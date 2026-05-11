@@ -34,12 +34,9 @@ const quickLinks: FooterLink[] = [
 ];
 
 const serviceLinks: FooterLink[] = [
-  { label: 'Home Cleaning', page: 'categories' },
   { label: 'Plumbing', page: 'categories' },
   { label: 'Electrical', page: 'categories' },
-  { label: 'Painting', page: 'categories' },
-  { label: 'Appliance Repair', page: 'categories' },
-  { label: 'All Services', page: 'categories' },
+  { label: 'AC & HVAC', page: 'categories' },
 ];
 
 const legalLinks: { label: string; page: Page }[] = [
@@ -75,8 +72,8 @@ export function Footer() {
               </span>
             </button>
             <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              Your trusted marketplace for professional home services. Find skilled
-              providers, book with confidence, and get the job done right.
+              Your trusted marketplace for professional home maintenance &amp; repair
+              services. Find skilled providers, book with confidence, and get the job done right.
             </p>
             {/* Social Media Links */}
             <div className="flex items-center gap-3">
@@ -162,27 +159,29 @@ export function Footer() {
               <li className="flex items-start gap-2.5">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600" />
                 <span className="text-sm text-muted-foreground">
-                  123 Service Street, Suite 100
+                  BookYourService Technologies Pvt. Ltd.
                   <br />
-                  San Francisco, CA 94102
+                  123 Service Street, Fort
+                  <br />
+                  Mumbai 400001, India
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone className="size-4 shrink-0 text-emerald-600" />
                 <a
-                  href="tel:+14155551234"
+                  href="tel:+919876543210"
                   className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
                 >
-                  +1 (415) 555-1234
+                  +91 98765 43210
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
                 <Mail className="size-4 shrink-0 text-emerald-600" />
                 <a
-                  href="mailto:hello@bookyourservice.com"
+                  href="mailto:support@bookyourservice.co.in"
                   className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
                 >
-                  hello@bookyourservice.com
+                  support@bookyourservice.co.in
                 </a>
               </li>
             </ul>
@@ -210,7 +209,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
           <p className="text-xs text-muted-foreground">
-            &copy; 2024 BookYourService. All rights reserved.
+            &copy; 2025 BookYourService. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             {legalLinks.map((link) => (

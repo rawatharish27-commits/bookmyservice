@@ -377,3 +377,29 @@ model ContactMessage {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model VisitorSession {
+  id          String   @id @default(cuid())
+  sessionId   String   @unique
+  ipAddress   String?
+  userAgent   String?
+  country     String?
+  city        String?
+  page        String?
+  referrer    String?
+  isActive    Boolean  @default(true)
+  lastActive  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model PlatformStats {
+  id              Int      @id @default(autoincrement())
+  totalVisitors   Int      @default(0)
+  totalUsers      Int      @default(0)
+  totalProviders  Int      @default(0)
+  totalBookings   Int      @default(0)
+  totalServices   Int      @default(0)
+  activeVisitors  Int      @default(0)
+  updatedAt       DateTime @updatedAt
+}

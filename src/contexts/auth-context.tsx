@@ -27,12 +27,13 @@ interface AuthContextType {
   refreshProfile: () => Promise<void>;
 }
 
-interface RegisterData {
+export interface RegisterData {
   email: string;
   phone: string;
   password: string;
   name: string;
   roleId: number;
+  role?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -69,10 +70,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = useCallback(async (data: RegisterData) => {
+    // Map roleId to role string for the API, but also pass roleId for compatibility
+    const roleMap: Record<number, string> = { 1: 'CLIENT', 2: 'PROVIDER' };
+    const payload = {
+      ...data,
+      role: data.role || roleMap[data.roleId] || 'CLIENT',
+    };
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload),
     });
     const result = await res.json();
     if (!res.ok) throw new Error(result.error || 'Registration failed');

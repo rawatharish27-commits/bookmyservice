@@ -111,10 +111,28 @@ export function LegalPage() {
             )}
           </div>
 
-          <div
-            className="prose prose-sm max-w-none text-muted-foreground"
-            dangerouslySetInnerHTML={{ __html: data.content }}
-          />
+          <div className="legal-content prose prose-sm max-w-none text-muted-foreground">
+            {data.content.split('\n').map((line, i) => {
+              const trimmed = line.trim();
+              if (!trimmed) return <br key={i} />;
+              // Main title (ALL CAPS, long)
+              if (trimmed === trimmed.toUpperCase() && trimmed.length > 20 && !trimmed.startsWith('•') && !trimmed.startsWith('-')) {
+                return <h2 key={i} className="mt-6 mb-3 text-lg font-bold text-foreground">{trimmed}</h2>;
+              }
+              // Numbered sections like "1.", "1.1", "2.3"
+              if (/^\d+\.\d+/.test(trimmed)) {
+                return <p key={i} className="ml-4 mt-1 leading-relaxed">{trimmed}</p>;
+              }
+              if (/^\d+\./.test(trimmed)) {
+                return <h3 key={i} className="mt-4 mb-1 font-semibold text-foreground">{trimmed}</h3>;
+              }
+              // Bullet points
+              if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
+                return <p key={i} className="ml-4 leading-relaxed">{trimmed}</p>;
+              }
+              return <p key={i} className="leading-relaxed">{trimmed}</p>;
+            })}
+          </div>
         </article>
       )}
 

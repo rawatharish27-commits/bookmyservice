@@ -31,6 +31,8 @@ async function main() {
   await db.seoMetadata.deleteMany();
   await db.revenueStream.deleteMany();
   await db.contactMessage.deleteMany();
+  await db.visitorSession.deleteMany();
+  await db.platformStats.deleteMany();
 
   // ========================================
   // 1. ROLES
@@ -47,36 +49,13 @@ async function main() {
   });
 
   // ========================================
-  // 2. SERVICE CATEGORIES (26 categories)
+  // 2. SERVICE CATEGORIES (3 categories)
   // ========================================
   console.log('📂 Creating service categories...');
   const categoryData = [
-    { name: 'Home Maintenance & Repairs', slug: 'home-maintenance-repairs', icon: 'Wrench', description: 'General home maintenance and repair services' },
-    { name: 'Plumbing Services', slug: 'plumbing-services', icon: 'Droplets', description: 'Professional plumbing installation, repair, and maintenance' },
-    { name: 'Electrical Services', slug: 'electrical-services', icon: 'Zap', description: 'Licensed electrical work and installations' },
-    { name: 'AC & HVAC Services', slug: 'ac-hvac-services', icon: 'Thermometer', description: 'Air conditioning and HVAC system services' },
-    { name: 'Carpentry & Woodwork', slug: 'carpentry-woodwork', icon: 'Hammer', description: 'Custom carpentry and woodworking services' },
-    { name: 'Painting & Decoration', slug: 'painting-decoration', icon: 'PaintBucket', description: 'Interior and exterior painting and decoration' },
-    { name: 'Handyman Services', slug: 'handyman-services', icon: 'Tool', description: 'Multi-purpose handyman for odd jobs' },
-    { name: 'Masonry & Tiling', slug: 'masonry-tiling', icon: 'Grid3x3', description: 'Masonry, tiling, and stone work' },
-    { name: 'Pest Control', slug: 'pest-control', icon: 'Bug', description: 'Professional pest control and extermination' },
-    { name: 'Home Cleaning', slug: 'home-cleaning', icon: 'Sparkles', description: 'Deep cleaning and regular home cleaning services' },
-    { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', icon: 'Container', description: 'Water tank cleaning and sanitization' },
-    { name: 'Appliance Repair', slug: 'appliance-repair', icon: 'Settings', description: 'Home appliance repair and servicing' },
-    { name: 'Gadget Repair', slug: 'gadget-repair', icon: 'Smartphone', description: 'Mobile, tablet, and gadget repair' },
-    { name: 'Lawn & Gardening', slug: 'lawn-gardening', icon: 'Flower2', description: 'Lawn maintenance and gardening services' },
-    { name: 'Exterior Cleaning', slug: 'exterior-cleaning', icon: 'SprayCan', description: 'Exterior wall, driveway, and facade cleaning' },
-    { name: 'Moving & Relocation', slug: 'moving-relocation', icon: 'Truck', description: 'Packing, moving, and relocation services' },
-    { name: 'Salon for Women', slug: 'salon-women', icon: 'Scissors', description: 'At-home salon services for women' },
-    { name: 'Barber for Men', slug: 'barber-men', icon: 'Scissors', description: 'At-home barber and grooming services for men' },
-    { name: 'Massage & Spa', slug: 'massage-spa', icon: 'Heart', description: 'At-home massage and spa services' },
-    { name: 'Fitness Training', slug: 'fitness-training', icon: 'Dumbbell', description: 'Personal fitness training at home' },
-    { name: 'Home Tutoring', slug: 'home-tutoring', icon: 'GraduationCap', description: 'At-home academic tutoring and coaching' },
-    { name: 'Event Planning', slug: 'event-planning', icon: 'PartyPopper', description: 'Event planning and management services' },
-    { name: 'Photography & Video', slug: 'photography-video', icon: 'Camera', description: 'Professional photography and videography' },
-    { name: 'Tailoring & Alteration', slug: 'tailoring-alteration', icon: 'PenTool', description: 'Custom tailoring and clothing alterations' },
-    { name: 'Pet Care', slug: 'pet-care', icon: 'PawPrint', description: 'Pet grooming, walking, and veterinary care' },
-    { name: 'Car Care', slug: 'car-care', icon: 'Car', description: 'Car washing, detailing, and maintenance' },
+    { name: 'Plumbing', slug: 'plumbing', icon: 'Droplets', description: 'Professional plumbing services for your home' },
+    { name: 'Electrical', slug: 'electrical', icon: 'Zap', description: 'Licensed electrical services for your home' },
+    { name: 'AC & HVAC', slug: 'ac-hvac', icon: 'Wind', description: 'Air conditioning and heating services for your home' },
   ];
 
   const categories: Record<string, any> = {};
@@ -88,136 +67,45 @@ async function main() {
   }
 
   // ========================================
-  // 3. SUBCATEGORIES (10+ per top 10 categories)
+  // 3. SUBCATEGORIES (10 per category)
   // ========================================
   console.log('📁 Creating subcategories...');
   const subcategoryData: Record<string, Array<{ name: string; slug: string; description: string }>> = {
-    'home-maintenance-repairs': [
-      { name: 'Wall Crack Repair', slug: 'wall-crack-repair', description: 'Repair of wall cracks and plaster damage' },
-      { name: 'Door & Window Repair', slug: 'door-window-repair', description: 'Door and window frame repair and alignment' },
-      { name: 'Roof Leak Repair', slug: 'roof-leak-repair', description: 'Roof leak detection and waterproofing' },
-      { name: 'Floor Repair', slug: 'floor-repair', description: 'Floor tile, marble, and wooden floor repair' },
-      { name: 'Ceiling Repair', slug: 'ceiling-repair', description: 'False ceiling and POP ceiling repair' },
-      { name: 'Gate & Fence Repair', slug: 'gate-fence-repair', description: 'Main gate and boundary fence repair' },
-      { name: 'Lock & Latch Repair', slug: 'lock-latch-repair', description: 'Door lock and latch replacement and repair' },
-      { name: 'Waterproofing', slug: 'waterproofing', description: 'Bathroom and terrace waterproofing' },
-      { name: 'Grout & Sealant Work', slug: 'grout-sealant-work', description: 'Tile grouting and sealant application' },
-      { name: 'General Home Inspection', slug: 'general-home-inspection', description: 'Complete home inspection and assessment' },
-      { name: 'Termite Treatment', slug: 'termite-treatment', description: 'Pre and post construction anti-termite treatment' },
-      { name: 'Wall Putty & Finishing', slug: 'wall-putty-finishing', description: 'Wall putty application and surface finishing' },
+    'plumbing': [
+      { name: 'Leak Repair', slug: 'leak-repair', description: 'Detection and repair of pipe leaks and water seepage' },
+      { name: 'Drain Cleaning', slug: 'drain-cleaning', description: 'Blocked drain and sewer line cleaning services' },
+      { name: 'Pipe Installation', slug: 'pipe-installation', description: 'New pipe installation and replacement services' },
+      { name: 'Faucet Repair', slug: 'faucet-repair', description: 'Tap and faucet repair and replacement' },
+      { name: 'Toilet Installation', slug: 'toilet-installation', description: 'Toilet seat, cistern, and flush installation' },
+      { name: 'Water Heater Repair', slug: 'water-heater-repair', description: 'Geyser and water heater repair and servicing' },
+      { name: 'Sewage Cleaning', slug: 'sewage-cleaning', description: 'Sewage line cleaning and unclogging services' },
+      { name: 'Shower/Tub Repair', slug: 'shower-tub-repair', description: 'Shower and bathtub repair and fitting services' },
+      { name: 'Gas Line Servicing', slug: 'gas-line-servicing', description: 'Gas pipe installation, repair, and safety checks' },
+      { name: 'Pump Repair', slug: 'pump-repair', description: 'Water pump and motor repair and installation' },
     ],
-    'plumbing-services': [
-      { name: 'Pipe Leakage Repair', slug: 'pipe-leakage-repair', description: 'Detection and repair of pipe leaks' },
-      { name: 'Tap & Faucet Installation', slug: 'tap-faucet-installation', description: 'New tap and faucet installation' },
-      { name: 'Water Heater Installation', slug: 'water-heater-installation', description: 'Geyser and water heater installation' },
-      { name: 'Toilet Repair', slug: 'toilet-repair', description: 'Toilet flush, seat, and cistern repair' },
-      { name: 'Drain Cleaning', slug: 'drain-cleaning', description: 'Blocked drain and sewer line cleaning' },
-      { name: 'Bathroom Fittings', slug: 'bathroom-fittings', description: 'Shower, jet spray, and bathroom fitting installation' },
-      { name: 'Water Pump Installation', slug: 'water-pump-installation', description: 'Motor and water pump installation and repair' },
-      { name: 'Kitchen Sink Plumbing', slug: 'kitchen-sink-plumbing', description: 'Kitchen sink pipe and drain installation' },
-      { name: 'Sewage Line Repair', slug: 'sewage-line-repair', description: 'Sewage pipe repair and replacement' },
-      { name: 'RO & Water Purifier Installation', slug: 'ro-water-purifier-installation', description: 'RO system and water purifier setup' },
-      { name: 'Overhead Tank Plumbing', slug: 'overhead-tank-plumbing', description: 'Overhead water tank pipe connections' },
+    'electrical': [
+      { name: 'Wiring Repairs', slug: 'wiring-repairs', description: 'House wiring repair and rewiring services' },
+      { name: 'Light Fixture Installation', slug: 'light-fixture-installation', description: 'Chandelier, tube light, and LED fixture installation' },
+      { name: 'Socket Repairs', slug: 'socket-repairs', description: 'Switch and socket point repair and installation' },
+      { name: 'Circuit Breaker Fixing', slug: 'circuit-breaker-fixing', description: 'MCB, DB box, and circuit breaker repair and setup' },
+      { name: 'Ceiling Fan Installation', slug: 'ceiling-fan-installation', description: 'Ceiling fan mounting, wiring, and repair' },
+      { name: 'Smart Home Setup', slug: 'smart-home-setup', description: 'Smart home automation wiring and device setup' },
+      { name: 'Generator Maintenance', slug: 'generator-maintenance', description: 'Generator servicing, repair, and maintenance' },
+      { name: 'Switchboard Upgrades', slug: 'switchboard-upgrades', description: 'Switchboard and distribution board upgrades' },
+      { name: 'Panel Repair', slug: 'panel-repair', description: 'Electrical panel and control panel repair' },
+      { name: 'Appliance Grounding', slug: 'appliance-grounding', description: 'Earthing, grounding, and electrical safety installation' },
     ],
-    'electrical-services': [
-      { name: 'Wiring & Rewiring', slug: 'wiring-rewiring', description: 'Complete house wiring and rewiring' },
-      { name: 'Switch & Socket Installation', slug: 'switch-socket-installation', description: 'New switch and socket point installation' },
-      { name: 'Ceiling Fan Installation', slug: 'ceiling-fan-installation', description: 'Ceiling fan mounting and wiring' },
-      { name: 'MCB & DB Box Setup', slug: 'mcb-db-box-setup', description: 'Distribution board and MCB configuration' },
-      { name: 'Inverter & UPS Installation', slug: 'inverter-ups-installation', description: 'Power backup system installation' },
-      { name: 'Light Fixture Installation', slug: 'light-fixture-installation', description: 'Chandelier, tube light, and LED installation' },
-      { name: 'CCTV Wiring', slug: 'cctv-wiring', description: 'Security camera wiring and setup' },
-      { name: 'Electrical Safety Audit', slug: 'electrical-safety-audit', description: 'Home electrical safety inspection' },
-      { name: 'Earthing & Grounding', slug: 'earthing-grounding', description: 'Proper earthing and grounding installation' },
-      { name: 'Smart Home Wiring', slug: 'smart-home-wiring', description: 'Smart home automation wiring setup' },
-      { name: 'Doorbell & Intercom', slug: 'doorbell-intercom', description: 'Doorbell and video intercom installation' },
-    ],
-    'ac-hvac-services': [
-      { name: 'AC Installation', slug: 'ac-installation', description: 'Split and window AC installation' },
-      { name: 'AC Repair & Troubleshooting', slug: 'ac-repair-troubleshooting', description: 'AC cooling issues and repair' },
-      { name: 'AC Gas Refill', slug: 'ac-gas-refill', description: 'Refrigerant gas refill and leak fixing' },
-      { name: 'AC Deep Cleaning', slug: 'ac-deep-cleaning', description: 'Foam wash and deep cleaning of AC units' },
-      { name: 'AC Uninstallation', slug: 'ac-uninstallation', description: 'Safe AC unit removal and packing' },
-      { name: 'AC Annual Maintenance', slug: 'ac-annual-maintenance', description: 'Annual service contract for AC maintenance' },
-      { name: 'Central AC Servicing', slug: 'central-ac-servicing', description: 'Central air conditioning system service' },
-      { name: 'Duct Cleaning', slug: 'duct-cleaning', description: 'HVAC duct cleaning and sanitization' },
-      { name: 'Thermostat Repair', slug: 'thermostat-repair', description: 'AC thermostat replacement and calibration' },
-      { name: 'Compressor Repair', slug: 'compressor-repair', description: 'AC compressor diagnosis and repair' },
-      { name: 'HVAC System Design', slug: 'hvac-system-design', description: 'Custom HVAC system planning and installation' },
-    ],
-    'carpentry-woodwork': [
-      { name: 'Modular Kitchen', slug: 'modular-kitchen', description: 'Custom modular kitchen design and installation' },
-      { name: 'Wardrobe & Closet', slug: 'wardrobe-closet', description: 'Custom wardrobe and closet construction' },
-      { name: 'Door & Frame Work', slug: 'door-frame-work', description: 'Wooden door and frame fabrication' },
-      { name: 'Furniture Repair', slug: 'furniture-repair', description: 'Repair of wooden furniture and fixtures' },
-      { name: 'TV Unit & Shelving', slug: 'tv-unit-shelving', description: 'Custom TV unit and wall shelving' },
-      { name: 'Bookshelf & Storage', slug: 'bookshelf-storage', description: 'Custom bookshelf and storage solutions' },
-      { name: 'Window Frame & Grill', slug: 'window-frame-grill', description: 'Wooden window frame work' },
-      { name: 'False Ceiling Woodwork', slug: 'false-ceiling-woodwork', description: 'Wooden false ceiling and paneling' },
-      { name: 'Pooja Room Design', slug: 'pooja-room-design', description: 'Custom pooja room and mandir woodwork' },
-      { name: 'Flooring & Decking', slug: 'flooring-decking', description: 'Wooden flooring and deck installation' },
-      { name: 'Study Table & Workstation', slug: 'study-table-workstation', description: 'Custom study table and home office workstation' },
-    ],
-    'painting-decoration': [
-      { name: 'Interior Wall Painting', slug: 'interior-wall-painting', description: 'Interior wall painting and color consultation' },
-      { name: 'Exterior Wall Painting', slug: 'exterior-wall-painting', description: 'Exterior wall painting and weatherproofing' },
-      { name: 'Texture Painting', slug: 'texture-painting', description: 'Decorative texture and stucco painting' },
-      { name: 'Wood Polish & Varnish', slug: 'wood-polish-varnish', description: 'Wood furniture and door polishing' },
-      { name: 'Wallpaper Installation', slug: 'wallpaper-installation', description: 'Wallpaper selection and installation' },
-      { name: 'Stenciling & Murals', slug: 'stenciling-murals', description: 'Custom wall stenciling and mural painting' },
-      { name: 'Metal Paint & Anti-Rust', slug: 'metal-paint-anti-rust', description: 'Metal gate and grille painting' },
-      { name: 'Waterproof Paint', slug: 'waterproof-paint', description: 'Waterproof coating for walls and roofs' },
-      { name: 'Pop & Cornice Work', slug: 'pop-cornice-work', description: 'Plaster of Paris and decorative cornice work' },
-      { name: 'Wall Putty & Primer', slug: 'wall-putty-primer', description: 'Wall surface preparation and priming' },
-    ],
-    'handyman-services': [
-      { name: 'Furniture Assembly', slug: 'furniture-assembly', description: 'Flat-pack furniture assembly' },
-      { name: 'Picture & Mirror Hanging', slug: 'picture-mirror-hanging', description: 'Wall mounting for pictures and mirrors' },
-      { name: 'TV Wall Mounting', slug: 'tv-wall-mounting', description: 'TV bracket installation and cable management' },
-      { name: 'Shelf Installation', slug: 'shelf-installation', description: 'Floating and wall shelf installation' },
-      { name: 'Curtain Rod Installation', slug: 'curtain-rod-installation', description: 'Curtain rod and blind fitting' },
-      { name: 'Small Repairs', slug: 'small-repairs', description: 'General small repair and fix-up jobs' },
-      { name: 'Appliance Installation', slug: 'appliance-installation', description: 'Home appliance mounting and setup' },
-      { name: 'Weather Stripping', slug: 'weather-stripping', description: 'Door and window weather stripping' },
-      { name: 'Gutter Cleaning', slug: 'gutter-cleaning', description: 'Rain gutter cleaning and maintenance' },
-      { name: 'Smoke Detector Installation', slug: 'smoke-detector-installation', description: 'Smoke and CO detector installation' },
-    ],
-    'masonry-tiling': [
-      { name: 'Floor Tiling', slug: 'floor-tiling', description: 'Floor tile laying and grouting' },
-      { name: 'Wall Tiling', slug: 'wall-tiling', description: 'Bathroom and kitchen wall tiling' },
-      { name: 'Marble & Granite Work', slug: 'marble-granite-work', description: 'Marble and granite flooring and countertops' },
-      { name: 'Brick Work', slug: 'brick-work', description: 'Brick wall construction and repair' },
-      { name: 'Plastering', slug: 'plastering', description: 'Wall plastering and finishing' },
-      { name: 'Concrete Work', slug: 'concrete-work', description: 'Concrete pouring and finishing' },
-      { name: 'Kitchen Counter Tiling', slug: 'kitchen-counter-tiling', description: 'Kitchen countertop tiling and backsplash' },
-      { name: 'Bathroom Renovation', slug: 'bathroom-renovation', description: 'Complete bathroom tile renovation' },
-      { name: 'Grout Replacement', slug: 'grout-replacement', description: 'Old grout removal and replacement' },
-      { name: 'Stone Cladding', slug: 'stone-cladding', description: 'Natural stone wall cladding' },
-    ],
-    'pest-control': [
-      { name: 'Cockroach Control', slug: 'cockroach-control', description: 'Complete cockroach extermination and prevention' },
-      { name: 'Termite Control', slug: 'termite-control', description: 'Anti-termite treatment and protection' },
-      { name: 'Mosquito Control', slug: 'mosquito-control', description: 'Mosquito fogging and larvicide treatment' },
-      { name: 'Bed Bug Treatment', slug: 'bed-bug-treatment', description: 'Bed bug heat treatment and chemical control' },
-      { name: 'Rodent Control', slug: 'rodent-control', description: 'Rat and mice trapping and extermination' },
-      { name: 'Ant Control', slug: 'ant-control', description: 'Ant infestation treatment and barrier' },
-      { name: 'Spider Control', slug: 'spider-control', description: 'Spider removal and web cleaning' },
-      { name: 'Flea & Tick Control', slug: 'flea-tick-control', description: 'Pet area flea and tick treatment' },
-      { name: 'Lizard Control', slug: 'lizard-control', description: 'Lizard repellent and removal' },
-      { name: 'Annual Pest Contract', slug: 'annual-pest-contract', description: 'Year-round pest control maintenance' },
-      { name: 'Commercial Pest Control', slug: 'commercial-pest-control', description: 'Office and commercial space pest management' },
-    ],
-    'home-cleaning': [
-      { name: 'Deep Home Cleaning', slug: 'deep-home-cleaning', description: 'Complete deep cleaning of entire home' },
-      { name: 'Kitchen Deep Cleaning', slug: 'kitchen-deep-cleaning', description: 'Kitchen chimney, cabinet, and surface cleaning' },
-      { name: 'Bathroom Deep Cleaning', slug: 'bathroom-deep-cleaning', description: 'Bathroom tile, fixture, and sanitization' },
-      { name: 'Sofa & Carpet Cleaning', slug: 'sofa-carpet-cleaning', description: 'Sofa shampooing and carpet deep clean' },
-      { name: 'Move-In Cleaning', slug: 'move-in-cleaning', description: 'Pre-move-in deep cleaning service' },
-      { name: 'Post-Construction Cleaning', slug: 'post-construction-cleaning', description: 'After renovation debris and dust cleaning' },
-      { name: 'Window & Glass Cleaning', slug: 'window-glass-cleaning', description: 'Interior and exterior window cleaning' },
-      { name: 'Regular Housekeeping', slug: 'regular-housekeeping', description: 'Daily or weekly housekeeping service' },
-      { name: 'Mattress Cleaning', slug: 'mattress-cleaning', description: 'Mattress deep cleaning and sanitization' },
-      { name: 'Office Cleaning', slug: 'office-cleaning', description: 'Commercial office cleaning service' },
+    'ac-hvac': [
+      { name: 'AC Installation', slug: 'ac-installation', description: 'Split and window AC installation services' },
+      { name: 'AC Repair', slug: 'ac-repair', description: 'AC cooling issues, troubleshooting, and repair' },
+      { name: 'AC Cleaning/Servicing', slug: 'ac-cleaning-servicing', description: 'Foam wash, deep cleaning, and regular AC servicing' },
+      { name: 'Heating Unit Repairs', slug: 'heating-unit-repairs', description: 'Heater and heating system repair services' },
+      { name: 'Thermostat Setup', slug: 'thermostat-setup', description: 'Thermostat installation, calibration, and repair' },
+      { name: 'Central Air Maintenance', slug: 'central-air-maintenance', description: 'Central air conditioning system maintenance and servicing' },
+      { name: 'Duct Cleaning', slug: 'duct-cleaning', description: 'HVAC duct cleaning and sanitization services' },
+      { name: 'Furnace Repair', slug: 'furnace-repair', description: 'Furnace diagnosis, repair, and maintenance' },
+      { name: 'Ventilator Services', slug: 'ventilator-services', description: 'Ventilation system installation and servicing' },
+      { name: 'Gas Refilling', slug: 'gas-refilling', description: 'Refrigerant gas refill and leak fixing services' },
     ],
   };
 
@@ -258,12 +146,12 @@ async function main() {
   });
 
   // ========================================
-  // 5. SAMPLE PROVIDERS (3 providers with KYC APPROVED)
+  // 5. SERVICE PROVIDERS (5 providers - major Indian cities)
   // ========================================
-  console.log('👷 Creating sample providers...');
+  console.log('👷 Creating service providers...');
   const providerPasswordHash = await bcrypt.hash('provider123', SALT_ROUNDS);
 
-  const providers = [];
+  const providers: any[] = [];
   const providerInfos = [
     {
       name: 'Rajesh Kumar',
@@ -327,6 +215,48 @@ async function main() {
         verifiedBy: admin.id,
       },
     },
+    {
+      name: 'Srinivas Rao',
+      email: 'srinivas.rao@gmail.com',
+      phone: '+919812345673',
+      city: 'Hyderabad',
+      state: 'Telangana',
+      country: 'India',
+      pincode: '500001',
+      address: '23, Banjara Hills, Hyderabad',
+      latitude: 17.4156,
+      longitude: 78.4489,
+      kyc: {
+        documentType: 'AADHAAR',
+        documentNumber: '567890123456',
+        documentFrontUrl: '/uploads/kyc/srinivas-aadhaar-front.jpg',
+        documentBackUrl: '/uploads/kyc/srinivas-aadhaar-back.jpg',
+        selfieUrl: '/uploads/kyc/srinivas-selfie.jpg',
+        verificationStatus: 'APPROVED',
+        verifiedBy: admin.id,
+      },
+    },
+    {
+      name: 'Karthik Iyer',
+      email: 'karthik.iyer@gmail.com',
+      phone: '+919812345674',
+      city: 'Chennai',
+      state: 'Tamil Nadu',
+      country: 'India',
+      pincode: '600001',
+      address: '89, T. Nagar, Chennai',
+      latitude: 13.0418,
+      longitude: 80.2341,
+      kyc: {
+        documentType: 'PASSPORT',
+        documentNumber: 'T5678901',
+        documentFrontUrl: '/uploads/kyc/karthik-passport-front.jpg',
+        documentBackUrl: '/uploads/kyc/karthik-passport-back.jpg',
+        selfieUrl: '/uploads/kyc/karthik-selfie.jpg',
+        verificationStatus: 'APPROVED',
+        verifiedBy: admin.id,
+      },
+    },
   ];
 
   for (const pInfo of providerInfos) {
@@ -351,17 +281,20 @@ async function main() {
   }
 
   // ========================================
-  // 6. SAMPLE CLIENTS (5 clients with various statuses)
+  // 6. CLIENT USERS (8 clients with various statuses)
   // ========================================
-  console.log('👥 Creating sample clients...');
+  console.log('👥 Creating client users...');
   const clientPasswordHash = await bcrypt.hash('client123', SALT_ROUNDS);
-  const clients = [];
+  const clients: any[] = [];
   const clientInfos = [
     { name: 'Anita Desai', email: 'anita.desai@gmail.com', phone: '+919912345670', status: 'ACTIVE', city: 'Hyderabad', state: 'Telangana', country: 'India', pincode: '500001', address: '23, Banjara Hills, Hyderabad', latitude: 17.4156, longitude: 78.4489, emailVerified: true, phoneVerified: true },
-    { name: 'Vikram Singh', email: 'vikram.singh@gmail.com', phone: '+919912345671', status: 'ACTIVE', city: 'Pune', state: 'Maharashtra', country: 'India', pincode: '411001', address: '56, Koregaon Park, Pune', latitude: 18.5362, longitude: 73.8938, emailVerified: true, phoneVerified: true },
+    { name: 'Vikram Singh', email: 'vikram.singh@gmail.com', phone: '+919912345671', status: 'ACTIVE', city: 'Delhi', state: 'Delhi', country: 'India', pincode: '110001', address: '56, GK-II, New Delhi', latitude: 28.5485, longitude: 77.2485, emailVerified: true, phoneVerified: true },
     { name: 'Meera Nair', email: 'meera.nair@gmail.com', phone: '+919912345672', status: 'PENDING', city: 'Chennai', state: 'Tamil Nadu', country: 'India', pincode: '600001', address: '89, T. Nagar, Chennai', latitude: 13.0418, longitude: 80.2341, emailVerified: false, phoneVerified: true },
     { name: 'Suresh Reddy', email: 'suresh.reddy@gmail.com', phone: '+919912345673', status: 'ACTIVE', city: 'Bengaluru', state: 'Karnataka', country: 'India', pincode: '560034', address: '34, Whitefield, Bengaluru', latitude: 12.9698, longitude: 77.7500, emailVerified: true, phoneVerified: true },
-    { name: 'Kavita Joshi', email: 'kavita.joshi@gmail.com', phone: '+919912345674', status: 'BLOCKED', city: 'Jaipur', state: 'Rajasthan', country: 'India', pincode: '302001', address: '67, Malviya Nagar, Jaipur', latitude: 26.8571, longitude: 75.8098, emailVerified: true, phoneVerified: false },
+    { name: 'Kavita Joshi', email: 'kavita.joshi@gmail.com', phone: '+919912345674', status: 'BLOCKED', city: 'Mumbai', state: 'Maharashtra', country: 'India', pincode: '400051', address: '67, Malviya Nagar, Mumbai', latitude: 19.0596, longitude: 72.8456, emailVerified: true, phoneVerified: false },
+    { name: 'Deepak Verma', email: 'deepak.verma@gmail.com', phone: '+919912345675', status: 'ACTIVE', city: 'Hyderabad', state: 'Telangana', country: 'India', pincode: '500034', address: '12, Madhapur, Hyderabad', latitude: 17.4491, longitude: 78.3912, emailVerified: true, phoneVerified: true },
+    { name: 'Pooja Menon', email: 'pooja.menon@gmail.com', phone: '+919912345676', status: 'SUSPENDED', city: 'Chennai', state: 'Tamil Nadu', country: 'India', pincode: '600018', address: '45, Adyar, Chennai', latitude: 13.0067, longitude: 80.2572, emailVerified: true, phoneVerified: true },
+    { name: 'Rahul Gupta', email: 'rahul.gupta@gmail.com', phone: '+919912345677', status: 'ACTIVE', city: 'Delhi', state: 'Delhi', country: 'India', pincode: '110019', address: '78, Saket, New Delhi', latitude: 28.5244, longitude: 77.2066, emailVerified: true, phoneVerified: true },
   ];
 
   for (const cInfo of clientInfos) {
@@ -372,17 +305,17 @@ async function main() {
   }
 
   // ========================================
-  // 7. SAMPLE SERVICES (18 services across categories)
+  // 7. SERVICES (14 services across 3 categories)
   // ========================================
-  console.log('🔧 Creating sample services...');
+  console.log('🔧 Creating services...');
   const serviceData = [
-    // Rajesh Kumar - Delhi provider
+    // Rajesh Kumar - Delhi provider (Plumbing + Electrical)
     {
       providerId: providers[0].id,
-      categoryId: categories['plumbing-services'].id,
-      subcategoryId: subcategories['plumbing-services']?.[0]?.id,
-      title: 'Professional Pipe Leakage Repair & Fixing',
-      description: 'Expert plumbing service for detecting and repairing all types of pipe leakages. We use advanced leak detection equipment and provide long-lasting solutions for residential and commercial properties. Service includes inspection, repair, and post-repair testing.',
+      categoryId: categories['plumbing'].id,
+      subcategoryId: subcategories['plumbing']?.[0]?.id,
+      title: 'Professional Leak Repair & Detection Service',
+      description: 'Expert plumbing service for detecting and repairing all types of pipe leakages, water seepage, and dampness issues. We use advanced leak detection equipment including thermal imaging and acoustic sensors. Service includes thorough inspection, precise leak location identification, professional repair using quality materials, and post-repair pressure testing to ensure the fix is permanent.',
       basePrice: 499,
       priceNegotiable: true,
       serviceDurationMinutes: 60,
@@ -397,30 +330,12 @@ async function main() {
     },
     {
       providerId: providers[0].id,
-      categoryId: categories['electrical-services'].id,
-      subcategoryId: subcategories['electrical-services']?.[1]?.id,
-      title: 'Switch & Socket Installation Service',
-      description: 'Professional installation of switches, sockets, and electrical points. Licensed electrician with 10+ years of experience. Includes wiring, fitting, and safety testing. We ensure all installations meet ISI standards.',
-      basePrice: 299,
+      categoryId: categories['plumbing'].id,
+      subcategoryId: subcategories['plumbing']?.[4]?.id,
+      title: 'Toilet Installation & Repair Service',
+      description: 'Complete toilet installation, replacement, and repair service. Whether you need a new western-style toilet installed, an existing one repaired, or a cistern fixed, our experienced plumbers handle it all. We work with all major brands and ensure proper sealing, water connection, and flush mechanism setup. Same-day service available for urgent repairs.',
+      basePrice: 699,
       priceNegotiable: false,
-      serviceDurationMinutes: 45,
-      serviceAreaRadiusKm: 20,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    {
-      providerId: providers[0].id,
-      categoryId: categories['home-maintenance-repairs'].id,
-      subcategoryId: subcategories['home-maintenance-repairs']?.[0]?.id,
-      title: 'Wall Crack & Plaster Repair Service',
-      description: 'Complete wall crack repair service including plaster damage restoration. Professional technicians use quality materials for long-lasting repairs. Includes surface preparation, crack filling, and finishing.',
-      basePrice: 599,
-      priceNegotiable: true,
       serviceDurationMinutes: 90,
       serviceAreaRadiusKm: 15,
       city: 'Delhi',
@@ -431,17 +346,36 @@ async function main() {
       latitude: 28.6315,
       longitude: 77.2167,
     },
-    // Priya Sharma - Mumbai provider
+    {
+      providerId: providers[0].id,
+      categoryId: categories['electrical'].id,
+      subcategoryId: subcategories['electrical']?.[0]?.id,
+      title: 'Complete House Wiring & Rewiring Service',
+      description: 'Professional house wiring and rewiring by licensed electricians with 10+ years of experience. We handle new construction wiring, old house rewiring, and electrical system upgrades. All work meets ISI standards and local electrical codes. Includes conduit piping, wire pulling, switch and socket connections, DB box setup, and thorough safety testing.',
+      basePrice: 2999,
+      priceNegotiable: true,
+      serviceDurationMinutes: 240,
+      serviceAreaRadiusKm: 20,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      address: '45, Connaught Place, New Delhi',
+      pincode: '110001',
+      latitude: 28.6315,
+      longitude: 77.2167,
+    },
+
+    // Priya Sharma - Mumbai provider (Electrical + AC & HVAC)
     {
       providerId: providers[1].id,
-      categoryId: categories['home-cleaning'].id,
-      subcategoryId: subcategories['home-cleaning']?.[0]?.id,
-      title: 'Deep Home Cleaning - Complete House',
-      description: 'Thorough deep cleaning service for your entire home. Includes kitchen, bathrooms, bedrooms, living area, and balconies. We use eco-friendly cleaning products and professional-grade equipment. Service covers dusting, mopping, scrubbing, and sanitization.',
-      basePrice: 2499,
+      categoryId: categories['electrical'].id,
+      subcategoryId: subcategories['electrical']?.[1]?.id,
+      title: 'Light Fixture & Chandelier Installation',
+      description: 'Professional installation of all types of light fixtures including chandeliers, pendant lights, recessed lighting, tube lights, LED panels, and decorative fixtures. We handle ceiling mounting, wiring, switch connection, and dimmer setup. Our electricians ensure safe installation with proper load balancing and circuit protection.',
+      basePrice: 399,
       priceNegotiable: false,
-      serviceDurationMinutes: 240,
-      serviceAreaRadiusKm: 25,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 20,
       city: 'Mumbai',
       state: 'Maharashtra',
       country: 'India',
@@ -452,11 +386,12 @@ async function main() {
     },
     {
       providerId: providers[1].id,
-      categoryId: categories['salon-women'].id,
-      title: 'At-Home Salon Service for Women',
-      description: 'Complete salon experience at your doorstep. Includes haircut, facial, manicure, pedicure, waxing, and threading. Professional beautician with premium products. Relax in the comfort of your home.',
-      basePrice: 1499,
-      priceNegotiable: false,
+      categoryId: categories['electrical'].id,
+      subcategoryId: subcategories['electrical']?.[5]?.id,
+      title: 'Smart Home Automation Setup',
+      description: 'Transform your home with smart home automation. We install and configure smart switches, smart lights, motion sensors, smart doorbells, voice assistant integration (Alexa/Google Home), and automated curtain controls. Complete setup includes Wi-Fi configuration, app setup, and user training. Make your home future-ready with our expert smart home services.',
+      basePrice: 4999,
+      priceNegotiable: true,
       serviceDurationMinutes: 180,
       serviceAreaRadiusKm: 20,
       city: 'Mumbai',
@@ -469,13 +404,13 @@ async function main() {
     },
     {
       providerId: providers[1].id,
-      categoryId: categories['painting-decoration'].id,
-      subcategoryId: subcategories['painting-decoration']?.[0]?.id,
-      title: 'Interior Wall Painting - Professional Finish',
-      description: 'Transform your home with professional interior painting. Includes surface preparation, putty, primer, and two coats of premium emulsion paint. Color consultation available. We protect your furniture and ensure a clean workspace.',
-      basePrice: 3999,
-      priceNegotiable: true,
-      serviceDurationMinutes: 480,
+      categoryId: categories['ac-hvac'].id,
+      subcategoryId: subcategories['ac-hvac']?.[2]?.id,
+      title: 'AC Deep Cleaning & Servicing',
+      description: 'Comprehensive AC cleaning and servicing for split and window ACs. Our foam wash deep cleaning removes dust, mold, and bacteria from evaporator and condenser coils, filters, and drain pan. Includes gas level check, thermostat calibration, electrical connection inspection, and performance testing. Improves cooling efficiency and air quality. Recommended every 6 months.',
+      basePrice: 599,
+      priceNegotiable: false,
+      serviceDurationMinutes: 60,
       serviceAreaRadiusKm: 25,
       city: 'Mumbai',
       state: 'Maharashtra',
@@ -485,13 +420,14 @@ async function main() {
       latitude: 19.1197,
       longitude: 72.8464,
     },
-    // Arun Patel - Bengaluru provider
+
+    // Arun Patel - Bengaluru provider (AC & HVAC)
     {
       providerId: providers[2].id,
-      categoryId: categories['ac-hvac-services'].id,
-      subcategoryId: subcategories['ac-hvac-services']?.[0]?.id,
-      title: 'Split AC Installation Service',
-      description: 'Professional split AC installation by certified technician. Includes copper piping, drainage pipe setup, gas charging, and performance testing. We install all major brands. 30-day service warranty included.',
+      categoryId: categories['ac-hvac'].id,
+      subcategoryId: subcategories['ac-hvac']?.[0]?.id,
+      title: 'Split & Window AC Installation',
+      description: 'Professional AC installation by certified technician. For split ACs: includes wall bracket mounting, indoor-outdoor unit connection, copper piping (up to 10 ft), drainage pipe setup, gas charging, electrical connection, and performance testing. For window ACs: includes window frame preparation, unit mounting, sealing, and testing. We install all major brands. 30-day service warranty included.',
       basePrice: 1299,
       priceNegotiable: false,
       serviceDurationMinutes: 120,
@@ -500,16 +436,16 @@ async function main() {
       state: 'Karnataka',
       country: 'India',
       address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
+      pincode: '560001',
       latitude: 12.9352,
       longitude: 77.6245,
     },
     {
       providerId: providers[2].id,
-      categoryId: categories['ac-hvac-services'].id,
-      subcategoryId: subcategories['ac-hvac-services']?.[2]?.id,
-      title: 'AC Gas Refill & Leak Fixing',
-      description: 'Complete AC gas refill service with leak detection and fixing. We use genuine refrigerant gas and ensure optimal cooling performance. Includes pressure testing and performance verification.',
+      categoryId: categories['ac-hvac'].id,
+      subcategoryId: subcategories['ac-hvac']?.[9]?.id,
+      title: 'AC Gas Refilling & Leak Fixing',
+      description: 'Complete AC gas refill service with leak detection and fixing. We use genuine refrigerant gas (R32/R410a/R22 as applicable) and ensure optimal cooling performance. Service includes pressure testing, leak detection using UV dye, leak sealing, vacuum pumping, gas charging to manufacturer specifications, and performance verification. 90-day warranty on gas refill.',
       basePrice: 1899,
       priceNegotiable: true,
       serviceDurationMinutes: 90,
@@ -518,183 +454,121 @@ async function main() {
       state: 'Karnataka',
       country: 'India',
       address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
+      pincode: '560001',
       latitude: 12.9352,
       longitude: 77.6245,
     },
     {
       providerId: providers[2].id,
-      categoryId: categories['pest-control'].id,
-      subcategoryId: subcategories['pest-control']?.[0]?.id,
-      title: 'Cockroach Control - Complete Extermination',
-      description: 'Professional cockroach control using safe, herbal-based chemicals. Includes kitchen, bathroom, and all affected areas treatment. 3-month warranty with follow-up visit. Safe for children and pets.',
-      basePrice: 999,
-      priceNegotiable: false,
-      serviceDurationMinutes: 60,
-      serviceAreaRadiusKm: 25,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
-    // More services across various categories
-    {
-      providerId: providers[0].id,
-      categoryId: categories['carpentry-woodwork'].id,
-      subcategoryId: subcategories['carpentry-woodwork']?.[0]?.id,
-      title: 'Modular Kitchen Design & Installation',
-      description: 'Custom modular kitchen design, fabrication, and installation. Wide range of finishes and accessories. Includes 3D design consultation, material selection, and professional installation with 5-year warranty.',
-      basePrice: 49999,
-      priceNegotiable: true,
-      serviceDurationMinutes: 480,
-      serviceAreaRadiusKm: 30,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['massage-spa'].id,
-      title: 'Full Body Massage & Relaxation Therapy',
-      description: 'Professional at-home full body massage service. Choose from Swedish, Deep Tissue, or Aromatherapy massage. Certified therapist brings all equipment and oils. 60 or 90 minute sessions available.',
-      basePrice: 1799,
-      priceNegotiable: false,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 15,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
-      providerId: providers[2].id,
-      categoryId: categories['appliance-repair'].id,
-      title: 'Washing Machine Repair & Service',
-      description: 'Expert repair for all types of washing machines - top load, front load, and semi-automatic. Diagnosis, spare parts replacement, and testing included. We service all major brands.',
+      categoryId: categories['ac-hvac'].id,
+      subcategoryId: subcategories['ac-hvac']?.[1]?.id,
+      title: 'AC Repair & Troubleshooting Service',
+      description: 'Expert AC repair service for all types of issues — not cooling, strange noises, water leakage, remote not working, compressor problems, or electrical faults. Our certified technicians diagnose the issue quickly and provide transparent repair estimates. We service all brands including Daikin, Voltas, LG, Samsung, Blue Star, and more. Genuine spare parts used with warranty.',
       basePrice: 399,
       priceNegotiable: true,
       serviceDurationMinutes: 60,
-      serviceAreaRadiusKm: 15,
+      serviceAreaRadiusKm: 20,
       city: 'Bengaluru',
       state: 'Karnataka',
       country: 'India',
       address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
+      pincode: '560001',
       latitude: 12.9352,
       longitude: 77.6245,
     },
+
+    // Srinivas Rao - Hyderabad provider (Plumbing + AC & HVAC)
     {
-      providerId: providers[0].id,
-      categoryId: categories['moving-relocation'].id,
-      title: 'Home Relocation & Packing Service',
-      description: 'Complete home shifting service including packing, loading, transportation, and unpacking. Professional team with quality packing materials. Insurance coverage available. Local and intercity moves.',
-      basePrice: 5999,
-      priceNegotiable: true,
-      serviceDurationMinutes: 480,
-      serviceAreaRadiusKm: 50,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['fitness-training'].id,
-      title: 'Personal Fitness Training at Home',
-      description: 'Certified personal trainer for home workouts. Customized fitness plans including weight training, cardio, and yoga. Suitable for all fitness levels. Monthly packages available.',
-      basePrice: 799,
+      providerId: providers[3].id,
+      categoryId: categories['plumbing'].id,
+      subcategoryId: subcategories['plumbing']?.[1]?.id,
+      title: 'Drain Cleaning & Unclogging Service',
+      description: 'Professional drain cleaning service for kitchen sinks, bathroom drains, floor drains, and main sewer lines. We use high-pressure water jetting, motorized drain snakes, and chemical treatments to clear blockages caused by grease, hair, food waste, and tree roots. Includes camera inspection for persistent blocks. Preventive maintenance tips provided.',
+      basePrice: 599,
       priceNegotiable: false,
       serviceDurationMinutes: 60,
-      serviceAreaRadiusKm: 10,
-      city: 'Mumbai',
-      state: 'Maharashtra',
+      serviceAreaRadiusKm: 15,
+      city: 'Hyderabad',
+      state: 'Telangana',
       country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
+      address: '23, Banjara Hills, Hyderabad',
+      pincode: '500001',
+      latitude: 17.4156,
+      longitude: 78.4489,
     },
     {
-      providerId: providers[2].id,
-      categoryId: categories['photography-video'].id,
-      title: 'Professional Event Photography',
-      description: 'Professional photography for events, parties, and celebrations. Includes candid and traditional shots. High-resolution images delivered via cloud within 7 days. Album design available at extra cost.',
-      basePrice: 4999,
+      providerId: providers[3].id,
+      categoryId: categories['plumbing'].id,
+      subcategoryId: subcategories['plumbing']?.[5]?.id,
+      title: 'Water Heater/Geyser Repair & Installation',
+      description: 'Expert water heater and geyser repair, servicing, and installation. We handle both electric and gas water heaters of all brands and capacities. Services include thermostat replacement, heating element change, valve repair, tank cleaning, anode rod replacement, and new unit installation. Safety checks included with every service. Same-day repair available.',
+      basePrice: 449,
       priceNegotiable: true,
-      serviceDurationMinutes: 360,
-      serviceAreaRadiusKm: 30,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
-    {
-      providerId: providers[0].id,
-      categoryId: categories['handyman-services'].id,
-      subcategoryId: subcategories['handyman-services']?.[2]?.id,
-      title: 'TV Wall Mounting & Installation',
-      description: 'Professional TV wall mounting service. Includes bracket installation, cable management, and TV setup. We mount all TV sizes from 32" to 75". Hidden cable routing available for an extra charge.',
-      basePrice: 499,
-      priceNegotiable: false,
-      serviceDurationMinutes: 45,
+      serviceDurationMinutes: 60,
       serviceAreaRadiusKm: 15,
-      city: 'Delhi',
-      state: 'Delhi',
+      city: 'Hyderabad',
+      state: 'Telangana',
       country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
+      address: '23, Banjara Hills, Hyderabad',
+      pincode: '500001',
+      latitude: 17.4156,
+      longitude: 78.4489,
     },
     {
-      providerId: providers[1].id,
-      categoryId: categories['pet-care'].id,
-      title: 'Pet Grooming at Home',
-      description: 'Professional pet grooming service at your doorstep. Includes bathing, hair trimming, nail clipping, ear cleaning, and teeth brushing. Experienced groomers handle dogs and cats of all breeds.',
-      basePrice: 899,
-      priceNegotiable: false,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 15,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
-      providerId: providers[2].id,
-      categoryId: categories['car-care'].id,
-      title: 'Car Detailing & Deep Clean',
-      description: 'Premium car detailing service at your doorstep. Includes exterior wash, clay bar treatment, wax coating, interior vacuuming, dashboard polish, and seat cleaning. Ceramic coating available at extra cost.',
+      providerId: providers[3].id,
+      categoryId: categories['ac-hvac'].id,
+      subcategoryId: subcategories['ac-hvac']?.[6]?.id,
+      title: 'HVAC Duct Cleaning & Sanitization',
+      description: 'Professional HVAC duct cleaning service for homes and offices. We remove dust, allergens, mold, and contaminants from air ducts using powerful vacuum systems and rotary brushes. Includes vent cover cleaning, filter replacement, and antimicrobial sanitization treatment. Improves indoor air quality and HVAC efficiency. Recommended annually.',
       basePrice: 2499,
       priceNegotiable: true,
       serviceDurationMinutes: 180,
-      serviceAreaRadiusKm: 15,
-      city: 'Bengaluru',
-      state: 'Karnataka',
+      serviceAreaRadiusKm: 20,
+      city: 'Hyderabad',
+      state: 'Telangana',
       country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
+      address: '23, Banjara Hills, Hyderabad',
+      pincode: '500001',
+      latitude: 17.4156,
+      longitude: 78.4489,
+    },
+
+    // Karthik Iyer - Chennai provider (Electrical + Plumbing)
+    {
+      providerId: providers[4].id,
+      categoryId: categories['electrical'].id,
+      subcategoryId: subcategories['electrical']?.[4]?.id,
+      title: 'Ceiling Fan Installation & Repair',
+      description: 'Professional ceiling fan installation, repair, and replacement service. We install all types of fans — regular ceiling fans, decorative fans, hunter fans, and exhaust fans. Service includes ceiling hook mounting, downrod installation, wiring from switch to fan, regulator setup, and blade balancing. Repair service covers motor winding, capacitor replacement, and noise fixing.',
+      basePrice: 349,
+      priceNegotiable: false,
+      serviceDurationMinutes: 45,
+      serviceAreaRadiusKm: 15,
+      city: 'Chennai',
+      state: 'Tamil Nadu',
+      country: 'India',
+      address: '89, T. Nagar, Chennai',
+      pincode: '600001',
+      latitude: 13.0418,
+      longitude: 80.2341,
+    },
+    {
+      providerId: providers[4].id,
+      categoryId: categories['electrical'].id,
+      subcategoryId: subcategories['electrical']?.[3]?.id,
+      title: 'Circuit Breaker & DB Box Repair',
+      description: 'Expert circuit breaker, MCB, and distribution board (DB box) repair and upgrade service. We diagnose tripping breakers, replace faulty MCBs/RCCBs, upgrade DB boxes, add new circuits, and ensure proper load distribution. All work complies with electrical safety standards. Includes thorough wiring inspection and safety audit. Emergency same-day service available.',
+      basePrice: 799,
+      priceNegotiable: true,
+      serviceDurationMinutes: 90,
+      serviceAreaRadiusKm: 15,
+      city: 'Chennai',
+      state: 'Tamil Nadu',
+      country: 'India',
+      address: '89, T. Nagar, Chennai',
+      pincode: '600001',
+      latitude: 13.0418,
+      longitude: 80.2341,
     },
   ];
 
@@ -708,7 +582,7 @@ async function main() {
         approvalStatus: 'APPROVED',
         approvedBy: admin.id,
         approvedAt: new Date('2025-01-20'),
-        averageRating: (3.5 + Math.random() * 1.5),
+        averageRating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
         totalBookings: Math.floor(Math.random() * 50),
         totalReviews: Math.floor(Math.random() * 20),
       },
@@ -716,20 +590,12 @@ async function main() {
     services.push(service);
   }
 
-  // Fix average ratings to be rounded
-  for (const service of services) {
-    await db.service.update({
-      where: { id: service.id },
-      data: { averageRating: Math.round(service.averageRating * 10) / 10 },
-    });
-  }
-
   // ========================================
   // SERVICE AVAILABILITY SLOTS
   // ========================================
   console.log('📅 Creating service availability slots...');
   for (const service of services) {
-    // Monday to Saturday (1-6), available 9 AM to 7 PM
+    // Monday to Saturday (1-6), available 9 AM to 7 PM; Saturday 9 AM to 3 PM
     const availabilities = [
       { dayOfWeek: 1, startTime: '09:00', endTime: '19:00' },
       { dayOfWeek: 2, startTime: '09:00', endTime: '19:00' },
@@ -751,27 +617,24 @@ async function main() {
   }
 
   // ========================================
-  // 8. SAMPLE BOOKINGS (12 bookings in various states)
+  // 8. SAMPLE BOOKINGS
   // ========================================
   console.log('📝 Creating sample bookings...');
-  const bookingStatuses = ['PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'CANCELLED', 'CANCELLED', 'PENDING', 'ACCEPTED'];
   const bookings: any[] = [];
 
   const bookingDataList = [
     { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[0].id, scheduledDate: '2025-07-10', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 499, finalPrice: 499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-10T11:30:00') },
-    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[3].id, scheduledDate: '2025-07-12', scheduledTime: '09:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 2499, finalPrice: 2499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-12T13:30:00') },
-    { clientId: clients[2].id, providerId: providers[2].id, serviceId: services[6].id, scheduledDate: '2025-07-15', scheduledTime: '11:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 1299, finalPrice: 1299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-15T13:00:00') },
-    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[1].id, scheduledDate: '2025-07-18', scheduledTime: '14:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 299, finalPrice: 299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-18T15:00:00') },
-    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[8].id, scheduledDate: '2025-07-20', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 999, finalPrice: 999, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-20T11:00:00') },
-    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[4].id, scheduledDate: '2025-07-25', scheduledTime: '10:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 1499, finalPrice: 1499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-25T13:00:00') },
+    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[3].id, scheduledDate: '2025-07-12', scheduledTime: '09:00', serviceAddress: '56, GK-II, New Delhi', basePrice: 399, finalPrice: 399, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-12T10:30:00') },
+    { clientId: clients[3].id, providerId: providers[2].id, serviceId: services[6].id, scheduledDate: '2025-07-15', scheduledTime: '11:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 1299, finalPrice: 1299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-15T13:00:00') },
+    { clientId: clients[0].id, providerId: providers[3].id, serviceId: services[9].id, scheduledDate: '2025-07-18', scheduledTime: '14:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 599, finalPrice: 599, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-18T15:00:00') },
+    { clientId: clients[5].id, providerId: providers[4].id, serviceId: services[12].id, scheduledDate: '2025-07-20', scheduledTime: '10:00', serviceAddress: '12, Madhapur, Hyderabad', basePrice: 349, finalPrice: 349, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-20T11:00:00') },
+    { clientId: clients[7].id, providerId: providers[0].id, serviceId: services[1].id, scheduledDate: '2025-07-25', scheduledTime: '10:00', serviceAddress: '78, Saket, New Delhi', basePrice: 699, finalPrice: 699, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-25T12:00:00') },
     { clientId: clients[3].id, providerId: providers[2].id, serviceId: services[7].id, scheduledDate: '2025-08-01', scheduledTime: '15:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 1899, finalPrice: 1899, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-01T16:30:00') },
-    { clientId: clients[0].id, providerId: providers[1].id, serviceId: services[10].id, scheduledDate: '2025-08-05', scheduledTime: '09:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 1799, finalPrice: 1799, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-05T10:30:00') },
-    { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[15].id, scheduledDate: '2025-08-10', scheduledTime: '11:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 499, finalPrice: 499, status: 'PENDING', paymentStatus: 'PENDING' },
-    { clientId: clients[1].id, providerId: providers[2].id, serviceId: services[11].id, scheduledDate: '2025-08-12', scheduledTime: '14:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 399, finalPrice: 399, status: 'ACCEPTED', paymentStatus: 'PAID' },
-    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[12].id, scheduledDate: '2025-08-15', scheduledTime: '08:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 5999, negotiatedPrice: 5499, finalPrice: 5499, status: 'IN_PROGRESS', paymentStatus: 'PAID' },
-    { clientId: clients[4].id, providerId: providers[1].id, serviceId: services[5].id, scheduledDate: '2025-07-22', scheduledTime: '09:00', serviceAddress: '67, Malviya Nagar, Jaipur', basePrice: 3999, finalPrice: 3999, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Schedule conflict - provider unavailable', cancelledBy: providers[1].id, cancelledAt: new Date('2025-07-21T18:00:00') },
-    { clientId: clients[2].id, providerId: providers[2].id, serviceId: services[13].id, scheduledDate: '2025-07-28', scheduledTime: '07:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 799, finalPrice: 799, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Changed my mind', cancelledBy: clients[2].id, cancelledAt: new Date('2025-07-27T20:00:00') },
-    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[17].id, scheduledDate: '2025-08-18', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 2499, finalPrice: 2499, status: 'PENDING', paymentStatus: 'PENDING' },
+    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[5].id, scheduledDate: '2025-08-05', scheduledTime: '09:00', serviceAddress: '56, GK-II, New Delhi', basePrice: 599, finalPrice: 599, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-05T10:30:00') },
+    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[8].id, scheduledDate: '2025-08-10', scheduledTime: '11:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 399, finalPrice: 399, status: 'PENDING', paymentStatus: 'PENDING' },
+    { clientId: clients[3].id, providerId: providers[3].id, serviceId: services[10].id, scheduledDate: '2025-08-12', scheduledTime: '14:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 449, finalPrice: 449, status: 'ACCEPTED', paymentStatus: 'PAID' },
+    { clientId: clients[7].id, providerId: providers[0].id, serviceId: services[2].id, scheduledDate: '2025-08-15', scheduledTime: '08:00', serviceAddress: '78, Saket, New Delhi', basePrice: 2999, negotiatedPrice: 2799, finalPrice: 2799, status: 'IN_PROGRESS', paymentStatus: 'PAID' },
+    { clientId: clients[4].id, providerId: providers[1].id, serviceId: services[4].id, scheduledDate: '2025-07-22', scheduledTime: '09:00', serviceAddress: '67, Malviya Nagar, Mumbai', basePrice: 4999, finalPrice: 4999, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Schedule conflict - provider unavailable', cancelledBy: providers[1].id, cancelledAt: new Date('2025-07-21T18:00:00') },
   ];
 
   let bookingCounter = 1000;
@@ -827,20 +690,19 @@ async function main() {
   }
 
   // ========================================
-  // 9. SAMPLE REVIEWS (9 reviews for completed bookings)
+  // 9. SAMPLE REVIEWS
   // ========================================
   console.log('⭐ Creating sample reviews...');
   const completedBookings = bookings.filter(b => b.status === 'COMPLETED');
   const reviewData = [
-    { rating: 5, comment: 'Excellent work! The plumber was very professional and fixed the leakage in no time. Highly recommended.' },
-    { rating: 4, comment: 'Good cleaning service. The team was punctual and thorough. Only giving 4 stars because they were slightly late arriving.' },
+    { rating: 5, comment: 'Excellent work! The plumber was very professional and fixed the leak in no time. Highly recommended for any plumbing issue.' },
+    { rating: 4, comment: 'Good light fixture installation. The electrician was punctual and neat with the wiring. Minor delay in arrival but quality work.' },
     { rating: 5, comment: 'Perfect AC installation! Very neat work with proper copper piping and drainage. The technician was knowledgeable and friendly.' },
-    { rating: 4, comment: 'Good electrical work. Switch installation was done properly. Would recommend for basic electrical needs.' },
-    { rating: 5, comment: 'The pest control service was extremely effective. No cockroach sightings since the treatment. 3-month warranty gives peace of mind.' },
-    { rating: 4, comment: 'Wonderful salon experience at home. The beautician was skilled and used quality products. Will book again!' },
-    { rating: 3, comment: 'AC gas refill was okay but took longer than expected. Cooling improved but not as much as I hoped.' },
-    { rating: 5, comment: 'Amazing massage therapy! The therapist was well-trained and the oils used were premium quality. Very relaxing experience.' },
-    { rating: 4, comment: 'Great modular kitchen work. The design was exactly as discussed. Minor delays in installation but overall satisfied.' },
+    { rating: 4, comment: 'Great drain cleaning service. The blockage was completely cleared. Would recommend for plumbing needs.' },
+    { rating: 5, comment: 'Fan installation was done perfectly. Clean wiring and the fan runs smoothly without any wobble. Very satisfied!' },
+    { rating: 4, comment: 'Toilet installation was done properly. Professional approach and clean work area. Good service overall.' },
+    { rating: 5, comment: 'AC gas refill service was excellent. Cooling improved dramatically. The technician explained the issue clearly before starting work.' },
+    { rating: 4, comment: 'AC servicing was thorough. The foam wash really made a difference in cooling efficiency. Will book again for regular servicing.' },
   ];
 
   for (let i = 0; i < Math.min(completedBookings.length, reviewData.length); i++) {
@@ -860,37 +722,36 @@ async function main() {
   }
 
   // ========================================
-  // 10. FAQs (22 FAQs across categories)
+  // 10. FAQs (updated for 3 categories only)
   // ========================================
   console.log('❓ Creating FAQs...');
   const faqData = [
     // General
-    { category: 'General', question: 'What is BookYourService?', answer: 'BookYourService is India\'s leading online marketplace connecting customers with verified service providers for home services, beauty, maintenance, and more. We ensure quality, reliability, and transparent pricing for every booking.', displayOrder: 1 },
-    { category: 'General', question: 'Which cities does BookYourService operate in?', answer: 'We currently operate in major Indian cities including Delhi, Mumbai, Bengaluru, Hyderabad, Pune, Chennai, Jaipur, Kolkata, and expanding rapidly. Enter your pincode on the homepage to check availability in your area.', displayOrder: 2 },
-    { category: 'General', question: 'How do I book a service?', answer: 'Simply browse categories or search for a service, select your preferred provider, choose a date and time, and confirm your booking. You can also call our helpline for assistance with booking.', displayOrder: 3 },
-    { category: 'General', question: 'Are the service providers verified?', answer: 'Yes, all service providers on BookYourService undergo a rigorous KYC verification process including identity verification (Aadhaar/PAN), address verification, skill assessment, and background checks before being listed on our platform.', displayOrder: 4 },
-    { category: 'General', question: 'What services are available on BookYourService?', answer: 'We offer 25+ categories of services including home maintenance, plumbing, electrical, AC repair, cleaning, beauty, fitness, photography, pet care, car care, and many more. Each category has multiple sub-services to choose from.', displayOrder: 5 },
+    { category: 'General', question: 'What is BookYourService?', answer: 'BookYourService is India\'s trusted online marketplace connecting homeowners with verified service providers for Plumbing, Electrical, and AC & HVAC services. We ensure quality, reliability, and transparent pricing for every booking.', displayOrder: 1 },
+    { category: 'General', question: 'Which cities does BookYourService operate in?', answer: 'We currently operate in major Indian cities including Delhi, Mumbai, Bengaluru, Hyderabad, and Chennai, with plans to expand rapidly. Enter your pincode on the homepage to check availability in your area.', displayOrder: 2 },
+    { category: 'General', question: 'How do I book a service?', answer: 'Simply browse our three categories — Plumbing, Electrical, or AC & HVAC — select your desired sub-service, choose a provider, pick a date and time, and confirm your booking. You can also call our helpline for assistance.', displayOrder: 3 },
+    { category: 'General', question: 'Are the service providers verified?', answer: 'Yes, all service providers on BookYourService undergo a rigorous KYC verification process including identity verification (Aadhaar/PAN/Passport), address verification, skill assessment, and background checks before being listed on our platform.', displayOrder: 4 },
+    { category: 'General', question: 'What services are available on BookYourService?', answer: 'We offer three main categories of home services: Plumbing (leak repair, drain cleaning, pipe installation, faucet repair, toilet installation, water heater repair, sewage cleaning, shower/tub repair, gas line servicing, pump repair), Electrical (wiring repairs, light fixture installation, socket repairs, circuit breaker fixing, ceiling fan installation, smart home setup, generator maintenance, switchboard upgrades, panel repair, appliance grounding), and AC & HVAC (AC installation, AC repair, AC cleaning/servicing, heating unit repairs, thermostat setup, central air maintenance, duct cleaning, furnace repair, ventilator services, gas refilling).', displayOrder: 5 },
     // Booking
     { category: 'Booking', question: 'Can I reschedule my booking?', answer: 'Yes, you can reschedule your booking up to 4 hours before the scheduled time at no extra charge. Go to My Bookings, select the booking, and click Reschedule. Subject to provider availability.', displayOrder: 6 },
     { category: 'Booking', question: 'What happens if the provider doesn\'t show up?', answer: 'If a provider fails to arrive within 30 minutes of the scheduled time without prior notice, you can raise a no-show complaint. We\'ll arrange an alternative provider or provide a full refund along with a 10% credit as compensation.', displayOrder: 7 },
     { category: 'Booking', question: 'Can I book services for someone else?', answer: 'Yes, during booking you can specify a different service address and contact person. The booking confirmation will be sent to your registered number/email while the service details go to the service address contact.', displayOrder: 8 },
-    { category: 'Booking', question: 'Is there a minimum booking amount?', answer: 'There is no minimum booking amount. However, some services have a base price which is the minimum charge for that service. The final price may vary based on the scope of work and negotiation.', displayOrder: 9 },
+    { category: 'Booking', question: 'Is there a minimum booking amount?', answer: 'There is no minimum booking amount. However, each service has a base price which is the minimum charge for that service. The final price may vary based on the scope of work and negotiation.', displayOrder: 9 },
     { category: 'Booking', question: 'How far in advance can I book a service?', answer: 'You can book services up to 30 days in advance. For same-day bookings, we recommend booking at least 2 hours before the desired time slot to ensure provider availability.', displayOrder: 10 },
     // Payment
-    { category: 'Payment', question: 'What payment methods are accepted?', answer: 'We accept UPI (Google Pay, PhonePe, Paytm), Credit/Debit Cards, Net Banking, and BookYourService Wallet. Cash payment is available for select services only.', displayOrder: 11 },
-    { category: 'Payment', question: 'Is it safe to make online payments on BookYourService?', answer: 'Absolutely. All payments are processed through Razorpay, a PCI DSS Level 1 certified payment gateway. Your card and banking details are encrypted and never stored on our servers.', displayOrder: 12 },
-    { category: 'Payment', question: 'When is the payment deducted from my account?', answer: 'For most services, payment is authorized at the time of booking but charged only after the service is completed. For premium services, an advance may be required at the time of booking.', displayOrder: 13 },
-    { category: 'Payment', question: 'Can I negotiate the service price?', answer: 'Yes, for services marked as "Price Negotiable," you can propose a different price through our negotiation feature. The provider can accept, reject, or counter-offer. Both parties must agree before the booking is confirmed.', displayOrder: 14 },
-    { category: 'Payment', question: 'Do I need to pay extra charges or taxes?', answer: 'The final price shown includes all applicable charges. A nominal platform fee (5%) is charged separately and displayed during checkout. GST is included in the service price where applicable.', displayOrder: 15 },
+    { category: 'Payment', question: 'What payment methods are accepted?', answer: 'Currently, payments are settled directly between the client and the provider via cash or direct bank transfer. Our online payment system (UPI, Cards, Net Banking) will be activated soon for a more seamless experience.', displayOrder: 11 },
+    { category: 'Payment', question: 'How does the platform fee work?', answer: 'BookYourService charges a small platform fee on each booking. This fee is separate from the service price and supports platform maintenance, provider verification, and customer support. The platform fee is displayed transparently during checkout.', displayOrder: 12 },
+    { category: 'Payment', question: 'Can I negotiate the service price?', answer: 'Yes, for services marked as "Price Negotiable," you can propose a different price through our negotiation feature. The provider can accept, reject, or counter-offer. Both parties must agree before the booking is confirmed.', displayOrder: 13 },
+    { category: 'Payment', question: 'Do I need to pay extra charges or taxes?', answer: 'The service price is agreed upon between you and the provider. A nominal platform fee is charged separately and displayed during checkout. GST, if applicable, is included in the service price.', displayOrder: 14 },
     // Provider
-    { category: 'Provider', question: 'How can I become a service provider on BookYourService?', answer: 'Register as a provider, complete KYC verification (Aadhaar/PAN + selfie), and get your profile approved. Once verified, you can list your services, set pricing, and start receiving bookings. The approval process typically takes 24-48 hours.', displayOrder: 16 },
-    { category: 'Provider', question: 'What commission does BookYourService charge providers?', answer: 'We charge a competitive commission of 15-20% depending on the service category and your subscription plan. Premium plan providers enjoy lower commission rates and priority listing.', displayOrder: 17 },
-    { category: 'Provider', question: 'How do I receive my earnings?', answer: 'Provider earnings are transferred directly to your registered bank account within 3-5 business days after service completion. You can track all payments and earnings in your Provider Dashboard.', displayOrder: 18 },
-    { category: 'Provider', question: 'Can I set my own prices for services?', answer: 'Yes, you have full control over your service pricing. You can also mark prices as negotiable to allow clients to propose different rates. We recommend competitive pricing based on your experience and market rates.', displayOrder: 19 },
+    { category: 'Provider', question: 'How can I become a service provider on BookYourService?', answer: 'Register as a provider, complete KYC verification (Aadhaar/PAN/Passport + selfie), and get your profile approved. Once verified, you can list your services under Plumbing, Electrical, or AC & HVAC categories, set pricing, and start receiving bookings. The approval process typically takes 24-48 hours.', displayOrder: 15 },
+    { category: 'Provider', question: 'What commission does BookYourService charge providers?', answer: 'We charge a competitive commission of 15-20% depending on the service category and your subscription plan. Premium plan providers enjoy lower commission rates and priority listing in their category.', displayOrder: 16 },
+    { category: 'Provider', question: 'How do I receive my earnings?', answer: 'Currently, payments are collected directly by providers from clients (cash/direct transfer). Once our online payment system is activated, provider earnings will be transferred to your registered bank account within 3-5 business days after deducting the platform commission.', displayOrder: 17 },
+    { category: 'Provider', question: 'Can I set my own prices for services?', answer: 'Yes, you have full control over your service pricing. You can also mark prices as negotiable to allow clients to propose different rates. We recommend competitive pricing based on your experience and market rates in your city.', displayOrder: 18 },
     // Cancellation
-    { category: 'Cancellation', question: 'What is the cancellation policy?', answer: 'Cancellations made 24+ hours before the scheduled time are fully refundable. Cancellations within 4-24 hours incur a 10% fee. Cancellations within 4 hours or no-shows incur a 25% fee. Refunds are processed within 5-7 business days.', displayOrder: 20 },
-    { category: 'Cancellation', question: 'How do I cancel a booking?', answer: 'Go to My Bookings, select the booking you wish to cancel, and click Cancel Booking. You\'ll need to provide a cancellation reason. The refund (if applicable) will be initiated immediately to your original payment method.', displayOrder: 21 },
-    { category: 'Cancellation', question: 'Can a provider cancel my booking?', answer: 'Providers can cancel only in genuine emergencies. Frequent cancellations affect their rating and may lead to account suspension. If your booking is cancelled by the provider, we\'ll offer an alternative provider or a full refund with a 10% credit bonus.', displayOrder: 22 },
+    { category: 'Cancellation', question: 'What is the cancellation policy?', answer: 'Cancellations made 24+ hours before the scheduled time are fully refundable. Cancellations within 4-24 hours incur a 10% fee. Cancellations within 4 hours or no-shows incur a 25% fee. Refunds are processed within 5-7 business days once online payments are active.', displayOrder: 19 },
+    { category: 'Cancellation', question: 'How do I cancel a booking?', answer: 'Go to My Bookings, select the booking you wish to cancel, and click Cancel Booking. You\'ll need to provide a cancellation reason. The refund (if applicable) will be initiated immediately to your original payment method once online payments are active.', displayOrder: 20 },
+    { category: 'Cancellation', question: 'Can a provider cancel my booking?', answer: 'Providers can cancel only in genuine emergencies. Frequent cancellations affect their rating and may lead to account suspension. If your booking is cancelled by the provider, we\'ll offer an alternative provider or a full refund with a 10% credit bonus.', displayOrder: 21 },
   ];
 
   for (const faq of faqData) {
@@ -898,7 +759,7 @@ async function main() {
   }
 
   // ========================================
-  // 11. LEGAL PAGES
+  // 11. LEGAL PAGES (Comprehensive)
   // ========================================
   console.log('📜 Creating legal pages...');
 
@@ -906,94 +767,212 @@ async function main() {
   await db.legalPage.create({
     data: {
       pageType: 'TERMS',
-      title: 'Terms & Conditions',
-      version: '1.0',
-      effectiveDate: '2025-01-01',
-      content: `TERMS AND CONDITIONS FOR BOOKYOURSERVICE
+      title: 'Terms of Service',
+      version: '2.0',
+      effectiveDate: '2025-03-05',
+      content: `TERMS OF SERVICE FOR BOOKYOURSERVICE
 
-Last Updated: January 1, 2025
+Last Updated: March 5, 2025
+
+IMPORTANT NOTICE: PLEASE READ THESE TERMS OF SERVICE CAREFULLY BEFORE USING THE BOOKYOURSERVICE PLATFORM. BY ACCESSING OR USING THE PLATFORM, YOU AGREE TO BE BOUND BY THESE TERMS. IF YOU DO NOT AGREE WITH ANY PART OF THESE TERMS, YOU MUST NOT USE OUR SERVICES.
 
 1. ACCEPTANCE OF TERMS
-By accessing or using the BookYourService platform (website and mobile application), you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you must not use our services.
+1.1 By accessing, browsing, registering on, or using the BookYourService platform (including the website at bookyourservice.co.in and the mobile application), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service ("Terms"), our Privacy Policy, and all applicable laws and regulations.
+1.2 If you are using the Platform on behalf of a business or entity, you represent and warrant that you have the authority to bind that entity to these Terms.
+1.3 BookYourService reserves the right to update, modify, or replace any part of these Terms at its sole discretion. It is your responsibility to check these Terms periodically for changes. Your continued use of the Platform following the posting of any changes constitutes acceptance of those changes.
+1.4 These Terms constitute a legally binding agreement between you and BookYourService Technologies Pvt. Ltd. ("Company," "we," "us," or "our"), a company incorporated under the laws of India.
 
 2. DEFINITIONS
-"Platform" refers to the BookYourService website and mobile application operated by BookYourService Technologies Pvt. Ltd.
-"Service Provider" refers to individuals or businesses registered on the platform to offer services.
-"Client" refers to users who book services through the platform.
-"Services" refers to the home and personal services listed on the platform.
+2.1 "Platform" refers to the BookYourService website, mobile application, and all associated services operated by BookYourService Technologies Pvt. Ltd.
+2.2 "Service Provider" or "Provider" refers to independent third-party individuals or businesses registered on the Platform to offer plumbing, electrical, and/or AC & HVAC services.
+2.3 "Client" or "Customer" refers to users who book or attempt to book services through the Platform.
+2.4 "Services" refers to the home services listed on the Platform, specifically plumbing, electrical, and AC & HVAC related services.
+2.5 "Booking" refers to a scheduled appointment for a Service between a Client and a Provider facilitated through the Platform.
+2.6 "Platform Fee" refers to the fee charged by the Company for the use of the Platform's intermediary services.
+2.7 "Content" refers to text, images, reviews, ratings, and other materials posted on the Platform.
 
-3. USER REGISTRATION
-3.1 Users must provide accurate and complete information during registration.
-3.2 Users must be at least 18 years of age to create an account.
-3.3 Each user may maintain only one account at a time.
-3.4 Users are responsible for maintaining the confidentiality of their account credentials.
-3.5 BookYourService reserves the right to suspend accounts that violate these terms.
+3. NATURE OF THE PLATFORM — INTERMEDIARY STATUS
+3.1 CRITICAL ACKNOWLEDGMENT: BookYourService is an INTERMEDIARY and ONLINE MARKETPLACE ONLY. The Company DOES NOT directly provide any plumbing, electrical, or AC & HVAC services. All services listed on the Platform are provided by independent third-party Service Providers who are not employees, agents, or representatives of the Company.
+3.2 The Platform merely facilitates the connection between Clients and Service Providers. The Company acts as a facilitator and does not endorse, guarantee, or warrant the quality, safety, legality, or suitability of any services provided by any Service Provider.
+3.3 The Company is NOT a party to any service agreement between a Client and a Service Provider. Any contract for services is solely between the Client and the Service Provider.
+3.4 The Company does not supervise, direct, or control the work of Service Providers. Service Providers are solely responsible for the manner, method, and quality of their work.
+3.5 The Company does not guarantee the accuracy of Provider profiles, qualifications, or reviews displayed on the Platform. All such information is provided by the Providers themselves and has not been independently verified beyond basic KYC checks.
+3.6 By using the Platform, you expressly acknowledge and agree that the Company shall not be held responsible or liable for any acts, omissions, defaults, or misconduct of any Service Provider or Client.
 
-4. SERVICE BOOKING
-4.1 Clients can browse, select, and book services through the platform.
-4.2 All bookings are subject to provider availability and confirmation.
-4.3 The platform acts as an intermediary and does not directly provide services.
-4.4 Service prices are indicative and may vary based on the actual scope of work.
-4.5 Booking confirmation constitutes a service agreement between the Client and Provider.
+4. USER REGISTRATION AND ACCOUNTS
+4.1 Users must provide accurate, current, and complete information during registration and must keep such information updated at all times.
+4.2 Users must be at least 18 years of age to create an account and use the Platform.
+4.3 Each user may maintain only one account at a time. Creating multiple accounts is prohibited and may result in suspension.
+4.4 Users are solely responsible for maintaining the confidentiality of their account credentials (email, password, OTP) and for all activities that occur under their account.
+4.5 Users must notify the Company immediately of any unauthorized use of their account or any other breach of security.
+4.6 The Company shall not be liable for any loss or damage arising from a user's failure to comply with this Section 4.
+4.7 The Company reserves the right to suspend, terminate, or restrict any account that violates these Terms, engages in fraudulent activity, or is deemed harmful to other users or the Platform.
 
-5. PAYMENT TERMS
-5.1 Payments are processed through secure third-party payment gateways.
-5.2 The platform charges a service fee on each booking as displayed during checkout.
-5.3 All prices are listed in Indian Rupees (INR) inclusive of applicable taxes.
-5.4 Payment must be completed before service commencement unless otherwise stated.
-5.5 Provider earnings are disbursed after deducting the platform commission.
+5. SERVICE BOOKING AND DELIVERY
+5.1 Clients can browse, select, and book services through the Platform from the available categories: Plumbing, Electrical, and AC & HVAC.
+5.2 All bookings are subject to provider availability and confirmation. A booking request does not guarantee service delivery.
+5.3 Service prices displayed on the Platform are indicative and based on information provided by the Service Provider. The actual price may vary depending on the scope of work, materials required, and any negotiation between the Client and Provider.
+5.4 Booking confirmation constitutes a service agreement between the Client and the Provider. The Company is NOT a party to this agreement.
+5.5 The Company does not guarantee the timely delivery, quality, or outcome of any service. Any guarantee or warranty for services is solely the responsibility of the Service Provider.
+5.6 Clients acknowledge that home services involve inherent risks including but not limited to property damage, water damage, electrical hazards, and refrigerant exposure. Clients engage services at their own risk.
+5.7 The Company recommends that Clients verify the identity of the Service Provider upon arrival and ensure that safety precautions are followed during service delivery.
 
-6. CANCELLATION AND REFUND
-6.1 Cancellations made 24+ hours before the scheduled time receive a full refund.
-6.2 Cancellations within 4-24 hours incur a 10% cancellation fee.
-6.3 Cancellations within 4 hours or no-shows incur a 25% cancellation fee.
-6.4 Refunds are processed within 5-7 business days to the original payment method.
-6.5 The platform reserves the right to modify the cancellation policy with prior notice.
+6. PAYMENT TERMS
+6.1 CURRENT PAYMENT MODEL: At present, the Company's online payment system is under development and has not yet been activated. Accordingly, all payments for services are settled DIRECTLY between the Client and the Service Provider through cash, bank transfer, UPI, or any other mutually agreed payment method.
+6.2 The Company DOES NOT collect, process, hold, or handle any service payments at this time. The Company is NOT responsible for any payment disputes, defaults, or issues between Clients and Providers.
+6.3 Clients and Providers are solely responsible for agreeing upon and completing payment transactions. The Company recommends obtaining a receipt or confirmation for all payments.
+6.4 ONLINE PAYMENT SYSTEM (FUTURE): The Company intends to introduce an online payment system in the near future. Once activated, the following terms will apply:
+   (a) Payments will be processed through secure third-party payment gateways (such as Razorpay) that are PCI DSS Level 1 certified.
+   (b) The Company may hold payments in escrow until service completion to protect both parties.
+   (c) Provider earnings will be disbursed after deducting the applicable platform commission.
+   (d) All online payment transactions will be subject to the payment gateway's terms and conditions.
+6.5 PLATFORM FEE: The Company charges a Platform Fee for providing the intermediary service of connecting Clients with Providers. The Platform Fee is separate from the service price and is displayed transparently during the booking process. The Platform Fee structure is as follows:
+   (a) A percentage-based commission (currently 5-10%) is charged on each completed booking.
+   (b) For the current direct payment model, the Platform Fee is collected from the Provider's earnings on a periodic basis.
+   (c) Once the online payment system is activated, the Platform Fee will be automatically deducted before Provider disbursement.
+6.6 All prices are listed in Indian Rupees (INR). Applicable taxes (including GST) are included in the displayed prices unless otherwise stated.
+6.7 The Company reserves the right to modify the Platform Fee structure at any time with prior notice to users.
 
-7. SERVICE GUARANTEE
-7.1 BookYourService provides a 7-day service guarantee for completed bookings.
-7.2 If the service quality is unsatisfactory, clients can raise a dispute within 7 days.
-7.3 The platform will mediate disputes and facilitate resolution.
-7.4 Re-service or refund will be provided based on the dispute resolution outcome.
+7. CANCELLATION AND REFUND
+7.1 Cancellation by Client:
+   (a) Full refund (no cancellation fee): Cancellations made 24 or more hours before the scheduled service time.
+   (b) Partial refund (90% of service price): Cancellations made 4-24 hours before the scheduled service time.
+   (c) Partial refund (75% of service price): Cancellations made within 4 hours of the scheduled service time.
+   (d) No refund: No-show by the Client without prior cancellation.
+7.2 Cancellation by Provider:
+   (a) Providers may cancel bookings only in genuine emergencies or unavoidable circumstances.
+   (b) Frequent cancellations by a Provider will negatively impact their rating and may result in account suspension or termination.
+   (c) If a Provider cancels a booking, the Company will attempt to arrange an alternative Provider or facilitate a full refund to the Client.
+7.3 REFUND PROCESSING:
+   (a) For the current direct payment model, refunds are the responsibility of the Service Provider. The Company will facilitate the refund process but cannot guarantee refund timelines or outcomes.
+   (b) Once the online payment system is activated, refunds will be processed to the original payment method within 5-7 business days.
+   (c) Refund processing times may vary by payment method: UPI (3-5 business days), Credit/Debit Card (5-7 business days), Net Banking (5-7 business days), Wallet (24-48 hours).
+7.4 The Company reserves the right to modify the cancellation policy with reasonable prior notice.
 
-8. PROVIDER OBLIGATIONS
-8.1 Providers must complete KYC verification before listing services.
-8.2 Providers must maintain professional conduct and service quality standards.
-8.3 Providers must arrive on time and complete services as described.
-8.4 Providers must not solicit direct business bypassing the platform.
-8.5 Providers are responsible for their own tools, equipment, and insurance.
+8. SERVICE QUALITY AND DISPUTES
+8.1 The Company provides a dispute resolution mechanism to facilitate communication between Clients and Providers regarding service quality issues.
+8.2 Clients can raise a quality dispute within 7 days of service completion through the Platform.
+8.3 The Company will act as a mediator and attempt to facilitate a fair resolution. However, the Company is NOT bound to enforce any particular outcome.
+8.4 THE COMPANY MAKES NO WARRANTIES OR GUARANTEES REGARDING THE QUALITY, SAFETY, TIMELINESS, OR COMPLETENESS OF ANY SERVICE PROVIDED THROUGH THE PLATFORM.
+8.5 Any re-service or refund arising from a quality dispute is solely at the discretion of the Service Provider, subject to the Company's mediation efforts.
 
-9. LIABILITY LIMITATIONS
-9.1 BookYourService is not liable for any direct, indirect, or consequential damages arising from service delivery.
-9.2 The platform does not guarantee the outcome of any service rendered.
-9.3 Total liability is limited to the amount paid for the specific service in question.
-9.4 The platform is not responsible for delays or failures due to force majeure events.
+9. LIABILITY LIMITATIONS AND DISCLAIMERS
+9.1 NO WARRANTY: ALL SERVICES PROVIDED THROUGH THE PLATFORM ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE. THE COMPANY SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+9.2 NOT RESPONSIBLE FOR SERVICE QUALITY: The Company is NOT responsible or liable for the quality, safety, legality, or appropriateness of any service provided by a Service Provider. The Company does not guarantee that any service will meet a Client's expectations or requirements.
+9.3 NO LIABILITY FOR DAMAGES: UNDER NO CIRCUMSTANCES SHALL THE COMPANY, ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
+   (a) Personal injury, bodily harm, or death resulting from services;
+   (b) Property damage, water damage, fire damage, or electrical damage;
+   (c) Loss of use, loss of data, loss of profits, loss of business, or loss of goodwill;
+   (d) Emotional distress, mental anguish, or reputational harm;
+   (e) Any damages arising from the negligence, recklessness, or intentional misconduct of a Service Provider or Client;
+   (f) Any damages arising from delays, failures, errors, or interruptions in the Platform's operation;
+   (g) Any damages arising from unauthorized access to or use of our servers or any personal information stored therein;
+   (h) Any damages arising from any content, goods, or services obtained through the Platform.
+9.4 LIMITATION OF LIABILITY: THE COMPANY'S TOTAL AGGREGATE LIABILITY FOR ANY AND ALL CLAIMS ARISING OUT OF OR RELATED TO THESE TERMS OR THE USE OF THE PLATFORM SHALL NOT EXCEED THE AMOUNT OF THE PLATFORM FEE PAID BY YOU TO THE COMPANY IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE LIABILITY, OR INR 1,000 (INDIAN RUPEES ONE THOUSAND), WHICHEVER IS LESS.
+9.5 INDEMNIFICATION: You agree to indemnify, defend, and hold harmless the Company, its directors, officers, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or related to:
+   (a) Your use of or inability to use the Platform;
+   (b) Your violation of these Terms;
+   (c) Your violation of any applicable law, regulation, or third-party right;
+   (d) Any service you provide or receive through the Platform;
+   (e) Any dispute between you and another user of the Platform;
+   (f) Any content you submit, post, or transmit through the Platform;
+   (g) Any negligent or wrongful act or omission on your part;
+   (h) Any breach of any representation, warranty, or obligation under these Terms.
+9.6 The Company shall not be liable for any failure or delay in performing its obligations under these Terms where such failure or delay results from circumstances beyond its reasonable control.
+9.7 You acknowledge that the Company has relied on the limitations and exclusions of liability set forth herein in providing the Platform at its current pricing and that these limitations and exclusions form an essential basis of the bargain between the parties.
 
-10. INTELLECTUAL PROPERTY
-10.1 All content on the platform is owned by BookYourService Technologies Pvt. Ltd.
-10.2 Users may not copy, reproduce, or distribute platform content without written consent.
-10.3 Provider listings and reviews remain the property of BookYourService.
+10. FORCE MAJEURE
+10.1 The Company shall not be liable for any failure or delay in the performance of its obligations under these Terms if such failure or delay is caused by events beyond the Company's reasonable control, including but not limited to:
+   (a) Acts of God, natural disasters, earthquakes, floods, storms, or fires;
+   (b) War, terrorism, civil unrest, riots, or insurrections;
+   (c) Epidemics, pandemics, or public health emergencies;
+   (d) Government actions, orders, regulations, or restrictions;
+   (e) Strikes, labor disputes, or industrial action;
+   (f) Internet service provider failures, power outages, or telecommunication failures;
+   (g) Cyber attacks, hacking, or security breaches;
+   (h) Shortages of materials, labor, or supplies;
+   (i) Transportation disruptions or failures;
+   (j) Any other event that could not have been reasonably foreseen or prevented.
+10.2 In the event of a force majeure, the Company will use reasonable efforts to mitigate the impact and resume performance as soon as practicable.
+10.3 If a force majeure event continues for more than 90 days, either party may terminate these Terms upon written notice.
 
-11. PRIVACY AND DATA
-11.1 User data is collected and processed in accordance with our Privacy Policy.
-11.2 We comply with the Information Technology Act, 2000 and applicable data protection laws.
-11.3 Users consent to receiving transactional and promotional communications.
+11. INTELLECTUAL PROPERTY
+11.1 All content, features, and functionality of the Platform, including but not limited to text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, and software, are the exclusive property of BookYourService Technologies Pvt. Ltd. or its licensors and are protected by Indian and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+11.2 Users may not copy, reproduce, distribute, publish, display, modify, create derivative works from, or commercially exploit any content from the Platform without the express written consent of the Company.
+11.3 Provider listings, reviews, ratings, and other user-generated content submitted to the Platform are licensed to the Company on a non-exclusive, worldwide, royalty-free basis for use in connection with the Platform's operation and marketing.
+11.4 The "BookYourService" name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of the Company. You may not use such marks without the Company's prior written permission.
 
-12. DISPUTE RESOLUTION
-12.1 Disputes shall first be attempted to be resolved through the platform's dispute mechanism.
-12.2 Unresolved disputes shall be referred to arbitration in accordance with the Arbitration and Conciliation Act, 1996.
-12.3 The seat of arbitration shall be Mumbai, India.
-12.4 All proceedings shall be conducted in English.
+12. PRIVACY AND DATA PROTECTION
+12.1 User data is collected, processed, and stored in accordance with our Privacy Policy, which is incorporated herein by reference.
+12.2 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and all applicable data protection laws of India.
+12.3 By using the Platform, you consent to the collection, use, and disclosure of your personal information as described in our Privacy Policy.
+12.4 Users consent to receiving transactional and service-related communications. Marketing communications are subject to user opt-in consent and can be opted out at any time.
 
-13. MODIFICATIONS
-13.1 BookYourService reserves the right to modify these terms at any time.
-13.2 Users will be notified of significant changes via email or platform notification.
-13.3 Continued use of the platform after modifications constitutes acceptance of revised terms.
+13. DISPUTE RESOLUTION AND ARBITRATION
+13.1 INFORMAL RESOLUTION: Before initiating any formal proceedings, the parties agree to first attempt to resolve any dispute through the Platform's dispute resolution mechanism or through good-faith negotiation.
+13.2 ARBITRATION: Any dispute, controversy, or claim arising out of or relating to these Terms, or the breach, termination, or invalidity thereof, shall be settled by binding arbitration in accordance with the Arbitration and Conciliation Act, 1996 (as amended).
+13.3 The arbitration shall be conducted by a sole arbitrator appointed mutually by the parties. If the parties cannot agree on an arbitrator within 30 days, the arbitrator shall be appointed by the Bombay High Court.
+13.4 The seat and venue of arbitration shall be Mumbai, Maharashtra, India.
+13.5 The language of the arbitration proceedings shall be English.
+13.6 The arbitration proceedings shall be confidential, and neither party may disclose any information regarding the arbitration without the other party's prior written consent.
+13.7 The arbitrator's decision shall be final and binding on both parties, and judgment upon the award may be entered in any court of competent jurisdiction.
+13.8 Each party shall bear its own costs and expenses of arbitration, unless the arbitrator determines otherwise.
+13.9 NOTWITHSTANDING THE FOREGOING, THE COMPANY MAY SEEK INJUNCTIVE OR EQUITABLE RELIEF IN ANY COURT OF COMPETENT JURISDICTION TO PROTECT ITS INTELLECTUAL PROPERTY RIGHTS OR PREVENT IRREPARABLE HARM.
 
-14. GOVERNING LAW
-These Terms and Conditions are governed by the laws of India. The courts of Mumbai shall have exclusive jurisdiction over any disputes arising from these terms.
+14. GOVERNING LAW AND JURISDICTION
+14.1 These Terms of Service shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law principles.
+14.2 Subject to the arbitration provisions in Section 13, the courts of Mumbai, Maharashtra, India shall have exclusive jurisdiction over any disputes arising from or related to these Terms.
+14.3 Any legal action or proceeding not subject to arbitration shall be brought exclusively in the courts located in Mumbai, Maharashtra, India.
+14.4 You hereby irrevocably consent to the personal jurisdiction and venue of such courts and waive any objection based on inconvenient forum.
 
-Contact: legal@bookyourservice.co.in`,
+15. PROVIDER OBLIGATIONS
+15.1 Providers must complete KYC verification before listing services on the Platform.
+15.2 Providers must maintain professional conduct, appropriate skill levels, and service quality standards at all times.
+15.3 Providers must arrive on time and complete services as described in their listings.
+15.4 Providers must NOT solicit direct business or attempt to bypass the Platform for future bookings with Clients met through the Platform.
+15.5 Providers are solely responsible for their own tools, equipment, transportation, insurance, and statutory compliance.
+15.6 Providers must comply with all applicable laws, regulations, and licensing requirements for their trade (plumbing, electrical, HVAC).
+15.7 Providers must maintain valid insurance coverage appropriate for their services.
+15.8 Providers are responsible for obtaining all necessary permits and approvals required for service delivery.
+
+16. CLIENT OBLIGATIONS
+16.1 Clients must provide accurate service address and contact information.
+16.2 Clients must provide safe and reasonable access to the service location.
+16.3 Clients must not engage in any form of harassment, abuse, or discrimination against Service Providers.
+16.4 Clients must settle payment as agreed with the Service Provider.
+16.5 Clients must not request services that are illegal, dangerous, or beyond the scope of the Provider's listing.
+
+17. PROHIBITED ACTIVITIES
+17.1 Using the Platform for any unlawful purpose or in violation of any applicable law.
+17.2 Submitting false, misleading, or fraudulent information.
+17.3 Impersonating any person or entity or misrepresenting your affiliation.
+17.4 Interfering with or disrupting the Platform's operation or servers.
+17.5 Attempting to gain unauthorized access to any part of the Platform.
+17.6 Using automated tools (bots, scrapers) to access or collect data from the Platform.
+17.7 Engaging in any form of price manipulation or market distortion.
+17.8 Circumventing or attempting to circumvent the Platform's payment system.
+17.9 Soliciting Platform users for services outside the Platform.
+
+18. TERMINATION
+18.1 The Company may terminate or suspend your account and access to the Platform at its sole discretion, without notice, for conduct that the Company determines violates these Terms, is harmful to other users, or is otherwise objectionable.
+18.2 Users may terminate their account at any time by contacting customer support or through their account settings.
+18.3 Upon termination, the provisions of these Terms that by their nature should survive shall remain in effect, including but not limited to Sections 3, 9, 10, 11, 13, and 14.
+18.4 The Company shall not be liable for any damages resulting from the termination or suspension of your account.
+
+19. SEVERABILITY
+19.1 If any provision of these Terms is held to be invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect.
+19.2 The invalid or unenforceable provision shall be modified to the minimum extent necessary to make it valid and enforceable while preserving the intent of the original provision.
+
+20. ENTIRE AGREEMENT
+20.1 These Terms, together with the Privacy Policy and any other agreements incorporated by reference, constitute the entire agreement between you and the Company regarding the use of the Platform.
+20.2 These Terms supersede any prior agreements, understandings, or representations regarding the Platform.
+
+21. CONTACT INFORMATION
+For questions or concerns regarding these Terms of Service:
+Company: BookYourService Technologies Pvt. Ltd.
+Email: legal@bookyourservice.co.in
+Address: Fort, Mumbai 400001, Maharashtra, India
+Grievance Officer: grievance@bookyourservice.co.in`,
     },
   });
 
@@ -1002,84 +981,94 @@ Contact: legal@bookyourservice.co.in`,
     data: {
       pageType: 'PRIVACY',
       title: 'Privacy Policy',
-      version: '1.0',
-      effectiveDate: '2025-01-01',
+      version: '2.0',
+      effectiveDate: '2025-03-05',
       content: `PRIVACY POLICY FOR BOOKYOURSERVICE
 
-Last Updated: January 1, 2025
+Last Updated: March 5, 2025
+
+BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform for Plumbing, Electrical, and AC & HVAC services.
 
 1. INTRODUCTION
-BookYourService Technologies Pvt. Ltd. ("we", "our", "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.
+1.1 This Privacy Policy applies to all users (Clients, Service Providers, and Administrators) of the BookYourService platform, including our website (bookyourservice.co.in) and mobile application.
+1.2 By using the Platform, you consent to the data practices described in this Privacy Policy.
+1.3 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and all applicable data protection laws of India.
 
 2. INFORMATION WE COLLECT
-2.1 Personal Information: Name, email address, phone number, profile photo, and address.
-2.2 Identity Verification: Aadhaar number, PAN number, driving license, passport (for providers).
-2.3 Location Data: GPS coordinates for service delivery and provider matching.
-2.4 Payment Information: Payment method details (processed securely by Razorpay; we do not store card/bank details).
-2.5 Device Information: IP address, browser type, device type, operating system.
-2.6 Usage Data: Pages visited, features used, search queries, booking history.
-2.7 Communications: Chat messages between clients and providers, support tickets.
+2.1 Personal Information: Name, email address, phone number, profile photo, residential address, and date of birth.
+2.2 Identity Verification: Aadhaar number, PAN number, driving license number, passport number (for Service Providers undergoing KYC verification).
+2.3 Location Data: GPS coordinates for service delivery matching, provider proximity calculation, and service area determination.
+2.4 Payment Information: Currently, we do not collect or process payment information as all payments are settled directly between Clients and Providers. When our online payment system is activated, payment data will be processed securely by PCI DSS Level 1 certified third-party payment gateways. We will NOT store card numbers, CVVs, or bank account details on our servers.
+2.5 Device Information: IP address, browser type and version, device type and model, operating system, unique device identifiers, and mobile network information.
+2.6 Usage Data: Pages visited, features used, search queries, booking history, time spent on pages, click patterns, and navigation paths.
+2.7 Communications: Chat messages between Clients and Providers through the Platform, customer support tickets, and feedback submissions.
+2.8 Service Data: Service categories browsed (Plumbing, Electrical, AC & HVAC), subcategories selected, booking details, service addresses, and special instructions.
 
 3. HOW WE USE YOUR INFORMATION
-3.1 To provide and improve our services, including matching clients with providers.
-3.2 To process bookings, payments, and refunds.
-3.3 To verify user identity and prevent fraud.
-3.4 To send booking confirmations, reminders, and service updates.
-3.5 To provide customer support and resolve disputes.
-3.6 To send promotional offers and updates (with opt-out option).
-3.7 To comply with legal obligations and regulatory requirements.
-3.8 To analyze usage patterns and improve platform performance.
+3.1 To provide, operate, and maintain the Platform, including matching Clients with appropriate Service Providers.
+3.2 To process bookings, facilitate communication between Clients and Providers, and manage service delivery.
+3.3 To verify user identity, prevent fraud, and maintain platform security.
+3.4 To send booking confirmations, reminders, service updates, and transactional notifications.
+3.5 To provide customer support, resolve disputes, and handle complaints.
+3.6 To send promotional offers, newsletters, and platform updates (with opt-out option for marketing communications).
+3.7 To comply with legal obligations, regulatory requirements, and law enforcement requests.
+3.8 To analyze usage patterns, improve platform performance, and develop new features.
+3.9 To enforce our Terms of Service and protect the rights, property, or safety of BookYourService, our users, or the public.
 
-4. DATA SHARING
-4.1 Service Providers: Your name, address, and phone number are shared with the assigned provider for service delivery.
-4.2 Payment Processors: Payment data is shared with Razorpay for transaction processing.
-4.3 Analytics Partners: Anonymized usage data may be shared with analytics services.
-4.4 Legal Requirements: We may disclose data when required by law, regulation, or legal process.
-4.5 Business Transfers: In the event of a merger or acquisition, user data may be transferred to the acquiring entity.
-4.6 We do NOT sell your personal data to third parties for marketing purposes.
+4. DATA SHARING AND DISCLOSURE
+4.1 Service Providers: When you book a service, your name, service address, and phone number are shared with the assigned Service Provider to facilitate service delivery.
+4.2 Clients: Service Provider's name, profile photo, rating, and approximate location (city-level) are visible to Clients browsing services.
+4.3 Payment Processors: When the online payment system is activated, payment data will be shared with authorized payment gateways for transaction processing.
+4.4 Analytics Partners: Anonymized and aggregated usage data may be shared with analytics services to improve our Platform.
+4.5 Legal Requirements: We may disclose personal data when required by law, regulation, legal process, or governmental request, or when we believe in good faith that disclosure is necessary to protect our rights, your safety or the safety of others, investigate fraud, or respond to a government request.
+4.6 Business Transfers: In the event of a merger, acquisition, reorganization, bankruptcy, or sale of all or a portion of our assets, user data may be transferred to the acquiring entity.
+4.7 We do NOT sell, rent, or trade your personal data to third parties for their marketing purposes.
 
 5. DATA SECURITY
-5.1 All data transmissions are encrypted using TLS/SSL.
-5.2 Personal data is stored in encrypted databases with restricted access.
-5.3 We conduct regular security audits and vulnerability assessments.
-5.4 Access to personal data is limited to authorized personnel on a need-to-know basis.
-5.5 Despite our best efforts, no method of electronic transmission or storage is 100% secure.
+5.1 All data transmissions between your device and our servers are encrypted using TLS/SSL (Transport Layer Security/Secure Sockets Layer).
+5.2 Personal data is stored in encrypted databases with strict access controls.
+5.3 We conduct regular security audits, vulnerability assessments, and penetration testing.
+5.4 Access to personal data is limited to authorized personnel on a strict need-to-know basis.
+5.5 We implement firewalls, intrusion detection systems, and anti-malware protections.
+5.6 DESPITE OUR BEST EFFORTS, NO METHOD OF ELECTRONIC TRANSMISSION OR STORAGE IS 100% SECURE. We cannot guarantee absolute security of your data.
 
 6. DATA RETENTION
 6.1 Active account data is retained for the duration of your account.
-6.2 Booking records are retained for 3 years after the booking date.
-6.3 Payment records are retained for 7 years as required by Indian tax laws.
-6.4 KYC documents are retained for the duration of the provider relationship plus 1 year.
-6.5 You can request deletion of your account and associated data at any time.
+6.2 Booking records are retained for 3 years after the booking date for dispute resolution and legal compliance.
+6.3 Payment records (when activated) will be retained for 7 years as required by Indian tax laws.
+6.4 KYC documents are retained for the duration of the Provider relationship plus 1 year after termination.
+6.5 Deleted account data is retained for 30 days for recovery purposes, then permanently deleted.
+6.6 You can request deletion of your account and associated data at any time by contacting support.
 
 7. YOUR RIGHTS
 7.1 Access: You can view and download your personal data from your account settings.
-7.2 Correction: You can update your personal information at any time.
-7.3 Deletion: You can request deletion of your account and data by contacting support.
-7.4 Objection: You can opt out of marketing communications at any time.
-7.5 Data Portability: You can request a copy of your data in a machine-readable format.
+7.2 Correction: You can update your personal information at any time through your account settings.
+7.3 Deletion: You can request deletion of your account and data by contacting support@bookyourservice.co.in.
+7.4 Objection: You can opt out of marketing communications at any time by clicking the unsubscribe link or updating your preferences.
+7.5 Data Portability: You can request a copy of your data in a machine-readable format by contacting our Data Protection Officer.
 
-8. COOKIES AND TRACKING
-8.1 We use essential cookies for platform functionality and session management.
+8. COOKIES AND TRACKING TECHNOLOGIES
+8.1 We use essential cookies for platform functionality, session management, and security.
 8.2 Analytics cookies help us understand usage patterns and improve our services.
-8.3 You can manage cookie preferences through your browser settings.
-8.4 Please refer to our Cookie Policy for detailed information.
+8.3 Functional cookies remember your preferences such as location, language, and recently viewed services.
+8.4 You can manage cookie preferences through your browser settings or our cookie consent banner.
+8.5 Please refer to our Cookie Policy for detailed information on cookie usage.
 
 9. CHILDREN'S PRIVACY
-Our platform is not intended for children under 18 years of age. We do not knowingly collect personal information from children. If we become aware of such data, it will be promptly deleted.
+Our Platform is not intended for children under 18 years of age. We do not knowingly collect personal information from children. If we become aware that we have collected personal data from a child under 18, we will take steps to delete such information promptly.
 
 10. INTERNATIONAL DATA TRANSFERS
-Your data is primarily stored on servers located in India. In the event of international data processing, we ensure appropriate safeguards are in place in compliance with applicable data protection laws.
+Your data is primarily stored on servers located in India. In the event of international data processing, we ensure appropriate safeguards are in place in compliance with applicable data protection laws, including standard contractual clauses and adequacy decisions.
 
-11. CHANGES TO THIS POLICY
-We may update this Privacy Policy from time to time. Significant changes will be communicated via email or platform notification. Your continued use of the platform after changes constitutes acceptance of the revised policy.
+11. CHANGES TO THIS PRIVACY POLICY
+We may update this Privacy Policy from time to time. Significant changes will be communicated via email or platform notification at least 15 days before taking effect. Your continued use of the Platform after changes constitutes acceptance of the revised policy.
 
 12. CONTACT US
-For privacy-related inquiries or data requests:
+For privacy-related inquiries, data access requests, or to exercise your rights:
 Email: privacy@bookyourservice.co.in
 Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
-
-Data Protection Officer: privacy@bookyourservice.co.in`,
+Data Protection Officer: dpo@bookyourservice.co.in
+Grievance Officer: grievance@bookyourservice.co.in`,
     },
   });
 
@@ -1088,70 +1077,98 @@ Data Protection Officer: privacy@bookyourservice.co.in`,
     data: {
       pageType: 'REFUND',
       title: 'Refund Policy',
-      version: '1.0',
-      effectiveDate: '2025-01-01',
+      version: '2.0',
+      effectiveDate: '2025-03-05',
       content: `REFUND POLICY FOR BOOKYOURSERVICE
 
-Last Updated: January 1, 2025
+Last Updated: March 5, 2025
 
 1. OVERVIEW
-At BookYourService, we strive to ensure complete satisfaction with every service. If you are not satisfied with a service, we offer a comprehensive refund policy as outlined below.
+1.1 BookYourService facilitates connections between Clients and Service Providers for Plumbing, Electrical, and AC & HVAC services. As an intermediary platform, our refund policy applies to the Platform Fee charged by BookYourService and the facilitation of refunds for service payments between Clients and Providers.
+1.2 IMPORTANT: Currently, all service payments are settled directly between Clients and Providers (cash/direct transfer). The Company does NOT hold, process, or control service payments. Refunds for service payments must be arranged directly between the Client and Provider.
+1.3 Once our online payment system is activated, the refund process will be managed through the Platform as described in the relevant sections below.
 
-2. ELIGIBILITY FOR REFUND
-2.1 The service was not delivered as described in the listing.
-2.2 The provider did not arrive within 30 minutes of the scheduled time (no-show).
-2.3 The service quality is significantly below the expected standard.
-2.4 The booking was cancelled within the applicable cancellation window.
-2.5 A duplicate charge was applied to your account.
-2.6 The provider cancelled the booking without adequate notice.
+2. PLATFORM FEE REFUND
+2.1 The Platform Fee is refundable under the following conditions:
+   (a) The booking was cancelled by the Client within the applicable cancellation window.
+   (b) The booking was cancelled by the Provider without adequate notice.
+   (c) The Service Provider failed to arrive (no-show).
+   (d) A duplicate Platform Fee charge was applied.
+2.2 The Platform Fee is NOT refundable under the following conditions:
+   (a) The service was completed, regardless of Client satisfaction.
+   (b) The Client was a no-show without prior cancellation.
+   (c) The cancellation was made within 4 hours of the scheduled time (partial refund may apply).
 
-3. CANCELLATION-BASED REFUNDS
-3.1 Full Refund: Cancellations made 24 or more hours before the scheduled service time.
-3.2 Partial Refund (90%): Cancellations made 4-24 hours before the scheduled service time.
-3.3 Partial Refund (75%): Cancellations made within 4 hours of the scheduled service time.
-3.4 No Refund: No-show by the client without prior cancellation.
+3. SERVICE PAYMENT REFUND — CURRENT MODEL (DIRECT PAYMENT)
+3.1 Since payments are currently settled directly between Clients and Providers, the Company CANNOT process refunds for service payments.
+3.2 Clients must request refunds directly from the Service Provider.
+3.3 The Company will facilitate communication and mediation between the parties to resolve refund disputes.
+3.4 The Company is NOT liable for any Provider's refusal to issue a refund or delay in refund processing.
+3.5 The Company recommends obtaining receipts and maintaining records of all payments for refund purposes.
 
-4. SERVICE QUALITY-BASED REFUNDS
-4.1 Clients can raise a quality dispute within 7 days of service completion.
-4.2 Our team will review the dispute, including photos, descriptions, and provider response.
-4.3 If the quality issue is verified, a full or partial refund will be issued.
-4.4 In some cases, we may offer a re-service at no additional cost instead of a refund.
+4. SERVICE PAYMENT REFUND — FUTURE ONLINE PAYMENT MODEL
+4.1 When the online payment system is activated, the following refund policies will apply:
+   (a) Full Refund: Cancellations made 24 or more hours before the scheduled service time. Both service payment and Platform Fee will be refunded.
+   (b) Partial Refund (90%): Cancellations made 4-24 hours before the scheduled service time. 10% cancellation fee applies.
+   (c) Partial Refund (75%): Cancellations made within 4 hours of the scheduled service time. 25% cancellation fee applies.
+   (d) No Refund: Client no-show without prior cancellation.
 
-5. REFUND PROCESS
-5.1 Refund requests can be initiated from My Bookings or by contacting customer support.
-5.2 Refund requests are reviewed within 48 business hours.
-5.3 Approved refunds are processed to the original payment method.
-5.4 Refund processing times vary by payment method:
+5. ELIGIBILITY FOR SERVICE QUALITY REFUND
+5.1 The service was not delivered as described in the listing.
+5.2 The Provider did not arrive within 30 minutes of the scheduled time (no-show).
+5.3 The service quality is significantly below the expected standard as evidenced by photos or documentation.
+5.4 The Provider cancelled the booking without adequate notice.
+5.5 A duplicate charge was applied.
+5.6 The service could not be completed due to Provider's inability or equipment failure.
+
+6. SERVICE QUALITY DISPUTE PROCESS
+6.1 Clients can raise a quality dispute within 7 days of service completion through the Platform.
+6.2 The Client must provide supporting evidence including photos, descriptions, and any relevant documentation.
+6.3 The Company will review the dispute and contact the Provider for their response.
+6.4 Review process takes up to 48 business hours.
+6.5 If the quality issue is verified, the Company will facilitate a full or partial refund from the Provider.
+6.6 In some cases, the Company may offer a re-service through a different Provider instead of a refund.
+
+7. REFUND PROCESSING (ONLINE PAYMENT MODEL)
+7.1 Approved refunds will be processed to the original payment method.
+7.2 Refund processing times vary by payment method:
    - UPI: 3-5 business days
    - Credit/Debit Card: 5-7 business days
    - Net Banking: 5-7 business days
    - Wallet: 24-48 hours
+7.3 The Company is NOT responsible for delays caused by payment gateways or banking systems.
 
-6. NON-REFUNDABLE ITEMS
-6.1 Platform fee for completed services (unless the service quality dispute is upheld).
-6.2 Convenience charges for premium time slots.
-6.3 Tips or bonuses paid to providers.
-6.4 Subscription fees for provider plans (after 7 days of activation).
+8. NON-REFUNDABLE ITEMS
+8.1 Platform Fee for completed services (unless a quality dispute is upheld).
+8.2 Tips or bonuses paid directly to Providers.
+8.3 Subscription fees for Provider plans (after 7 days of activation).
+8.4 Any charges for additional materials or work requested by the Client beyond the original scope.
 
-7. PARTIAL REFUNDS
-7.1 If a service is partially completed, a partial refund may be issued based on the portion not completed.
-7.2 The refund amount is determined based on the scope of work completed vs. agreed upon.
-7.3 Both client and provider input is considered in determining the partial refund amount.
+9. PARTIAL REFUNDS
+9.1 If a service is partially completed, a partial refund may be issued based on the portion not completed.
+9.2 The refund amount is determined based on the scope of work completed versus agreed upon.
+9.3 Both Client and Provider input is considered in determining the partial refund amount.
 
-8. REFUND TO WALLET
-8.1 In some cases, refunds may be offered as BookYourService Wallet credit.
-8.2 Wallet refunds are processed instantly and can be used for future bookings.
-8.3 Wallet credits have no expiry date and can be withdrawn to your bank account.
+10. REFUND TO WALLET (FUTURE)
+10.1 When the online payment system is activated, refunds may be offered as BookYourService Wallet credit.
+10.2 Wallet refunds are processed instantly and can be used for future bookings.
+10.3 Wallet credits have no expiry date and can be withdrawn to your bank account.
 
-9. DISPUTE ESCALATION
-9.1 If a refund request is denied, you can escalate the matter to our grievance officer.
-9.2 Escalated disputes are reviewed within 5 business days.
-9.3 The decision of the grievance officer is final and binding.
+11. DISPUTE ESCALATION
+11.1 If a refund request is denied, you can escalate the matter to our Grievance Officer.
+11.2 Escalated disputes are reviewed within 5 business days.
+11.3 The decision of the Grievance Officer is final and binding.
+11.4 Nothing in this Refund Policy prevents you from seeking remedies available under applicable consumer protection laws.
 
-10. CONTACT
-For refund inquiries:
+12. LIMITATION OF LIABILITY
+12.1 The Company's liability for any refund is limited to the Platform Fee collected by the Company for the specific booking in question.
+12.2 The Company is NOT liable for the service payment amount, as it is settled directly between the Client and Provider.
+12.3 Under no circumstances shall the Company be liable for any indirect, incidental, special, or consequential damages arising from refund-related disputes.
+
+13. CONTACT
+For refund inquiries and dispute resolution:
 Email: refunds@bookyourservice.co.in
-Phone: 1800-XXX-XXXX (Toll Free)
+Grievance Officer: grievance@bookyourservice.co.in
 Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     },
   });
@@ -1161,171 +1178,157 @@ Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     data: {
       pageType: 'COOKIES',
       title: 'Cookie Policy',
-      version: '1.0',
-      effectiveDate: '2025-01-01',
+      version: '2.0',
+      effectiveDate: '2025-03-05',
       content: `COOKIE POLICY FOR BOOKYOURSERVICE
 
-Last Updated: January 1, 2025
+Last Updated: March 5, 2025
 
-1. WHAT ARE COOKIES?
-Cookies are small text files placed on your device when you visit our website or use our mobile application. They help us remember your preferences, understand how you use our platform, and improve your experience.
+1. INTRODUCTION
+This Cookie Policy explains how BookYourService Technologies Pvt. Ltd. ("we," "us," or "our") uses cookies and similar tracking technologies when you visit our website (bookyourservice.co.in) or use our mobile application. This policy should be read alongside our Privacy Policy.
 
-2. TYPES OF COOKIES WE USE
+2. WHAT ARE COOKIES?
+Cookies are small text files placed on your device (computer, tablet, or mobile phone) when you visit a website or use an application. They help us remember your preferences, understand how you use our Platform, and improve your experience when browsing for Plumbing, Electrical, and AC & HVAC services.
 
-2.1 Essential Cookies (Required)
-These cookies are necessary for the platform to function properly. They enable core features such as:
-- User authentication and session management
-- Security and fraud prevention
+3. TYPES OF COOKIES WE USE
+
+3.1 Essential Cookies (Strictly Necessary)
+These cookies are required for the Platform to function properly and cannot be disabled. They enable core features such as:
+- User authentication and secure session management
+- Security and fraud prevention measures
 - Load balancing and server optimization
-- Shopping cart and booking state management
+- Booking state management and cart functionality
+- Compliance with legal obligations
 
-2.2 Functional Cookies
+3.2 Functional Cookies
 These cookies enable enhanced functionality and personalization:
-- Remembering your location and preferred city
-- Saving your search preferences and filters
-- Storing your recently viewed services
-- Language and theme preferences
+- Remembering your city/location and preferred service area
+- Saving your search preferences and category filters (Plumbing, Electrical, AC & HVAC)
+- Storing your recently viewed services and providers
+- Language and display preferences
+- Auto-filling form data for faster booking
 
-2.3 Analytics Cookies
-These cookies help us understand how users interact with our platform:
+3.3 Analytics and Performance Cookies
+These cookies help us understand how users interact with our Platform:
 - Page views and navigation patterns
 - Feature usage statistics
 - Error tracking and performance monitoring
-- A/B testing for platform improvements
+- A/B testing for Platform improvements
+- Conversion tracking and funnel analysis
 We use Google Analytics for website analytics. Data is collected anonymously and aggregated.
 
-2.4 Marketing Cookies
+3.4 Marketing and Advertising Cookies
 These cookies are used for targeted advertising and remarketing:
-- Showing relevant service recommendations
+- Showing relevant service recommendations based on browsing history
 - Retargeting ads across partner networks
 - Measuring the effectiveness of marketing campaigns
 - Social media integration features
+- Email campaign tracking
+These cookies require your explicit consent before activation.
 
-3. THIRD-PARTY COOKIES
-We allow the following third parties to set cookies on our platform:
-- Razorpay (Payment processing)
-- Google Analytics (Website analytics)
-- Google Maps (Location services)
-- Facebook/Meta (Social integration and advertising)
-- WhatsApp (Click-to-chat functionality)
+4. THIRD-PARTY COOKIES
+We allow the following third parties to set cookies on our Platform:
+4.1 Google Analytics — Website analytics and user behavior tracking
+4.2 Google Maps — Location services and provider proximity mapping
+4.3 Razorpay — Payment processing (when online payments are activated)
+4.4 Facebook/Meta — Social integration and advertising
+4.5 WhatsApp — Click-to-chat functionality with providers and support
 
-4. MANAGING COOKIES
-
-4.1 Browser Settings
+5. MANAGING COOKIES
+5.1 Browser Settings
 You can manage cookies through your browser settings:
-- Chrome: Settings > Privacy and Security > Cookies
-- Firefox: Options > Privacy & Security > Cookies
-- Safari: Preferences > Privacy > Cookies
-- Edge: Settings > Cookies and site permissions
+- Chrome: Settings > Privacy and Security > Cookies and other site data
+- Firefox: Options > Privacy & Security > Cookies and Site Data
+- Safari: Preferences > Privacy > Cookies and website data
+- Edge: Settings > Cookies and site permissions > Manage and delete cookies
 
-4.2 Opt-Out
-You can opt out of specific cookie categories through our cookie consent banner. Essential cookies cannot be disabled as they are required for platform functionality.
+5.2 Cookie Consent Banner
+Our Platform displays a cookie consent banner upon your first visit. You can accept or reject non-essential cookies through this banner. You can modify your preferences at any time.
 
-4.3 Do Not Track
-We respect Do Not Track (DNT) signals where legally required. However, not all browsers support DNT uniformly.
+5.3 Opt-Out Links
+You can opt out of specific third-party cookies:
+- Google Analytics: https://tools.google.com/dlpage/gaoptout
+- Facebook: https://www.facebook.com/help/568137493302217
+- Network Advertising Initiative: https://optout.networkadvertising.org/
 
-5. COOKIE DURATION
-5.1 Session cookies expire when you close your browser.
-5.2 Persistent cookies have varying durations:
+5.4 Do Not Track
+We respect Do Not Track (DNT) browser signals to the extent required by applicable law. However, DNT is not uniformly supported across all browsers and may not fully prevent all tracking.
+
+6. COOKIE DURATION
+6.1 Session cookies expire when you close your browser.
+6.2 Persistent cookies have varying durations:
    - Authentication cookies: 30 days
    - Preference cookies: 1 year
    - Analytics cookies: 2 years
    - Marketing cookies: 90 days
+   - Essential cookies: Until browser session ends
 
-6. COOKIES AND MOBILE APPS
-Our mobile application uses similar technologies including:
-- Local Storage for session and preference data
-- Device identifiers for analytics
-- Push notification tokens for communication
+7. COOKIES AND MOBILE APPLICATIONS
+Our mobile application uses similar tracking technologies including:
+7.1 Local Storage for session data and user preferences
+7.2 Device identifiers (IDFA/GAID) for analytics
+7.3 Push notification tokens for communication
+7.4 In-app tracking for usage analytics and feature optimization
 
-7. UPDATES TO THIS POLICY
-We may update this Cookie Policy to reflect changes in our practices or regulatory requirements. We will notify you of material changes through our platform or via email.
+8. SPECIFIC COOKIES USED
+The following categories of cookies are specifically used on our Platform:
+- _ga, _gid, _gat — Google Analytics tracking
+- session_id — User session management
+- auth_token — Authentication and security
+- csrf_token — Cross-site request forgery protection
+- preferred_city — User location preference
+- recent_services — Recently viewed services
+- cookie_consent — User cookie preferences
 
-8. CONTACT
-For questions about our use of cookies:
+9. YOUR RIGHTS
+9.1 You have the right to be informed about cookies used on our Platform.
+9.2 You have the right to consent to or reject non-essential cookies.
+9.3 You have the right to withdraw consent at any time by updating your cookie preferences.
+9.4 You have the right to request information about how your data is used through cookies.
+
+10. IMPACT OF DISABLING COOKIES
+10.1 Essential cookies cannot be disabled as they are required for Platform functionality.
+10.2 Disabling functional cookies may result in a less personalized experience.
+10.3 Disabling analytics cookies will not affect Platform functionality but may limit our ability to improve the Platform.
+10.4 Disabling marketing cookies will prevent targeted advertising but will not affect core Platform features.
+
+11. UPDATES TO THIS COOKIE POLICY
+We may update this Cookie Policy to reflect changes in our practices, technology, or regulatory requirements. Material changes will be communicated through our Platform or via email. We encourage you to review this policy periodically.
+
+12. CONTACT
+For questions about our use of cookies or to exercise your rights:
 Email: privacy@bookyourservice.co.in
 Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India`,
     },
   });
 
   // ========================================
-  // 12. REVENUE STREAMS (55 revenue streams)
+  // 12. REVENUE STREAMS (for 3 categories only)
   // ========================================
   console.log('💰 Creating revenue streams...');
   const revenueStreamData = [
-    // Commission-based
-    { streamType: 'Booking Commission', description: 'Percentage commission on each completed booking', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 500000 },
-    { streamType: 'Premium Provider Commission', description: 'Reduced commission rate for premium plan providers', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 200000 },
-    { streamType: 'Category-specific Commission', description: 'Higher commission for premium service categories', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 150000 },
-    { streamType: 'Urgent Booking Surcharge', description: 'Additional fee for same-day or urgent bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 75000 },
-    { streamType: 'Weekend/Holiday Premium', description: 'Surcharge for weekend and holiday bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 60000 },
+    // Plumbing category revenue
+    { streamType: 'Plumbing Booking Commission', description: 'Percentage commission on completed plumbing service bookings (leak repair, drain cleaning, pipe installation, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 180000, status: 'ACTIVE' },
+    { streamType: 'Plumbing Featured Listing', description: 'Featured placement for providers within the Plumbing category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 35000, status: 'ACTIVE' },
+    { streamType: 'Plumbing Premium Provider Plan', description: 'Monthly subscription for premium plumbing providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 80000, status: 'ACTIVE' },
 
-    // Subscription-based
-    { streamType: 'Provider Basic Plan', description: 'Monthly subscription for basic provider listing', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 100000 },
-    { streamType: 'Provider Premium Plan', description: 'Monthly subscription for premium provider features', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 250000 },
-    { streamType: 'Provider Enterprise Plan', description: 'Monthly subscription for multi-provider businesses', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 80000 },
-    { streamType: 'Client Plus Membership', description: 'Monthly client membership with discounts and priority booking', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 120000 },
-    { streamType: 'Client Premium Membership', description: 'Premium client membership with exclusive benefits', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 60000 },
+    // Electrical category revenue
+    { streamType: 'Electrical Booking Commission', description: 'Percentage commission on completed electrical service bookings (wiring, light fixture, socket repair, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 220000, status: 'ACTIVE' },
+    { streamType: 'Electrical Featured Listing', description: 'Featured placement for providers within the Electrical category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 40000, status: 'ACTIVE' },
+    { streamType: 'Electrical Premium Provider Plan', description: 'Monthly subscription for premium electrical providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 95000, status: 'ACTIVE' },
 
-    // Featured Listings
-    { streamType: 'Category Featured Listing', description: 'Featured placement within service category pages', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 90000 },
-    { streamType: 'Homepage Featured Listing', description: 'Featured placement on the homepage carousel', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 150000 },
-    { streamType: 'Search Result Boost', description: 'Boosted position in search results for providers', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 85000 },
-    { streamType: 'Top Provider Badge', description: 'Premium badge and highlighted listing for top providers', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 45000 },
-    { streamType: 'City Page Featured', description: 'Featured listing on city-specific landing pages', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 55000 },
+    // AC & HVAC category revenue
+    { streamType: 'AC HVAC Booking Commission', description: 'Percentage commission on completed AC & HVAC service bookings (installation, repair, cleaning, gas refill, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 250000, status: 'ACTIVE' },
+    { streamType: 'AC HVAC Featured Listing', description: 'Featured placement for providers within the AC & HVAC category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 45000, status: 'ACTIVE' },
+    { streamType: 'AC HVAC Premium Provider Plan', description: 'Monthly subscription for premium AC & HVAC providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 100000, status: 'ACTIVE' },
 
-    // Advertising
-    { streamType: 'Banner Ads - Homepage', description: 'Display advertising on homepage', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 100000 },
-    { streamType: 'Banner Ads - Category Pages', description: 'Display advertising on category listing pages', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 60000 },
-    { streamType: 'Sponsored Content', description: 'Sponsored blog posts and service guides', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 35000 },
-    { streamType: 'Push Notification Ads', description: 'Targeted push notification advertising', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 25000 },
-    { streamType: 'Email Newsletter Ads', description: 'Advertising in weekly email newsletters', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 20000 },
-    { streamType: 'In-App Banner Ads', description: 'Banner advertising within the mobile app', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 40000 },
-    { streamType: 'Video Ads', description: 'Pre-roll and mid-roll video advertisements', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 30000 },
-
-    // Premium Features
-    { streamType: 'Priority Booking', description: 'Clients pay for priority slot booking', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 50000 },
-    { streamType: 'Express Service', description: 'Guaranteed faster service delivery', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 40000 },
-    { streamType: 'Extended Warranty', description: 'Extended service warranty beyond standard period', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 30000 },
-    { streamType: 'Insurance Add-on', description: 'Service insurance for high-value bookings', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 25000 },
-    { streamType: 'VIP Support', description: 'Dedicated customer support for premium users', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 20000 },
-    { streamType: 'Detailed Service Report', description: 'Comprehensive post-service report with photos', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 15000 },
-    { streamType: 'Scheduled Maintenance Plan', description: 'Prepaid recurring maintenance service plans', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 75000 },
-
-    // Referral
-    { streamType: 'Client Referral Fee', description: 'Fee from referral program for new client acquisition', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 35000 },
-    { streamType: 'Provider Referral Fee', description: 'Fee from referral program for new provider acquisition', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 25000 },
-    { streamType: 'Corporate Partnership Referral', description: 'Referral fees from corporate tie-ups', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 45000 },
-    { streamType: 'Affiliate Marketing', description: 'Commission from affiliate partner referrals', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 20000 },
-    { streamType: 'Social Media Influencer Referral', description: 'Referral fees from influencer partnerships', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 15000 },
-
-    // API Access
-    { streamType: 'API Access - Basic', description: 'Basic API access for third-party integrations', revenueModel: 'API_ACCESS', estimatedMonthlyRevenue: 30000 },
-    { streamType: 'API Access - Premium', description: 'Premium API access with higher rate limits', revenueModel: 'API_ACCESS', estimatedMonthlyRevenue: 50000 },
-    { streamType: 'White Label Solution', description: 'White-label platform licensing for partners', revenueModel: 'API_ACCESS', estimatedMonthlyRevenue: 100000 },
-    { streamType: 'Corporate API Integration', description: 'Custom API integration for corporate clients', revenueModel: 'API_ACCESS', estimatedMonthlyRevenue: 75000 },
-    { streamType: 'Real Estate Partner API', description: 'API integration for real estate platforms', revenueModel: 'API_ACCESS', estimatedMonthlyRevenue: 40000 },
-
-    // Data Licensing
-    { streamType: 'Market Research Data', description: 'Anonymized market data licensing to researchers', revenueModel: 'DATA_LICENSING', estimatedMonthlyRevenue: 25000 },
-    { streamType: 'Pricing Intelligence Data', description: 'Service pricing trends and analytics data', revenueModel: 'DATA_LICENSING', estimatedMonthlyRevenue: 20000 },
-    { streamType: 'Demand Forecasting Data', description: 'Service demand forecasting data for partners', revenueModel: 'DATA_LICENSING', estimatedMonthlyRevenue: 30000 },
-    { streamType: 'Consumer Behavior Analytics', description: 'Anonymized consumer behavior and preference data', revenueModel: 'DATA_LICENSING', estimatedMonthlyRevenue: 15000 },
-    { streamType: 'Geographic Service Mapping Data', description: 'Service availability and demand mapping by geography', revenueModel: 'DATA_LICENSING', estimatedMonthlyRevenue: 10000 },
-
-    // Additional Revenue Streams
-    { streamType: 'Platform Convenience Fee', description: 'Flat convenience fee per transaction', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 80000 },
-    { streamType: 'Payment Processing Margin', description: 'Margin on payment gateway processing', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 40000 },
-    { streamType: 'Wallet Float Revenue', description: 'Interest earned on wallet balances', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 10000 },
-    { streamType: 'Late Cancellation Fee', description: 'Fee charged for late booking cancellations', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 35000 },
-    { streamType: 'Service Verification Fee', description: 'Fee for verifying and certifying provider quality', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 20000 },
-    { streamType: 'Background Check Fee', description: 'Charged to providers for background verification', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 15000 },
-    { streamType: 'Training Certification Fee', description: 'Fee for platform-provided skill training and certification', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 25000 },
-    { streamType: 'Lead Generation Fee', description: 'Fee from providers for qualified lead distribution', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 65000 },
-    { streamType: 'Seasonal Campaign Revenue', description: 'Revenue from seasonal promotional campaigns', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 55000 },
-    { streamType: 'Corporate Bulk Booking', description: 'Revenue from corporate bulk service bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 120000 },
-    { streamType: 'Service Package Deals', description: 'Revenue from bundled service packages', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 90000 },
-    { streamType: 'Geographic Expansion Fee', description: 'Revenue from new city launch partnerships', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 50000 },
+    // Cross-category revenue
+    { streamType: 'Homepage Featured Listing', description: 'Featured placement on the homepage carousel across all categories', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 120000, status: 'ACTIVE' },
+    { streamType: 'Search Result Boost', description: 'Boosted position in search results for providers across all categories', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 60000, status: 'ACTIVE' },
+    { streamType: 'Urgent/Same-Day Booking Surcharge', description: 'Additional fee for same-day or urgent bookings across all categories', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 50000, status: 'ACTIVE' },
+    { streamType: 'Client Plus Membership', description: 'Monthly client membership with discounts and priority booking across all categories', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 75000, status: 'PLANNED' },
+    { streamType: 'Banner Advertising', description: 'Display advertising on category pages and homepage', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 45000, status: 'ACTIVE' },
+    { streamType: 'Referral Program', description: 'Revenue from client and provider referral programs', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 25000, status: 'PLANNED' },
   ];
 
   for (const rs of revenueStreamData) {
@@ -1333,92 +1336,76 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   }
 
   // ========================================
-  // 13. SEO METADATA
+  // 13. SEO METADATA (for 3 categories)
   // ========================================
   console.log('🔍 Creating SEO metadata...');
   const seoData = [
     {
-      pageType: 'HOME',
-      title: 'BookYourService - Book Home Services Online in India',
-      description: 'Book trusted home services online. Plumbing, electrical, cleaning, AC repair, beauty, and 25+ categories. Verified providers, transparent pricing, and guaranteed satisfaction.',
-      keywords: 'home services, book service online, plumbing, electrical, cleaning, AC repair, beauty services, India',
-      canonicalUrl: 'https://www.bookyourservice.co.in',
-      ogImage: '/images/og-home.jpg',
-      schemaMarkup: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "BookYourService",
-        "url": "https://www.bookyourservice.co.in",
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": "https://www.bookyourservice.co.in/search?q={search_term_string}",
-          "query-input": "required name=search_term_string"
-        }
-      }),
+      pageType: 'home',
+      title: 'BookYourService — Trusted Home Services in India | Plumbing, Electrical, AC & HVAC',
+      description: 'Book verified professionals for Plumbing, Electrical, and AC & HVAC services at your doorstep. Trusted providers in Delhi, Mumbai, Bengaluru, Hyderabad & Chennai. Transparent pricing, KYC verified providers.',
+      keywords: 'home services, plumbing services, electrical services, AC repair, HVAC services, book plumber, book electrician, AC installation, India, Delhi, Mumbai, Bengaluru, Hyderabad, Chennai',
+      canonicalUrl: 'https://bookyourservice.co.in',
+      indexed: true,
     },
     {
-      pageType: 'SERVICES',
-      title: 'All Services - BookYourService',
-      description: 'Browse 25+ service categories on BookYourService. Home maintenance, beauty, fitness, events, and more. Book trusted professionals near you.',
-      keywords: 'all services, service categories, home services India, book professional',
-      canonicalUrl: 'https://www.bookyourservice.co.in/services',
+      pageType: 'category',
+      pageId: 'plumbing',
+      title: 'Plumbing Services — Professional Plumbers Near You | BookYourService',
+      description: 'Expert plumbing services including leak repair, drain cleaning, pipe installation, faucet repair, toilet installation, water heater repair, sewage cleaning, and more. Book verified plumbers in Delhi, Mumbai, Bengaluru, Hyderabad & Chennai.',
+      keywords: 'plumber near me, leak repair, drain cleaning, pipe installation, faucet repair, toilet installation, water heater repair, plumbing services India, book plumber online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/plumbing',
+      indexed: true,
     },
     {
-      pageType: 'CATEGORY',
-      title: '{categoryName} Services - BookYourService',
-      description: 'Book professional {categoryName} services online. Verified providers, transparent pricing, and guaranteed satisfaction.',
-      keywords: '{categoryName} services, book {categoryName}, {categoryName} near me',
+      pageType: 'category',
+      pageId: 'electrical',
+      title: 'Electrical Services — Licensed Electricians Near You | BookYourService',
+      description: 'Licensed electrical services including wiring repairs, light fixture installation, socket repairs, circuit breaker fixing, ceiling fan installation, smart home setup, generator maintenance, and more. Book verified electricians in top Indian cities.',
+      keywords: 'electrician near me, wiring repair, light fixture installation, socket repair, circuit breaker, ceiling fan, smart home setup, electrical services India, book electrician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/electrical',
+      indexed: true,
     },
     {
-      pageType: 'SERVICE_DETAIL',
-      title: '{serviceName} - BookYourService',
-      description: 'Book {serviceName} at the best price. Verified provider, transparent pricing, and quality guaranteed.',
-      keywords: '{serviceName}, book {serviceName}, {serviceName} online',
+      pageType: 'category',
+      pageId: 'ac-hvac',
+      title: 'AC & HVAC Services — Certified Technicians Near You | BookYourService',
+      description: 'Professional AC & HVAC services including AC installation, repair, cleaning, gas refilling, heating unit repairs, thermostat setup, central air maintenance, duct cleaning, furnace repair, and more. Book certified technicians in top Indian cities.',
+      keywords: 'AC repair near me, AC installation, AC cleaning, gas refill, HVAC services, air conditioning repair, duct cleaning, furnace repair, AC service India, book AC technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/ac-hvac',
+      indexed: true,
     },
     {
-      pageType: 'PROVIDER_PROFILE',
-      title: '{providerName} - Service Provider on BookYourService',
-      description: 'View {providerName}\'s profile, services, ratings, and reviews on BookYourService. Book trusted services today.',
+      pageType: 'how-it-works',
+      title: 'How It Works — BookYourService Home Services Made Easy',
+      description: 'Learn how BookYourService connects you with verified professionals for Plumbing, Electrical, and AC & HVAC services in just a few simple steps.',
+      keywords: 'how bookyourservice works, book home service, online service booking, plumbing booking, electrical booking, AC service booking',
+      canonicalUrl: 'https://bookyourservice.co.in/how-it-works',
+      indexed: true,
     },
     {
-      pageType: 'BOOKING',
-      title: 'My Bookings - BookYourService',
-      description: 'View and manage your bookings on BookYourService.',
+      pageType: 'about',
+      title: 'About BookYourService — India\'s Trusted Home Service Platform',
+      description: 'BookYourService connects homeowners with verified service providers for Plumbing, Electrical, and AC & HVAC services across major Indian cities. Learn about our mission and values.',
+      keywords: 'about bookyourservice, home service platform India, verified service providers, plumbing electrical HVAC marketplace',
+      canonicalUrl: 'https://bookyourservice.co.in/about',
+      indexed: true,
     },
     {
-      pageType: 'ABOUT',
-      title: 'About BookYourService - India\'s Trusted Service Marketplace',
-      description: 'Learn about BookYourService, India\'s leading online marketplace connecting customers with verified service providers for home and personal services.',
-      canonicalUrl: 'https://www.bookyourservice.co.in/about',
+      pageType: 'faq',
+      title: 'FAQ — Frequently Asked Questions | BookYourService',
+      description: 'Find answers to common questions about BookYourService including booking, payments, cancellations, and service categories — Plumbing, Electrical, and AC & HVAC.',
+      keywords: 'bookyourservice FAQ, frequently asked questions, home service questions, plumbing FAQ, electrical FAQ, AC HVAC FAQ',
+      canonicalUrl: 'https://bookyourservice.co.in/faq',
+      indexed: true,
     },
     {
-      pageType: 'CONTACT',
-      title: 'Contact Us - BookYourService',
-      description: 'Get in touch with BookYourService. Customer support, business inquiries, and partnership opportunities.',
-      canonicalUrl: 'https://www.bookyourservice.co.in/contact',
-    },
-    {
-      pageType: 'FAQ',
-      title: 'Frequently Asked Questions - BookYourService',
-      description: 'Find answers to common questions about booking, payments, cancellations, and more on BookYourService.',
-      canonicalUrl: 'https://www.bookyourservice.co.in/faq',
-      schemaMarkup: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "mainEntity": []
-      }),
-    },
-    {
-      pageType: 'TERMS',
-      title: 'Terms & Conditions - BookYourService',
-      description: 'Read the Terms and Conditions for using BookYourService platform.',
-      canonicalUrl: 'https://www.bookyourservice.co.in/legal/terms',
-    },
-    {
-      pageType: 'PRIVACY',
-      title: 'Privacy Policy - BookYourService',
-      description: 'Read our Privacy Policy to understand how BookYourService collects, uses, and protects your personal information.',
-      canonicalUrl: 'https://www.bookyourservice.co.in/legal/privacy',
+      pageType: 'contact',
+      title: 'Contact Us — BookYourService Customer Support',
+      description: 'Get in touch with BookYourService for support, queries, or feedback regarding Plumbing, Electrical, or AC & HVAC services. We\'re here to help.',
+      keywords: 'contact bookyourservice, customer support, home service help, plumbing support, electrical support, AC support',
+      canonicalUrl: 'https://bookyourservice.co.in/contact',
+      indexed: true,
     },
   ];
 
@@ -1427,131 +1414,65 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   }
 
   // ========================================
-  // 14. NOTIFICATIONS
+  // 14. PLATFORM STATS
+  // ========================================
+  console.log('📊 Creating platform stats...');
+  await db.platformStats.create({
+    data: {
+      totalVisitors: 12500,
+      totalUsers: clients.length + providers.length + 1, // clients + providers + admin
+      totalProviders: providers.length,
+      totalBookings: bookings.length,
+      totalServices: services.length,
+      activeVisitors: 42,
+    },
+  });
+
+  // ========================================
+  // 15. NOTIFICATIONS
   // ========================================
   console.log('🔔 Creating sample notifications...');
-
-  // Notifications for client Anita Desai
-  const notificationData = [
-    { userId: clients[0].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your booking for Pipe Leakage Repair has been confirmed for July 10, 2025 at 10:00 AM.', actionUrl: '/bookings/1', isRead: true },
-    { userId: clients[0].id, type: 'SERVICE_COMPLETED', title: 'Service Completed', message: 'Your Pipe Leakage Repair service has been completed. Please rate your experience!', actionUrl: '/bookings/1/review', isRead: true },
-    { userId: clients[0].id, type: 'BOOKING_PENDING', title: 'Booking Pending', message: 'Your booking for TV Wall Mounting is awaiting provider confirmation.', actionUrl: '/bookings/9', isRead: false },
-    { userId: clients[0].id, type: 'PROMO', title: 'Special Offer!', message: 'Get 20% off on all cleaning services this weekend. Use code CLEAN20 at checkout!', isRead: false },
-
-    { userId: clients[1].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your Deep Home Cleaning service has been confirmed for July 12, 2025.', actionUrl: '/bookings/2', isRead: true },
-    { userId: clients[1].id, type: 'PAYMENT_SUCCESS', title: 'Payment Successful', message: 'Payment of ₹399 has been successfully processed for your Washing Machine Repair booking.', isRead: false },
-    { userId: clients[1].id, type: 'REVIEW_REMINDER', title: 'Rate Your Experience', message: 'You recently completed a Deep Home Cleaning. Share your feedback!', isRead: false },
-
-    { userId: clients[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled', message: 'Your Fitness Training booking has been cancelled. Refund will be processed in 5-7 days.', isRead: true },
-    { userId: clients[2].id, type: 'VERIFICATION', title: 'Email Verification', message: 'Please verify your email address to access all features of your account.', actionUrl: '/verify-email', isRead: false },
-
-    { userId: clients[3].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your Switch & Socket Installation service has been confirmed.', isRead: true },
-    { userId: clients[3].id, type: 'BOOKING_IN_PROGRESS', title: 'Service In Progress', message: 'Your Home Relocation service is currently in progress. Track your provider!', actionUrl: '/bookings/11', isRead: false },
-
-    { userId: providers[0].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'You have a new booking request for TV Wall Mounting on August 10, 2025.', actionUrl: '/provider/bookings', isRead: false },
-    { userId: providers[0].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹474 has been credited to your account for the Pipe Leakage Repair service.', isRead: true },
-    { userId: providers[0].id, type: 'NEW_REVIEW', title: 'New Review', message: 'Anita Desai left a 5-star review for your Pipe Leakage Repair service!', isRead: true },
-
-    { userId: providers[1].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Washing Machine Repair service on August 12, 2025.', isRead: false },
-    { userId: providers[1].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹2,374 has been credited for the Deep Home Cleaning service.', isRead: true },
-    { userId: providers[1].id, type: 'KYC_APPROVED', title: 'KYC Approved', message: 'Your KYC verification has been approved. You can now list services on the platform.', isRead: true },
-
-    { userId: providers[2].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Car Detailing service on August 18, 2025.', isRead: false },
-    { userId: providers[2].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹1,234 has been credited for the AC Installation service.', isRead: true },
-    { userId: providers[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled by Client', message: 'Your Fitness Training booking was cancelled by the client. No action required.', isRead: true },
-
-    { userId: admin.id, type: 'NEW_PROVIDER_SIGNUP', title: 'New Provider Registration', message: 'A new provider has registered and is pending KYC verification.', isRead: false },
-    { userId: admin.id, type: 'DISPUTE_RAISED', title: 'New Dispute', message: 'A new dispute has been raised for booking BYS-1001. Review required.', isRead: false },
+  const notifications = [
+    { userId: clients[0].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your plumbing service booking has been confirmed. The provider will arrive at the scheduled time.', actionUrl: '/bookings', isRead: true, readAt: new Date('2025-07-10T09:30:00') },
+    { userId: clients[3].id, type: 'BOOKING_REMINDER', title: 'Upcoming Booking Reminder', message: 'Your AC installation service is scheduled for tomorrow at 11:00 AM. Please ensure access to the service location.', actionUrl: '/bookings', isRead: false },
+    { userId: providers[0].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'You have a new booking request for leak repair service. Please review and confirm.', actionUrl: '/provider/bookings', isRead: true, readAt: new Date('2025-08-10T10:00:00') },
+    { userId: providers[1].id, type: 'PAYMENT_RECEIVED', title: 'Payment Update', message: 'Payment for the recent light fixture installation service has been confirmed by the client.', actionUrl: '/provider/earnings', isRead: false },
+    { userId: clients[1].id, type: 'REVIEW_REQUEST', title: 'Rate Your Experience', message: 'How was your light fixture installation? Please take a moment to rate and review the service.', actionUrl: '/reviews', isRead: false },
+    { userId: clients[7].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled', message: 'Your smart home setup booking has been cancelled by the provider. A refund will be processed if applicable.', actionUrl: '/bookings', isRead: true, readAt: new Date('2025-07-21T18:30:00') },
+    { userId: providers[2].id, type: 'KYC_APPROVED', title: 'KYC Verification Approved', message: 'Your KYC verification has been approved. You can now list services and start receiving bookings.', actionUrl: '/provider/profile', isRead: true, readAt: new Date('2025-01-15T12:00:00') },
+    { userId: clients[5].id, type: 'PROMOTION', title: 'Special Offer on Plumbing Services', message: 'Get 15% off on all plumbing services this month! Book now and save on leak repairs, drain cleaning, and more.', actionUrl: '/category/plumbing', isRead: false },
   ];
 
-  for (const notif of notificationData) {
-    await db.notification.create({
-      data: {
-        ...notif,
-        readAt: notif.isRead ? new Date() : null,
-      },
-    });
-  }
-
-  // ========================================
-  // ADMIN LOGS
-  // ========================================
-  console.log('📋 Creating admin logs...');
-  const adminLogData = [
-    { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[0].id, details: JSON.stringify({ providerName: 'Rajesh Kumar', documentType: 'AADHAAR' }) },
-    { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[1].id, details: JSON.stringify({ providerName: 'Priya Sharma', documentType: 'PAN' }) },
-    { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[2].id, details: JSON.stringify({ providerName: 'Arun Patel', documentType: 'DRIVING_LICENSE' }) },
-    { adminId: admin.id, action: 'APPROVE_SERVICE', targetType: 'SERVICE', details: JSON.stringify({ serviceName: 'Professional Pipe Leakage Repair' }) },
-    { adminId: admin.id, action: 'APPROVE_SERVICE', targetType: 'SERVICE', details: JSON.stringify({ serviceName: 'Deep Home Cleaning' }) },
-    { adminId: admin.id, action: 'BLOCK_USER', targetType: 'USER', targetId: clients[4].id, details: JSON.stringify({ reason: 'Fraudulent activity detected', userName: 'Kavita Joshi' }) },
-    { adminId: admin.id, action: 'UPDATE_FAQ', targetType: 'FAQ', details: JSON.stringify({ action: 'Created 22 FAQs' }) },
-    { adminId: admin.id, action: 'UPDATE_LEGAL_PAGE', targetType: 'LEGAL_PAGE', details: JSON.stringify({ pagesUpdated: ['TERMS', 'PRIVACY', 'REFUND', 'COOKIES'] }) },
-  ];
-
-  for (const log of adminLogData) {
-    await db.adminLog.create({ data: log });
-  }
-
-  // ========================================
-  // FAVORITES
-  // ========================================
-  console.log('❤️ Creating sample favorites...');
-  const favoriteData = [
-    { userId: clients[0].id, serviceId: services[3].id },
-    { userId: clients[0].id, serviceId: services[6].id },
-    { userId: clients[1].id, serviceId: services[0].id },
-    { userId: clients[1].id, serviceId: services[10].id },
-    { userId: clients[3].id, serviceId: services[7].id },
-    { userId: clients[3].id, serviceId: services[17].id },
-  ];
-
-  for (const fav of favoriteData) {
-    await db.favorite.create({ data: fav });
-  }
-
-  // ========================================
-  // CONTACT MESSAGES
-  // ========================================
-  console.log('📩 Creating sample contact messages...');
-  const contactMessages = [
-    { name: 'Rahul Verma', email: 'rahul.verma@gmail.com', subject: 'Partnership Inquiry', message: 'I run a chain of salons in Delhi NCR and would like to explore listing our services on BookYourService. Please share the partnership details and onboarding process.', isRead: true },
-    { name: 'Sunita Devi', email: 'sunita.devi@gmail.com', subject: 'Service Not Satisfactory', message: 'I booked a deep cleaning service on July 12th but the cleaning was not up to the mark. The bathroom was not cleaned properly and there were areas that were completely missed. I would like to raise a complaint.', isRead: false },
-    { name: 'Amitabh Patel', email: 'amitabh.p@corporate.com', subject: 'Corporate Account Setup', message: 'We are a company with 500+ employees looking for corporate service packages for home maintenance. Can you provide bulk booking options and corporate pricing?', isRead: false },
-  ];
-
-  for (const cm of contactMessages) {
-    await db.contactMessage.create({ data: cm });
+  for (const notif of notifications) {
+    await db.notification.create({ data: notif });
   }
 
   // ========================================
   // SUMMARY
   // ========================================
-  console.log('\n✅ Database seeding completed successfully!');
-  console.log('\n📊 Summary:');
-  console.log(`   Roles: 3`);
-  console.log(`   Service Categories: ${categoryData.length}`);
-  console.log(`   Subcategories: ${Object.values(subcategoryData).flat().length}`);
-  console.log(`   Admin Users: 1`);
-  console.log(`   Providers: ${providers.length}`);
-  console.log(`   Clients: ${clients.length}`);
-  console.log(`   Services: ${services.length}`);
-  console.log(`   Bookings: ${bookings.length}`);
-  console.log(`   Reviews: ${reviewData.length}`);
-  console.log(`   FAQs: ${faqData.length}`);
-  console.log(`   Legal Pages: 4`);
-  console.log(`   Revenue Streams: ${revenueStreamData.length}`);
-  console.log(`   SEO Metadata: ${seoData.length}`);
-  console.log(`   Notifications: ${notificationData.length}`);
-  console.log(`   Admin Logs: ${adminLogData.length}`);
-  console.log(`   Favorites: ${favoriteData.length}`);
-  console.log(`   Contact Messages: ${contactMessages.length}`);
-  console.log('\n🔐 Login Credentials:');
-  console.log('   Admin:    admin@bookyourservice.co.in / admin123');
-  console.log('   Provider: rajesh.kumar@gmail.com / provider123');
-  console.log('   Provider: priya.sharma@gmail.com / provider123');
-  console.log('   Provider: arun.patel@gmail.com / provider123');
-  console.log('   Client:   anita.desai@gmail.com / client123');
-  console.log('   Client:   vikram.singh@gmail.com / client123');
+  console.log('\n');
+  console.log('========================================');
+  console.log('📊 SEED DATA SUMMARY');
+  console.log('========================================');
+  console.log(`Roles: 3 (CLIENT, PROVIDER, ADMIN)`);
+  console.log(`Categories: 3 (Plumbing, Electrical, AC & HVAC)`);
+  console.log(`Subcategories: 30 (10 per category)`);
+  console.log(`Admin User: 1 (admin@bookyourservice.co.in / admin123)`);
+  console.log(`Providers: ${providers.length} (Delhi, Mumbai, Bengaluru, Hyderabad, Chennai) — All KYC APPROVED`);
+  console.log(`Clients: ${clients.length} (various statuses: ACTIVE, PENDING, BLOCKED, SUSPENDED)`);
+  console.log(`Services: ${services.length} (across 3 categories, all active & approved)`);
+  console.log(`Service Availability Slots: ${services.length * 6} (Mon-Fri 9AM-7PM, Sat 9AM-3PM)`);
+  console.log(`Bookings: ${bookings.length}`);
+  console.log(`Reviews: ${Math.min(completedBookings.length, reviewData.length)}`);
+  console.log(`FAQs: ${faqData.length}`);
+  console.log(`Legal Pages: 4 (Terms, Privacy, Refund, Cookies)`);
+  console.log(`Revenue Streams: ${revenueStreamData.length}`);
+  console.log(`SEO Metadata: ${seoData.length}`);
+  console.log(`Notifications: ${notifications.length}`);
+  console.log(`PlatformStats: 1 record`);
+  console.log('========================================');
+  console.log('✅ Database seeding completed successfully!');
+  console.log('========================================\n');
 }
 
 main()

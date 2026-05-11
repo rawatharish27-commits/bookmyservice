@@ -34,7 +34,6 @@ import {
   CalendarCheck,
   LayoutDashboard,
   HelpCircle,
-  Info,
   Phone,
   Shield,
   Users,
@@ -46,6 +45,10 @@ import {
   Heart,
   Settings,
   ChevronRight,
+  LogIn,
+  Droplets,
+  Zap,
+  Wind,
 } from 'lucide-react';
 
 interface NavLink {
@@ -59,10 +62,11 @@ function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
   if (!role) {
     return [
       { label: 'Home', page: 'home', icon: <Home className="size-4" /> },
-      { label: 'Categories', page: 'categories', icon: <Grid3X3 className="size-4" /> },
-      { label: 'How It Works', page: 'how-it-works', icon: <Info className="size-4" /> },
-      { label: 'FAQ', page: 'faq', icon: <HelpCircle className="size-4" /> },
-      { label: 'About', page: 'about', icon: <Info className="size-4" /> },
+      { label: 'Services', page: 'categories', icon: <Grid3X3 className="size-4" /> },
+      { label: 'Plumbing', page: 'categories', icon: <Droplets className="size-4" /> },
+      { label: 'Electrical', page: 'categories', icon: <Zap className="size-4" /> },
+      { label: 'AC & HVAC', page: 'categories', icon: <Wind className="size-4" /> },
+      { label: 'How It Works', page: 'how-it-works', icon: <HelpCircle className="size-4" /> },
       { label: 'Contact', page: 'contact', icon: <Phone className="size-4" /> },
     ];
   }
@@ -91,7 +95,7 @@ function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
   // Client
   return [
     { label: 'Home', page: 'home', icon: <Home className="size-4" /> },
-    { label: 'Categories', page: 'categories', icon: <Grid3X3 className="size-4" /> },
+    { label: 'Services', page: 'categories', icon: <Grid3X3 className="size-4" /> },
     { label: 'My Bookings', page: 'client-bookings', icon: <CalendarCheck className="size-4" /> },
     { label: 'Dashboard', page: 'client-dashboard', icon: <LayoutDashboard className="size-4" /> },
     { label: 'Notifications', page: 'client-notifications', icon: <Bell className="size-4" />, badge: unreadCount },
@@ -205,9 +209,9 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
-          {links.map((link) => (
+          {links.map((link, idx) => (
             <button
-              key={link.page}
+              key={`${link.page}-${idx}`}
               onClick={() => handleNavigate(link.page)}
               className={`relative inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
                 isActive(link.page)
@@ -311,9 +315,10 @@ export function Header() {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleNavigate('login')}
-                className="text-sm"
+                className="gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-800"
               >
-                Log in
+                <LogIn className="size-4" />
+                Client Login
               </Button>
               <Button
                 size="sm"
@@ -366,8 +371,8 @@ export function Header() {
 
               {/* Mobile Nav Links */}
               <nav className="flex flex-col px-2 py-2" aria-label="Mobile navigation">
-                {links.map((link) => (
-                  <SheetClose asChild key={link.page}>
+                {links.map((link, idx) => (
+                  <SheetClose asChild key={`${link.page}-${idx}`}>
                     <button
                       onClick={() => handleNavigate(link.page)}
                       className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
@@ -430,16 +435,17 @@ export function Header() {
                   <div className="flex flex-col gap-2">
                     <SheetClose asChild>
                       <Button
-                        variant="outline"
-                        className="w-full"
+                        className="w-full gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
                         onClick={() => handleNavigate('login')}
                       >
-                        Log in
+                        <LogIn className="size-4" />
+                        Client Login
                       </Button>
                     </SheetClose>
                     <SheetClose asChild>
                       <Button
-                        className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+                        variant="outline"
+                        className="w-full"
                         onClick={() => handleNavigate('register')}
                       >
                         Sign up

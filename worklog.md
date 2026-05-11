@@ -1,48 +1,106 @@
-# Worklog - BookYourService Platform
+---
+Task ID: 1
+Agent: Main Agent
+Task: Update Prisma schema with Visitor and PlatformStats models
 
-## Task 1: Prisma Schema Setup
-**Status**: COMPLETED
-- Created comprehensive Prisma schema with 20+ models (Users, Roles, ProviderKyc, ServiceCategory, ServiceSubcategory, Service, ServiceAvailability, Booking, Payment, Review, Negotiation, Dispute, DisputeMessage, Notification, Faq, LegalPage, SeoMetadata, RevenueStream, AdminLog, Favorite, ContactMessage)
-- Database pushed and Prisma client generated successfully
+Work Log:
+- Added VisitorSession model for real-time visitor tracking
+- Added PlatformStats model for aggregated platform statistics
+- Ran bun run db:push to sync schema with database
 
-## Task 2: Seed Data
-**Status**: COMPLETED
-- Created production-grade seed script with 26 categories, 107 subcategories, 3 providers, 5 clients, 18 services, 14 bookings, 9 reviews, 22 FAQs, 4 legal pages, 56 revenue streams, 11 SEO metadata, 22 notifications, 6 favorites
-- Login credentials: admin@bookyourservice.co.in/admin123, client123, provider123
+Stage Summary:
+- Two new models added: VisitorSession, PlatformStats
+- Database schema is in sync
 
-## Task 3-6: API Routes
-**Status**: COMPLETED
-- Created 55 API route files across 16 groups
-- JWT auth with jose library, auth middleware helpers
-- Full CRUD for all resources with proper validation and error handling
+---
+Task ID: 2
+Agent: Subagent (full-stack-developer)
+Task: Rewrite seed file with ONLY 3 categories and their specific subcategories
 
-## Task 7: Layout & Navigation
-**Status**: COMPLETED
-- Created Header with role-based nav, mobile hamburger menu, notification bell, user dropdown
-- Created Footer with 4-column layout, sticky-to-bottom
-- Updated page.tsx with AuthProvider + AppProvider
+Work Log:
+- Completely rewrote prisma/seed.ts with only 3 categories
+- Created 5 providers with KYC APPROVED across 5 Indian cities
+- Created 8 client users with various statuses
+- Created 14 services across 3 categories
+- Added comprehensive legal pages with full company liability protection
+- Added FAQ data updated for only 3 categories
 
-## Task 8+13: Public Pages
-**Status**: COMPLETED
-- Created 10 public page components: HomePage, CategoriesPage, CategoryDetailPage, ServiceDetailPage, SearchPage, AboutPage, HowItWorksPage, FaqPage, ContactPage, LegalPage
-- Hero section with AI-generated illustration
-- Categories from API, featured services from API, testimonials, trust badges
+Stage Summary:
+- 3 categories: Plumbing (Droplets), Electrical (Zap), AC & HVAC (Wind)
+- 30 subcategories (10 per category)
+- 14 services, 5 providers, 8 clients
+- 4 comprehensive legal pages protecting company from all liability
 
-## Task 9-10: Auth & Client Pages
-**Status**: COMPLETED
-- Created 11 page components: LoginPage, RegisterPage, ClientDashboardPage, ClientBookingsPage, ClientBookingDetailPage, ClientProfilePage, ClientReviewsPage, ClientFavoritesPage, ClientNotificationsPage, BookingPage, BookingConfirmationPage
-- Full booking wizard with date/time selection, price negotiation support
+---
+Task ID: 3
+Agent: Subagent (full-stack-developer)
+Task: Create real-time stats API routes
 
-## Task 11-12: Provider & Admin Pages
-**Status**: COMPLETED
-- Created 19 page components: ProviderDashboardPage, ProviderServicesPage, ProviderCreateServicePage, ProviderBookingsPage, ProviderBookingDetailPage, ProviderEarningsPage, ProviderReviewsPage, ProviderProfilePage, ProviderKycPage
-- Admin: DashboardPage, UsersPage, UserDetailPage, ServicesPage, BookingsPage, DisputesPage, CategoriesPage, FaqPage, RevenuePage, LogsPage
+Work Log:
+- Created /api/stats/visitor (POST for tracking, GET for stats)
+- Created /api/stats/platform (GET for real-time platform stats)
+- Created /api/stats/cleanup (POST for inactive visitor cleanup)
 
-## Task 14: Final Polish
-**Status**: COMPLETED
-- Fixed auth context to handle accessToken field from API
-- All pages integrated into SPA router in page.tsx
-- Lint passes with 0 errors
-- All API endpoints verified working
-- SEO metadata configured in layout.tsx
-- Generated hero illustration using AI image generation
+Stage Summary:
+- All stats APIs working with real database data
+- No mock/fake data anywhere
+
+---
+Task ID: 4
+Agent: Subagent (full-stack-developer)
+Task: Create WebSocket mini-service for real-time stats
+
+Work Log:
+- Created stats-service on port 3003 with Socket.io
+- Broadcasts stats every 5 seconds
+- Tracks connected clients for real-time visitor count
+
+Stage Summary:
+- WebSocket service running on port 3003
+- Frontend connects via io("/?XTransformPort=3003")
+
+---
+Task ID: 5
+Agent: Subagent (full-stack-developer)
+Task: Rebuild home page with attractive UI
+
+Work Log:
+- Completely rewrote home-page.tsx with modern design
+- Added WebSocket + REST API fallback for real-time stats
+- Added visitor tracking with heartbeat
+- Hero with animated service icons, Client Login button
+- Live stats bar, category cards, how it works, featured services, provider CTA
+
+Stage Summary:
+- Attractive UI with real-time stats
+- No hardcoded data - all from APIs
+- Client Login prominently featured
+
+---
+Task ID: 7
+Agent: Subagent (full-stack-developer)
+Task: Update header, footer, categories page
+
+Work Log:
+- Footer: only 3 service links, Indian contact info
+- Header: category nav items, prominent Client Login
+- Categories page: 3 large attractive cards
+
+Stage Summary:
+- All references to other categories removed
+- Only Plumbing, Electrical, AC & HVAC shown
+
+---
+Task ID: 8
+Agent: Subagent (full-stack-developer)
+Task: Update login/register pages
+
+Work Log:
+- Login: Client/Provider tabs, Client default
+- Register: Client/Provider tabs with specialization
+- Auth context fix for role string
+- Gradient design with framer-motion
+
+Stage Summary:
+- Client Login prominently displayed
+- Tab-based login for Client vs Provider
