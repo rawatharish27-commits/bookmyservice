@@ -152,7 +152,7 @@ function AnimatedCounter({ value, loading, className = '' }: { value: number; lo
     requestAnimationFrame(animate);
   }, [value, loading]);
 
-  if (loading) return <Skeleton className={`h-7 w-16 ${className}`} />;
+  if (loading) return <span className={`inline-block h-7 w-16 animate-pulse rounded-md bg-accent ${className}`} />;
   return <span className={className}>{display.toLocaleString()}</span>;
 }
 
@@ -615,28 +615,38 @@ export function HomePage() {
             transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
           />
           {/* Particle-like dots animation */}
-          {Array.from({ length: 20 }).map((_, i) => (
+          {Array.from({ length: 20 }).map((_, i) => {
+            // Deterministic pseudo-random values based on index to avoid hydration mismatch
+            const seed = (i * 2654435761) >>> 0;
+            const w = 2 + (seed % 300) / 100;
+            const h = 2 + ((seed * 7) % 300) / 100;
+            const l = (seed * 13) % 100;
+            const t = (seed * 17) % 100;
+            const dur = 2 + (seed % 300) / 100;
+            const del = (seed * 3 % 300) / 100;
+            return (
             <motion.div
               key={`particle-${i}`}
               className="absolute rounded-full bg-white/[0.15]"
               style={{
-                width: `${2 + Math.random() * 3}px`,
-                height: `${2 + Math.random() * 3}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                width: `${w}px`,
+                height: `${h}px`,
+                left: `${l}%`,
+                top: `${t}%`,
               }}
               animate={{
                 opacity: [0, 0.6, 0],
                 scale: [0.5, 1, 0.5],
               }}
               transition={{
-                duration: 2 + Math.random() * 3,
+                duration: dur,
                 repeat: Infinity,
-                delay: Math.random() * 3,
+                delay: del,
                 ease: 'easeInOut',
               }}
             />
-          ))}
+            );
+          })}
           {/* Grid pattern overlay */}
           <div
             className="absolute inset-0 opacity-[0.04]"
@@ -1269,28 +1279,38 @@ export function HomePage() {
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           />
           {/* Particle dots */}
-          {Array.from({ length: 12 }).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => {
+            // Deterministic pseudo-random values based on index to avoid hydration mismatch
+            const seed = ((i + 50) * 2654435761) >>> 0;
+            const w = 2 + (seed % 200) / 100;
+            const h = 2 + ((seed * 7) % 200) / 100;
+            const l = (seed * 13) % 100;
+            const t = (seed * 17) % 100;
+            const dur = 2 + (seed % 300) / 100;
+            const del = (seed * 3 % 300) / 100;
+            return (
             <motion.div
               key={`cta-particle-${i}`}
               className="absolute rounded-full bg-white/[0.12]"
               style={{
-                width: `${2 + Math.random() * 2}px`,
-                height: `${2 + Math.random() * 2}px`,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                width: `${w}px`,
+                height: `${h}px`,
+                left: `${l}%`,
+                top: `${t}%`,
               }}
               animate={{
                 opacity: [0, 0.5, 0],
                 scale: [0.5, 1, 0.5],
               }}
               transition={{
-                duration: 2 + Math.random() * 3,
+                duration: dur,
                 repeat: Infinity,
-                delay: Math.random() * 3,
+                delay: del,
                 ease: 'easeInOut',
               }}
             />
-          ))}
+            );
+          })}
           {/* Grid pattern */}
           <div
             className="absolute inset-0 opacity-[0.03]"

@@ -1003,3 +1003,22 @@ Stage Summary:
 - Dev server: Compiling successfully, all APIs returning 200
 - Footer links properly navigate to all legal pages
 - Register page legal links navigate correctly
+
+---
+Task ID: fix-hydration-errors
+Agent: Main Agent
+Task: Fix HTML nesting error (<div> in <p>) and hydration mismatch (Math.random) errors
+
+Work Log:
+- Fixed AnimatedCounter component in home-page.tsx: Changed loading state from <Skeleton> (renders <div>) to <span> with inline-block + animate-pulse, so it's valid inside <p> tags
+- Fixed Math.random() hydration mismatch in home-page.tsx hero section: Replaced 20 particle dots with deterministic pseudo-random values using hash-based seed (i * 2654435761) >>> 0
+- Fixed Math.random() hydration mismatch in home-page.tsx provider CTA section: Same deterministic approach for 12 CTA particle dots
+- Fixed Math.random() hydration mismatch in booking-confirmation-page.tsx: Replaced ConfettiParticle random values with deterministic seed-based values
+- All Math.random() calls removed from all .tsx component files
+- Lint: Clean, no errors
+- Dev server: Compiling successfully with no hydration or nesting errors
+
+Stage Summary:
+- HTML nesting error resolved: <span> elements now used inside <p> tags instead of <div>
+- Hydration mismatch resolved: All Math.random() replaced with deterministic pseudo-random values
+- No remaining console errors

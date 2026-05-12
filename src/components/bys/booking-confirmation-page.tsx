@@ -41,19 +41,25 @@ interface BookingData {
 }
 
 // Confetti particles
-function ConfettiParticle({ delay, x }: { delay: number; x: number }) {
+function ConfettiParticle({ delay, x, index }: { delay: number; x: number; index: number }) {
   const colors = ['#10b981', '#14b8a6', '#06b6d4', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
-  const color = colors[Math.floor(Math.random() * colors.length)];
+  const color = colors[index % colors.length];
+  // Deterministic pseudo-random values based on index to avoid hydration mismatch
+  const seed = (index * 2654435761) >>> 0;
+  const yAnim = -200 - (seed % 200);
+  const xAnim = x + ((seed * 7 % 400) - 200);
+  const rotate = seed % 720;
+  const dur = 1.5 + (seed % 100) / 100;
   return (
     <motion.div
       initial={{ opacity: 1, y: 0, x: 0, rotate: 0 }}
       animate={{
         opacity: 0,
-        y: -200 - Math.random() * 200,
-        x: x + (Math.random() - 0.5) * 200,
-        rotate: Math.random() * 720,
+        y: yAnim,
+        x: xAnim,
+        rotate: rotate,
       }}
-      transition={{ duration: 1.5 + Math.random(), delay, ease: 'easeOut' }}
+      transition={{ duration: dur, delay, ease: 'easeOut' }}
       className="absolute size-2 rounded-full"
       style={{ backgroundColor: color }}
     />
@@ -90,9 +96,13 @@ function SuccessCheckmark() {
         </motion.div>
       </motion.div>
       {/* Confetti */}
-      {Array.from({ length: 12 }).map((_, i) => (
-        <ConfettiParticle key={i} delay={0.4 + i * 0.05} x={(Math.random() - 0.5) * 100} />
-      ))}
+      {Array.from({ length: 12 }).map((_, i) => {
+        const seed = ((i + 30) * 2654435761) >>> 0;
+        const xPos = ((seed * 13) % 200) - 100;
+        return (
+          <ConfettiParticle key={i} delay={0.4 + i * 0.05} x={xPos} index={i} />
+        );
+      })}
     </div>
   );
 }
