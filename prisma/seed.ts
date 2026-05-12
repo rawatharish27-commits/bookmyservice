@@ -1,9 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '../src/lib/password';
 
 const db = new PrismaClient();
-
-const SALT_ROUNDS = 10;
 
 async function main() {
   console.log('🌱 Starting database seeding...');
@@ -126,7 +124,7 @@ async function main() {
   // 4. ADMIN USER
   // ========================================
   console.log('👤 Creating admin user...');
-  const adminPasswordHash = await bcrypt.hash('admin123', SALT_ROUNDS);
+  const adminPasswordHash = await hashPassword('admin123');
   const admin = await db.user.create({
     data: {
       email: 'admin@bookyourservice.co.in',
@@ -149,7 +147,7 @@ async function main() {
   // 5. SERVICE PROVIDERS (5 providers - major Indian cities)
   // ========================================
   console.log('👷 Creating service providers...');
-  const providerPasswordHash = await bcrypt.hash('provider123', SALT_ROUNDS);
+  const providerPasswordHash = await hashPassword('provider123');
 
   const providers: any[] = [];
   const providerInfos = [
@@ -284,7 +282,7 @@ async function main() {
   // 6. CLIENT USERS (8 clients with various statuses)
   // ========================================
   console.log('👥 Creating client users...');
-  const clientPasswordHash = await bcrypt.hash('client123', SALT_ROUNDS);
+  const clientPasswordHash = await hashPassword('client123');
   const clients: any[] = [];
   const clientInfos = [
     { name: 'Anita Desai', email: 'anita.desai@gmail.com', phone: '+919912345670', status: 'ACTIVE', city: 'Hyderabad', state: 'Telangana', country: 'India', pincode: '500001', address: '23, Banjara Hills, Hyderabad', latitude: 17.4156, longitude: 78.4489, emailVerified: true, phoneVerified: true },

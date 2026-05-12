@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+import { verifyPassword } from '@/lib/password';
 import { signAccessToken, signRefreshToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -28,8 +28,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify password
-    const isValid = await bcrypt.compare(password, user.passwordHash);
+    // Verify password (WebCrypto PBKDF2, Cloudflare-compatible)
+    const isValid = await verifyPassword(password, user.passwordHash);
     if (!isValid) {
       return NextResponse.json(
         { error: 'Invalid email or password' },

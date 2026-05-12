@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+import { hashPassword } from '@/lib/password';
 import { signAccessToken, signRefreshToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
@@ -43,8 +43,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 12);
+    // Hash password (WebCrypto PBKDF2, Cloudflare-compatible)
+    const passwordHash = await hashPassword(password);
 
     // Create user
     const user = await db.user.create({

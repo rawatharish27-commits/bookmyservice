@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import bcrypt from 'bcryptjs';
+import { verifyPassword, hashPassword } from '@/lib/password';
 import { requireAuth } from '@/lib/middleware';
 
 export async function POST(request: NextRequest) {
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    const isValid = await bcrypt.compare(currentPassword, dbUser.passwordHash);
+    const isValid = await verifyPassword(currentPassword, dbUser.passwordHash);
     if (!isValid) {
       return NextResponse.json(
         { error: 'Current password is incorrect' },
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+    const newPasswordHash = await hashPassword(newPassword);
     await db.user.update({
       where: { id: user.userId },
       data: { passwordHash: newPasswordHash },
