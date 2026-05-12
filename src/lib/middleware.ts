@@ -1,9 +1,8 @@
-import { NextRequest } from 'next/server';
 import { verifyToken, TokenPayload } from './auth';
 
 export type AuthUser = TokenPayload;
 
-export async function getAuthUser(request: NextRequest): Promise<AuthUser | null> {
+export async function getAuthUser(request: Request): Promise<AuthUser | null> {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader?.startsWith('Bearer ')) {
     return null;
@@ -13,7 +12,7 @@ export async function getAuthUser(request: NextRequest): Promise<AuthUser | null
   return verifyToken(token);
 }
 
-export function requireAuth(request: NextRequest): Promise<AuthUser> {
+export function requireAuth(request: Request): Promise<AuthUser> {
   return getAuthUser(request).then((user) => {
     if (!user) {
       throw new Error('UNAUTHORIZED');

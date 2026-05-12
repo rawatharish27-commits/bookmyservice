@@ -1064,3 +1064,103 @@ Stage Summary:
 - Provider service creation enforces ₹199-₹499 ✅
 - Cloudflare deployment config ready (wrangler.jsonc, open-next.config.ts) ✅
 - Build commands: `bun run build:cf` → `bun run deploy:cf` ✅
+
+---
+Task ID: 1
+Agent: Vite Setup Agent
+Task: Set up Vite + React + Tailwind project structure
+
+Work Log:
+- Removed Next.js packages: next, next-auth, next-intl, next-themes, @opennextjs/cloudflare, @mdxeditor/editor, eslint-config-next, sharp, @prisma/adapter-d1
+- Installed Vite packages: vite@8.0.12, @vitejs/plugin-react@6.0.1, vite-plugin-pwa@1.3.0, @tailwindcss/vite@4.3.0
+- Installed ESLint packages for Vite: @eslint/js, typescript-eslint, eslint-plugin-react-hooks, eslint-plugin-react-refresh
+- Created vite.config.ts with React, Tailwind CSS v4, PWA plugins, path alias, manual chunks, port 3000
+- Created index.html at project root with Inter, Geist, Geist Mono fonts from Google Fonts, CSS variables for font-geist-sans/font-geist-mono, PWA manifest link
+- Created src/main.tsx as Vite entry point rendering App into #root
+- Created src/App.tsx migrated from src/app/page.tsx with same AppRouter switch/case logic, AuthProvider > AppProvider wrapping, Toaster component
+- Updated package.json: name→bookyourservice, scripts changed to vite/vite build/vite preview
+- Updated tsconfig.json: target ES2020, module ESNext, moduleResolution bundler, jsx react-jsx, removed Next.js plugin/includes, added vite.config.ts to includes, added dist to excludes
+- Created public/manifest.json for PWA
+- Moved globals.css from src/app/ to src/
+- Removed Next.js files: src/app/ directory (entire app router), next.config.ts, open-next.config.ts, postcss.config.mjs, tailwind.config.ts, .next/ directory
+- Updated eslint.config.mjs for Vite/React (removed Next.js plugins, added react-hooks and react-refresh plugins)
+- Fixed manualChunks to use function format (Vite 8/Rolldown requirement, object format caused TypeError)
+- Build test: bun run build succeeded in 911ms
+  - Output: 287.76 KB CSS, ~1.1 MB JS split across vendor (259.70 KB), ui (150.39 KB), index (701.77 KB) chunks
+  - PWA service worker generated with 10 precache entries
+  - Chunk size warning for index bundle (expected for large SPA)
+
+Stage Summary:
+- Vite + React + Tailwind CSS v4 project structure fully set up
+- Build succeeds with proper code splitting (vendor/ui/charts/index)
+- All 30+ page components preserved in src/components/bys/
+- All contexts, hooks, lib preserved
+- API routes removed (were in src/app/api/) - need separate backend service
+- Components still import from 'next/*' - need migration in next step
+- 'use client' directives harmless but unnecessary in Vite
+
+---
+Task ID: 3
+Agent: Component Migration Agent
+Task: Fix Next.js imports in components for Vite compatibility
+
+Work Log:
+- Searched all .tsx/.ts files in src/ for 'use client' directives — found 83 files with single or double quoted variants
+- Removed ALL 'use client' directives using sed across all source files (45 single-quoted, 39 double-quoted)
+- Cleaned up leading blank lines left behind after 'use client' removal
+- Searched for all Next.js-specific imports: found only 2 files:
+  1. src/lib/middleware.ts — imported `NextRequest` from 'next/server'
+  2. src/components/ui/sonner.tsx — imported `useTheme` from 'next-themes'
+- Fixed middleware.ts: replaced `NextRequest` with standard `Request` type (same API surface — .headers.get() works identically)
+- Fixed sonner.tsx: replaced `useTheme` from 'next-themes' with native `window.matchMedia('(prefers-color-scheme: dark)')` for system theme detection
+- Verified NO Next.js router imports (useRouter, usePathname) exist — components already use useApp().navigate()
+- Verified NO Next.js Image/Link imports exist — components already use native <img> and <a> tags
+- Verified auth-context.tsx uses only standard fetch() — no next/* imports
+- Searched entire src/ for remaining 'next' string references — all are benign (UI text like "Go to next page", variable name `next` in home-page.tsx, comment in sonner.tsx)
+- Build verification: `bun run build` succeeds in ~930ms, producing dist/ output with proper chunking
+- Lint: 7 pre-existing errors unrelated to migration (React hooks best practices warnings in carousel, sidebar, use-api, use-mobile, admin pages)
+
+Stage Summary:
+- ALL 'use client' directives removed (83 files)
+- ALL Next.js imports replaced:
+  - middleware.ts: NextRequest → Request
+  - sonner.tsx: useTheme from next-themes → native matchMedia
+- No Next.js Image, Link, useRouter, usePathname imports found (already migrated)
+- Build succeeds cleanly with Vite
+- Project is fully Vite-compatible with zero Next.js dependencies in src/
+
+---
+Task ID: 5
+Agent: Cloudflare Functions Developer
+Task: Create Cloudflare Pages Functions to replace Next.js API routes
+
+Work Log:
+- Created 52 Cloudflare Pages Functions files in functions/ directory
+- Shared utilities: types.ts, _shared/db.ts (D1 helpers), _shared/auth.ts (WebCrypto JWT), _shared/response.ts, _shared/password.ts (PBKDF2-SHA512)
+- Middleware: _middleware.ts for CORS headers and OPTIONS preflight
+- Auth API: login, register, profile (GET/PATCH), change-password (4 files)
+- Services API: index (GET list/POST create), [id] (GET/PATCH/DELETE), search, [id]/reviews, [id]/availability, [id]/approve (6 files)
+- Categories API: index (with subcategories), [id], subcategories/index (3 files)
+- Bookings API: index (GET/POST), [id], [id]/accept, reject, start, complete, cancel (7 files)
+- Stats API: platform, visitor (2 files)
+- Reviews API: index (GET/POST), [id] (PUT/DELETE) (2 files)
+- Legal API: index, [type] (2 files)
+- FAQ API: index (1 file)
+- Contact API: index (1 file)
+- Favorites API: index (GET/POST), [serviceId] (DELETE) (2 files)
+- Notifications API: index (GET/PATCH), [id]/read (2 files)
+- KYC API: status, submit (2 files)
+- Admin API: dashboard, users/index, users/[userId], bookings, services, categories, revenue, logs, faq/index, faq/[faqId] (10 files)
+- Disputes API: index, [disputeId] (2 files)
+- Fixed missing queryOne imports in favorites/index.ts, bookings/index.ts, reviews/index.ts
+- Removed unused hashPassword import from auth/profile.ts
+- Verified all frontend API endpoints are covered
+
+Stage Summary:
+- 52 function files created covering all API routes the frontend uses
+- WebCrypto-based JWT (HS256) for edge runtime compatibility
+- PBKDF2-SHA512 password hashing with bcrypt backward compatibility
+- Parameterized SQL queries throughout for SQL injection prevention
+- Role-based access control (CLIENT, PROVIDER, ADMIN) on all protected endpoints
+- CORS middleware handles preflight and response headers globally
+

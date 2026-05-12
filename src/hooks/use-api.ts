@@ -1,6 +1,4 @@
-'use client';
-
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 
 export function useApi<T>(url: string | null, options?: RequestInit) {
@@ -8,6 +6,7 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
+  const optionsRef = useRef(options);
 
   const fetchData = useCallback(async () => {
     if (!url) {
@@ -19,12 +18,12 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        ...(options?.headers as Record<string, string>),
+        ...(optionsRef.current?.headers as Record<string, string>),
       };
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      const res = await fetch(url, { ...options, headers });
+      const res = await fetch(url, { ...optionsRef.current, headers });
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');
@@ -35,7 +34,7 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
     } finally {
       setLoading(false);
     }
-  }, [url, token, JSON.stringify(options)]);
+  }, [url, token]);
 
   useEffect(() => {
     fetchData();

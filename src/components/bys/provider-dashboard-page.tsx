@@ -1,5 +1,3 @@
-'use client';
-
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';

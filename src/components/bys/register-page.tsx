@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useMemo } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';

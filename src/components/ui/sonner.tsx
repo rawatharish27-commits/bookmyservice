@@ -1,10 +1,10 @@
-"use client"
-
-import { useTheme } from "next-themes"
 import { Toaster as Sonner, ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
+  // Use system theme preference for Vite (no next-themes dependency)
+  const theme = typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? "dark"
+    : "light"
 
   return (
     <Sonner

@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

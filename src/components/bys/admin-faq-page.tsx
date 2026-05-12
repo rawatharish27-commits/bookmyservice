@@ -1,5 +1,3 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useApiMutation } from '@/hooks/use-api';

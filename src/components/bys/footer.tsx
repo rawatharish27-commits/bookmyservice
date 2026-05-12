@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { useApp, type Page } from '@/contexts/app-context';
 import { Input } from '@/components/ui/input';
