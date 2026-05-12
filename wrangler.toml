@@ -1,16 +1,4 @@
 #:schema node_modules/wrangler/config-schema.json
 name = "bookyourservice"
 compatibility_date = "2025-04-01"
-compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
-
-[vars]
-JWT_SECRET = "bys-dev-secret-key-change-in-production-2024"
-
-# Cloudflare D1 Database binding
-# Run: npx wrangler d1 create bookyourservice-db
-# Then paste the database_id below
-[[d1_databases]]
-binding = "DB"
-database_name = "bookyourservice-db"
-database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
