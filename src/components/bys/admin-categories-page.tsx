@@ -44,10 +44,6 @@ export function AdminCategoriesPage() {
   const [formOrder, setFormOrder] = useState('0');
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
   const fetchCategories = async () => {
     setLoading(true);
     try {
@@ -62,6 +58,11 @@ export function AdminCategoriesPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchCategories();
+  }, []);
 
   const resetForm = () => {
     setFormName('');

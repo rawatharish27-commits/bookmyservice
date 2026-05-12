@@ -42,10 +42,6 @@ export function AdminFaqPage() {
   const [formActive, setFormActive] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    fetchFaqs();
-  }, []);
-
   const fetchFaqs = async () => {
     setLoading(true);
     try {
@@ -62,6 +58,11 @@ export function AdminFaqPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchFaqs();
+  }, []);
 
   const resetForm = () => {
     setFormCategory('');

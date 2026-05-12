@@ -37,8 +37,43 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
   }, [url, token]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    let cancelled = false;
+    const load = async () => {
+      if (!url) {
+        setLoading(false);
+        return;
+      }
+      setLoading(true);
+      setError(null);
+      try {
+        const headers: Record<string, string> = {
+          'Content-Type': 'application/json',
+          ...(optionsRef.current?.headers as Record<string, string>),
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+        const res = await fetch(url, { ...optionsRef.current, headers });
+        const result = await res.json();
+        if (!res.ok) {
+          throw new Error(result.error || 'Request failed');
+        }
+        if (!cancelled) {
+          setData(result);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : 'An error occurred');
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+    load();
+    return () => { cancelled = true; };
+  }, [url, token]);
 
   return { data, loading, error, refetch: fetchData };
 }
