@@ -394,107 +394,29 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
   );
 }
 
-// ─── Demo Data (fallback when API is unavailable) ─────────────────────────────
-
-const DEMO_CATEGORIES: Category[] = [
-  { id: 1, name: 'Plumbing', slug: 'plumbing', description: 'Expert plumbing services for your home', icon: 'Droplets', subcategoriesCount: 10, servicesCount: 10 },
-  { id: 2, name: 'Electrical', slug: 'electrical', description: 'Certified electricians for safe solutions', icon: 'Zap', subcategoriesCount: 10, servicesCount: 10 },
-  { id: 3, name: 'AC & HVAC', slug: 'ac-hvac', description: 'Keep cool with professional AC services', icon: 'Wind', subcategoriesCount: 10, servicesCount: 10 },
-];
-
-const DEMO_SUBCATEGORIES: Record<number, Subcategory[]> = {
-  1: [
-    { id: 1, name: 'Pipe Repair & Fitting', slug: 'pipe-repair' },
-    { id: 2, name: 'Leak Detection & Fix', slug: 'leak-detection' },
-    { id: 3, name: 'Drain Cleaning', slug: 'drain-cleaning' },
-    { id: 4, name: 'Water Heater Installation', slug: 'water-heater' },
-    { id: 5, name: 'Bathroom Plumbing', slug: 'bathroom-plumbing' },
-    { id: 6, name: 'Kitchen Plumbing', slug: 'kitchen-plumbing' },
-    { id: 7, name: 'Sewer Line Service', slug: 'sewer-line' },
-    { id: 8, name: 'Tap & Faucet Repair', slug: 'tap-faucet' },
-    { id: 9, name: 'Toilet Repair', slug: 'toilet-repair' },
-    { id: 10, name: 'Water Pressure Fix', slug: 'water-pressure' },
-  ],
-  2: [
-    { id: 11, name: 'Wiring & Rewiring', slug: 'wiring-rewiring' },
-    { id: 12, name: 'Switch & Outlet Fix', slug: 'switch-outlet' },
-    { id: 13, name: 'Ceiling Fan Installation', slug: 'ceiling-fan' },
-    { id: 14, name: 'MCB & Fuse Repair', slug: 'mcb-fuse' },
-    { id: 15, name: 'Light Fixture Setup', slug: 'light-fixture' },
-    { id: 16, name: 'Inverter & UPS Setup', slug: 'inverter-ups' },
-    { id: 17, name: 'Electrical Inspection', slug: 'electrical-inspection' },
-    { id: 18, name: 'Appliance Wiring', slug: 'appliance-wiring' },
-    { id: 19, name: 'Earthing & Grounding', slug: 'earthing' },
-    { id: 20, name: 'Doorbell & Intercom', slug: 'doorbell-intercom' },
-  ],
-  3: [
-    { id: 21, name: 'AC Installation', slug: 'ac-installation' },
-    { id: 22, name: 'AC Repair & Gas Refill', slug: 'ac-repair' },
-    { id: 23, name: 'AC Servicing & Cleaning', slug: 'ac-servicing' },
-    { id: 24, name: 'HVAC System Repair', slug: 'hvac-repair' },
-    { id: 25, name: 'Duct Cleaning', slug: 'duct-cleaning' },
-    { id: 26, name: 'Thermostat Repair', slug: 'thermostat' },
-    { id: 27, name: 'Heat Pump Service', slug: 'heat-pump' },
-    { id: 28, name: 'Ventilation Service', slug: 'ventilation' },
-    { id: 29, name: 'Refrigerant Leak Fix', slug: 'refrigerant-leak' },
-    { id: 30, name: 'Central AC Service', slug: 'central-ac' },
-  ],
-};
-
-const DEMO_SERVICES: ServiceItem[] = [
-  { id: 's1', title: 'Pipe Leak Repair', description: 'Professional pipe leak detection and repair service', basePrice: 299, priceNegotiable: true, averageRating: 4.8, totalBookings: 156, totalReviews: 89, city: 'Mumbai', provider: { id: 'p1', name: 'Rajesh Plumbing Co.' }, category: { id: 1, name: 'Plumbing', slug: 'plumbing' } },
-  { id: 's2', title: 'Drain Unclogging', description: 'Fast and effective drain cleaning service', basePrice: 249, priceNegotiable: false, averageRating: 4.6, totalBookings: 203, totalReviews: 124, city: 'Delhi', provider: { id: 'p2', name: 'AquaFix Solutions' }, category: { id: 1, name: 'Plumbing', slug: 'plumbing' } },
-  { id: 's3', title: 'Water Heater Install', description: 'Complete geyser installation with warranty', basePrice: 499, priceNegotiable: true, averageRating: 4.9, totalBookings: 87, totalReviews: 65, city: 'Bangalore', provider: { id: 'p3', name: 'HotFlow Experts' }, category: { id: 1, name: 'Plumbing', slug: 'plumbing' } },
-  { id: 's4', title: 'House Rewiring', description: 'Complete home electrical rewiring by certified electricians', basePrice: 499, priceNegotiable: true, averageRating: 4.7, totalBookings: 134, totalReviews: 98, city: 'Pune', provider: { id: 'p4', name: 'SafeWire Electric' }, category: { id: 2, name: 'Electrical', slug: 'electrical' } },
-  { id: 's5', title: 'Switch & MCB Repair', description: 'Quick switch, outlet, and MCB repair service', basePrice: 199, priceNegotiable: false, averageRating: 4.5, totalBookings: 312, totalReviews: 187, city: 'Hyderabad', provider: { id: 'p5', name: 'SparkPro Services' }, category: { id: 2, name: 'Electrical', slug: 'electrical' } },
-  { id: 's6', title: 'AC Gas Refill & Repair', description: 'Complete AC gas refill, leak fix, and cooling restore', basePrice: 499, priceNegotiable: true, averageRating: 4.8, totalBookings: 245, totalReviews: 156, city: 'Chennai', provider: { id: 'p6', name: 'CoolBreeze HVAC' }, category: { id: 3, name: 'AC & HVAC', slug: 'ac-hvac' } },
-];
-
-const DEMO_STATS: PlatformStats = {
-  activeVisitors: 42,
-  totalVisitors: 18429,
-  totalUsers: 3847,
-  totalProviders: 612,
-  totalServices: 1836,
-  totalBookings: 9214,
-  timestamp: new Date().toISOString(),
-};
-
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function HomePage() {
   const { navigate } = useApp();
   const { user } = useAuth();
 
-  // Data fetching
+  // Data fetching - REAL API only, no mock/demo data
   const { data: categoriesData, loading: categoriesLoading, refetch: refetchCategories } = useApi<Category[]>('/api/categories');
   const { data: servicesData, loading: servicesLoading } = useApi<{ services: ServiceItem[]; pagination: { total: number } }>('/api/services?limit=6');
 
-  // Use API data or fall back to demo data
-  const [categories, setCategories] = useState<Category[]>(DEMO_CATEGORIES);
-  const [services] = useState<ServiceItem[]>(DEMO_SERVICES);
-
-  // Override with API data when available
-  useEffect(() => {
-    if (Array.isArray(categoriesData) && categoriesData.length > 0) {
-      setCategories(categoriesData);
-    }
-  }, [categoriesData]);
-
-  const apiServices = servicesData?.services && servicesData.services.length > 0 ? servicesData.services : null;
+  const categories = Array.isArray(categoriesData) ? categoriesData : [];
+  const services = servicesData?.services || [];
 
   // Subcategories per category
-  const [subcategoriesMap, setSubcategoriesMap] = useState<Record<number, Subcategory[]>>(DEMO_SUBCATEGORIES);
+  const [subcategoriesMap, setSubcategoriesMap] = useState<Record<number, Subcategory[]>>({});
 
-  // Real-time stats - use demo stats as fallback
-  const [liveStats, setLiveStats] = useState<PlatformStats | null>(DEMO_STATS);
+  // Real-time stats from API
+  const [liveStats, setLiveStats] = useState<PlatformStats | null>(null);
 
-  // ─── Fetch subcategories from API (fallback to demo data) ──────────────────
+  // ─── Fetch subcategories for each category ──────────────────────────────────
 
   useEffect(() => {
     if (categories.length === 0) return;
-    // If using demo categories, demo subcategories are already set
-    if (categories === DEMO_CATEGORIES) return;
     async function fetchSubcategories() {
       const map: Record<number, Subcategory[]> = {};
       await Promise.all(
@@ -506,7 +428,7 @@ export function HomePage() {
               map[cat.id] = data;
             }
           } catch {
-            // ignore - will fall back to demo data
+            // ignore
           }
         })
       );
@@ -517,7 +439,7 @@ export function HomePage() {
     fetchSubcategories();
   }, [categories]);
 
-  // ─── Try to get live stats from API, otherwise use demo stats ──────────────
+  // ─── Fetch live stats from API ──────────────────────────────────────────────
 
   useEffect(() => {
     async function fetchStats() {
@@ -526,20 +448,22 @@ export function HomePage() {
         if (res.ok) {
           const data = await res.json();
           setLiveStats({
-            activeVisitors: data.activeVisitors || DEMO_STATS.activeVisitors,
-            totalVisitors: data.totalVisitors || DEMO_STATS.totalVisitors,
-            totalUsers: data.totalClients || DEMO_STATS.totalUsers,
-            totalProviders: data.totalProviders || DEMO_STATS.totalProviders,
-            totalServices: data.totalServices || DEMO_STATS.totalServices,
-            totalBookings: data.totalBookings || DEMO_STATS.totalBookings,
+            activeVisitors: data.activeVisitors || 0,
+            totalVisitors: data.totalVisitors || 0,
+            totalUsers: data.totalClients || data.totalUsers || 0,
+            totalProviders: data.totalProviders || 0,
+            totalServices: data.totalServices || 0,
+            totalBookings: data.totalBookings || 0,
             timestamp: new Date().toISOString(),
           });
         }
       } catch {
-        // Use demo stats already set in state
+        // Stats will remain null - shows loading state
       }
     }
     fetchStats();
+    const interval = setInterval(fetchStats, 30000);
+    return () => clearInterval(interval);
   }, []);
 
   // ─── Motion Variants ────────────────────────────────────────────────────────
@@ -1163,7 +1087,7 @@ export function HomePage() {
             <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {servicesLoading
                 ? Array.from({ length: 6 }).map((_, i) => <ServiceSkeleton key={i} />)
-                : (apiServices || services).map((service, idx) => (
+                : services.map((service, idx) => (
                     <motion.div
                       key={service.id}
                       initial="hidden"

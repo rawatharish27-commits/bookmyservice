@@ -1164,3 +1164,93 @@ Stage Summary:
 - Role-based access control (CLIENT, PROVIDER, ADMIN) on all protected endpoints
 - CORS middleware handles preflight and response headers globally
 
+
+---
+Task ID: 3-a
+Agent: full-stack-developer
+Task: Create auth, categories, services, subcategories API routes with security
+
+Work Log:
+- Created functions/api/auth/register.ts - POST /api/auth/register with email/phone/name/password/roleId validation, password strength check, duplicate email/phone check, PBKDF2 password hashing, user creation with ACTIVE status, ProviderKyc placeholder for PROVIDER role, JWT access + refresh tokens
+- Created functions/api/auth/login.ts - POST /api/auth/login with email/password validation, user lookup, password verification, status check (ACTIVE only), lastLoginAt update, JWT token signing
+- Created functions/api/auth/profile.ts - GET /api/auth/profile (requires auth, returns user + KYC status for providers) + PATCH /api/auth/profile (update name/phone/city/state/country with phone uniqueness check)
+- Created functions/api/auth/change-password.ts - POST /api/auth/change-password (requires auth, verifies current password, validates new password strength, ensures new != current, hashes and updates)
+- Created functions/api/categories/index.ts - GET /api/categories with subcategories count and services count (using ServiceCategory table matching actual D1 schema)
+- Created functions/api/categories/[id].ts - GET /api/categories/:id with category details and subcategories list
+- Created functions/api/services/index.ts - GET /api/services with pagination (limit/offset), filtering (categoryId, city, minPrice, maxPrice, search), joins with User/ServiceCategory/ServiceSubcategory, only active+approved services, structured provider/category/subcategory nesting
+- Created functions/api/services/[id].ts - GET /api/services/:id with full service details, provider info with KYC status, category/subcategory info, availability slots, and reviews with reviewer info
+- Created functions/api/services/search.ts - GET /api/services/search with full-text search across title and description, title-matching prioritization in sort order, pagination with page/limit, all filter support
+- Created functions/api/subcategories/index.ts - GET /api/subcategories?categoryId=X with services count per subcategory
+
+Stage Summary:
+- 10 API route files created covering auth (4), categories (2), services (3), subcategories (1)
+- All SQL uses parameterized queries via D1 prepared statements with .bind()
+- All user input sanitized via sanitizeString/sanitizeObject before use
+- Auth routes validate email format, Indian phone numbers (10 digits starting 6-9), password strength (8+ chars, uppercase, lowercase, number)
+- JWT tokens signed with HS256 using jose library (WebCrypto-compatible)
+- Services API adapts to actual D1 schema: ServiceCategory (not Category), ServiceSubcategory (not Subcategory), isActive+approvalStatus (not status field)
+- Proper HTTP status codes: 200, 201, 400, 401, 403, 404, 409, 500
+- All routes use shared _shared/ modules (db, auth, password, response, security)
+
+---
+Task ID: 3-b
+Agent: full-stack-developer
+Task: Create bookings, reviews, stats, FAQ, contact, legal API routes
+
+Work Log:
+- Created functions/api/bookings/index.ts - GET /api/bookings (role-based filtering: client=own, provider=assigned, admin=all; status filter + pagination) + POST /api/bookings (CLIENT only, validates serviceId/scheduledDate/scheduledTime/address/city/pincode, looks up service for basePrice+providerId, validates price ₹199-₹499, generates bookingNumber, creates booking with PENDING status, notifies provider)
+- Created functions/api/bookings/[id].ts - GET /api/bookings/:id (returns booking with service/client/provider details, access check: client/provider/admin only, includes review if exists)
+- Created functions/api/bookings/[id]/accept.ts - POST /api/bookings/:id/accept (PROVIDER only, must be assigned provider, changes PENDING→CONFIRMED, notifies client)
+- Created functions/api/bookings/[id]/reject.ts - POST /api/bookings/:id/reject (PROVIDER only, requires rejectionReason, changes PENDING→REJECTED, sets cancellationReason+cancelledBy+cancelledAt, notifies client)
+- Created functions/api/bookings/[id]/cancel.ts - POST /api/bookings/:id/cancel (CLIENT only, requires cancellationReason, can cancel PENDING/CONFIRMED, changes to CANCELLED, notifies provider)
+- Created functions/api/bookings/[id]/start.ts - POST /api/bookings/:id/start (PROVIDER only, changes CONFIRMED→IN_PROGRESS, notifies client)
+- Created functions/api/bookings/[id]/complete.ts - POST /api/bookings/:id/complete (PROVIDER only, changes IN_PROGRESS→COMPLETED, sets completedAt, increments service totalBookings, notifies client to leave review)
+- Created functions/api/reviews/index.ts - GET /api/reviews?serviceId=X (paginated reviews with reviewer info, average rating summary) + POST /api/reviews (CLIENT only, validates bookingId/serviceId/rating(1-5), verifies completed booking ownership, prevents duplicate reviews, updates service averageRating+totalReviews, notifies provider)
+- Created functions/api/reviews/[id].ts - GET /api/reviews/:id (single review with reviewer, provider, and service details)
+- Created functions/api/stats/platform.ts - GET /api/stats/platform (public, returns totalClients, totalProviders, totalServices, totalBookings, completedBookings, pendingBookings, activeVisitors, totalVisitors from actual DB queries)
+- Created functions/api/stats/visitor.ts - POST /api/stats/visitor (tracks visitor session by sessionId, upserts VisitorSession, updates PlatformStats table with live counts)
+- Created functions/api/faq/index.ts - GET /api/faq (returns active FAQ items ordered by displayOrder, optional category filter, grouped by category for convenience)
+- Created functions/api/contact/index.ts - POST /api/contact (validates name/email/subject/message, email format validation, length limits, creates ContactMessage record, rate limited by middleware)
+- Created functions/api/legal/index.ts - GET /api/legal (returns list of all legal documents with pageType/title/version/effectiveDate)
+- Created functions/api/legal/[type].ts - GET /api/legal/:type (maps URL-friendly types to DB pageType: terms→terms-of-service, privacy→privacy-policy, etc., returns full document)
+
+Stage Summary:
+- 15 API route files created covering bookings (7), reviews (2), stats (2), FAQ (1), contact (1), legal (2)
+- All SQL uses parameterized queries via D1 prepared statements with .bind()
+- All user input sanitized via sanitizeString/sanitizeObject
+- Booking prices validated against ₹199-₹499 range
+- Role-based access control enforced on all protected routes
+- Notifications created for all booking status changes
+- Database schema mapped correctly: Booking (serviceAddress, bookingNumber, platformFee, providerEarnings), Review (reviewerId/reviewedId), Faq (not FAQ), ContactMessage (not ContactSubmission), LegalPage (pageType not type), VisitorSession (not Visitor)
+- Proper HTTP status codes: 200, 201, 400, 401, 403, 404, 500
+
+---
+Task ID: 3-c
+Agent: full-stack-developer
+Task: Create admin, notifications, favorites, disputes, KYC API routes
+
+Work Log:
+- Created 19 API route files for Cloudflare Pages Functions with D1 database
+- Admin routes (11 files): dashboard, users (list + detail), services, bookings, disputes, categories, FAQ (list + detail), revenue, logs
+- Notification routes (2 files): list with unread count, mark as read with ownership check
+- Favorites routes (2 files): list/add favorites, remove favorite
+- Disputes routes (2 files): list/create disputes, dispute detail with messages
+- KYC routes (2 files): submit documents, check status
+- All SQL uses parameterized queries (no string concatenation)
+- All user input sanitized via sanitizeString/sanitizeObject
+- Admin routes enforce requireRole(user, 'ADMIN') with 403 response
+- Provider routes enforce requireRole(user, 'PROVIDER')
+- Client routes enforce requireRole(user, 'CLIENT')
+- Admin actions logged to AdminLog table
+- Notifications created for relevant parties on status changes
+- KYC document numbers masked in status response
+- Dispute access verified (user must be party to the booking)
+- Notification ownership verified before marking as read
+
+Stage Summary:
+- 19 API route files created in functions/api/ directory
+- Full CRUD support for admin management (users, services, bookings, disputes, categories, FAQ)
+- Revenue analytics with monthly breakdown and category grouping
+- Audit logging for all admin actions
+- User-facing routes for notifications, favorites, disputes, and KYC
+- Consistent security patterns across all routes (parameterized queries, input sanitization, role checks)

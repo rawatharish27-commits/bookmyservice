@@ -1,22 +1,22 @@
--- BookYourService D1 Migration
--- Run with: npx wrangler d1 execute bookyourservice-db --file=./migrations/0001_init.sql
+-- BookYourService D1 Database Schema
+-- Migration 0001: Initial schema
 
--- Role table
+-- Roles
 CREATE TABLE IF NOT EXISTS Role (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
   description TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now'))
 );
 
--- User table
+-- Users
 CREATE TABLE IF NOT EXISTS User (
   id TEXT PRIMARY KEY,
   email TEXT NOT NULL UNIQUE,
   phone TEXT NOT NULL UNIQUE,
   passwordHash TEXT NOT NULL,
   name TEXT NOT NULL,
-  roleId INTEGER NOT NULL,
+  roleId INTEGER NOT NULL REFERENCES Role(id),
   status TEXT NOT NULL DEFAULT 'PENDING',
   emailVerified INTEGER NOT NULL DEFAULT 0,
   phoneVerified INTEGER NOT NULL DEFAULT 0,
@@ -29,15 +29,18 @@ CREATE TABLE IF NOT EXISTS User (
   latitude REAL,
   longitude REAL,
   lastLoginAt TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (roleId) REFERENCES Role(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_user_email ON User(email);
+CREATE INDEX IF NOT EXISTS idx_user_phone ON User(phone);
+CREATE INDEX IF NOT EXISTS idx_user_role ON User(roleId);
+CREATE INDEX IF NOT EXISTS idx_user_status ON User(status);
 
--- ProviderKyc table
+-- Provider KYC
 CREATE TABLE IF NOT EXISTS ProviderKyc (
   id TEXT PRIMARY KEY,
-  providerId TEXT NOT NULL UNIQUE,
+  providerId TEXT NOT NULL UNIQUE REFERENCES User(id) ON DELETE CASCADE,
   documentType TEXT NOT NULL,
   documentNumber TEXT NOT NULL,
   documentFrontUrl TEXT NOT NULL,
@@ -47,12 +50,11 @@ CREATE TABLE IF NOT EXISTS ProviderKyc (
   verifiedBy TEXT,
   verifiedAt TEXT,
   rejectionReason TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (providerId) REFERENCES User(id) ON DELETE CASCADE
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
 
--- ServiceCategory table
+-- Service Categories
 CREATE TABLE IF NOT EXISTS ServiceCategory (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL UNIQUE,
@@ -60,37 +62,38 @@ CREATE TABLE IF NOT EXISTS ServiceCategory (
   description TEXT,
   iconUrl TEXT,
   icon TEXT,
-  parentId INTEGER,
+  parentId INTEGER REFERENCES ServiceCategory(id),
   isActive INTEGER NOT NULL DEFAULT 1,
   displayOrder INTEGER NOT NULL DEFAULT 0,
   seoTitle TEXT,
   seoDescription TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (parentId) REFERENCES ServiceCategory(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_category_slug ON ServiceCategory(slug);
+CREATE INDEX IF NOT EXISTS idx_category_active ON ServiceCategory(isActive);
 
--- ServiceSubcategory table
+-- Service Subcategories
 CREATE TABLE IF NOT EXISTS ServiceSubcategory (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  categoryId INTEGER NOT NULL,
+  categoryId INTEGER NOT NULL REFERENCES ServiceCategory(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   slug TEXT NOT NULL,
   description TEXT,
   isActive INTEGER NOT NULL DEFAULT 1,
   displayOrder INTEGER NOT NULL DEFAULT 0,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (categoryId) REFERENCES ServiceCategory(id) ON DELETE CASCADE,
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now')),
   UNIQUE(categoryId, slug)
 );
+CREATE INDEX IF NOT EXISTS idx_subcategory_category ON ServiceSubcategory(categoryId);
 
--- Service table
+-- Services
 CREATE TABLE IF NOT EXISTS Service (
   id TEXT PRIMARY KEY,
-  providerId TEXT NOT NULL,
-  categoryId INTEGER NOT NULL,
-  subcategoryId INTEGER,
+  providerId TEXT NOT NULL REFERENCES User(id) ON DELETE CASCADE,
+  categoryId INTEGER NOT NULL REFERENCES ServiceCategory(id),
+  subcategoryId INTEGER REFERENCES ServiceSubcategory(id),
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   basePrice REAL NOT NULL,
@@ -114,35 +117,35 @@ CREATE TABLE IF NOT EXISTS Service (
   averageRating REAL NOT NULL DEFAULT 0,
   totalBookings INTEGER NOT NULL DEFAULT 0,
   totalReviews INTEGER NOT NULL DEFAULT 0,
-  seoTitle TEXT,
-  seoDescription TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (providerId) REFERENCES User(id) ON DELETE CASCADE,
-  FOREIGN KEY (categoryId) REFERENCES ServiceCategory(id),
-  FOREIGN KEY (subcategoryId) REFERENCES ServiceSubcategory(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_service_provider ON Service(providerId);
+CREATE INDEX IF NOT EXISTS idx_service_category ON Service(categoryId);
+CREATE INDEX IF NOT EXISTS idx_service_active ON Service(isActive, isApproved);
+CREATE INDEX IF NOT EXISTS idx_service_city ON Service(city);
+CREATE INDEX IF NOT EXISTS idx_service_price ON Service(basePrice);
 
--- ServiceAvailability table
+-- Service Availability
 CREATE TABLE IF NOT EXISTS ServiceAvailability (
   id TEXT PRIMARY KEY,
-  serviceId TEXT NOT NULL,
+  serviceId TEXT NOT NULL REFERENCES Service(id) ON DELETE CASCADE,
   dayOfWeek INTEGER NOT NULL,
   startTime TEXT NOT NULL,
   endTime TEXT NOT NULL,
   isAvailable INTEGER NOT NULL DEFAULT 1,
   maxBookingsPerSlot INTEGER NOT NULL DEFAULT 1,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (serviceId) REFERENCES Service(id) ON DELETE CASCADE
+  createdAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_availability_service ON ServiceAvailability(serviceId);
 
--- Booking table
+-- Bookings
 CREATE TABLE IF NOT EXISTS Booking (
   id TEXT PRIMARY KEY,
   bookingNumber TEXT NOT NULL UNIQUE,
-  clientId TEXT NOT NULL,
-  providerId TEXT NOT NULL,
-  serviceId TEXT NOT NULL,
+  clientId TEXT NOT NULL REFERENCES User(id),
+  providerId TEXT NOT NULL REFERENCES User(id),
+  serviceId TEXT NOT NULL REFERENCES Service(id),
   status TEXT NOT NULL DEFAULT 'PENDING',
   scheduledDate TEXT NOT NULL,
   scheduledTime TEXT NOT NULL,
@@ -161,17 +164,19 @@ CREATE TABLE IF NOT EXISTS Booking (
   cancelledAt TEXT,
   completedAt TEXT,
   paymentStatus TEXT NOT NULL DEFAULT 'PENDING',
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (clientId) REFERENCES User(id),
-  FOREIGN KEY (providerId) REFERENCES User(id),
-  FOREIGN KEY (serviceId) REFERENCES Service(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_booking_client ON Booking(clientId);
+CREATE INDEX IF NOT EXISTS idx_booking_provider ON Booking(providerId);
+CREATE INDEX IF NOT EXISTS idx_booking_service ON Booking(serviceId);
+CREATE INDEX IF NOT EXISTS idx_booking_status ON Booking(status);
+CREATE INDEX IF NOT EXISTS idx_booking_number ON Booking(bookingNumber);
 
--- Payment table
+-- Payments
 CREATE TABLE IF NOT EXISTS Payment (
   id TEXT PRIMARY KEY,
-  bookingId TEXT NOT NULL UNIQUE,
+  bookingId TEXT NOT NULL UNIQUE REFERENCES Booking(id),
   amount REAL NOT NULL,
   currency TEXT NOT NULL DEFAULT 'INR',
   paymentMethod TEXT,
@@ -183,94 +188,88 @@ CREATE TABLE IF NOT EXISTS Payment (
   refundReason TEXT,
   refundedAt TEXT,
   metadata TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE RESTRICT
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
 
--- Review table
+-- Reviews
 CREATE TABLE IF NOT EXISTS Review (
   id TEXT PRIMARY KEY,
-  bookingId TEXT NOT NULL UNIQUE,
-  reviewerId TEXT NOT NULL,
-  reviewedId TEXT NOT NULL,
-  serviceId TEXT NOT NULL,
-  rating INTEGER NOT NULL,
+  bookingId TEXT NOT NULL UNIQUE REFERENCES Booking(id) ON DELETE CASCADE,
+  reviewerId TEXT NOT NULL REFERENCES User(id),
+  reviewedId TEXT NOT NULL REFERENCES User(id),
+  serviceId TEXT NOT NULL REFERENCES Service(id),
+  rating INTEGER NOT NULL CHECK(rating >= 1 AND rating <= 5),
   comment TEXT,
   images TEXT,
   isVerified INTEGER NOT NULL DEFAULT 0,
   isFlagged INTEGER NOT NULL DEFAULT 0,
   flagReason TEXT,
   adminResponse TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE CASCADE,
-  FOREIGN KEY (reviewerId) REFERENCES User(id),
-  FOREIGN KEY (reviewedId) REFERENCES User(id),
-  FOREIGN KEY (serviceId) REFERENCES Service(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_review_service ON Review(serviceId);
+CREATE INDEX IF NOT EXISTS idx_review_reviewer ON Review(reviewerId);
 
--- Negotiation table
+-- Negotiations
 CREATE TABLE IF NOT EXISTS Negotiation (
   id TEXT PRIMARY KEY,
-  bookingId TEXT NOT NULL,
-  serviceId TEXT NOT NULL,
-  proposedBy TEXT NOT NULL,
+  bookingId TEXT NOT NULL REFERENCES Booking(id) ON DELETE CASCADE,
+  serviceId TEXT NOT NULL REFERENCES Service(id) ON DELETE CASCADE,
+  proposedBy TEXT NOT NULL REFERENCES User(id),
   proposedPrice REAL NOT NULL,
   message TEXT,
   status TEXT NOT NULL DEFAULT 'PENDING',
   respondedAt TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (bookingId) REFERENCES Booking(id) ON DELETE CASCADE,
-  FOREIGN KEY (serviceId) REFERENCES Service(id) ON DELETE CASCADE,
-  FOREIGN KEY (proposedBy) REFERENCES User(id)
+  createdAt TEXT DEFAULT (datetime('now'))
 );
 
--- Dispute table
+-- Disputes
 CREATE TABLE IF NOT EXISTS Dispute (
   id TEXT PRIMARY KEY,
-  bookingId TEXT NOT NULL,
-  raisedBy TEXT NOT NULL,
+  bookingId TEXT NOT NULL REFERENCES Booking(id),
+  raisedBy TEXT NOT NULL REFERENCES User(id),
   disputeType TEXT NOT NULL,
   description TEXT NOT NULL,
   evidence TEXT,
   status TEXT NOT NULL DEFAULT 'OPEN',
-  assignedTo TEXT,
+  assignedTo TEXT REFERENCES User(id),
   resolution TEXT,
   resolvedAt TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (bookingId) REFERENCES Booking(id),
-  FOREIGN KEY (raisedBy) REFERENCES User(id),
-  FOREIGN KEY (assignedTo) REFERENCES User(id)
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_dispute_raiser ON Dispute(raisedBy);
+CREATE INDEX IF NOT EXISTS idx_dispute_status ON Dispute(status);
 
--- DisputeMessage table
+-- Dispute Messages
 CREATE TABLE IF NOT EXISTS DisputeMessage (
   id TEXT PRIMARY KEY,
-  disputeId TEXT NOT NULL,
+  disputeId TEXT NOT NULL REFERENCES Dispute(id) ON DELETE CASCADE,
   senderId TEXT NOT NULL,
   message TEXT NOT NULL,
   attachments TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (disputeId) REFERENCES Dispute(id) ON DELETE CASCADE
+  createdAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_dispute_msg ON DisputeMessage(disputeId);
 
--- Notification table
+-- Notifications
 CREATE TABLE IF NOT EXISTS Notification (
   id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
+  userId TEXT NOT NULL REFERENCES User(id) ON DELETE CASCADE,
   type TEXT NOT NULL,
   title TEXT NOT NULL,
   message TEXT NOT NULL,
   actionUrl TEXT,
   isRead INTEGER NOT NULL DEFAULT 0,
   readAt TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE
+  createdAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_notification_user ON Notification(userId);
+CREATE INDEX IF NOT EXISTS idx_notification_unread ON Notification(userId, isRead);
 
--- Faq table
+-- FAQ
 CREATE TABLE IF NOT EXISTS Faq (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   category TEXT NOT NULL,
@@ -278,11 +277,11 @@ CREATE TABLE IF NOT EXISTS Faq (
   answer TEXT NOT NULL,
   displayOrder INTEGER NOT NULL DEFAULT 0,
   isActive INTEGER NOT NULL DEFAULT 1,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
 
--- LegalPage table
+-- Legal Pages
 CREATE TABLE IF NOT EXISTS LegalPage (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   pageType TEXT NOT NULL UNIQUE,
@@ -290,14 +289,14 @@ CREATE TABLE IF NOT EXISTS LegalPage (
   content TEXT NOT NULL,
   version TEXT,
   effectiveDate TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
 
--- SeoMetadata table
+-- SEO Metadata
 CREATE TABLE IF NOT EXISTS SeoMetadata (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  pageType TEXT NOT NULL,
+  pageType TEXT,
   pageId TEXT,
   title TEXT,
   description TEXT,
@@ -306,11 +305,11 @@ CREATE TABLE IF NOT EXISTS SeoMetadata (
   ogImage TEXT,
   schemaMarkup TEXT,
   indexed INTEGER NOT NULL DEFAULT 1,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
 
--- RevenueStream table
+-- Revenue Streams
 CREATE TABLE IF NOT EXISTS RevenueStream (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   streamType TEXT NOT NULL,
@@ -318,35 +317,35 @@ CREATE TABLE IF NOT EXISTS RevenueStream (
   revenueModel TEXT,
   status TEXT NOT NULL DEFAULT 'ACTIVE',
   estimatedMonthlyRevenue REAL,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now'))
 );
 
--- AdminLog table
+-- Admin Logs
 CREATE TABLE IF NOT EXISTS AdminLog (
   id TEXT PRIMARY KEY,
-  adminId TEXT NOT NULL,
+  adminId TEXT NOT NULL REFERENCES User(id),
   action TEXT NOT NULL,
   targetType TEXT,
   targetId TEXT,
   details TEXT,
   ipAddress TEXT,
   userAgent TEXT,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (adminId) REFERENCES User(id)
+  createdAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_adminlog_admin ON AdminLog(adminId);
+CREATE INDEX IF NOT EXISTS idx_adminlog_created ON AdminLog(createdAt);
 
--- Favorite table
+-- Favorites
 CREATE TABLE IF NOT EXISTS Favorite (
   id TEXT PRIMARY KEY,
-  userId TEXT NOT NULL,
-  serviceId TEXT NOT NULL,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  FOREIGN KEY (userId) REFERENCES User(id) ON DELETE CASCADE,
-  FOREIGN KEY (serviceId) REFERENCES Service(id) ON DELETE CASCADE,
+  userId TEXT NOT NULL REFERENCES User(id) ON DELETE CASCADE,
+  serviceId TEXT NOT NULL REFERENCES Service(id) ON DELETE CASCADE,
+  createdAt TEXT DEFAULT (datetime('now')),
   UNIQUE(userId, serviceId)
 );
+CREATE INDEX IF NOT EXISTS idx_favorite_user ON Favorite(userId);
 
--- ContactMessage table
+-- Contact Messages
 CREATE TABLE IF NOT EXISTS ContactMessage (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
@@ -354,10 +353,10 @@ CREATE TABLE IF NOT EXISTS ContactMessage (
   subject TEXT NOT NULL,
   message TEXT NOT NULL,
   isRead INTEGER NOT NULL DEFAULT 0,
-  createdAt TEXT NOT NULL DEFAULT (datetime('now'))
+  createdAt TEXT DEFAULT (datetime('now'))
 );
 
--- VisitorSession table
+-- Visitor Sessions
 CREATE TABLE IF NOT EXISTS VisitorSession (
   id TEXT PRIMARY KEY,
   sessionId TEXT NOT NULL UNIQUE,
@@ -368,12 +367,14 @@ CREATE TABLE IF NOT EXISTS VisitorSession (
   page TEXT,
   referrer TEXT,
   isActive INTEGER NOT NULL DEFAULT 1,
-  lastActive TEXT NOT NULL DEFAULT (datetime('now')),
-  createdAt TEXT NOT NULL DEFAULT (datetime('now')),
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+  lastActive TEXT DEFAULT (datetime('now')),
+  createdAt TEXT DEFAULT (datetime('now')),
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
+CREATE INDEX IF NOT EXISTS idx_visitor_session ON VisitorSession(sessionId);
+CREATE INDEX IF NOT EXISTS idx_visitor_active ON VisitorSession(isActive);
 
--- PlatformStats table
+-- Platform Stats
 CREATE TABLE IF NOT EXISTS PlatformStats (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   totalVisitors INTEGER NOT NULL DEFAULT 0,
@@ -382,25 +383,5 @@ CREATE TABLE IF NOT EXISTS PlatformStats (
   totalBookings INTEGER NOT NULL DEFAULT 0,
   totalServices INTEGER NOT NULL DEFAULT 0,
   activeVisitors INTEGER NOT NULL DEFAULT 0,
-  updatedAt TEXT NOT NULL DEFAULT (datetime('now'))
+  updatedAt TEXT DEFAULT (datetime('now'))
 );
-
--- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_user_role ON User(roleId);
-CREATE INDEX IF NOT EXISTS idx_user_status ON User(status);
-CREATE INDEX IF NOT EXISTS idx_service_provider ON Service(providerId);
-CREATE INDEX IF NOT EXISTS idx_service_category ON Service(categoryId);
-CREATE INDEX IF NOT EXISTS idx_service_approval ON Service(approvalStatus);
-CREATE INDEX IF NOT EXISTS idx_service_subcategory ON Service(subcategoryId);
-CREATE INDEX IF NOT EXISTS idx_booking_client ON Booking(clientId);
-CREATE INDEX IF NOT EXISTS idx_booking_provider ON Booking(providerId);
-CREATE INDEX IF NOT EXISTS idx_booking_service ON Booking(serviceId);
-CREATE INDEX IF NOT EXISTS idx_booking_status ON Booking(status);
-CREATE INDEX IF NOT EXISTS idx_payment_booking ON Payment(bookingId);
-CREATE INDEX IF NOT EXISTS idx_review_booking ON Review(bookingId);
-CREATE INDEX IF NOT EXISTS idx_review_service ON Review(serviceId);
-CREATE INDEX IF NOT EXISTS idx_notification_user ON Notification(userId);
-CREATE INDEX IF NOT EXISTS idx_dispute_booking ON Dispute(bookingId);
-CREATE INDEX IF NOT EXISTS idx_admin_log_admin ON AdminLog(adminId);
-CREATE INDEX IF NOT EXISTS idx_favorite_user ON Favorite(userId);
-CREATE INDEX IF NOT EXISTS idx_visitor_session ON VisitorSession(sessionId);
