@@ -1,61 +1,65 @@
 import { PrismaClient } from '@prisma/client'
-import { PrismaD1 } from '@prisma/adapter-d1'
+import { PrismaPg } from '@prisma/adapter-pg'
+import pg from 'pg'
 
 /**
- * Cloudflare-aware database client.
+ * PostgreSQL database client using Prisma with driver adapter.
  *
- * - On Cloudflare Workers: Uses D1 adapter (env.DB binding)
- * - On local dev / Node.js: Uses standard PrismaClient with SQLite
+ * - Uses @prisma/adapter-pg for PostgreSQL connections
+ * - Works with any PostgreSQL provider: Neon, Supabase, Railway, AWS RDS, etc.
+ * - Connection string is set via DATABASE_URL env variable
  *
- * In Cloudflare Pages, the D1 binding is accessed via:
- *   process.env.DB  (OpenNext injects it)
+ * Example DATABASE_URL:
+ *   postgresql://user:password@host:5432/dbname?sslmode=require
+ *   postgres://user:password@ep-xxx.region.aws.neon.tech/dbname?sslmode=require
  */
-
-export type EnvBindings = {
-  DB?: D1Database
-}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined
 }
 
-function createD1Client(d1Database: D1Database): PrismaClient {
-  const adapter = new PrismaD1(d1Database)
+function createPgClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL
+
+  if (!connectionString) {
+    throw new Error(
+      'DATABASE_URL environment variable is not set. ' +
+      'Please set it to your PostgreSQL connection string. ' +
+      'Example: postgresql://user:password@host:5432/dbname?sslmode=require'
+    )
+  }
+
+  // Parse SSL mode from connection string
+  const sslmode = connectionString.includes('sslmode=require') ||
+                  connectionString.includes('ssl=true') ||
+                  connectionString.includes('neon.tech') ||
+                  connectionString.includes('supabase.co') ||
+                  connectionString.includes('railway.app')
+
+  const pool = new pg.Pool({
+    connectionString,
+    ssl: sslmode ? { rejectUnauthorized: false } : undefined,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  })
+
+  const adapter = new PrismaPg(pool)
   return new PrismaClient({ adapter })
 }
 
-function createLocalClient(): PrismaClient {
-  return new PrismaClient({
-    log: ['query'],
-  })
-}
-
 /**
- * Get a PrismaClient instance.
- * - If a D1 binding is provided, uses the D1 adapter (Cloudflare Workers)
- * - Otherwise falls back to standard SQLite PrismaClient (local dev)
+ * Get a PrismaClient instance for PostgreSQL.
+ * Uses singleton pattern in development to prevent connection pool exhaustion.
  */
-export function getDb(env?: EnvBindings): PrismaClient {
-  // Cloudflare Workers with D1 binding
-  if (env?.DB) {
-    return createD1Client(env.DB)
-  }
-
-  // Check for D1 in process.env (injected by OpenNext/Cloudflare)
-  if (typeof process !== 'undefined' && (process.env as Record<string, unknown>).DB) {
-    return createD1Client((process.env as Record<string, unknown>).DB as D1Database)
-  }
-
-  // Local development - use standard SQLite PrismaClient (singleton)
+export function getDb(): PrismaClient {
   if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = createLocalClient()
+    globalForPrisma.prisma = createPgClient()
   }
   return globalForPrisma.prisma
 }
 
 /**
  * Default export for backward compatibility with existing API routes.
- * In Cloudflare Workers, this will attempt to use D1 if available,
- * otherwise falls back to SQLite (which only works locally).
  */
 export const db = getDb()

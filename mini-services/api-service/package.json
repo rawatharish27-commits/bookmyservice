@@ -1,0 +1,11 @@
+{
+  "name": "bys-api-service",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "bun --hot index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.0.2",
+    "hono": "^4.12.18"
+  }
+}

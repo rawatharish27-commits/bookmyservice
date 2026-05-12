@@ -1276,3 +1276,32 @@ Stage Summary:
 - Missing PWA icons: FIXED - icon-192.png and icon-512.png generated and included in dist
 - Lint: Clean, 0 errors
 - Build: Successful, single JS chunk (1078KB)
+
+---
+Task ID: postgres-migration
+Agent: Main Agent
+Task: Migrate database from SQLite/D1 to PostgreSQL
+
+Work Log:
+- Updated prisma/schema.prisma: provider changed from "sqlite" to "postgresql"
+- Downgraded Prisma from v7 to v6 (v7 has breaking config changes)
+- Removed deprecated previewFeatures = ["driverAdapters"]
+- Installed @prisma/adapter-pg, pg, @types/pg for PostgreSQL driver
+- Rewrote src/lib/db.ts to use PrismaPg adapter with pg.Pool
+- Auto-detects SSL mode based on connection string (Neon, Supabase, Railway)
+- Created mini-services/api-service/ with Hono framework for local API server
+- API service runs on port 3001, connects to PostgreSQL via Prisma
+- Implements ALL API routes: auth, categories, services, bookings, reviews, favorites, notifications, FAQ, legal, contact, stats, KYC, admin, disputes
+- Updated vite.config.ts: proxy /api requests to localhost:3001
+- Updated Caddyfile: route /api/* to port 3001
+- Added db:push, db:seed, db:studio, db:migrate, db:generate scripts to package.json
+- Created .env with PostgreSQL connection string template
+- Lint: Clean, 0 errors
+- Build: Successful
+
+Stage Summary:
+- Project now uses PostgreSQL instead of SQLite/D1
+- Local dev: Vite (3000) → API Service (3001) → PostgreSQL
+- Production: Cloudflare Pages Functions → D1 (unchanged, for Cloudflare deployment)
+- User needs to provide a PostgreSQL DATABASE_URL and run bun run db:push + bun run db:seed
+- Free PostgreSQL options: Neon (neon.tech), Supabase (supabase.com), Railway (railway.app)
