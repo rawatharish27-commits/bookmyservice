@@ -54,11 +54,12 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-800">
         {/* Mesh gradient overlays */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(16,185,129,0.4),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(20,184,166,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_80%,rgba(5,150,105,0.35),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(16,185,129,0.45),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(6,182,212,0.3),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_80%,rgba(245,158,11,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_40%_20%,rgba(20,184,166,0.25),transparent_50%)]" />
 
         {/* Dot pattern overlay */}
         <div className="absolute inset-0 opacity-[0.07]" style={{
@@ -165,7 +166,7 @@ export function LoginPage() {
           </motion.button>
 
           {/* ========== GLASSMORPHISM CARD ========== */}
-          <div className="glass rounded-2xl shadow-xl shadow-emerald-900/5 border-emerald-100/50 relative overflow-hidden">
+          <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/5 border-emerald-100/50 relative overflow-hidden">
             {/* Subtle border glow */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/60" />
 
@@ -205,7 +206,7 @@ export function LoginPage() {
                     <TabsTrigger
                       key={tab}
                       value={tab}
-                      className="flex-1 py-3 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 transition-all duration-300 text-sm font-medium"
+                      className="flex-1 py-3 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-600/30 transition-all duration-300 text-sm font-medium"
                     >
                       {tab === 'client' ? (
                         <><User className="size-4 mr-2" />Client Login</>
@@ -327,7 +328,7 @@ export function LoginPage() {
                     {/* Gradient shimmer submit button */}
                     <Button
                       type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                      className="w-full shimmer bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                       disabled={loading}
                     >
                       {loading ? (
@@ -353,7 +354,7 @@ export function LoginPage() {
                     {/* Social login button (UI only) */}
                     <button
                       type="button"
-                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200 bg-white/80 hover:bg-gray-50 hover:border-gray-300 transition-all text-sm font-medium text-gray-700 shadow-sm"
+                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-gray-50 hover:border-gray-300 transition-all text-sm font-medium text-gray-700 shadow-md shadow-gray-200/50 ring-1 ring-gray-100/80"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -498,7 +499,7 @@ export function LoginPage() {
                     {/* Gradient shimmer submit button */}
                     <Button
                       type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                      className="w-full shimmer bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                       disabled={loading}
                     >
                       {loading ? (
@@ -524,7 +525,7 @@ export function LoginPage() {
                     {/* Social login button */}
                     <button
                       type="button"
-                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200 bg-white/80 hover:bg-gray-50 hover:border-gray-300 transition-all text-sm font-medium text-gray-700 shadow-sm"
+                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-gray-50 hover:border-gray-300 transition-all text-sm font-medium text-gray-700 shadow-md shadow-gray-200/50 ring-1 ring-gray-100/80"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -560,8 +561,8 @@ export function LoginPage() {
           >
             {trustBadges.map(({ icon: Icon, label }, i) => (
               <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <div className="flex size-6 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
-                  <Icon className="size-3 text-emerald-600" />
+                <div className="flex size-6 items-center justify-center rounded-full bg-emerald-100 border border-emerald-200/80 shadow-sm shadow-emerald-200/50">
+                  <Icon className="size-3 text-emerald-700" />
                 </div>
                 <span>{label}</span>
               </div>

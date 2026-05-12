@@ -28,10 +28,10 @@ import {
 } from 'lucide-react';
 
 const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.ReactNode; gradient: string }> = {
-  terms: { title: 'Terms of Service', type: 'TERMS', icon: <Shield className="size-5" />, gradient: 'from-emerald-500 to-teal-500' },
-  privacy: { title: 'Privacy Policy', type: 'PRIVACY', icon: <Lock className="size-5" />, gradient: 'from-teal-500 to-cyan-500' },
-  'refund-policy': { title: 'Refund Policy', type: 'REFUND', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-500 to-orange-500' },
-  'cookie-policy': { title: 'Cookie Policy', type: 'COOKIES', icon: <Cookie className="size-5" />, gradient: 'from-violet-500 to-purple-500' },
+  terms: { title: 'Terms of Service', type: 'TERMS', icon: <Shield className="size-5" />, gradient: 'from-emerald-700 to-teal-600' },
+  privacy: { title: 'Privacy Policy', type: 'PRIVACY', icon: <Lock className="size-5" />, gradient: 'from-teal-700 to-cyan-600' },
+  'refund-policy': { title: 'Refund Policy', type: 'REFUND', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-orange-500' },
+  'cookie-policy': { title: 'Cookie Policy', type: 'COOKIES', icon: <Cookie className="size-5" />, gradient: 'from-violet-600 to-purple-500' },
 };
 
 interface LegalPageData {
@@ -51,7 +51,7 @@ const fadeUp = {
 export function LegalPage() {
   const { navigate, nav } = useApp();
   const pageType = nav.params.type || 'terms';
-  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType.toUpperCase(), icon: <FileText className="size-5" />, gradient: 'from-emerald-500 to-teal-500' };
+  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType.toUpperCase(), icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(
     `/api/legal/${pageInfo.type}`
@@ -133,7 +133,7 @@ export function LegalPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mesh-bg min-h-screen mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
       <motion.div {...fadeUp} transition={{ duration: 0.4 }}>
         <Breadcrumb className="mb-6">
@@ -192,7 +192,7 @@ export function LegalPage() {
 
       {error && (
         <motion.div {...fadeUp} className="py-16 text-center">
-          <div className="glass mx-auto max-w-md rounded-2xl p-8">
+          <div className="glass-emerald mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
             <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-red-50">
               <AlertCircle className="size-8 text-red-400" />
             </div>
@@ -216,7 +216,7 @@ export function LegalPage() {
               className="hidden lg:block"
             >
               <div className="sticky top-24">
-                <div className="overflow-hidden rounded-2xl border-0 bg-white shadow-lg">
+                <div className="glass-emerald overflow-hidden rounded-2xl border border-white/20 shadow-lg">
                   <div className={`h-1.5 bg-gradient-to-r ${pageInfo.gradient}`} />
                   <div className="p-5">
                     <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Contents</h3>
@@ -247,7 +247,7 @@ export function LegalPage() {
                 </div>
 
                 {/* Other Legal Pages */}
-                <div className="mt-4 overflow-hidden rounded-2xl border-0 bg-white shadow-lg">
+                <div className="glass-emerald mt-4 overflow-hidden rounded-2xl border border-white/20 shadow-lg">
                   <div className="p-5">
                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-500">Other Pages</h3>
                     <div className="space-y-1">
@@ -279,13 +279,13 @@ export function LegalPage() {
             transition={{ duration: 0.5, delay: 0.15 }}
             className={tableOfContents.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}
           >
-            <div className="overflow-hidden rounded-2xl border-0 bg-white shadow-lg">
+            <div className="glass-emerald overflow-hidden rounded-2xl border border-white/20 shadow-lg">
               <div className={`h-1.5 bg-gradient-to-r ${pageInfo.gradient}`} />
               <div className="p-6 sm:p-8 lg:p-10">
                 {/* Header */}
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg`}>
+                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg shadow-emerald-500/20`}>
                       {pageInfo.icon}
                     </div>
                     <div>
@@ -314,11 +314,11 @@ export function LegalPage() {
                 </div>
 
                 {/* Separator */}
-                <div className="mb-8 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+                <div className="mb-8 h-px bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
 
                 {/* Mobile TOC */}
                 {tableOfContents.length > 0 && (
-                  <div className="mb-8 rounded-xl bg-gray-50 p-4 lg:hidden">
+                  <div className="mb-8 rounded-xl bg-emerald-50/50 border border-emerald-100/50 p-4 lg:hidden">
                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-500">Table of Contents</h3>
                     <nav className="space-y-1 max-h-48 overflow-y-auto">
                       {tableOfContents.map((section, idx) => (
@@ -375,7 +375,7 @@ export function LegalPage() {
 
       {!loading && !error && !data && (
         <motion.div {...fadeUp} className="py-16 text-center">
-          <div className="glass mx-auto max-w-md rounded-2xl p-8">
+          <div className="glass-emerald mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
             <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50">
               <FileText className="size-8 text-gray-400" />
             </div>
@@ -395,7 +395,7 @@ export function LegalPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-600 hover:to-teal-600 transition-all"
+            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-700 hover:to-teal-700 transition-all"
             aria-label="Back to top"
           >
             <ArrowUp className="size-5" />

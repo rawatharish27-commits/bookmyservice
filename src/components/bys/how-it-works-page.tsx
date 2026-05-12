@@ -44,7 +44,7 @@ const clientSteps = [
     title: 'Create Your Account',
     description: 'Sign up for free with your email and phone number. Verify your account to get started.',
     icon: <UserPlus className="size-6" />,
-    gradient: 'from-emerald-500 to-teal-500',
+    gradient: 'from-emerald-600 to-teal-600',
     illustration: '📝',
   },
   {
@@ -52,7 +52,7 @@ const clientSteps = [
     title: 'Search for Services',
     description: 'Browse through categories or use our search to find the service you need. Filter by location, price, and ratings.',
     icon: <Search className="size-6" />,
-    gradient: 'from-teal-500 to-cyan-500',
+    gradient: 'from-teal-600 to-cyan-600',
     illustration: '🔍',
   },
   {
@@ -60,7 +60,7 @@ const clientSteps = [
     title: 'Compare Providers',
     description: 'View detailed profiles, read reviews, compare prices, and check availability to find the best match.',
     icon: <Users className="size-6" />,
-    gradient: 'from-cyan-500 to-blue-500',
+    gradient: 'from-cyan-600 to-blue-600',
     illustration: '⚖️',
   },
   {
@@ -68,7 +68,7 @@ const clientSteps = [
     title: 'Book & Schedule',
     description: 'Select your preferred date and time, add any special instructions, and confirm your booking.',
     icon: <CalendarCheck className="size-6" />,
-    gradient: 'from-emerald-500 to-emerald-600',
+    gradient: 'from-emerald-600 to-emerald-700',
     illustration: '📅',
   },
   {
@@ -76,7 +76,7 @@ const clientSteps = [
     title: 'Make Secure Payment',
     description: 'Pay securely through our platform. Your payment is held in escrow until the service is completed.',
     icon: <CreditCard className="size-6" />,
-    gradient: 'from-amber-500 to-orange-500',
+    gradient: 'from-amber-600 to-orange-600',
     illustration: '💳',
   },
   {
@@ -84,7 +84,7 @@ const clientSteps = [
     title: 'Get Service Done',
     description: 'A verified professional arrives at your location and completes the work as agreed.',
     icon: <CheckCircle2 className="size-6" />,
-    gradient: 'from-emerald-600 to-teal-600',
+    gradient: 'from-emerald-700 to-teal-700',
     illustration: '✅',
   },
   {
@@ -92,7 +92,7 @@ const clientSteps = [
     title: 'Review & Rate',
     description: 'After completion, rate the service and leave a review to help other users make informed decisions.',
     icon: <Star className="size-6" />,
-    gradient: 'from-amber-400 to-yellow-500',
+    gradient: 'from-amber-500 to-yellow-600',
     illustration: '⭐',
   },
 ];
@@ -103,7 +103,7 @@ const providerSteps = [
     title: 'Register as Provider',
     description: 'Sign up with a provider account. Fill in your professional details and areas of expertise.',
     icon: <UserPlus className="size-6" />,
-    gradient: 'from-emerald-500 to-teal-500',
+    gradient: 'from-emerald-600 to-teal-600',
     illustration: '📝',
   },
   {
@@ -111,7 +111,7 @@ const providerSteps = [
     title: 'Complete KYC Verification',
     description: 'Submit your identity documents for verification. This builds trust with potential customers.',
     icon: <Shield className="size-6" />,
-    gradient: 'from-teal-500 to-cyan-500',
+    gradient: 'from-teal-600 to-cyan-600',
     illustration: '🛡️',
   },
   {
@@ -119,7 +119,7 @@ const providerSteps = [
     title: 'List Your Services',
     description: 'Create detailed service listings with pricing, availability, and service areas. Add photos to attract customers.',
     icon: <Briefcase className="size-6" />,
-    gradient: 'from-cyan-500 to-blue-500',
+    gradient: 'from-cyan-600 to-blue-600',
     illustration: '📋',
   },
   {
@@ -127,7 +127,7 @@ const providerSteps = [
     title: 'Set Your Schedule',
     description: 'Define your availability for each day of the week. Manage your calendar to avoid conflicts.',
     icon: <Clock className="size-6" />,
-    gradient: 'from-emerald-500 to-emerald-600',
+    gradient: 'from-emerald-600 to-emerald-700',
     illustration: '🕐',
   },
   {
@@ -135,7 +135,7 @@ const providerSteps = [
     title: 'Receive Bookings',
     description: 'Get notified of new booking requests. Accept or reject based on your availability and preferences.',
     icon: <ClipboardList className="size-6" />,
-    gradient: 'from-amber-500 to-orange-500',
+    gradient: 'from-amber-600 to-orange-600',
     illustration: '📩',
   },
   {
@@ -143,7 +143,7 @@ const providerSteps = [
     title: 'Complete the Service',
     description: 'Arrive on time, deliver quality work, and mark the service as completed through the platform.',
     icon: <CheckCircle2 className="size-6" />,
-    gradient: 'from-emerald-600 to-teal-600',
+    gradient: 'from-emerald-700 to-teal-700',
     illustration: '✅',
   },
   {
@@ -151,7 +151,7 @@ const providerSteps = [
     title: 'Get Paid',
     description: 'Receive your earnings directly to your account. Track all payments and earnings through your dashboard.',
     icon: <DollarSign className="size-6" />,
-    gradient: 'from-emerald-400 to-teal-500',
+    gradient: 'from-emerald-500 to-teal-600',
     illustration: '💰',
   },
 ];
@@ -207,7 +207,7 @@ export function HowItWorksPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="text-gradient font-semibold">How It Works</BreadcrumbPage>
+              <BreadcrumbPage className="text-gradient-ocean font-semibold">How It Works</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -218,7 +218,7 @@ export function HowItWorksPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-10 sm:p-14"
+        className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700 p-10 sm:p-14"
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -259,7 +259,7 @@ export function HowItWorksPage() {
             onClick={() => setActiveTab('client')}
             className={`relative flex flex-1 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium transition-all duration-300 ${
               activeTab === 'client'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
                 : 'text-muted-foreground hover:bg-gray-50'
             }`}
           >
@@ -271,7 +271,7 @@ export function HowItWorksPage() {
             onClick={() => setActiveTab('provider')}
             className={`relative flex flex-1 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium transition-all duration-300 ${
               activeTab === 'provider'
-                ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white shadow-md'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
                 : 'text-muted-foreground hover:bg-gray-50'
             }`}
           >
@@ -297,7 +297,7 @@ export function HowItWorksPage() {
               initial={{ height: 0 }}
               animate={{ height: '100%' }}
               transition={{ duration: 1.5, ease: 'easeOut' }}
-              className="w-full bg-gradient-to-b from-emerald-400 via-teal-400 to-cyan-400"
+              className="w-full bg-gradient-to-b from-emerald-500 via-teal-500 to-cyan-500"
             />
           </div>
 
@@ -321,13 +321,13 @@ export function HowItWorksPage() {
                     {step.icon}
                   </motion.div>
                   {/* Step number badge */}
-                  <div className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-600 shadow-md ring-2 ring-emerald-200">
+                  <div className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-700 shadow-md ring-2 ring-emerald-300">
                     {step.step}
                   </div>
                 </div>
 
                 {/* Card */}
-                <div className="group flex-1 overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-md transition-all duration-300 hover:shadow-xl hover:border-emerald-200/50">
+                <div className="group flex-1 overflow-hidden rounded-2xl border border-gray-100 glass-emerald shadow-md transition-all duration-300 hover:shadow-xl hover:border-emerald-300/50">
                   <div className="flex">
                     {/* Left gradient accent bar */}
                     <div className={`hidden w-1.5 shrink-0 bg-gradient-to-b ${step.gradient} sm:block`} />
@@ -381,9 +381,9 @@ export function HowItWorksPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1, duration: 0.3 }}
-              className="glass rounded-2xl p-5 text-center shadow-md"
+              className="glass-emerald rounded-2xl p-5 text-center shadow-md"
             >
-              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
+              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
                 {item.icon}
               </div>
               <h4 className="font-semibold text-gray-900">{item.title}</h4>
@@ -402,14 +402,14 @@ export function HowItWorksPage() {
         className="mt-8"
       >
         {activeTab === 'client' ? (
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-10 text-center">
+          <div className="relative overflow-hidden rounded-3xl mesh-bg p-10 text-center">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -right-16 -top-16 size-48 rounded-full bg-emerald-100/50" />
               <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-teal-100/50" />
             </div>
             <div className="relative">
               <h2 className="text-3xl font-bold text-gray-900">
-                Ready to Find a <span className="text-gradient">Service</span>?
+                Ready to Find a <span className="text-gradient-ocean">Service</span>?
               </h2>
               <p className="mx-auto mt-3 max-w-md text-muted-foreground">
                 Browse through thousands of verified service providers and book with confidence
@@ -418,7 +418,7 @@ export function HowItWorksPage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('categories')}
-                  className="shimmer rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-8 text-white shadow-lg shadow-emerald-500/25 hover:from-emerald-600 hover:to-teal-600"
+                  className="shimmer rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-8 text-white shadow-lg shadow-emerald-600/25 hover:from-emerald-700 hover:to-teal-700"
                 >
                   Browse Services <ArrowRight className="ml-2 size-4" />
                 </Button>
@@ -426,7 +426,7 @@ export function HowItWorksPage() {
                   size="lg"
                   variant="outline"
                   onClick={() => navigate('register')}
-                  className="rounded-xl border-emerald-200 px-8 text-emerald-600 hover:bg-emerald-50"
+                  className="rounded-xl border-emerald-300 px-8 text-emerald-700 hover:bg-emerald-50"
                 >
                   Create Account
                 </Button>
@@ -434,7 +434,7 @@ export function HowItWorksPage() {
             </div>
           </div>
         ) : (
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-700 p-10 text-center">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700 p-10 text-center">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -right-16 -top-16 size-48 rounded-full bg-white/5" />
               <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-white/5" />
@@ -474,7 +474,7 @@ export function HowItWorksPage() {
       >
         <div className="text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Frequently Asked <span className="text-gradient">Questions</span>
+            Frequently Asked <span className="text-gradient-ocean">Questions</span>
           </h2>
           <p className="mt-3 text-muted-foreground">
             Common questions about how BookYourService works
@@ -483,10 +483,10 @@ export function HowItWorksPage() {
         <div className="mx-auto mt-8 max-w-2xl">
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl border border-gray-100 bg-white px-4 shadow-sm mb-3 data-[state=open]:shadow-md data-[state=open]:border-emerald-200/50 transition-all">
+              <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl border border-gray-100 glass-emerald px-4 shadow-sm mb-3 data-[state=open]:shadow-md data-[state=open]:border-emerald-300/50 transition-all">
                 <AccordionTrigger className="text-left hover:no-underline py-4">
                   <span className="flex items-center gap-3">
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-xs font-bold text-white">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-teal-600 text-xs font-bold text-white">
                       {i + 1}
                     </span>
                     {faq.q}
@@ -503,7 +503,7 @@ export function HowItWorksPage() {
           <Button
             variant="outline"
             onClick={() => navigate('faq')}
-            className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50"
           >
             View All FAQs <ArrowRight className="ml-1 size-4" />
           </Button>

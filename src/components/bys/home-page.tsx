@@ -338,7 +338,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4 }}
-          className="glass rounded-3xl p-8 text-center shadow-lg sm:p-10"
+          className="glass-emerald rounded-3xl p-8 text-center shadow-xl sm:p-10"
         >
           <Quote className="mx-auto mb-4 size-10 text-emerald-400/60" />
           <p className="mb-6 text-lg leading-relaxed text-foreground/90 sm:text-xl">&ldquo;{t.quote}&rdquo;</p>
@@ -573,26 +573,27 @@ export function HomePage() {
   return (
     <div className="flex flex-col">
       {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-700 to-teal-600">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700">
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Large gradient orbs */}
-          <div className="absolute -left-40 -top-40 size-[600px] rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-400/10 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-teal-400/20 to-emerald-300/10 blur-3xl" />
-          <div className="absolute left-1/2 top-1/3 size-[300px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-400/10 to-orange-300/5 blur-3xl" />
+          <div className="absolute -left-40 -top-40 size-[600px] rounded-full bg-gradient-to-br from-blue-600/30 to-cyan-400/20 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-teal-500/30 to-emerald-400/15 blur-3xl" />
+          <div className="absolute left-1/2 top-1/3 size-[300px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-400/10 blur-3xl" />
+          <div className="absolute right-1/4 bottom-1/4 size-[250px] rounded-full bg-gradient-to-br from-violet-500/10 to-fuchsia-400/5 blur-3xl" />
           {/* Animated floating shapes */}
           <motion.div
-            className="absolute -left-20 -top-20 size-80 rounded-full bg-white/[0.04]"
+            className="absolute -left-20 -top-20 size-80 rounded-full bg-cyan-400/[0.08]"
             animate={{ x: [0, 40, 0], y: [0, -30, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-10 right-10 size-60 rounded-full bg-white/[0.04]"
+            className="absolute -bottom-10 right-10 size-60 rounded-full bg-emerald-400/[0.08]"
             animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/4 top-1/4 size-40 rounded-full bg-white/[0.04]"
+            className="absolute left-1/4 top-1/4 size-40 rounded-full bg-amber-400/[0.06]"
             animate={{ scale: [1, 1.3, 1] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -773,7 +774,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Live Stats Bar ═══════════ */}
-      <section className="relative z-10 -mt-2 bg-white/90">
+      <section className="relative z-10 -mt-2 mesh-bg">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {[
@@ -788,7 +789,7 @@ export function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="glass group rounded-2xl p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+                className="glass group rounded-2xl p-4 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-emerald-200/60 border border-transparent"
               >
                 <div className="flex items-center gap-3">
                   <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-sm`}>
@@ -796,7 +797,7 @@ export function HomePage() {
                   </div>
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <p className="text-xl font-bold text-foreground">
+                      <p className="text-2xl font-extrabold text-foreground">
                         <AnimatedCounter value={stat.value} loading={!liveStats} />
                       </p>
                       {stat.live && (
@@ -816,7 +817,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Service Categories ═══════════ */}
-      <section className="bg-gray-50/50 py-20">
+      <section className="mesh-bg py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -953,7 +954,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ How It Works ═══════════ */}
-      <section className="bg-white py-20">
+      <section className="mesh-bg py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -974,9 +975,9 @@ export function HomePage() {
 
           <div className="relative mt-16">
             {/* Connecting line - desktop */}
-            <div className="absolute left-0 right-0 top-24 hidden h-0.5 bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-200 sm:block">
+            <div className="absolute left-0 right-0 top-24 hidden h-0.5 bg-gradient-to-r from-emerald-200 via-cyan-300 to-amber-200 sm:block">
               <motion.div
-                className="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500"
+                className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500"
                 initial={{ width: '0%' }}
                 whileInView={{ width: '100%' }}
                 viewport={{ once: true }}
@@ -991,21 +992,21 @@ export function HomePage() {
                   title: 'Search & Compare',
                   description: 'Browse through our verified service providers. Read genuine reviews, compare prices, and pick the best match.',
                   icon: <Search className="size-7" />,
-                  color: 'from-emerald-500 to-teal-500',
+                  color: 'from-emerald-600 to-teal-500',
                 },
                 {
                   step: '2',
                   title: 'Book & Schedule',
                   description: 'Choose your preferred time slot, confirm your booking, and get instant confirmation from verified professionals.',
                   icon: <CalendarCheck className="size-7" />,
-                  color: 'from-teal-500 to-cyan-500',
+                  color: 'from-teal-600 to-cyan-500',
                 },
                 {
                   step: '3',
                   title: 'Get It Done',
                   description: 'A KYC-verified professional arrives on time, completes the work, and you leave a review for the community.',
                   icon: <CheckCircle2 className="size-7" />,
-                  color: 'from-cyan-500 to-emerald-500',
+                  color: 'from-cyan-600 to-emerald-500',
                 },
               ].map((item, idx) => (
                 <motion.div
@@ -1019,7 +1020,7 @@ export function HomePage() {
                 >
                   {/* Icon container */}
                   <motion.div
-                    className="mx-auto flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600 shadow-lg ring-1 ring-emerald-100"
+                    className="mx-auto flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-700 shadow-xl ring-1 ring-emerald-200/50"
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -1047,7 +1048,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Featured Services ═══════════ */}
-      <section className="bg-gray-50/50 py-20">
+      <section className="mesh-bg py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between">
             <motion.div
@@ -1182,23 +1183,24 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Provider CTA Section ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-600 py-20">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-600 py-20">
         {/* Parallax-like decorative elements */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[400px] rounded-full bg-gradient-to-br from-teal-400/10 to-emerald-300/5 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-blue-400/10 to-cyan-300/5 blur-3xl" />
+          <div className="absolute -left-20 top-0 size-[400px] rounded-full bg-gradient-to-br from-teal-500/20 to-emerald-400/10 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-blue-500/15 to-cyan-400/10 blur-3xl" />
+          <div className="absolute left-1/2 top-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-400/5 blur-3xl" />
           <motion.div
-            className="absolute -right-10 -top-10 size-40 rounded-full bg-white/[0.04]"
+            className="absolute -right-10 -top-10 size-40 rounded-full bg-cyan-400/[0.08]"
             animate={{ scale: [1, 1.4, 1], rotate: [0, 30, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-8 left-10 size-32 rounded-full bg-white/[0.04]"
+            className="absolute -bottom-8 left-10 size-32 rounded-full bg-emerald-400/[0.08]"
             animate={{ scale: [1.2, 1, 1.2], rotate: [0, -20, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/3 top-1/4 size-24 rounded-full bg-white/[0.03]"
+            className="absolute left-1/3 top-1/4 size-24 rounded-full bg-amber-400/[0.06]"
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -1275,7 +1277,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Testimonials / Reviews Section ═══════════ */}
-      <section className="bg-gradient-to-b from-white to-emerald-50/30 py-20">
+      <section className="mesh-bg py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1307,7 +1309,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Trust & Safety Section ═══════════ */}
-      <section className="bg-white py-20">
+      <section className="mesh-bg py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1361,7 +1363,7 @@ export function HomePage() {
                 variants={scaleIn}
                 custom={idx}
               >
-                <Card className="group rounded-2xl border-0 bg-white text-center shadow-md transition-all duration-500 hover:shadow-xl">
+                <Card className="group rounded-2xl border-0 bg-white/80 text-center shadow-md transition-all duration-500 hover:shadow-xl hover:border-emerald-200/40 border border-transparent backdrop-blur-sm">
                   <CardContent className="p-8">
                     <div className={`mx-auto flex size-18 items-center justify-center rounded-2xl ${badge.bgGlow} relative`}>
                       {/* Gradient icon background */}

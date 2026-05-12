@@ -80,7 +80,7 @@ const CATEGORY_GRADIENTS: Record<string, {
 }> = {
   plumbing: {
     gradient: 'from-blue-500 to-cyan-500',
-    headerGradient: 'from-blue-600 via-blue-500 to-cyan-500',
+    headerGradient: 'from-blue-700 via-blue-600 to-cyan-500',
     lightBg: 'bg-blue-50',
     lightText: 'text-blue-700',
     glow: 'shadow-blue-500/25',
@@ -94,7 +94,7 @@ const CATEGORY_GRADIENTS: Record<string, {
   },
   electrical: {
     gradient: 'from-amber-500 to-yellow-500',
-    headerGradient: 'from-amber-600 via-amber-500 to-yellow-400',
+    headerGradient: 'from-amber-700 via-amber-600 to-yellow-500',
     lightBg: 'bg-amber-50',
     lightText: 'text-amber-700',
     glow: 'shadow-amber-500/25',
@@ -108,7 +108,7 @@ const CATEGORY_GRADIENTS: Record<string, {
   },
   'ac-hvac': {
     gradient: 'from-teal-500 to-emerald-500',
-    headerGradient: 'from-teal-600 via-teal-500 to-emerald-400',
+    headerGradient: 'from-teal-700 via-teal-600 to-emerald-500',
     lightBg: 'bg-teal-50',
     lightText: 'text-teal-700',
     glow: 'shadow-teal-500/25',
@@ -124,7 +124,7 @@ const CATEGORY_GRADIENTS: Record<string, {
 
 const DEFAULT_GRADIENT = {
   gradient: 'from-emerald-500 to-teal-500',
-  headerGradient: 'from-emerald-600 via-emerald-500 to-teal-400',
+  headerGradient: 'from-emerald-700 via-emerald-600 to-teal-500',
   lightBg: 'bg-emerald-50',
   lightText: 'text-emerald-700',
   glow: 'shadow-emerald-500/25',
@@ -321,22 +321,22 @@ export function CategoriesPage() {
   return (
     <div className="flex flex-col">
       {/* ═══════════ Hero Header ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-700 to-teal-600">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700">
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Category-colored orbs */}
           <motion.div
-            className="absolute -left-40 -top-40 size-[600px] rounded-full bg-gradient-to-br from-blue-500/20 to-cyan-400/10 blur-3xl"
+            className="absolute -left-40 -top-40 size-[600px] rounded-full bg-gradient-to-br from-cyan-500/30 to-blue-400/15 blur-3xl"
             animate={{ x: [0, 30, 0], y: [0, -20, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-teal-400/20 to-emerald-300/10 blur-3xl"
+            className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-cyan-400/25 to-teal-300/15 blur-3xl"
             animate={{ x: [0, -25, 0], y: [0, 20, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/2 top-1/3 size-[300px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-400/10 to-orange-300/5 blur-3xl"
+            className="absolute left-1/2 top-1/3 size-[300px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-400/20 to-cyan-300/10 blur-3xl"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -466,7 +466,7 @@ export function CategoriesPage() {
       </section>
 
       {/* ═══════════ Trust Badges ═══════════ */}
-      <section className="relative z-10 bg-white">
+      <section className="relative z-10 mesh-bg">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -478,10 +478,10 @@ export function CategoriesPage() {
             className="flex flex-wrap items-center justify-center gap-6 sm:gap-10"
           >
             {[
-              { icon: <ShieldCheck className="size-5" />, label: 'Verified Providers', gradient: 'from-emerald-500 to-teal-500' },
-              { icon: <Clock className="size-5" />, label: 'On-Time Service', gradient: 'from-blue-500 to-cyan-500' },
-              { icon: <Users className="size-5" />, label: 'Trusted by Thousands', gradient: 'from-amber-500 to-yellow-500' },
-              { icon: <CheckCircle2 className="size-5" />, label: 'Satisfaction Guaranteed', gradient: 'from-rose-500 to-pink-500' },
+              { icon: <ShieldCheck className="size-5" />, label: 'Verified Providers', gradient: 'from-emerald-700 to-teal-600' },
+              { icon: <Clock className="size-5" />, label: 'On-Time Service', gradient: 'from-blue-700 to-cyan-600' },
+              { icon: <Users className="size-5" />, label: 'Trusted by Thousands', gradient: 'from-amber-600 to-amber-400' },
+              { icon: <CheckCircle2 className="size-5" />, label: 'Satisfaction Guaranteed', gradient: 'from-rose-600 to-pink-500' },
             ].map((badge) => (
               <motion.div
                 key={badge.label}
@@ -500,7 +500,7 @@ export function CategoriesPage() {
       </section>
 
       {/* ═══════════ Categories Grid ═══════════ */}
-      <section className="bg-gray-50/50 py-16">
+      <section className="mesh-bg py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Error State */}
           {error && (
@@ -690,7 +690,7 @@ export function CategoriesPage() {
 
       {/* ═══════════ Why Choose Us Section ═══════════ */}
       {!loading && !error && categories.length > 0 && (
-        <section className="bg-white py-16">
+        <section className="mesh-bg py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial="hidden"
@@ -714,21 +714,21 @@ export function CategoriesPage() {
                   icon: <ShieldCheck className="size-6" />,
                   title: 'KYC Verified Providers',
                   desc: 'Every professional on our platform is background-verified and KYC approved for your safety.',
-                  gradient: 'from-emerald-500 to-teal-500',
+                  gradient: 'from-emerald-700 to-teal-600',
                   bg: 'bg-emerald-50',
                 },
                 {
                   icon: <TrendingUp className="size-6" />,
                   title: 'Transparent Pricing',
                   desc: 'No hidden charges. See exact pricing upfront before you book any service.',
-                  gradient: 'from-blue-500 to-cyan-500',
+                  gradient: 'from-blue-700 to-cyan-600',
                   bg: 'bg-blue-50',
                 },
                 {
                   icon: <Clock className="size-6" />,
                   title: 'On-Time Guarantee',
                   desc: 'Our professionals arrive on time or we compensate you for the delay.',
-                  gradient: 'from-amber-500 to-yellow-500',
+                  gradient: 'from-amber-600 to-amber-400',
                   bg: 'bg-amber-50',
                 },
               ].map((item, idx) => (
@@ -778,7 +778,7 @@ export function CategoriesPage() {
                 <div className="size-full rounded-3xl bg-white" />
               </div>
 
-              <div className="relative glass rounded-3xl px-8 py-12 text-center sm:px-16 sm:py-16">
+              <div className="relative glass-emerald rounded-3xl px-8 py-12 text-center sm:px-16 sm:py-16">
                 {/* Decorative gradient orbs inside */}
                 <div className="pointer-events-none absolute -left-10 -top-10 size-40 rounded-full bg-emerald-200/30 blur-3xl" />
                 <div className="pointer-events-none absolute -bottom-10 -right-10 size-40 rounded-full bg-teal-200/30 blur-3xl" />

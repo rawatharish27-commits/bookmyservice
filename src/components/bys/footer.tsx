@@ -98,7 +98,7 @@ function ServiceLinkButton({
       whileHover={{ x: 3 }}
       transition={{ duration: 0.2 }}
     >
-      <span className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 transition-all duration-200 group-hover:bg-emerald-100 group-hover:text-emerald-600 group-hover:shadow-sm">
+      <span className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 transition-all duration-200 group-hover:bg-emerald-100 group-hover:text-emerald-600 group-hover:shadow-sm glow-emerald">
         {link.icon}
       </span>
       <span className="relative">
@@ -133,10 +133,10 @@ export function Footer() {
   return (
     <footer className="mt-auto">
       {/* Gradient top border */}
-      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500" />
+      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-teal-500" />
 
       {/* Main footer content */}
-      <div className="bg-gradient-to-b from-gray-50 to-gray-100/80">
+      <div className="mesh-bg bg-gradient-to-b from-gray-50/95 to-gray-100/80">
         <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {/* About Column (spans 2 on lg) */}
@@ -148,7 +148,7 @@ export function Footer() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20">
+                <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-cyan-500 shadow-md shadow-emerald-500/25">
                   <Wrench className="size-4 text-white" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
                 </div>
@@ -168,7 +168,7 @@ export function Footer() {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="group flex size-9 items-center justify-center rounded-xl bg-white text-muted-foreground shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-500 hover:to-teal-500 hover:text-white hover:shadow-md hover:shadow-emerald-500/20"
+                    className="group flex size-9 items-center justify-center rounded-xl bg-white text-muted-foreground shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-600 hover:to-cyan-500 hover:text-white hover:shadow-lg hover:shadow-emerald-500/30"
                     aria-label={social.label}
                     onClick={(e) => e.preventDefault()}
                     whileHover={{ scale: 1.1, y: -2 }}
@@ -243,7 +243,7 @@ export function Footer() {
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-9 rounded-lg border-emerald-200 bg-white pl-9 text-sm focus-visible:ring-emerald-500"
+                      className="h-9 rounded-lg border-amber-200/80 bg-amber-50/30 pl-9 text-sm focus-visible:ring-amber-500"
                       required
                     />
                   </div>
@@ -251,7 +251,7 @@ export function Footer() {
                     <Button
                       type="submit"
                       size="sm"
-                      className="h-9 bg-gradient-to-r from-emerald-600 to-teal-600 px-3 text-white shadow-sm hover:from-emerald-700 hover:to-teal-700"
+                      className="h-9 bg-gradient-to-r from-amber-500 to-orange-500 px-3 text-white shadow-sm glow-amber hover:from-amber-600 hover:to-orange-600"
                     >
                       <Send className="size-3.5" />
                     </Button>
@@ -261,7 +261,7 @@ export function Footer() {
                   <motion.div
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-emerald-600"
+                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-amber-600"
                   >
                     <CheckCircle2 className="size-3.5" />
                     Subscribed successfully!
@@ -317,11 +317,11 @@ export function Footer() {
 
           {/* Gradient Divider */}
           <div className="relative my-8">
-            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent" />
           </div>
 
           {/* Bottom Bar */}
-          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-xl bg-gray-100/50 px-4 py-3 sm:flex-row">
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
               &copy; 2025{' '}
               <span className="font-semibold text-foreground">BookYourService</span>

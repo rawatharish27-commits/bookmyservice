@@ -162,7 +162,7 @@ function ActiveIndicator() {
   return (
     <motion.div
       layoutId="activeNavIndicator"
-      className="absolute -bottom-0.5 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+      className="absolute -bottom-0.5 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-400"
       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
     />
   );
@@ -174,8 +174,8 @@ function NotificationBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
     <span className="relative flex items-center justify-center">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 opacity-50" />
-      <span className="relative flex size-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-[9px] font-bold text-white shadow-sm">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-amber-400 to-orange-400 opacity-50" />
+      <span className="relative flex size-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-bold text-white shadow-sm">
         {count > 9 ? '9+' : count}
       </span>
     </span>
@@ -246,10 +246,10 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full transition-all duration-300 relative after:absolute after:bottom-0 after:inset-x-0 after:h-px after:transition-colors after:duration-500 ${
         scrolled
-          ? 'glass shadow-lg shadow-black/[0.04]'
-          : 'glass'
+          ? 'glass shadow-lg shadow-black/[0.04] after:bg-gradient-to-r after:from-transparent after:via-emerald-500/50 after:to-transparent'
+          : 'glass after:bg-transparent'
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -261,7 +261,7 @@ export function Header() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-emerald-500/30">
+          <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-cyan-500 shadow-md shadow-emerald-500/25 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/30">
             <Wrench className="size-4 text-white" />
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
           </div>
@@ -343,7 +343,7 @@ export function Header() {
                     whileTap={{ scale: 0.98 }}
                     aria-label="User menu"
                   >
-                    <Avatar className="size-8 ring-2 ring-emerald-200 ring-offset-2 ring-offset-white transition-all duration-200 hover:ring-emerald-400">
+                    <Avatar className="size-8 ring-2 ring-emerald-200 ring-offset-2 ring-offset-white transition-all duration-200 hover:ring-emerald-400 hover:shadow-md hover:shadow-emerald-400/25">
                       {user.profileImageUrl && (
                         <AvatarImage src={user.profileImageUrl} alt={user.name} />
                       )}
@@ -446,12 +446,12 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="glass w-[320px] overflow-y-auto border-0 p-0 shadow-2xl"
+              className="glass-emerald w-[320px] overflow-y-auto border-l border-emerald-200/30 p-0 shadow-2xl shadow-emerald-900/10"
             >
               {/* Mobile Header */}
-              <SheetHeader className="border-b border-emerald-100 px-5 py-5">
+              <SheetHeader className="border-b border-emerald-200/60 px-5 py-5">
                 <SheetTitle className="flex items-center gap-2.5">
-                  <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20">
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-cyan-500 shadow-md shadow-emerald-500/25">
                     <Wrench className="size-4 text-white" />
                   </div>
                   <span className="text-xl font-extrabold tracking-tight">
@@ -463,7 +463,7 @@ export function Header() {
 
               {/* Mobile User Info */}
               {user && (
-                <div className="border-b border-emerald-100 px-5 py-4">
+                <div className="border-b border-emerald-200/60 px-5 py-4">
                   <div className="flex items-center gap-3">
                     <Avatar className="size-11 ring-2 ring-emerald-200 ring-offset-2">
                       {user.profileImageUrl && (
@@ -494,7 +494,7 @@ export function Header() {
                       onClick={() => handleNavigate(link.page)}
                       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                         isActive(link.page)
-                          ? 'bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 shadow-sm'
+                          ? 'bg-gradient-to-r from-emerald-50 to-cyan-50 text-emerald-700 shadow-sm shadow-emerald-500/10'
                           : 'text-muted-foreground hover:bg-emerald-50/50 hover:text-foreground'
                       }`}
                       initial={{ opacity: 0, x: 20 }}
@@ -521,7 +521,7 @@ export function Header() {
               {/* Mobile Auth Section */}
               {user ? (
                 <>
-                  <div className="border-t border-emerald-100 px-3 py-3">
+                  <div className="border-t border-emerald-200/60 px-3 py-3">
                     <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                       Account
                     </p>
@@ -540,7 +540,7 @@ export function Header() {
                       </SheetClose>
                     ))}
                   </div>
-                  <div className="border-t border-emerald-100 px-3 py-3">
+                  <div className="border-t border-emerald-200/60 px-3 py-3">
                     <SheetClose asChild>
                       <motion.button
                         onClick={() => {
@@ -559,7 +559,7 @@ export function Header() {
                   </div>
                 </>
               ) : (
-                <div className="border-t border-emerald-100 px-5 py-5">
+                <div className="border-t border-emerald-200/60 px-5 py-5">
                   <div className="flex flex-col gap-3">
                     <SheetClose asChild>
                       <motion.div

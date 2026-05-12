@@ -15,9 +15,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const specializations = [
-  { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-400 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
-  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-amber-400 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Wiring, switches, fixtures' },
-  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-400 to-emerald-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
+  { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-500 to-cyan-500', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
+  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-amber-500 to-yellow-500', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Wiring, switches, fixtures' },
+  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 to-emerald-500', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
 ];
 
 const trustBadges = [
@@ -34,11 +34,11 @@ function getPasswordStrength(password: string): { label: string; color: string; 
   if (/[0-9]/.test(password)) score++;
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
-  if (score <= 1) return { label: 'Very Weak', color: 'bg-red-500', width: 'w-1/5', emoji: '😩', score };
-  if (score === 2) return { label: 'Weak', color: 'bg-orange-500', width: 'w-2/5', emoji: '😕', score };
-  if (score === 3) return { label: 'Fair', color: 'bg-yellow-500', width: 'w-3/5', emoji: '😐', score };
-  if (score === 4) return { label: 'Strong', color: 'bg-emerald-500', width: 'w-4/5', emoji: '😊', score };
-  return { label: 'Very Strong', color: 'bg-emerald-600', width: 'w-full', emoji: '💪', score };
+  if (score <= 1) return { label: 'Very Weak', color: 'bg-gradient-to-r from-red-500 to-red-600', width: 'w-1/5', emoji: '😩', score };
+  if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-orange-500 to-amber-500', width: 'w-2/5', emoji: '😕', score };
+  if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-amber-400', width: 'w-3/5', emoji: '😐', score };
+  if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-emerald-500 to-teal-400', width: 'w-4/5', emoji: '😊', score };
+  return { label: 'Very Strong', color: 'bg-gradient-to-r from-emerald-600 to-cyan-500', width: 'w-full', emoji: '💪', score };
 }
 
 export function RegisterPage() {
@@ -128,11 +128,12 @@ export function RegisterPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-800 via-teal-700 to-cyan-800">
         {/* Mesh gradient overlays */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(16,185,129,0.4),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(20,184,166,0.3),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(5,150,105,0.35),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(16,185,129,0.45),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(6,182,212,0.3),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_10%,rgba(245,158,11,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_60%,rgba(20,184,166,0.25),transparent_50%)]" />
 
         {/* Dot pattern */}
         <div className="absolute inset-0 opacity-[0.07]" style={{
@@ -241,7 +242,7 @@ export function RegisterPage() {
           </motion.button>
 
           {/* ========== GLASSMORPHISM CARD ========== */}
-          <div className="glass rounded-2xl shadow-xl shadow-emerald-900/5 border-emerald-100/50 relative overflow-hidden">
+          <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/5 border-emerald-100/50 relative overflow-hidden">
             {/* Subtle border glow */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/60" />
 
@@ -278,7 +279,7 @@ export function RegisterPage() {
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-2 rounded-full bg-emerald-100 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500"
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400"
                     initial={{ width: 0 }}
                     animate={{ width: `${(filledSteps / totalSteps) * 100}%` }}
                     transition={{ type: 'spring', stiffness: 120, damping: 18 }}
@@ -298,7 +299,7 @@ export function RegisterPage() {
                     <TabsTrigger
                       key={tab}
                       value={tab}
-                      className="flex-1 py-3 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-500/25 transition-all duration-300 text-sm font-medium"
+                      className="flex-1 py-3 rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-600/30 transition-all duration-300 text-sm font-medium"
                     >
                       {tab === 'client' ? (
                         <><User className="size-4 mr-2" />Sign up as Client</>
@@ -524,7 +525,7 @@ export function RegisterPage() {
                     {/* Gradient shimmer submit button */}
                     <Button
                       type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                      className="w-full shimmer bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                       disabled={loading}
                     >
                       {loading ? (
@@ -806,7 +807,7 @@ export function RegisterPage() {
                     {/* Gradient shimmer submit button */}
                     <Button
                       type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 shadow-lg shadow-emerald-500/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                      className="w-full shimmer bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                       disabled={loading}
                     >
                       {loading ? (
@@ -847,8 +848,8 @@ export function RegisterPage() {
           >
             {trustBadges.map(({ icon: Icon, label }) => (
               <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <div className="flex size-6 items-center justify-center rounded-full bg-emerald-50 border border-emerald-100">
-                  <Icon className="size-3 text-emerald-600" />
+                <div className="flex size-6 items-center justify-center rounded-full bg-emerald-100 border border-emerald-200/80 shadow-sm shadow-emerald-200/50">
+                  <Icon className="size-3 text-emerald-700" />
                 </div>
                 <span>{label}</span>
               </div>
