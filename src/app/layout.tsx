@@ -14,23 +14,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BookYourService - Find Trusted Home Service Professionals",
-  description: "Book verified professionals for cleaning, plumbing, electrical work, and more. Get quality service with our satisfaction guarantee.",
-  keywords: ["home services", "service marketplace", "book services", "cleaning", "plumbing", "electrical", "painting", "BookYourService"],
-  authors: [{ name: "BookYourService" }],
+  title: "BookYourService - Trusted Home Service Professionals in India",
+  description: "Book verified professionals for Plumbing, Electrical, and AC & HVAC home services across India. KYC verified providers, transparent pricing (₹199-₹499), and satisfaction guarantee. BookYourService Technologies Pvt. Ltd.",
+  keywords: ["home services", "service marketplace India", "plumbing repair", "electrician booking", "AC repair service", "HVAC service", "BookYourService", "home maintenance India", "verified service providers"],
+  authors: [{ name: "BookYourService Technologies Pvt. Ltd." }],
   icons: {
     icon: "/favicon.ico",
   },
+  metadataBase: new URL("https://bookyourservice.co.in"),
   openGraph: {
-    title: "BookYourService - Find Trusted Home Service Professionals",
-    description: "Book verified professionals for home services with our satisfaction guarantee.",
+    title: "BookYourService - Trusted Home Service Professionals",
+    description: "Book verified professionals for Plumbing, Electrical, and AC & HVAC services. Transparent pricing starting ₹199.",
     siteName: "BookYourService",
     type: "website",
+    url: "https://bookyourservice.co.in",
+    locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BookYourService - Find Trusted Home Service Professionals",
-    description: "Book verified professionals for home services with our satisfaction guarantee.",
+    title: "BookYourService - Trusted Home Service Professionals",
+    description: "Book verified professionals for Plumbing, Electrical, and AC & HVAC services. Starting ₹199.",
+  },
+  robots: {
+    index: true,
+    follow: true,
   },
 };
 

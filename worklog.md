@@ -1022,3 +1022,45 @@ Stage Summary:
 - HTML nesting error resolved: <span> elements now used inside <p> tags instead of <div>
 - Hydration mismatch resolved: All Math.random() replaced with deterministic pseudo-random values
 - No remaining console errors
+
+---
+Task ID: pricing-and-cloudflare
+Agent: Main Agent
+Task: Fix service prices to ₹199-₹499 range and make app Cloudflare deployment ready
+
+Work Log:
+- Fixed all 14 service prices in seed.ts to be within ₹199-₹499 range:
+  - Professional Leak Repair: ₹499 (was ₹499, no change)
+  - Toilet Installation: ₹399 (was ₹699)
+  - House Wiring: ₹499 (was ₹2999)
+  - Light Fixture Installation: ₹349 (was ₹399→₹349)
+  - Smart Home Automation: ₹499 (was ₹4999)
+  - AC Deep Cleaning: ₹349 (was ₹599)
+  - AC Installation: ₹499 (was ₹1299)
+  - AC Gas Refilling: ₹499 (was ₹1899)
+  - AC Repair: ₹399 (was ₹399, no change)
+  - Drain Cleaning: ₹349 (was ₹599)
+  - Water Heater Repair: ₹449 (was ₹449, no change)
+  - HVAC Duct Cleaning: ₹499 (was ₹2499)
+  - Ceiling Fan Installation: ₹349 (was ₹349, no change)
+  - Circuit Breaker Repair: ₹399 (was ₹799)
+- Updated all 12 booking prices in seed.ts to match new service prices
+- Updated provider create service page with price validation: min ₹199, max ₹499
+- Updated provider create service form label to show "(₹199 - ₹499)" hint
+- Installed @opennextjs/cloudflare for Cloudflare Pages deployment
+- Created wrangler.jsonc with Cloudflare Workers config (nodejs_compat)
+- Created open-next.config.ts with cloudflare-node wrapper and edge converter
+- Updated next.config.ts: removed standalone output, added images.unoptimized
+- Updated package.json with new scripts: build:cf, preview:cf, deploy:cf
+- Updated .gitignore with .open-next/ and .wrangler/ entries
+- Updated layout.tsx metadata with production SEO (bookyourservice.co.in, ₹199-₹499 pricing, India locale)
+- Re-seeded database with all new prices
+- Lint: Clean, no errors
+- All APIs returning 200
+
+Stage Summary:
+- All 14 service prices now in ₹199-₹499 range ✅
+- All 12 booking prices updated ✅
+- Provider service creation enforces ₹199-₹499 ✅
+- Cloudflare deployment config ready (wrangler.jsonc, open-next.config.ts) ✅
+- Build commands: `bun run build:cf` → `bun run deploy:cf` ✅

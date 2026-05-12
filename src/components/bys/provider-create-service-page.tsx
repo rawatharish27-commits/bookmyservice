@@ -113,8 +113,13 @@ export function ProviderCreateServicePage() {
       return;
     }
 
-    if (parseFloat(basePrice) < 50) {
-      alert('Base price must be at least ₹50');
+    if (parseFloat(basePrice) < 199) {
+      alert('Base price must be at least ₹199');
+      return;
+    }
+
+    if (parseFloat(basePrice) > 499) {
+      alert('Base price must not exceed ₹499');
       return;
     }
 
@@ -228,11 +233,12 @@ export function ProviderCreateServicePage() {
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Base Price (₹) *</Label>
+                <Label>Base Price (₹) * <span className="text-xs text-muted-foreground">(₹199 - ₹499)</span></Label>
                 <Input
                   type="number"
-                  min="50"
-                  placeholder="Min ₹50"
+                  min="199"
+                  max="499"
+                  placeholder="₹199 - ₹499"
                   value={basePrice}
                   onChange={(e) => setBasePrice(e.target.value)}
                 />
