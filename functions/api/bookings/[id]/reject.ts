@@ -5,15 +5,10 @@
  *   - Changes status to 'REJECTED'
  */
 
-import { queryOne, execute } from '../../../_shared/db';
+import { createSupabaseClient, Env } from '../../../_shared/db';
 import { requireAuth, requireRole } from '../../../_shared/auth';
 import { json, unauthorized, forbidden, notFound, error } from '../../../_shared/response';
 import { sanitizeString } from '../../../_shared/security';
-
-interface Env {
-  DB: D1Database;
-  JWT_SECRET?: string;
-}
 
 export async function onRequestPost(context: { request: Request; env: Env; params: { id: string } }): Promise<Response> {
   try {
@@ -34,11 +29,18 @@ export async function onRequestPost(context: { request: Request; env: Env; param
       return error('rejectionReason is required');
     }
 
-    const booking = await queryOne(
-      context.env.DB,
-      `SELECT * FROM Booking WHERE id = ?`,
-      [bookingId]
-    );
+    const supabase = createSupabaseClient(context.env);
+
+    const { data: booking, error: fetchError } = await supabase
+      .from('Booking')
+      .select('*')
+      .eq('id', bookingId)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('Reject booking error:', fetchError);
+      return error('Failed to fetch booking', 500);
+    }
 
     if (!booking) {
       return notFound('Booking not found');
@@ -56,20 +58,37 @@ export async function onRequestPost(context: { request: Request; env: Env; param
       return error(`Booking cannot be rejected. Current status: ${bookingData.status}`);
     }
 
-    await execute(
-      context.env.DB,
-      `UPDATE Booking SET status = 'REJECTED', cancellationReason = ?, cancelledBy = ?, cancelledAt = datetime('now'), updatedAt = datetime('now') WHERE id = ?`,
-      [rejectionReason, user.userId, bookingId]
-    );
+    const now = new Date().toISOString();
+
+    const { error: updateError } = await supabase
+      .from('Booking')
+      .update({
+        status: 'REJECTED',
+        cancellationReason: rejectionReason,
+        cancelledBy: user.userId,
+        cancelledAt: now,
+        updatedAt: now,
+      })
+      .eq('id', bookingId);
+
+    if (updateError) {
+      console.error('Reject booking update error:', updateError);
+      return error('Failed to reject booking', 500);
+    }
 
     // Notify the client
     const notifId = `notif_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, createdAt)
-       VALUES (?, ?, 'BOOKING', 'Booking Rejected', ?, ?, datetime('now'))`,
-      [notifId, bookingData.clientId, `Your booking has been rejected. Reason: ${rejectionReason}`, `/bookings/${bookingId}`]
-    );
+    await supabase
+      .from('Notification')
+      .insert({
+        id: notifId,
+        userId: String(bookingData.clientId),
+        type: 'BOOKING',
+        title: 'Booking Rejected',
+        message: `Your booking has been rejected. Reason: ${rejectionReason}`,
+        actionUrl: `/bookings/${bookingId}`,
+        createdAt: now,
+      });
 
     return json({ message: 'Booking rejected', bookingId, status: 'REJECTED' });
   } catch (err) {

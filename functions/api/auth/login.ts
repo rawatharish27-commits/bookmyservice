@@ -3,7 +3,7 @@
  * Authenticates a user with email and password.
  */
 
-import { queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { signAccessToken, signRefreshToken } from '../../_shared/auth';
 import { verifyPassword } from '../../_shared/password';
 import { json, error, unauthorized, serverError } from '../../_shared/response';
@@ -15,7 +15,7 @@ interface LoginBody {
 }
 
 export async function onRequestPost(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database; JWT_SECRET: string } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     const body: LoginBody = await request.json();
@@ -32,54 +32,65 @@ export async function onRequestPost(context: EventContext<Record<string, unknown
       return error('Invalid email address format', 400);
     }
 
-    // ─── Look up user by email ───────────────────────────────────
-    const user = await queryOne(
-      env.DB,
-      `SELECT u.id, u.email, u.phone, u.passwordHash, u.name, u.roleId, u.status, u.profileImageUrl,
-              u.city, u.state, u.country, u.address, u.pincode, u.createdAt, u.updatedAt, r.name as role
-       FROM User u JOIN Role r ON u.roleId = r.id
-       WHERE u.email = ?`,
-      [sanitizedEmail]
-    ) as (Record<string, unknown> & { passwordHash: string; status: string; roleId: number; id: string; email: string; role: string }) | null;
+    // ─── Create Supabase client ──────────────────────────────────
+    const supabase = createSupabaseClient(env);
+
+    // ─── Look up user by email with Role join ────────────────────
+    const { data: user, error: queryError } = await supabase
+      .from('User')
+      .select('*, Role(name)')
+      .ilike('email', sanitizedEmail)
+      .maybeSingle();
+
+    if (queryError) {
+      console.error('Login query error:', queryError);
+      return serverError('Login failed. Please try again.');
+    }
 
     if (!user) {
       return unauthorized('Invalid email or password');
     }
 
+    // ─── Flatten PostgREST join result ───────────────────────────
+    // PostgREST returns: { id, email, ..., roleId, Role: { name: "CLIENT" } }
+    // Flatten to: { id, email, ..., roleId, role: "CLIENT" }
+    const userRecord = user as Record<string, unknown> & { passwordHash: string; status: string; roleId: number; id: string; email: string; Role?: { name: string } };
+    const roleName = userRecord.Role?.name ?? '';
+
     // ─── Verify password ─────────────────────────────────────────
-    const isValid = await verifyPassword(String(password), user.passwordHash);
+    const isValid = await verifyPassword(String(password), userRecord.passwordHash);
     if (!isValid) {
       return unauthorized('Invalid email or password');
     }
 
     // ─── Check user status ───────────────────────────────────────
-    if (user.status !== 'ACTIVE') {
+    if (userRecord.status !== 'ACTIVE') {
       return error(
-        `Your account is ${String(user.status).toLowerCase()}. Please contact support.`,
+        `Your account is ${String(userRecord.status).toLowerCase()}. Please contact support.`,
         403
       );
     }
 
     // ─── Update last login timestamp ─────────────────────────────
-    await execute(
-      env.DB,
-      `UPDATE User SET lastLoginAt = datetime('now'), updatedAt = datetime('now') WHERE id = ?`,
-      [user.id]
-    );
+    await supabase
+      .from('User')
+      .update({ lastLoginAt: new Date().toISOString(), updatedAt: new Date().toISOString() })
+      .eq('id', userRecord.id);
 
     // ─── Sign tokens ─────────────────────────────────────────────
     const tokenPayload = {
-      userId: user.id,
-      email: user.email,
-      roleId: user.roleId,
-      role: user.role,
+      userId: userRecord.id,
+      email: userRecord.email,
+      roleId: userRecord.roleId,
+      role: roleName,
     };
 
     const accessToken = await signAccessToken(tokenPayload, env);
     const refreshToken = await signRefreshToken(tokenPayload, env);
 
-    // ─── Remove passwordHash from response ───────────────────────
-    const { passwordHash: _ph, ...safeUser } = user as Record<string, unknown> & { passwordHash: string };
+    // ─── Remove passwordHash and flatten role for response ───────
+    const { passwordHash: _ph, Role: _role, ...safeFields } = userRecord as Record<string, unknown> & { passwordHash: string; Role?: unknown };
+    const safeUser = { ...safeFields, role: roleName };
 
     return json({
       message: 'Login successful',

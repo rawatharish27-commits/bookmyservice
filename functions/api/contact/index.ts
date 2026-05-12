@@ -5,13 +5,9 @@
  *   - Rate limited (handled by middleware)
  */
 
-import { execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, error } from '../../_shared/response';
 import { sanitizeString, sanitizeObject, validateEmail } from '../../_shared/security';
-
-interface Env {
-  DB: D1Database;
-}
 
 function generateId(): string {
   return `msg_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
@@ -19,6 +15,7 @@ function generateId(): string {
 
 export async function onRequestPost(context: { request: Request; env: Env; params: Record<string, string> }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const body = await context.request.json() as Record<string, unknown>;
     const sanitized = sanitizeObject(body);
 
@@ -44,13 +41,24 @@ export async function onRequestPost(context: { request: Request; env: Env; param
     if (message.length > 5000) return error('message must be at most 5000 characters');
 
     const id = generateId();
+    const now = new Date().toISOString();
 
-    await execute(
-      context.env.DB,
-      `INSERT INTO ContactMessage (id, name, email, subject, message, isRead, createdAt)
-       VALUES (?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [id, name, email, subject, message]
-    );
+    const { error: insertError } = await supabase
+      .from('ContactMessage')
+      .insert({
+        id,
+        name,
+        email,
+        subject,
+        message,
+        isRead: false,
+        createdAt: now,
+      });
+
+    if (insertError) {
+      console.error('Contact form insert error:', insertError);
+      return error('Failed to submit contact form', 500);
+    }
 
     return json({
       success: true,

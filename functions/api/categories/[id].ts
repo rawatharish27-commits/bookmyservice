@@ -3,11 +3,11 @@
  * Returns single category with its subcategories.
  */
 
-import { queryOne, query } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, notFound, serverError } from '../../_shared/response';
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { env, params } = context as { env: { DB: D1Database }; params: { id: string } };
+  const { env, params } = context as unknown as { env: Env; params: { id: string } };
 
   try {
     const categoryId = Number(params.id);
@@ -16,34 +16,62 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       return json({ error: 'Invalid category ID' }, 400);
     }
 
+    const supabase = createSupabaseClient(env);
+
     // ─── Fetch category ──────────────────────────────────────────
-    const category = await queryOne(
-      env.DB,
-      `SELECT c.id, c.name, c.slug, c.description, c.icon, c.isActive, c.displayOrder,
-              (SELECT COUNT(*) FROM ServiceSubcategory WHERE categoryId = c.id AND isActive = 1) as subcategoriesCount,
-              (SELECT COUNT(*) FROM Service WHERE categoryId = c.id AND isActive = 1 AND approvalStatus = 'APPROVED') as servicesCount
-       FROM ServiceCategory c
-       WHERE c.id = ? AND c.isActive = 1`,
-      [categoryId]
-    );
+    const { data: category, error: catError } = await supabase
+      .from('ServiceCategory')
+      .select('*')
+      .eq('id', categoryId)
+      .eq('isActive', true)
+      .maybeSingle();
+
+    if (catError) {
+      console.error('Get category error:', catError);
+      return serverError('Failed to fetch category');
+    }
 
     if (!category) {
       return notFound('Category not found');
     }
 
+    // Fetch counts for the category
+    const { count: subcategoriesCount } = await supabase
+      .from('ServiceSubcategory')
+      .select('id', { count: 'exact' })
+      .eq('categoryId', categoryId)
+      .eq('isActive', true);
+
+    const { count: servicesCount } = await supabase
+      .from('Service')
+      .select('id', { count: 'exact' })
+      .eq('categoryId', categoryId)
+      .eq('isActive', true)
+      .eq('approvalStatus', 'APPROVED');
+
+    const categoryWithCounts = {
+      ...category,
+      subcategoriesCount: subcategoriesCount ?? 0,
+      servicesCount: servicesCount ?? 0,
+    };
+
     // ─── Fetch subcategories for this category ───────────────────
-    const subcategories = await query(
-      env.DB,
-      `SELECT id, name, slug, description, displayOrder, isActive
-       FROM ServiceSubcategory
-       WHERE categoryId = ? AND isActive = 1
-       ORDER BY displayOrder, id`,
-      [categoryId]
-    );
+    const { data: subcategories, error: subError } = await supabase
+      .from('ServiceSubcategory')
+      .select('*')
+      .eq('categoryId', categoryId)
+      .eq('isActive', true)
+      .order('displayOrder')
+      .order('id');
+
+    if (subError) {
+      console.error('Get subcategories error:', subError);
+      return serverError('Failed to fetch subcategories');
+    }
 
     return json({
-      category,
-      subcategories,
+      category: categoryWithCounts,
+      subcategories: subcategories || [],
     });
   } catch (err) {
     console.error('Get category error:', err);

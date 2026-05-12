@@ -4,14 +4,14 @@
  * Requires auth
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth } from '../../_shared/auth';
 import { json, unauthorized, notFound, error } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -23,47 +23,56 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
     return unauthorized();
   }
 
+  const supabase = createSupabaseClient(context.env);
   const url = new URL(context.request.url);
   const page = Math.max(1, parseInt(url.searchParams.get('page') || '1', 10));
   const limit = Math.min(50, Math.max(1, parseInt(url.searchParams.get('limit') || '20', 10)));
   const status = url.searchParams.get('status');
 
-  const conditions: string[] = ['d.raisedBy = ?'];
-  const params: unknown[] = [user.userId];
+  const offset = (page - 1) * limit;
+
+  // Build query with filters
+  let queryBuilder = supabase
+    .from('Dispute')
+    .select('id,disputeType,description,status,resolution,createdAt,resolvedAt,booking:Booking(bookingNumber,finalPrice,status,service:Service(title))', { count: 'exact' })
+    .eq('raisedBy', user.userId)
+    .order('createdAt', { ascending: false })
+    .range(offset, offset + limit - 1);
 
   if (status) {
-    conditions.push('d.status = ?');
-    params.push(sanitizeString(status));
+    queryBuilder = queryBuilder.eq('status', sanitizeString(status));
   }
 
-  const whereClause = `WHERE ${conditions.join(' AND ')}`;
+  const { data: disputes, error: disputesError, count } = await queryBuilder;
 
-  // Count
-  const countResult = await queryOne(
-    context.env.DB,
-    `SELECT COUNT(*) as count FROM Dispute d ${whereClause}`,
-    params
-  );
-  const total = (countResult as { count: number } | null)?.count ?? 0;
+  if (disputesError) {
+    console.error('Get disputes error:', disputesError);
+    return error('Failed to fetch disputes', 500);
+  }
 
-  // Fetch disputes
-  const offset = (page - 1) * limit;
-  const disputes = await query(
-    context.env.DB,
-    `SELECT d.id, d.disputeType, d.description, d.status, d.resolution, d.createdAt, d.resolvedAt,
-            b.bookingNumber, b.finalPrice as bookingAmount, b.status as bookingStatus,
-            s.title as serviceTitle
-     FROM Dispute d
-     JOIN Booking b ON d.bookingId = b.id
-     JOIN Service s ON b.serviceId = s.id
-     ${whereClause}
-     ORDER BY d.createdAt DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, offset]
-  );
+  // Flatten the join results
+  const flatDisputes = (disputes as Record<string, unknown>[] || []).map((d) => {
+    const booking = d.booking as Record<string, unknown> | null;
+    const service = booking?.service as Record<string, unknown> | null;
+    return {
+      id: d.id,
+      disputeType: d.disputeType,
+      description: d.description,
+      status: d.status,
+      resolution: d.resolution,
+      createdAt: d.createdAt,
+      resolvedAt: d.resolvedAt,
+      bookingNumber: booking?.bookingNumber ?? null,
+      bookingAmount: booking?.finalPrice ?? null,
+      bookingStatus: booking?.status ?? null,
+      serviceTitle: service?.title ?? null,
+    };
+  });
+
+  const total = count || 0;
 
   return json({
-    disputes,
+    disputes: flatDisputes,
     pagination: {
       page,
       limit,
@@ -80,6 +89,8 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   } catch {
     return unauthorized();
   }
+
+  const supabase = createSupabaseClient(context.env);
 
   let body;
   try {
@@ -107,11 +118,11 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   }
 
   // Check booking exists and user is part of it
-  const booking = await queryOne(
-    context.env.DB,
-    'SELECT id, clientId, providerId, status FROM Booking WHERE id = ?',
-    [bookingId]
-  );
+  const { data: booking } = await supabase
+    .from('Booking')
+    .select('id,clientId,providerId,status')
+    .eq('id', bookingId)
+    .maybeSingle();
 
   if (!booking) {
     return notFound('Booking not found');
@@ -123,46 +134,58 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   }
 
   // Check if dispute already exists for this booking
-  const existingDispute = await queryOne(
-    context.env.DB,
-    "SELECT id FROM Dispute WHERE bookingId = ? AND status IN ('OPEN', 'UNDER_REVIEW')",
-    [bookingId]
-  );
+  const { data: existingDispute } = await supabase
+    .from('Dispute')
+    .select('id')
+    .eq('bookingId', bookingId)
+    .in('status', ['OPEN', 'UNDER_REVIEW'])
+    .maybeSingle();
 
   if (existingDispute) {
     return error('An active dispute already exists for this booking', 409);
   }
 
   const disputeId = crypto.randomUUID();
+  const now = new Date().toISOString();
 
-  await execute(
-    context.env.DB,
-    `INSERT INTO Dispute (id, bookingId, raisedBy, disputeType, description, status, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, 'OPEN', datetime('now'), datetime('now'))`,
-    [disputeId, bookingId, user.userId, disputeType, description]
-  );
+  const { error: insertError } = await supabase
+    .from('Dispute')
+    .insert({
+      id: disputeId,
+      bookingId,
+      raisedBy: user.userId,
+      disputeType,
+      description,
+      status: 'OPEN',
+      createdAt: now,
+      updatedAt: now,
+    });
+
+  if (insertError) {
+    console.error('Create dispute error:', insertError);
+    return error('Failed to create dispute', 500);
+  }
 
   // Notify the other party
   const otherPartyId = bookingData.clientId === user.userId ? bookingData.providerId : bookingData.clientId;
-  await execute(
-    context.env.DB,
-    `INSERT INTO Notification (id, userId, type, title, message, actionUrl, isRead, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-    [
-      crypto.randomUUID(),
-      otherPartyId,
-      'DISPUTE',
-      'New Dispute Raised',
-      `A dispute has been raised regarding your booking`,
-      '/disputes',
-    ]
-  );
+  await supabase
+    .from('Notification')
+    .insert({
+      id: crypto.randomUUID(),
+      userId: otherPartyId,
+      type: 'DISPUTE',
+      title: 'New Dispute Raised',
+      message: 'A dispute has been raised regarding your booking',
+      actionUrl: '/disputes',
+      isRead: false,
+      createdAt: now,
+    });
 
-  const newDispute = await queryOne(
-    context.env.DB,
-    'SELECT * FROM Dispute WHERE id = ?',
-    [disputeId]
-  );
+  const { data: newDispute } = await supabase
+    .from('Dispute')
+    .select('*')
+    .eq('id', disputeId)
+    .maybeSingle();
 
   return json({ dispute: newDispute, message: 'Dispute created successfully' }, 201);
 }

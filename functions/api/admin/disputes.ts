@@ -4,14 +4,14 @@
  * Requires ADMIN role
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden, notFound, error } from '../../_shared/response';
-import { sanitizeString, sanitizeObject, getClientIP } from '../../_shared/security';
+import { sanitizeString, getClientIP } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -32,50 +32,89 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20', 10)));
   const status = url.searchParams.get('status');
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
+  const supabase = createSupabaseClient(context.env);
+
+  // Build count query
+  let countQuery = supabase.from('Dispute').select('id', { count: 'exact' });
+
+  // Build data query
+  let dataQuery = supabase
+    .from('Dispute')
+    .select('id, disputeType, description, status, resolution, createdAt, resolvedAt, bookingId, raisedBy, assignedTo')
+    .order('createdAt', { ascending: false })
+    .range((page - 1) * limit, (page - 1) * limit + limit - 1);
 
   if (status) {
-    conditions.push('d.status = ?');
-    params.push(sanitizeString(status));
+    const sanitizedStatus = sanitizeString(status);
+    countQuery = countQuery.eq('status', sanitizedStatus);
+    dataQuery = dataQuery.eq('status', sanitizedStatus);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const [countResult, dataResult] = await Promise.all([countQuery, dataQuery]);
 
-  // Count
-  const countResult = await queryOne(
-    context.env.DB,
-    `SELECT COUNT(*) as count FROM Dispute d ${whereClause}`,
-    params
-  );
-  const total = (countResult as { count: number } | null)?.count ?? 0;
+  const total = countResult.count ?? 0;
+  const disputes = (dataResult.data ?? []) as Record<string, unknown>[];
 
-  // Fetch disputes
-  const offset = (page - 1) * limit;
-  const disputes = await query(
-    context.env.DB,
-    `SELECT d.id, d.disputeType, d.description, d.status, d.resolution, d.createdAt, d.resolvedAt,
-            b.bookingNumber, b.finalPrice as bookingAmount,
-            raiser.name as raiserName, raiser.email as raiserEmail,
-            assignee.name as assigneeName
-     FROM Dispute d
-     JOIN Booking b ON d.bookingId = b.id
-     JOIN User raiser ON d.raisedBy = raiser.id
-     LEFT JOIN User assignee ON d.assignedTo = assignee.id
-     ${whereClause}
-     ORDER BY d.createdAt DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, offset]
-  );
+  // Enrich disputes with related data
+  const enrichedDisputes = await enrichDisputes(supabase, disputes);
 
   return json({
-    disputes,
+    disputes: enrichedDisputes,
     pagination: {
       page,
       limit,
       total,
       totalPages: Math.ceil(total / limit),
     },
+  });
+}
+
+async function enrichDisputes(
+  supabase: ReturnType<typeof createSupabaseClient>,
+  disputes: Record<string, unknown>[]
+): Promise<Record<string, unknown>[]> {
+  if (disputes.length === 0) return [];
+
+  const bookingIds = [...new Set(disputes.map((d) => String(d.bookingId)))];
+  const raiserIds = [...new Set(disputes.map((d) => String(d.raisedBy)))];
+  const assigneeIds = [...new Set(
+    disputes
+      .filter((d) => d.assignedTo != null)
+      .map((d) => String(d.assignedTo))
+  )];
+
+  const [bookingsResult, raisersResult, assigneesResult] = await Promise.all([
+    supabase.from('Booking').select('id, bookingNumber, finalPrice').in('id', bookingIds),
+    supabase.from('User').select('id, name, email').in('id', raiserIds),
+    assigneeIds.length > 0
+      ? supabase.from('User').select('id, name').in('id', assigneeIds)
+      : Promise.resolve({ data: [], error: null, count: null }),
+  ]);
+
+  const bookingMap = new Map(
+    (bookingsResult.data ?? []).map((b: Record<string, unknown>) => [String(b.id), b])
+  );
+  const raiserMap = new Map(
+    (raisersResult.data ?? []).map((r: Record<string, unknown>) => [String(r.id), r])
+  );
+  const assigneeMap = new Map(
+    (assigneesResult.data ?? []).map((a: Record<string, unknown>) => [String(a.id), a])
+  );
+
+  return disputes.map((d) => {
+    const booking = bookingMap.get(String(d.bookingId)) as Record<string, unknown> | undefined;
+    const raiser = raiserMap.get(String(d.raisedBy)) as Record<string, unknown> | undefined;
+    const assignee = d.assignedTo
+      ? assigneeMap.get(String(d.assignedTo)) as Record<string, unknown> | undefined
+      : undefined;
+    return {
+      ...d,
+      bookingNumber: booking?.bookingNumber ?? null,
+      bookingAmount: booking?.finalPrice ?? null,
+      raiserName: raiser?.name ?? null,
+      raiserEmail: raiser?.email ?? null,
+      assigneeName: assignee?.name ?? null,
+    };
   });
 }
 
@@ -110,16 +149,20 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   const disputeId = sanitizeString(body.disputeId);
   const action = sanitizeString(body.action);
 
+  const supabase = createSupabaseClient(context.env);
+
   // Check dispute exists
-  const existingDispute = await queryOne(
-    context.env.DB,
-    'SELECT id, status, disputeType FROM Dispute WHERE id = ?',
-    [disputeId]
-  );
+  const { data: existingDispute } = await supabase
+    .from('Dispute')
+    .select('id, status, disputeType')
+    .eq('id', disputeId)
+    .maybeSingle();
 
   if (!existingDispute) {
     return notFound('Dispute not found');
   }
+
+  const now = new Date().toISOString();
 
   if (action === 'RESOLVE') {
     if (!body.resolution) {
@@ -128,53 +171,55 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
 
     const resolution = sanitizeString(body.resolution);
 
-    await execute(
-      context.env.DB,
-      `UPDATE Dispute SET status = 'RESOLVED', resolution = ?, assignedTo = ?, resolvedAt = datetime('now'), updatedAt = datetime('now')
-       WHERE id = ?`,
-      [resolution, user.userId, disputeId]
-    );
+    const { error: updateError } = await supabase
+      .from('Dispute')
+      .update({
+        status: 'RESOLVED',
+        resolution,
+        assignedTo: user.userId,
+        resolvedAt: now,
+        updatedAt: now,
+      })
+      .eq('id', disputeId);
+
+    if (updateError) {
+      return error('Failed to resolve dispute: ' + updateError.message);
+    }
 
     // Log action
     const ip = getClientIP(context.request);
     const userAgent = context.request.headers.get('User-Agent') || null;
-    await execute(
-      context.env.DB,
-      `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-      [
-        crypto.randomUUID(),
-        user.userId,
-        'RESOLVE_DISPUTE',
-        'DISPUTE',
-        disputeId,
-        JSON.stringify({ resolution }),
-        ip,
-        userAgent,
-      ]
-    );
+    await supabase.from('AdminLog').insert({
+      id: crypto.randomUUID(),
+      adminId: user.userId,
+      action: 'RESOLVE_DISPUTE',
+      targetType: 'DISPUTE',
+      targetId: disputeId,
+      details: JSON.stringify({ resolution }),
+      ipAddress: ip,
+      userAgent,
+      createdAt: now,
+    });
 
     // Notify the raiser
-    const disputeInfo = await queryOne(
-      context.env.DB,
-      'SELECT raisedBy, bookingId FROM Dispute WHERE id = ?',
-      [disputeId]
-    );
+    const { data: disputeInfo } = await supabase
+      .from('Dispute')
+      .select('raisedBy, bookingId')
+      .eq('id', disputeId)
+      .maybeSingle();
+
     if (disputeInfo) {
-      const { raisedBy } = disputeInfo as { raisedBy: string; bookingId: string };
-      await execute(
-        context.env.DB,
-        `INSERT INTO Notification (id, userId, type, title, message, actionUrl, isRead, createdAt)
-         VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-        [
-          crypto.randomUUID(),
-          raisedBy,
-          'DISPUTE',
-          'Dispute Resolved',
-          `Your dispute has been resolved. Resolution: ${resolution}`,
-          '/disputes',
-        ]
-      );
+      const raisedBy = String((disputeInfo as Record<string, unknown>).raisedBy);
+      await supabase.from('Notification').insert({
+        id: crypto.randomUUID(),
+        userId: raisedBy,
+        type: 'DISPUTE',
+        title: 'Dispute Resolved',
+        message: `Your dispute has been resolved. Resolution: ${resolution}`,
+        actionUrl: '/disputes',
+        isRead: false,
+        createdAt: now,
+      });
     }
 
     return json({ message: 'Dispute resolved successfully', disputeId });
@@ -187,40 +232,49 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
 
     const assignedTo = sanitizeString(body.assignedTo);
 
-    await execute(
-      context.env.DB,
-      `UPDATE Dispute SET assignedTo = ?, status = 'UNDER_REVIEW', updatedAt = datetime('now') WHERE id = ?`,
-      [assignedTo, disputeId]
-    );
+    const { error: updateError } = await supabase
+      .from('Dispute')
+      .update({
+        assignedTo,
+        status: 'UNDER_REVIEW',
+        updatedAt: now,
+      })
+      .eq('id', disputeId);
+
+    if (updateError) {
+      return error('Failed to assign dispute: ' + updateError.message);
+    }
 
     // Log action
     const ip = getClientIP(context.request);
     const userAgent = context.request.headers.get('User-Agent') || null;
-    await execute(
-      context.env.DB,
-      `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-      [
-        crypto.randomUUID(),
-        user.userId,
-        'ASSIGN_DISPUTE',
-        'DISPUTE',
-        disputeId,
-        JSON.stringify({ assignedTo }),
-        ip,
-        userAgent,
-      ]
-    );
+    await supabase.from('AdminLog').insert({
+      id: crypto.randomUUID(),
+      adminId: user.userId,
+      action: 'ASSIGN_DISPUTE',
+      targetType: 'DISPUTE',
+      targetId: disputeId,
+      details: JSON.stringify({ assignedTo }),
+      ipAddress: ip,
+      userAgent,
+      createdAt: now,
+    });
 
     return json({ message: 'Dispute assigned successfully', disputeId });
   }
 
   if (action === 'CLOSE') {
-    await execute(
-      context.env.DB,
-      `UPDATE Dispute SET status = 'CLOSED', updatedAt = datetime('now') WHERE id = ?`,
-      [disputeId]
-    );
+    const { error: updateError } = await supabase
+      .from('Dispute')
+      .update({
+        status: 'CLOSED',
+        updatedAt: now,
+      })
+      .eq('id', disputeId);
+
+    if (updateError) {
+      return error('Failed to close dispute: ' + updateError.message);
+    }
 
     return json({ message: 'Dispute closed successfully', disputeId });
   }

@@ -4,14 +4,14 @@
  * Requires ADMIN role
  */
 
-import { query, queryOne, execute } from '../../../_shared/db';
+import { createSupabaseClient, Env } from '../../../_shared/db';
 import { requireAuth, requireRole } from '../../../_shared/auth';
 import { json, unauthorized, forbidden, error } from '../../../_shared/response';
 import { sanitizeString, getClientIP } from '../../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -30,24 +30,20 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   const url = new URL(context.request.url);
   const category = url.searchParams.get('category');
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
+  const supabase = createSupabaseClient(context.env);
+
+  let query = supabase
+    .from('Faq')
+    .select('id, category, question, answer, displayOrder, isActive, createdAt, updatedAt')
+    .order('category', { ascending: true })
+    .order('displayOrder', { ascending: true })
+    .order('id', { ascending: true });
 
   if (category) {
-    conditions.push('category = ?');
-    params.push(sanitizeString(category));
+    query = query.eq('category', sanitizeString(category));
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
-
-  const faqs = await query(
-    context.env.DB,
-    `SELECT id, category, question, answer, displayOrder, isActive, createdAt, updatedAt
-     FROM Faq
-     ${whereClause}
-     ORDER BY category ASC, displayOrder ASC, id ASC`,
-    params
-  );
+  const { data: faqs } = await query;
 
   return json({ faqs });
 }
@@ -85,38 +81,43 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   const question = sanitizeString(body.question);
   const answer = sanitizeString(body.answer);
   const displayOrder = body.displayOrder || 0;
-  const isActive = body.isActive !== false ? 1 : 0;
+  const isActive = body.isActive !== false;
 
-  await execute(
-    context.env.DB,
-    `INSERT INTO Faq (category, question, answer, displayOrder, isActive, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, datetime('now'), datetime('now'))`,
-    [category, question, answer, displayOrder, isActive]
-  );
+  const supabase = createSupabaseClient(context.env);
+  const now = new Date().toISOString();
+
+  const { data: newFaq, error: insertError } = await supabase
+    .from('Faq')
+    .insert({
+      category,
+      question,
+      answer,
+      displayOrder,
+      isActive,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .select()
+    .single();
+
+  if (insertError) {
+    return error('Failed to create FAQ: ' + insertError.message);
+  }
 
   // Log action
   const ip = getClientIP(context.request);
   const userAgent = context.request.headers.get('User-Agent') || null;
-  await execute(
-    context.env.DB,
-    `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    [
-      crypto.randomUUID(),
-      user.userId,
-      'CREATE_FAQ',
-      'FAQ',
-      null,
-      JSON.stringify({ category, question }),
-      ip,
-      userAgent,
-    ]
-  );
-
-  const newFaq = await queryOne(
-    context.env.DB,
-    'SELECT * FROM Faq ORDER BY id DESC LIMIT 1'
-  );
+  await supabase.from('AdminLog').insert({
+    id: crypto.randomUUID(),
+    adminId: user.userId,
+    action: 'CREATE_FAQ',
+    targetType: 'FAQ',
+    targetId: null,
+    details: JSON.stringify({ category, question }),
+    ipAddress: ip,
+    userAgent,
+    createdAt: now,
+  });
 
   return json({ faq: newFaq, message: 'FAQ created successfully' }, 201);
 }

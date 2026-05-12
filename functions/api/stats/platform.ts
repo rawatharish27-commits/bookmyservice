@@ -3,79 +3,73 @@
  *   - Public endpoint (no auth required)
  */
 
-import { query, queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, error } from '../../_shared/response';
-
-interface Env {
-  DB: D1Database;
-}
 
 export async function onRequestGet(context: { request: Request; env: Env; params: Record<string, string> }): Promise<Response> {
   try {
-    // Count clients (roleId = 1)
-    const clientCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM User WHERE roleId = 1 AND status != 'BLOCKED'`,
-      []
-    );
+    const supabase = createSupabaseClient(context.env);
 
-    // Count providers (roleId = 2)
-    const providerCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM User WHERE roleId = 2 AND status = 'ACTIVE'`,
-      []
-    );
+    // Count clients (roleId = 1, status != BLOCKED)
+    const { count: clientCount } = await supabase
+      .from('User')
+      .select('', { count: 'exact', head: true })
+      .eq('roleId', 1)
+      .neq('status', 'BLOCKED');
+
+    // Count providers (roleId = 2, status = ACTIVE)
+    const { count: providerCount } = await supabase
+      .from('User')
+      .select('', { count: 'exact', head: true })
+      .eq('roleId', 2)
+      .eq('status', 'ACTIVE');
 
     // Count active services
-    const serviceCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM Service WHERE isActive = 1 AND approvalStatus = 'APPROVED'`,
-      []
-    );
+    const { count: serviceCount } = await supabase
+      .from('Service')
+      .select('', { count: 'exact', head: true })
+      .eq('isActive', true)
+      .eq('approvalStatus', 'APPROVED');
 
     // Count total bookings
-    const bookingCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM Booking`,
-      []
-    );
+    const { count: bookingCount } = await supabase
+      .from('Booking')
+      .select('', { count: 'exact', head: true });
 
     // Count active visitors (sessions active in last 5 minutes)
-    const activeVisitorCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM VisitorSession WHERE isActive = 1 AND datetime(lastActive) > datetime('now', '-5 minutes')`,
-      []
-    );
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { count: activeVisitorCount } = await supabase
+      .from('VisitorSession')
+      .select('', { count: 'exact', head: true })
+      .eq('isActive', true)
+      .gte('lastActive', fiveMinutesAgo);
 
     // Count total visitors
-    const totalVisitorCount = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM VisitorSession`,
-      []
-    );
+    const { count: totalVisitorCount } = await supabase
+      .from('VisitorSession')
+      .select('', { count: 'exact', head: true });
 
-    // Get recent stats for additional context
-    const completedBookings = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM Booking WHERE status = 'COMPLETED'`,
-      []
-    );
+    // Count completed bookings
+    const { count: completedBookings } = await supabase
+      .from('Booking')
+      .select('', { count: 'exact', head: true })
+      .eq('status', 'COMPLETED');
 
-    const pendingBookings = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as count FROM Booking WHERE status = 'PENDING'`,
-      []
-    );
+    // Count pending bookings
+    const { count: pendingBookings } = await supabase
+      .from('Booking')
+      .select('', { count: 'exact', head: true })
+      .eq('status', 'PENDING');
 
     return json({
-      totalClients: Number((clientCount as Record<string, unknown>)?.count || 0),
-      totalProviders: Number((providerCount as Record<string, unknown>)?.count || 0),
-      totalServices: Number((serviceCount as Record<string, unknown>)?.count || 0),
-      totalBookings: Number((bookingCount as Record<string, unknown>)?.count || 0),
-      completedBookings: Number((completedBookings as Record<string, unknown>)?.count || 0),
-      pendingBookings: Number((pendingBookings as Record<string, unknown>)?.count || 0),
-      activeVisitors: Number((activeVisitorCount as Record<string, unknown>)?.count || 0),
-      totalVisitors: Number((totalVisitorCount as Record<string, unknown>)?.count || 0),
+      totalClients: clientCount || 0,
+      totalProviders: providerCount || 0,
+      totalServices: serviceCount || 0,
+      totalBookings: bookingCount || 0,
+      completedBookings: completedBookings || 0,
+      pendingBookings: pendingBookings || 0,
+      activeVisitors: activeVisitorCount || 0,
+      totalVisitors: totalVisitorCount || 0,
     });
   } catch (err) {
     console.error('Platform stats error:', err);

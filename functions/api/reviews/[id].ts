@@ -2,38 +2,53 @@
  * GET /api/reviews/:id - Returns single review
  */
 
-import { queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, notFound } from '../../_shared/response';
-
-interface Env {
-  DB: D1Database;
-  JWT_SECRET?: string;
-}
 
 export async function onRequestGet(context: { request: Request; env: Env; params: { id: string } }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const reviewId = context.params.id;
 
-    const review = await queryOne(
-      context.env.DB,
-      `SELECT r.id, r.bookingId, r.reviewerId, r.reviewedId, r.serviceId, r.rating, r.comment,
-              r.isVerified, r.isFlagged, r.flagReason, r.adminResponse, r.createdAt, r.updatedAt,
-              reviewer.name as reviewerName, reviewer.profileImageUrl as reviewerProfileImage,
-              reviewed.name as providerName, reviewed.profileImageUrl as providerProfileImage,
-              s.title as serviceTitle
-       FROM Review r
-       LEFT JOIN User reviewer ON r.reviewerId = reviewer.id
-       LEFT JOIN User reviewed ON r.reviewedId = reviewed.id
-       LEFT JOIN Service s ON r.serviceId = s.id
-       WHERE r.id = ?`,
-      [reviewId]
-    );
+    const { data: review, error: reviewError } = await supabase
+      .from('Review')
+      .select('id,bookingId,reviewerId,reviewedId,serviceId,rating,comment,isVerified,isFlagged,flagReason,adminResponse,createdAt,updatedAt,reviewer:User!Review_reviewerId_fkey(name,profileImageUrl),reviewed:User!Review_reviewedId_fkey(name,profileImageUrl),service:Service(title)')
+      .eq('id', reviewId)
+      .maybeSingle();
+
+    if (reviewError) {
+      console.error('Get review error:', reviewError);
+      return notFound('Review not found');
+    }
 
     if (!review) {
       return notFound('Review not found');
     }
 
-    return json({ review });
+    // Flatten the join results
+    const r = review as Record<string, unknown>;
+    const flatReview = {
+      id: r.id,
+      bookingId: r.bookingId,
+      reviewerId: r.reviewerId,
+      reviewedId: r.reviewedId,
+      serviceId: r.serviceId,
+      rating: r.rating,
+      comment: r.comment,
+      isVerified: r.isVerified,
+      isFlagged: r.isFlagged,
+      flagReason: r.flagReason,
+      adminResponse: r.adminResponse,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      reviewerName: (r.reviewer as Record<string, unknown>)?.name ?? null,
+      reviewerProfileImage: (r.reviewer as Record<string, unknown>)?.profileImageUrl ?? null,
+      providerName: (r.reviewed as Record<string, unknown>)?.name ?? null,
+      providerProfileImage: (r.reviewed as Record<string, unknown>)?.profileImageUrl ?? null,
+      serviceTitle: (r.service as Record<string, unknown>)?.title ?? null,
+    };
+
+    return json({ review: flatReview });
   } catch (err) {
     console.error('Get review error:', err);
     return notFound('Review not found');

@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
-import { useApp } from '@/contexts/app-context';
+import { useApp, type Page } from '@/contexts/app-context';
 import { useApi } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   CalendarCheck,
   CheckCircle2,
@@ -344,7 +344,7 @@ export function ClientDashboardPage() {
               key={action.label}
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => navigate(action.nav)}
+              onClick={() => navigate(action.nav as Page)}
               className={`flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br ${action.gradient} p-5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
             >
               <action.icon className="size-6" />

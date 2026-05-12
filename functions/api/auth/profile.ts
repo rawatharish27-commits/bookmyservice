@@ -3,15 +3,15 @@
  * PATCH /api/auth/profile - Updates user profile
  */
 
-import { queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth } from '../../_shared/auth';
 import { json, error, unauthorized, serverError } from '../../_shared/response';
-import { sanitizeString, validatePhone, validateEmail } from '../../_shared/security';
+import { sanitizeString, validatePhone } from '../../_shared/security';
 
 // ─── GET /api/auth/profile ────────────────────────────────────────
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database; JWT_SECRET: string } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     // ─── Authenticate ─────────────────────────────────────────────
@@ -22,34 +22,42 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       return unauthorized('Authentication required');
     }
 
-    // ─── Fetch user profile ──────────────────────────────────────
-    const profile = await queryOne(
-      env.DB,
-      `SELECT u.id, u.email, u.phone, u.name, u.roleId, u.status, u.profileImageUrl,
-              u.city, u.state, u.country, u.address, u.pincode, u.emailVerified, u.phoneVerified,
-              u.createdAt, u.updatedAt, u.lastLoginAt, r.name as role
-       FROM User u JOIN Role r ON u.roleId = r.id
-       WHERE u.id = ?`,
-      [user.userId]
-    );
+    // ─── Create Supabase client ──────────────────────────────────
+    const supabase = createSupabaseClient(env);
+
+    // ─── Fetch user profile with Role join ───────────────────────
+    const { data: profile, error: queryError } = await supabase
+      .from('User')
+      .select('*, Role(name)')
+      .eq('id', user.userId)
+      .maybeSingle();
+
+    if (queryError) {
+      console.error('Get profile query error:', queryError);
+      return serverError('Failed to fetch profile');
+    }
 
     if (!profile) {
       return error('User not found', 404);
     }
 
+    // ─── Flatten PostgREST join result ───────────────────────────
+    const { Role: _role, ...profileFields } = profile as Record<string, unknown> & { Role?: { name: string } };
+    const flatProfile = { ...profileFields, role: (profile as Record<string, unknown> & { Role?: { name: string } }).Role?.name ?? '' };
+
     // ─── If provider, also fetch KYC status ──────────────────────
-    let kycStatus = null;
+    let kycStatus: string | null = null;
     if (user.roleId === 2) {
-      const kyc = await queryOne(
-        env.DB,
-        'SELECT verificationStatus FROM ProviderKyc WHERE providerId = ?',
-        [user.userId]
-      );
-      kycStatus = kyc ? (kyc as Record<string, unknown>).verificationStatus : null;
+      const { data: kyc } = await supabase
+        .from('ProviderKyc')
+        .select('verificationStatus')
+        .eq('providerId', user.userId)
+        .maybeSingle();
+      kycStatus = kyc ? String((kyc as Record<string, unknown>).verificationStatus ?? null) : null;
     }
 
     return json({
-      user: profile,
+      user: flatProfile,
       kycStatus,
     });
   } catch (err) {
@@ -69,7 +77,7 @@ interface UpdateProfileBody {
 }
 
 export async function onRequestPatch(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database; JWT_SECRET: string } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     // ─── Authenticate ─────────────────────────────────────────────
@@ -81,8 +89,10 @@ export async function onRequestPatch(context: EventContext<Record<string, unknow
     }
 
     const body: UpdateProfileBody = await request.json();
-    const updates: string[] = [];
-    const params: unknown[] = [];
+    const updateData: Record<string, unknown> = {};
+
+    // ─── Create Supabase client ──────────────────────────────────
+    const supabase = createSupabaseClient(env);
 
     // ─── Validate and build update fields ─────────────────────────
     if (body.name !== undefined) {
@@ -90,8 +100,7 @@ export async function onRequestPatch(context: EventContext<Record<string, unknow
       if (sanitizedName.length < 2 || sanitizedName.length > 100) {
         return error('Name must be between 2 and 100 characters', 400);
       }
-      updates.push('name = ?');
-      params.push(sanitizedName);
+      updateData.name = sanitizedName;
     }
 
     if (body.phone !== undefined) {
@@ -100,62 +109,62 @@ export async function onRequestPatch(context: EventContext<Record<string, unknow
         return error('Invalid phone number. Must be 10 digits starting with 6-9', 400);
       }
       // Check if phone is already used by another user
-      const existingPhone = await queryOne(
-        env.DB,
-        'SELECT id FROM User WHERE phone = ? AND id != ?',
-        [sanitizedPhone, user.userId]
-      );
+      const { data: existingPhone } = await supabase
+        .from('User')
+        .select('id')
+        .eq('phone', sanitizedPhone)
+        .neq('id', user.userId)
+        .maybeSingle();
       if (existingPhone) {
         return error('Phone number is already registered by another user', 409);
       }
-      updates.push('phone = ?');
-      params.push(sanitizedPhone);
+      updateData.phone = sanitizedPhone;
     }
 
     if (body.city !== undefined) {
-      updates.push('city = ?');
-      params.push(sanitizeString(String(body.city)));
+      updateData.city = sanitizeString(String(body.city));
     }
 
     if (body.state !== undefined) {
-      updates.push('state = ?');
-      params.push(sanitizeString(String(body.state)));
+      updateData.state = sanitizeString(String(body.state));
     }
 
     if (body.country !== undefined) {
-      updates.push('country = ?');
-      params.push(sanitizeString(String(body.country)));
+      updateData.country = sanitizeString(String(body.country));
     }
 
-    if (updates.length === 0) {
+    if (Object.keys(updateData).length === 0) {
       return error('No fields provided to update', 400);
     }
 
     // ─── Always update updatedAt ──────────────────────────────────
-    updates.push("updatedAt = datetime('now')");
-    params.push(user.userId);
+    updateData.updatedAt = new Date().toISOString();
 
     // ─── Execute update ───────────────────────────────────────────
-    await execute(
-      env.DB,
-      `UPDATE User SET ${updates.join(', ')} WHERE id = ?`,
-      params
-    );
+    await supabase
+      .from('User')
+      .update(updateData)
+      .eq('id', user.userId);
 
-    // ─── Fetch updated profile ────────────────────────────────────
-    const updatedProfile = await queryOne(
-      env.DB,
-      `SELECT u.id, u.email, u.phone, u.name, u.roleId, u.status, u.profileImageUrl,
-              u.city, u.state, u.country, u.address, u.pincode, u.emailVerified, u.phoneVerified,
-              u.createdAt, u.updatedAt, r.name as role
-       FROM User u JOIN Role r ON u.roleId = r.id
-       WHERE u.id = ?`,
-      [user.userId]
-    );
+    // ─── Fetch updated profile with Role join ────────────────────
+    const { data: updatedProfile, error: fetchError } = await supabase
+      .from('User')
+      .select('*, Role(name)')
+      .eq('id', user.userId)
+      .maybeSingle();
+
+    if (fetchError || !updatedProfile) {
+      console.error('Fetch updated profile error:', fetchError);
+      return serverError('Profile updated but failed to fetch updated data');
+    }
+
+    // ─── Flatten PostgREST join result ───────────────────────────
+    const { Role: _role, ...profileFields } = updatedProfile as Record<string, unknown> & { Role?: { name: string } };
+    const flatProfile = { ...profileFields, role: (updatedProfile as Record<string, unknown> & { Role?: { name: string } }).Role?.name ?? '' };
 
     return json({
       message: 'Profile updated successfully',
-      user: updatedProfile,
+      user: flatProfile,
     });
   } catch (err) {
     console.error('Update profile error:', err);

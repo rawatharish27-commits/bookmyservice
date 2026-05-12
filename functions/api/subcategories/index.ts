@@ -3,11 +3,11 @@
  * Returns subcategories for a given category.
  */
 
-import { query } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, error, serverError } from '../../_shared/response';
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     const url = new URL(request.url);
@@ -22,19 +22,41 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       return error('Invalid categoryId', 400);
     }
 
-    const subcategories = await query(
-      env.DB,
-      `SELECT id, name, slug, description, categoryId, displayOrder, isActive,
-              (SELECT COUNT(*) FROM Service WHERE subcategoryId = ServiceSubcategory.id AND isActive = 1 AND approvalStatus = 'APPROVED') as servicesCount
-       FROM ServiceSubcategory
-       WHERE categoryId = ? AND isActive = 1
-       ORDER BY displayOrder, id`,
-      [categoryIdNum]
+    const supabase = createSupabaseClient(env);
+
+    const { data: subcategories, error: subError } = await supabase
+      .from('ServiceSubcategory')
+      .select('*')
+      .eq('categoryId', categoryIdNum)
+      .eq('isActive', true)
+      .order('displayOrder')
+      .order('id');
+
+    if (subError) {
+      console.error('Get subcategories error:', subError);
+      return serverError('Failed to fetch subcategories');
+    }
+
+    // Fetch services count for each subcategory
+    const subcategoriesWithCounts = await Promise.all(
+      (subcategories || []).map(async (sub: Record<string, unknown>) => {
+        const { count: servicesCount } = await supabase
+          .from('Service')
+          .select('id', { count: 'exact' })
+          .eq('subcategoryId', sub.id)
+          .eq('isActive', true)
+          .eq('approvalStatus', 'APPROVED');
+
+        return {
+          ...sub,
+          servicesCount: servicesCount ?? 0,
+        };
+      })
     );
 
     return json({
-      subcategories,
-      total: subcategories.length,
+      subcategories: subcategoriesWithCounts,
+      total: subcategoriesWithCounts.length,
       categoryId: categoryIdNum,
     });
   } catch (err) {

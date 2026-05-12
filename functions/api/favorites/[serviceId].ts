@@ -3,14 +3,14 @@
  * Requires CLIENT role
  */
 
-import { queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden, notFound } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: { serviceId: string };
 }
 
@@ -26,24 +26,31 @@ export async function onRequestDelete(context: EventContext): Promise<Response> 
     return forbidden('Client access required');
   }
 
+  const supabase = createSupabaseClient(context.env);
   const serviceId = sanitizeString(context.params.serviceId);
 
   // Check favorite exists
-  const favorite = await queryOne(
-    context.env.DB,
-    'SELECT id FROM Favorite WHERE userId = ? AND serviceId = ?',
-    [user.userId, serviceId]
-  );
+  const { data: favorite } = await supabase
+    .from('Favorite')
+    .select('id')
+    .eq('userId', user.userId)
+    .eq('serviceId', serviceId)
+    .maybeSingle();
 
   if (!favorite) {
     return notFound('Favorite not found');
   }
 
-  await execute(
-    context.env.DB,
-    'DELETE FROM Favorite WHERE userId = ? AND serviceId = ?',
-    [user.userId, serviceId]
-  );
+  const { error: deleteError } = await supabase
+    .from('Favorite')
+    .delete()
+    .eq('userId', user.userId)
+    .eq('serviceId', serviceId);
+
+  if (deleteError) {
+    console.error('Remove favorite error:', deleteError);
+    return notFound('Favorite not found');
+  }
 
   return json({ message: 'Service removed from favorites' });
 }

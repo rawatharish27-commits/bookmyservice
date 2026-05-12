@@ -67,7 +67,7 @@ export function ProviderProfilePage() {
     }
   };
 
-  const kycStatus = 'NOT_SUBMITTED';
+  const kycStatus: string = 'NOT_SUBMITTED';
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">

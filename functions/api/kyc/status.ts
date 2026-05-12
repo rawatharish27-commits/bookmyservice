@@ -3,13 +3,13 @@
  * Requires PROVIDER role
  */
 
-import { queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden } from '../../_shared/response';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -25,13 +25,13 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
     return forbidden('Provider access required');
   }
 
-  const kycRecord = await queryOne(
-    context.env.DB,
-    `SELECT id, documentType, documentNumber, verificationStatus, rejectionReason, verifiedBy, verifiedAt, createdAt, updatedAt
-     FROM ProviderKyc
-     WHERE providerId = ?`,
-    [user.userId]
-  );
+  const supabase = createSupabaseClient(context.env);
+
+  const { data: kycRecord } = await supabase
+    .from('ProviderKyc')
+    .select('id,documentType,documentNumber,verificationStatus,rejectionReason,verifiedBy,verifiedAt,createdAt,updatedAt')
+    .eq('providerId', user.userId)
+    .maybeSingle();
 
   if (!kycRecord) {
     return json({

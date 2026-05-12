@@ -4,14 +4,14 @@
  * Query: page, limit, role, status, search
  */
 
-import { query, queryOne } from '../../../_shared/db';
+import { createSupabaseClient, Env } from '../../../_shared/db';
 import { requireAuth, requireRole } from '../../../_shared/auth';
 import { json, unauthorized, forbidden } from '../../../_shared/response';
 import { sanitizeString } from '../../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -34,57 +34,118 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   const status = url.searchParams.get('status');
   const search = url.searchParams.get('search');
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
+  const supabase = createSupabaseClient(context.env);
 
+  // Resolve role to roleId if filtering by role
+  let roleId: number | null = null;
   if (role) {
-    conditions.push('r.name = ?');
-    params.push(sanitizeString(role));
+    const { data: roleData } = await supabase
+      .from('Role')
+      .select('id')
+      .eq('name', sanitizeString(role))
+      .maybeSingle();
+    roleId = roleData ? Number((roleData as Record<string, unknown>).id) : null;
+  }
+
+  // For search, find matching user IDs first
+  let searchUserIds: string[] | null = null;
+  if (search) {
+    const sanitizedSearch = sanitizeString(search);
+    const searchPattern = `%${sanitizedSearch}%`;
+
+    const [nameResults, emailResults, phoneResults] = await Promise.all([
+      supabase.from('User').select('id').ilike('name', searchPattern),
+      supabase.from('User').select('id').ilike('email', searchPattern),
+      supabase.from('User').select('id').ilike('phone', searchPattern),
+    ]);
+
+    const idSet = new Set<string>();
+    for (const u of (nameResults.data ?? [])) { idSet.add(String(u.id)); }
+    for (const u of (emailResults.data ?? [])) { idSet.add(String(u.id)); }
+    for (const u of (phoneResults.data ?? [])) { idSet.add(String(u.id)); }
+    searchUserIds = [...idSet];
+
+    if (searchUserIds.length === 0) {
+      return json({
+        users: [],
+        pagination: { page, limit, total: 0, totalPages: 0 },
+      });
+    }
+  }
+
+  // Build count query
+  let countQuery = supabase.from('User').select('id', { count: 'exact' });
+
+  // Build data query
+  let dataQuery = supabase
+    .from('User')
+    .select('id, email, phone, name, status, emailVerified, phoneVerified, profileImageUrl, city, state, createdAt, lastLoginAt, roleId')
+    .order('createdAt', { ascending: false })
+    .range((page - 1) * limit, (page - 1) * limit + limit - 1);
+
+  if (roleId !== null) {
+    countQuery = countQuery.eq('roleId', roleId);
+    dataQuery = dataQuery.eq('roleId', roleId);
+  } else if (role) {
+    // Role was specified but not found — return empty
+    return json({
+      users: [],
+      pagination: { page, limit, total: 0, totalPages: 0 },
+    });
   }
 
   if (status) {
-    conditions.push('u.status = ?');
-    params.push(sanitizeString(status));
+    const sanitizedStatus = sanitizeString(status);
+    countQuery = countQuery.eq('status', sanitizedStatus);
+    dataQuery = dataQuery.eq('status', sanitizedStatus);
   }
 
-  if (search) {
-    const sanitizedSearch = sanitizeString(search);
-    conditions.push('(u.name LIKE ? OR u.email LIKE ? OR u.phone LIKE ?)');
-    params.push(`%${sanitizedSearch}%`, `%${sanitizedSearch}%`, `%${sanitizedSearch}%`);
+  if (searchUserIds !== null) {
+    countQuery = countQuery.in('id', searchUserIds);
+    dataQuery = dataQuery.in('id', searchUserIds);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const [countResult, dataResult] = await Promise.all([countQuery, dataQuery]);
 
-  // Count total
-  const countResult = await queryOne(
-    context.env.DB,
-    `SELECT COUNT(*) as count FROM User u JOIN Role r ON u.roleId = r.id ${whereClause}`,
-    params
-  );
-  const total = (countResult as { count: number } | null)?.count ?? 0;
+  const total = countResult.count ?? 0;
+  const users = (dataResult.data ?? []) as Record<string, unknown>[];
 
-  // Fetch paginated users
-  const offset = (page - 1) * limit;
-  const users = await query(
-    context.env.DB,
-    `SELECT u.id, u.email, u.phone, u.name, u.status, u.emailVerified, u.phoneVerified,
-            u.profileImageUrl, u.city, u.state, u.createdAt, u.lastLoginAt,
-            r.name as role, r.id as roleId
-     FROM User u
-     JOIN Role r ON u.roleId = r.id
-     ${whereClause}
-     ORDER BY u.createdAt DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, offset]
-  );
+  // Enrich with role info
+  const enrichedUsers = await enrichUsersWithRoles(supabase, users);
 
   return json({
-    users,
+    users: enrichedUsers,
     pagination: {
       page,
       limit,
       total,
       totalPages: Math.ceil(total / limit),
     },
+  });
+}
+
+async function enrichUsersWithRoles(
+  supabase: ReturnType<typeof createSupabaseClient>,
+  users: Record<string, unknown>[]
+): Promise<Record<string, unknown>[]> {
+  if (users.length === 0) return [];
+
+  const roleIds = [...new Set(users.map((u) => Number(u.roleId)))];
+
+  const { data: roles } = await supabase
+    .from('Role')
+    .select('id, name')
+    .in('id', roleIds);
+
+  const roleMap = new Map(
+    (roles ?? []).map((r: Record<string, unknown>) => [Number(r.id), r])
+  );
+
+  return users.map((u) => {
+    const role = roleMap.get(Number(u.roleId)) as Record<string, unknown> | undefined;
+    return {
+      ...u,
+      role: role?.name ?? null,
+    };
   });
 }

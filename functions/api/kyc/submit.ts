@@ -5,14 +5,14 @@
  * Updates provider kycStatus to 'PENDING'
  */
 
-import { queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden, error } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -27,6 +27,8 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   if (!requireRole(user, 'PROVIDER')) {
     return forbidden('Provider access required');
   }
+
+  const supabase = createSupabaseClient(context.env);
 
   let body;
   try {
@@ -58,11 +60,11 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   const selfieUrl = sanitizeString(body.selfieUrl);
 
   // Check if provider already has KYC
-  const existingKyc = await queryOne(
-    context.env.DB,
-    'SELECT id, verificationStatus FROM ProviderKyc WHERE providerId = ?',
-    [user.userId]
-  );
+  const { data: existingKyc } = await supabase
+    .from('ProviderKyc')
+    .select('id,verificationStatus')
+    .eq('providerId', user.userId)
+    .maybeSingle();
 
   if (existingKyc) {
     const kycData = existingKyc as { id: string; verificationStatus: string };
@@ -78,48 +80,76 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
     }
 
     // If rejected, allow resubmission by updating existing record
-    await execute(
-      context.env.DB,
-      `UPDATE ProviderKyc
-       SET documentType = ?, documentNumber = ?, documentFrontUrl = ?, documentBackUrl = ?, selfieUrl = ?,
-           verificationStatus = 'PENDING', verifiedBy = NULL, verifiedAt = NULL, rejectionReason = NULL,
-           updatedAt = datetime('now')
-       WHERE id = ?`,
-      [documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl, kycData.id]
-    );
+    const now = new Date().toISOString();
+    const { error: updateError } = await supabase
+      .from('ProviderKyc')
+      .update({
+        documentType,
+        documentNumber,
+        documentFrontUrl,
+        documentBackUrl,
+        selfieUrl,
+        verificationStatus: 'PENDING',
+        verifiedBy: null,
+        verifiedAt: null,
+        rejectionReason: null,
+        updatedAt: now,
+      })
+      .eq('id', kycData.id);
+
+    if (updateError) {
+      console.error('KYC resubmit error:', updateError);
+      return error('Failed to resubmit KYC documents', 500);
+    }
 
     return json({ message: 'KYC documents resubmitted successfully', kycStatus: 'PENDING' });
   }
 
   // Create new KYC record
   const kycId = crypto.randomUUID();
-  await execute(
-    context.env.DB,
-    `INSERT INTO ProviderKyc (id, providerId, documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl, verificationStatus, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING', datetime('now'), datetime('now'))`,
-    [kycId, user.userId, documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl]
-  );
+  const now = new Date().toISOString();
+  const { error: insertError } = await supabase
+    .from('ProviderKyc')
+    .insert({
+      id: kycId,
+      providerId: user.userId,
+      documentType,
+      documentNumber,
+      documentFrontUrl,
+      documentBackUrl,
+      selfieUrl,
+      verificationStatus: 'PENDING',
+      createdAt: now,
+      updatedAt: now,
+    });
+
+  if (insertError) {
+    console.error('KYC submit error:', insertError);
+    return error('Failed to submit KYC documents', 500);
+  }
 
   // Notify admins about new KYC submission
-  const admins = await queryOne(
-    context.env.DB,
-    "SELECT id FROM User WHERE roleId = (SELECT id FROM Role WHERE name = 'ADMIN') LIMIT 1"
-  );
+  // Find admin users (roleId = 3 for ADMIN based on Role table)
+  const { data: admins } = await supabase
+    .from('User')
+    .select('id')
+    .eq('roleId', 3)
+    .limit(1);
 
-  if (admins) {
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, isRead, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [
-        crypto.randomUUID(),
-        (admins as { id: string }).id,
-        'KYC_SUBMISSION',
-        'New KYC Submission',
-        `A provider has submitted KYC documents for verification`,
-        '/admin/users',
-      ]
-    );
+  if (admins && admins.length > 0) {
+    const adminId = (admins[0] as { id: string }).id;
+    await supabase
+      .from('Notification')
+      .insert({
+        id: crypto.randomUUID(),
+        userId: adminId,
+        type: 'KYC_SUBMISSION',
+        title: 'New KYC Submission',
+        message: 'A provider has submitted KYC documents for verification',
+        actionUrl: '/admin/users',
+        isRead: false,
+        createdAt: now,
+      });
   }
 
   return json({ message: 'KYC documents submitted successfully', kycStatus: 'PENDING' }, 201);

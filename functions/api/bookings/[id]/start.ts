@@ -4,14 +4,9 @@
  *   - Changes status to 'IN_PROGRESS'
  */
 
-import { queryOne, execute } from '../../../_shared/db';
+import { createSupabaseClient, Env } from '../../../_shared/db';
 import { requireAuth, requireRole } from '../../../_shared/auth';
 import { json, unauthorized, forbidden, notFound, error } from '../../../_shared/response';
-
-interface Env {
-  DB: D1Database;
-  JWT_SECRET?: string;
-}
 
 export async function onRequestPost(context: { request: Request; env: Env; params: { id: string } }): Promise<Response> {
   try {
@@ -24,12 +19,18 @@ export async function onRequestPost(context: { request: Request; env: Env; param
     }
 
     const bookingId = context.params.id;
+    const supabase = createSupabaseClient(context.env);
 
-    const booking = await queryOne(
-      context.env.DB,
-      `SELECT * FROM Booking WHERE id = ?`,
-      [bookingId]
-    );
+    const { data: booking, error: fetchError } = await supabase
+      .from('Booking')
+      .select('*')
+      .eq('id', bookingId)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('Start booking error:', fetchError);
+      return error('Failed to fetch booking', 500);
+    }
 
     if (!booking) {
       return notFound('Booking not found');
@@ -47,20 +48,34 @@ export async function onRequestPost(context: { request: Request; env: Env; param
       return error(`Booking cannot be started. Current status: ${bookingData.status}`);
     }
 
-    await execute(
-      context.env.DB,
-      `UPDATE Booking SET status = 'IN_PROGRESS', updatedAt = datetime('now') WHERE id = ?`,
-      [bookingId]
-    );
+    const now = new Date().toISOString();
+
+    const { error: updateError } = await supabase
+      .from('Booking')
+      .update({
+        status: 'IN_PROGRESS',
+        updatedAt: now,
+      })
+      .eq('id', bookingId);
+
+    if (updateError) {
+      console.error('Start booking update error:', updateError);
+      return error('Failed to start booking', 500);
+    }
 
     // Notify the client
     const notifId = `notif_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, createdAt)
-       VALUES (?, ?, 'BOOKING', 'Service Started', ?, ?, datetime('now'))`,
-      [notifId, bookingData.clientId, `Your service provider has started the service`, `/bookings/${bookingId}`]
-    );
+    await supabase
+      .from('Notification')
+      .insert({
+        id: notifId,
+        userId: String(bookingData.clientId),
+        type: 'BOOKING',
+        title: 'Service Started',
+        message: 'Your service provider has started the service',
+        actionUrl: `/bookings/${bookingId}`,
+        createdAt: now,
+      });
 
     return json({ message: 'Booking started successfully', bookingId, status: 'IN_PROGRESS' });
   } catch (err) {

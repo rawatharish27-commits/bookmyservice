@@ -3,13 +3,13 @@
  * Requires ADMIN role
  */
 
-import { query, queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden } from '../../_shared/response';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -25,70 +25,126 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
     return forbidden('Admin access required');
   }
 
-  const db = context.env.DB;
+  const supabase = createSupabaseClient(context.env);
 
-  // Total users
-  const totalUsersResult = await queryOne(db, 'SELECT COUNT(*) as count FROM User');
-  const totalUsers = (totalUsersResult as { count: number } | null)?.count ?? 0;
+  // Total users count
+  const { count: totalUsers } = await supabase
+    .from('User')
+    .select('id', { count: 'exact' });
 
   // Total providers (roleId = 2)
-  const totalProvidersResult = await queryOne(db, "SELECT COUNT(*) as count FROM User WHERE roleId = (SELECT id FROM Role WHERE name = 'PROVIDER')");
-  const totalProviders = (totalProvidersResult as { count: number } | null)?.count ?? 0;
+  const { count: totalProviders } = await supabase
+    .from('User')
+    .select('id', { count: 'exact' })
+    .eq('roleId', 2);
 
-  // Total services
-  const totalServicesResult = await queryOne(db, 'SELECT COUNT(*) as count FROM Service');
-  const totalServices = (totalServicesResult as { count: number } | null)?.count ?? 0;
+  // Total services count
+  const { count: totalServices } = await supabase
+    .from('Service')
+    .select('id', { count: 'exact' });
 
-  // Total bookings
-  const totalBookingsResult = await queryOne(db, 'SELECT COUNT(*) as count FROM Booking');
-  const totalBookings = (totalBookingsResult as { count: number } | null)?.count ?? 0;
+  // Total bookings count
+  const { count: totalBookings } = await supabase
+    .from('Booking')
+    .select('id', { count: 'exact' });
 
   // Total revenue (sum of finalPrice from completed bookings)
-  const totalRevenueResult = await queryOne(db, "SELECT COALESCE(SUM(finalPrice), 0) as total FROM Booking WHERE status = 'COMPLETED'");
-  const totalRevenue = (totalRevenueResult as { total: number } | null)?.total ?? 0;
+  const { data: completedBookings } = await supabase
+    .from('Booking')
+    .select('finalPrice')
+    .eq('status', 'COMPLETED');
+  const totalRevenue = completedBookings?.reduce((sum, b) => sum + Number(b.finalPrice ?? 0), 0) ?? 0;
 
-  // Pending verifications (KYC pending + services pending)
-  const pendingKycResult = await queryOne(db, "SELECT COUNT(*) as count FROM ProviderKyc WHERE verificationStatus = 'PENDING'");
-  const pendingKyc = (pendingKycResult as { count: number } | null)?.count ?? 0;
+  // Pending KYC verifications
+  const { count: pendingKyc } = await supabase
+    .from('ProviderKyc')
+    .select('id', { count: 'exact' })
+    .eq('verificationStatus', 'PENDING');
 
-  const pendingServicesResult = await queryOne(db, "SELECT COUNT(*) as count FROM Service WHERE approvalStatus = 'PENDING'");
-  const pendingServices = (pendingServicesResult as { count: number } | null)?.count ?? 0;
+  // Pending service approvals
+  const { count: pendingServices } = await supabase
+    .from('Service')
+    .select('id', { count: 'exact' })
+    .eq('approvalStatus', 'PENDING');
 
-  const pendingVerifications = pendingKyc + pendingServices;
+  const pendingVerifications = (pendingKyc ?? 0) + (pendingServices ?? 0);
 
   // Recent bookings (last 10)
-  const recentBookings = await query(db, `
-    SELECT b.id, b.bookingNumber, b.status, b.finalPrice, b.scheduledDate, b.scheduledTime,
-           b.createdAt,
-           c.name as clientName, c.email as clientEmail,
-           p.name as providerName, p.email as providerEmail,
-           s.title as serviceTitle
-    FROM Booking b
-    JOIN User c ON b.clientId = c.id
-    JOIN User p ON b.providerId = p.id
-    JOIN Service s ON b.serviceId = s.id
-    ORDER BY b.createdAt DESC
-    LIMIT 10
-  `);
+  const { data: recentBookingsRaw } = await supabase
+    .from('Booking')
+    .select('id, bookingNumber, status, finalPrice, scheduledDate, scheduledTime, createdAt, clientId, providerId, serviceId')
+    .order('createdAt', { ascending: false })
+    .limit(10);
+
+  // Enrich recent bookings with user and service info
+  const recentBookings = await enrichBookings(supabase, recentBookingsRaw as Record<string, unknown>[] | null);
 
   // Users by role
-  const usersByRole = await query(db, `
-    SELECT r.name as role, COUNT(u.id) as count
-    FROM Role r
-    LEFT JOIN User u ON u.roleId = r.id
-    GROUP BY r.id, r.name
-  `);
+  const { data: roles } = await supabase
+    .from('Role')
+    .select('id, name');
+
+  const usersByRole = await Promise.all(
+    (roles ?? []).map(async (role) => {
+      const { count } = await supabase
+        .from('User')
+        .select('id', { count: 'exact' })
+        .eq('roleId', role.id);
+      return { role: role.name, count: count ?? 0 };
+    })
+  );
 
   return json({
-    totalUsers,
-    totalProviders,
-    totalServices,
-    totalBookings,
+    totalUsers: totalUsers ?? 0,
+    totalProviders: totalProviders ?? 0,
+    totalServices: totalServices ?? 0,
+    totalBookings: totalBookings ?? 0,
     totalRevenue,
     pendingVerifications,
-    pendingKyc,
-    pendingServices,
+    pendingKyc: pendingKyc ?? 0,
+    pendingServices: pendingServices ?? 0,
     recentBookings,
     usersByRole,
+  });
+}
+
+async function enrichBookings(
+  supabase: ReturnType<typeof createSupabaseClient>,
+  bookings: Record<string, unknown>[] | null
+): Promise<Record<string, unknown>[]> {
+  if (!bookings || bookings.length === 0) return [];
+
+  const clientIds = [...new Set(bookings.map((b) => String(b.clientId)))];
+  const providerIds = [...new Set(bookings.map((b) => String(b.providerId)))];
+  const serviceIds = [...new Set(bookings.map((b) => String(b.serviceId)))];
+
+  const [clientsResult, providersResult, servicesResult] = await Promise.all([
+    supabase.from('User').select('id, name, email').in('id', clientIds),
+    supabase.from('User').select('id, name, email').in('id', providerIds),
+    supabase.from('Service').select('id, title').in('id', serviceIds),
+  ]);
+
+  const clientMap = new Map(
+    (clientsResult.data ?? []).map((c: Record<string, unknown>) => [String(c.id), c])
+  );
+  const providerMap = new Map(
+    (providersResult.data ?? []).map((p: Record<string, unknown>) => [String(p.id), p])
+  );
+  const serviceMap = new Map(
+    (servicesResult.data ?? []).map((s: Record<string, unknown>) => [String(s.id), s])
+  );
+
+  return bookings.map((b) => {
+    const client = clientMap.get(String(b.clientId)) as Record<string, unknown> | undefined;
+    const provider = providerMap.get(String(b.providerId)) as Record<string, unknown> | undefined;
+    const service = serviceMap.get(String(b.serviceId)) as Record<string, unknown> | undefined;
+    return {
+      ...b,
+      clientName: client?.name ?? null,
+      clientEmail: client?.email ?? null,
+      providerName: provider?.name ?? null,
+      providerEmail: provider?.email ?? null,
+      serviceTitle: service?.title ?? null,
+    };
   });
 }

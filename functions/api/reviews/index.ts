@@ -3,15 +3,10 @@
  * POST /api/reviews - Client creates a review (must have completed booking)
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, error, unauthorized, forbidden } from '../../_shared/response';
 import { sanitizeString, sanitizeObject } from '../../_shared/security';
-
-interface Env {
-  DB: D1Database;
-  JWT_SECRET?: string;
-}
 
 function generateId(): string {
   return `rev_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
@@ -19,6 +14,7 @@ function generateId(): string {
 
 export async function onRequestGet(context: { request: Request; env: Env; params: Record<string, string> }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const url = new URL(context.request.url);
     const serviceId = url.searchParams.get('serviceId');
     const page = parseInt(url.searchParams.get('page') || '1', 10);
@@ -29,47 +25,60 @@ export async function onRequestGet(context: { request: Request; env: Env; params
       return error('serviceId query parameter is required');
     }
 
-    const countResult = await queryOne(
-      context.env.DB,
-      `SELECT COUNT(*) as total FROM Review WHERE serviceId = ?`,
-      [serviceId]
-    );
+    // Fetch reviews with reviewer and service info using PostgREST joins
+    const { data: reviews, error: reviewsError, count } = await supabase
+      .from('Review')
+      .select('id,bookingId,reviewerId,reviewedId,serviceId,rating,comment,isVerified,createdAt,reviewer:User!Review_reviewerId_fkey(name,profileImageUrl),service:Service(title)', { count: 'exact' })
+      .eq('serviceId', serviceId)
+      .order('createdAt', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    const reviews = await query(
-      context.env.DB,
-      `SELECT r.id, r.bookingId, r.reviewerId, r.reviewedId, r.serviceId, r.rating, r.comment,
-              r.isVerified, r.createdAt,
-              u.name as reviewerName, u.profileImageUrl as reviewerProfileImage,
-              s.title as serviceTitle
-       FROM Review r
-       LEFT JOIN User u ON r.reviewerId = u.id
-       LEFT JOIN Service s ON r.serviceId = s.id
-       WHERE r.serviceId = ?
-       ORDER BY r.createdAt DESC
-       LIMIT ? OFFSET ?`,
-      [serviceId, limit, offset]
-    );
+    if (reviewsError) {
+      console.error('Get reviews error:', reviewsError);
+      return error('Failed to fetch reviews', 500);
+    }
 
-    const total = (countResult as Record<string, unknown>)?.total || 0;
+    // Flatten the join results
+    const flatReviews = (reviews as Record<string, unknown>[] || []).map((r) => ({
+      id: r.id,
+      bookingId: r.bookingId,
+      reviewerId: r.reviewerId,
+      reviewedId: r.reviewedId,
+      serviceId: r.serviceId,
+      rating: r.rating,
+      comment: r.comment,
+      isVerified: r.isVerified,
+      createdAt: r.createdAt,
+      reviewerName: (r.reviewer as Record<string, unknown>)?.name ?? null,
+      reviewerProfileImage: (r.reviewer as Record<string, unknown>)?.profileImageUrl ?? null,
+      serviceTitle: (r.service as Record<string, unknown>)?.title ?? null,
+    }));
 
-    // Get average rating for the service
-    const avgResult = await queryOne(
-      context.env.DB,
-      `SELECT AVG(rating) as avgRating, COUNT(*) as totalReviews FROM Review WHERE serviceId = ?`,
-      [serviceId]
-    );
+    const total = count || 0;
+
+    // Calculate average rating client-side
+    const { data: allRatings } = await supabase
+      .from('Review')
+      .select('rating')
+      .eq('serviceId', serviceId);
+
+    const ratings = (allRatings || []) as { rating: number }[];
+    const avgRating = ratings.length > 0
+      ? (ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length).toFixed(1)
+      : '0.0';
+    const totalReviews = ratings.length;
 
     return json({
-      reviews,
+      reviews: flatReviews,
       summary: {
-        averageRating: Number((avgResult as Record<string, unknown>)?.avgRating || 0).toFixed(1),
-        totalReviews: (avgResult as Record<string, unknown>)?.totalReviews || 0,
+        averageRating: avgRating,
+        totalReviews,
       },
       pagination: {
         page,
         limit,
         total,
-        totalPages: Math.ceil(Number(total) / limit),
+        totalPages: Math.ceil(total / limit),
       },
     });
   } catch (err) {
@@ -80,6 +89,7 @@ export async function onRequestGet(context: { request: Request; env: Env; params
 
 export async function onRequestPost(context: { request: Request; env: Env; params: Record<string, string> }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const user = await requireAuth(context.request, context.env);
     if (!user) return unauthorized();
 
@@ -107,11 +117,12 @@ export async function onRequestPost(context: { request: Request; env: Env; param
     }
 
     // Check that the booking exists and belongs to this client
-    const booking = await queryOne(
-      context.env.DB,
-      `SELECT * FROM Booking WHERE id = ? AND clientId = ?`,
-      [bookingId, user.userId]
-    );
+    const { data: booking } = await supabase
+      .from('Booking')
+      .select('*')
+      .eq('id', bookingId)
+      .eq('clientId', user.userId)
+      .maybeSingle();
 
     if (!booking) {
       return error('Booking not found or does not belong to you', 404);
@@ -130,11 +141,11 @@ export async function onRequestPost(context: { request: Request; env: Env; param
     }
 
     // Check if review already exists for this booking
-    const existingReview = await queryOne(
-      context.env.DB,
-      `SELECT id FROM Review WHERE bookingId = ?`,
-      [bookingId]
-    );
+    const { data: existingReview } = await supabase
+      .from('Review')
+      .select('id')
+      .eq('bookingId', bookingId)
+      .maybeSingle();
 
     if (existingReview) {
       return error('You have already reviewed this booking');
@@ -142,41 +153,77 @@ export async function onRequestPost(context: { request: Request; env: Env; param
 
     const reviewId = generateId();
     const providerId = String(bookingData.providerId);
+    const now = new Date().toISOString();
 
-    await execute(
-      context.env.DB,
-      `INSERT INTO Review (id, bookingId, reviewerId, reviewedId, serviceId, rating, comment, isVerified, createdAt, updatedAt)
-       VALUES (?, ?, ?, ?, ?, ?, ?, 1, datetime('now'), datetime('now'))`,
-      [reviewId, bookingId, user.userId, providerId, serviceId, rating, comment]
-    );
+    await supabase
+      .from('Review')
+      .insert({
+        id: reviewId,
+        bookingId,
+        reviewerId: user.userId,
+        reviewedId: providerId,
+        serviceId,
+        rating,
+        comment,
+        isVerified: true,
+        createdAt: now,
+        updatedAt: now,
+      });
+
+    // Recalculate average rating for the service
+    const { data: serviceReviews } = await supabase
+      .from('Review')
+      .select('rating')
+      .eq('serviceId', serviceId);
+
+    const svcReviews = (serviceReviews || []) as { rating: number }[];
+    const newAvg = svcReviews.length > 0
+      ? svcReviews.reduce((sum, r) => sum + r.rating, 0) / svcReviews.length
+      : 0;
 
     // Update service average rating and total reviews
-    await execute(
-      context.env.DB,
-      `UPDATE Service SET
-        totalReviews = totalReviews + 1,
-        averageRating = (SELECT AVG(rating) FROM Review WHERE serviceId = ?)
-       WHERE id = ?`,
-      [serviceId, serviceId]
-    );
+    await supabase
+      .from('Service')
+      .update({
+        totalReviews: svcReviews.length,
+        averageRating: Math.round(newAvg * 100) / 100,
+      })
+      .eq('id', serviceId);
 
     // Notify the provider
     const notifId = `notif_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, createdAt)
-       VALUES (?, ?, 'REVIEW', 'New Review', ?, ?, datetime('now'))`,
-      [notifId, providerId, `You received a ${rating}-star review for your service`, `/reviews/${reviewId}`]
-    );
+    await supabase
+      .from('Notification')
+      .insert({
+        id: notifId,
+        userId: providerId,
+        type: 'REVIEW',
+        title: 'New Review',
+        message: `You received a ${rating}-star review for your service`,
+        actionUrl: `/reviews/${reviewId}`,
+        isRead: false,
+        createdAt: now,
+      });
 
-    // Fetch the created review
-    const review = await queryOne(
-      context.env.DB,
-      `SELECT r.*, u.name as reviewerName FROM Review r LEFT JOIN User u ON r.reviewerId = u.id WHERE r.id = ?`,
-      [reviewId]
-    );
+    // Fetch the created review with reviewer name
+    const { data: review } = await supabase
+      .from('Review')
+      .select('*,reviewer:User!Review_reviewerId_fkey(name)')
+      .eq('id', reviewId)
+      .maybeSingle();
 
-    return json({ review }, 201);
+    // Flatten the join result
+    let flatReview = review;
+    if (review) {
+      const r = review as Record<string, unknown>;
+      flatReview = {
+        ...r,
+        reviewerName: (r.reviewer as Record<string, unknown>)?.name ?? null,
+      };
+      delete (flatReview as Record<string, unknown>).reviewer;
+    }
+
+    return json({ review: flatReview }, 201);
   } catch (err) {
     if ((err as Error).message === 'UNAUTHORIZED') return unauthorized();
     console.error('Create review error:', err);

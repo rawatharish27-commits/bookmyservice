@@ -12,6 +12,8 @@ export interface User {
   city?: string;
   state?: string;
   country?: string;
+  emailVerified?: boolean;
+  phoneVerified?: boolean;
 }
 
 interface AuthContextType {

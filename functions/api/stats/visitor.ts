@@ -4,13 +4,9 @@
  *   - Upserts visitor record
  */
 
-import { queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, error } from '../../_shared/response';
 import { sanitizeString, getClientIP } from '../../_shared/security';
-
-interface Env {
-  DB: D1Database;
-}
 
 function generateId(): string {
   return `vs_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
@@ -18,6 +14,7 @@ function generateId(): string {
 
 export async function onRequestPost(context: { request: Request; env: Env; params: Record<string, string> }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const body = await context.request.json() as Record<string, unknown>;
     const sessionId = sanitizeString(String(body.sessionId || ''));
     const page = sanitizeString(String(body.page || ''));
@@ -28,64 +25,109 @@ export async function onRequestPost(context: { request: Request; env: Env; param
 
     const ipAddress = getClientIP(context.request);
     const userAgent = context.request.headers.get('User-Agent') || null;
+    const now = new Date().toISOString();
 
     // Check if session already exists
-    const existing = await queryOne(
-      context.env.DB,
-      `SELECT id FROM VisitorSession WHERE sessionId = ?`,
-      [sessionId]
-    );
+    const { data: existing } = await supabase
+      .from('VisitorSession')
+      .select('id')
+      .eq('sessionId', sessionId)
+      .maybeSingle();
 
     if (existing) {
       // Update existing session
-      await execute(
-        context.env.DB,
-        `UPDATE VisitorSession SET lastActive = datetime('now'), isActive = 1, page = ?, updatedAt = datetime('now') WHERE sessionId = ?`,
-        [page || null, sessionId]
-      );
+      await supabase
+        .from('VisitorSession')
+        .update({
+          lastActive: now,
+          isActive: true,
+          page: page || null,
+          updatedAt: now,
+        })
+        .eq('sessionId', sessionId);
     } else {
       // Create new session
       const id = generateId();
-      await execute(
-        context.env.DB,
-        `INSERT INTO VisitorSession (id, sessionId, ipAddress, userAgent, page, isActive, lastActive, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, 1, datetime('now'), datetime('now'), datetime('now'))`,
-        [id, sessionId, ipAddress, userAgent, page || null]
-      );
+      await supabase
+        .from('VisitorSession')
+        .insert({
+          id,
+          sessionId,
+          ipAddress,
+          userAgent,
+          page: page || null,
+          isActive: true,
+          lastActive: now,
+          createdAt: now,
+          updatedAt: now,
+        });
     }
 
     // Update PlatformStats table
-    await execute(
-      context.env.DB,
-      `UPDATE PlatformStats SET
-        totalVisitors = (SELECT COUNT(*) FROM VisitorSession),
-        activeVisitors = (SELECT COUNT(*) FROM VisitorSession WHERE isActive = 1 AND datetime(lastActive) > datetime('now', '-5 minutes')),
-        updatedAt = datetime('now')
-       WHERE id = 1`
-    );
+    // First, count total and active visitors
+    const { count: totalVisitors } = await supabase
+      .from('VisitorSession')
+      .select('', { count: 'exact', head: true });
 
-    // If no row exists, insert one
-    const statsRow = await queryOne(
-      context.env.DB,
-      `SELECT id FROM PlatformStats WHERE id = 1`,
-      []
-    );
+    // For active visitors, we need sessions where lastActive is within 5 minutes
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+    const { count: activeVisitors } = await supabase
+      .from('VisitorSession')
+      .select('', { count: 'exact', head: true })
+      .eq('isActive', true)
+      .gte('lastActive', fiveMinutesAgo);
 
-    if (!statsRow) {
-      await execute(
-        context.env.DB,
-        `INSERT INTO PlatformStats (id, totalVisitors, totalUsers, totalProviders, totalBookings, totalServices, activeVisitors, updatedAt)
-         VALUES (1,
-           (SELECT COUNT(*) FROM VisitorSession),
-           (SELECT COUNT(*) FROM User WHERE roleId = 1),
-           (SELECT COUNT(*) FROM User WHERE roleId = 2 AND status = 'ACTIVE'),
-           (SELECT COUNT(*) FROM Booking),
-           (SELECT COUNT(*) FROM Service WHERE isActive = 1 AND approvalStatus = 'APPROVED'),
-           (SELECT COUNT(*) FROM VisitorSession WHERE isActive = 1 AND datetime(lastActive) > datetime('now', '-5 minutes')),
-           datetime('now')
-         )`,
-        []
-      );
+    // Try to update existing stats row
+    const { data: statsRow } = await supabase
+      .from('PlatformStats')
+      .select('id')
+      .eq('id', 1)
+      .maybeSingle();
+
+    if (statsRow) {
+      await supabase
+        .from('PlatformStats')
+        .update({
+          totalVisitors: totalVisitors || 0,
+          activeVisitors: activeVisitors || 0,
+          updatedAt: now,
+        })
+        .eq('id', 1);
+    } else {
+      // Count other stats for initial row
+      const { count: totalUsers } = await supabase
+        .from('User')
+        .select('', { count: 'exact', head: true })
+        .eq('roleId', 1);
+
+      const { count: totalProviders } = await supabase
+        .from('User')
+        .select('', { count: 'exact', head: true })
+        .eq('roleId', 2)
+        .eq('status', 'ACTIVE');
+
+      const { count: totalBookings } = await supabase
+        .from('Booking')
+        .select('', { count: 'exact', head: true });
+
+      const { count: totalServices } = await supabase
+        .from('Service')
+        .select('', { count: 'exact', head: true })
+        .eq('isActive', true)
+        .eq('approvalStatus', 'APPROVED');
+
+      await supabase
+        .from('PlatformStats')
+        .insert({
+          id: 1,
+          totalVisitors: totalVisitors || 0,
+          totalUsers: totalUsers || 0,
+          totalProviders: totalProviders || 0,
+          totalBookings: totalBookings || 0,
+          totalServices: totalServices || 0,
+          activeVisitors: activeVisitors || 0,
+          updatedAt: now,
+        });
     }
 
     return json({ success: true });

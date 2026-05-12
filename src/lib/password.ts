@@ -106,11 +106,11 @@ function bufferToBase64(buffer: Uint8Array): string {
   return btoa(String.fromCharCode(...buffer));
 }
 
-function base64ToBuffer(base64: string): Uint8Array {
+function base64ToBuffer(base64: string): Uint8Array<ArrayBuffer> {
   const binary = atob(base64);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
     bytes[i] = binary.charCodeAt(i);
   }
-  return bytes;
+  return bytes as Uint8Array<ArrayBuffer>;
 }

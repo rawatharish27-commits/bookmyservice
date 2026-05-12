@@ -4,12 +4,12 @@
  * Query params: q, categoryId, city, minPrice, maxPrice, page, limit
  */
 
-import { query, queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, serverError } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     const url = new URL(request.url);
@@ -22,75 +22,55 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
     const limit = Math.min(Math.max(Number(url.searchParams.get('limit')) || 20, 1), 100);
     const offset = (page - 1) * limit;
 
-    // ─── Build WHERE conditions ──────────────────────────────────
-    const conditions: string[] = [
-      "s.isActive = 1",
-      "s.approvalStatus = 'APPROVED'",
-    ];
-    const params: unknown[] = [];
+    const supabase = createSupabaseClient(env);
+
+    // ─── Build query with PostgREST joins and filters ────────────
+    const selectColumns = '*,provider:User!Service_providerId_fkey(id,name,profileImageUrl),category:ServiceCategory!Service_categoryId_fkey(id,name,slug,icon),subcategory:ServiceSubcategory!Service_subcategoryId_fkey(id,name,slug)';
+
+    let query = supabase
+      .from('Service')
+      .select(selectColumns, { count: 'exact' })
+      .eq('isActive', true)
+      .eq('approvalStatus', 'APPROVED');
 
     // Search query - match against title and description
     if (q) {
-      const sanitizedQ = sanitizeString(q);
-      conditions.push('(LOWER(s.title) LIKE LOWER(?) OR LOWER(s.description) LIKE LOWER(?))');
-      const searchTerm = `%${sanitizedQ}%`;
-      params.push(searchTerm);
-      params.push(searchTerm);
+      const sanitizedQ = sanitizeString(q).replace(/[%(),]/g, '');
+      query = query.or(`title.ilike.%${sanitizedQ}%,description.ilike.%${sanitizedQ}%`);
     }
 
     if (categoryId) {
-      conditions.push('s.categoryId = ?');
-      params.push(Number(categoryId));
+      query = query.eq('categoryId', Number(categoryId));
     }
 
     if (city) {
-      conditions.push('LOWER(s.city) LIKE LOWER(?)');
-      params.push(`%${sanitizeString(city)}%`);
+      const sanitizedCity = sanitizeString(city).replace(/[%(),]/g, '');
+      query = query.ilike('city', `%${sanitizedCity}%`);
     }
 
     if (minPrice) {
-      conditions.push('s.basePrice >= ?');
-      params.push(Number(minPrice));
+      query = query.gte('basePrice', Number(minPrice));
     }
 
     if (maxPrice) {
-      conditions.push('s.basePrice <= ?');
-      params.push(Number(maxPrice));
+      query = query.lte('basePrice', Number(maxPrice));
     }
 
-    const whereClause = conditions.join(' AND ');
+    // ─── Execute count + data query together ─────────────────────
+    const { data: services, count, error: svcError } = await query
+      .order('averageRating', { ascending: false })
+      .order('totalBookings', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    // ─── Count total matching services ───────────────────────────
-    const countResult = await queryOne(
-      env.DB,
-      `SELECT COUNT(*) as total FROM Service s WHERE ${whereClause}`,
-      params
-    );
-    const total = Number((countResult as Record<string, unknown>)?.total ?? 0);
+    if (svcError) {
+      console.error('Search services error:', svcError);
+      return serverError('Failed to search services');
+    }
 
-    // ─── Fetch paginated search results ──────────────────────────
-    const services = await query(
-      env.DB,
-      `SELECT s.id, s.title, s.description, s.basePrice, s.priceNegotiable,
-              s.averageRating, s.totalBookings, s.totalReviews, s.city, s.images,
-              s.serviceDurationMinutes, s.createdAt,
-              u.id as providerId, u.name as providerName, u.profileImageUrl as providerImage,
-              sc.id as categoryId, sc.name as categoryName, sc.slug as categorySlug, sc.icon as categoryIcon,
-              ss.id as subcategoryId, ss.name as subcategoryName, ss.slug as subcategorySlug
-       FROM Service s
-       JOIN User u ON s.providerId = u.id
-       JOIN ServiceCategory sc ON s.categoryId = sc.id
-       LEFT JOIN ServiceSubcategory ss ON s.subcategoryId = ss.id
-       WHERE ${whereClause}
-       ORDER BY
-         CASE WHEN LOWER(s.title) LIKE LOWER(?) THEN 0 ELSE 1 END,
-         s.averageRating DESC, s.totalBookings DESC
-       LIMIT ? OFFSET ?`,
-      [...params, q ? `%${sanitizeString(q)}%` : '', limit, offset]
-    );
+    const total = count ?? 0;
 
-    // ─── Transform to structured format ──────────────────────────
-    const formattedServices = (services as Record<string, unknown>[]).map((s) => ({
+    // ─── Transform to structured format matching original response ──
+    const formattedServices = (services || []).map((s: Record<string, unknown>) => ({
       id: s.id,
       title: s.title,
       description: s.description,
@@ -103,22 +83,9 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       images: s.images,
       serviceDurationMinutes: s.serviceDurationMinutes,
       createdAt: s.createdAt,
-      provider: {
-        id: s.providerId,
-        name: s.providerName,
-        profileImageUrl: s.providerImage,
-      },
-      category: {
-        id: s.categoryId,
-        name: s.categoryName,
-        slug: s.categorySlug,
-        icon: s.categoryIcon,
-      },
-      subcategory: s.subcategoryId ? {
-        id: s.subcategoryId,
-        name: s.subcategoryName,
-        slug: s.subcategorySlug,
-      } : null,
+      provider: s.provider || null,
+      category: s.category || null,
+      subcategory: s.subcategoryId ? (s.subcategory || null) : null,
     }));
 
     const totalPages = Math.ceil(total / limit);

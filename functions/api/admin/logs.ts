@@ -4,14 +4,14 @@
  * Returns recent activity logs
  */
 
-import { query, queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -34,65 +34,88 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   const targetType = url.searchParams.get('targetType');
   const adminId = url.searchParams.get('adminId');
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
+  const supabase = createSupabaseClient(context.env);
+
+  // Build count query
+  let countQuery = supabase.from('AdminLog').select('id', { count: 'exact' });
+
+  // Build data query
+  let dataQuery = supabase
+    .from('AdminLog')
+    .select('id, action, targetType, targetId, details, ipAddress, userAgent, createdAt, adminId')
+    .order('createdAt', { ascending: false })
+    .range((page - 1) * limit, (page - 1) * limit + limit - 1);
 
   if (action) {
-    conditions.push('al.action = ?');
-    params.push(sanitizeString(action));
+    const sanitizedAction = sanitizeString(action);
+    countQuery = countQuery.eq('action', sanitizedAction);
+    dataQuery = dataQuery.eq('action', sanitizedAction);
   }
 
   if (targetType) {
-    conditions.push('al.targetType = ?');
-    params.push(sanitizeString(targetType));
+    const sanitizedTargetType = sanitizeString(targetType);
+    countQuery = countQuery.eq('targetType', sanitizedTargetType);
+    dataQuery = dataQuery.eq('targetType', sanitizedTargetType);
   }
 
   if (adminId) {
-    conditions.push('al.adminId = ?');
-    params.push(sanitizeString(adminId));
+    const sanitizedAdminId = sanitizeString(adminId);
+    countQuery = countQuery.eq('adminId', sanitizedAdminId);
+    dataQuery = dataQuery.eq('adminId', sanitizedAdminId);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  // Execute queries in parallel
+  const [countResult, dataResult] = await Promise.all([countQuery, dataQuery]);
 
-  // Count
-  const countResult = await queryOne(
-    context.env.DB,
-    `SELECT COUNT(*) as count FROM AdminLog al ${whereClause}`,
-    params
-  );
-  const total = (countResult as { count: number } | null)?.count ?? 0;
+  const total = countResult.count ?? 0;
+  const logs = dataResult.data ?? [];
 
-  // Fetch logs
-  const offset = (page - 1) * limit;
-  const logs = await query(
-    context.env.DB,
-    `SELECT al.id, al.action, al.targetType, al.targetId, al.details, al.ipAddress, al.userAgent, al.createdAt,
-            u.name as adminName, u.email as adminEmail
-     FROM AdminLog al
-     JOIN User u ON al.adminId = u.id
-     ${whereClause}
-     ORDER BY al.createdAt DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, offset]
-  );
+  // Enrich logs with admin user info
+  const adminIds = [...new Set(logs.map((l: Record<string, unknown>) => String(l.adminId)))];
+  let adminMap = new Map<string, Record<string, unknown>>();
 
-  // Available action types for filtering
-  const actionTypes = await query(
-    context.env.DB,
-    'SELECT DISTINCT action FROM AdminLog ORDER BY action'
-  );
+  if (adminIds.length > 0) {
+    const { data: adminUsers } = await supabase
+      .from('User')
+      .select('id, name, email')
+      .in('id', adminIds);
+    adminMap = new Map(
+      (adminUsers ?? []).map((u: Record<string, unknown>) => [String(u.id), u])
+    );
+  }
 
-  // Available target types for filtering
-  const targetTypes = await query(
-    context.env.DB,
-    'SELECT DISTINCT targetType FROM AdminLog WHERE targetType IS NOT NULL ORDER BY targetType'
-  );
+  const enrichedLogs = logs.map((l: Record<string, unknown>) => {
+    const admin = adminMap.get(String(l.adminId)) as Record<string, unknown> | undefined;
+    return {
+      ...l,
+      adminName: admin?.name ?? null,
+      adminEmail: admin?.email ?? null,
+    };
+  });
+
+  // Fetch available action types for filtering
+  const { data: allLogs } = await supabase
+    .from('AdminLog')
+    .select('action');
+
+  const actionTypes = [...new Set((allLogs ?? []).map((l: Record<string, unknown>) => String(l.action)))].sort();
+
+  // Fetch available target types for filtering
+  const { data: allLogTypes } = await supabase
+    .from('AdminLog')
+    .select('targetType');
+
+  const targetTypes = [...new Set(
+    (allLogTypes ?? [])
+      .map((l: Record<string, unknown>) => l.targetType)
+      .filter((t): t is string => t != null)
+  )].sort();
 
   return json({
-    logs,
+    logs: enrichedLogs,
     filters: {
-      actionTypes: (actionTypes as { action: string }[]).map(a => a.action),
-      targetTypes: (targetTypes as { targetType: string }[]).map(t => t.targetType),
+      actionTypes,
+      targetTypes,
     },
     pagination: {
       page,

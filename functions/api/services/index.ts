@@ -4,12 +4,12 @@
  * Query params: limit, offset, categoryId, city, minPrice, maxPrice, search
  */
 
-import { query, queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, serverError } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { request, env } = context as { request: Request; env: { DB: D1Database } };
+  const { request, env } = context as unknown as { request: Request; env: Env };
 
   try {
     const url = new URL(request.url);
@@ -21,71 +21,53 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
     const maxPrice = url.searchParams.get('maxPrice');
     const search = url.searchParams.get('search');
 
-    // ─── Build WHERE conditions ──────────────────────────────────
-    const conditions: string[] = [
-      "s.isActive = 1",
-      "s.approvalStatus = 'APPROVED'",
-    ];
-    const params: unknown[] = [];
+    const supabase = createSupabaseClient(env);
+
+    // ─── Build query with PostgREST joins and filters ────────────
+    const selectColumns = '*,provider:User!Service_providerId_fkey(id,name,profileImageUrl),category:ServiceCategory!Service_categoryId_fkey(id,name,slug,icon),subcategory:ServiceSubcategory!Service_subcategoryId_fkey(id,name,slug)';
+
+    let query = supabase
+      .from('Service')
+      .select(selectColumns, { count: 'exact' })
+      .eq('isActive', true)
+      .eq('approvalStatus', 'APPROVED');
 
     if (categoryId) {
-      conditions.push('s.categoryId = ?');
-      params.push(Number(categoryId));
+      query = query.eq('categoryId', Number(categoryId));
     }
 
     if (city) {
-      conditions.push('LOWER(s.city) = LOWER(?)');
-      params.push(sanitizeString(city));
+      query = query.ilike('city', `%${sanitizeString(city)}%`);
     }
 
     if (minPrice) {
-      conditions.push('s.basePrice >= ?');
-      params.push(Number(minPrice));
+      query = query.gte('basePrice', Number(minPrice));
     }
 
     if (maxPrice) {
-      conditions.push('s.basePrice <= ?');
-      params.push(Number(maxPrice));
+      query = query.lte('basePrice', Number(maxPrice));
     }
 
     if (search) {
-      conditions.push('(LOWER(s.title) LIKE LOWER(?) OR LOWER(s.description) LIKE LOWER(?))');
-      const searchTerm = `%${sanitizeString(search)}%`;
-      params.push(searchTerm);
-      params.push(searchTerm);
+      const sanitizedSearch = sanitizeString(search).replace(/[%(),]/g, '');
+      query = query.or(`title.ilike.%${sanitizedSearch}%,description.ilike.%${sanitizedSearch}%`);
     }
 
-    const whereClause = conditions.join(' AND ');
+    // ─── Execute count + data query together ─────────────────────
+    const { data: services, count, error: svcError } = await query
+      .order('averageRating', { ascending: false })
+      .order('totalBookings', { ascending: false })
+      .range(offset, offset + limit - 1);
 
-    // ─── Count total matching services ───────────────────────────
-    const countResult = await queryOne(
-      env.DB,
-      `SELECT COUNT(*) as total FROM Service s WHERE ${whereClause}`,
-      params
-    );
-    const total = (countResult as Record<string, unknown>)?.total ?? 0;
+    if (svcError) {
+      console.error('Get services error:', svcError);
+      return serverError('Failed to fetch services');
+    }
 
-    // ─── Fetch paginated services ────────────────────────────────
-    const services = await query(
-      env.DB,
-      `SELECT s.id, s.title, s.description, s.basePrice, s.priceNegotiable,
-              s.averageRating, s.totalBookings, s.totalReviews, s.city, s.images,
-              s.serviceDurationMinutes, s.createdAt, s.updatedAt,
-              u.id as providerId, u.name as providerName, u.profileImageUrl as providerImage,
-              sc.id as categoryId, sc.name as categoryName, sc.slug as categorySlug, sc.icon as categoryIcon,
-              ss.id as subcategoryId, ss.name as subcategoryName, ss.slug as subcategorySlug
-       FROM Service s
-       JOIN User u ON s.providerId = u.id
-       JOIN ServiceCategory sc ON s.categoryId = sc.id
-       LEFT JOIN ServiceSubcategory ss ON s.subcategoryId = ss.id
-       WHERE ${whereClause}
-       ORDER BY s.averageRating DESC, s.totalBookings DESC
-       LIMIT ? OFFSET ?`,
-      [...params, limit, offset]
-    );
+    const total = count ?? 0;
 
-    // ─── Transform to structured format ──────────────────────────
-    const formattedServices = (services as Record<string, unknown>[]).map((s) => ({
+    // ─── Transform to structured format matching original response ──
+    const formattedServices = (services || []).map((s: Record<string, unknown>) => ({
       id: s.id,
       title: s.title,
       description: s.description,
@@ -99,22 +81,9 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       serviceDurationMinutes: s.serviceDurationMinutes,
       createdAt: s.createdAt,
       updatedAt: s.updatedAt,
-      provider: {
-        id: s.providerId,
-        name: s.providerName,
-        profileImageUrl: s.providerImage,
-      },
-      category: {
-        id: s.categoryId,
-        name: s.categoryName,
-        slug: s.categorySlug,
-        icon: s.categoryIcon,
-      },
-      subcategory: s.subcategoryId ? {
-        id: s.subcategoryId,
-        name: s.subcategoryName,
-        slug: s.subcategorySlug,
-      } : null,
+      provider: s.provider || null,
+      category: s.category || null,
+      subcategory: s.subcategoryId ? (s.subcategory || null) : null,
     }));
 
     return json({

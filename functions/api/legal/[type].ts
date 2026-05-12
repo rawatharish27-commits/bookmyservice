@@ -3,12 +3,8 @@
  *   - type can be: terms, privacy, refund-policy, cookies, aup, provider-agreement, community-guidelines
  */
 
-import { queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, error, notFound } from '../../_shared/response';
-
-interface Env {
-  DB: D1Database;
-}
 
 // Map URL type param to database pageType values
 const TYPE_MAP: Record<string, string> = {
@@ -23,16 +19,22 @@ const TYPE_MAP: Record<string, string> = {
 
 export async function onRequestGet(context: { request: Request; env: Env; params: { type: string } }): Promise<Response> {
   try {
+    const supabase = createSupabaseClient(context.env);
     const typeParam = context.params.type;
 
     // Map the URL-friendly type to the database pageType
     const pageType = TYPE_MAP[typeParam] || typeParam;
 
-    const document = await queryOne(
-      context.env.DB,
-      `SELECT * FROM LegalPage WHERE pageType = ?`,
-      [pageType]
-    );
+    const { data: document, error: docError } = await supabase
+      .from('LegalPage')
+      .select('*')
+      .eq('pageType', pageType)
+      .maybeSingle();
+
+    if (docError) {
+      console.error('Get legal document error:', docError);
+      return error('Failed to fetch legal document', 500);
+    }
 
     if (!document) {
       return notFound(`Legal document '${typeParam}' not found`);

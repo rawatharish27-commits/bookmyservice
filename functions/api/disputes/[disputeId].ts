@@ -4,14 +4,14 @@
  * Requires auth
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth } from '../../_shared/auth';
 import { json, unauthorized, notFound, error, forbidden } from '../../_shared/response';
 import { sanitizeString } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: { disputeId: string };
 }
 
@@ -23,62 +23,91 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
     return unauthorized();
   }
 
+  const supabase = createSupabaseClient(context.env);
   const disputeId = sanitizeString(context.params.disputeId);
 
-  const dispute = await queryOne(
-    context.env.DB,
-    `SELECT d.id, d.bookingId, d.raisedBy, d.disputeType, d.description, d.evidence,
-            d.status, d.assignedTo, d.resolution, d.createdAt, d.resolvedAt, d.updatedAt,
-            b.bookingNumber, b.finalPrice as bookingAmount, b.status as bookingStatus,
-            b.scheduledDate, b.scheduledTime,
-            s.title as serviceTitle,
-            raiser.name as raiserName, raiser.email as raiserEmail,
-            assignee.name as assigneeName
-     FROM Dispute d
-     JOIN Booking b ON d.bookingId = b.id
-     JOIN Service s ON b.serviceId = s.id
-     JOIN User raiser ON d.raisedBy = raiser.id
-     LEFT JOIN User assignee ON d.assignedTo = assignee.id
-     WHERE d.id = ?`,
-    [disputeId]
-  );
+  // Fetch dispute with booking and service info via joins, plus messages
+  const { data: dispute, error: disputeError } = await supabase
+    .from('Dispute')
+    .select('id,bookingId,raisedBy,disputeType,description,evidence,status,assignedTo,resolution,createdAt,resolvedAt,updatedAt,booking:Booking(bookingNumber,finalPrice,status,scheduledDate,scheduledTime,service:Service(title)),raiser:User!Dispute_raisedBy_fkey(name,email),assignee:User!Dispute_assignedTo_fkey(name),messages:DisputeMessage(id,senderId,message,attachments,createdAt,sender:User!DisputeMessage_senderId_fkey(name,email,profileImageUrl))')
+    .eq('id', disputeId)
+    .maybeSingle();
+
+  if (disputeError) {
+    console.error('Get dispute error:', disputeError);
+    return notFound('Dispute not found');
+  }
 
   if (!dispute) {
     return notFound('Dispute not found');
   }
 
   // Check access - user must be the raiser, the other party in booking, or admin
-  const disputeData = dispute as { raisedBy: string; bookingId: string };
-  const booking = await queryOne(
-    context.env.DB,
-    'SELECT clientId, providerId FROM Booking WHERE id = ?',
-    [disputeData.bookingId]
-  );
+  const d = dispute as Record<string, unknown>;
+  const booking = d.booking as Record<string, unknown> | null;
 
-  if (booking) {
-    const bookingData = booking as { clientId: string; providerId: string };
-    if (disputeData.raisedBy !== user.userId &&
-        bookingData.clientId !== user.userId &&
-        bookingData.providerId !== user.userId &&
+  // We need to check clientId and providerId from the booking
+  // Since the join doesn't include those, fetch them separately
+  const { data: bookingRow } = await supabase
+    .from('Booking')
+    .select('clientId,providerId')
+    .eq('id', d.bookingId as string)
+    .maybeSingle();
+
+  if (bookingRow) {
+    const bk = bookingRow as { clientId: string; providerId: string };
+    if (d.raisedBy !== user.userId &&
+        bk.clientId !== user.userId &&
+        bk.providerId !== user.userId &&
         user.role !== 'ADMIN') {
       return forbidden('You do not have access to this dispute');
     }
   }
 
-  // Get dispute messages
-  const messages = await query(
-    context.env.DB,
-    `SELECT dm.id, dm.senderId, dm.message, dm.attachments, dm.createdAt,
-            u.name as senderName, u.email as senderEmail, u.profileImageUrl as senderImage
-     FROM DisputeMessage dm
-     JOIN User u ON dm.senderId = u.id
-     WHERE dm.disputeId = ?
-     ORDER BY dm.createdAt ASC`,
-    [disputeId]
-  );
+  // Flatten the dispute join results
+  const service = booking?.service as Record<string, unknown> | null;
+  const raiser = d.raiser as Record<string, unknown> | null;
+  const assignee = d.assignee as Record<string, unknown> | null;
+  const messages = (d.messages as Record<string, unknown>[] || []).map((msg) => {
+    const sender = msg.sender as Record<string, unknown> | null;
+    return {
+      id: msg.id,
+      senderId: msg.senderId,
+      message: msg.message,
+      attachments: msg.attachments,
+      createdAt: msg.createdAt,
+      senderName: sender?.name ?? null,
+      senderEmail: sender?.email ?? null,
+      senderImage: sender?.profileImageUrl ?? null,
+    };
+  });
+
+  const flatDispute = {
+    id: d.id,
+    bookingId: d.bookingId,
+    raisedBy: d.raisedBy,
+    disputeType: d.disputeType,
+    description: d.description,
+    evidence: d.evidence,
+    status: d.status,
+    assignedTo: d.assignedTo,
+    resolution: d.resolution,
+    createdAt: d.createdAt,
+    resolvedAt: d.resolvedAt,
+    updatedAt: d.updatedAt,
+    bookingNumber: booking?.bookingNumber ?? null,
+    bookingAmount: booking?.finalPrice ?? null,
+    bookingStatus: booking?.status ?? null,
+    scheduledDate: booking?.scheduledDate ?? null,
+    scheduledTime: booking?.scheduledTime ?? null,
+    serviceTitle: service?.title ?? null,
+    raiserName: raiser?.name ?? null,
+    raiserEmail: raiser?.email ?? null,
+    assigneeName: assignee?.name ?? null,
+  };
 
   return json({
-    dispute,
+    dispute: flatDispute,
     messages,
   });
 }
@@ -91,14 +120,15 @@ export async function onRequestPatch(context: EventContext): Promise<Response> {
     return unauthorized();
   }
 
+  const supabase = createSupabaseClient(context.env);
   const disputeId = sanitizeString(context.params.disputeId);
 
   // Check dispute exists
-  const dispute = await queryOne(
-    context.env.DB,
-    'SELECT id, raisedBy, bookingId, status FROM Dispute WHERE id = ?',
-    [disputeId]
-  );
+  const { data: dispute } = await supabase
+    .from('Dispute')
+    .select('id,raisedBy,bookingId,status')
+    .eq('id', disputeId)
+    .maybeSingle();
 
   if (!dispute) {
     return notFound('Dispute not found');
@@ -107,17 +137,17 @@ export async function onRequestPatch(context: EventContext): Promise<Response> {
   const disputeData = dispute as { raisedBy: string; bookingId: string; status: string };
 
   // Check access
-  const booking = await queryOne(
-    context.env.DB,
-    'SELECT clientId, providerId FROM Booking WHERE id = ?',
-    [disputeData.bookingId]
-  );
+  const { data: bookingRow } = await supabase
+    .from('Booking')
+    .select('clientId,providerId')
+    .eq('id', disputeData.bookingId)
+    .maybeSingle();
 
-  if (booking) {
-    const bookingData = booking as { clientId: string; providerId: string };
+  if (bookingRow) {
+    const bk = bookingRow as { clientId: string; providerId: string };
     if (disputeData.raisedBy !== user.userId &&
-        bookingData.clientId !== user.userId &&
-        bookingData.providerId !== user.userId &&
+        bk.clientId !== user.userId &&
+        bk.providerId !== user.userId &&
         user.role !== 'ADMIN') {
       return forbidden('You do not have access to this dispute');
     }
@@ -144,53 +174,67 @@ export async function onRequestPatch(context: EventContext): Promise<Response> {
 
   const message = sanitizeString(body.message);
   const attachments = body.attachments ? sanitizeString(body.attachments) : null;
+  const now = new Date().toISOString();
 
   // Add dispute message
   const msgId = crypto.randomUUID();
-  await execute(
-    context.env.DB,
-    `INSERT INTO DisputeMessage (id, disputeId, senderId, message, attachments, createdAt)
-     VALUES (?, ?, ?, ?, ?, datetime('now'))`,
-    [msgId, disputeId, user.userId, message, attachments]
-  );
+  const { error: msgInsertError } = await supabase
+    .from('DisputeMessage')
+    .insert({
+      id: msgId,
+      disputeId,
+      senderId: user.userId,
+      message,
+      attachments,
+      createdAt: now,
+    });
+
+  if (msgInsertError) {
+    console.error('Add dispute message error:', msgInsertError);
+    return error('Failed to add message', 500);
+  }
 
   // Update dispute status to UNDER_REVIEW if it was OPEN
+  let newStatus = disputeData.status;
   if (disputeData.status === 'OPEN') {
-    await execute(
-      context.env.DB,
-      `UPDATE Dispute SET status = 'UNDER_REVIEW', updatedAt = datetime('now') WHERE id = ?`,
-      [disputeId]
-    );
+    newStatus = 'UNDER_REVIEW';
+    await supabase
+      .from('Dispute')
+      .update({ status: 'UNDER_REVIEW', updatedAt: now })
+      .eq('id', disputeId);
   }
 
   // Notify the other party about the new message
-  const otherPartyId = disputeData.raisedBy === user.userId
-    ? (booking as { clientId: string; providerId: string } | null)?.clientId === user.userId
-      ? (booking as { clientId: string; providerId: string }).providerId
-      : (booking as { clientId: string; providerId: string }).clientId
-    : disputeData.raisedBy;
-
-  if (otherPartyId) {
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, isRead, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [
-        crypto.randomUUID(),
-        otherPartyId,
-        'DISPUTE',
-        'Dispute Update',
-        'A new message has been added to the dispute',
-        `/disputes/${disputeId}`,
-      ]
-    );
+  let otherPartyId: string | null = null;
+  if (bookingRow) {
+    const bk = bookingRow as { clientId: string; providerId: string };
+    if (disputeData.raisedBy === user.userId) {
+      otherPartyId = bk.clientId === user.userId ? bk.providerId : bk.clientId;
+    } else {
+      otherPartyId = disputeData.raisedBy;
+    }
   }
 
-  const newMessage = await queryOne(
-    context.env.DB,
-    'SELECT * FROM DisputeMessage WHERE id = ?',
-    [msgId]
-  );
+  if (otherPartyId) {
+    await supabase
+      .from('Notification')
+      .insert({
+        id: crypto.randomUUID(),
+        userId: otherPartyId,
+        type: 'DISPUTE',
+        title: 'Dispute Update',
+        message: 'A new message has been added to the dispute',
+        actionUrl: `/disputes/${disputeId}`,
+        isRead: false,
+        createdAt: now,
+      });
+  }
 
-  return json({ message: newMessage, disputeStatus: disputeData.status === 'OPEN' ? 'UNDER_REVIEW' : disputeData.status });
+  const { data: newMessage } = await supabase
+    .from('DisputeMessage')
+    .select('*')
+    .eq('id', msgId)
+    .maybeSingle();
+
+  return json({ message: newMessage, disputeStatus: newStatus });
 }

@@ -5,14 +5,14 @@
  * Requires ADMIN role
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env, DbRecord } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden, notFound, error } from '../../_shared/response';
-import { sanitizeString, sanitizeObject, getClientIP } from '../../_shared/security';
+import { sanitizeString, getClientIP } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -28,30 +28,59 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
     return forbidden('Admin access required');
   }
 
-  const categories = await query(
-    context.env.DB,
-    `SELECT c.id, c.name, c.slug, c.description, c.iconUrl, c.icon, c.parentId,
-            c.isActive, c.displayOrder, c.createdAt,
-            (SELECT COUNT(*) FROM Service s WHERE s.categoryId = c.id) as serviceCount,
-            (SELECT COUNT(*) FROM ServiceSubcategory sc WHERE sc.categoryId = c.id) as subcategoryCount
-     FROM ServiceCategory c
-     ORDER BY c.displayOrder ASC, c.name ASC`
-  );
+  const supabase = createSupabaseClient(context.env);
 
-  // Get subcategories for each category
-  const categoriesWithSubs = await Promise.all(
-    (categories as Record<string, unknown>[]).map(async (cat) => {
-      const subcategories = await query(
-        context.env.DB,
-        `SELECT id, name, slug, description, isActive, displayOrder
-         FROM ServiceSubcategory
-         WHERE categoryId = ?
-         ORDER BY displayOrder ASC, name ASC`,
-        [cat.id]
-      );
-      return { ...cat, subcategories };
-    })
-  );
+  // Fetch categories
+  const { data: categories } = await supabase
+    .from('ServiceCategory')
+    .select('id, name, slug, description, iconUrl, icon, parentId, isActive, displayOrder, createdAt')
+    .order('displayOrder', { ascending: true })
+    .order('name', { ascending: true });
+
+  // Fetch service counts per category
+  const { data: serviceCounts } = await supabase
+    .from('Service')
+    .select('categoryId');
+
+  const serviceCountMap = new Map<string, number>();
+  for (const s of ((serviceCounts ?? []) as DbRecord[])) {
+    const catId = String((s as Record<string, unknown>).categoryId);
+    serviceCountMap.set(catId, (serviceCountMap.get(catId) ?? 0) + 1);
+  }
+
+  // Fetch subcategory counts per category
+  const { data: subcategoryCounts } = await supabase
+    .from('ServiceSubcategory')
+    .select('categoryId');
+
+  const subcategoryCountMap = new Map<string, number>();
+  for (const sc of ((subcategoryCounts ?? []) as DbRecord[])) {
+    const catId = String((sc as Record<string, unknown>).categoryId);
+    subcategoryCountMap.set(catId, (subcategoryCountMap.get(catId) ?? 0) + 1);
+  }
+
+  // Fetch all subcategories
+  const { data: allSubcategories } = await supabase
+    .from('ServiceSubcategory')
+    .select('id, name, slug, description, isActive, displayOrder, categoryId')
+    .order('displayOrder', { ascending: true })
+    .order('name', { ascending: true });
+
+  const subcategoriesByCategory = new Map<string, Record<string, unknown>[]>();
+  for (const sub of ((allSubcategories ?? []) as DbRecord[])) {
+    const catId = String((sub as Record<string, unknown>).categoryId);
+    if (!subcategoriesByCategory.has(catId)) {
+      subcategoriesByCategory.set(catId, []);
+    }
+    subcategoriesByCategory.get(catId)!.push(sub);
+  }
+
+  const categoriesWithSubs = (categories ?? []).map((cat: Record<string, unknown>) => ({
+    ...cat,
+    serviceCount: serviceCountMap.get(String(cat.id)) ?? 0,
+    subcategoryCount: subcategoryCountMap.get(String(cat.id)) ?? 0,
+    subcategories: subcategoriesByCategory.get(String(cat.id)) ?? [],
+  }));
 
   return json({ categories: categoriesWithSubs });
 }
@@ -95,48 +124,56 @@ export async function onRequestPost(context: EventContext): Promise<Response> {
   const parentId = body.parentId || null;
   const displayOrder = body.displayOrder || 0;
 
+  const supabase = createSupabaseClient(context.env);
+
   // Check slug uniqueness
-  const existing = await queryOne(
-    context.env.DB,
-    'SELECT id FROM ServiceCategory WHERE slug = ?',
-    [slug]
-  );
+  const { data: existing } = await supabase
+    .from('ServiceCategory')
+    .select('id')
+    .eq('slug', slug)
+    .maybeSingle();
 
   if (existing) {
     return error('Category with this slug already exists');
   }
 
-  await execute(
-    context.env.DB,
-    `INSERT INTO ServiceCategory (name, slug, description, iconUrl, icon, parentId, isActive, displayOrder, createdAt, updatedAt)
-     VALUES (?, ?, ?, ?, ?, ?, 1, ?, datetime('now'), datetime('now'))`,
-    [name, slug, description, iconUrl, icon, parentId, displayOrder]
-  );
+  const now = new Date().toISOString();
+
+  const { data: newCategory, error: insertError } = await supabase
+    .from('ServiceCategory')
+    .insert({
+      name,
+      slug,
+      description,
+      iconUrl,
+      icon,
+      parentId,
+      isActive: true,
+      displayOrder,
+      createdAt: now,
+      updatedAt: now,
+    })
+    .select()
+    .single();
+
+  if (insertError) {
+    return error('Failed to create category: ' + insertError.message);
+  }
 
   // Log action
   const ip = getClientIP(context.request);
   const userAgent = context.request.headers.get('User-Agent') || null;
-  await execute(
-    context.env.DB,
-    `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    [
-      crypto.randomUUID(),
-      user.userId,
-      'CREATE_CATEGORY',
-      'CATEGORY',
-      slug,
-      JSON.stringify({ name, slug }),
-      ip,
-      userAgent,
-    ]
-  );
-
-  const newCategory = await queryOne(
-    context.env.DB,
-    'SELECT * FROM ServiceCategory WHERE slug = ?',
-    [slug]
-  );
+  await supabase.from('AdminLog').insert({
+    id: crypto.randomUUID(),
+    adminId: user.userId,
+    action: 'CREATE_CATEGORY',
+    targetType: 'CATEGORY',
+    targetId: slug,
+    details: JSON.stringify({ name, slug }),
+    ipAddress: ip,
+    userAgent,
+    createdAt: now,
+  });
 
   return json({ category: newCategory, message: 'Category created successfully' }, 201);
 }
@@ -174,78 +211,68 @@ export async function onRequestPatch(context: EventContext): Promise<Response> {
 
   const categoryId = body.categoryId;
 
+  const supabase = createSupabaseClient(context.env);
+
   // Check category exists
-  const existing = await queryOne(
-    context.env.DB,
-    'SELECT id, name FROM ServiceCategory WHERE id = ?',
-    [categoryId]
-  );
+  const { data: existing } = await supabase
+    .from('ServiceCategory')
+    .select('id, name')
+    .eq('id', categoryId)
+    .maybeSingle();
 
   if (!existing) {
     return notFound('Category not found');
   }
 
-  // Build dynamic update query
-  const updates: string[] = ['updatedAt = datetime(\'now\')'];
-  const params: unknown[] = [];
+  // Build dynamic update object
+  const updates: Record<string, unknown> = {
+    updatedAt: new Date().toISOString(),
+  };
 
   if (body.name !== undefined) {
-    updates.push('name = ?');
-    params.push(sanitizeString(body.name));
+    updates.name = sanitizeString(body.name);
   }
   if (body.description !== undefined) {
-    updates.push('description = ?');
-    params.push(sanitizeString(body.description));
+    updates.description = sanitizeString(body.description);
   }
   if (body.iconUrl !== undefined) {
-    updates.push('iconUrl = ?');
-    params.push(sanitizeString(body.iconUrl));
+    updates.iconUrl = sanitizeString(body.iconUrl);
   }
   if (body.icon !== undefined) {
-    updates.push('icon = ?');
-    params.push(sanitizeString(body.icon));
+    updates.icon = sanitizeString(body.icon);
   }
   if (body.isActive !== undefined) {
-    updates.push('isActive = ?');
-    params.push(body.isActive ? 1 : 0);
+    updates.isActive = body.isActive;
   }
   if (body.displayOrder !== undefined) {
-    updates.push('displayOrder = ?');
-    params.push(body.displayOrder);
+    updates.displayOrder = body.displayOrder;
   }
 
-  params.push(categoryId);
+  const { data: updatedCategory, error: updateError } = await supabase
+    .from('ServiceCategory')
+    .update(updates)
+    .eq('id', categoryId)
+    .select()
+    .single();
 
-  await execute(
-    context.env.DB,
-    `UPDATE ServiceCategory SET ${updates.join(', ')} WHERE id = ?`,
-    params
-  );
+  if (updateError) {
+    return error('Failed to update category: ' + updateError.message);
+  }
 
   // Log action
   const ip = getClientIP(context.request);
   const userAgent = context.request.headers.get('User-Agent') || null;
-  await execute(
-    context.env.DB,
-    `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    [
-      crypto.randomUUID(),
-      user.userId,
-      'UPDATE_CATEGORY',
-      'CATEGORY',
-      String(categoryId),
-      JSON.stringify(body),
-      ip,
-      userAgent,
-    ]
-  );
-
-  const updatedCategory = await queryOne(
-    context.env.DB,
-    'SELECT * FROM ServiceCategory WHERE id = ?',
-    [categoryId]
-  );
+  await supabase.from('AdminLog').insert({
+    id: crypto.randomUUID(),
+    adminId: user.userId,
+    action: 'UPDATE_CATEGORY',
+    targetType: 'CATEGORY',
+    targetId: String(categoryId),
+    details: JSON.stringify(body),
+    ipAddress: ip,
+    userAgent,
+    createdAt: new Date().toISOString(),
+  });
 
   return json({ category: updatedCategory, message: 'Category updated successfully' });
 }

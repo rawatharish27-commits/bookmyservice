@@ -3,14 +3,9 @@
  *   - Only accessible if user is the client, provider, or admin
  */
 
-import { queryOne } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth } from '../../_shared/auth';
 import { json, unauthorized, forbidden, notFound } from '../../_shared/response';
-
-interface Env {
-  DB: D1Database;
-  JWT_SECRET?: string;
-}
 
 export async function onRequestGet(context: { request: Request; env: Env; params: { id: string } }): Promise<Response> {
   try {
@@ -19,25 +14,18 @@ export async function onRequestGet(context: { request: Request; env: Env; params
 
     const bookingId = context.params.id;
 
-    const booking = await queryOne(
-      context.env.DB,
-      `SELECT b.*,
-              s.title as serviceTitle, s.description as serviceDescription,
-              s.basePrice as serviceBasePrice, s.images as serviceImages,
-              s.serviceDurationMinutes,
-              sc.name as categoryName, sc.icon as categoryIcon,
-              c.name as clientName, c.email as clientEmail, c.phone as clientPhone,
-              c.profileImageUrl as clientProfileImage,
-              p.name as providerName, p.email as providerEmail, p.phone as providerPhone,
-              p.profileImageUrl as providerProfileImage
-       FROM Booking b
-       LEFT JOIN Service s ON b.serviceId = s.id
-       LEFT JOIN ServiceCategory sc ON s.categoryId = sc.id
-       LEFT JOIN User c ON b.clientId = c.id
-       LEFT JOIN User p ON b.providerId = p.id
-       WHERE b.id = ?`,
-      [bookingId]
-    );
+    const supabase = createSupabaseClient(context.env);
+
+    const { data: booking, error: fetchError } = await supabase
+      .from('Booking')
+      .select('*,service:Service!Booking_serviceId_fkey(title,description,basePrice,images,serviceDurationMinutes,category:ServiceCategory!Service_categoryId_fkey(name,icon)),client:User!Booking_clientId_fkey(name,email,phone,profileImageUrl),provider:User!Booking_providerId_fkey(name,email,phone,profileImageUrl)')
+      .eq('id', bookingId)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('Get booking error:', fetchError);
+      return notFound('Booking not found');
+    }
 
     if (!booking) {
       return notFound('Booking not found');
@@ -54,17 +42,44 @@ export async function onRequestGet(context: { request: Request; env: Env; params
       return forbidden('You do not have access to this booking');
     }
 
-    // Also fetch any reviews for this booking
-    const review = await queryOne(
-      context.env.DB,
-      `SELECT r.id, r.rating, r.comment, r.createdAt FROM Review r WHERE r.bookingId = ?`,
-      [bookingId]
-    );
+    // Fetch any review for this booking
+    const { data: review } = await supabase
+      .from('Review')
+      .select('id,rating,comment,createdAt')
+      .eq('bookingId', bookingId)
+      .maybeSingle();
 
-    return json({
+    // Flatten nested objects for backward compatibility
+    const service = (bookingData.service as Record<string, unknown>) || {};
+    const serviceCategory = (service.category as Record<string, unknown>) || {};
+    const client = (bookingData.client as Record<string, unknown>) || {};
+    const provider = (bookingData.provider as Record<string, unknown>) || {};
+
+    const flatBooking = {
       ...bookingData,
+      serviceTitle: service.title ?? null,
+      serviceDescription: service.description ?? null,
+      serviceBasePrice: service.basePrice ?? null,
+      serviceImages: service.images ?? null,
+      serviceDurationMinutes: service.serviceDurationMinutes ?? null,
+      categoryName: serviceCategory.name ?? null,
+      categoryIcon: serviceCategory.icon ?? null,
+      clientName: client.name ?? null,
+      clientEmail: client.email ?? null,
+      clientPhone: client.phone ?? null,
+      clientProfileImage: client.profileImageUrl ?? null,
+      providerName: provider.name ?? null,
+      providerEmail: provider.email ?? null,
+      providerPhone: provider.phone ?? null,
+      providerProfileImage: provider.profileImageUrl ?? null,
       review: review || null,
-    });
+      // Remove nested objects
+      service: undefined,
+      client: undefined,
+      provider: undefined,
+    };
+
+    return json(flatBooking);
   } catch (err) {
     if ((err as Error).message === 'UNAUTHORIZED') return unauthorized();
     console.error('Get booking error:', err);

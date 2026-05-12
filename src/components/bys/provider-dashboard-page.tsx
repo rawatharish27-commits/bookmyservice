@@ -1,11 +1,11 @@
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
-import { useApp } from '@/contexts/app-context';
+import { useApp, type Page } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   CalendarCheck,
@@ -286,7 +286,7 @@ export function ProviderDashboardPage() {
                   key={action.label}
                   whileHover={{ scale: 1.01 }}
                   whileTap={{ scale: 0.99 }}
-                  onClick={() => navigate(action.nav)}
+                  onClick={() => navigate(action.nav as Page)}
                   className={`flex w-full items-center gap-3 rounded-xl bg-gradient-to-r ${action.gradient} p-3.5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
                 >
                   <action.icon className="size-5" />

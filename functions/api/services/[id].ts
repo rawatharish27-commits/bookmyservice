@@ -3,11 +3,11 @@
  * Returns single service with full details, provider info, and reviews.
  */
 
-import { queryOne, query } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { json, notFound, serverError } from '../../_shared/response';
 
 export async function onRequestGet(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
-  const { env, params } = context as { env: { DB: D1Database }; params: { id: string } };
+  const { env, params } = context as unknown as { env: Env; params: { id: string } };
 
   try {
     const serviceId = String(params.id);
@@ -16,56 +16,54 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       return json({ error: 'Invalid service ID' }, 400);
     }
 
+    const supabase = createSupabaseClient(env);
+
     // ─── Fetch service with provider and category info ───────────
-    const service = await queryOne(
-      env.DB,
-      `SELECT s.id, s.title, s.description, s.basePrice, s.priceNegotiable,
-              s.averageRating, s.totalBookings, s.totalReviews, s.city, s.state, s.country,
-              s.address, s.pincode, s.images, s.serviceDurationMinutes, s.serviceAreaRadiusKm,
-              s.isActive, s.approvalStatus, s.createdAt, s.updatedAt,
-              u.id as providerId, u.name as providerName, u.email as providerEmail,
-              u.phone as providerPhone, u.profileImageUrl as providerImage, u.city as providerCity,
-              kyc.verificationStatus as providerKycStatus,
-              sc.id as categoryId, sc.name as categoryName, sc.slug as categorySlug, sc.icon as categoryIcon,
-              ss.id as subcategoryId, ss.name as subcategoryName, ss.slug as subcategorySlug
-       FROM Service s
-       JOIN User u ON s.providerId = u.id
-       LEFT JOIN ProviderKyc kyc ON kyc.providerId = u.id
-       JOIN ServiceCategory sc ON s.categoryId = sc.id
-       LEFT JOIN ServiceSubcategory ss ON s.subcategoryId = ss.id
-       WHERE s.id = ?`,
-      [serviceId]
-    );
+    const { data: service, error: svcError } = await supabase
+      .from('Service')
+      .select('*,provider:User!Service_providerId_fkey(id,name,email,phone,profileImageUrl,city,providerKyc:ProviderKyc!ProviderKyc_providerId_fkey(verificationStatus)),category:ServiceCategory!Service_categoryId_fkey(id,name,slug,icon),subcategory:ServiceSubcategory!Service_subcategoryId_fkey(id,name,slug)')
+      .eq('id', serviceId)
+      .maybeSingle();
+
+    if (svcError) {
+      console.error('Get service error:', svcError);
+      return serverError('Failed to fetch service');
+    }
 
     if (!service) {
       return notFound('Service not found');
     }
 
     // ─── Fetch availability slots ────────────────────────────────
-    const availability = await query(
-      env.DB,
-      `SELECT id, dayOfWeek, startTime, endTime, isAvailable, maxBookingsPerSlot
-       FROM ServiceAvailability
-       WHERE serviceId = ?
-       ORDER BY dayOfWeek, startTime`,
-      [serviceId]
-    );
+    const { data: availability, error: availError } = await supabase
+      .from('ServiceAvailability')
+      .select('id,dayOfWeek,startTime,endTime,isAvailable,maxBookingsPerSlot')
+      .eq('serviceId', serviceId)
+      .order('dayOfWeek')
+      .order('startTime');
+
+    if (availError) {
+      console.error('Get availability error:', availError);
+      // Non-fatal — continue without availability
+    }
 
     // ─── Fetch reviews for this service ──────────────────────────
-    const reviews = await query(
-      env.DB,
-      `SELECT r.id, r.rating, r.comment, r.isVerified, r.createdAt,
-              u.id as reviewerId, u.name as reviewerName, u.profileImageUrl as reviewerImage
-       FROM Review r
-       JOIN User u ON r.reviewerId = u.id
-       WHERE r.serviceId = ?
-       ORDER BY r.createdAt DESC
-       LIMIT 50`,
-      [serviceId]
-    );
+    const { data: reviews, error: revError } = await supabase
+      .from('Review')
+      .select('id,rating,comment,isVerified,createdAt,reviewer:User!Review_reviewerId_fkey(id,name,profileImageUrl)')
+      .eq('serviceId', serviceId)
+      .order('createdAt', { ascending: false })
+      .limit(50);
+
+    if (revError) {
+      console.error('Get reviews error:', revError);
+      // Non-fatal — continue without reviews
+    }
 
     // ─── Build structured response ───────────────────────────────
     const s = service as Record<string, unknown>;
+    const provider = (s.provider as Record<string, unknown>) || {};
+    const providerKyc = (provider.providerKyc as Record<string, unknown>[]) || [];
 
     const formattedService = {
       id: s.id,
@@ -89,26 +87,17 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
       createdAt: s.createdAt,
       updatedAt: s.updatedAt,
       provider: {
-        id: s.providerId,
-        name: s.providerName,
-        email: s.providerEmail,
-        phone: s.providerPhone,
-        profileImageUrl: s.providerImage,
-        city: s.providerCity,
-        kycStatus: s.providerKycStatus,
+        id: provider.id,
+        name: provider.name,
+        email: provider.email,
+        phone: provider.phone,
+        profileImageUrl: provider.profileImageUrl,
+        city: provider.city,
+        kycStatus: providerKyc.length > 0 ? providerKyc[0].verificationStatus : null,
       },
-      category: {
-        id: s.categoryId,
-        name: s.categoryName,
-        slug: s.categorySlug,
-        icon: s.categoryIcon,
-      },
-      subcategory: s.subcategoryId ? {
-        id: s.subcategoryId,
-        name: s.subcategoryName,
-        slug: s.subcategorySlug,
-      } : null,
-      availability: (availability as Record<string, unknown>[]).map((a) => ({
+      category: s.category || null,
+      subcategory: s.subcategoryId ? (s.subcategory || null) : null,
+      availability: (availability || []).map((a: Record<string, unknown>) => ({
         id: a.id,
         dayOfWeek: a.dayOfWeek,
         startTime: a.startTime,
@@ -116,18 +105,21 @@ export async function onRequestGet(context: EventContext<Record<string, unknown>
         isAvailable: a.isAvailable,
         maxBookingsPerSlot: a.maxBookingsPerSlot,
       })),
-      reviews: (reviews as Record<string, unknown>[]).map((r) => ({
-        id: r.id,
-        rating: r.rating,
-        comment: r.comment,
-        isVerified: r.isVerified,
-        createdAt: r.createdAt,
-        reviewer: {
-          id: r.reviewerId,
-          name: r.reviewerName,
-          profileImageUrl: r.reviewerImage,
-        },
-      })),
+      reviews: (reviews || []).map((r: Record<string, unknown>) => {
+        const reviewer = (r.reviewer as Record<string, unknown>) || {};
+        return {
+          id: r.id,
+          rating: r.rating,
+          comment: r.comment,
+          isVerified: r.isVerified,
+          createdAt: r.createdAt,
+          reviewer: {
+            id: reviewer.id,
+            name: reviewer.name,
+            profileImageUrl: reviewer.profileImageUrl,
+          },
+        };
+      }),
     };
 
     return json({ service: formattedService });

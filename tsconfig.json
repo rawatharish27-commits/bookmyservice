@@ -31,6 +31,9 @@
   ],
   "exclude": [
     "node_modules",
-    "dist"
+    "dist",
+    "skills",
+    "examples",
+    "mini-services"
   ]
 }

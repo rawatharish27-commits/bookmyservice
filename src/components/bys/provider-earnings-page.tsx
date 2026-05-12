@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { useApi } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { DollarSign, TrendingUp, Clock, CheckCircle2, ArrowUpRight } from 'lucide-react';

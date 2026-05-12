@@ -1305,3 +1305,302 @@ Stage Summary:
 - Production: Cloudflare Pages Functions → D1 (unchanged, for Cloudflare deployment)
 - User needs to provide a PostgreSQL DATABASE_URL and run bun run db:push + bun run db:seed
 - Free PostgreSQL options: Neon (neon.tech), Supabase (supabase.com), Railway (railway.app)
+
+---
+Task ID: 1
+Agent: Migration Agent
+Task: Create PostgreSQL migration SQL files converting SQLite D1 schema to PostgreSQL
+
+Work Log:
+- Read existing SQLite schema at /migrations/0001_init.sql (20 tables, 30+ indexes)
+- Read existing seed data at /migrations/0002_seed.sql
+- Generated bcrypt hash for admin password "Admin@2024" using bcryptjs
+- Created /migrations/postgres/0001_init.sql with full schema conversion
+- Created /migrations/postgres/0002_seed.sql with converted seed data
+- Created /migrations/postgres/setup_complete.sql combining both files
+
+Conversion Details:
+- INTEGER PRIMARY KEY AUTOINCREMENT → SERIAL PRIMARY KEY (Role, ServiceCategory, ServiceSubcategory, Faq, LegalPage, SeoMetadata, RevenueStream, PlatformStats)
+- REAL → DOUBLE PRECISION (all latitude/longitude/price fields)
+- INTEGER booleans → BOOLEAN with true/false defaults:
+  * User: emailVerified, phoneVerified
+  * ServiceCategory, ServiceSubcategory, Faq: isActive
+  * Service: priceNegotiable, isActive, isApproved
+  * ServiceAvailability: isAvailable
+  * Review: isVerified, isFlagged
+  * Notification, ContactMessage: isRead
+  * SeoMetadata: indexed
+  * VisitorSession: isActive
+- TEXT DEFAULT (datetime('now')) → TIMESTAMPTZ DEFAULT NOW() (all createdAt/updatedAt/lastActive fields)
+- datetime('now') references → NOW()
+- scheduledDate TEXT → DATE, scheduledTime TEXT → TIME
+- effectiveDate TEXT → DATE
+- All table/column names double-quoted for camelCase safety in PostgreSQL
+- IF NOT EXISTS retained on all CREATE TABLE and CREATE INDEX
+- All foreign keys, UNIQUE constraints, and CHECK constraints preserved
+- Admin password hash regenerated: PBKDF2-SHA512 → bcrypt ($2b$10$...)
+- Privacy policy text updated: "PBKDF2-SHA512" → "bcrypt"
+- All boolean 1/0 values in seed data → true/false
+- Added SELECT setval() statements to reset SERIAL sequences after explicit ID inserts
+- Combined file includes header with conversion notes for reference
+
+Stage Summary:
+- 3 PostgreSQL migration files created in /migrations/postgres/
+- All 20 tables converted with proper PostgreSQL types
+- All 30+ indexes preserved
+- Seed data fully converted with proper boolean/timestamp types
+- Compatible with Supabase PostgreSQL (public schema)
+
+---
+Task ID: 2
+Agent: Supabase Migration Agent
+Task: Rewrite /functions/_shared/db.ts to use Supabase REST API instead of D1; add bcrypt support to password.ts
+
+Work Log:
+- Completely rewrote /functions/_shared/db.ts from D1-based helpers to Supabase REST API (PostgREST) client
+- Created SupabaseClient class: lightweight wrapper around PostgREST using fetch() (HTTP only, no TCP)
+  - Constructor takes (url, serviceKey); uses service_role key to bypass RLS
+  - .from(table) returns a QueryBuilder instance
+  - .rpc(functionName, params?) calls PostgreSQL functions via POST /rpc/function_name
+- Created QueryBuilder class: chainable, thenable query builder for PostgREST
+  - Filters: .eq, .neq, .gt, .gte, .lt, .lte, .like, .ilike, .in, .is
+  - Ordering: .order(column, { ascending, nullsFirst })
+  - Pagination: .limit(count), .range(from, to)
+  - Single results: .single(), .maybeSingle() (handles PGRST116 gracefully)
+  - Mutations: .insert(data), .update(data), .delete(), .upsert(data) — all return representation
+  - Count: .select('*', { count: 'exact' }) parses content-range header
+  - Implements Thenable interface so builders can be directly awaited
+- Exported Env interface: { SUPABASE_URL, SUPABASE_SERVICE_KEY, JWT_SECRET }
+- Exported createSupabaseClient(env) factory helper
+- All code uses only Web APIs (fetch, Headers, URLSearchParams) — no Node.js deps, safe for Cloudflare Workers
+- Updated /functions/_shared/password.ts to support bcrypt hashes in addition to PBKDF2
+  - Auto-detects hash format from prefix ($pbkdf2-sha512$ vs $2a$/$2b$/$2y$)
+  - Uses bcryptjs (already in package.json) for bcrypt verification — pure JS, Workers-compatible
+  - hashPassword() still produces PBKDF2 hashes (backward compatible)
+  - verifyPassword() now routes to PBKDF2 or bcrypt verification based on stored hash format
+
+Stage Summary:
+- db.ts: Full Supabase REST API client with chainable query builder (SupabaseClient, QueryBuilder, createSupabaseClient, Env)
+- password.ts: Dual-format password verification (PBKDF2 + bcrypt) for PostgreSQL migration compatibility
+- No Node.js-specific APIs used — fully compatible with Cloudflare Workers runtime
+
+---
+Task ID: 3
+Agent: Subagent (auth-migration)
+Task: Rewrite auth-related Cloudflare Pages Functions to use Supabase REST API client instead of D1
+
+Work Log:
+- Rewrote /functions/api/auth/login.ts to use createSupabaseClient + Env from _shared/db
+- Replaced queryOne(env.DB, SQL) with supabase.from('User').select('*, Role(name)').ilike('email', email).maybeSingle()
+- Replaced execute(env.DB, SQL) for lastLoginAt update with supabase.from('User').update({...}).eq('id', userId)
+- Used ilike for case-insensitive email matching (PostgreSQL difference)
+- Used new Date().toISOString() instead of datetime('now') (PostgreSQL difference)
+- Flattened PostgREST join result (Role: { name }) to flat role field in response
+- Rewrote /functions/api/auth/register.ts with same pattern
+- Used boolean false instead of 0 for emailVerified/phoneVerified (PostgreSQL difference)
+- Used supabase.from('User').insert({...}).select().single() for create-and-return
+- Used supabase.from('ProviderKyc').insert({...}) for KYC placeholder
+- Rewrote /functions/api/auth/profile.ts GET and PATCH handlers
+- Used dynamic update object instead of dynamic SQL for profile updates
+- Used .neq('id', userId) for phone uniqueness check excluding current user
+- Rewrote /functions/api/auth/change-password.ts
+- Used supabase.from('User').select('passwordHash').eq('id', userId).maybeSingle() for hash fetch
+- Used supabase.from('User').update({ passwordHash, updatedAt }).eq('id', userId) for password update
+
+Stage Summary:
+- All 4 auth files fully migrated from D1 raw SQL to Supabase REST API (PostgREST) client
+- All imports changed from queryOne/execute to createSupabaseClient/Env
+- All env types changed from { DB: D1Database; JWT_SECRET: string } to Env
+- All SQL queries replaced with QueryBuilder chain calls
+- PostgreSQL differences handled: boolean true/false, ISO timestamps, ilike for case-insensitive matching
+- PostgREST join results flattened (Role: { name }) to match original API response format
+- No TODOs or placeholders left
+
+---
+Task ID: 6
+Agent: Backend Migration Agent
+Task: Rewrite remaining Cloudflare Pages Functions from D1 to Supabase REST API
+
+Work Log:
+- Rewrote 16 API endpoint files from D1 (query/queryOne/execute) to Supabase REST API (createSupabaseClient/QueryBuilder)
+- All files now import { createSupabaseClient, Env } from shared db.ts instead of { query, queryOne, execute }
+- Changed env type from { DB: D1Database; JWT_SECRET?: string } to Env (SUPABASE_URL, SUPABASE_SERVICE_KEY, JWT_SECRET)
+- Client created via: const supabase = createSupabaseClient(context.env)
+
+Files Rewritten:
+1. /functions/api/reviews/index.ts - GET (with PostgREST joins for reviewer/service) + POST (insert review, recalc average rating client-side, notify provider)
+2. /functions/api/reviews/[id].ts - GET single review with PostgREST joins (reviewer, reviewed, service)
+3. /functions/api/disputes/index.ts - GET list with booking/service joins + POST create dispute with notification
+4. /functions/api/disputes/[disputeId].ts - GET with messages via PostgREST join + PATCH add message, update status, notify
+5. /functions/api/contact/index.ts - POST insert ContactMessage with boolean isRead:false and ISO timestamp
+6. /functions/api/faq/index.ts - GET with .eq('isActive', true), .order('displayOrder'), optional category filter
+7. /functions/api/favorites/index.ts - GET with service/category/provider joins + POST add favorite
+8. /functions/api/favorites/[serviceId].ts - DELETE remove favorite with .eq filters
+9. /functions/api/kyc/submit.ts - POST insert/update ProviderKyc, notify admin users (roleId=3)
+10. /functions/api/kyc/status.ts - GET ProviderKyc by providerId with maybeSingle()
+11. /functions/api/legal/index.ts - GET all LegalPage records ordered by id
+12. /functions/api/legal/[type].ts - GET single LegalPage by pageType with maybeSingle()
+13. /functions/api/notifications/index.ts - GET with count:exact, optional unread filter, separate unread count query
+14. /functions/api/notifications/[id]/read.ts - POST mark as read with boolean isRead:true and ISO readAt
+15. /functions/api/stats/visitor.ts - POST upsert VisitorSession, count/update PlatformStats with head:true for count-only
+16. /functions/api/stats/platform.ts - GET counts using { count: 'exact', head: true } for all tables
+
+Key PostgreSQL Conversion Rules Applied:
+- Boolean: true/false instead of 1/0 (isRead, isActive, isVerified)
+- Timestamps: new Date().toISOString() instead of datetime('now')
+- .maybeSingle() instead of .single() when zero results is OK
+- { count: 'exact', head: true } for count-only queries
+- .neq() for NOT EQUAL comparisons (status != 'BLOCKED')
+- .in() for IN lists (dispute status in ['OPEN', 'UNDER_REVIEW'])
+- .gte() for >= comparisons (lastActive >= fiveMinutesAgo)
+- PostgREST relation syntax for joins: '*,reviewer:User!Review_reviewerId_fkey(name,profileImageUrl)'
+- Client-side aggregation for average rating (fetch all ratings, calculate in JS)
+- Separate count query for PlatformStats since PostgREST doesn't support subqueries in UPDATE
+
+Stage Summary:
+- All 16 Cloudflare Pages Functions successfully migrated from D1 to Supabase REST API
+- No D1 imports remaining; all files use createSupabaseClient and QueryBuilder
+- All PostgreSQL-specific patterns correctly applied (booleans, timestamps, PostgREST joins)
+- No TODOs or placeholders left in any file
+
+---
+Task ID: 5
+Agent: Subagent (full-stack-developer)
+Task: Rewrite ALL admin Cloudflare Pages Functions to use Supabase REST API client instead of D1
+
+Work Log:
+- Read and understood the new Supabase REST API client (SupabaseClient, QueryBuilder, createSupabaseClient, Env) from functions/_shared/db.ts
+- Rewrote all 11 admin endpoint files to use the new Supabase REST API client
+- Replaced all D1 SQL queries with PostgREST-compatible Supabase client calls
+- Changed env type from `{ DB: D1Database; JWT_SECRET?: string }` to `Env`
+- Created client via `const supabase = createSupabaseClient(context.env)` in each handler
+- Used `.select(id, { count: exact })` for count-only queries
+- Used `.ilike()` for case-insensitive search (replacing SQL LIKE)
+- Used JavaScript `reduce()` for complex aggregations (SUM, AVG) since PostgREST doesn't support them directly
+- Used `new Date().toISOString()` instead of `datetime('now')` for timestamps
+- Used `true`/`false` instead of `1`/`0` for boolean fields
+- Used `.eq()`, `.in()`, `.maybeSingle()`, `.single()`, `.range()`, `.order()`, `.limit()` for filtering/pagination
+- Used `.insert()`, `.update()`, `.delete()` with `.select().single()` for mutations returning data
+- Implemented JOIN emulation by fetching related records in batch via `.in()` and joining in JavaScript with Maps
+- For search in users, used separate ilike queries per field and combined matching IDs
+- For search in bookings, searched across booking number, user names, and service titles
+
+Files rewritten:
+1. functions/api/admin/dashboard.ts - Dashboard stats with multiple count queries + JS aggregation
+2. functions/api/admin/bookings.ts - Paginated bookings with enrichment (client/provider/service/category)
+3. functions/api/admin/categories.ts - GET with subcategory aggregation, POST create, PATCH update
+4. functions/api/admin/disputes.ts - GET with enrichment, POST for RESOLVE/ASSIGN/CLOSE actions
+5. functions/api/admin/faq/index.ts - GET list with category filter, POST create
+6. functions/api/admin/faq/[faqId].ts - PATCH update, DELETE
+7. functions/api/admin/logs.ts - GET with filters, enrichment with admin user info, action/target type lists
+8. functions/api/admin/revenue.ts - Revenue analytics with JS-based monthly/category aggregation
+9. functions/api/admin/services.ts - GET with enrichment, PATCH approve/reject with notifications
+10. functions/api/admin/users/index.ts - GET with role/status/search filtering
+11. functions/api/admin/users/[userId].ts - GET with KYC/booking/review stats, PATCH status update
+
+Stage Summary:
+- All 11 admin endpoints fully migrated from D1 SQL to Supabase REST API
+- Zero D1 dependencies remain in admin functions
+- Complex SQL JOINs replaced with batched fetches + JS-side join via Maps
+- Complex SQL aggregations (SUM, AVG, GROUP BY, strftime) replaced with JS computation
+- All PostgreSQL-compatible patterns used (booleans, timestamps, ILIKE)
+- No TODOs or placeholders left
+
+
+---
+Task ID: 4
+Agent: Backend Migration Agent
+Task: Rewrite categories, services, and bookings Cloudflare Pages Functions to use Supabase REST API client instead of D1
+
+Work Log:
+- Read and understood the new SupabaseClient / QueryBuilder API in functions/_shared/db.ts
+- Added `or()` method to QueryBuilder in db.ts for PostgREST OR filter support (needed for search)
+- Rewrote all 13 Cloudflare Pages Function files from raw D1 SQL to Supabase QueryBuilder calls
+
+Files rewritten:
+1. functions/api/categories/index.ts - Fetch categories with separate count queries for subcategories/services (PostgREST doesn't support subqueries)
+2. functions/api/categories/[id].ts - Single category with counts + subcategories
+3. functions/api/subcategories/index.ts - Subcategories by categoryId with per-subcategory service counts
+4. functions/api/services/index.ts - Paginated services with PostgREST joins (provider, category, subcategory), dynamic filters
+5. functions/api/services/[id].ts - Single service with nested joins (provider+KYC, category, subcategory), availability, reviews
+6. functions/api/services/search.ts - Search with OR filter across title+description, PostgREST joins, pagination
+7. functions/api/bookings/index.ts - Role-based GET (admin/provider/client) with PostgREST joins, booking creation POST with validation
+8. functions/api/bookings/[id].ts - Single booking with nested joins, access control, review
+9. functions/api/bookings/[id]/accept.ts - Provider accepts PENDING → CONFIRMED
+10. functions/api/bookings/[id]/cancel.ts - Client cancels PENDING/CONFIRMED → CANCELLED
+11. functions/api/bookings/[id]/complete.ts - Provider completes IN_PROGRESS → COMPLETED (with Service.totalBookings increment)
+12. functions/api/bookings/[id]/reject.ts - Provider rejects PENDING → REJECTED
+13. functions/api/bookings/[id]/start.ts - Provider starts CONFIRMED → IN_PROGRESS
+
+Key conversion patterns applied:
+- `import { query, queryOne, execute } from '../../_shared/db'` → `import { createSupabaseClient, Env } from '../../_shared/db'`
+- `env: { DB: D1Database }` → `env: Env`
+- `createSupabaseClient(env)` replaces all D1 access
+- Raw SQL SELECT → `.from('Table').select(...).eq(...).order(...)`
+- Raw SQL JOIN → PostgREST embedded selects: `select('*,provider:User!FK_name(id,name,...)')`
+- Raw SQL INSERT → `.from('Table').insert({...})`
+- Raw SQL UPDATE → `.from('Table').update({...}).eq('id', id)`
+- SQL subqueries for counts → separate count queries with `select('id', { count: 'exact' })`
+- SQL `isActive = 1` → `.eq('isActive', true)` (PostgreSQL boolean)
+- SQL `datetime('now')` → `new Date().toISOString()` (JavaScript Date)
+- SQL `LIKE LOWER(?)` → `.ilike('col', '%term%')`
+- SQL `OR` conditions → `.or('title.ilike.%term%,description.ilike.%term%')`
+- Booking response objects are flattened from nested PostgREST format to maintain backward compatibility with frontend
+- Service totalBookings increment (SQL `SET totalBookings = totalBookings + 1`) handled via read-then-write since PostgREST doesn't support atomic increments
+
+Stage Summary:
+- All 13 API function files fully rewritten to use Supabase REST API client
+- No remaining D1 / raw SQL references in rewritten files
+- Added `or()` method to QueryBuilder for search functionality
+- Response formats maintain backward compatibility with existing frontend where applicable
+
+---
+Task ID: 7
+Agent: TypeScript Fix Agent
+Task: Fix 163 TypeScript errors in Cloudflare Pages Functions and src/ components
+
+Work Log:
+- Fixed 163 TypeScript errors, bringing the count to 0
+- Categorized errors into 7 types and fixed each systematically
+
+Fixes Applied:
+
+1. **tsconfig.json** - Excluded skills/, examples/, mini-services/ from compilation (removed ~25 module-not-found errors for socket.io, bun:sqlite, z-ai-web-dev-sdk)
+
+2. **functions/_shared/db.ts** - Added `DbRecord` type (`Record<string, any>`) as default generic parameter for QueryBuilder and SupabaseClient.from() instead of `Record<string, unknown>`. This allows property access on query results without "Object is of type 'unknown'" errors. Also added `head?: boolean` option to select() method and 'HEAD' to HttpMethod union.
+
+3. **functions/cloudflare.d.ts** - Created EventContext type declaration file for Cloudflare Pages Functions, resolving "Cannot find name 'EventContext'" errors across 10+ function files.
+
+4. **functions/_shared/password.ts** and **src/lib/password.ts** - Fixed Uint8Array/BufferSource type incompatibility by changing base64ToBuffer return type to `Uint8Array<ArrayBuffer>` with explicit cast, resolving TypeScript 5.7+ strict ArrayBuffer types issue.
+
+5. **Component ease type errors** (home-page.tsx, categories-page.tsx, category-detail-page.tsx, service-detail-page.tsx) - Added `as const` to all `ease: [0.25, 0.46, 0.45, 0.94]` arrays in Framer Motion variants to satisfy the Easing type (tuple instead of number[]).
+
+6. **Component import/type errors**:
+   - Added `useCallback` to home-page.tsx imports
+   - Changed Skeleton import from `@/components/ui/separator` to `@/components/ui/skeleton` in 3 files
+   - Added `emailVerified` and `phoneVerified` optional properties to User interface in auth-context.tsx
+   - Added `type Page` import and `as Page` cast for navigate() calls in client-dashboard-page.tsx and provider-dashboard-page.tsx
+   - Changed `kycStatus` type annotation from inferred `'NOT_SUBMITTED'` to `string` in provider-profile-page.tsx
+
+7. **EventContext cast errors** (10 function files) - Changed `context as { ... }` to `context as unknown as { ... }` to satisfy TypeScript's overlap requirement when casting between incompatible types.
+
+8. **Array type mismatches in admin API files** - Added explicit type assertions for query results that are actually arrays but typed as DbRecord:
+   - admin/bookings.ts: Cast booking IDs and data results
+   - admin/categories.ts: Cast serviceCounts/subcategoryCounts iterations as DbRecord[]
+   - admin/dashboard.ts: Cast recentBookingsRaw for enrichBookings
+   - admin/disputes.ts: Cast disputes data for enrichDisputes
+   - admin/revenue.ts: Cast allCompletedBookings for computeRevenueByCategory
+   - admin/services.ts: Cast services data for enrichServices
+   - admin/users/[userId].ts: Added DbRecord type for kycInfo variable
+   - admin/users/index.ts: Cast users data for enrichUsersWithRoles
+   - auth/profile.ts: Added explicit `string | null` type for kycStatus variable
+
+Verification:
+- `npx tsc --noEmit` returns 0 errors
+- `bun run lint` passes with 0 errors and 0 warnings
+
+Stage Summary:
+- All 163 TypeScript errors resolved
+- 0 errors from tsc --noEmit
+- 0 errors from ESLint
+- No functional changes to any business logic

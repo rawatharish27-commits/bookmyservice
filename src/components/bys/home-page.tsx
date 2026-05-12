@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useApp } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useApi } from '@/hooks/use-api';
@@ -172,7 +172,7 @@ function RotatingText({ words }: { words: string[] }) {
         initial={{ y: 20, opacity: 0, scale: 0.9 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: -20, opacity: 0, scale: 1.1 }}
-        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
         className="inline-block text-gradient drop-shadow-[0_0_24px_rgba(16,185,129,0.5)]"
         style={{ textShadow: '0 0 30px rgba(16,185,129,0.4), 0 0 60px rgba(20,184,166,0.2)' }}
       >
@@ -473,7 +473,7 @@ export function HomePage() {
     visible: (i: number) => ({
       opacity: 1,
       y: 0,
-      transition: { delay: i * 0.12, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { delay: i * 0.12, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
     }),
   };
 
@@ -488,7 +488,7 @@ export function HomePage() {
       opacity: 1,
       scale: 1,
       y: 0,
-      transition: { delay: i * 0.15, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
+      transition: { delay: i * 0.15, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
     }),
   };
 

@@ -4,14 +4,14 @@
  * Requires ADMIN role
  */
 
-import { query, queryOne, execute } from '../../_shared/db';
+import { createSupabaseClient, Env } from '../../_shared/db';
 import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, unauthorized, forbidden, notFound, error } from '../../_shared/response';
 import { sanitizeString, getClientIP } from '../../_shared/security';
 
 interface EventContext {
   request: Request;
-  env: { DB: D1Database; JWT_SECRET?: string };
+  env: Env;
   params: Record<string, string>;
 }
 
@@ -32,49 +32,80 @@ export async function onRequestGet(context: EventContext): Promise<Response> {
   const limit = Math.min(100, Math.max(1, parseInt(url.searchParams.get('limit') || '20', 10)));
   const status = url.searchParams.get('status'); // PENDING, APPROVED, REJECTED
 
-  const conditions: string[] = [];
-  const params: unknown[] = [];
+  const supabase = createSupabaseClient(context.env);
+
+  // Build count query
+  let countQuery = supabase.from('Service').select('id', { count: 'exact' });
+
+  // Build data query
+  let dataQuery = supabase
+    .from('Service')
+    .select('id, title, description, basePrice, approvalStatus, isActive, city, averageRating, totalBookings, totalReviews, createdAt, categoryId, providerId')
+    .order('createdAt', { ascending: false })
+    .range((page - 1) * limit, (page - 1) * limit + limit - 1);
 
   if (status) {
-    conditions.push('s.approvalStatus = ?');
-    params.push(sanitizeString(status));
+    const sanitizedStatus = sanitizeString(status);
+    countQuery = countQuery.eq('approvalStatus', sanitizedStatus);
+    dataQuery = dataQuery.eq('approvalStatus', sanitizedStatus);
   }
 
-  const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+  const [countResult, dataResult] = await Promise.all([countQuery, dataQuery]);
 
-  // Count
-  const countResult = await queryOne(
-    context.env.DB,
-    `SELECT COUNT(*) as count FROM Service s ${whereClause}`,
-    params
-  );
-  const total = (countResult as { count: number } | null)?.count ?? 0;
+  const total = countResult.count ?? 0;
+  const services = (dataResult.data ?? []) as Record<string, unknown>[];
 
-  // Fetch services
-  const offset = (page - 1) * limit;
-  const services = await query(
-    context.env.DB,
-    `SELECT s.id, s.title, s.description, s.basePrice, s.approvalStatus, s.isActive,
-            s.city, s.averageRating, s.totalBookings, s.totalReviews, s.createdAt,
-            sc.name as categoryName, sc.slug as categorySlug,
-            u.name as providerName, u.email as providerEmail
-     FROM Service s
-     JOIN ServiceCategory sc ON s.categoryId = sc.id
-     JOIN User u ON s.providerId = u.id
-     ${whereClause}
-     ORDER BY s.createdAt DESC
-     LIMIT ? OFFSET ?`,
-    [...params, limit, offset]
-  );
+  // Enrich services with category and provider info
+  const enrichedServices = await enrichServices(supabase, services);
 
   return json({
-    services,
+    services: enrichedServices,
     pagination: {
       page,
       limit,
       total,
       totalPages: Math.ceil(total / limit),
     },
+  });
+}
+
+async function enrichServices(
+  supabase: ReturnType<typeof createSupabaseClient>,
+  services: Record<string, unknown>[]
+): Promise<Record<string, unknown>[]> {
+  if (services.length === 0) return [];
+
+  const categoryIds = [...new Set(
+    services
+      .map((s) => String(s.categoryId))
+      .filter((id) => id !== 'null' && id !== 'undefined')
+  )];
+  const providerIds = [...new Set(services.map((s) => String(s.providerId)))];
+
+  const [categoriesResult, providersResult] = await Promise.all([
+    categoryIds.length > 0
+      ? supabase.from('ServiceCategory').select('id, name, slug').in('id', categoryIds)
+      : Promise.resolve({ data: [], error: null, count: null }),
+    supabase.from('User').select('id, name, email').in('id', providerIds),
+  ]);
+
+  const categoryMap = new Map(
+    (categoriesResult.data ?? []).map((c: Record<string, unknown>) => [String(c.id), c])
+  );
+  const providerMap = new Map(
+    (providersResult.data ?? []).map((p: Record<string, unknown>) => [String(p.id), p])
+  );
+
+  return services.map((s) => {
+    const category = categoryMap.get(String(s.categoryId)) as Record<string, unknown> | undefined;
+    const provider = providerMap.get(String(s.providerId)) as Record<string, unknown> | undefined;
+    return {
+      ...s,
+      categoryName: category?.name ?? null,
+      categorySlug: category?.slug ?? null,
+      providerName: provider?.name ?? null,
+      providerEmail: provider?.email ?? null,
+    };
   });
 }
 
@@ -110,77 +141,83 @@ export async function onRequestPatch(context: EventContext): Promise<Response> {
   const newStatus = sanitizeString(body.status);
   const rejectionReason = body.rejectionReason ? sanitizeString(body.rejectionReason) : null;
 
+  const supabase = createSupabaseClient(context.env);
+
   // Check service exists
-  const existingService = await queryOne(
-    context.env.DB,
-    'SELECT id, title, approvalStatus FROM Service WHERE id = ?',
-    [serviceId]
-  );
+  const { data: existingService } = await supabase
+    .from('Service')
+    .select('id, title, approvalStatus')
+    .eq('id', serviceId)
+    .maybeSingle();
 
   if (!existingService) {
     return notFound('Service not found');
   }
 
-  const isActive = newStatus === 'APPROVED' ? 1 : 0;
-  const isApproved = newStatus === 'APPROVED' ? 1 : 0;
+  const isActive = newStatus === 'APPROVED';
+  const isApproved = newStatus === 'APPROVED';
+  const now = new Date().toISOString();
 
-  await execute(
-    context.env.DB,
-    `UPDATE Service SET approvalStatus = ?, isActive = ?, isApproved = ?, approvedBy = ?, approvedAt = datetime('now'),
-            rejectionReason = ?, updatedAt = datetime('now') WHERE id = ?`,
-    [newStatus, isActive, isApproved, user.userId, rejectionReason, serviceId]
-  );
+  const { error: updateError } = await supabase
+    .from('Service')
+    .update({
+      approvalStatus: newStatus,
+      isActive,
+      isApproved,
+      approvedBy: user.userId,
+      approvedAt: now,
+      rejectionReason,
+      updatedAt: now,
+    })
+    .eq('id', serviceId);
+
+  if (updateError) {
+    return error('Failed to update service: ' + updateError.message);
+  }
 
   // Log admin action
   const ip = getClientIP(context.request);
   const userAgent = context.request.headers.get('User-Agent') || null;
-  await execute(
-    context.env.DB,
-    `INSERT INTO AdminLog (id, adminId, action, targetType, targetId, details, ipAddress, userAgent, createdAt)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))`,
-    [
-      crypto.randomUUID(),
-      user.userId,
-      newStatus === 'APPROVED' ? 'APPROVE_SERVICE' : 'REJECT_SERVICE',
-      'SERVICE',
-      serviceId,
-      JSON.stringify({
-        previousStatus: (existingService as { approvalStatus: string }).approvalStatus,
-        newStatus,
-        rejectionReason,
-      }),
-      ip,
-      userAgent,
-    ]
-  );
+  await supabase.from('AdminLog').insert({
+    id: crypto.randomUUID(),
+    adminId: user.userId,
+    action: newStatus === 'APPROVED' ? 'APPROVE_SERVICE' : 'REJECT_SERVICE',
+    targetType: 'SERVICE',
+    targetId: serviceId,
+    details: JSON.stringify({
+      previousStatus: (existingService as Record<string, unknown>).approvalStatus,
+      newStatus,
+      rejectionReason,
+    }),
+    ipAddress: ip,
+    userAgent,
+    createdAt: now,
+  });
 
   // Create notification for the provider
-  const serviceInfo = await queryOne(
-    context.env.DB,
-    'SELECT providerId FROM Service WHERE id = ?',
-    [serviceId]
-  );
+  const { data: serviceInfo } = await supabase
+    .from('Service')
+    .select('providerId')
+    .eq('id', serviceId)
+    .maybeSingle();
 
   if (serviceInfo) {
-    const providerId = (serviceInfo as { providerId: string }).providerId;
+    const providerId = String((serviceInfo as Record<string, unknown>).providerId);
     const notifTitle = newStatus === 'APPROVED' ? 'Service Approved' : 'Service Rejected';
     const notifMessage = newStatus === 'APPROVED'
-      ? `Your service "${(existingService as { title: string }).title}" has been approved`
-      : `Your service "${(existingService as { title: string }).title}" has been rejected${rejectionReason ? `. Reason: ${rejectionReason}` : ''}`;
+      ? `Your service "${(existingService as Record<string, unknown>).title}" has been approved`
+      : `Your service "${(existingService as Record<string, unknown>).title}" has been rejected${rejectionReason ? `. Reason: ${rejectionReason}` : ''}`;
 
-    await execute(
-      context.env.DB,
-      `INSERT INTO Notification (id, userId, type, title, message, actionUrl, isRead, createdAt)
-       VALUES (?, ?, ?, ?, ?, ?, 0, datetime('now'))`,
-      [
-        crypto.randomUUID(),
-        providerId,
-        'SERVICE_STATUS',
-        notifTitle,
-        notifMessage,
-        `/provider/services`,
-      ]
-    );
+    await supabase.from('Notification').insert({
+      id: crypto.randomUUID(),
+      userId: providerId,
+      type: 'SERVICE_STATUS',
+      title: notifTitle,
+      message: notifMessage,
+      actionUrl: '/provider/services',
+      isRead: false,
+      createdAt: now,
+    });
   }
 
   return json({
