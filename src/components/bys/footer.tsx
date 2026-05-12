@@ -53,7 +53,10 @@ const legalLinks: { label: string; page: Page }[] = [
   { label: 'Terms of Service', page: 'terms' },
   { label: 'Privacy Policy', page: 'privacy' },
   { label: 'Refund Policy', page: 'refund-policy' },
-  { label: 'Acceptable Usage Policy', page: 'terms' },
+  { label: 'AUP', page: 'aup' },
+  { label: 'Provider Agreement', page: 'provider-agreement' },
+  { label: 'Community Guidelines', page: 'community-guidelines' },
+  { label: 'Cookie Policy', page: 'cookie-policy' },
 ];
 
 // ─── Social Icons Config ─────────────────────────────────────────────────────

@@ -25,6 +25,9 @@ import {
   Lock,
   RefreshCw,
   Cookie,
+  Scale,
+  HandshakeIcon,
+  Users,
 } from 'lucide-react';
 
 const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.ReactNode; gradient: string }> = {
@@ -32,6 +35,9 @@ const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.R
   privacy: { title: 'Privacy Policy', type: 'PRIVACY', icon: <Lock className="size-5" />, gradient: 'from-teal-700 to-cyan-600' },
   'refund-policy': { title: 'Refund Policy', type: 'REFUND', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-orange-500' },
   'cookie-policy': { title: 'Cookie Policy', type: 'COOKIES', icon: <Cookie className="size-5" />, gradient: 'from-violet-600 to-purple-500' },
+  aup: { title: 'Acceptable Usage Policy', type: 'AUP', icon: <Scale className="size-5" />, gradient: 'from-rose-600 to-red-500' },
+  'provider-agreement': { title: 'Provider Agreement', type: 'PROVIDER_AGREEMENT', icon: <HandshakeIcon className="size-5" />, gradient: 'from-sky-600 to-blue-500' },
+  'community-guidelines': { title: 'Community Guidelines', type: 'COMMUNITY_GUIDELINES', icon: <Users className="size-5" />, gradient: 'from-fuchsia-600 to-pink-500' },
 };
 
 interface LegalPageData {

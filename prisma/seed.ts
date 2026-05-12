@@ -1482,6 +1482,348 @@ For questions about our use of cookies or to exercise your rights:
     },
   });
 
+  // Acceptable Usage Policy (Standalone)
+  await db.legalPage.create({
+    data: {
+      pageType: 'AUP',
+      title: 'Acceptable Usage Policy',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
+      content: `ACCEPTABLE USAGE POLICY FOR BOOKYOURSERVICE
+
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
+
+This Acceptable Usage Policy ("AUP") governs the acceptable use of the BookYourService platform operated by BookYourService Technologies Pvt. Ltd. ("Company," "we," "us," or "our"). This AUP is incorporated by reference into our Terms of Service and applies to all users of the Platform.
+
+1. PURPOSE AND SCOPE
+1.1 This AUP establishes the standards and rules for acceptable use of the BookYourService platform, including the website at https://bookyourservice.co.in and all associated services.
+1.2 This policy applies to all users, including Clients, Service Providers, and visitors, and is designed to ensure a safe, fair, and legally compliant environment for all participants.
+1.3 By using the Platform, you agree to comply with this AUP. Violations may result in account suspension, termination, or legal action as described herein.
+
+2. ACCEPTABLE USE
+2.1 Users may use the Platform only for lawful purposes and in accordance with these policies.
+2.2 Clients may browse, search, and book services in the categories offered: Plumbing, Electrical, and AC & HVAC.
+2.3 Service Providers may list and offer services only within the three approved categories: Plumbing, Electrical, and AC & HVAC.
+2.4 All communications through the Platform must be professional, respectful, and related to service bookings.
+2.5 Users must provide accurate and truthful information at all times when using the Platform.
+
+3. PROHIBITED CONDUCT
+3.1 Users must NOT use the Platform for any unlawful purpose or in violation of any applicable Indian law.
+3.2 The following activities are strictly prohibited:
+• Submitting false, misleading, or fraudulent information
+• Impersonating any person or entity
+• Interfering with or disrupting the Platform's operation
+• Attempting to gain unauthorized access to any part of the Platform
+• Using automated tools (bots, scrapers) without written permission
+• Circumventing the Platform's payment, booking, or review systems
+• Soliciting users for transactions outside the Platform
+• Posting defamatory, obscene, harassing, threatening, or discriminatory content
+• Uploading viruses, malware, or malicious code
+• Engaging in money laundering or terrorist financing
+• Creating fake bookings, reviews, or ratings
+• Harassing, stalking, or intimidating other users
+3.3 The Company bears NO liability for any actions taken by users in violation of this Section 3.
+
+4. SERVICE-SPECIFIC RULES
+4.1 PLUMBING SERVICES: Providers offering plumbing services must hold valid plumbing certifications or licenses as required by applicable state regulations. Services include but are not limited to: leak repair, pipe installation, drain cleaning, faucet replacement, water heater service, bathroom plumbing, kitchen plumbing, sewage repair, water tank installation, and bathroom renovation plumbing.
+4.2 ELECTRICAL SERVICES: Providers offering electrical services must hold valid electrical licenses from the State Electricity Board or equivalent authority. Services include but are not limited to: wiring and rewiring, light fixture installation, ceiling fan installation, socket and switch repair, MCB and DB box installation, inverter and UPS setup, earthing and grounding, electrical safety inspection, appliance repair, and electrical renovation.
+4.3 AC & HVAC SERVICES: Providers offering AC and HVAC services must hold relevant HVAC certifications. Services include but are not limited to: AC installation, AC repair and troubleshooting, AC gas refilling, AC cleaning and servicing, ducted AC service, central AC maintenance, heater repair, ventilation system service, thermostat installation, and HVAC system overhaul.
+4.4 Providers must NOT list services outside these three categories. Any attempt to list services in unapproved categories will result in listing removal and potential account suspension.
+
+5. ACCOUNT INTEGRITY
+5.1 Each user may maintain only one active account. Creating multiple accounts is prohibited.
+5.2 Users are responsible for maintaining the confidentiality of their account credentials.
+5.3 Users must not share, transfer, or sell their account credentials to any third party.
+5.4 Any unauthorized use of an account must be reported to support@bookyourservice.co.in immediately.
+5.5 The Company shall NOT be liable for any loss arising from a user's failure to comply with these account security obligations.
+
+6. CONTENT STANDARDS
+6.1 All content posted on the Platform must be accurate, truthful, and not misleading.
+6.2 Prohibited content includes: false or fraudulent content, infringing content, defamatory or obscene material, content promoting violence or illegal activities, content containing personal information of others without consent, and content containing malicious code.
+6.3 Reviews and ratings must be based on genuine service experiences. Fake, incentivized, or retaliatory reviews are strictly prohibited.
+6.4 The Company reserves the right to remove any content that violates these standards at its sole discretion.
+
+7. COMMUNICATION STANDARDS
+7.1 All communications through the Platform must be professional and courteous.
+7.2 Users must NOT use communication channels for spam, promotional material, offensive content, threats, or harassment.
+7.3 Users must NOT share personal contact information to circumvent the Platform's booking and payment systems.
+7.4 The Company may monitor communications for compliance but is NOT obligated to do so and bears NO liability for user communications.
+
+8. ENFORCEMENT
+8.1 The Company may take the following actions for AUP violations: issuing warnings, removing prohibited content, suspending accounts, terminating accounts, forfeiting pending payments, and referring matters to law enforcement.
+8.2 The Company reserves the right to determine, in its sole discretion, whether a violation has occurred and what action is appropriate.
+8.3 The Company bears NO liability for any actions taken pursuant to this enforcement section.
+
+9. REPORTING VIOLATIONS
+9.1 Users are encouraged to report AUP violations through: support@bookyourservice.co.in (general violations), legal@bookyourservice.co.in (legal/compliance concerns), or the in-app reporting feature.
+9.2 The Company will investigate all reports and take appropriate action.
+9.3 Reporter identity will be kept confidential to the extent permitted by law.
+9.4 Filing false or malicious reports is itself a violation of this AUP.
+
+10. POLICY UPDATES
+10.1 The Company reserves the right to update this AUP at its sole discretion.
+10.2 Material changes will be communicated via email, Platform notice, or in-app notification.
+10.3 The Company will provide at least 15 days' notice before material changes take effect, except for security or legal compliance changes.
+10.4 Continued use after changes constitutes acceptance.
+
+11. CONTACT
+For questions regarding this Acceptable Usage Policy:
+• General Support: support@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Registered Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Website: https://bookyourservice.co.in
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
+    },
+  });
+
+  // Provider Agreement
+  await db.legalPage.create({
+    data: {
+      pageType: 'PROVIDER_AGREEMENT',
+      title: 'Service Provider Agreement',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
+      content: `SERVICE PROVIDER AGREEMENT FOR BOOKYOURSERVICE
+
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
+
+IMPORTANT: THIS SERVICE PROVIDER AGREEMENT ("AGREEMENT") CONSTITUTES A LEGALLY BINDING AGREEMENT BETWEEN YOU ("PROVIDER," "YOU," OR "YOUR") AND BOOKYOURSERVICE TECHNOLOGIES PVT. LTD. ("COMPANY," "WE," "US," OR "OUR"). BY REGISTERING AS A SERVICE PROVIDER ON THE PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY THIS AGREEMENT.
+
+1. DEFINITIONS
+1.1 "Platform" means the BookYourService website at https://bookyourservice.co.in and associated mobile applications.
+1.2 "Services" means the home maintenance and repair services offered by the Provider through the Platform, limited to Plumbing, Electrical, and AC & HVAC categories.
+1.3 "Client" means a user of the Platform who books services through the Platform.
+1.4 "Platform Fee" means the commission charged by the Company for facilitating the booking transaction.
+1.5 "Booking" means a confirmed appointment for a service between a Client and a Provider.
+
+2. SCOPE OF AGREEMENT
+2.1 This Agreement governs the relationship between the Provider and the Company regarding the use of the Platform to offer and deliver services to Clients.
+2.2 The Provider acknowledges that they are an INDEPENDENT CONTRACTOR and NOT an employee, agent, or representative of the Company.
+2.3 The Company is an INTERMEDIARY and MARKETPLACE ONLY. The Company does NOT provide any plumbing, electrical, or AC & HVAC services directly.
+2.4 Nothing in this Agreement creates an employer-employee relationship, partnership, joint venture, or agency relationship between the Provider and the Company.
+
+3. PROVIDER OBLIGATIONS
+3.1 KYC AND VERIFICATION: The Provider must complete the Know Your Customer (KYC) verification process, including submission of government-issued ID (Aadhaar, PAN, Passport, or Driving License), address proof, a recent photograph/selfie, and trade-specific certifications or licenses.
+3.2 The Provider must notify the Company within 7 days of any changes to KYC information.
+3.3 QUALIFICATIONS: The Provider must possess and maintain all necessary qualifications, licenses, and permits required by applicable Indian law to perform the services listed.
+3.4 SERVICE QUALITY: The Provider must deliver services in a professional, workmanlike manner consistent with industry standards and applicable laws.
+3.5 AVAILABILITY: The Provider must maintain accurate availability schedules on the Platform and honor accepted bookings.
+3.6 PUNCTUALITY: The Provider must arrive at the scheduled time or notify the Client of delays at least 30 minutes in advance.
+3.7 COMMUNICATION: The Provider must maintain professional and courteous communication with Clients through the Platform.
+
+4. SERVICE LISTING RULES
+4.1 The Provider may ONLY list services within the three approved categories: Plumbing, Electrical, and AC & HVAC.
+4.2 Service listings must include accurate information: service title, detailed description, base price (INR), estimated duration, service area, and availability.
+4.3 The Provider must NOT list services they are not qualified or legally permitted to perform.
+4.4 Service descriptions must NOT contain misleading claims or "bait and switch" pricing.
+4.5 All service images must be original or properly licensed. Stock photos misrepresenting the Provider's work are prohibited.
+4.6 The Provider must NOT list the same service multiple times under different names.
+4.7 The Company reserves the right to remove, modify, or reject any service listing at its sole discretion.
+
+5. PRICING AND PAYMENTS
+5.1 CURRENT PAYMENT MODEL: At present, the Company's online payment system is under development. All service payments are settled DIRECTLY between the Client and the Provider through cash, bank transfer, UPI, or any other mutually agreed method. The Company DOES NOT collect, process, hold, or handle any service payments at this time.
+5.2 Upon activation of the online payment system, the following will apply:
+• All payments will be processed through the Platform's secure payment gateway
+• The Company will deduct the Platform Fee before disbursing the Provider's earnings
+• The Provider will receive payouts according to the disbursement schedule
+5.3 PLATFORM FEE: The Company charges a commission (currently 5-10%) on each completed booking. The Platform Fee is disclosed transparently during the booking process.
+5.4 All prices must be listed in Indian Rupees (INR). Applicable GST must be included unless otherwise stated.
+5.5 The Company is NOT responsible for any payment disputes between the Provider and the Client.
+
+6. TAX OBLIGATIONS
+6.1 The Provider is solely responsible for all tax obligations arising from services provided through the Platform, including income tax and GST.
+6.2 The Provider must obtain and maintain GST registration if applicable and must provide valid tax invoices to Clients upon request.
+6.3 The Company will issue Form 16A or equivalent documentation for TDS deductions as applicable.
+6.4 The Company bears NO liability for the Provider's failure to comply with tax obligations.
+
+7. INSURANCE AND LIABILITY
+7.1 The Provider is solely responsible for obtaining and maintaining appropriate insurance coverage, including but not limited to: professional liability insurance, general liability insurance, workers' compensation (if employing helpers), and vehicle insurance.
+7.2 The Provider assumes ALL risk and liability for:
+• Personal injury, bodily harm, or death occurring during service delivery
+• Property damage caused during service delivery (water damage, fire damage, electrical damage, etc.)
+• Damage to Client's property or third-party property
+• Any negligence, recklessness, or intentional misconduct by the Provider or their employees/agents
+7.3 THE COMPANY BEARS NO LIABILITY FOR ANY DAMAGES ARISING FROM THE PROVISION OF SERVICES BY THE PROVIDER.
+
+8. INDEMNIFICATION
+8.1 The Provider agrees to indemnify, defend, and hold harmless the Company, its directors, officers, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees arising out of or related to:
+• Services provided or failed to be provided by the Provider
+• Any breach of this Agreement by the Provider
+• Any violation of applicable law by the Provider
+• Any dispute between the Provider and a Client
+• Any injury, damage, or loss caused by the Provider's negligence or misconduct
+• Any content submitted by the Provider on the Platform
+
+9. BOOKING COMMITMENTS
+9.1 The Provider must honor all accepted bookings. Failure to do so may result in:
+• Negative impact on the Provider's rating and visibility
+• Account suspension for repeated cancellations
+• Forfeiture of any applicable credits or benefits
+9.2 The Provider may cancel bookings only in genuine emergencies and must provide a valid reason.
+9.3 The Provider must not solicit Clients for transactions outside the Platform (platform bypass).
+9.4 The Provider must not request additional payments beyond the agreed service price without the Client's consent.
+
+10. INTELLECTUAL PROPERTY
+10.1 The Provider grants the Company a non-exclusive, worldwide, royalty-free, transferable, sub-licensable license to use their listing content, reviews, and other user-generated content for Platform operation, marketing, and improvement.
+10.2 The Provider must NOT use the "BookYourService" name, logo, or trademarks without written permission.
+10.3 The Provider retains ownership of their original content, subject to the license granted above.
+
+11. ACCOUNT SUSPENSION AND TERMINATION
+11.1 The Company may suspend or terminate the Provider's account for:
+• Violation of this Agreement, the AUP, or any Platform policy
+• Providing false or misleading information
+• Fraudulent activity or illegal conduct
+• Repeated negative reviews or complaints
+• Failure to pay applicable Platform Fees
+• Any conduct harmful to other users or the Platform
+11.2 The Provider may terminate their account by contacting support@bookyourservice.co.in.
+11.3 Upon termination, all active bookings will be cancelled, pending payments processed per applicable policies, and surviving provisions (Sections 7, 8, 10) remain in effect.
+
+12. LIMITATION OF LIABILITY
+12.1 THE COMPANY'S TOTAL AGGREGATE LIABILITY SHALL NOT EXCEED THE PLATFORM FEE PAID BY THE PROVIDER IN THE TWELVE (12) MONTHS PRECEDING THE EVENT, OR INR 1,000, WHICHEVER IS LESS.
+12.2 THE COMPANY IS NOT LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES.
+12.3 THE COMPANY DOES NOT GUARANTEE ANY MINIMUM NUMBER OF BOOKINGS OR EARNINGS FOR THE PROVIDER.
+
+13. DISPUTE RESOLUTION
+13.1 Disputes shall be resolved per the dispute resolution provisions in Section 14 of the AUP.
+13.2 Arbitration shall be conducted in Mumbai, Maharashtra, India per the Arbitration and Conciliation Act, 1996.
+13.3 The courts of Mumbai, Maharashtra, India shall have exclusive jurisdiction.
+
+14. MODIFICATIONS
+14.1 The Company reserves the right to modify this Agreement at its sole discretion with at least 15 days' notice.
+14.2 Continued use after modifications constitutes acceptance.
+
+15. CONTACT
+For questions regarding this Provider Agreement:
+• General Support: support@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Registered Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Website: https://bookyourservice.co.in
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
+    },
+  });
+
+  // Community Guidelines
+  await db.legalPage.create({
+    data: {
+      pageType: 'COMMUNITY_GUIDELINES',
+      title: 'Community Guidelines',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
+      content: `COMMUNITY GUIDELINES FOR BOOKYOURSERVICE
+
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
+
+At BookYourService, we are committed to building a safe, respectful, and trustworthy community for Clients and Service Providers alike. These Community Guidelines outline the behavior expected of all users on our Platform. By using BookYourService, you agree to follow these guidelines.
+
+1. OUR COMMUNITY VALUES
+1.1 SAFETY FIRST: The safety of our users is our top priority. We expect all interactions on the Platform to prioritize physical safety, emotional well-being, and property protection.
+1.2 RESPECT AND PROFESSIONALISM: Treat every user with dignity and respect. Professional communication and behavior are expected at all times.
+1.3 HONESTY AND TRANSPARENCY: Be truthful in your profile, listings, reviews, and communications. Accurate information builds trust and ensures positive experiences.
+1.4 FAIRNESS: Engage in fair business practices. Do not manipulate pricing, reviews, or the booking system.
+1.5 ACCOUNTABILITY: Take responsibility for your actions. If you make a mistake, own it and work to make it right.
+
+2. GUIDELINES FOR CLIENTS
+2.1 RESPECT PROVIDERS: Service Providers are skilled professionals. Treat them with the same respect you would expect. Do not use abusive language, make threats, or engage in harassment.
+2.2 ACCURATE BOOKING INFORMATION: Provide accurate service addresses, contact information, and special instructions. Misleading information wastes everyone's time and may result in service cancellation.
+2.3 TIMELY COMMUNICATION: Respond to Provider messages promptly. If you need to cancel or reschedule, do so as early as possible.
+2.4 FAIR REVIEWS: Leave honest, fair reviews based on your actual experience. Do not post retaliatory reviews or threaten negative reviews to extract discounts.
+2.5 PAYMENT INTEGRITY: Pay the agreed-upon price for services rendered. Do not attempt to negotiate lower prices after a service has been completed.
+2.6 PROPERTY ACCESS: Ensure the Provider has safe and appropriate access to the work area. Remove hazards and supervise children and pets during service visits.
+2.7 NO SOLICITATION: Do not ask Providers to work outside the Platform or bypass the booking system.
+
+3. GUIDELINES FOR SERVICE PROVIDERS
+3.1 PROFESSIONAL CONDUCT: Arrive on time, dress appropriately, and conduct yourself professionally. You are representing both yourself and the BookYourService community.
+3.2 QUALITY WORKMANSHIP: Deliver services to the best of your ability, consistent with industry standards. If a job is beyond your expertise, communicate this honestly.
+3.3 TRANSPARENT PRICING: Clearly communicate the scope of work and pricing before starting. Do not add hidden charges or increase prices without the Client's consent.
+3.4 RESPECT CLIENT PROPERTY: Treat the Client's home and property with care. Clean up after completing work. Report any accidental damage immediately.
+3.5 HONEST REVIEWS: Do not solicit positive reviews or create fake reviews. Report any Client who offers incentives for positive reviews.
+3.6 SAFETY COMPLIANCE: Follow all safety protocols relevant to your trade. Use appropriate safety equipment. Ensure electrical, plumbing, and HVAC work meets safety codes.
+3.7 NO PLATFORM BYPASS: Never ask Clients to book directly with you outside the Platform or share personal contact details for the purpose of circumventing the Platform.
+
+4. PROHIBITED BEHAVIOR
+4.1 The following behaviors are strictly prohibited and may result in immediate account suspension or termination:
+• Harassment, bullying, or intimidation of any kind
+• Discrimination based on caste, religion, gender, sexual orientation, disability, age, or any other protected characteristic
+• Use of offensive, abusive, or threatening language
+• Sharing or requesting personal contact information to bypass the Platform
+• Posting fake, misleading, or incentivized reviews
+• Creating multiple accounts
+• Providing services while under the influence of alcohol or drugs
+• Engaging in any form of fraud, theft, or dishonesty
+• Recording or photographing other users without their consent
+• Carrying weapons or dangerous materials to a service location (beyond tools required for the service)
+• Any form of physical, verbal, or sexual harassment
+
+5. SAFETY GUIDELINES
+5.1 DURING SERVICE VISITS:
+• Providers should carry valid ID and present it upon request
+• Clients should ensure the work area is safe and accessible
+• Both parties should maintain professional boundaries
+• If you feel unsafe at any time, leave the situation and contact support immediately
+5.2 EMERGENCY PROCEDURES:
+• In case of immediate danger, contact emergency services first (100 for police, 101 for fire, 108 for ambulance)
+• Then report the incident to support@bookyourservice.co.in
+• Preserve any evidence (messages, photos) for investigation
+
+6. REVIEW AND RATING GUIDELINES
+6.1 Reviews must be based on genuine, first-hand experiences.
+6.2 Keep reviews factual, constructive, and professional.
+6.3 Do NOT include personal information, offensive language, or irrelevant content in reviews.
+6.4 Do NOT post reviews in exchange for money, discounts, or other incentives.
+6.5 Do NOT threaten negative reviews to extract concessions.
+6.6 The Company reserves the right to remove reviews that violate these guidelines.
+
+7. DISPUTE RESOLUTION
+7.1 If a dispute arises between a Client and a Provider, both parties should first attempt to resolve it through good-faith communication.
+7.2 If informal resolution fails, use the Platform's built-in dispute resolution mechanism.
+7.3 The Company will act as a mediator but is NOT bound to enforce any particular outcome.
+7.4 Both parties must provide truthful information and evidence during dispute resolution.
+
+8. CONSEQUENCES OF VIOLATIONS
+8.1 FIRST MINOR VIOLATION: Warning and reminder of community guidelines.
+8.2 REPEATED MINOR VIOLATIONS: Account restrictions, reduced visibility, or temporary suspension.
+8.3 SERIOUS VIOLATIONS: Immediate account suspension or termination.
+8.4 ILLEGAL ACTIVITY: Account termination and referral to law enforcement.
+8.5 The Company reserves the right to determine the severity of violations and appropriate consequences at its sole discretion.
+
+9. REPORTING CONCERNS
+9.1 If you experience or witness behavior that violates these Community Guidelines:
+• Use the in-app reporting feature on user profiles or service pages
+• Email: support@bookyourservice.co.in
+• Email: legal@bookyourservice.co.in for legal or safety concerns
+9.2 The Company takes all reports seriously and will investigate promptly.
+9.3 Reporter identity will be kept confidential to the extent permitted by law.
+9.4 The Company will NOT retaliate against users who report violations in good faith.
+9.5 Filing false reports is itself a violation and may result in account action.
+
+10. POSITIVE COMMUNITY RECOGNITION
+10.1 Providers who consistently deliver excellent service and maintain high ratings may receive:
+• "Top Provider" badge on their profile
+• Priority placement in search results
+• Access to premium features and benefits
+• Invitation to the Provider Advisory Board
+10.2 Clients who maintain positive booking history and provide helpful reviews may receive:
+• "Trusted Client" badge
+• Priority booking for high-demand services
+• Access to exclusive offers and discounts
+
+11. GUIDELINE UPDATES
+11.1 The Company may update these Community Guidelines at any time.
+11.2 Material changes will be communicated via email, Platform notice, or in-app notification.
+11.3 Continued use after changes constitutes acceptance.
+
+12. CONTACT
+For questions about these Community Guidelines:
+• General Support: support@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Community Team: community@bookyourservice.co.in
+• Registered Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Website: https://bookyourservice.co.in
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
+    },
+  });
+
   // ========================================
   // 12. REVENUE STREAMS (for 3 categories only)
   // ========================================
@@ -1645,7 +1987,7 @@ For questions about our use of cookies or to exercise your rights:
   console.log(`Bookings: ${bookings.length}`);
   console.log(`Reviews: ${Math.min(completedBookings.length, reviewData.length)}`);
   console.log(`FAQs: ${faqData.length}`);
-  console.log(`Legal Pages: 4 (Terms, Privacy, Refund, Cookies)`);
+  console.log(`Legal Pages: 7 (Terms, Privacy, Refund, Cookies, AUP, Provider Agreement, Community Guidelines)`);
   console.log(`Revenue Streams: ${revenueStreamData.length}`);
   console.log(`SEO Metadata: ${seoData.length}`);
   console.log(`Notifications: ${notifications.length}`);

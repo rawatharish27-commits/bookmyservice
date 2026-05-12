@@ -90,6 +90,12 @@ function AppRouter() {
         return <LegalPage />;
       case 'cookie-policy':
         return <LegalPage />;
+      case 'aup':
+        return <LegalPage />;
+      case 'provider-agreement':
+        return <LegalPage />;
+      case 'community-guidelines':
+        return <LegalPage />;
 
       // Auth pages
       case 'login':
