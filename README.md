@@ -567,6 +567,9 @@ bun run dev
 | `bun run lint` | Run ESLint |
 | `bun run db:push` | Push Prisma schema to database |
 | `bun run db:seed` | Seed database with demo data |
+| `npm run pages:build` | Build for Cloudflare Pages |
+| `npm run pages:preview` | Preview Cloudflare Pages locally |
+| `npm run pages:deploy` | Deploy to Cloudflare Pages |
 
 ---
 
@@ -616,42 +619,83 @@ The seed script (`prisma/seed.ts`) creates:
 
 The application is configured for **Cloudflare Pages** deployment using `@opennextjs/cloudflare`.
 
-### Configuration
+### Configuration Files
 
+**`next.config.ts`** — Cloudflare-compatible settings:
 ```typescript
-// next.config.ts
 const nextConfig: NextConfig = {
   images: { unoptimized: true },  // Cloudflare compatible
   reactStrictMode: false,
 };
 ```
 
+**`wrangler.toml`** — Cloudflare Pages configuration:
+```toml
+name = "bookyourservice"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".open-next/assets"
+
+[vars]
+DATABASE_URL = "file:./db/custom.db"
+```
+
+**`open-next.config.ts`** — OpenNext adapter configuration:
+```typescript
+const config: OpenNextConfig = {
+  default: {
+    override: {
+      wrapper: "cloudflare-node",
+      converter: "edge",
+      incrementalCache: "dummy",
+      tagCache: "dummy",
+      queue: "dummy",
+    },
+  },
+};
+```
+
 ### Build for Cloudflare
 
 ```bash
-# Build with OpenNext for Cloudflare
-npx @opennextjs/cloudflare
+# Build with OpenNext for Cloudflare Pages
+npx @opennextjs/cloudflare build
 
-# Or using the built-in build
-bun run build
+# Or using the npm script
+npm run pages:build
 ```
 
-### Deployment Steps
+### Cloudflare Pages Deployment Steps
 
-1. **Connect Repository** — Link `bookmyservice` repo to Cloudflare Pages
-2. **Build Settings**:
-   - Framework preset: `Next.js`
-   - Build command: `npx @opennextjs/cloudflare`
-   - Output directory: `.open-next/worker`
-3. **Environment Variables** — Set `DATABASE_URL` and `JWT_SECRET` in Cloudflare dashboard
-4. **Deploy** — Cloudflare will auto-deploy on push to `main`
+1. **Connect Repository** — Go to Cloudflare Dashboard → Pages → Create project → Connect `bookmyservice` repo
+2. **Build Settings** (configure in Cloudflare dashboard):
+   - Framework preset: `Next.js (Static HTML Export)` or leave blank
+   - Build command: `npx @opennextjs/cloudflare build`
+   - Build output directory: `.open-next/assets`
+   - Root directory: `/` (default)
+   - Node.js version: `22`
+3. **Environment Variables** — Set in Cloudflare dashboard:
+   - `DATABASE_URL` — Your production database connection string
+   - `JWT_SECRET` — Strong random secret key (min 32 chars)
+4. **Deploy** — Click "Save and Deploy". Cloudflare will auto-deploy on every push to `main`
+
+### Local Cloudflare Preview
+
+```bash
+# Build first
+npx @opennextjs/cloudflare build
+
+# Preview locally with Wrangler
+npx wrangler pages dev .open-next/assets
+```
 
 ### Important Notes for Cloudflare
 
 - **SQLite Limitation**: Cloudflare Workers don't support filesystem SQLite. For production, migrate to **Cloudflare D1** (SQLite-compatible) or **Turso** (libSQL)
 - **Images**: Set to `unoptimized: true` since Cloudflare has its own image optimization
 - **WebSocket**: Socket.IO stats service needs a separate deployment (Cloudflare Durable Objects or external server)
-- **Environment**: Update `DATABASE_URL` to point to your production database
+- **Environment**: Update `DATABASE_URL` to point to your production database (D1/Turso)
+- **`wrangler.jsonc` vs `wrangler.toml`**: Cloudflare Pages requires `wrangler.toml` with `pages_build_output_dir`. Do NOT use `wrangler.jsonc` as it will cause build failures
 
 ---
 

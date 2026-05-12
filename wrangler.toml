@@ -1,0 +1,8 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "bookyourservice"
+compatibility_date = "2025-04-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".open-next/assets"
+
+[vars]
+DATABASE_URL = "file:./db/custom.db"
