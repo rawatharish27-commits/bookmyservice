@@ -108,15 +108,15 @@ const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_BG_MAP: Record<string, string> = {
-  Droplets: 'from-blue-500 to-cyan-500',
-  Zap: 'from-amber-500 to-yellow-500',
-  Wind: 'from-teal-500 to-emerald-500',
+  Droplets: 'from-blue-600 via-blue-500 to-cyan-400',
+  Zap: 'from-amber-600 via-amber-500 to-orange-400',
+  Wind: 'from-teal-600 via-emerald-500 to-cyan-400',
 };
 
 const CATEGORY_LIGHT_BG: Record<string, string> = {
-  Droplets: 'bg-blue-50 text-blue-600',
-  Zap: 'bg-amber-50 text-amber-600',
-  Wind: 'bg-teal-50 text-teal-600',
+  Droplets: 'bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100/50',
+  Zap: 'bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-100/50',
+  Wind: 'bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 border border-teal-100/50',
 };
 
 const CATEGORY_GLOW: Record<string, string> = {
@@ -172,11 +172,12 @@ function RotatingText({ words }: { words: string[] }) {
     <AnimatePresence mode="wait">
       <motion.span
         key={words[index]}
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -20, opacity: 0 }}
-        transition={{ duration: 0.4 }}
-        className="inline-block text-gradient"
+        initial={{ y: 20, opacity: 0, scale: 0.9 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: -20, opacity: 0, scale: 1.1 }}
+        transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+        className="inline-block text-gradient drop-shadow-[0_0_24px_rgba(16,185,129,0.5)]"
+        style={{ textShadow: '0 0 30px rgba(16,185,129,0.4), 0 0 60px rgba(20,184,166,0.2)' }}
       >
         {words[index]}
       </motion.span>
@@ -338,7 +339,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.4 }}
-          className="glass-emerald rounded-3xl p-8 text-center shadow-xl sm:p-10"
+          className="glass-emerald rounded-3xl p-8 text-center shadow-xl sm:p-10 bg-gradient-to-br from-emerald-50/60 via-white/80 to-teal-50/40 ring-1 ring-emerald-200/40"
         >
           <Quote className="mx-auto mb-4 size-10 text-emerald-400/60" />
           <p className="mb-6 text-lg leading-relaxed text-foreground/90 sm:text-xl">&ldquo;{t.quote}&rdquo;</p>
@@ -346,19 +347,19 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
             {Array.from({ length: 5 }).map((_, i) => (
               <Star
                 key={i}
-                className={`size-5 ${i < t.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'}`}
+                className={`size-5 drop-shadow-[0_0_4px_rgba(251,191,36,0.4)] ${i < t.rating ? 'fill-amber-400 text-amber-400' : 'fill-gray-200 text-gray-200'}`}
               />
             ))}
           </div>
           <div className="flex items-center justify-center gap-3">
-            <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 text-sm font-bold text-white shadow-md">
+            <div className="flex size-12 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-sm font-bold text-white shadow-md shadow-emerald-500/25 ring-2 ring-white/40">
               {t.avatar}
             </div>
             <div className="text-left">
               <p className="font-semibold text-foreground">{t.name}</p>
               <p className="text-sm text-muted-foreground">{t.role}</p>
             </div>
-            <Badge className="ml-2 border-emerald-200 bg-emerald-50 text-emerald-700" variant="outline">
+            <Badge className="ml-2 border-amber-200/60 bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700" variant="outline">
               {t.service}
             </Badge>
           </div>
@@ -369,7 +370,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
       <div className="mt-6 flex items-center justify-center gap-4">
         <button
           onClick={prev}
-          className="flex size-10 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-600 shadow-sm transition-all hover:bg-emerald-50 hover:shadow-md"
+          className="flex size-10 items-center justify-center rounded-full border border-emerald-200 bg-gradient-to-r from-white to-emerald-50 text-emerald-600 shadow-sm transition-all hover:bg-emerald-100 hover:shadow-md hover:border-emerald-300"
           aria-label="Previous testimonial"
         >
           <ChevronLeft className="size-5" />
@@ -379,14 +380,14 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
             <button
               key={idx}
               onClick={() => { setCurrent(idx); setAutoPlay(false); }}
-              className={`h-2.5 rounded-full transition-all duration-300 ${idx === current ? 'w-8 bg-emerald-500' : 'w-2.5 bg-emerald-200'}`}
+              className={`h-2.5 rounded-full transition-all duration-300 ${idx === current ? 'w-8 bg-gradient-to-r from-emerald-500 to-teal-400 shadow-sm shadow-emerald-400/30' : 'w-2.5 bg-emerald-200 hover:bg-emerald-300'}`}
               aria-label={`Go to testimonial ${idx + 1}`}
             />
           ))}
         </div>
         <button
           onClick={next}
-          className="flex size-10 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-600 shadow-sm transition-all hover:bg-emerald-50 hover:shadow-md"
+          className="flex size-10 items-center justify-center rounded-full border border-emerald-200 bg-gradient-to-r from-emerald-50 to-white text-emerald-600 shadow-sm transition-all hover:bg-emerald-100 hover:shadow-md hover:border-emerald-300"
           aria-label="Next testimonial"
         >
           <ChevronRight className="size-5" />
@@ -573,14 +574,18 @@ export function HomePage() {
   return (
     <div className="flex flex-col">
       {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700">
+      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-800" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 25%, #0f766e 50%, #0e7490 75%, #164e63 100%)' }}>
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Large gradient orbs */}
-          <div className="absolute -left-40 -top-40 size-[600px] rounded-full bg-gradient-to-br from-blue-600/30 to-cyan-400/20 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-teal-500/30 to-emerald-400/15 blur-3xl" />
-          <div className="absolute left-1/2 top-1/3 size-[300px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-400/10 blur-3xl" />
-          <div className="absolute right-1/4 bottom-1/4 size-[250px] rounded-full bg-gradient-to-br from-violet-500/10 to-fuchsia-400/5 blur-3xl" />
+          <div className="absolute -left-40 -top-40 size-[700px] rounded-full bg-gradient-to-br from-blue-700/40 to-cyan-400/25 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[600px] rounded-full bg-gradient-to-tl from-teal-500/35 to-emerald-400/20 blur-3xl" />
+          <div className="absolute left-1/2 top-1/3 size-[350px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-500/25 to-orange-400/15 blur-3xl" />
+          <div className="absolute right-1/4 bottom-1/4 size-[250px] rounded-full bg-gradient-to-br from-violet-500/15 to-fuchsia-400/8 blur-3xl" />
+          {/* Deep blue accent orb */}
+          <div className="absolute left-1/4 top-1/2 size-[200px] rounded-full bg-gradient-to-br from-indigo-600/20 to-blue-400/10 blur-3xl" />
+          {/* Warm amber orb */}
+          <div className="absolute right-1/3 top-1/6 size-[180px] rounded-full bg-gradient-to-br from-amber-400/20 to-yellow-300/10 blur-3xl" />
           {/* Animated floating shapes */}
           <motion.div
             className="absolute -left-20 -top-20 size-80 rounded-full bg-cyan-400/[0.08]"
@@ -597,12 +602,47 @@ export function HomePage() {
             animate={{ scale: [1, 1.3, 1] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
+          {/* Warm amber animated orb */}
+          <motion.div
+            className="absolute right-1/4 top-1/3 size-32 rounded-full bg-amber-300/[0.07]"
+            animate={{ x: [0, -20, 0], y: [0, 25, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          {/* Deep blue animated orb */}
+          <motion.div
+            className="absolute left-1/6 bottom-1/3 size-24 rounded-full bg-blue-400/[0.06]"
+            animate={{ x: [0, 25, 0], scale: [1, 1.2, 1] }}
+            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          {/* Particle-like dots animation */}
+          {Array.from({ length: 20 }).map((_, i) => (
+            <motion.div
+              key={`particle-${i}`}
+              className="absolute rounded-full bg-white/[0.15]"
+              style={{
+                width: `${2 + Math.random() * 3}px`,
+                height: `${2 + Math.random() * 3}px`,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                opacity: [0, 0.6, 0],
+                scale: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 3,
+                repeat: Infinity,
+                delay: Math.random() * 3,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
           {/* Grid pattern overlay */}
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.04]"
             style={{
               backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+              backgroundSize: '32px 32px',
             }}
           />
         </div>
@@ -664,7 +704,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('categories')}
-                  className="shimmer group bg-white px-8 text-emerald-700 shadow-lg shadow-emerald-900/20 hover:bg-emerald-50"
+                  className="shimmer group bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 px-8 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500"
                 >
                   Book a Service
                   <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
@@ -674,7 +714,7 @@ export function HomePage() {
                     <Button
                       size="lg"
                       onClick={() => navigate('login')}
-                      className="border-2 border-emerald-300/40 bg-emerald-500/20 px-8 text-white shadow-lg shadow-emerald-900/20 backdrop-blur-sm hover:border-emerald-300/60 hover:bg-emerald-500/30"
+                      className="border-2 border-cyan-300/50 bg-gradient-to-r from-teal-600/40 to-cyan-600/40 px-8 text-white shadow-lg shadow-cyan-900/30 backdrop-blur-sm hover:border-cyan-300/70 hover:from-teal-600/50 hover:to-cyan-600/50"
                     >
                       Client Login
                     </Button>
@@ -682,7 +722,7 @@ export function HomePage() {
                       size="lg"
                       variant="outline"
                       onClick={() => navigate('register')}
-                      className="border-emerald-300/30 text-emerald-100 hover:bg-emerald-600/30"
+                      className="border-amber-300/40 text-amber-100 hover:bg-amber-600/20 hover:border-amber-300/60"
                     >
                       Join as Provider
                     </Button>
@@ -692,7 +732,7 @@ export function HomePage() {
                   <Button
                     size="lg"
                     onClick={() => navigate('client-dashboard')}
-                    className="border-2 border-emerald-300/40 bg-emerald-500/20 px-8 text-white shadow-lg shadow-emerald-900/20 backdrop-blur-sm hover:border-emerald-300/60 hover:bg-emerald-500/30"
+                    className="border-2 border-cyan-300/50 bg-gradient-to-r from-teal-600/40 to-cyan-600/40 px-8 text-white shadow-lg shadow-cyan-900/30 backdrop-blur-sm hover:border-cyan-300/70 hover:from-teal-600/50 hover:to-cyan-600/50"
                   >
                     My Dashboard
                   </Button>
@@ -701,7 +741,7 @@ export function HomePage() {
                   <Button
                     size="lg"
                     onClick={() => navigate('provider-dashboard')}
-                    className="border-2 border-emerald-300/40 bg-emerald-500/20 px-8 text-white shadow-lg shadow-emerald-900/20 backdrop-blur-sm hover:border-emerald-300/60 hover:bg-emerald-500/30"
+                    className="border-2 border-amber-300/50 bg-gradient-to-r from-amber-600/40 to-orange-600/40 px-8 text-white shadow-lg shadow-amber-900/30 backdrop-blur-sm hover:border-amber-300/70 hover:from-amber-600/50 hover:to-orange-600/50"
                   >
                     Provider Dashboard
                   </Button>
@@ -778,21 +818,21 @@ export function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {[
-              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-emerald-500 to-teal-400', live: true },
-              { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-500 to-cyan-400' },
-              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-amber-500 to-yellow-400' },
-              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-teal-500 to-emerald-400' },
-              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-rose-500 to-pink-400' },
+              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-emerald-600 to-emerald-400', cardBg: 'bg-gradient-to-br from-emerald-50/80 to-teal-50/60', hoverGlow: 'hover:shadow-emerald-300/40', live: true },
+              { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-600 to-cyan-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-cyan-50/60', hoverGlow: 'hover:shadow-blue-300/40' },
+              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-amber-600 to-amber-400', cardBg: 'bg-gradient-to-br from-amber-50/80 to-orange-50/60', hoverGlow: 'hover:shadow-amber-300/40' },
+              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-teal-600 to-teal-400', cardBg: 'bg-gradient-to-br from-teal-50/80 to-emerald-50/60', hoverGlow: 'hover:shadow-teal-300/40' },
+              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-rose-600 to-pink-400', cardBg: 'bg-gradient-to-br from-rose-50/80 to-pink-50/60', hoverGlow: 'hover:shadow-rose-300/40' },
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="glass group rounded-2xl p-4 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-emerald-200/60 border border-transparent"
+                className={`group ${stat.cardBg} rounded-2xl p-4 shadow-sm backdrop-blur-sm ring-1 ring-white/60 transition-all duration-300 hover:shadow-lg ${stat.hoverGlow} hover:ring-white/80`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-sm`}>
+                  <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.color} text-white shadow-md`}>
                     {stat.icon}
                   </div>
                   <div>
@@ -801,9 +841,9 @@ export function HomePage() {
                         <AnimatedCounter value={stat.value} loading={!liveStats} />
                       </p>
                       {stat.live && (
-                        <span className="relative flex size-2.5">
-                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75" />
-                          <span className="relative inline-flex size-2.5 rounded-full bg-emerald-500" />
+                        <span className="relative flex size-3">
+                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-80" />
+                          <span className="relative inline-flex size-3 rounded-full bg-emerald-400 shadow-md shadow-emerald-400/50" />
                         </span>
                       )}
                     </div>
@@ -873,6 +913,14 @@ export function HomePage() {
                             {/* Gradient border effect on hover */}
                             <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${gradientBg} opacity-0 transition-opacity duration-500 group-hover:opacity-100`} style={{ padding: '2px' }}>
                               <div className="size-full rounded-2xl bg-white" />
+                            </div>
+
+                            {/* Gradient overlay on hover */}
+                            <div className={`pointer-events-none absolute inset-0 z-10 rounded-2xl bg-gradient-to-br ${gradientBg} opacity-0 transition-opacity duration-500 group-hover:opacity-[0.03]`} />
+
+                            {/* Shimmer effect */}
+                            <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden rounded-2xl">
+                              <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_ease-in-out] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                             </div>
 
                             {/* Gradient header */}
@@ -975,13 +1023,19 @@ export function HomePage() {
 
           <div className="relative mt-16">
             {/* Connecting line - desktop */}
-            <div className="absolute left-0 right-0 top-24 hidden h-0.5 bg-gradient-to-r from-emerald-200 via-cyan-300 to-amber-200 sm:block">
+            <div className="absolute left-0 right-0 top-24 hidden h-1 rounded-full bg-gradient-to-r from-emerald-200 via-cyan-200 to-amber-200 sm:block">
               <motion.div
-                className="h-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-500"
+                className="h-full rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 via-cyan-400 to-amber-400"
                 initial={{ width: '0%' }}
                 whileInView={{ width: '100%' }}
                 viewport={{ once: true }}
-                transition={{ duration: 1.5, ease: 'easeInOut' }}
+                transition={{ duration: 2, ease: 'easeInOut' }}
+              />
+              {/* Animated glow on the line */}
+              <motion.div
+                className="absolute top-0 h-full w-20 rounded-full bg-gradient-to-r from-transparent via-white/60 to-transparent blur-sm"
+                animate={{ x: ['-5%', '105%'] }}
+                transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
               />
             </div>
 
@@ -992,21 +1046,30 @@ export function HomePage() {
                   title: 'Search & Compare',
                   description: 'Browse through our verified service providers. Read genuine reviews, compare prices, and pick the best match.',
                   icon: <Search className="size-7" />,
-                  color: 'from-emerald-600 to-teal-500',
+                  color: 'from-emerald-600 via-emerald-500 to-teal-500',
+                  iconBg: 'from-emerald-100 to-teal-50',
+                  iconColor: 'text-emerald-600',
+                  shadowColor: 'shadow-emerald-500/25',
                 },
                 {
                   step: '2',
                   title: 'Book & Schedule',
                   description: 'Choose your preferred time slot, confirm your booking, and get instant confirmation from verified professionals.',
                   icon: <CalendarCheck className="size-7" />,
-                  color: 'from-teal-600 to-cyan-500',
+                  color: 'from-cyan-600 via-teal-500 to-emerald-500',
+                  iconBg: 'from-cyan-100 to-teal-50',
+                  iconColor: 'text-teal-600',
+                  shadowColor: 'shadow-teal-500/25',
                 },
                 {
                   step: '3',
                   title: 'Get It Done',
                   description: 'A KYC-verified professional arrives on time, completes the work, and you leave a review for the community.',
                   icon: <CheckCircle2 className="size-7" />,
-                  color: 'from-cyan-600 to-emerald-500',
+                  color: 'from-amber-600 via-amber-500 to-orange-400',
+                  iconBg: 'from-amber-100 to-orange-50',
+                  iconColor: 'text-amber-600',
+                  shadowColor: 'shadow-amber-500/25',
                 },
               ].map((item, idx) => (
                 <motion.div
@@ -1018,9 +1081,9 @@ export function HomePage() {
                   custom={idx}
                   className="relative text-center"
                 >
-                  {/* Icon container */}
+                  {/* Icon container with gradient */}
                   <motion.div
-                    className="mx-auto flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-emerald-100 to-teal-50 text-emerald-700 shadow-xl ring-1 ring-emerald-200/50"
+                    className={`mx-auto flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br ${item.iconBg} ${item.iconColor} shadow-xl ${item.shadowColor} ring-1 ring-white/60`}
                     whileHover={{ scale: 1.05 }}
                     transition={{ duration: 0.2 }}
                   >
@@ -1029,7 +1092,7 @@ export function HomePage() {
 
                   {/* Step number with gradient */}
                   <motion.div
-                    className={`mx-auto mt-5 flex size-10 items-center justify-center rounded-full bg-gradient-to-br ${item.color} text-sm font-bold text-white shadow-lg`}
+                    className={`mx-auto mt-5 flex size-10 items-center justify-center rounded-full bg-gradient-to-br ${item.color} text-sm font-bold text-white shadow-lg ${item.shadowColor}`}
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
                     viewport={{ once: true }}
@@ -1183,33 +1246,57 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Provider CTA Section ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-600 py-20">
+      <section className="relative overflow-hidden py-20" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 20%, #0f766e 45%, #0e7490 70%, #1e3a5f 100%)' }}>
         {/* Parallax-like decorative elements */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[400px] rounded-full bg-gradient-to-br from-teal-500/20 to-emerald-400/10 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[500px] rounded-full bg-gradient-to-tl from-blue-500/15 to-cyan-400/10 blur-3xl" />
-          <div className="absolute left-1/2 top-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-amber-500/10 to-orange-400/5 blur-3xl" />
+          <div className="absolute -left-20 top-0 size-[500px] rounded-full bg-gradient-to-br from-teal-500/25 to-emerald-400/15 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[600px] rounded-full bg-gradient-to-tl from-blue-600/20 to-cyan-400/15 blur-3xl" />
+          <div className="absolute left-1/2 top-1/2 size-[350px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-amber-500/15 to-orange-400/8 blur-3xl" />
+          <div className="absolute right-1/6 top-1/6 size-[200px] rounded-full bg-gradient-to-br from-indigo-500/15 to-blue-400/8 blur-3xl" />
           <motion.div
-            className="absolute -right-10 -top-10 size-40 rounded-full bg-cyan-400/[0.08]"
+            className="absolute -right-10 -top-10 size-40 rounded-full bg-cyan-400/[0.1]"
             animate={{ scale: [1, 1.4, 1], rotate: [0, 30, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-8 left-10 size-32 rounded-full bg-emerald-400/[0.08]"
+            className="absolute -bottom-8 left-10 size-32 rounded-full bg-emerald-400/[0.1]"
             animate={{ scale: [1.2, 1, 1.2], rotate: [0, -20, 0] }}
             transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/3 top-1/4 size-24 rounded-full bg-amber-400/[0.06]"
+            className="absolute left-1/3 top-1/4 size-24 rounded-full bg-amber-400/[0.08]"
             animate={{ y: [0, -15, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
           />
+          {/* Particle dots */}
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={`cta-particle-${i}`}
+              className="absolute rounded-full bg-white/[0.12]"
+              style={{
+                width: `${2 + Math.random() * 2}px`,
+                height: `${2 + Math.random() * 2}px`,
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                opacity: [0, 0.5, 0],
+                scale: [0.5, 1, 0.5],
+              }}
+              transition={{
+                duration: 2 + Math.random() * 3,
+                repeat: Infinity,
+                delay: Math.random() * 3,
+                ease: 'easeInOut',
+              }}
+            />
+          ))}
           {/* Grid pattern */}
           <div
-            className="absolute inset-0 opacity-[0.02]"
+            className="absolute inset-0 opacity-[0.03]"
             style={{
               backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+              backgroundSize: '32px 32px',
             }}
           />
         </div>
@@ -1222,43 +1309,43 @@ export function HomePage() {
           custom={0}
           className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8"
         >
-          <Badge className="mb-6 border-emerald-300/20 bg-emerald-500/20 px-4 py-1.5 text-emerald-100 hover:bg-emerald-500/30">
+          <Badge className="mb-6 border-cyan-300/20 bg-gradient-to-r from-teal-500/20 to-cyan-500/20 px-4 py-1.5 text-cyan-100 hover:from-teal-500/30 hover:to-cyan-500/30">
             <Activity className="mr-1.5 size-3.5" /> Grow Your Business
           </Badge>
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            Become a <span className="text-emerald-200">Service Provider</span>
+            Become a <span className="bg-gradient-to-r from-cyan-200 via-teal-200 to-emerald-200 bg-clip-text text-transparent">Service Provider</span>
           </h2>
-          <p className="mx-auto mt-4 max-w-xl text-lg text-emerald-100/80">
+          <p className="mx-auto mt-4 max-w-xl text-lg text-cyan-100/80">
             Join our growing network of professionals. Reach thousands of customers, manage your
             schedule, and grow your business with BookYourService.
           </p>
 
           {/* Provider stats with animated counters */}
           <div className="mx-auto mt-10 grid max-w-lg grid-cols-3 gap-6">
-            <div className="glass-dark rounded-2xl p-4 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-emerald-900/60 to-teal-900/40 p-4 text-center backdrop-blur-md ring-1 ring-white/10">
               <p className="text-3xl font-bold text-white">
                 <AnimatedCounter value={liveStats?.totalProviders || 0} loading={!liveStats} />
               </p>
               <p className="mt-1 text-xs font-medium text-emerald-200">Active Providers</p>
             </div>
-            <div className="glass-dark rounded-2xl p-4 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-teal-900/60 to-cyan-900/40 p-4 text-center backdrop-blur-md ring-1 ring-white/10">
               <p className="text-3xl font-bold text-white">
                 <AnimatedCounter value={liveStats?.totalBookings || 0} loading={!liveStats} />
               </p>
-              <p className="mt-1 text-xs font-medium text-emerald-200">Bookings Done</p>
+              <p className="mt-1 text-xs font-medium text-teal-200">Bookings Done</p>
             </div>
-            <div className="glass-dark rounded-2xl p-4 text-center">
+            <div className="rounded-2xl bg-gradient-to-br from-cyan-900/60 to-blue-900/40 p-4 text-center backdrop-blur-md ring-1 ring-white/10">
               <p className="text-3xl font-bold text-white">
                 <AnimatedCounter value={liveStats?.totalUsers || 0} loading={!liveStats} />
               </p>
-              <p className="mt-1 text-xs font-medium text-emerald-200">Happy Clients</p>
+              <p className="mt-1 text-xs font-medium text-cyan-200">Happy Clients</p>
             </div>
           </div>
 
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Button
               size="lg"
-              className="shimmer group bg-white px-8 text-emerald-600 shadow-lg shadow-emerald-900/20 hover:bg-emerald-50"
+              className="shimmer group bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 px-8 text-white shadow-lg shadow-teal-500/30 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500"
               onClick={() => navigate('register')}
             >
               Join as Provider
@@ -1267,7 +1354,7 @@ export function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              className="border-emerald-300/30 text-emerald-100 hover:bg-emerald-700/50"
+              className="border-cyan-300/30 text-cyan-100 hover:bg-cyan-700/30 hover:border-cyan-300/50"
               onClick={() => navigate('how-it-works')}
             >
               Learn More

@@ -162,7 +162,7 @@ function ActiveIndicator() {
   return (
     <motion.div
       layoutId="activeNavIndicator"
-      className="absolute -bottom-0.5 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-emerald-600 to-cyan-400"
+      className="absolute -bottom-0.5 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400"
       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
     />
   );
@@ -174,8 +174,8 @@ function NotificationBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
     <span className="relative flex items-center justify-center">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-amber-400 to-orange-400 opacity-50" />
-      <span className="relative flex size-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-[9px] font-bold text-white shadow-sm">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 opacity-50" />
+      <span className="relative flex size-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-[9px] font-bold text-white shadow-sm">
         {count > 9 ? '9+' : count}
       </span>
     </span>
@@ -248,7 +248,7 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 relative after:absolute after:bottom-0 after:inset-x-0 after:h-px after:transition-colors after:duration-500 ${
         scrolled
-          ? 'glass shadow-lg shadow-black/[0.04] after:bg-gradient-to-r after:from-transparent after:via-emerald-500/50 after:to-transparent'
+          ? 'glass shadow-lg shadow-black/[0.06] after:bg-gradient-to-r after:from-transparent after:via-emerald-400/60 after:to-transparent'
           : 'glass after:bg-transparent'
       }`}
     >
@@ -261,9 +261,9 @@ export function Header() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-cyan-500 shadow-md shadow-emerald-500/25 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/30">
+          <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-700 via-teal-500 to-cyan-400 shadow-md shadow-emerald-500/25 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/30">
             <Wrench className="size-4 text-white" />
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 via-white/5 to-transparent" />
           </div>
           <span className="text-xl font-extrabold tracking-tight">
             <span className="text-gradient">BookYour</span>
@@ -281,10 +281,10 @@ export function Header() {
             <motion.button
               key={`${link.page}-${idx}`}
               onClick={() => handleNavigate(link.page)}
-              className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
+              className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-300 ${
                 isActive(link.page)
                   ? 'text-emerald-700'
-                  : 'text-muted-foreground hover:bg-emerald-50/60 hover:text-foreground'
+                  : 'text-muted-foreground hover:bg-gradient-to-r hover:from-emerald-50/60 hover:to-cyan-50/40 hover:text-foreground'
               }`}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
@@ -343,14 +343,16 @@ export function Header() {
                     whileTap={{ scale: 0.98 }}
                     aria-label="User menu"
                   >
-                    <Avatar className="size-8 ring-2 ring-emerald-200 ring-offset-2 ring-offset-white transition-all duration-200 hover:ring-emerald-400 hover:shadow-md hover:shadow-emerald-400/25">
+                    <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 p-[2px] transition-all duration-300 hover:shadow-md hover:shadow-emerald-400/30">
+                    <Avatar className="size-8 ring-0 ring-offset-0 transition-all duration-200">
                       {user.profileImageUrl && (
                         <AvatarImage src={user.profileImageUrl} alt={user.name} />
                       )}
-                      <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-xs font-bold text-white">
+                      <AvatarFallback className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-xs font-bold text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
+                    </div>
                     <span className="max-w-[120px] truncate text-sm font-medium text-foreground">
                       {user.name}
                     </span>
@@ -363,14 +365,16 @@ export function Header() {
                 >
                   <DropdownMenuLabel className="font-normal px-2 py-3">
                     <div className="flex items-center gap-3">
-                      <Avatar className="size-10 ring-2 ring-emerald-200 ring-offset-1">
+                      <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 p-[2px]">
+                      <Avatar className="size-10 ring-0 ring-offset-0">
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-sm font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-sm font-bold text-white">
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
+                      </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-sm font-semibold leading-none">{user.name}</p>
                         <p className="mt-1 truncate text-xs text-muted-foreground">{user.email}</p>
@@ -423,7 +427,7 @@ export function Header() {
                 <Button
                   size="sm"
                   onClick={() => handleNavigate('register')}
-                  className="gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/30"
+                  className="gap-1.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600 hover:shadow-lg hover:shadow-emerald-500/30"
                 >
                   <UserPlus className="size-4" />
                   Sign up
@@ -446,12 +450,12 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="glass-emerald w-[320px] overflow-y-auto border-l border-emerald-200/30 p-0 shadow-2xl shadow-emerald-900/10"
+              className="glass-emerald w-[320px] overflow-y-auto border-l border-emerald-200/30 p-0 shadow-2xl shadow-emerald-900/10 bg-gradient-to-b from-emerald-50/80 via-white/90 to-teal-50/80"
             >
               {/* Mobile Header */}
-              <SheetHeader className="border-b border-emerald-200/60 px-5 py-5">
+              <SheetHeader className="border-b border-emerald-200/60 px-5 py-5 bg-gradient-to-r from-emerald-50/50 to-cyan-50/30">
                 <SheetTitle className="flex items-center gap-2.5">
-                  <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-cyan-500 shadow-md shadow-emerald-500/25">
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-700 via-teal-500 to-cyan-400 shadow-md shadow-emerald-500/25">
                     <Wrench className="size-4 text-white" />
                   </div>
                   <span className="text-xl font-extrabold tracking-tight">
@@ -463,16 +467,18 @@ export function Header() {
 
               {/* Mobile User Info */}
               {user && (
-                <div className="border-b border-emerald-200/60 px-5 py-4">
+                <div className="border-b border-emerald-200/60 px-5 py-4 bg-gradient-to-r from-emerald-50/30 to-teal-50/20">
                   <div className="flex items-center gap-3">
-                    <Avatar className="size-11 ring-2 ring-emerald-200 ring-offset-2">
+                    <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-400 to-cyan-400 p-[2px]">
+                    <Avatar className="size-11 ring-0 ring-offset-0">
                       {user.profileImageUrl && (
                         <AvatarImage src={user.profileImageUrl} alt={user.name} />
                       )}
-                      <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-sm font-bold text-white">
+                      <AvatarFallback className="bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-sm font-bold text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
+                    </div>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
                       <p className="truncate text-xs text-muted-foreground">{user.email}</p>
@@ -494,8 +500,8 @@ export function Header() {
                       onClick={() => handleNavigate(link.page)}
                       className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                         isActive(link.page)
-                          ? 'bg-gradient-to-r from-emerald-50 to-cyan-50 text-emerald-700 shadow-sm shadow-emerald-500/10'
-                          : 'text-muted-foreground hover:bg-emerald-50/50 hover:text-foreground'
+                          ? 'bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 text-emerald-700 shadow-sm shadow-emerald-500/10'
+                          : 'text-muted-foreground hover:bg-gradient-to-r hover:from-emerald-50/50 hover:to-cyan-50/30 hover:text-foreground'
                       }`}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -559,7 +565,7 @@ export function Header() {
                   </div>
                 </>
               ) : (
-                <div className="border-t border-emerald-200/60 px-5 py-5">
+                <div className="border-t border-emerald-200/60 px-5 py-5 bg-gradient-to-b from-emerald-50/30 to-transparent">
                   <div className="flex flex-col gap-3">
                     <SheetClose asChild>
                       <motion.div
@@ -568,7 +574,7 @@ export function Header() {
                         transition={{ delay: 0.2, duration: 0.3 }}
                       >
                         <Button
-                          className="w-full gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700"
+                          className="w-full gap-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600"
                           onClick={() => handleNavigate('login')}
                         >
                           <LogIn className="size-4" />
@@ -584,7 +590,7 @@ export function Header() {
                       >
                         <Button
                           variant="outline"
-                          className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                          className="w-full border-emerald-300/80 text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-cyan-50 hover:text-emerald-800"
                           onClick={() => handleNavigate('register')}
                         >
                           <UserPlus className="mr-2 size-4" />

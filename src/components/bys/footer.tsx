@@ -53,6 +53,7 @@ const legalLinks: { label: string; page: Page }[] = [
   { label: 'Terms of Service', page: 'terms' },
   { label: 'Privacy Policy', page: 'privacy' },
   { label: 'Refund Policy', page: 'refund-policy' },
+  { label: 'Acceptable Usage Policy', page: 'terms' },
 ];
 
 // ─── Social Icons Config ─────────────────────────────────────────────────────
@@ -98,7 +99,7 @@ function ServiceLinkButton({
       whileHover={{ x: 3 }}
       transition={{ duration: 0.2 }}
     >
-      <span className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 transition-all duration-200 group-hover:bg-emerald-100 group-hover:text-emerald-600 group-hover:shadow-sm glow-emerald">
+      <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-50 to-cyan-50 text-emerald-600 transition-all duration-200 group-hover:from-emerald-100 group-hover:to-cyan-100 group-hover:text-emerald-700 group-hover:shadow-sm">
         {link.icon}
       </span>
       <span className="relative">
@@ -133,10 +134,10 @@ export function Footer() {
   return (
     <footer className="mt-auto">
       {/* Gradient top border */}
-      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-cyan-400 to-teal-500" />
+      <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-cyan-400 via-40% to-teal-500 via-70% to-amber-400" />
 
       {/* Main footer content */}
-      <div className="mesh-bg bg-gradient-to-b from-gray-50/95 to-gray-100/80">
+      <div className="mesh-bg bg-gradient-to-b from-emerald-50/30 via-gray-50/95 to-gray-100/80">
         <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {/* About Column (spans 2 on lg) */}
@@ -168,7 +169,7 @@ export function Footer() {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="group flex size-9 items-center justify-center rounded-xl bg-white text-muted-foreground shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-600 hover:to-cyan-500 hover:text-white hover:shadow-lg hover:shadow-emerald-500/30"
+                    className="group flex size-9 items-center justify-center rounded-xl bg-white text-muted-foreground shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:text-white hover:shadow-lg hover:shadow-teal-500/30"
                     aria-label={social.label}
                     onClick={(e) => e.preventDefault()}
                     whileHover={{ scale: 1.1, y: -2 }}
@@ -183,7 +184,7 @@ export function Footer() {
             {/* Quick Links Column */}
             <div>
               <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
-                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400" />
                 Quick Links
               </h3>
               <ul className="space-y-3">
@@ -198,7 +199,7 @@ export function Footer() {
             {/* Services Column with Icons */}
             <div>
               <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
-                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-teal-500 to-cyan-400" />
                 Services
               </h3>
               <ul className="space-y-3">
@@ -212,7 +213,7 @@ export function Footer() {
               {/* Company links */}
               <div className="mt-6">
                 <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
-                  <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                  <span className="size-1.5 rounded-full bg-gradient-to-r from-amber-400 to-orange-400" />
                   Company
                 </h4>
                 <ul className="space-y-3">
@@ -228,7 +229,7 @@ export function Footer() {
             {/* Newsletter + Contact Column */}
             <div>
               <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
-                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-400" />
                 Stay Updated
               </h3>
               <p className="mb-3 text-sm text-muted-foreground">
@@ -243,7 +244,7 @@ export function Footer() {
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-9 rounded-lg border-amber-200/80 bg-amber-50/30 pl-9 text-sm focus-visible:ring-amber-500"
+                      className="h-9 rounded-lg border-amber-300/60 bg-gradient-to-r from-amber-50/50 to-orange-50/30 pl-9 text-sm focus-visible:ring-amber-500"
                       required
                     />
                   </div>
@@ -251,7 +252,7 @@ export function Footer() {
                     <Button
                       type="submit"
                       size="sm"
-                      className="h-9 bg-gradient-to-r from-amber-500 to-orange-500 px-3 text-white shadow-sm glow-amber hover:from-amber-600 hover:to-orange-600"
+                      className="h-9 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 px-3 text-white shadow-sm hover:from-amber-600 hover:via-orange-600 hover:to-rose-600"
                     >
                       <Send className="size-3.5" />
                     </Button>
@@ -271,13 +272,13 @@ export function Footer() {
 
               {/* Contact Info */}
               <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
-                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-400" />
                 Contact Us
               </h4>
               <ul className="space-y-3">
                 <li>
                   <div className="flex items-start gap-2.5">
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-600">
                       <MapPin className="size-3.5" />
                     </span>
                     <span className="text-sm leading-relaxed text-muted-foreground">
@@ -294,7 +295,7 @@ export function Footer() {
                     href="tel:+919876543210"
                     className="flex items-center gap-2.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
                   >
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500 transition-colors duration-200 group-hover:bg-emerald-100">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-teal-50 to-cyan-50 text-teal-600 transition-colors duration-200 group-hover:bg-teal-100">
                       <Phone className="size-3.5" />
                     </span>
                     +91 98765 43210
@@ -305,7 +306,7 @@ export function Footer() {
                     href="mailto:support@bookyourservice.co.in"
                     className="flex items-center gap-2.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
                   >
-                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br from-cyan-50 to-blue-50 text-cyan-600">
                       <Mail className="size-3.5" />
                     </span>
                     support@bookyourservice.co.in
@@ -317,16 +318,16 @@ export function Footer() {
 
           {/* Gradient Divider */}
           <div className="relative my-8">
-            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-400/70 to-transparent" />
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 via-50% to-transparent" />
           </div>
 
           {/* Bottom Bar */}
-          <div className="flex flex-col items-center justify-between gap-4 rounded-xl bg-gray-100/50 px-4 py-3 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-xl bg-gradient-to-r from-gray-100/50 via-emerald-50/20 to-gray-100/50 px-4 py-3 sm:flex-row">
             <p className="flex items-center gap-1 text-xs text-muted-foreground">
               &copy; 2025{' '}
               <span className="font-semibold text-foreground">BookYourService</span>
               . Made with{' '}
-              <Heart className="inline size-3 fill-emerald-500 text-emerald-500" />{' '}
+              <Heart className="inline size-3 fill-emerald-500 text-emerald-500 drop-shadow-sm" />{' '}
               in India. All rights reserved.
             </p>
             <div className="flex items-center gap-4">

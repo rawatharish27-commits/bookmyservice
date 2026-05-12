@@ -763,216 +763,310 @@ async function main() {
   // ========================================
   console.log('📜 Creating legal pages...');
 
-  // Terms & Conditions
+  // Terms & Conditions — Acceptable Usage Policy (AUP)
   await db.legalPage.create({
     data: {
       pageType: 'TERMS',
-      title: 'Terms of Service',
-      version: '2.0',
-      effectiveDate: '2025-03-05',
-      content: `TERMS OF SERVICE FOR BOOKYOURSERVICE
+      title: 'Acceptable Usage Policy & Terms of Service',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
+      content: `ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE FOR BOOKYOURSERVICE
 
-Last Updated: March 5, 2025
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 
-IMPORTANT NOTICE: PLEASE READ THESE TERMS OF SERVICE CAREFULLY BEFORE USING THE BOOKYOURSERVICE PLATFORM. BY ACCESSING OR USING THE PLATFORM, YOU AGREE TO BE BOUND BY THESE TERMS. IF YOU DO NOT AGREE WITH ANY PART OF THESE TERMS, YOU MUST NOT USE OUR SERVICES.
+IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE CAREFULLY BEFORE USING THE BOOKYOURSERVICE PLATFORM. BY ACCESSING OR USING THE PLATFORM, YOU AGREE TO BE BOUND BY THESE TERMS. IF YOU DO NOT AGREE WITH ANY PART OF THESE TERMS, YOU MUST NOT USE OUR SERVICES. THIS DOCUMENT CONSTITUTES A LEGALLY BINDING AGREEMENT BETWEEN YOU AND BOOKYOURSERVICE TECHNOLOGIES PVT. LTD.
 
-1. ACCEPTANCE OF TERMS
-1.1 By accessing, browsing, registering on, or using the BookYourService platform (including the website at bookyourservice.co.in and the mobile application), you acknowledge that you have read, understood, and agree to be bound by these Terms of Service ("Terms"), our Privacy Policy, and all applicable laws and regulations.
-1.2 If you are using the Platform on behalf of a business or entity, you represent and warrant that you have the authority to bind that entity to these Terms.
-1.3 BookYourService reserves the right to update, modify, or replace any part of these Terms at its sole discretion. It is your responsibility to check these Terms periodically for changes. Your continued use of the Platform following the posting of any changes constitutes acceptance of those changes.
-1.4 These Terms constitute a legally binding agreement between you and BookYourService Technologies Pvt. Ltd. ("Company," "we," "us," or "our"), a company incorporated under the laws of India.
+1. INTRODUCTION
+1.1 This Acceptable Usage Policy and Terms of Service ("AUP," "Terms," or "Agreement") governs your access to and use of the BookYourService platform, including the website at https://bookyourservice.co.in, the mobile application, and all associated services operated by BookYourService Technologies Pvt. Ltd. ("Company," "we," "us," or "our"), a company incorporated under the laws of India.
+1.2 BookYourService is an online intermediary marketplace that connects Clients with independent Service Providers for Plumbing, Electrical, and AC & HVAC home services across India.
+1.3 By registering an account, browsing, booking, or listing services on the Platform, you acknowledge that you have read, understood, and agree to be bound by this AUP, our Privacy Policy, Refund Policy, Cookie Policy, and all applicable laws and regulations of India.
+1.4 If you are using the Platform on behalf of a business or entity, you represent and warrant that you have the authority to bind that entity to these Terms.
+1.5 This AUP sets forth the acceptable and prohibited uses of the Platform, the rights and obligations of all users, and the limitations of liability of the Company. It is designed to ensure a safe, fair, and legally compliant environment for all participants.
+1.6 The Company reserves the right to update, modify, or replace any part of this AUP at its sole discretion. It is your responsibility to review these Terms periodically. Your continued use of the Platform after any changes constitutes acceptance of those changes.
 
-2. DEFINITIONS
-2.1 "Platform" refers to the BookYourService website, mobile application, and all associated services operated by BookYourService Technologies Pvt. Ltd.
-2.2 "Service Provider" or "Provider" refers to independent third-party individuals or businesses registered on the Platform to offer plumbing, electrical, and/or AC & HVAC services.
-2.3 "Client" or "Customer" refers to users who book or attempt to book services through the Platform.
-2.4 "Services" refers to the home services listed on the Platform, specifically plumbing, electrical, and AC & HVAC related services.
-2.5 "Booking" refers to a scheduled appointment for a Service between a Client and a Provider facilitated through the Platform.
-2.6 "Platform Fee" refers to the fee charged by the Company for the use of the Platform's intermediary services.
-2.7 "Content" refers to text, images, reviews, ratings, and other materials posted on the Platform.
+2. ELIGIBILITY
+2.1 You must be at least 18 (eighteen) years of age and a resident of India to create an account and use the Platform. By using the Platform, you represent and warrant that you meet these eligibility requirements.
+2.2 Individuals who are legally barred from entering into contracts under Indian law, including but not limited to undischarged insolvents and persons of unsound mind, are not eligible to use the Platform.
+2.3 Service Providers must possess the necessary qualifications, licenses, and permits required by applicable Indian law to perform the services they list on the Platform (e.g., electrical license from the State Electricity Board, plumbing certification, HVAC technician certification).
+2.4 Clients must have the legal capacity and authority to request services at the address provided and must be the owner or authorized occupant of the premises where services are to be rendered.
+2.5 Users who have been previously suspended or terminated from the Platform for policy violations are not eligible to create new accounts. Creating multiple or duplicate accounts to circumvent a suspension is strictly prohibited.
+2.6 Corporate and enterprise users must designate an authorized representative who accepts these Terms on behalf of the organization and must maintain accurate business registration details on the Platform.
 
-3. NATURE OF THE PLATFORM — INTERMEDIARY STATUS
-3.1 CRITICAL ACKNOWLEDGMENT: BookYourService is an INTERMEDIARY and ONLINE MARKETPLACE ONLY. The Company DOES NOT directly provide any plumbing, electrical, or AC & HVAC services. All services listed on the Platform are provided by independent third-party Service Providers who are not employees, agents, or representatives of the Company.
-3.2 The Platform merely facilitates the connection between Clients and Service Providers. The Company acts as a facilitator and does not endorse, guarantee, or warrant the quality, safety, legality, or suitability of any services provided by any Service Provider.
-3.3 The Company is NOT a party to any service agreement between a Client and a Service Provider. Any contract for services is solely between the Client and the Service Provider.
-3.4 The Company does not supervise, direct, or control the work of Service Providers. Service Providers are solely responsible for the manner, method, and quality of their work.
-3.5 The Company does not guarantee the accuracy of Provider profiles, qualifications, or reviews displayed on the Platform. All such information is provided by the Providers themselves and has not been independently verified beyond basic KYC checks.
-3.6 By using the Platform, you expressly acknowledge and agree that the Company shall not be held responsible or liable for any acts, omissions, defaults, or misconduct of any Service Provider or Client.
+3. ACCOUNT RESPONSIBILITIES
+3.1 Users must provide accurate, current, and complete information during registration, including full legal name, valid email address, active phone number, and correct residential or business address. Users must keep such information updated at all times.
+3.2 Each user may maintain only one active account at a time. Creating multiple accounts using different email addresses or phone numbers is prohibited and may result in immediate suspension of all associated accounts.
+3.3 Users are solely responsible for maintaining the confidentiality of their account credentials (email, password, OTP) and for all activities that occur under their account, whether or not the user authorized such activities.
+3.4 Users must not share, transfer, or sell their account credentials to any third party. Any unauthorized use of an account must be reported to the Company immediately by contacting support@bookyourservice.co.in.
+3.5 The Company shall NOT be liable for any loss, damage, or harm arising from a user's failure to comply with the account security obligations set forth in this Section 3.
+3.6 The Company reserves the right to suspend, terminate, or restrict any account that violates these Terms, engages in fraudulent activity, provides false information, or is deemed harmful to other users or the Platform.
+3.7 Users must not create accounts using automated means, bots, or scripts. All registrations must be performed manually by a real person.
 
-4. USER REGISTRATION AND ACCOUNTS
-4.1 Users must provide accurate, current, and complete information during registration and must keep such information updated at all times.
-4.2 Users must be at least 18 years of age to create an account and use the Platform.
-4.3 Each user may maintain only one account at a time. Creating multiple accounts is prohibited and may result in suspension.
-4.4 Users are solely responsible for maintaining the confidentiality of their account credentials (email, password, OTP) and for all activities that occur under their account.
-4.5 Users must notify the Company immediately of any unauthorized use of their account or any other breach of security.
-4.6 The Company shall not be liable for any loss or damage arising from a user's failure to comply with this Section 4.
-4.7 The Company reserves the right to suspend, terminate, or restrict any account that violates these Terms, engages in fraudulent activity, or is deemed harmful to other users or the Platform.
+4. PROHIBITED ACTIVITIES
+4.1 Users must NOT use the Platform for any unlawful purpose or in violation of any applicable Indian law, including but not limited to the Indian Penal Code, the Information Technology Act, 2000, the Consumer Protection Act, 2019, and state-specific regulations.
+4.2 The following activities are strictly prohibited on the Platform:
+• Submitting false, misleading, or fraudulent information in profiles, listings, reviews, or communications
+• Impersonating any person or entity or misrepresenting your identity, qualifications, or affiliation
+• Interfering with or disrupting the Platform's operation, servers, or networks
+• Attempting to gain unauthorized access to any part of the Platform, user accounts, or systems
+• Using automated tools (bots, scrapers, crawlers) to access or collect data from the Platform without written permission
+• Engaging in any form of price manipulation, bid rigging, or market distortion
+• Circumventing or attempting to circumvent the Platform's payment, booking, or review systems
+• Soliciting Platform users for services or transactions outside the Platform (platform bypass)
+• Posting or transmitting content that is defamatory, obscene, harassing, threatening, hateful, or discriminatory
+• Uploading viruses, malware, or any malicious code that may harm the Platform or its users
+• Engaging in money laundering, terrorist financing, or any activity prohibited under the Prevention of Money Laundering Act, 2002
+• Using the Platform to advertise or promote products, services, or websites not approved by the Company
+• Creating fake bookings, reviews, or ratings to artificially inflate metrics
+• Harassing, stalking, or intimidating other users through the Platform's communication channels
+4.3 Any violation of this Section 4 may result in immediate account suspension or termination, forfeiture of any pending payments or credits, and referral to law enforcement authorities where applicable.
+4.4 The Company bears NO liability for any actions taken by users in violation of this Section 4. Users are solely responsible for their conduct on the Platform.
 
-5. SERVICE BOOKING AND DELIVERY
-5.1 Clients can browse, select, and book services through the Platform from the available categories: Plumbing, Electrical, and AC & HVAC.
-5.2 All bookings are subject to provider availability and confirmation. A booking request does not guarantee service delivery.
-5.3 Service prices displayed on the Platform are indicative and based on information provided by the Service Provider. The actual price may vary depending on the scope of work, materials required, and any negotiation between the Client and Provider.
-5.4 Booking confirmation constitutes a service agreement between the Client and the Provider. The Company is NOT a party to this agreement.
-5.5 The Company does not guarantee the timely delivery, quality, or outcome of any service. Any guarantee or warranty for services is solely the responsibility of the Service Provider.
-5.6 Clients acknowledge that home services involve inherent risks including but not limited to property damage, water damage, electrical hazards, and refrigerant exposure. Clients engage services at their own risk.
-5.7 The Company recommends that Clients verify the identity of the Service Provider upon arrival and ensure that safety precautions are followed during service delivery.
+5. KYC AND VERIFICATION
+5.1 All Service Providers must complete the Know Your Customer (KYC) verification process before listing any services on the Platform. KYC verification includes submission of government-issued identity proof (Aadhaar, PAN, Passport, or Driving License), address proof, a recent photograph/selfie, and any trade-specific certifications or licenses.
+5.2 The Company reserves the right to request additional documentation or verification at any time, including but not limited to police verification, reference checks, skill assessments, and background checks.
+5.3 KYC verification status (APPROVED, PENDING, REJECTED) is displayed on the Provider's profile. Providers with PENDING or REJECTED status cannot list or offer services on the Platform.
+5.4 The Company's KYC verification is a preliminary identity check only and does NOT constitute an endorsement, guarantee, or warranty of the Provider's competence, skill, reliability, or suitability. The Company is NOT liable for any inaccuracies in KYC documents or any harm caused by a KYC-verified Provider.
+5.5 Providers must notify the Company within 7 days of any changes to their KYC information, including change of address, legal name, or license status. Failure to update KYC information may result in account suspension.
+5.6 The Company may periodically re-verify KYC documents. Providers must cooperate fully with re-verification requests.
+5.7 KYC documents are retained for the duration of the Provider relationship plus 1 year after termination, in compliance with applicable data protection and tax laws of India.
 
-6. PAYMENT TERMS
-6.1 CURRENT PAYMENT MODEL: At present, the Company's online payment system is under development and has not yet been activated. Accordingly, all payments for services are settled DIRECTLY between the Client and the Service Provider through cash, bank transfer, UPI, or any other mutually agreed payment method.
-6.2 The Company DOES NOT collect, process, hold, or handle any service payments at this time. The Company is NOT responsible for any payment disputes, defaults, or issues between Clients and Providers.
-6.3 Clients and Providers are solely responsible for agreeing upon and completing payment transactions. The Company recommends obtaining a receipt or confirmation for all payments.
-6.4 ONLINE PAYMENT SYSTEM (FUTURE): The Company intends to introduce an online payment system in the near future. Once activated, the following terms will apply:
-   (a) Payments will be processed through secure third-party payment gateways (such as Razorpay) that are PCI DSS Level 1 certified.
-   (b) The Company may hold payments in escrow until service completion to protect both parties.
-   (c) Provider earnings will be disbursed after deducting the applicable platform commission.
-   (d) All online payment transactions will be subject to the payment gateway's terms and conditions.
-6.5 PLATFORM FEE: The Company charges a Platform Fee for providing the intermediary service of connecting Clients with Providers. The Platform Fee is separate from the service price and is displayed transparently during the booking process. The Platform Fee structure is as follows:
-   (a) A percentage-based commission (currently 5-10%) is charged on each completed booking.
-   (b) For the current direct payment model, the Platform Fee is collected from the Provider's earnings on a periodic basis.
-   (c) Once the online payment system is activated, the Platform Fee will be automatically deducted before Provider disbursement.
-6.6 All prices are listed in Indian Rupees (INR). Applicable taxes (including GST) are included in the displayed prices unless otherwise stated.
-6.7 The Company reserves the right to modify the Platform Fee structure at any time with prior notice to users.
+6. SERVICE LISTING RULES
+6.1 Service Providers may only list services within the three approved categories on the Platform: Plumbing, Electrical, and AC & HVAC. Listing services outside these categories is prohibited.
+6.2 Service listings must include accurate and complete information, including but not limited to: service title, detailed description, base price (in INR), estimated service duration, service area (city and radius), and availability schedule.
+6.3 Providers must not list services that they are not qualified, licensed, or legally permitted to perform. For example, only licensed electricians may list electrical services, and only certified HVAC technicians may list AC gas refilling services.
+6.4 Service descriptions must not contain misleading claims, guarantees of results, or pricing that does not reflect the actual cost. "Bait and switch" pricing tactics are strictly prohibited.
+6.5 Providers must set fair and reasonable prices. The Company reserves the right to delist services with prices that are demonstrably exploitative or significantly deviate from market rates without justification.
+6.6 Providers may mark prices as "Negotiable" if they are open to discussion with Clients. However, the base price must still represent a good-faith estimate of the service cost.
+6.7 All service images must be original or properly licensed. Using stock photos that misrepresent the Provider's work is prohibited. Images must not contain watermarks from other platforms or businesses.
+6.8 Providers must not list the same service multiple times under different names to manipulate search rankings or visibility.
+6.9 The Company reserves the right to remove, modify, or reject any service listing that violates these rules or is deemed inappropriate, without prior notice to the Provider.
 
-7. CANCELLATION AND REFUND
-7.1 Cancellation by Client:
-   (a) Full refund (no cancellation fee): Cancellations made 24 or more hours before the scheduled service time.
-   (b) Partial refund (90% of service price): Cancellations made 4-24 hours before the scheduled service time.
-   (c) Partial refund (75% of service price): Cancellations made within 4 hours of the scheduled service time.
-   (d) No refund: No-show by the Client without prior cancellation.
-7.2 Cancellation by Provider:
-   (a) Providers may cancel bookings only in genuine emergencies or unavoidable circumstances.
-   (b) Frequent cancellations by a Provider will negatively impact their rating and may result in account suspension or termination.
-   (c) If a Provider cancels a booking, the Company will attempt to arrange an alternative Provider or facilitate a full refund to the Client.
-7.3 REFUND PROCESSING:
-   (a) For the current direct payment model, refunds are the responsibility of the Service Provider. The Company will facilitate the refund process but cannot guarantee refund timelines or outcomes.
-   (b) Once the online payment system is activated, refunds will be processed to the original payment method within 5-7 business days.
-   (c) Refund processing times may vary by payment method: UPI (3-5 business days), Credit/Debit Card (5-7 business days), Net Banking (5-7 business days), Wallet (24-48 hours).
-7.4 The Company reserves the right to modify the cancellation policy with reasonable prior notice.
+7. BOOKING RULES
+7.1 Clients can browse, select, and book services through the Platform from the available categories: Plumbing, Electrical, and AC & HVAC. All bookings are subject to provider availability and confirmation.
+7.2 A booking request does not constitute a confirmed appointment until the Service Provider accepts it. The Company is NOT a party to the service agreement between the Client and the Provider.
+7.3 Service prices displayed on the Platform are indicative and based on information provided by the Service Provider. The actual price may vary depending on the scope of work, materials required, and any negotiation between the Client and Provider.
+7.4 Clients must provide accurate service address, contact information, and any special instructions at the time of booking. Failure to provide accurate information may result in service cancellation without refund.
+7.5 Booking confirmation constitutes a service agreement between the Client and the Provider. The Company is NOT a party to this agreement and bears NO liability for its execution.
+7.6 The Company does NOT guarantee the timely delivery, quality, or outcome of any service. Any guarantee or warranty for services is solely the responsibility of the Service Provider.
+7.7 Clients acknowledge that home services involve inherent risks including but not limited to property damage, water damage, electrical hazards, and refrigerant exposure. Clients engage services at their own risk and the Company bears NO liability for any such risks.
+7.8 Providers must arrive at the scheduled time or notify the Client of any delays at least 30 minutes in advance. Repeated no-shows or late arrivals will negatively impact the Provider's rating and may result in account suspension.
+7.9 Clients may cancel bookings subject to the cancellation policy outlined in Section 15. Providers may cancel bookings only in genuine emergencies and must provide a valid reason.
 
-8. SERVICE QUALITY AND DISPUTES
-8.1 The Company provides a dispute resolution mechanism to facilitate communication between Clients and Providers regarding service quality issues.
-8.2 Clients can raise a quality dispute within 7 days of service completion through the Platform.
-8.3 The Company will act as a mediator and attempt to facilitate a fair resolution. However, the Company is NOT bound to enforce any particular outcome.
-8.4 THE COMPANY MAKES NO WARRANTIES OR GUARANTEES REGARDING THE QUALITY, SAFETY, TIMELINESS, OR COMPLETENESS OF ANY SERVICE PROVIDED THROUGH THE PLATFORM.
-8.5 Any re-service or refund arising from a quality dispute is solely at the discretion of the Service Provider, subject to the Company's mediation efforts.
+8. COMMUNICATION POLICY
+8.1 The Platform provides in-app messaging and calling features to facilitate communication between Clients and Providers regarding service bookings. All communications through the Platform are logged for dispute resolution purposes.
+8.2 Users must NOT use the Platform's communication channels for purposes unrelated to service bookings, including but not limited to: sending spam, promotional material, offensive content, threats, or any form of harassment.
+8.3 Users must NOT share personal contact information (personal phone numbers, personal email addresses, social media profiles) through the Platform's messaging system for the purpose of circumventing the Platform's booking and payment systems.
+8.4 The Company reserves the right to monitor, filter, and moderate communications on the Platform to ensure compliance with this AUP and applicable laws. However, the Company is NOT obligated to monitor all communications and bears NO liability for the content of user communications.
+8.5 Users must not record, screenshot, or distribute communications from other users without their consent, except as required for dispute resolution or legal proceedings.
+8.6 The Company may restrict or terminate communication privileges for users who violate this Section 8.
+8.7 In case of emergency or safety concerns during a service visit, users should contact local emergency services (100 for police, 101 for fire, 108 for ambulance) first and then report the incident to the Company at support@bookyourservice.co.in.
 
-9. LIABILITY LIMITATIONS AND DISCLAIMERS
-9.1 NO WARRANTY: ALL SERVICES PROVIDED THROUGH THE PLATFORM ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE. THE COMPANY SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
-9.2 NOT RESPONSIBLE FOR SERVICE QUALITY: The Company is NOT responsible or liable for the quality, safety, legality, or appropriateness of any service provided by a Service Provider. The Company does not guarantee that any service will meet a Client's expectations or requirements.
-9.3 NO LIABILITY FOR DAMAGES: UNDER NO CIRCUMSTANCES SHALL THE COMPANY, ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
-   (a) Personal injury, bodily harm, or death resulting from services;
-   (b) Property damage, water damage, fire damage, or electrical damage;
-   (c) Loss of use, loss of data, loss of profits, loss of business, or loss of goodwill;
-   (d) Emotional distress, mental anguish, or reputational harm;
-   (e) Any damages arising from the negligence, recklessness, or intentional misconduct of a Service Provider or Client;
-   (f) Any damages arising from delays, failures, errors, or interruptions in the Platform's operation;
-   (g) Any damages arising from unauthorized access to or use of our servers or any personal information stored therein;
-   (h) Any damages arising from any content, goods, or services obtained through the Platform.
-9.4 LIMITATION OF LIABILITY: THE COMPANY'S TOTAL AGGREGATE LIABILITY FOR ANY AND ALL CLAIMS ARISING OUT OF OR RELATED TO THESE TERMS OR THE USE OF THE PLATFORM SHALL NOT EXCEED THE AMOUNT OF THE PLATFORM FEE PAID BY YOU TO THE COMPANY IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE LIABILITY, OR INR 1,000 (INDIAN RUPEES ONE THOUSAND), WHICHEVER IS LESS.
-9.5 INDEMNIFICATION: You agree to indemnify, defend, and hold harmless the Company, its directors, officers, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or related to:
-   (a) Your use of or inability to use the Platform;
-   (b) Your violation of these Terms;
-   (c) Your violation of any applicable law, regulation, or third-party right;
-   (d) Any service you provide or receive through the Platform;
-   (e) Any dispute between you and another user of the Platform;
-   (f) Any content you submit, post, or transmit through the Platform;
-   (g) Any negligent or wrongful act or omission on your part;
-   (h) Any breach of any representation, warranty, or obligation under these Terms.
-9.6 The Company shall not be liable for any failure or delay in performing its obligations under these Terms where such failure or delay results from circumstances beyond its reasonable control.
-9.7 You acknowledge that the Company has relied on the limitations and exclusions of liability set forth herein in providing the Platform at its current pricing and that these limitations and exclusions form an essential basis of the bargain between the parties.
+9. PRIVACY AND DATA PROTECTION
+9.1 User data is collected, processed, and stored in accordance with our Privacy Policy, which is incorporated herein by reference and available at https://bookyourservice.co.in.
+9.2 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and all applicable data protection laws of India, including the Digital Personal Data Protection Act, 2023.
+9.3 By using the Platform, you consent to the collection, use, storage, and disclosure of your personal information as described in our Privacy Policy.
+9.4 Users consent to receiving transactional and service-related communications (booking confirmations, reminders, security alerts). Marketing communications are subject to user opt-in consent and can be opted out at any time.
+9.5 The Company implements industry-standard security measures to protect user data, including TLS/SSL encryption, encrypted databases, firewalls, intrusion detection systems, and regular security audits.
+9.6 NOTWITHSTANDING THE FOREGOING, NO METHOD OF ELECTRONIC TRANSMISSION OR STORAGE IS 100% SECURE. The Company cannot guarantee absolute security of user data and bears NO liability for unauthorized access, data breaches, or cyber attacks beyond its reasonable control.
+9.7 Users have the right to access, correct, and request deletion of their personal data by contacting support@bookyourservice.co.in or the Data Protection Officer at dpo@bookyourservice.co.in.
 
-10. FORCE MAJEURE
-10.1 The Company shall not be liable for any failure or delay in the performance of its obligations under these Terms if such failure or delay is caused by events beyond the Company's reasonable control, including but not limited to:
-   (a) Acts of God, natural disasters, earthquakes, floods, storms, or fires;
-   (b) War, terrorism, civil unrest, riots, or insurrections;
-   (c) Epidemics, pandemics, or public health emergencies;
-   (d) Government actions, orders, regulations, or restrictions;
-   (e) Strikes, labor disputes, or industrial action;
-   (f) Internet service provider failures, power outages, or telecommunication failures;
-   (g) Cyber attacks, hacking, or security breaches;
-   (h) Shortages of materials, labor, or supplies;
-   (i) Transportation disruptions or failures;
-   (j) Any other event that could not have been reasonably foreseen or prevented.
-10.2 In the event of a force majeure, the Company will use reasonable efforts to mitigate the impact and resume performance as soon as practicable.
-10.3 If a force majeure event continues for more than 90 days, either party may terminate these Terms upon written notice.
+10. INTELLECTUAL PROPERTY
+10.1 All content, features, and functionality of the Platform, including but not limited to text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, software, and the overall design and layout, are the exclusive property of BookYourService Technologies Pvt. Ltd. or its licensors and are protected by Indian and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
+10.2 Users may NOT copy, reproduce, distribute, publish, display, modify, create derivative works from, decompile, reverse engineer, or commercially exploit any content from the Platform without the express written consent of the Company.
+10.3 Provider listings, reviews, ratings, and other user-generated content submitted to the Platform are licensed to the Company on a non-exclusive, worldwide, royalty-free, transferable, sub-licensable basis for use in connection with the Platform's operation, marketing, and improvement.
+10.4 The "BookYourService" name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of the Company. Users may NOT use such marks without the Company's prior written permission.
+10.5 Any feedback, suggestions, or ideas submitted by users to the Company regarding the Platform shall become the exclusive property of the Company, and the Company may use such feedback without any obligation of attribution or compensation.
 
-11. INTELLECTUAL PROPERTY
-11.1 All content, features, and functionality of the Platform, including but not limited to text, graphics, logos, icons, images, audio clips, digital downloads, data compilations, and software, are the exclusive property of BookYourService Technologies Pvt. Ltd. or its licensors and are protected by Indian and international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
-11.2 Users may not copy, reproduce, distribute, publish, display, modify, create derivative works from, or commercially exploit any content from the Platform without the express written consent of the Company.
-11.3 Provider listings, reviews, ratings, and other user-generated content submitted to the Platform are licensed to the Company on a non-exclusive, worldwide, royalty-free basis for use in connection with the Platform's operation and marketing.
-11.4 The "BookYourService" name, logo, and all related names, logos, product and service names, designs, and slogans are trademarks of the Company. You may not use such marks without the Company's prior written permission.
+11. SECURITY POLICY
+11.1 Users must NOT attempt to compromise the security of the Platform, including but not limited to: attempting to bypass authentication, accessing restricted areas, exploiting vulnerabilities, conducting denial-of-service attacks, or introducing malicious code.
+11.2 Users must NOT use the Platform in any manner that could damage, disable, overburden, or impair the Platform's servers or networks.
+11.3 Users must report any discovered security vulnerabilities to the Company immediately at legal@bookyourservice.co.in. Users must NOT publicly disclose or exploit such vulnerabilities.
+11.4 The Company reserves the right to investigate and take appropriate legal action against anyone who, in the Company's sole discretion, violates this Section 11, including removing offending content, suspending or terminating the accounts of such violators, and/or reporting them to law enforcement authorities.
+11.5 The Company implements reasonable security measures but does NOT guarantee that the Platform will be free from security vulnerabilities, unauthorized access, or cyber attacks. The Company bears NO liability for any security incidents beyond its reasonable control.
 
-12. PRIVACY AND DATA PROTECTION
-12.1 User data is collected, processed, and stored in accordance with our Privacy Policy, which is incorporated herein by reference.
-12.2 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and all applicable data protection laws of India.
-12.3 By using the Platform, you consent to the collection, use, and disclosure of your personal information as described in our Privacy Policy.
-12.4 Users consent to receiving transactional and service-related communications. Marketing communications are subject to user opt-in consent and can be opted out at any time.
+12. CONTENT POLICY
+12.1 Users are solely responsible for all content they post, upload, or transmit on the Platform, including but not limited to: profile information, service listings, reviews, ratings, messages, images, and any other materials.
+12.2 The following content is prohibited on the Platform:
+• Content that is false, misleading, deceptive, or fraudulent
+• Content that infringes on the intellectual property rights of any third party
+• Content that is defamatory, libelous, obscene, pornographic, or offensive
+• Content that promotes violence, terrorism, hatred, discrimination, or illegal activities
+• Content that contains personal information of other users without their consent
+• Content that contains viruses, malware, or other harmful code
+• Content that impersonates another person or entity
+• Content that violates any applicable Indian law or regulation
+12.3 The Company reserves the right to remove, modify, or reject any content that violates this Section 12 or is deemed inappropriate, at its sole discretion, without prior notice.
+12.4 The Company does NOT endorse, verify, or guarantee the accuracy of any user-generated content on the Platform. All content is provided "as is" and the Company bears NO liability for any content posted by users.
+12.5 Reviews and ratings must be based on genuine service experiences. Posting fake, incentivized, or retaliatory reviews is strictly prohibited and may result in account termination.
 
-13. DISPUTE RESOLUTION AND ARBITRATION
-13.1 INFORMAL RESOLUTION: Before initiating any formal proceedings, the parties agree to first attempt to resolve any dispute through the Platform's dispute resolution mechanism or through good-faith negotiation.
-13.2 ARBITRATION: Any dispute, controversy, or claim arising out of or relating to these Terms, or the breach, termination, or invalidity thereof, shall be settled by binding arbitration in accordance with the Arbitration and Conciliation Act, 1996 (as amended).
-13.3 The arbitration shall be conducted by a sole arbitrator appointed mutually by the parties. If the parties cannot agree on an arbitrator within 30 days, the arbitrator shall be appointed by the Bombay High Court.
-13.4 The seat and venue of arbitration shall be Mumbai, Maharashtra, India.
-13.5 The language of the arbitration proceedings shall be English.
-13.6 The arbitration proceedings shall be confidential, and neither party may disclose any information regarding the arbitration without the other party's prior written consent.
-13.7 The arbitrator's decision shall be final and binding on both parties, and judgment upon the award may be entered in any court of competent jurisdiction.
-13.8 Each party shall bear its own costs and expenses of arbitration, unless the arbitrator determines otherwise.
-13.9 NOTWITHSTANDING THE FOREGOING, THE COMPANY MAY SEEK INJUNCTIVE OR EQUITABLE RELIEF IN ANY COURT OF COMPETENT JURISDICTION TO PROTECT ITS INTELLECTUAL PROPERTY RIGHTS OR PREVENT IRREPARABLE HARM.
+13. PLATFORM FEES
+13.1 The Company charges a Platform Fee for providing the intermediary service of connecting Clients with Providers. The Platform Fee is separate from the service price and is disclosed transparently during the booking process.
+13.2 The current Platform Fee structure is as follows:
+• A percentage-based commission (currently 5-10%) is charged on each completed booking
+• For the current direct payment model, the Platform Fee is collected from the Provider's earnings on a periodic basis
+• Once the online payment system is activated, the Platform Fee will be automatically deducted before Provider disbursement
+13.3 CURRENT PAYMENT MODEL: At present, the Company's online payment system is under development. All service payments are settled DIRECTLY between the Client and the Service Provider through cash, bank transfer, UPI, or any other mutually agreed payment method. The Company DOES NOT collect, process, hold, or handle any service payments at this time.
+13.4 The Company is NOT responsible for any payment disputes, defaults, or issues between Clients and Providers. Both parties are solely responsible for agreeing upon and completing payment transactions.
+13.5 All prices are listed in Indian Rupees (INR). Applicable taxes (including GST) are included in the displayed prices unless otherwise stated.
+13.6 The Company reserves the right to modify the Platform Fee structure at any time with prior notice to users. Changes to the fee structure will not affect bookings already confirmed at the previous rate.
 
-14. GOVERNING LAW AND JURISDICTION
-14.1 These Terms of Service shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law principles.
-14.2 Subject to the arbitration provisions in Section 13, the courts of Mumbai, Maharashtra, India shall have exclusive jurisdiction over any disputes arising from or related to these Terms.
-14.3 Any legal action or proceeding not subject to arbitration shall be brought exclusively in the courts located in Mumbai, Maharashtra, India.
-14.4 You hereby irrevocably consent to the personal jurisdiction and venue of such courts and waive any objection based on inconvenient forum.
+14. DISPUTE RESOLUTION
+14.1 INFORMAL RESOLUTION: Before initiating any formal proceedings, the parties agree to first attempt to resolve any dispute through the Platform's built-in dispute resolution mechanism or through good-faith negotiation.
+14.2 Clients can raise a quality dispute within 7 days of service completion through the Platform. The Client must provide supporting evidence including photos, descriptions, and any relevant documentation.
+14.3 The Company will act as a mediator and attempt to facilitate a fair resolution between the Client and the Provider. However, the Company is NOT bound to enforce any particular outcome.
+14.4 ARBITRATION: Any dispute, controversy, or claim arising out of or relating to these Terms that cannot be resolved through informal resolution shall be settled by binding arbitration in accordance with the Arbitration and Conciliation Act, 1996 (as amended).
+14.5 The arbitration shall be conducted by a sole arbitrator appointed mutually by the parties. If the parties cannot agree on an arbitrator within 30 days, the arbitrator shall be appointed by the Bombay High Court.
+14.6 The seat and venue of arbitration shall be Mumbai, Maharashtra, India. The language of the arbitration proceedings shall be English.
+14.7 The arbitrator's decision shall be final and binding on both parties. Each party shall bear its own costs and expenses of arbitration, unless the arbitrator determines otherwise.
+14.8 NOTWITHSTANDING THE FOREGOING, THE COMPANY MAY SEEK INJUNCTIVE OR EQUITABLE RELIEF IN ANY COURT OF COMPETENT JURISDICTION TO PROTECT ITS INTELLECTUAL PROPERTY RIGHTS OR PREVENT IRREPARABLE HARM.
+14.9 The courts of Mumbai, Maharashtra, India shall have exclusive jurisdiction over any disputes not subject to arbitration.
 
-15. PROVIDER OBLIGATIONS
-15.1 Providers must complete KYC verification before listing services on the Platform.
-15.2 Providers must maintain professional conduct, appropriate skill levels, and service quality standards at all times.
-15.3 Providers must arrive on time and complete services as described in their listings.
-15.4 Providers must NOT solicit direct business or attempt to bypass the Platform for future bookings with Clients met through the Platform.
-15.5 Providers are solely responsible for their own tools, equipment, transportation, insurance, and statutory compliance.
-15.6 Providers must comply with all applicable laws, regulations, and licensing requirements for their trade (plumbing, electrical, HVAC).
-15.7 Providers must maintain valid insurance coverage appropriate for their services.
-15.8 Providers are responsible for obtaining all necessary permits and approvals required for service delivery.
+15. REFUNDS AND CANCELLATIONS
+15.1 Cancellation by Client:
+• Full refund (no cancellation fee): Cancellations made 24 or more hours before the scheduled service time
+• Partial refund (90% of service price): Cancellations made 4-24 hours before the scheduled service time
+• Partial refund (75% of service price): Cancellations made within 4 hours of the scheduled service time
+• No refund: No-show by the Client without prior cancellation
+15.2 Cancellation by Provider:
+• Providers may cancel bookings only in genuine emergencies or unavoidable circumstances
+• Frequent cancellations by a Provider will negatively impact their rating and may result in account suspension or termination
+• If a Provider cancels a booking, the Company will attempt to arrange an alternative Provider or facilitate a full refund to the Client
+15.3 REFUND PROCESSING:
+• For the current direct payment model, refunds are the responsibility of the Service Provider. The Company will facilitate the refund process but cannot guarantee refund timelines or outcomes
+• Once the online payment system is activated, refunds will be processed to the original payment method within 5-7 business days
+• Refund processing times may vary by payment method: UPI (3-5 business days), Credit/Debit Card (5-7 business days), Net Banking (5-7 business days), Wallet (24-48 hours)
+15.4 The Company's liability for any refund is limited to the Platform Fee collected by the Company for the specific booking. The Company is NOT liable for the service payment amount.
+15.5 Detailed refund policies are available in our Refund Policy at https://bookyourservice.co.in.
 
-16. CLIENT OBLIGATIONS
-16.1 Clients must provide accurate service address and contact information.
-16.2 Clients must provide safe and reasonable access to the service location.
-16.3 Clients must not engage in any form of harassment, abuse, or discrimination against Service Providers.
-16.4 Clients must settle payment as agreed with the Service Provider.
-16.5 Clients must not request services that are illegal, dangerous, or beyond the scope of the Provider's listing.
+16. ADVERTISING AND SEO POLICY
+16.1 Service Providers must NOT engage in any form of deceptive advertising or search engine manipulation (black-hat SEO) to artificially boost their visibility on the Platform or external search engines.
+16.2 The following advertising practices are prohibited:
+• Using misleading keywords, tags, or metadata that do not accurately describe the listed service
+• Keyword stuffing in service titles or descriptions
+• Creating duplicate or near-duplicate service listings to occupy more search result positions
+• Using the BookYourService brand name, logo, or trademarks in external advertising without written permission
+• Making false or unverifiable claims in service descriptions (e.g., "Best plumber in India," "100% guaranteed")
+• Paying for or incentivizing fake reviews, ratings, or bookings
+16.3 The Company may offer legitimate advertising and featured listing options (such as priority placement, search result boosts, and banner advertising) through the Platform. Users must only use these approved methods for promoting their services.
+16.4 Any Provider found engaging in prohibited advertising or SEO practices may have their listings delisted, their account suspended, and any associated fees forfeited.
+16.5 The Company reserves the right to modify search ranking algorithms and advertising options at any time without prior notice.
 
-17. PROHIBITED ACTIVITIES
-17.1 Using the Platform for any unlawful purpose or in violation of any applicable law.
-17.2 Submitting false, misleading, or fraudulent information.
-17.3 Impersonating any person or entity or misrepresenting your affiliation.
-17.4 Interfering with or disrupting the Platform's operation or servers.
-17.5 Attempting to gain unauthorized access to any part of the Platform.
-17.6 Using automated tools (bots, scrapers) to access or collect data from the Platform.
-17.7 Engaging in any form of price manipulation or market distortion.
-17.8 Circumventing or attempting to circumvent the Platform's payment system.
-17.9 Soliciting Platform users for services outside the Platform.
+17. INTERNATIONAL USE
+17.1 The Platform is designed for use within India only. All services, bookings, and transactions are subject to Indian law.
+17.2 Users accessing the Platform from outside India do so at their own risk and are responsible for compliance with all applicable local laws. The Company makes no representation that the Platform is appropriate or available for use in jurisdictions outside India.
+17.3 Service Providers must be physically located in India and must hold valid Indian identity documents and business registrations. Foreign nationals operating in India must have valid work permits and business visas.
+17.4 All payments must be made in Indian Rupees (INR). The Company does not support international currency transactions at this time.
+17.5 Data processed by the Platform is primarily stored on servers located in India. In the event of any international data processing, appropriate safeguards are implemented in compliance with applicable Indian data protection laws.
 
-18. TERMINATION
-18.1 The Company may terminate or suspend your account and access to the Platform at its sole discretion, without notice, for conduct that the Company determines violates these Terms, is harmful to other users, or is otherwise objectionable.
-18.2 Users may terminate their account at any time by contacting customer support or through their account settings.
-18.3 Upon termination, the provisions of these Terms that by their nature should survive shall remain in effect, including but not limited to Sections 3, 9, 10, 11, 13, and 14.
-18.4 The Company shall not be liable for any damages resulting from the termination or suspension of your account.
+18. ACCOUNT SUSPENSION AND TERMINATION
+18.1 The Company may terminate or suspend your account and access to the Platform at its sole discretion, without prior notice, for any of the following reasons:
+• Violation of this AUP or any other Platform policy
+• Engaging in fraudulent, illegal, or harmful activity
+• Providing false or misleading information during registration or KYC verification
+• Repeated negative reviews or complaints from other users
+• Failure to pay applicable Platform Fees
+• Any conduct that the Company determines is harmful to other users, the Platform, or the Company's reputation
+18.2 Users may terminate their account at any time by contacting customer support at support@bookyourservice.co.in or through their account settings.
+18.3 Upon termination:
+• All active bookings will be cancelled
+• Any pending payments or refunds will be processed according to the applicable policies
+• The provisions of this AUP that by their nature should survive shall remain in effect, including but not limited to Sections 1, 4, 9, 10, 11, 12, 14, 19, and 24
+• The Company shall NOT be liable for any damages resulting from the termination or suspension of your account
+18.4 The Company reserves the right to pursue legal action against users whose accounts are terminated for cause, including but not limited to fraud, theft, or intentional harm.
 
-19. SEVERABILITY
-19.1 If any provision of these Terms is held to be invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect.
-19.2 The invalid or unenforceable provision shall be modified to the minimum extent necessary to make it valid and enforceable while preserving the intent of the original provision.
+19. LIMITATION OF LIABILITY
+19.1 NO WARRANTY: ALL SERVICES PROVIDED THROUGH THE PLATFORM ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE. THE COMPANY SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
+19.2 INTERMEDIARY STATUS: BookYourService is an INTERMEDIARY and ONLINE MARKETPLACE ONLY. The Company DOES NOT directly provide any plumbing, electrical, or AC & HVAC services. All services listed on the Platform are provided by independent third-party Service Providers who are NOT employees, agents, or representatives of the Company.
+19.3 NOT RESPONSIBLE FOR SERVICE QUALITY: The Company is NOT responsible or liable for the quality, safety, legality, or appropriateness of any service provided by a Service Provider. The Company does not guarantee that any service will meet a Client's expectations or requirements.
+19.4 NO LIABILITY FOR DAMAGES: UNDER NO CIRCUMSTANCES SHALL THE COMPANY, ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
+• Personal injury, bodily harm, or death resulting from services
+• Property damage, water damage, fire damage, or electrical damage
+• Loss of use, loss of data, loss of profits, loss of business, or loss of goodwill
+• Emotional distress, mental anguish, or reputational harm
+• Any damages arising from the negligence, recklessness, or intentional misconduct of a Service Provider or Client
+• Any damages arising from delays, failures, errors, or interruptions in the Platform's operation
+• Any damages arising from unauthorized access to or use of our servers or any personal information stored therein
+• Any damages arising from any content, goods, or services obtained through the Platform
+19.5 LIMITATION OF LIABILITY: THE COMPANY'S TOTAL AGGREGATE LIABILITY FOR ANY AND ALL CLAIMS ARISING OUT OF OR RELATED TO THESE TERMS OR THE USE OF THE PLATFORM SHALL NOT EXCEED THE AMOUNT OF THE PLATFORM FEE PAID BY YOU TO THE COMPANY IN THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO THE LIABILITY, OR INR 1,000 (INDIAN RUPEES ONE THOUSAND), WHICHEVER IS LESS.
+19.6 INDEMNIFICATION: You agree to indemnify, defend, and hold harmless the Company, its directors, officers, employees, agents, and affiliates from and against any and all claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising out of or related to:
+• Your use of or inability to use the Platform
+• Your violation of these Terms
+• Your violation of any applicable law, regulation, or third-party right
+• Any service you provide or receive through the Platform
+• Any dispute between you and another user of the Platform
+• Any content you submit, post, or transmit through the Platform
+• Any negligent or wrongful act or omission on your part
+19.7 The Company shall not be liable for any failure or delay in performing its obligations under these Terms where such failure or delay results from circumstances beyond its reasonable control (force majeure).
+19.8 You acknowledge that the Company has relied on the limitations and exclusions of liability set forth herein in providing the Platform at its current pricing and that these limitations and exclusions form an essential basis of the agreement between the parties.
 
-20. ENTIRE AGREEMENT
-20.1 These Terms, together with the Privacy Policy and any other agreements incorporated by reference, constitute the entire agreement between you and the Company regarding the use of the Platform.
-20.2 These Terms supersede any prior agreements, understandings, or representations regarding the Platform.
+20. COMPLIANCE WITH LAW
+20.1 Users must comply with all applicable Indian laws, regulations, and rules when using the Platform, including but not limited to:
+• The Information Technology Act, 2000 and its associated rules
+• The Consumer Protection Act, 2019 and the Consumer Protection (E-Commerce) Rules, 2020
+• The Digital Personal Data Protection Act, 2023
+• The Goods and Services Tax (GST) laws and regulations
+• State-specific labor laws, licensing requirements, and trade regulations
+• The Indian Penal Code and the Code of Criminal Procedure
+• The Prevention of Money Laundering Act, 2002
+• The Equal Remuneration Act, 1976 and anti-discrimination laws
+20.2 Service Providers must obtain and maintain all necessary permits, licenses, and registrations required for their trade (plumbing, electrical, HVAC) in the jurisdiction where they operate.
+20.3 Providers must comply with all applicable tax obligations, including GST registration and filing, and must provide valid tax invoices to Clients upon request.
+20.4 The Company will cooperate with law enforcement and regulatory authorities as required by law, including responding to subpoenas, court orders, and lawful requests for user information.
+20.5 The Company bears NO liability for any user's failure to comply with applicable laws and regulations. Users are solely responsible for ensuring their own legal compliance.
 
-21. CONTACT INFORMATION
-For questions or concerns regarding these Terms of Service:
-Company: BookYourService Technologies Pvt. Ltd.
-Email: legal@bookyourservice.co.in
-Address: Fort, Mumbai 400001, Maharashtra, India
-Grievance Officer: grievance@bookyourservice.co.in`,
+21. REPORTING VIOLATIONS
+21.1 Users are encouraged to report any violations of this AUP, suspicious activity, or safety concerns to the Company.
+21.2 Reports can be submitted through the following channels:
+• Email: support@bookyourservice.co.in for general violations
+• Email: legal@bookyourservice.co.in for legal or compliance concerns
+• In-app reporting feature on service and user profile pages
+21.3 The Company will investigate all reported violations and take appropriate action, which may include: issuing warnings, removing prohibited content, suspending or terminating accounts, and referring matters to law enforcement.
+21.4 The Company will keep the identity of reporting users confidential to the extent permitted by law. The Company will NOT retaliate against users who report violations in good faith.
+21.5 Filing false or malicious reports is itself a violation of this AUP and may result in account suspension.
+21.6 In case of immediate danger or emergencies, users should contact local emergency services (100 for police, 101 for fire, 108 for ambulance) first, before reporting to the Company.
+
+22. POLICY UPDATES
+22.1 The Company reserves the right to update, modify, or replace any part of this AUP at its sole discretion.
+22.2 Material changes to this AUP will be communicated to users through one or more of the following methods:
+• Email notification to the registered email address
+• Prominent notice on the Platform's homepage or login screen
+• In-app notification or popup
+• SMS to the registered phone number (for critical changes)
+22.3 The Company will provide at least 15 days' notice before material changes take effect, except where immediate changes are necessary for security, legal compliance, or the protection of users.
+22.4 Your continued use of the Platform after the effective date of any changes constitutes acceptance of the revised AUP.
+22.5 If you do not agree with the revised terms, you must stop using the Platform and terminate your account. The Company's obligation to you shall be limited to any applicable refunds as per the Refund Policy.
+22.6 The Company will maintain an archive of previous versions of this AUP. Users may request a copy of any previous version by contacting legal@bookyourservice.co.in.
+
+23. CONTACT INFORMATION
+For questions, concerns, or notices regarding this Acceptable Usage Policy and Terms of Service:
+• Company: BookYourService Technologies Pvt. Ltd.
+• Website: https://bookyourservice.co.in
+• General Support: support@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Data Protection Officer: dpo@bookyourservice.co.in
+• Grievance Officer: grievance@bookyourservice.co.in
+• Registered Address: Fort, Mumbai 400001, Maharashtra, India
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week
+
+24. ADDITIONAL ENTERPRISE CLAUSES
+24.1 CORPORATE ACCOUNTS: Organizations using the Platform for bulk or recurring service bookings may enter into a separate Enterprise Service Agreement (ESA) with the Company. The terms of the ESA will supplement but not override this AUP, except where expressly stated in the ESA.
+24.2 VOLUME DISCOUNTS: Enterprise clients may be eligible for volume-based discounts on Platform Fees, subject to negotiation and mutual agreement. Such discounts do not affect the Company's limitation of liability under Section 19.
+24.3 SERVICE LEVEL AGREEMENTS (SLAs): The Company may offer SLAs for enterprise clients that specify response times, availability commitments, and support priorities. However, failure to meet SLA targets shall NOT result in liability beyond the refund of the affected Platform Fee.
+24.4 INDEMNIFICATION BY ENTERPRISE: Enterprise clients agree to indemnify the Company against any claims arising from the enterprise's use of the Platform, including claims by the enterprise's employees, contractors, or agents.
+24.5 AUDIT RIGHTS: The Company reserves the right to audit enterprise accounts for compliance with this AUP and any applicable ESA, upon reasonable notice.
+24.6 CORPORATE GOVERNANCE: Enterprise users must ensure that their employees and agents using the Platform are trained on and comply with this AUP. The enterprise is responsible for all activities conducted under its corporate account.
+
+25. FINAL PROVISIONS AND IMPLEMENTATION
+25.1 SEVERABILITY: If any provision of this AUP is held to be invalid, illegal, or unenforceable by a court of competent jurisdiction, the remaining provisions shall continue in full force and effect. The invalid or unenforceable provision shall be modified to the minimum extent necessary to make it valid and enforceable while preserving the intent of the original provision.
+25.2 ENTIRE AGREEMENT: This AUP, together with the Privacy Policy, Refund Policy, and Cookie Policy (all available at https://bookyourservice.co.in), constitute the entire agreement between you and the Company regarding the use of the Platform, and supersede any prior agreements, understandings, or representations.
+25.3 WAIVER: The failure of the Company to enforce any right or provision of this AUP shall not constitute a waiver of such right or provision. Any waiver of any provision of this AUP must be in writing and signed by the Company to be effective.
+25.4 ASSIGNMENT: You may not assign or transfer your rights or obligations under this AUP without the Company's prior written consent. The Company may assign its rights and obligations under this AUP without your consent.
+25.5 FORCE MAJEURE: The Company shall not be liable for any failure or delay in performing its obligations under this AUP if such failure or delay is caused by events beyond the Company's reasonable control, including but not limited to natural disasters, war, terrorism, epidemics, government actions, strikes, power outages, cyber attacks, and internet service disruptions.
+25.6 GOVERNING LAW: This AUP shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law principles.
+25.7 JURISDICTION: Subject to the arbitration provisions in Section 14, the courts of Mumbai, Maharashtra, India shall have exclusive jurisdiction over any disputes arising from or related to this AUP.
+25.8 LANGUAGE: This AUP is written in English. In the event of any inconsistency between the English version and any translated version, the English version shall prevail.
+25.9 EFFECTIVE DATE: This AUP is effective as of January 1, 2025 and applies to all use of the Platform from that date forward.
+25.10 ACKNOWLEDGMENT: BY USING THE PLATFORM, YOU ACKNOWLEDGE THAT YOU HAVE READ, UNDERSTOOD, AND AGREE TO BE BOUND BY ALL THE TERMS AND CONDITIONS OF THIS ACCEPTABLE USAGE POLICY, INCLUDING THE LIMITATION OF LIABILITY PROVISIONS IN SECTION 19.`,
     },
   });
 
@@ -981,48 +1075,53 @@ Grievance Officer: grievance@bookyourservice.co.in`,
     data: {
       pageType: 'PRIVACY',
       title: 'Privacy Policy',
-      version: '2.0',
-      effectiveDate: '2025-03-05',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
       content: `PRIVACY POLICY FOR BOOKYOURSERVICE
 
-Last Updated: March 5, 2025
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 
-BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform for Plumbing, Electrical, and AC & HVAC services.
+BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service. It explains how we collect, use, disclose, and safeguard your information when you use our platform for Plumbing, Electrical, and AC & HVAC services.
 
-1. INTRODUCTION
-1.1 This Privacy Policy applies to all users (Clients, Service Providers, and Administrators) of the BookYourService platform, including our website (bookyourservice.co.in) and mobile application.
-1.2 By using the Platform, you consent to the data practices described in this Privacy Policy.
-1.3 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, and all applicable data protection laws of India.
+1. INTRODUCTION AND SCOPE
+1.1 This Privacy Policy applies to all users (Clients, Service Providers, and Administrators) of the BookYourService platform, including our website at https://bookyourservice.co.in and our mobile application.
+1.2 By using the Platform, you consent to the data practices described in this Privacy Policy. This consent is given in conjunction with the Acceptable Usage Policy (AUP) and Terms of Service.
+1.3 We comply with the Information Technology Act, 2000, the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011, the Digital Personal Data Protection Act, 2023, and all applicable data protection laws of India.
+1.4 This Privacy Policy applies to all personal data processed in connection with the Platform, regardless of whether the data is collected online, offline, or through third-party integrations.
+1.5 The Company acts as a data fiduciary under Indian data protection law and is responsible for determining the purposes and means of processing personal data collected through the Platform.
 
 2. INFORMATION WE COLLECT
-2.1 Personal Information: Name, email address, phone number, profile photo, residential address, and date of birth.
-2.2 Identity Verification: Aadhaar number, PAN number, driving license number, passport number (for Service Providers undergoing KYC verification).
-2.3 Location Data: GPS coordinates for service delivery matching, provider proximity calculation, and service area determination.
+2.1 Personal Information: Name, email address, phone number, profile photo, residential address, date of birth, and gender.
+2.2 Identity Verification (KYC): Aadhaar number, PAN number, driving license number, passport number (for Service Providers undergoing KYC verification as required by Section 5 of the AUP).
+2.3 Location Data: GPS coordinates for service delivery matching, provider proximity calculation, and service area determination. Location data is collected only with your explicit consent.
 2.4 Payment Information: Currently, we do not collect or process payment information as all payments are settled directly between Clients and Providers. When our online payment system is activated, payment data will be processed securely by PCI DSS Level 1 certified third-party payment gateways. We will NOT store card numbers, CVVs, or bank account details on our servers.
 2.5 Device Information: IP address, browser type and version, device type and model, operating system, unique device identifiers, and mobile network information.
 2.6 Usage Data: Pages visited, features used, search queries, booking history, time spent on pages, click patterns, and navigation paths.
-2.7 Communications: Chat messages between Clients and Providers through the Platform, customer support tickets, and feedback submissions.
+2.7 Communications: Chat messages between Clients and Providers through the Platform, customer support tickets, and feedback submissions. Communications are logged for dispute resolution as described in Section 8 of the AUP (Communication Policy).
 2.8 Service Data: Service categories browsed (Plumbing, Electrical, AC & HVAC), subcategories selected, booking details, service addresses, and special instructions.
+2.9 Cookies and Tracking Data: As described in our Cookie Policy, we use cookies and similar technologies to enhance your experience. Please refer to our Cookie Policy for details.
 
 3. HOW WE USE YOUR INFORMATION
 3.1 To provide, operate, and maintain the Platform, including matching Clients with appropriate Service Providers.
 3.2 To process bookings, facilitate communication between Clients and Providers, and manage service delivery.
-3.3 To verify user identity, prevent fraud, and maintain platform security.
+3.3 To verify user identity through KYC processes, prevent fraud, and maintain platform security (as outlined in Section 11 of the AUP — Security Policy).
 3.4 To send booking confirmations, reminders, service updates, and transactional notifications.
-3.5 To provide customer support, resolve disputes, and handle complaints.
+3.5 To provide customer support, resolve disputes as per Section 14 of the AUP (Dispute Resolution), and handle complaints.
 3.6 To send promotional offers, newsletters, and platform updates (with opt-out option for marketing communications).
-3.7 To comply with legal obligations, regulatory requirements, and law enforcement requests.
+3.7 To comply with legal obligations, regulatory requirements, and law enforcement requests as per Section 20 of the AUP (Compliance with Law).
 3.8 To analyze usage patterns, improve platform performance, and develop new features.
-3.9 To enforce our Terms of Service and protect the rights, property, or safety of BookYourService, our users, or the public.
+3.9 To enforce our AUP and Terms of Service and protect the rights, property, or safety of BookYourService, our users, or the public.
+3.10 To detect and prevent prohibited activities as outlined in Section 4 of the AUP (Prohibited Activities).
 
 4. DATA SHARING AND DISCLOSURE
 4.1 Service Providers: When you book a service, your name, service address, and phone number are shared with the assigned Service Provider to facilitate service delivery.
 4.2 Clients: Service Provider's name, profile photo, rating, and approximate location (city-level) are visible to Clients browsing services.
-4.3 Payment Processors: When the online payment system is activated, payment data will be shared with authorized payment gateways for transaction processing.
+4.3 Payment Processors: When the online payment system is activated, payment data will be shared with authorized payment gateways (such as Razorpay) for transaction processing.
 4.4 Analytics Partners: Anonymized and aggregated usage data may be shared with analytics services to improve our Platform.
 4.5 Legal Requirements: We may disclose personal data when required by law, regulation, legal process, or governmental request, or when we believe in good faith that disclosure is necessary to protect our rights, your safety or the safety of others, investigate fraud, or respond to a government request.
 4.6 Business Transfers: In the event of a merger, acquisition, reorganization, bankruptcy, or sale of all or a portion of our assets, user data may be transferred to the acquiring entity.
 4.7 We do NOT sell, rent, or trade your personal data to third parties for their marketing purposes.
+4.8 The Company bears NO liability for how third parties use your data after it has been shared in accordance with this Section 4, except where such sharing was in violation of this Privacy Policy.
 
 5. DATA SECURITY
 5.1 All data transmissions between your device and our servers are encrypted using TLS/SSL (Transport Layer Security/Secure Sockets Layer).
@@ -1031,44 +1130,71 @@ BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to prote
 5.4 Access to personal data is limited to authorized personnel on a strict need-to-know basis.
 5.5 We implement firewalls, intrusion detection systems, and anti-malware protections.
 5.6 DESPITE OUR BEST EFFORTS, NO METHOD OF ELECTRONIC TRANSMISSION OR STORAGE IS 100% SECURE. We cannot guarantee absolute security of your data.
+5.7 The Company bears NO liability for data breaches, unauthorized access, or cyber attacks beyond its reasonable control, as further outlined in Section 19 of the AUP (Limitation of Liability).
+5.8 In the event of a data breach, we will notify affected users and the relevant authorities within 72 hours as required by the Digital Personal Data Protection Act, 2023.
 
 6. DATA RETENTION
 6.1 Active account data is retained for the duration of your account.
 6.2 Booking records are retained for 3 years after the booking date for dispute resolution and legal compliance.
 6.3 Payment records (when activated) will be retained for 7 years as required by Indian tax laws.
-6.4 KYC documents are retained for the duration of the Provider relationship plus 1 year after termination.
+6.4 KYC documents are retained for the duration of the Provider relationship plus 1 year after termination, as specified in Section 5.7 of the AUP.
 6.5 Deleted account data is retained for 30 days for recovery purposes, then permanently deleted.
-6.6 You can request deletion of your account and associated data at any time by contacting support.
+6.6 You can request deletion of your account and associated data at any time by contacting support@bookyourservice.co.in.
+6.7 Communication logs are retained for 2 years for dispute resolution purposes.
+6.8 Analytics data is retained in anonymized form for up to 3 years for platform improvement.
 
-7. YOUR RIGHTS
+7. YOUR RIGHTS UNDER INDIAN DATA PROTECTION LAW
 7.1 Access: You can view and download your personal data from your account settings.
 7.2 Correction: You can update your personal information at any time through your account settings.
 7.3 Deletion: You can request deletion of your account and data by contacting support@bookyourservice.co.in.
 7.4 Objection: You can opt out of marketing communications at any time by clicking the unsubscribe link or updating your preferences.
-7.5 Data Portability: You can request a copy of your data in a machine-readable format by contacting our Data Protection Officer.
+7.5 Data Portability: You can request a copy of your data in a machine-readable format by contacting our Data Protection Officer at dpo@bookyourservice.co.in.
+7.6 Right to Withdraw Consent: You may withdraw consent for data processing at any time, subject to legal and contractual obligations. Withdrawal of consent may result in limited Platform functionality.
+7.7 Right to Grievance Redressal: You may file a grievance with our Grievance Officer at grievance@bookyourservice.co.in. Grievances will be acknowledged within 48 hours and resolved within 30 days.
 
 8. COOKIES AND TRACKING TECHNOLOGIES
 8.1 We use essential cookies for platform functionality, session management, and security.
 8.2 Analytics cookies help us understand usage patterns and improve our services.
 8.3 Functional cookies remember your preferences such as location, language, and recently viewed services.
-8.4 You can manage cookie preferences through your browser settings or our cookie consent banner.
-8.5 Please refer to our Cookie Policy for detailed information on cookie usage.
+8.4 Marketing cookies (subject to your consent) help us deliver relevant recommendations and advertisements.
+8.5 You can manage cookie preferences through your browser settings or our cookie consent banner.
+8.6 Please refer to our Cookie Policy for detailed information on cookie usage, including the specific cookies used and their purposes.
 
 9. CHILDREN'S PRIVACY
-Our Platform is not intended for children under 18 years of age. We do not knowingly collect personal information from children. If we become aware that we have collected personal data from a child under 18, we will take steps to delete such information promptly.
+9.1 Our Platform is not intended for children under 18 years of age. We do not knowingly collect personal information from children.
+9.2 If we become aware that we have collected personal data from a child under 18, we will take steps to delete such information promptly.
+9.3 Parents or guardians who believe their child has provided personal data to us should contact us immediately at support@bookyourservice.co.in.
 
 10. INTERNATIONAL DATA TRANSFERS
-Your data is primarily stored on servers located in India. In the event of international data processing, we ensure appropriate safeguards are in place in compliance with applicable data protection laws, including standard contractual clauses and adequacy decisions.
+10.1 Your data is primarily stored on servers located in India.
+10.2 In the event of international data processing, we ensure appropriate safeguards are in place in compliance with applicable data protection laws, including standard contractual clauses and adequacy decisions.
+10.3 Any cross-border transfer of personal data will be conducted only with your explicit consent and in compliance with the Digital Personal Data Protection Act, 2023.
+10.4 The Company bears NO liability for data processing by third parties in jurisdictions outside India beyond the safeguards described in this Section 10.
 
-11. CHANGES TO THIS PRIVACY POLICY
-We may update this Privacy Policy from time to time. Significant changes will be communicated via email or platform notification at least 15 days before taking effect. Your continued use of the Platform after changes constitutes acceptance of the revised policy.
+11. SENSITIVE PERSONAL DATA
+11.1 We process sensitive personal data (as defined under the IT Rules, 2011) only to the extent necessary for the purposes described in this Privacy Policy, including:
+• KYC verification documents (Aadhaar, PAN, passport, driving license) for Service Providers
+• Financial information for payment processing (when the online payment system is activated)
+• Biometric data (selfie photographs) for identity verification purposes
+11.2 Sensitive personal data is stored with enhanced security measures, including encryption at rest and in transit, restricted access controls, and regular access audits.
+11.3 The Company bears NO liability for the misuse of sensitive personal data by third parties who gain unauthorized access despite our reasonable security measures.
 
-12. CONTACT US
-For privacy-related inquiries, data access requests, or to exercise your rights:
-Email: privacy@bookyourservice.co.in
-Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
-Data Protection Officer: dpo@bookyourservice.co.in
-Grievance Officer: grievance@bookyourservice.co.in`,
+12. CHANGES TO THIS PRIVACY POLICY
+12.1 We may update this Privacy Policy from time to time.
+12.2 Significant changes will be communicated via email or platform notification at least 15 days before taking effect, as described in Section 22 of the AUP (Policy Updates).
+12.3 Your continued use of the Platform after changes constitutes acceptance of the revised policy.
+12.4 If you do not agree with the revised policy, you may terminate your account as described in Section 18 of the AUP (Account Suspension and Termination).
+
+13. DATA PROTECTION OFFICER AND CONTACT
+For privacy-related inquiries, data access requests, to exercise your rights, or to file a complaint:
+• Email: support@bookyourservice.co.in
+• Privacy Team: privacy@bookyourservice.co.in
+• Data Protection Officer: dpo@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Grievance Officer: grievance@bookyourservice.co.in
+• Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Website: https://bookyourservice.co.in
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     },
   });
 
@@ -1076,100 +1202,135 @@ Grievance Officer: grievance@bookyourservice.co.in`,
   await db.legalPage.create({
     data: {
       pageType: 'REFUND',
-      title: 'Refund Policy',
-      version: '2.0',
-      effectiveDate: '2025-03-05',
-      content: `REFUND POLICY FOR BOOKYOURSERVICE
+      title: 'Refund & Cancellation Policy',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
+      content: `REFUND AND CANCELLATION POLICY FOR BOOKYOURSERVICE
 
-Last Updated: March 5, 2025
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 
-1. OVERVIEW
+This Refund and Cancellation Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service (Section 15 — Refunds and Cancellations). It provides detailed information about cancellation rights, refund eligibility, and dispute resolution for bookings made on the BookYourService platform.
+
+1. OVERVIEW AND INTERMEDIARY STATUS
 1.1 BookYourService facilitates connections between Clients and Service Providers for Plumbing, Electrical, and AC & HVAC services. As an intermediary platform, our refund policy applies to the Platform Fee charged by BookYourService and the facilitation of refunds for service payments between Clients and Providers.
-1.2 IMPORTANT: Currently, all service payments are settled directly between Clients and Providers (cash/direct transfer). The Company does NOT hold, process, or control service payments. Refunds for service payments must be arranged directly between the Client and Provider.
-1.3 Once our online payment system is activated, the refund process will be managed through the Platform as described in the relevant sections below.
+1.2 IMPORTANT: Currently, all service payments are settled directly between Clients and Providers (cash/direct transfer/UPI). The Company does NOT hold, process, or control service payments. Refunds for service payments must be arranged directly between the Client and Provider.
+1.3 The Company bears NO liability for any Provider's refusal to issue a refund or delay in refund processing, as further outlined in Section 19 of the AUP (Limitation of Liability).
+1.4 Once our online payment system is activated, the refund process will be managed through the Platform as described in the relevant sections below.
 
-2. PLATFORM FEE REFUND
-2.1 The Platform Fee is refundable under the following conditions:
-   (a) The booking was cancelled by the Client within the applicable cancellation window.
-   (b) The booking was cancelled by the Provider without adequate notice.
-   (c) The Service Provider failed to arrive (no-show).
-   (d) A duplicate Platform Fee charge was applied.
-2.2 The Platform Fee is NOT refundable under the following conditions:
-   (a) The service was completed, regardless of Client satisfaction.
-   (b) The Client was a no-show without prior cancellation.
-   (c) The cancellation was made within 4 hours of the scheduled time (partial refund may apply).
+2. CANCELLATION BY CLIENT
+2.1 Full Refund (no cancellation fee): Cancellations made 24 or more hours before the scheduled service time.
+2.2 Partial Refund (90% of service price): Cancellations made 4-24 hours before the scheduled service time. A 10% cancellation fee applies.
+2.3 Partial Refund (75% of service price): Cancellations made within 4 hours of the scheduled service time. A 25% cancellation fee applies.
+2.4 No Refund: No-show by the Client without prior cancellation.
+2.5 Clients can cancel bookings through the Platform's booking management interface or by contacting support@bookyourservice.co.in.
 
-3. SERVICE PAYMENT REFUND — CURRENT MODEL (DIRECT PAYMENT)
-3.1 Since payments are currently settled directly between Clients and Providers, the Company CANNOT process refunds for service payments.
-3.2 Clients must request refunds directly from the Service Provider.
-3.3 The Company will facilitate communication and mediation between the parties to resolve refund disputes.
-3.4 The Company is NOT liable for any Provider's refusal to issue a refund or delay in refund processing.
-3.5 The Company recommends obtaining receipts and maintaining records of all payments for refund purposes.
+3. CANCELLATION BY PROVIDER
+3.1 Providers may cancel bookings only in genuine emergencies or unavoidable circumstances.
+3.2 Frequent cancellations by a Provider will negatively impact their rating and may result in account suspension or termination, as outlined in Section 18 of the AUP (Account Suspension and Termination).
+3.3 If a Provider cancels a booking, the Company will attempt to arrange an alternative Provider or facilitate a full refund to the Client.
+3.4 The Company bears NO liability for losses arising from a Provider's cancellation, including but not limited to consequential damages, time lost, or emergency service costs.
 
-4. SERVICE PAYMENT REFUND — FUTURE ONLINE PAYMENT MODEL
-4.1 When the online payment system is activated, the following refund policies will apply:
-   (a) Full Refund: Cancellations made 24 or more hours before the scheduled service time. Both service payment and Platform Fee will be refunded.
-   (b) Partial Refund (90%): Cancellations made 4-24 hours before the scheduled service time. 10% cancellation fee applies.
-   (c) Partial Refund (75%): Cancellations made within 4 hours of the scheduled service time. 25% cancellation fee applies.
-   (d) No Refund: Client no-show without prior cancellation.
+4. PLATFORM FEE REFUND
+4.1 The Platform Fee is refundable under the following conditions:
+• The booking was cancelled by the Client within the applicable cancellation window
+• The booking was cancelled by the Provider without adequate notice
+• The Service Provider failed to arrive (no-show)
+• A duplicate Platform Fee charge was applied
+4.2 The Platform Fee is NOT refundable under the following conditions:
+• The service was completed, regardless of Client satisfaction
+• The Client was a no-show without prior cancellation
+• The cancellation was made within 4 hours of the scheduled time (partial refund may apply)
+• The Platform Fee was for a featured listing or advertising service
 
-5. ELIGIBILITY FOR SERVICE QUALITY REFUND
-5.1 The service was not delivered as described in the listing.
-5.2 The Provider did not arrive within 30 minutes of the scheduled time (no-show).
-5.3 The service quality is significantly below the expected standard as evidenced by photos or documentation.
-5.4 The Provider cancelled the booking without adequate notice.
-5.5 A duplicate charge was applied.
-5.6 The service could not be completed due to Provider's inability or equipment failure.
+5. SERVICE PAYMENT REFUND — CURRENT MODEL (DIRECT PAYMENT)
+5.1 Since payments are currently settled directly between Clients and Providers, the Company CANNOT process refunds for service payments.
+5.2 Clients must request refunds directly from the Service Provider.
+5.3 The Company will facilitate communication and mediation between the parties to resolve refund disputes, as described in Section 14 of the AUP (Dispute Resolution).
+5.4 The Company is NOT liable for any Provider's refusal to issue a refund or delay in refund processing.
+5.5 The Company recommends obtaining receipts and maintaining records of all payments for refund purposes.
 
-6. SERVICE QUALITY DISPUTE PROCESS
-6.1 Clients can raise a quality dispute within 7 days of service completion through the Platform.
-6.2 The Client must provide supporting evidence including photos, descriptions, and any relevant documentation.
-6.3 The Company will review the dispute and contact the Provider for their response.
-6.4 Review process takes up to 48 business hours.
-6.5 If the quality issue is verified, the Company will facilitate a full or partial refund from the Provider.
-6.6 In some cases, the Company may offer a re-service through a different Provider instead of a refund.
+6. SERVICE PAYMENT REFUND — FUTURE ONLINE PAYMENT MODEL
+6.1 When the online payment system is activated, the following refund policies will apply:
+• Full Refund: Cancellations made 24 or more hours before the scheduled service time. Both service payment and Platform Fee will be refunded.
+• Partial Refund (90%): Cancellations made 4-24 hours before the scheduled service time. 10% cancellation fee applies.
+• Partial Refund (75%): Cancellations made within 4 hours of the scheduled service time. 25% cancellation fee applies.
+• No Refund: Client no-show without prior cancellation.
 
-7. REFUND PROCESSING (ONLINE PAYMENT MODEL)
-7.1 Approved refunds will be processed to the original payment method.
-7.2 Refund processing times vary by payment method:
-   - UPI: 3-5 business days
-   - Credit/Debit Card: 5-7 business days
-   - Net Banking: 5-7 business days
-   - Wallet: 24-48 hours
-7.3 The Company is NOT responsible for delays caused by payment gateways or banking systems.
+7. ELIGIBILITY FOR SERVICE QUALITY REFUND
+7.1 The service was not delivered as described in the listing.
+7.2 The Provider did not arrive within 30 minutes of the scheduled time (no-show).
+7.3 The service quality is significantly below the expected standard as evidenced by photos or documentation.
+7.4 The Provider cancelled the booking without adequate notice.
+7.5 A duplicate charge was applied.
+7.6 The service could not be completed due to Provider's inability or equipment failure.
 
-8. NON-REFUNDABLE ITEMS
-8.1 Platform Fee for completed services (unless a quality dispute is upheld).
-8.2 Tips or bonuses paid directly to Providers.
-8.3 Subscription fees for Provider plans (after 7 days of activation).
-8.4 Any charges for additional materials or work requested by the Client beyond the original scope.
+8. SERVICE QUALITY DISPUTE PROCESS
+8.1 Clients can raise a quality dispute within 7 days of service completion through the Platform.
+8.2 The Client must provide supporting evidence including photos, descriptions, and any relevant documentation.
+8.3 The Company will review the dispute and contact the Provider for their response.
+8.4 Review process takes up to 48 business hours.
+8.5 If the quality issue is verified, the Company will facilitate a full or partial refund from the Provider.
+8.6 In some cases, the Company may offer a re-service through a different Provider instead of a refund.
+8.7 The Company's mediation is non-binding. The Company bears NO liability for the outcome of any dispute resolution, as per Section 19 of the AUP.
 
-9. PARTIAL REFUNDS
-9.1 If a service is partially completed, a partial refund may be issued based on the portion not completed.
-9.2 The refund amount is determined based on the scope of work completed versus agreed upon.
-9.3 Both Client and Provider input is considered in determining the partial refund amount.
+9. REFUND PROCESSING (ONLINE PAYMENT MODEL)
+9.1 Approved refunds will be processed to the original payment method.
+9.2 Refund processing times vary by payment method:
+• UPI: 3-5 business days
+• Credit/Debit Card: 5-7 business days
+• Net Banking: 5-7 business days
+• Wallet: 24-48 hours
+9.3 The Company is NOT responsible for delays caused by payment gateways or banking systems.
+9.4 The Company bears NO liability for any losses incurred during the refund processing period.
 
-10. REFUND TO WALLET (FUTURE)
-10.1 When the online payment system is activated, refunds may be offered as BookYourService Wallet credit.
-10.2 Wallet refunds are processed instantly and can be used for future bookings.
-10.3 Wallet credits have no expiry date and can be withdrawn to your bank account.
+10. NON-REFUNDABLE ITEMS
+10.1 Platform Fee for completed services (unless a quality dispute is upheld).
+10.2 Tips or bonuses paid directly to Providers.
+10.3 Subscription fees for Provider plans (after 7 days of activation).
+10.4 Any charges for additional materials or work requested by the Client beyond the original scope.
+10.5 Featured listing fees or advertising charges.
+10.6 Cancellation fees as described in Section 2 of this Policy.
 
-11. DISPUTE ESCALATION
-11.1 If a refund request is denied, you can escalate the matter to our Grievance Officer.
-11.2 Escalated disputes are reviewed within 5 business days.
-11.3 The decision of the Grievance Officer is final and binding.
-11.4 Nothing in this Refund Policy prevents you from seeking remedies available under applicable consumer protection laws.
+11. PARTIAL REFUNDS
+11.1 If a service is partially completed, a partial refund may be issued based on the portion not completed.
+11.2 The refund amount is determined based on the scope of work completed versus agreed upon.
+11.3 Both Client and Provider input is considered in determining the partial refund amount.
+11.4 The Company's mediation of partial refund disputes is non-binding and the Company bears NO liability for the final outcome.
 
-12. LIMITATION OF LIABILITY
-12.1 The Company's liability for any refund is limited to the Platform Fee collected by the Company for the specific booking in question.
-12.2 The Company is NOT liable for the service payment amount, as it is settled directly between the Client and Provider.
-12.3 Under no circumstances shall the Company be liable for any indirect, incidental, special, or consequential damages arising from refund-related disputes.
+12. REFUND TO WALLET (FUTURE)
+12.1 When the online payment system is activated, refunds may be offered as BookYourService Wallet credit.
+12.2 Wallet refunds are processed instantly and can be used for future bookings.
+12.3 Wallet credits have no expiry date and can be withdrawn to your bank account.
+12.4 Wallet credits are not transferable to other users.
 
-13. CONTACT
+13. DISPUTE ESCALATION
+13.1 If a refund request is denied, you can escalate the matter to our Grievance Officer at grievance@bookyourservice.co.in.
+13.2 Escalated disputes are reviewed within 5 business days.
+13.3 The decision of the Grievance Officer is final and binding on matters of Platform Fee refunds.
+13.4 Nothing in this Refund Policy prevents you from seeking remedies available under applicable consumer protection laws, including the Consumer Protection Act, 2019.
+13.5 For arbitration of larger disputes, please refer to Section 14 of the AUP (Dispute Resolution).
+
+14. LIMITATION OF LIABILITY
+14.1 The Company's liability for any refund is limited to the Platform Fee collected by the Company for the specific booking in question.
+14.2 The Company is NOT liable for the service payment amount, as it is settled directly between the Client and Provider.
+14.3 Under no circumstances shall the Company be liable for any indirect, incidental, special, or consequential damages arising from refund-related disputes.
+14.4 The Company's total aggregate liability shall not exceed the amount specified in Section 19.5 of the AUP (INR 1,000 or the Platform Fee paid in the preceding 12 months, whichever is less).
+14.5 The Company does NOT guarantee any particular outcome from dispute resolution or mediation.
+
+15. COMPLIANCE WITH CONSUMER PROTECTION LAW
+15.1 This Refund Policy is issued in compliance with the Consumer Protection Act, 2019 and the Consumer Protection (E-Commerce) Rules, 2020.
+15.2 Clients are entitled to all rights available under the Consumer Protection Act, 2019, including the right to seek redressal before the appropriate Consumer Disputes Redressal Commission.
+15.3 Nothing in this Refund Policy limits or extinguishes any rights available to consumers under Indian law.
+
+16. CONTACT
 For refund inquiries and dispute resolution:
-Email: refunds@bookyourservice.co.in
-Grievance Officer: grievance@bookyourservice.co.in
-Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
+• Email: support@bookyourservice.co.in
+• Refund Team: refunds@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Grievance Officer: grievance@bookyourservice.co.in
+• Website: https://bookyourservice.co.in
+• Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     },
   });
 
@@ -1178,52 +1339,58 @@ Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     data: {
       pageType: 'COOKIES',
       title: 'Cookie Policy',
-      version: '2.0',
-      effectiveDate: '2025-03-05',
+      version: '1.0',
+      effectiveDate: '2025-01-01',
       content: `COOKIE POLICY FOR BOOKYOURSERVICE
 
-Last Updated: March 5, 2025
+Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 
-1. INTRODUCTION
-This Cookie Policy explains how BookYourService Technologies Pvt. Ltd. ("we," "us," or "our") uses cookies and similar tracking technologies when you visit our website (bookyourservice.co.in) or use our mobile application. This policy should be read alongside our Privacy Policy.
+This Cookie Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service (Section 9 — Privacy and Data Protection) and our Privacy Policy (Section 8 — Cookies and Tracking Technologies). It explains how BookYourService Technologies Pvt. Ltd. ("we," "us," or "our") uses cookies and similar tracking technologies when you visit our website at https://bookyourservice.co.in or use our mobile application.
+
+1. INTRODUCTION AND SCOPE
+1.1 This Cookie Policy applies to all visitors and users of the BookYourService platform, including our website and mobile application.
+1.2 By using the Platform, you consent to the use of cookies as described in this Cookie Policy, subject to your right to manage or withdraw consent as outlined in Section 5.
+1.3 This policy should be read alongside our Privacy Policy and Acceptable Usage Policy (AUP), both available at https://bookyourservice.co.in.
 
 2. WHAT ARE COOKIES?
-Cookies are small text files placed on your device (computer, tablet, or mobile phone) when you visit a website or use an application. They help us remember your preferences, understand how you use our Platform, and improve your experience when browsing for Plumbing, Electrical, and AC & HVAC services.
+2.1 Cookies are small text files placed on your device (computer, tablet, or mobile phone) when you visit a website or use an application.
+2.2 They help us remember your preferences, understand how you use our Platform, and improve your experience when browsing for Plumbing, Electrical, and AC & HVAC services.
+2.3 Similar technologies we use include: local storage, session storage, web beacons (pixels), and device identifiers.
 
 3. TYPES OF COOKIES WE USE
 
-3.1 Essential Cookies (Strictly Necessary)
+3.1 ESSENTIAL COOKIES (STRICTLY NECESSARY)
 These cookies are required for the Platform to function properly and cannot be disabled. They enable core features such as:
-- User authentication and secure session management
-- Security and fraud prevention measures
-- Load balancing and server optimization
-- Booking state management and cart functionality
-- Compliance with legal obligations
+• User authentication and secure session management
+• Security and fraud prevention measures (as outlined in Section 11 of the AUP — Security Policy)
+• Load balancing and server optimization
+• Booking state management and cart functionality
+• Compliance with legal obligations
 
-3.2 Functional Cookies
+3.2 FUNCTIONAL COOKIES
 These cookies enable enhanced functionality and personalization:
-- Remembering your city/location and preferred service area
-- Saving your search preferences and category filters (Plumbing, Electrical, AC & HVAC)
-- Storing your recently viewed services and providers
-- Language and display preferences
-- Auto-filling form data for faster booking
+• Remembering your city/location and preferred service area
+• Saving your search preferences and category filters (Plumbing, Electrical, AC & HVAC)
+• Storing your recently viewed services and providers
+• Language and display preferences
+• Auto-filling form data for faster booking
 
-3.3 Analytics and Performance Cookies
+3.3 ANALYTICS AND PERFORMANCE COOKIES
 These cookies help us understand how users interact with our Platform:
-- Page views and navigation patterns
-- Feature usage statistics
-- Error tracking and performance monitoring
-- A/B testing for Platform improvements
-- Conversion tracking and funnel analysis
+• Page views and navigation patterns
+• Feature usage statistics
+• Error tracking and performance monitoring
+• A/B testing for Platform improvements
+• Conversion tracking and funnel analysis
 We use Google Analytics for website analytics. Data is collected anonymously and aggregated.
 
-3.4 Marketing and Advertising Cookies
+3.4 MARKETING AND ADVERTISING COOKIES
 These cookies are used for targeted advertising and remarketing:
-- Showing relevant service recommendations based on browsing history
-- Retargeting ads across partner networks
-- Measuring the effectiveness of marketing campaigns
-- Social media integration features
-- Email campaign tracking
+• Showing relevant service recommendations based on browsing history
+• Retargeting ads across partner networks
+• Measuring the effectiveness of marketing campaigns (as referenced in Section 16 of the AUP — Advertising and SEO Policy)
+• Social media integration features
+• Email campaign tracking
 These cookies require your explicit consent before activation.
 
 4. THIRD-PARTY COOKIES
@@ -1233,35 +1400,33 @@ We allow the following third parties to set cookies on our Platform:
 4.3 Razorpay — Payment processing (when online payments are activated)
 4.4 Facebook/Meta — Social integration and advertising
 4.5 WhatsApp — Click-to-chat functionality with providers and support
+4.6 The Company bears NO liability for the cookies and data practices of third parties. Users should review the privacy policies of these third parties independently.
 
 5. MANAGING COOKIES
 5.1 Browser Settings
 You can manage cookies through your browser settings:
-- Chrome: Settings > Privacy and Security > Cookies and other site data
-- Firefox: Options > Privacy & Security > Cookies and Site Data
-- Safari: Preferences > Privacy > Cookies and website data
-- Edge: Settings > Cookies and site permissions > Manage and delete cookies
-
+• Chrome: Settings > Privacy and Security > Cookies and other site data
+• Firefox: Options > Privacy & Security > Cookies and Site Data
+• Safari: Preferences > Privacy > Cookies and website data
+• Edge: Settings > Cookies and site permissions > Manage and delete cookies
 5.2 Cookie Consent Banner
 Our Platform displays a cookie consent banner upon your first visit. You can accept or reject non-essential cookies through this banner. You can modify your preferences at any time.
-
 5.3 Opt-Out Links
 You can opt out of specific third-party cookies:
-- Google Analytics: https://tools.google.com/dlpage/gaoptout
-- Facebook: https://www.facebook.com/help/568137493302217
-- Network Advertising Initiative: https://optout.networkadvertising.org/
-
+• Google Analytics: https://tools.google.com/dlpage/gaoptout
+• Facebook: https://www.facebook.com/help/568137493302217
+• Network Advertising Initiative: https://optout.networkadvertising.org/
 5.4 Do Not Track
 We respect Do Not Track (DNT) browser signals to the extent required by applicable law. However, DNT is not uniformly supported across all browsers and may not fully prevent all tracking.
 
 6. COOKIE DURATION
 6.1 Session cookies expire when you close your browser.
 6.2 Persistent cookies have varying durations:
-   - Authentication cookies: 30 days
-   - Preference cookies: 1 year
-   - Analytics cookies: 2 years
-   - Marketing cookies: 90 days
-   - Essential cookies: Until browser session ends
+• Authentication cookies: 30 days
+• Preference cookies: 1 year
+• Analytics cookies: 2 years
+• Marketing cookies: 90 days
+• Essential cookies: Until browser session ends
 
 7. COOKIES AND MOBILE APPLICATIONS
 Our mobile application uses similar tracking technologies including:
@@ -1272,33 +1437,48 @@ Our mobile application uses similar tracking technologies including:
 
 8. SPECIFIC COOKIES USED
 The following categories of cookies are specifically used on our Platform:
-- _ga, _gid, _gat — Google Analytics tracking
-- session_id — User session management
-- auth_token — Authentication and security
-- csrf_token — Cross-site request forgery protection
-- preferred_city — User location preference
-- recent_services — Recently viewed services
-- cookie_consent — User cookie preferences
+• _ga, _gid, _gat — Google Analytics tracking
+• session_id — User session management
+• auth_token — Authentication and security
+• csrf_token — Cross-site request forgery protection
+• preferred_city — User location preference
+• recent_services — Recently viewed services
+• cookie_consent — User cookie preferences
 
 9. YOUR RIGHTS
 9.1 You have the right to be informed about cookies used on our Platform.
 9.2 You have the right to consent to or reject non-essential cookies.
 9.3 You have the right to withdraw consent at any time by updating your cookie preferences.
-9.4 You have the right to request information about how your data is used through cookies.
+9.4 You have the right to request information about how your data is used through cookies, as further detailed in Section 7 of our Privacy Policy (Your Rights Under Indian Data Protection Law).
 
 10. IMPACT OF DISABLING COOKIES
 10.1 Essential cookies cannot be disabled as they are required for Platform functionality.
 10.2 Disabling functional cookies may result in a less personalized experience.
 10.3 Disabling analytics cookies will not affect Platform functionality but may limit our ability to improve the Platform.
 10.4 Disabling marketing cookies will prevent targeted advertising but will not affect core Platform features.
+10.5 The Company bears NO liability for any degraded experience resulting from the user's decision to disable cookies.
 
-11. UPDATES TO THIS COOKIE POLICY
-We may update this Cookie Policy to reflect changes in our practices, technology, or regulatory requirements. Material changes will be communicated through our Platform or via email. We encourage you to review this policy periodically.
+11. COMPLIANCE WITH DATA PROTECTION LAW
+11.1 This Cookie Policy is issued in compliance with the Information Technology Act, 2000, the Digital Personal Data Protection Act, 2023, and the Information Technology (Reasonable Security Practices and Procedures and Sensitive Personal Data or Information) Rules, 2011.
+11.2 We obtain explicit consent before setting non-essential cookies, as required by applicable Indian law.
+11.3 Cookie consent records are maintained for compliance and audit purposes.
 
-12. CONTACT
+12. UPDATES TO THIS COOKIE POLICY
+12.1 We may update this Cookie Policy to reflect changes in our practices, technology, or regulatory requirements.
+12.2 Material changes will be communicated through our Platform or via email, as described in Section 22 of the AUP (Policy Updates).
+12.3 We encourage you to review this policy periodically.
+12.4 Continued use of the Platform after changes constitutes acceptance of the revised policy.
+
+13. CONTACT
 For questions about our use of cookies or to exercise your rights:
-Email: privacy@bookyourservice.co.in
-Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India`,
+• Email: support@bookyourservice.co.in
+• Privacy Team: privacy@bookyourservice.co.in
+• Data Protection Officer: dpo@bookyourservice.co.in
+• Legal and Compliance: legal@bookyourservice.co.in
+• Grievance Officer: grievance@bookyourservice.co.in
+• Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtra, India
+• Website: https://bookyourservice.co.in
+• Support Hours: 8:00 AM - 10:00 PM IST, 7 days a week`,
     },
   });
 

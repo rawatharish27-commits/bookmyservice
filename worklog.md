@@ -644,3 +644,335 @@ Stage Summary:
 - Consistent design language: emerald-950/teal-800/cyan-700 hero gradients, mesh-bg section backgrounds, glass-emerald cards
 - New utility classes in globals.css for reusable patterns
 - No errors, no functional changes - only visual enhancements
+
+---
+Task ID: 3-a
+Agent: Frontend Styling Expert
+Task: Enhance global CSS color scheme and visual effects in globals.css
+
+Work Log:
+- Enhanced /src/app/globals.css with richer, more vibrant colors and new utility classes
+
+1. :root (Light Mode) Color Variable Enhancements:
+   - Primary: oklch(0.55 0.15 160) → oklch(0.50 0.20 158) — deeper, more saturated emerald green
+   - Accent: oklch(0.94 0.03 155) → oklch(0.90 0.07 75) — warm amber/orange for contrast
+   - Accent-foreground: shifted to warm hue 55 for readability on amber accent
+   - Chart-1: oklch(0.55 0.15 160) → oklch(0.50 0.20 158) — richer emerald
+   - Chart-2: oklch(0.60 0.14 190) → oklch(0.58 0.18 185) — more vibrant teal
+   - Chart-3: oklch(0.65 0.16 45) → oklch(0.72 0.18 55) — brighter warm amber
+   - Chart-4: oklch(0.55 0.12 250) → oklch(0.52 0.19 265) — deeper blue
+   - Chart-5: oklch(0.60 0.18 330) → oklch(0.60 0.22 340) — richer rose
+   - Foreground: oklch(0.15 0.02 155) → oklch(0.13 0.03 158) — deeper, higher contrast
+   - Sidebar-accent also shifted to warm amber to match
+   - All hues aligned to 158 for cohesive emerald theme
+
+2. .dark Mode Color Variable Enhancements:
+   - Primary: oklch(0.65 0.15 160) → oklch(0.68 0.18 158) — brighter, more saturated
+   - Accent: oklch(0.24 0.015 155) → oklch(0.28 0.06 75) — warm amber in dark mode too
+   - Chart colors all increased chroma and shifted to hue 158 for consistency
+   - Borders increased from 10% to 12% opacity for better visibility
+   - Input borders increased from 15% to 16% opacity
+
+3. New Utility Classes Added:
+   - .hero-gradient — Stunning 6-stop gradient (emerald-950→emerald-700→emerald-500→teal-500→cyan-600→cyan-400) with radial amber/cyan/emerald overlay pseudo-element
+   - .card-hover-lift — Spring-bounce hover effect: translateY(-6px) with emerald-tinted shadow on hover
+   - .gradient-border — Animated gradient border using mask-composite technique (emerald→teal→cyan→amber cycle, 6s animation)
+   - .text-gradient-emerald — 4-stop emerald-to-cyan text gradient (#047857→#059669→#0d9488→#06b6d4)
+   - .bg-mesh-1 — Emerald/cyan/teal mesh pattern with 4 radial gradients
+   - .bg-mesh-2 — Warm amber/orange mesh pattern with emerald accents
+   - .bg-mesh-3 — Cyan/emerald/amber mesh with teal accents
+   - .glass-card — Premium glassmorphism card: 24px blur, 2.2 saturation, emerald-tinted border, multi-layer shadow with inset highlight, border-radius: 1rem
+   - .animate-float — Gentle floating animation (6s ease-in-out, references existing @keyframes float)
+   - .animate-pulse-soft — Soft opacity pulsing (2.5s, opacity 1→0.6→1) for live indicators
+   - .glow-cyan — Cyan glow with 3-layer box-shadow
+   - .glow-orange — Orange glow with 3-layer box-shadow
+   - .scrollbar-smooth — Component-level thin scrollbar with emerald-to-cyan gradient
+
+4. Existing Utility Classes Enhanced:
+   - .glass — Increased blur 16px→20px, saturation 1.8→2, added subtle emerald-tinted shadow, adjusted opacity for more depth
+   - .glass-dark — Increased blur, added deeper shadow, adjusted background opacity
+   - .glass-emerald — Increased opacity and border intensity, added emerald glow shadow
+   - .glass-warm — Increased opacity and border intensity, added warm glow shadow
+   - .shimmer — More subtle: opacity reduced (0.35→0.18/0.28), transition widened (35%→38% start, 65%→62% end), speed slowed (3s→4s)
+   - .text-gradient — Extended from 3 stops to 4 stops (added deeper #047857 at start)
+   - .text-gradient-warm — Extended from 3 stops to 4 stops (added deeper #b45309 at start, brighter #f97316 at end)
+   - .border-gradient — Extended from 4 stops to 5 stops (added #047857 for deeper emerald)
+   - .mesh-bg — Increased opacity of all gradients for more visible effect
+   - All glow effects — Added 3rd box-shadow layer (80px spread at 5% opacity) for richer depth
+
+5. Scrollbar Enhancements:
+   - Width increased 7px→8px
+   - Track now has subtle colored background (oklch light emerald)
+   - Thumb now has 3-stop gradient (emerald→teal→cyan)
+   - Added padding-box border for cleaner look
+   - Added hover state with deeper gradient
+   - Added scrollbar-corner: transparent
+   - Added .dark scrollbar-track styling
+   - Added .scrollbar-smooth component-level class
+
+6. CSS Validation:
+   - All braces balanced ✓
+   - File size: 15,278 bytes (433 lines)
+   - All changes backward compatible — no class names removed or renamed
+
+Stage Summary:
+- :root colors made significantly richer with 33% more chroma on primary, warm amber accent added
+- Dark mode equally enhanced with matching vibrancy
+- 12 new utility classes for hero gradients, mesh backgrounds, animated borders, card effects, glassmorphism
+- All existing utilities refined (deeper glass blur, subtler shimmer, richer glows with 3-layer shadows)
+- Scrollbar fully styled for both light and dark modes
+- New animation utilities (.animate-float, .animate-pulse-soft)
+- 100% backward compatible — all existing class names preserved
+
+---
+Task ID: 4-a
+Agent: Frontend Styling Expert
+Task: Enhance home page visuals with richer colors and better visual depth
+
+Work Log:
+- Enhanced /src/components/bys/home-page.tsx with significantly more attractive visuals, richer colors, and better visual depth
+
+1. Hero Section Enhancements:
+   - Dramatic multi-stop gradient background using custom CSS (emerald-950 → emerald-900 → teal-800 → cyan-700 → slate-900) for deeper visual depth
+   - Larger gradient orbs (700px, 600px) with increased opacity (40%, 35%) for richer color bleed
+   - New deep indigo accent orb and warm amber gradient orb added for color diversity
+   - Two new animated floating orbs: warm amber (7s cycle) and deep blue (9s cycle) with different motion patterns
+   - 20 particle-like dots with randomized positions, sizes, and staggered opacity/scale animations creating a subtle starfield effect
+   - Grid pattern overlay density increased (32px spacing, opacity 0.04)
+   - RotatingText enhanced with scale animation (0.9→1 in, 1→1.1 out), longer transition (0.5s), and dramatic glow effect via drop-shadow-[0_0_24px] + textShadow (30px + 60px emerald/teal glow)
+   - CTA buttons enhanced: "Book a Service" now uses emerald→teal→cyan gradient with shadow-emerald-500/30 instead of plain white
+   - Client Login uses teal→cyan gradient border and background instead of plain emerald
+   - Join as Provider uses amber border/tones for contrast
+   - Provider Dashboard button uses amber→orange gradient for differentiation
+
+2. Live Stats Bar Enhancements:
+   - Each stat card now has a unique gradient background (emerald, blue, amber, teal, rose) replacing plain glass
+   - Per-stat hoverGlow colors (shadow-emerald-300/40, shadow-blue-300/40, etc.) for colored shadow on hover
+   - ring-1 ring-white/60 with backdrop-blur-sm for glass-like card quality
+   - Stat icon containers upgraded to shadow-md with deeper gradient colors (from-emerald-600, from-blue-600, etc.)
+   - Live indicator dot enlarged from size-2.5 to size-3 with bg-emerald-400 (brighter) and shadow-md shadow-emerald-400/50 for prominent glow pulse
+
+3. Service Categories Enhancements:
+   - CATEGORY_BG_MAP updated with 3-stop gradients: Plumbing=blue-600→blue-500→cyan-400, Electrical=amber-600→amber-500→orange-400, HVAC=teal-600→emerald-500→cyan-400
+   - CATEGORY_LIGHT_BG updated with gradient backgrounds + borders: each badge now uses bg-gradient-to-r with matching color pairs + border (blue-100/50, amber-100/50, teal-100/50)
+   - Added gradient overlay on card hover (opacity 0.03 of category gradient color)
+   - Added shimmer effect layer that animates on hover via group-hover:animate-[shimmer_2s_ease-in-out]
+
+4. How It Works Enhancements:
+   - Connecting line made thicker (h-1 with rounded-full) and now uses 4-stop gradient (emerald→teal→cyan→amber)
+   - Animated glowing light travels along the connecting line (motion.div with x: -5% → 105% over 2.5s repeating)
+   - Line fill animation duration increased to 2s for more dramatic reveal
+   - Each step now has unique colors: Step 1=emerald theme, Step 2=cyan/teal theme, Step 3=amber/orange theme
+   - Per-step properties added: iconBg, iconColor, shadowColor for themed icon containers
+   - Step numbers use 3-stop gradients with matching colored shadow glow
+   - Icon containers use category-matching gradient backgrounds instead of uniform emerald
+
+5. Testimonials Enhancements:
+   - Card background enhanced with gradient tint: bg-gradient-to-br from-emerald-50/60 via-white/80 to-teal-50/40 + ring-1 ring-emerald-200/40
+   - Star ratings now have amber glow: drop-shadow-[0_0_4px_rgba(251,191,36,0.4)]
+   - Avatar uses 3-stop gradient (emerald→teal→cyan) with ring-2 ring-white/40 for richer appearance
+   - Service badge uses gradient background (from-amber-50 to-orange-50) with amber border instead of plain emerald
+   - Navigation prev/next buttons use gradient backgrounds (from-white to-emerald-50)
+   - Active dot uses gradient (from-emerald-500 to-teal-400) with shadow-sm shadow-emerald-400/30
+   - Inactive dots have hover:bg-emerald-300 for interactivity
+
+6. Provider CTA Section Enhancements:
+   - Dramatic 5-stop custom CSS gradient (emerald-950 → emerald-900 → teal → cyan → slate/deep blue)
+   - Larger gradient orbs (500px, 600px, 350px) with increased opacity for richer atmosphere
+   - New indigo accent orb added for deep blue hint
+   - 12 particle dots with randomized animations for subtle sparkle
+   - Grid pattern density increased to 32px
+   - Badge uses teal→cyan gradient (from-teal-500/20 to-cyan-500/20)
+   - "Service Provider" heading uses gradient text (cyan-200→teal-200→emerald-200 bg-clip-text text-transparent)
+   - Description text changed to cyan-100/80 for complementary tone
+   - Stat cards use individual gradient backgrounds: emerald→teal, teal→cyan, cyan→blue with ring-1 ring-white/10
+   - Stat labels use matching colors (emerald-200, teal-200, cyan-200)
+   - Join as Provider button uses shimmer emerald→teal→cyan gradient instead of plain white
+   - Learn More button uses cyan border/tone instead of emerald
+
+All Existing Functionality Preserved:
+- WebSocket connection on port 3003 with REST API fallback
+- Visitor tracking with heartbeat
+- useApp() navigate for navigation
+- useAuth() for user state
+- useApi() for data fetching
+- All TypeScript interfaces kept unchanged
+- No mock data - all from real APIs
+- All event handlers, onClick, and data flow preserved exactly
+
+Lint: Clean, no errors (eslint passes for home-page.tsx)
+TypeScript: No type errors in home-page.tsx
+
+Stage Summary:
+- Home page significantly enhanced with richer colors, deeper gradients, more animated elements, and better visual depth
+- 6 sections enhanced: Hero, Live Stats, Service Categories, How It Works, Testimonials, Provider CTA
+- New visual effects: particle dots, glowing connecting line, shimmer on cards, gradient tinted backgrounds, 3-stop gradients throughout
+- Consistent color theming with category-specific colors (blue/cyan for Plumbing, amber/orange for Electrical, teal/emerald/cyan for HVAC)
+
+---
+Task ID: 2-a
+Agent: Legal Pages Update Agent
+Task: Update legal pages seed data with comprehensive Acceptable Usage Policy (AUP)
+
+Work Log:
+- Read existing seed file at prisma/seed.ts (lines 762-1303 for legal pages)
+- Read legal-page.tsx component to understand content parsing format (ALL CAPS headers, numbered sections, • bullets)
+- Completely rewrote TERMS legal page with comprehensive 25-section AUP:
+  - Title changed from "Terms of Service" to "Acceptable Usage Policy & Terms of Service"
+  - Version changed from "2.0" to "1.0"
+  - Effective date changed from "2025-03-05" to "2025-01-01"
+  - Content expanded from ~10,000 to ~39,897 characters
+  - All 25 sections included: Introduction, Eligibility, Account Responsibilities, Prohibited Activities, KYC & Verification, Service Listing Rules, Booking Rules, Communication Policy, Privacy & Data Protection, Intellectual Property, Security Policy, Content Policy, Platform Fees, Dispute Resolution, Refunds & Cancellations, Advertising & SEO Policy, International Use, Account Suspension & Termination, Limitation of Liability, Compliance with Law, Reporting Violations, Policy Updates, Contact Information, Additional Enterprise Clauses, Final Provisions
+  - Company limitation of liability clearly stated in Section 19 (NO WARRANTY, INTERMEDIARY STATUS, NOT RESPONSIBLE, NO LIABILITY FOR DAMAGES, INR 1,000 cap, INDEMNIFICATION)
+  - Contact emails: support@bookyourservice.co.in, legal@bookyourservice.co.in
+  - Website URL: https://bookyourservice.co.in
+  - 8 occurrences of "bears NO liability" and 6 occurrences of "is NOT liable/NOT responsible/NOT a party"
+- Updated PRIVACY legal page with comprehensive content:
+  - Version: 1.0, Effective Date: 2025-01-01
+  - Expanded from ~7,000 to ~12,616 characters
+  - 13 sections now include AUP cross-references (Section 5 KYC, Section 8 Communication, Section 11 Security, Section 14 Dispute Resolution, Section 19 Limitation of Liability, Section 22 Policy Updates)
+  - Added Digital Personal Data Protection Act, 2023 compliance
+  - Added Sensitive Personal Data section
+  - Added Right to Withdraw Consent and Right to Grievance Redressal
+  - Added data breach 72-hour notification requirement
+  - Added comprehensive contact section with all emails
+- Updated REFUND legal page with comprehensive content:
+  - Title changed to "Refund & Cancellation Policy"
+  - Version: 1.0, Effective Date: 2025-01-01
+  - Expanded from ~6,000 to ~9,796 characters
+  - 16 sections now include AUP cross-references (Section 14 Dispute Resolution, Section 18 Account Suspension, Section 19 Limitation of Liability)
+  - Added Compliance with Consumer Protection Law section
+  - Added INR 1,000 liability cap reference from AUP Section 19.5
+  - Added • bullet point format matching component parsing
+  - Added comprehensive contact section
+- Updated COOKIES legal page with comprehensive content:
+  - Version: 1.0, Effective Date: 2025-01-01
+  - Expanded from ~5,000 to ~8,301 characters
+  - 13 sections now include AUP cross-references (Section 11 Security Policy, Section 16 Advertising and SEO Policy, Section 22 Policy Updates)
+  - Added Compliance with Data Protection Law section
+  - Added • bullet point format matching component parsing
+  - Added NO liability disclaimer for third-party cookies
+  - Added NO liability for degraded experience from disabling cookies
+  - Added comprehensive contact section
+- Fixed pre-existing lint error in header.tsx (missing closing </div> for gradient wrapper around Avatar at line 472)
+- Ran bun run db:seed successfully — all legal pages seeded
+- Verified all legal pages via API (GET /api/legal/TERMS, PRIVACY, REFUND, COOKIES)
+- Confirmed all key content: emails, website URL, limitation of liability, all 25 AUP sections
+
+Stage Summary:
+- 4 legal pages comprehensively updated with AUP cross-references and company liability protection
+- TERMS/AUP: 25 sections, 39,897 characters, strong limitation of liability (8 "bears NO liability" + 6 "is NOT liable" statements)
+- PRIVACY: 13 sections, 12,616 characters, DPDP Act 2023 compliance, cross-references to AUP
+- REFUND: 16 sections, 9,796 characters, Consumer Protection Act compliance, cross-references to AUP
+- COOKIES: 13 sections, 8,301 characters, Data Protection Law compliance, cross-references to AUP
+- All pages: version 1.0, effective date 2025-01-01, contact emails (support@, legal@, dpo@, grievance@), website https://bookyourservice.co.in
+- Fixed pre-existing header.tsx lint error
+- All APIs verified working correctly
+---
+Task ID: 5-a-6-a
+Agent: Frontend Styling Expert
+Task: Enhance header, footer, login, and register pages with richer colors and better visual depth
+
+Work Log:
+- Enhanced /src/components/bys/header.tsx with richer gradients and color depth
+- Enhanced /src/components/bys/footer.tsx with dramatic multi-color accents and new legal link
+- Enhanced /src/components/bys/login-page.tsx with deeper panel gradient and animated patterns
+- Enhanced /src/components/bys/register-page.tsx with role-specific color themes and gradient accents
+
+Header Enhancements (header.tsx):
+1. Logo gradient richer - from-emerald-700 via-teal-500 to-cyan-400 with from-white/25 via-white/5 overlay
+2. Active nav indicator - from-emerald-500 via-teal-400 to-cyan-400 (3-stop gradient)
+3. User avatar gradient ring - p-[2px] gradient border from-emerald-400 via-teal-400 to-cyan-400 replacing plain ring-2
+4. Notification badge - from-amber-400 via-orange-400 to-rose-400 with pulse animation
+5. Nav hover - hover:bg-gradient-to-r hover:from-emerald-50/60 hover:to-cyan-50/40 replacing solid bg
+6. Mobile menu - bg-gradient-to-b from-emerald-50/80 via-white/90 to-teal-50/80 tinting
+7. Mobile header - bg-gradient-to-r from-emerald-50/50 to-cyan-50/30
+8. Mobile active nav - from-emerald-50 via-teal-50 to-cyan-50 (3-stop)
+9. Desktop Sign Up button - from-emerald-600 via-teal-600 to-cyan-500 (3-stop)
+10. Mobile Login button - from-emerald-600 via-teal-600 to-cyan-500
+11. Scrolled shadow - shadow-black/[0.06] with via-emerald-400/60 border line
+
+Footer Enhancements (footer.tsx):
+1. Gradient top border - h-1.5 from-emerald-500 via-cyan-400 via-40% to-teal-500 via-70% to-amber-400 (multi-color)
+2. Social icon hover - from-emerald-600 via-teal-500 to-cyan-500 (3-stop) with shadow-teal-500/30
+3. Category icons - bg-gradient-to-br from-emerald-50 to-cyan-50 with gradient hover states
+4. Section heading dots - Unique gradients per section (Quick Links=emerald→cyan, Services=teal→cyan, Company=amber→orange, Stay Updated=amber→orange, Contact=emerald→teal)
+5. Footer background - from-emerald-50/30 via-gray-50/95 to-gray-100/80
+6. Newsletter email - bg-gradient-to-r from-amber-50/50 to-orange-50/30 with border-amber-300/60
+7. Newsletter send - from-amber-500 via-orange-500 to-rose-500 (3-stop)
+8. Contact icons - Gradient backgrounds per type (MapPin=emerald→teal, Phone=teal→cyan, Mail=cyan→blue)
+9. Bottom bar - bg-gradient-to-r from-gray-100/50 via-emerald-50/20 to-gray-100/50
+10. Heart icon - drop-shadow-sm
+11. "Acceptable Usage Policy" link added to legalLinks array
+
+Login Page Enhancements (login-page.tsx):
+1. Left panel gradient deeper - from-emerald-900 via-teal-800 to-cyan-900 (darker base)
+2. Mesh gradient overlays enhanced - Higher opacity values (0.55, 0.4, 0.2, 0.35) + new 5th overlay
+3. Floating icons - shadow-xl shadow-black/25 + drop-shadow-[0_0_12px_rgba(16,185,129,0.2)] glow effect
+4. Brand icon - bg-white/25 shadow-lg shadow-black/10
+5. Headline accent - bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent
+6. Right panel - Third orb bg-cyan-100/15 + animated dot pattern (opacity-[0.03] radial gradient)
+7. Glassmorphism card - backdrop-blur-xl, shadow-emerald-900/8, ring-white/70, gradient top accent h-1 from-emerald-400 via-teal-400 to-cyan-400
+8. Header icon - from-emerald-600 via-teal-500 to-cyan-500
+9. Tab colors - Client=emerald→teal→cyan, Provider=amber→orange→rose (role-specific)
+10. TabsList bg - bg-gradient-to-r from-emerald-50/80 to-cyan-50/60
+11. Form inputs - focus:bg-white/80 on all fields
+12. Submit buttons - from-emerald-600 via-teal-600 to-cyan-500 (3-stop)
+13. Google button - hover:bg-white hover:shadow-md replacing hover:bg-gray-50
+14. Phone button - bg-gradient-to-r from-emerald-50/50 to-teal-50/30
+15. Trust badges - bg-gradient-to-br from-emerald-100 to-cyan-100
+
+Register Page Enhancements (register-page.tsx):
+1. Same left panel gradient depth as login (emerald-900→teal-800→cyan-900)
+2. Same mesh gradient overlay enhancement with 5 overlays
+3. Same floating icon glow effects
+4. Same headline gradient text (emerald-200→teal-200→cyan-200)
+5. Same right panel enhancements (3rd orb + dot pattern)
+6. Same glassmorphism card enhancements (backdrop-blur-xl + gradient top accent)
+7. Same header icon (emerald-600→teal-500→cyan-500)
+8. Tab colors - Client=emerald→teal→cyan, Provider=amber→orange→rose (role-specific)
+9. Specialization colors enhanced - Plumbing=blue-600→cyan-400, Electrical=amber-500→orange-500→yellow-400, AC=teal-500→emerald-500→cyan-400
+10. Client submit button - from-emerald-600 via-teal-600 to-cyan-500 (emerald theme)
+11. Provider submit button - from-amber-500 via-orange-500 to-rose-500 (amber/orange theme)
+12. Form inputs - focus:bg-white/80 on all fields including phone and password
+13. Trust badges - bg-gradient-to-br from-emerald-100 to-cyan-100
+14. Password strength "Very Strong" - from-emerald-600 via-teal-500 to-cyan-500
+
+All Existing Functionality Preserved:
+- Same component logic, state management, and event handlers in all 4 files
+- Same TypeScript interfaces, function signatures
+- Same navigation patterns (useApp navigate)
+- Same auth handling (useAuth login/register/logout)
+- Same form fields and validation logic
+- Same notification count logic in header
+- Same footer newsletter subscription
+- Same scroll-to-top on footer navigation
+
+Build: Clean, no errors
+
+Stage Summary:
+- Header: Richer 3-stop gradients, gradient avatar ring, vibrant notification badge, gradient nav hover, tinted mobile menu
+- Footer: Multi-color top border, per-section gradient dots, gradient contact icons, warm newsletter, Acceptable Usage Policy link
+- Login: Deeper left panel, animated dot pattern, gradient top accent on card, role-specific tab colors, enhanced trust badges
+- Register: Same depth enhancements + role-specific submit buttons (emerald for Client, amber/orange for Provider), enhanced specialization gradients
+
+
+---
+Task ID: 7
+Agent: Main Orchestrator
+Task: Final verification - lint check, API testing, ensure everything works
+
+Work Log:
+- Ran `bun run lint` - passes with no errors
+- Verified all 12 API endpoints return HTTP 200
+- Tested client login flow - works correctly, returns JWT token
+- Verified AUP legal page loaded with 39,897 characters of comprehensive content
+- Verified all 4 legal pages (TERMS, PRIVACY, REFUND, COOKIES) loaded
+- Verified real-time stats (8 clients, 5 providers, 14 services, 12 bookings)
+- Checked dev server log - zero compilation errors
+- Both services running: Next.js on port 3000, Stats WebSocket on port 3003
+
+Stage Summary:
+- All tasks completed successfully
+- No errors in lint, compilation, or runtime
+- BookYourService platform fully functional with enhanced UI and comprehensive legal pages
