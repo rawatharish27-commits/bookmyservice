@@ -1,12 +1,12 @@
 'use client';
 
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import {
@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Star, Trash2, Pencil, Loader2, MessageSquare } from 'lucide-react';
+import { Star, Trash2, Pencil, Loader2, MessageSquare, ArrowRight } from 'lucide-react';
 
 interface Review {
   id: string;
@@ -38,6 +38,11 @@ interface Review {
   service?: { id: string; title: string };
   reviewed?: { id: string; name: string };
 }
+
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+};
 
 export function ClientReviewsPage() {
   const { navigate } = useApp();
@@ -84,104 +89,120 @@ export function ClientReviewsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6"
+      >
         <h1 className="text-2xl font-bold">My Reviews</h1>
         <p className="text-sm text-muted-foreground">Reviews you&apos;ve given to service providers</p>
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-32 w-full" />
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted/50" />
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="py-16 text-center">
-          <MessageSquare className="mx-auto size-12 text-muted-foreground/40" />
-          <p className="mt-3 text-muted-foreground">No reviews yet</p>
-          <p className="text-sm text-muted-foreground">Complete a booking to leave your first review</p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center py-16 text-center"
+        >
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-50">
+            <MessageSquare className="size-10 text-amber-300" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
+          <p className="mt-1 text-sm text-muted-foreground/70">Complete a booking to leave your first review</p>
           <Button
-            variant="outline"
-            className="mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
             onClick={() => navigate('client-bookings')}
           >
-            View My Bookings
+            View My Bookings <ArrowRight className="ml-2 size-4" />
           </Button>
-        </div>
+        </motion.div>
       ) : (
         <div className="space-y-4">
-          {reviews.map((review) => (
-            <Card key={review.id} className="gap-4">
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-semibold">{review.service?.title || 'Service'}</p>
-                    <p className="text-sm text-muted-foreground">
-                      by {review.reviewed?.name || 'Provider'}
-                    </p>
+          {reviews.map((review, idx) => (
+            <motion.div
+              key={review.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.05 }}
+            >
+              <Card className="overflow-hidden rounded-2xl border-0 shadow-sm transition-shadow hover:shadow-md">
+                <CardContent className="p-5">
+                  <div className="flex items-start justify-between">
+                    <div>
+                      <p className="font-semibold">{review.service?.title || 'Service'}</p>
+                      <p className="text-sm text-muted-foreground">
+                        by {review.reviewed?.name || 'Provider'}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-emerald-50" onClick={() => openEdit(review)}>
+                        <Pencil className="size-3.5" />
+                      </Button>
+                      <AlertDialog open={deleteTarget === review.id} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="ghost" size="icon" className="size-8 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-600">
+                            <Trash2 className="size-3.5" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="rounded-2xl">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Review</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Are you sure you want to delete this review? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDelete(review.id)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="icon" className="size-8" onClick={() => openEdit(review)}>
-                      <Pencil className="size-3.5" />
-                    </Button>
-                    <AlertDialog open={deleteTarget === review.id} onOpenChange={(open) => !open && setDeleteTarget(null)}>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="size-8 text-red-500 hover:text-red-600">
-                          <Trash2 className="size-3.5" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Review</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Are you sure you want to delete this review? This action cannot be undone.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDelete(review.id)}
-                            className="bg-red-600 hover:bg-red-700"
-                          >
-                            Delete
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
-                  </div>
-                </div>
 
-                <div className="mt-3 flex items-center gap-2">
-                  <div className="flex">
-                    {Array.from({ length: 5 }).map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`size-4 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
-                      />
-                    ))}
+                  <div className="mt-3 flex items-center gap-2">
+                    <div className="flex">
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`size-4 ${i < review.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]' : 'text-gray-200'}`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {new Date(review.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </span>
                   </div>
-                  <span className="text-sm text-muted-foreground">
-                    {new Date(review.createdAt).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </span>
-                </div>
 
-                {review.comment && (
-                  <p className="mt-2 text-sm text-muted-foreground">{review.comment}</p>
-                )}
-              </CardContent>
-            </Card>
+                  {review.comment && (
+                    <p className="mt-2 text-sm text-muted-foreground">{review.comment}</p>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
           ))}
         </div>
       )}
 
       {/* Edit Review Dialog */}
       <Dialog open={!!editDialog} onOpenChange={(open) => !open && setEditDialog(null)}>
-        <DialogContent>
+        <DialogContent className="rounded-2xl">
           <DialogHeader>
             <DialogTitle>Edit Review</DialogTitle>
             <DialogDescription>
@@ -213,12 +234,13 @@ export function ClientReviewsPage() {
                 onChange={(e) => setEditComment(e.target.value)}
                 placeholder="Share your experience..."
                 rows={4}
+                className="rounded-xl"
               />
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditDialog(null)}>Cancel</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleEdit} disabled={updating}>
+            <Button variant="outline" onClick={() => setEditDialog(null)} className="rounded-xl">Cancel</Button>
+            <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl" onClick={handleEdit} disabled={updating}>
               {updating && <Loader2 className="mr-2 size-4 animate-spin" />}
               Save Changes
             </Button>

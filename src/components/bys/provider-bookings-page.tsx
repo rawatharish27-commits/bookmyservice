@@ -1,15 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CalendarCheck, User, Briefcase, Clock, CheckCircle2, XCircle, Play, Eye } from 'lucide-react';
 
 interface Booking {
@@ -35,26 +34,28 @@ interface BookingResponse {
 }
 
 function StatusBadge({ status }: { status: string }) {
-  const colors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-orange-100 text-orange-800 border-orange-200',
-    COMPLETED: 'bg-green-100 text-green-800 border-green-200',
-    CANCELLED: 'bg-red-100 text-red-800 border-red-200',
+  const config: Record<string, { className: string; dotColor: string }> = {
+    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
+    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
+  const c = config[status] || { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' };
   return (
-    <Badge variant="outline" className={colors[status] || 'bg-gray-100 text-gray-800'}>
+    <Badge variant="outline" className={`${c.className} gap-1.5 text-xs font-semibold`}>
+      <span className={`size-1.5 rounded-full ${c.dotColor}`} />
       {status.replace('_', ' ')}
     </Badge>
   );
 }
 
 const TABS = [
-  { key: 'PENDING', label: 'New Requests' },
-  { key: 'ACCEPTED', label: 'Accepted' },
-  { key: 'IN_PROGRESS', label: 'In Progress' },
-  { key: 'COMPLETED', label: 'Completed' },
-  { key: 'CANCELLED', label: 'Cancelled' },
+  { key: 'PENDING', label: 'New Requests', gradient: 'from-amber-400 to-orange-500', icon: Clock },
+  { key: 'ACCEPTED', label: 'Accepted', gradient: 'from-sky-400 to-blue-500', icon: CheckCircle2 },
+  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-orange-400 to-amber-500', icon: Play },
+  { key: 'COMPLETED', label: 'Completed', gradient: 'from-emerald-400 to-teal-500', icon: CheckCircle2 },
+  { key: 'CANCELLED', label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 ];
 
 export function ProviderBookingsPage() {
@@ -81,12 +82,12 @@ export function ProviderBookingsPage() {
           <>
             <Button
               size="sm"
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25 rounded-lg"
               onClick={() => handleAction(booking.id, 'accept')}
             >
               <CheckCircle2 className="mr-1 size-3" /> Accept
             </Button>
-            <Button size="sm" variant="destructive" onClick={() => handleAction(booking.id, 'reject')}>
+            <Button size="sm" variant="outline" className="border-red-200 text-red-600 hover:bg-red-50 rounded-lg" onClick={() => handleAction(booking.id, 'reject')}>
               <XCircle className="mr-1 size-3" /> Reject
             </Button>
           </>
@@ -95,7 +96,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-orange-600 text-white hover:bg-orange-700"
+            className="bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-sm rounded-lg"
             onClick={() => handleAction(booking.id, 'start')}
           >
             <Play className="mr-1 size-3" /> Start Service
@@ -105,7 +106,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25 rounded-lg"
             onClick={() => handleAction(booking.id, 'complete')}
           >
             <CheckCircle2 className="mr-1 size-3" /> Mark Complete
@@ -117,46 +118,85 @@ export function ProviderBookingsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6"
+      >
         <h1 className="text-2xl font-bold">Bookings</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your service bookings</p>
+      </motion.div>
+
+      {/* Tab Buttons */}
+      <div className="mb-6 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.key;
+          return (
+            <motion.button
+              key={tab.key}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+                isActive
+                  ? `bg-gradient-to-r ${tab.gradient} text-white shadow-lg`
+                  : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              <tab.icon className="size-4" />
+              {tab.label}
+            </motion.button>
+          );
+        })}
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="mb-6 w-full justify-start overflow-x-auto">
-          {TABS.map((tab) => (
-            <TabsTrigger key={tab.key} value={tab.key} className="text-xs sm:text-sm">
-              {tab.label}
-            </TabsTrigger>
-          ))}
-        </TabsList>
-
-        {TABS.map((tab) => (
-          <TabsContent key={tab.key} value={tab.key}>
-            {loading ? (
-              <div className="space-y-4">
-                {[1, 2, 3].map((i) => (
-                  <Skeleton key={i} className="h-32" />
-                ))}
-              </div>
-            ) : bookings.length === 0 ? (
-              <Card>
-                <CardContent className="flex flex-col items-center py-12 text-center">
-                  <CalendarCheck className="mb-4 size-12 text-muted-foreground/50" />
-                  <h3 className="text-lg font-medium">No {tab.label.toLowerCase()}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    {tab.key === 'PENDING'
-                      ? 'New booking requests will appear here'
-                      : `No ${tab.label.toLowerCase()} bookings found`}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              <ScrollArea className="max-h-[600px]">
-                <div className="space-y-3">
-                  {bookings.map((booking) => (
-                    <Card key={booking.id} className="transition-shadow hover:shadow-md">
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted/50" />
+            ))}
+          </div>
+        ) : bookings.length === 0 ? (
+          <motion.div
+            key="empty"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <Card className="rounded-2xl border-0 shadow-sm">
+              <CardContent className="flex flex-col items-center py-12 text-center">
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
+                  <CalendarCheck className="size-10 text-emerald-300" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-muted-foreground">
+                  No {TABS.find(t => t.key === activeTab)?.label.toLowerCase()}
+                </h3>
+                <p className="mt-1 text-sm text-muted-foreground/70">
+                  {activeTab === 'PENDING'
+                    ? 'New booking requests will appear here'
+                    : `No ${TABS.find(t => t.key === activeTab)?.label.toLowerCase()} bookings found`}
+                </p>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ) : (
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <ScrollArea className="max-h-[600px]">
+              <div className="space-y-3">
+                {bookings.map((booking, idx) => (
+                  <motion.div
+                    key={booking.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <Card className="overflow-hidden rounded-2xl border-0 shadow-sm transition-shadow hover:shadow-md">
+                      <div className={`h-1 bg-gradient-to-r ${TABS.find(t => t.key === booking.status)?.gradient || 'from-gray-400 to-gray-500'}`} />
                       <CardContent className="p-4">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                           <div className="min-w-0 flex-1">
@@ -182,7 +222,7 @@ export function ProviderBookingsPage() {
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <span className="text-lg font-bold text-emerald-600">
+                            <span className="text-gradient text-lg font-bold">
                               ₹{booking.finalPrice?.toLocaleString()}
                             </span>
                             <div className="flex gap-2">
@@ -190,6 +230,7 @@ export function ProviderBookingsPage() {
                               <Button
                                 size="sm"
                                 variant="outline"
+                                className="rounded-lg"
                                 onClick={() => navigate('provider-booking-detail', { bookingId: booking.id })}
                               >
                                 <Eye className="mr-1 size-3" /> Detail
@@ -199,13 +240,13 @@ export function ProviderBookingsPage() {
                         </div>
                       </CardContent>
                     </Card>
-                  ))}
-                </div>
-              </ScrollArea>
-            )}
-          </TabsContent>
-        ))}
-      </Tabs>
+                  </motion.div>
+                ))}
+              </div>
+            </ScrollArea>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,13 +1,13 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
+import { Skeleton } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   CalendarCheck,
@@ -15,12 +15,13 @@ import {
   Star,
   TrendingUp,
   Plus,
-  Eye,
   Clock,
   CheckCircle2,
   XCircle,
   Briefcase,
   ArrowRight,
+  Sparkles,
+  User,
 } from 'lucide-react';
 
 interface Booking {
@@ -40,16 +41,28 @@ interface BookingResponse {
   pagination: { total: number };
 }
 
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 },
+};
+
+const stagger = {
+  animate: { transition: { staggerChildren: 0.08 } },
+};
+
 function StatusBadge({ status }: { status: string }) {
-  const colors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-orange-100 text-orange-800 border-orange-200',
-    COMPLETED: 'bg-green-100 text-green-800 border-green-200',
-    CANCELLED: 'bg-red-100 text-red-800 border-red-200',
+  const colors: Record<string, { className: string; dotColor: string }> = {
+    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
+    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
+  const c = colors[status] || colors.PENDING;
   return (
-    <Badge variant="outline" className={colors[status] || 'bg-gray-100 text-gray-800'}>
+    <Badge variant="outline" className={`${c.className} gap-1.5 text-xs font-semibold`}>
+      <span className={`size-1.5 rounded-full ${c.dotColor}`} />
       {status.replace('_', ' ')}
     </Badge>
   );
@@ -65,12 +78,12 @@ export function ProviderDashboardPage() {
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <Skeleton className="mb-2 h-8 w-64" />
-          <Skeleton className="h-4 w-48" />
+          <div className="h-8 w-64 animate-pulse rounded-xl bg-muted/50" />
+          <div className="mt-2 h-4 w-48 animate-pulse rounded-lg bg-muted/50" />
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-32" />
+            <div key={i} className="h-32 animate-pulse rounded-2xl bg-muted/50" />
           ))}
         </div>
       </div>
@@ -91,7 +104,7 @@ export function ProviderDashboardPage() {
       return d >= weekAgo;
     })
     .reduce((sum, b) => sum + (b.providerEarnings || 0), 0);
-  const avgRating = 4.5; // Placeholder since we need separate API
+  const avgRating = 4.5;
 
   const handleBookingAction = async (bookingId: string, action: string) => {
     try {
@@ -102,98 +115,127 @@ export function ProviderDashboardPage() {
     }
   };
 
+  const stats = [
+    {
+      title: "Today's Bookings",
+      value: todayBookings.length,
+      icon: CalendarCheck,
+      gradient: 'from-emerald-400 to-teal-500',
+      bgGlow: 'bg-emerald-500/10',
+    },
+    {
+      title: 'This Week Earnings',
+      value: `₹${weekEarnings.toLocaleString()}`,
+      icon: DollarSign,
+      gradient: 'from-sky-400 to-blue-500',
+      bgGlow: 'bg-sky-500/10',
+    },
+    {
+      title: 'Average Rating',
+      value: avgRating,
+      icon: Star,
+      gradient: 'from-amber-400 to-orange-500',
+      bgGlow: 'bg-amber-500/10',
+    },
+    {
+      title: 'Total Bookings',
+      value: bookings.length,
+      icon: TrendingUp,
+      gradient: 'from-violet-400 to-purple-500',
+      bgGlow: 'bg-violet-500/10',
+    },
+  ];
+
+  const quickActions = [
+    { icon: Plus, label: 'Create Service', nav: 'provider-create-service', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
+    { icon: DollarSign, label: 'View Earnings', nav: 'provider-earnings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
+    { icon: Star, label: 'View Reviews', nav: 'provider-reviews', gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-500/25' },
+    { icon: CalendarCheck, label: 'All Bookings', nav: 'provider-bookings', gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/25' },
+  ];
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Welcome */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
-          Welcome back, {user?.name?.split(' ')[0] || 'Provider'}!
-        </h1>
-        <p className="mt-1 text-muted-foreground">Here&apos;s an overview of your business today.</p>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      {/* Welcome Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+      >
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-white/5 blur-3xl" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-5 text-emerald-200" />
+              <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+            </div>
+            <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+              {user?.name?.split(' ')[0] || 'Provider'} 👋
+            </h1>
+            <p className="mt-1 text-emerald-100/80">Here&apos;s an overview of your business today</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="glass-dark rounded-xl px-4 py-2 text-center">
+              <p className="text-xs text-emerald-200">This Week</p>
+              <p className="text-lg font-bold text-white">₹{weekEarnings.toLocaleString()}</p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-l-4 border-l-emerald-500">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Today&apos;s Bookings</p>
-                <p className="mt-1 text-2xl font-bold">{todayBookings.length}</p>
-              </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100">
-                <CalendarCheck className="size-5 text-emerald-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-blue-500">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">This Week Earnings</p>
-                <p className="mt-1 text-2xl font-bold">₹{weekEarnings.toLocaleString()}</p>
-              </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
-                <DollarSign className="size-5 text-blue-600" />
+      <motion.div
+        variants={stagger}
+        initial="initial"
+        animate="animate"
+        className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        {stats.map((stat) => (
+          <motion.div key={stat.title} variants={fadeUp}>
+            <div className="glass group relative overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+              <div className={`absolute -right-3 -top-3 size-16 rounded-full ${stat.bgGlow} blur-xl transition-all duration-300 group-hover:scale-150`} />
+              <div className="relative flex items-center gap-4">
+                <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg`}>
+                  <stat.icon className="size-5 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-xs text-muted-foreground">{stat.title}</p>
+                  <p className="text-xl font-bold">{stat.value}</p>
+                </div>
               </div>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-yellow-500">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Average Rating</p>
-                <p className="mt-1 text-2xl font-bold">{avgRating}</p>
-              </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-yellow-100">
-                <Star className="size-5 text-yellow-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="border-l-4 border-l-purple-500">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Bookings</p>
-                <p className="mt-1 text-2xl font-bold">{bookings.length}</p>
-              </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-purple-100">
-                <TrendingUp className="size-5 text-purple-600" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+          </motion.div>
+        ))}
+      </motion.div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* New Booking Requests */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-3">
-              <CardTitle className="text-lg">New Booking Requests</CardTitle>
-              <Badge className="bg-emerald-600 text-white hover:bg-emerald-700">
+        <motion.div className="lg:col-span-2" {...fadeUp}>
+          <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-orange-50/50 pb-3">
+              <CardTitle className="text-lg font-semibold">New Booking Requests</CardTitle>
+              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-sm">
                 {pendingBookings.length} pending
               </Badge>
             </CardHeader>
-            <Separator />
             <CardContent className="p-0">
               {pendingBookings.length === 0 ? (
-                <div className="p-8 text-center text-muted-foreground">
-                  <Clock className="mx-auto mb-2 size-8 opacity-50" />
-                  <p>No pending requests</p>
+                <div className="p-8 text-center">
+                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-amber-50">
+                    <Clock className="size-8 text-amber-300" />
+                  </div>
+                  <p className="mt-3 text-muted-foreground">No pending requests</p>
                 </div>
               ) : (
                 <ScrollArea className="max-h-96">
-                  {pendingBookings.map((booking) => (
-                    <div
+                  {pendingBookings.map((booking, idx) => (
+                    <motion.div
                       key={booking.id}
-                      className="flex items-center justify-between border-b p-4 last:border-0"
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -201,7 +243,7 @@ export function ProviderDashboardPage() {
                           <StatusBadge status={booking.status} />
                         </div>
                         <p className="mt-1 text-sm text-muted-foreground">
-                          {booking.client?.name} • {booking.scheduledDate} at {booking.scheduledTime}
+                          {booking.client?.name} &middot; {booking.scheduledDate} at {booking.scheduledTime}
                         </p>
                         <p className="text-sm font-semibold text-emerald-600">
                           ₹{booking.finalPrice?.toLocaleString()}
@@ -210,7 +252,7 @@ export function ProviderDashboardPage() {
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="bg-emerald-600 text-white hover:bg-emerald-700"
+                          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25"
                           onClick={() => handleBookingAction(booking.id, 'accept')}
                         >
                           <CheckCircle2 className="mr-1 size-3" />
@@ -218,92 +260,75 @@ export function ProviderDashboardPage() {
                         </Button>
                         <Button
                           size="sm"
-                          variant="destructive"
+                          variant="outline"
+                          className="border-red-200 text-red-600 hover:bg-red-50"
                           onClick={() => handleBookingAction(booking.id, 'reject')}
                         >
                           <XCircle className="mr-1 size-3" />
                           Reject
                         </Button>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </ScrollArea>
               )}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Quick Actions */}
-        <div>
-          <Card>
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
+        <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
+          <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+            <CardHeader className="bg-gradient-to-r from-violet-50/80 to-purple-50/50 pb-3">
+              <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
             </CardHeader>
-            <Separator />
-            <CardContent className="space-y-3 pt-4">
-              <Button
-                className="w-full justify-start bg-emerald-600 text-white hover:bg-emerald-700"
-                onClick={() => navigate('provider-create-service')}
-              >
-                <Plus className="mr-2 size-4" />
-                Create Service
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => navigate('provider-earnings')}
-              >
-                <DollarSign className="mr-2 size-4" />
-                View Earnings
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => navigate('provider-reviews')}
-              >
-                <Star className="mr-2 size-4" />
-                View Reviews
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                onClick={() => navigate('provider-bookings')}
-              >
-                <CalendarCheck className="mr-2 size-4" />
-                All Bookings
-              </Button>
+            <CardContent className="space-y-3 p-4">
+              {quickActions.map((action) => (
+                <motion.button
+                  key={action.label}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.99 }}
+                  onClick={() => navigate(action.nav)}
+                  className={`flex w-full items-center gap-3 rounded-xl bg-gradient-to-r ${action.gradient} p-3.5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
+                >
+                  <action.icon className="size-5" />
+                  <span className="text-sm font-semibold">{action.label}</span>
+                  <ArrowRight className="ml-auto size-4 opacity-60" />
+                </motion.button>
+              ))}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
 
       {/* Today's Schedule */}
-      <div className="mt-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-lg">Today&apos;s Schedule</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')}>
+      <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
+        <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardTitle className="text-lg font-semibold">Today&apos;s Schedule</CardTitle>
+            <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
               View all <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
-          <Separator />
           <CardContent className="p-0">
             {todayBookings.length === 0 ? (
-              <div className="p-8 text-center text-muted-foreground">
-                <CalendarCheck className="mx-auto mb-2 size-8 opacity-50" />
-                <p>No bookings scheduled for today</p>
+              <div className="p-8 text-center">
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
+                  <CalendarCheck className="size-8 text-emerald-300" />
+                </div>
+                <p className="mt-3 text-muted-foreground">No bookings scheduled for today</p>
               </div>
             ) : (
               <ScrollArea className="max-h-64">
                 {todayBookings.map((booking, i) => (
-                  <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-600">
+                  <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30">
+                    <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-sm`}>
                       {i + 1}
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{booking.service?.title}</p>
                       <p className="text-sm text-muted-foreground">
-                        {booking.client?.name} • {booking.scheduledTime}
+                        {booking.client?.name} &middot; {booking.scheduledTime}
                       </p>
                     </div>
                     <StatusBadge status={booking.status} />
@@ -313,48 +338,36 @@ export function ProviderDashboardPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Earnings Summary */}
-      <div className="mt-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-3">
-            <CardTitle className="text-lg">Earnings Overview</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('provider-earnings')}>
+      <motion.div {...fadeUp} transition={{ delay: 0.25 }} className="mt-6">
+        <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+            <CardTitle className="text-lg font-semibold">Earnings Overview</CardTitle>
+            <Button variant="ghost" size="sm" onClick={() => navigate('provider-earnings')} className="text-sky-600 hover:text-sky-700 hover:bg-sky-50">
               Details <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
-          <Separator />
-          <CardContent className="pt-4">
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div className="rounded-lg bg-emerald-50 p-3 text-center">
-                <p className="text-sm text-muted-foreground">Today</p>
-                <p className="mt-1 text-lg font-bold text-emerald-600">
-                  ₹{todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="rounded-lg bg-blue-50 p-3 text-center">
-                <p className="text-sm text-muted-foreground">This Week</p>
-                <p className="mt-1 text-lg font-bold text-blue-600">
-                  ₹{weekEarnings.toLocaleString()}
-                </p>
-              </div>
-              <div className="rounded-lg bg-purple-50 p-3 text-center">
-                <p className="text-sm text-muted-foreground">Total</p>
-                <p className="mt-1 text-lg font-bold text-purple-600">
-                  ₹{completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}
-                </p>
-              </div>
-              <div className="rounded-lg bg-orange-50 p-3 text-center">
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="mt-1 text-lg font-bold text-orange-600">
-                  {bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}
-                </p>
-              </div>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { label: 'Today', value: `₹${todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
+                { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
+                { label: 'Total', value: `₹${completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-violet-400 to-purple-500' },
+                { label: 'In Progress', value: `${bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}`, gradient: 'from-orange-400 to-amber-500' },
+              ].map((item) => (
+                <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center">
+                  <p className="text-xs text-muted-foreground">{item.label}</p>
+                  <p className={`mt-1 bg-gradient-to-r ${item.gradient} bg-clip-text text-lg font-bold text-transparent`}>
+                    {item.value}
+                  </p>
+                </div>
+              ))}
             </div>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
     </div>
   );
 }

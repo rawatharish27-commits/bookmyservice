@@ -1,13 +1,13 @@
 'use client';
 
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Heart, Star, MapPin, Loader2, Trash2 } from 'lucide-react';
+import { Heart, Star, MapPin, Loader2, ArrowRight } from 'lucide-react';
 
 interface Favorite {
   id: string;
@@ -42,89 +42,104 @@ export function ClientFavoritesPage() {
   };
 
   return (
-    <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
-      <div className="mb-6">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6"
+      >
         <h1 className="text-2xl font-bold">My Favorites</h1>
         <p className="text-sm text-muted-foreground">Services you&apos;ve saved for later</p>
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-48 w-full" />
+            <div key={i} className="h-48 animate-pulse rounded-2xl bg-muted/50" />
           ))}
         </div>
       ) : favorites.length === 0 ? (
-        <div className="py-16 text-center">
-          <Heart className="mx-auto size-12 text-muted-foreground/40" />
-          <p className="mt-3 text-muted-foreground">No favorites yet</p>
-          <p className="text-sm text-muted-foreground">Save services you like to find them easily later</p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center py-16 text-center"
+        >
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-100 to-rose-50">
+            <Heart className="size-10 text-pink-300" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No favorites yet</h3>
+          <p className="mt-1 text-sm text-muted-foreground/70">Save services you like to find them easily later</p>
           <Button
-            variant="outline"
-            className="mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
             onClick={() => navigate('categories')}
           >
-            Browse Services
+            Browse Services <ArrowRight className="ml-2 size-4" />
           </Button>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {favorites.map((fav) => {
+          {favorites.map((fav, idx) => {
             const service = fav.service;
             if (!service) return null;
             return (
-              <Card key={fav.id} className="gap-4 overflow-hidden">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <button
-                      onClick={() => navigate('service-detail', { serviceId: service.id })}
-                      className="min-w-0 flex-1 text-left"
-                    >
-                      <h3 className="truncate font-semibold">{service.title}</h3>
-                    </button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-8 shrink-0 text-red-500 hover:text-red-600"
-                      onClick={() => handleRemove(fav.serviceId)}
-                      disabled={removing}
-                    >
-                      {removing ? <Loader2 className="size-4 animate-spin" /> : <Heart className="size-4 fill-red-500" />}
-                    </Button>
-                  </div>
+              <motion.div
+                key={fav.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.05 }}
+              >
+                <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md">
+                  <div className="h-1.5 bg-gradient-to-r from-pink-400 to-rose-500" />
+                  <CardContent className="p-5">
+                    <div className="flex items-start justify-between gap-2">
+                      <button
+                        onClick={() => navigate('service-detail', { serviceId: service.id })}
+                        className="min-w-0 flex-1 text-left group-hover:text-emerald-600 transition-colors"
+                      >
+                        <h3 className="truncate font-semibold">{service.title}</h3>
+                      </button>
+                      <motion.button
+                        whileTap={{ scale: 0.7 }}
+                        onClick={() => handleRemove(fav.serviceId)}
+                        disabled={removing}
+                        className="flex size-8 shrink-0 items-center justify-center rounded-lg text-pink-500 transition-colors hover:bg-pink-50"
+                      >
+                        {removing ? <Loader2 className="size-4 animate-spin" /> : <Heart className="size-4 fill-pink-500" />}
+                      </motion.button>
+                    </div>
 
-                  <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
+                    <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
 
-                  <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
-                    {service.city && (
+                    <div className="mt-3 flex items-center gap-3 text-xs text-muted-foreground">
+                      {service.city && (
+                        <span className="flex items-center gap-1">
+                          <MapPin className="size-3" />
+                          {service.city}
+                        </span>
+                      )}
                       <span className="flex items-center gap-1">
-                        <MapPin className="size-3" />
-                        {service.city}
+                        <Star className="size-3 fill-amber-400 text-amber-400" />
+                        {service.averageRating?.toFixed(1) || '0.0'} ({service.totalReviews || 0})
                       </span>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between">
+                      <span className="text-gradient text-lg font-bold">₹{service.basePrice?.toLocaleString()}</span>
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25 rounded-lg"
+                        onClick={() => navigate('service-detail', { serviceId: service.id })}
+                      >
+                        View Details
+                      </Button>
+                    </div>
+
+                    {service.provider && (
+                      <p className="mt-2 text-xs text-muted-foreground">by {service.provider.name}</p>
                     )}
-                    <span className="flex items-center gap-1">
-                      <Star className="size-3 fill-amber-400 text-amber-400" />
-                      {service.averageRating?.toFixed(1) || '0.0'} ({service.totalReviews || 0})
-                    </span>
-                  </div>
-
-                  <div className="mt-3 flex items-center justify-between">
-                    <span className="text-lg font-bold text-emerald-600">₹{service.basePrice?.toLocaleString()}</span>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
-                      onClick={() => navigate('service-detail', { serviceId: service.id })}
-                    >
-                      View Details
-                    </Button>
-                  </div>
-
-                  {service.provider && (
-                    <p className="mt-2 text-xs text-muted-foreground">by {service.provider.name}</p>
-                  )}
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </motion.div>
             );
           })}
         </div>

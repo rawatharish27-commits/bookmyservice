@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp, type Page } from '@/contexts/app-context';
-import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 import {
   Wrench,
   Facebook,
@@ -12,6 +14,14 @@ import {
   Mail,
   Phone,
   MapPin,
+  Droplets,
+  Zap,
+  Wind,
+  Send,
+  ArrowUpRight,
+  Heart,
+  ChevronRight,
+  CheckCircle2,
 } from 'lucide-react';
 
 interface FooterLink {
@@ -33,10 +43,10 @@ const quickLinks: FooterLink[] = [
   { label: 'Become a Provider', page: 'register' },
 ];
 
-const serviceLinks: FooterLink[] = [
-  { label: 'Plumbing', page: 'categories' },
-  { label: 'Electrical', page: 'categories' },
-  { label: 'AC & HVAC', page: 'categories' },
+const serviceLinks: { label: string; page: Page; icon: React.ReactNode }[] = [
+  { label: 'Plumbing', page: 'categories', icon: <Droplets className="size-3.5" /> },
+  { label: 'Electrical', page: 'categories', icon: <Zap className="size-3.5" /> },
+  { label: 'AC & HVAC', page: 'categories', icon: <Wind className="size-3.5" /> },
 ];
 
 const legalLinks: { label: string; page: Page }[] = [
@@ -45,182 +55,296 @@ const legalLinks: { label: string; page: Page }[] = [
   { label: 'Refund Policy', page: 'refund-policy' },
 ];
 
+// ─── Social Icons Config ─────────────────────────────────────────────────────
+
+const socialLinks = [
+  { icon: <Facebook className="size-4" />, label: 'Facebook', href: '#' },
+  { icon: <Twitter className="size-4" />, label: 'Twitter', href: '#' },
+  { icon: <Instagram className="size-4" />, label: 'Instagram', href: '#' },
+  { icon: <Linkedin className="size-4" />, label: 'LinkedIn', href: '#' },
+];
+
+// ─── Footer Link with Animated Underline ─────────────────────────────────────
+
+function FooterLinkButton({ link, onNavigate }: { link: FooterLink; onNavigate: (page: Page) => void }) {
+  return (
+    <motion.button
+      onClick={() => onNavigate(link.page)}
+      className="group relative inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+      whileHover={{ x: 3 }}
+      transition={{ duration: 0.2 }}
+    >
+      <span className="relative">
+        {link.label}
+        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
+      </span>
+    </motion.button>
+  );
+}
+
+// ─── Service Link with Icon ──────────────────────────────────────────────────
+
+function ServiceLinkButton({
+  link,
+  onNavigate,
+}: {
+  link: { label: string; page: Page; icon: React.ReactNode };
+  onNavigate: (page: Page) => void;
+}) {
+  return (
+    <motion.button
+      onClick={() => onNavigate(link.page)}
+      className="group flex items-center gap-2.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+      whileHover={{ x: 3 }}
+      transition={{ duration: 0.2 }}
+    >
+      <span className="flex size-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-500 transition-all duration-200 group-hover:bg-emerald-100 group-hover:text-emerald-600 group-hover:shadow-sm">
+        {link.icon}
+      </span>
+      <span className="relative">
+        {link.label}
+        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-300 group-hover:w-full" />
+      </span>
+    </motion.button>
+  );
+}
+
+// ─── Main Footer Component ───────────────────────────────────────────────────
+
 export function Footer() {
   const { navigate } = useApp();
+  const [email, setEmail] = useState('');
+  const [subscribed, setSubscribed] = useState(false);
 
   const handleNavigate = (page: Page) => {
     navigate(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email.trim()) {
+      setSubscribed(true);
+      setEmail('');
+      setTimeout(() => setSubscribed(false), 3000);
+    }
+  };
+
   return (
-    <footer className="mt-auto border-t bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {/* About Column */}
-          <div>
-            <button
-              onClick={() => handleNavigate('home')}
-              className="mb-4 flex items-center gap-2 transition-opacity hover:opacity-80"
-              aria-label="Go to home page"
-            >
-              <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-                <Wrench className="size-4" />
-              </div>
-              <span className="text-lg font-bold tracking-tight">
-                Book<span className="text-emerald-600">Your</span>Service
-              </span>
-            </button>
-            <p className="mb-4 text-sm leading-relaxed text-muted-foreground">
-              Your trusted marketplace for professional home maintenance &amp; repair
-              services. Find skilled providers, book with confidence, and get the job done right.
-            </p>
-            {/* Social Media Links */}
-            <div className="flex items-center gap-3">
-              <a
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full bg-gray-200 text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-600"
-                aria-label="Facebook"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Facebook className="size-4" />
-              </a>
-              <a
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full bg-gray-200 text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-600"
-                aria-label="Twitter"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Twitter className="size-4" />
-              </a>
-              <a
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full bg-gray-200 text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-600"
-                aria-label="Instagram"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Instagram className="size-4" />
-              </a>
-              <a
-                href="#"
-                className="flex size-9 items-center justify-center rounded-full bg-gray-200 text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-600"
-                aria-label="LinkedIn"
-                onClick={(e) => e.preventDefault()}
-              >
-                <Linkedin className="size-4" />
-              </a>
-            </div>
-          </div>
+    <footer className="mt-auto">
+      {/* Gradient top border */}
+      <div className="h-1 w-full bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-500" />
 
-          {/* Quick Links Column */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
-              Quick Links
-            </h3>
-            <ul className="space-y-2.5">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
-                  <button
-                    onClick={() => handleNavigate(link.page)}
-                    className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Services Column */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
-              Services
-            </h3>
-            <ul className="space-y-2.5">
-              {serviceLinks.map((link) => (
-                <li key={link.label}>
-                  <button
-                    onClick={() => handleNavigate(link.page)}
-                    className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-                  >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact Column */}
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">
-              Contact Us
-            </h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600" />
-                <span className="text-sm text-muted-foreground">
-                  BookYourService Technologies Pvt. Ltd.
-                  <br />
-                  123 Service Street, Fort
-                  <br />
-                  Mumbai 400001, India
+      {/* Main footer content */}
+      <div className="bg-gradient-to-b from-gray-50 to-gray-100/80">
+        <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
+            {/* About Column (spans 2 on lg) */}
+            <div className="lg:col-span-2">
+              <motion.button
+                onClick={() => handleNavigate('home')}
+                className="group mb-5 flex items-center gap-2.5 transition-opacity hover:opacity-90"
+                aria-label="Go to home page"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20">
+                  <Wrench className="size-4 text-white" />
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
+                </div>
+                <span className="text-xl font-extrabold tracking-tight">
+                  <span className="text-gradient">BookYour</span>
+                  <span className="text-foreground">Service</span>
                 </span>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Phone className="size-4 shrink-0 text-emerald-600" />
-                <a
-                  href="tel:+919876543210"
-                  className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-                >
-                  +91 98765 43210
-                </a>
-              </li>
-              <li className="flex items-center gap-2.5">
-                <Mail className="size-4 shrink-0 text-emerald-600" />
-                <a
-                  href="mailto:support@bookyourservice.co.in"
-                  className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-                >
-                  support@bookyourservice.co.in
-                </a>
-              </li>
-            </ul>
+              </motion.button>
+              <p className="mb-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
+                Your trusted marketplace for professional home maintenance &amp; repair
+                services. Find skilled providers, book with confidence, and get the job done right.
+              </p>
 
-            <div className="mt-6">
-              <h4 className="mb-2 text-sm font-semibold text-foreground">Company</h4>
-              <ul className="space-y-2.5">
-                {aboutLinks.map((link) => (
+              {/* Social Media Links */}
+              <div className="flex items-center gap-2">
+                {socialLinks.map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    className="group flex size-9 items-center justify-center rounded-xl bg-white text-muted-foreground shadow-sm transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-500 hover:to-teal-500 hover:text-white hover:shadow-md hover:shadow-emerald-500/20"
+                    aria-label={social.label}
+                    onClick={(e) => e.preventDefault()}
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {social.icon}
+                  </motion.a>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Links Column */}
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                Quick Links
+              </h3>
+              <ul className="space-y-3">
+                {quickLinks.map((link) => (
                   <li key={link.label}>
-                    <button
-                      onClick={() => handleNavigate(link.page)}
-                      className="text-sm text-muted-foreground transition-colors hover:text-emerald-600"
-                    >
-                      {link.label}
-                    </button>
+                    <FooterLinkButton link={link} onNavigate={handleNavigate} />
                   </li>
                 ))}
               </ul>
             </div>
+
+            {/* Services Column with Icons */}
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                Services
+              </h3>
+              <ul className="space-y-3">
+                {serviceLinks.map((link) => (
+                  <li key={link.label}>
+                    <ServiceLinkButton link={link} onNavigate={handleNavigate} />
+                  </li>
+                ))}
+              </ul>
+
+              {/* Company links */}
+              <div className="mt-6">
+                <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
+                  <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                  Company
+                </h4>
+                <ul className="space-y-3">
+                  {aboutLinks.map((link) => (
+                    <li key={link.label}>
+                      <FooterLinkButton link={link} onNavigate={handleNavigate} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Newsletter + Contact Column */}
+            <div>
+              <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                Stay Updated
+              </h3>
+              <p className="mb-3 text-sm text-muted-foreground">
+                Get the latest offers and service updates delivered to your inbox.
+              </p>
+              <form onSubmit={handleSubscribe} className="mb-6">
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/50" />
+                    <Input
+                      type="email"
+                      placeholder="Your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-9 rounded-lg border-emerald-200 bg-white pl-9 text-sm focus-visible:ring-emerald-500"
+                      required
+                    />
+                  </div>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      type="submit"
+                      size="sm"
+                      className="h-9 bg-gradient-to-r from-emerald-600 to-teal-600 px-3 text-white shadow-sm hover:from-emerald-700 hover:to-teal-700"
+                    >
+                      <Send className="size-3.5" />
+                    </Button>
+                  </motion.div>
+                </div>
+                {subscribed && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="mt-2 flex items-center gap-1.5 text-xs font-medium text-emerald-600"
+                  >
+                    <CheckCircle2 className="size-3.5" />
+                    Subscribed successfully!
+                  </motion.div>
+                )}
+              </form>
+
+              {/* Contact Info */}
+              <h4 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-foreground">
+                <span className="size-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500" />
+                Contact Us
+              </h4>
+              <ul className="space-y-3">
+                <li>
+                  <div className="flex items-start gap-2.5">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500">
+                      <MapPin className="size-3.5" />
+                    </span>
+                    <span className="text-sm leading-relaxed text-muted-foreground">
+                      BookYourService Technologies Pvt. Ltd.
+                      <br />
+                      123 Service Street, Fort
+                      <br />
+                      Mumbai 400001, India
+                    </span>
+                  </div>
+                </li>
+                <li>
+                  <a
+                    href="tel:+919876543210"
+                    className="flex items-center gap-2.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+                  >
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500 transition-colors duration-200 group-hover:bg-emerald-100">
+                      <Phone className="size-3.5" />
+                    </span>
+                    +91 98765 43210
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="mailto:support@bookyourservice.co.in"
+                    className="flex items-center gap-2.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+                  >
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-emerald-50 text-emerald-500">
+                      <Mail className="size-3.5" />
+                    </span>
+                    support@bookyourservice.co.in
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <Separator className="my-8" />
+          {/* Gradient Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-300/50 to-transparent" />
+          </div>
 
-        {/* Bottom Bar */}
-        <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-          <p className="text-xs text-muted-foreground">
-            &copy; 2025 BookYourService. All rights reserved.
-          </p>
-          <div className="flex items-center gap-4">
-            {legalLinks.map((link) => (
-              <button
-                key={link.label}
-                onClick={() => handleNavigate(link.page)}
-                className="text-xs text-muted-foreground transition-colors hover:text-emerald-600"
-              >
-                {link.label}
-              </button>
-            ))}
+          {/* Bottom Bar */}
+          <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+            <p className="flex items-center gap-1 text-xs text-muted-foreground">
+              &copy; 2025{' '}
+              <span className="font-semibold text-foreground">BookYourService</span>
+              . Made with{' '}
+              <Heart className="inline size-3 fill-emerald-500 text-emerald-500" />{' '}
+              in India. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              {legalLinks.map((link, idx) => (
+                <React.Fragment key={link.label}>
+                  {idx > 0 && (
+                    <span className="size-1 rounded-full bg-muted-foreground/30" />
+                  )}
+                  <motion.button
+                    onClick={() => handleNavigate(link.page)}
+                    className="text-xs text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+                    whileHover={{ y: -1 }}
+                  >
+                    {link.label}
+                  </motion.button>
+                </React.Fragment>
+              ))}
+            </div>
           </div>
         </div>
       </div>

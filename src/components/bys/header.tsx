@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp, type Page } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Wrench,
   Menu,
@@ -49,6 +50,8 @@ import {
   Droplets,
   Zap,
   Wind,
+  Sparkles,
+  UserPlus,
 } from 'lucide-react';
 
 interface NavLink {
@@ -141,11 +144,62 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
+function getRoleBadgeStyle(role: string): string {
+  switch (role) {
+    case 'admin':
+      return 'bg-gradient-to-r from-violet-500 to-purple-600 text-white';
+    case 'provider':
+    case 'PROVIDER':
+      return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white';
+    default:
+      return 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white';
+  }
+}
+
+// ─── Active Nav Indicator ────────────────────────────────────────────────────
+
+function ActiveIndicator() {
+  return (
+    <motion.div
+      layoutId="activeNavIndicator"
+      className="absolute -bottom-0.5 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"
+      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+    />
+  );
+}
+
+// ─── Notification Badge with Pulse ───────────────────────────────────────────
+
+function NotificationBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="relative flex items-center justify-center">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 opacity-50" />
+      <span className="relative flex size-4 min-w-[16px] items-center justify-center rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-[9px] font-bold text-white shadow-sm">
+        {count > 9 ? '9+' : count}
+      </span>
+    </span>
+  );
+}
+
+// ─── Main Header Component ───────────────────────────────────────────────────
+
 export function Header() {
   const { user, logout } = useAuth();
   const { navigate, nav } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Track scroll for shadow effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Fetch unread notification count for authenticated users
   useEffect(() => {
@@ -191,42 +245,61 @@ export function Header() {
   const isActive = (page: Page) => nav.page === page;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-white/80">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header
+      className={`sticky top-0 z-50 w-full transition-all duration-300 ${
+        scrolled
+          ? 'glass shadow-lg shadow-black/[0.04]'
+          : 'glass'
+      }`}
+    >
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
-        <button
+        <motion.button
           onClick={() => handleNavigate('home')}
-          className="flex items-center gap-2 transition-opacity hover:opacity-80"
+          className="group flex items-center gap-2.5 transition-opacity hover:opacity-90"
           aria-label="Go to home page"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
         >
-          <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-            <Wrench className="size-4" />
+          <div className="relative flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20 transition-shadow duration-300 group-hover:shadow-lg group-hover:shadow-emerald-500/30">
+            <Wrench className="size-4 text-white" />
+            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/20 to-transparent" />
           </div>
-          <span className="text-lg font-bold tracking-tight text-foreground">
-            Book<span className="text-emerald-600">Your</span>Service
+          <span className="text-xl font-extrabold tracking-tight">
+            <span className="text-gradient">BookYour</span>
+            <span className="text-foreground">Service</span>
           </span>
-        </button>
+        </motion.button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+        <nav
+          ref={navRef}
+          className="hidden items-center gap-0.5 lg:flex"
+          aria-label="Main navigation"
+        >
           {links.map((link, idx) => (
-            <button
+            <motion.button
               key={`${link.page}-${idx}`}
               onClick={() => handleNavigate(link.page)}
-              className={`relative inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+              className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 ${
                 isActive(link.page)
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                  ? 'text-emerald-700'
+                  : 'text-muted-foreground hover:bg-emerald-50/60 hover:text-foreground'
               }`}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
             >
-              {link.icon}
+              {isActive(link.page) && <ActiveIndicator />}
+              <span className={`transition-colors duration-200 ${isActive(link.page) ? 'text-emerald-600' : ''}`}>
+                {link.icon}
+              </span>
               {link.label}
               {link.badge !== undefined && link.badge > 0 && (
-                <Badge className="ml-1 size-5 min-w-5 rounded-full bg-emerald-600 px-1.5 text-[10px] font-semibold text-white hover:bg-emerald-600">
-                  {link.badge > 99 ? '99+' : link.badge}
-                </Badge>
+                <span className="ml-1">
+                  <NotificationBadge count={link.badge > 99 ? 99 : link.badge} />
+                </span>
               )}
-            </button>
+            </motion.button>
           ))}
         </nav>
 
@@ -236,74 +309,98 @@ export function Header() {
             <>
               {/* Notification Bell (desktop) */}
               {user.role !== 'admin' && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="relative hidden lg:inline-flex"
-                  onClick={() =>
-                    handleNavigate(
-                      user.role === 'provider' ? 'provider-reviews' : 'client-notifications'
-                    )
-                  }
-                  aria-label={`Notifications${effectiveUnreadCount > 0 ? `, ${effectiveUnreadCount} unread` : ''}`}
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  <Bell className="size-4" />
-                  {effectiveUnreadCount > 0 && (
-                    <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-emerald-600 text-[10px] font-bold text-white">
-                      {effectiveUnreadCount > 9 ? '9+' : effectiveUnreadCount}
-                    </span>
-                  )}
-                </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="relative hidden lg:inline-flex hover:bg-emerald-50"
+                    onClick={() =>
+                      handleNavigate(
+                        user.role === 'provider' ? 'provider-reviews' : 'client-notifications'
+                      )
+                    }
+                    aria-label={`Notifications${effectiveUnreadCount > 0 ? `, ${effectiveUnreadCount} unread` : ''}`}
+                  >
+                    <Bell className="size-[18px] text-muted-foreground" />
+                    {effectiveUnreadCount > 0 && (
+                      <span className="absolute -right-0.5 -top-0.5">
+                        <NotificationBadge count={effectiveUnreadCount > 99 ? 99 : effectiveUnreadCount} />
+                      </span>
+                    )}
+                  </Button>
+                </motion.div>
               )}
 
               {/* User Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="hidden gap-2 lg:inline-flex"
+                  <motion.button
+                    className="hidden items-center gap-2.5 rounded-xl px-2 py-1.5 transition-colors duration-200 hover:bg-emerald-50/60 lg:inline-flex"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
                     aria-label="User menu"
                   >
-                    <Avatar className="size-7">
+                    <Avatar className="size-8 ring-2 ring-emerald-200 ring-offset-2 ring-offset-white transition-all duration-200 hover:ring-emerald-400">
                       {user.profileImageUrl && (
                         <AvatarImage src={user.profileImageUrl} alt={user.name} />
                       )}
-                      <AvatarFallback className="bg-emerald-100 text-xs font-medium text-emerald-700">
+                      <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-xs font-bold text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="max-w-[120px] truncate text-sm">{user.name}</span>
-                  </Button>
+                    <span className="max-w-[120px] truncate text-sm font-medium text-foreground">
+                      {user.name}
+                    </span>
+                  </motion.button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.name}</p>
-                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
-                      <Badge variant="secondary" className="mt-1 w-fit text-[10px] capitalize">
-                        {user.role}
-                      </Badge>
+                <DropdownMenuContent
+                  className="w-60 overflow-hidden rounded-xl p-1 shadow-xl"
+                  align="end"
+                  forceMount
+                >
+                  <DropdownMenuLabel className="font-normal px-2 py-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="size-10 ring-2 ring-emerald-200 ring-offset-1">
+                        {user.profileImageUrl && (
+                          <AvatarImage src={user.profileImageUrl} alt={user.name} />
+                        )}
+                        <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-sm font-bold text-white">
+                          {getInitials(user.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold leading-none">{user.name}</p>
+                        <p className="mt-1 truncate text-xs text-muted-foreground">{user.email}</p>
+                        <Badge
+                          className={`mt-1.5 border-0 px-2 py-0.5 text-[10px] font-semibold capitalize ${getRoleBadgeStyle(user.role)}`}
+                        >
+                          {user.role === 'PROVIDER' ? 'Provider' : user.role}
+                        </Badge>
+                      </div>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="my-1" />
                   <DropdownMenuGroup>
                     {dropdownLinks.map((link) => (
                       <DropdownMenuItem
                         key={link.page}
                         onClick={() => handleNavigate(link.page)}
-                        className="cursor-pointer"
+                        className="cursor-pointer rounded-lg px-2 py-2 transition-colors focus:bg-emerald-50 focus:text-emerald-700"
                       >
-                        {link.icon}
+                        <span className="mr-2 text-muted-foreground">{link.icon}</span>
                         {link.label}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator />
+                  <DropdownMenuSeparator className="my-1" />
                   <DropdownMenuItem
                     onClick={logout}
-                    className="cursor-pointer text-destructive focus:text-destructive"
+                    className="cursor-pointer rounded-lg px-2 py-2 text-destructive focus:bg-red-50 focus:text-destructive"
                   >
-                    <LogOut className="size-4" />
+                    <LogOut className="mr-2 size-4" />
                     Log out
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -311,87 +408,112 @@ export function Header() {
             </>
           ) : (
             <div className="hidden items-center gap-2 lg:flex">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => handleNavigate('login')}
-                className="gap-1.5 text-sm font-medium text-emerald-700 hover:text-emerald-800"
-              >
-                <LogIn className="size-4" />
-                Client Login
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => handleNavigate('register')}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
-              >
-                Sign up
-              </Button>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleNavigate('login')}
+                  className="gap-1.5 text-sm font-semibold text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                >
+                  <LogIn className="size-4" />
+                  Client Login
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Button
+                  size="sm"
+                  onClick={() => handleNavigate('register')}
+                  className="gap-1.5 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700 hover:shadow-lg hover:shadow-emerald-500/30"
+                >
+                  <UserPlus className="size-4" />
+                  Sign up
+                </Button>
+              </motion.div>
             </div>
           )}
 
           {/* Mobile Menu */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open menu">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden hover:bg-emerald-50"
+                aria-label="Open menu"
+              >
                 <Menu className="size-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] overflow-y-auto p-0">
-              <SheetHeader className="border-b px-4 py-4">
-                <SheetTitle className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-600 text-white">
-                    <Wrench className="size-4" />
+            <SheetContent
+              side="right"
+              className="glass w-[320px] overflow-y-auto border-0 p-0 shadow-2xl"
+            >
+              {/* Mobile Header */}
+              <SheetHeader className="border-b border-emerald-100 px-5 py-5">
+                <SheetTitle className="flex items-center gap-2.5">
+                  <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/20">
+                    <Wrench className="size-4 text-white" />
                   </div>
-                  <span className="text-lg font-bold">
-                    Book<span className="text-emerald-600">Your</span>Service
+                  <span className="text-xl font-extrabold tracking-tight">
+                    <span className="text-gradient">BookYour</span>
+                    <span className="text-foreground">Service</span>
                   </span>
                 </SheetTitle>
               </SheetHeader>
 
               {/* Mobile User Info */}
               {user && (
-                <div className="border-b px-4 py-3">
+                <div className="border-b border-emerald-100 px-5 py-4">
                   <div className="flex items-center gap-3">
-                    <Avatar className="size-10">
+                    <Avatar className="size-11 ring-2 ring-emerald-200 ring-offset-2">
                       {user.profileImageUrl && (
                         <AvatarImage src={user.profileImageUrl} alt={user.name} />
                       )}
-                      <AvatarFallback className="bg-emerald-100 text-sm font-medium text-emerald-700">
+                      <AvatarFallback className="bg-gradient-to-br from-emerald-400 to-teal-400 text-sm font-bold text-white">
                         {getInitials(user.name)}
                       </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{user.name}</p>
+                      <p className="truncate text-sm font-semibold text-foreground">{user.name}</p>
                       <p className="truncate text-xs text-muted-foreground">{user.email}</p>
+                      <Badge
+                        className={`mt-1 border-0 px-2 py-0.5 text-[10px] font-semibold capitalize ${getRoleBadgeStyle(user.role)}`}
+                      >
+                        {user.role === 'PROVIDER' ? 'Provider' : user.role}
+                      </Badge>
                     </div>
                   </div>
                 </div>
               )}
 
               {/* Mobile Nav Links */}
-              <nav className="flex flex-col px-2 py-2" aria-label="Mobile navigation">
+              <nav className="flex flex-col gap-0.5 px-3 py-3" aria-label="Mobile navigation">
                 {links.map((link, idx) => (
                   <SheetClose asChild key={`${link.page}-${idx}`}>
-                    <button
+                    <motion.button
                       onClick={() => handleNavigate(link.page)}
-                      className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors ${
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                         isActive(link.page)
-                          ? 'bg-emerald-50 text-emerald-700'
-                          : 'text-muted-foreground hover:bg-accent hover:text-foreground'
+                          ? 'bg-gradient-to-r from-emerald-50 to-teal-50 text-emerald-700 shadow-sm'
+                          : 'text-muted-foreground hover:bg-emerald-50/50 hover:text-foreground'
                       }`}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.05, duration: 0.3 }}
                     >
-                      {link.icon}
+                      <span className={`transition-colors duration-200 ${isActive(link.page) ? 'text-emerald-600' : ''}`}>
+                        {link.icon}
+                      </span>
                       {link.label}
                       {link.badge !== undefined && link.badge > 0 && (
-                        <Badge className="ml-auto bg-emerald-600 px-1.5 text-[10px] font-semibold text-white hover:bg-emerald-600">
-                          {link.badge > 99 ? '99+' : link.badge}
-                        </Badge>
+                        <span className="ml-auto">
+                          <NotificationBadge count={link.badge > 99 ? 99 : link.badge} />
+                        </span>
                       )}
                       {isActive(link.page) && (
-                        <ChevronRight className="ml-auto size-4 text-emerald-600" />
+                        <ChevronRight className="ml-auto size-4 text-emerald-500" />
                       )}
-                    </button>
+                    </motion.button>
                   </SheetClose>
                 ))}
               </nav>
@@ -399,57 +521,76 @@ export function Header() {
               {/* Mobile Auth Section */}
               {user ? (
                 <>
-                  <div className="border-t px-2 py-2">
-                    <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <div className="border-t border-emerald-100 px-3 py-3">
+                    <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">
                       Account
                     </p>
-                    {dropdownLinks.map((link) => (
+                    {dropdownLinks.map((link, idx) => (
                       <SheetClose asChild key={link.page}>
-                        <button
+                        <motion.button
                           onClick={() => handleNavigate(link.page)}
-                          className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+                          className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-muted-foreground transition-all duration-200 hover:bg-emerald-50/50 hover:text-foreground"
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.05 + 0.2, duration: 0.3 }}
                         >
                           {link.icon}
                           {link.label}
-                        </button>
+                        </motion.button>
                       </SheetClose>
                     ))}
                   </div>
-                  <div className="border-t px-2 py-2">
+                  <div className="border-t border-emerald-100 px-3 py-3">
                     <SheetClose asChild>
-                      <button
+                      <motion.button
                         onClick={() => {
                           logout();
                           setMobileOpen(false);
                         }}
-                        className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm text-destructive transition-colors hover:bg-destructive/10"
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-sm text-destructive transition-all duration-200 hover:bg-red-50"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4, duration: 0.3 }}
                       >
                         <LogOut className="size-4" />
                         Log out
-                      </button>
+                      </motion.button>
                     </SheetClose>
                   </div>
                 </>
               ) : (
-                <div className="border-t px-4 py-4">
-                  <div className="flex flex-col gap-2">
+                <div className="border-t border-emerald-100 px-5 py-5">
+                  <div className="flex flex-col gap-3">
                     <SheetClose asChild>
-                      <Button
-                        className="w-full gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
-                        onClick={() => handleNavigate('login')}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.2, duration: 0.3 }}
                       >
-                        <LogIn className="size-4" />
-                        Client Login
-                      </Button>
+                        <Button
+                          className="w-full gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/20 hover:from-emerald-700 hover:to-teal-700"
+                          onClick={() => handleNavigate('login')}
+                        >
+                          <LogIn className="size-4" />
+                          Client Login
+                        </Button>
+                      </motion.div>
                     </SheetClose>
                     <SheetClose asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={() => handleNavigate('register')}
+                      <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3, duration: 0.3 }}
                       >
-                        Sign up
-                      </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50 hover:text-emerald-800"
+                          onClick={() => handleNavigate('register')}
+                        >
+                          <UserPlus className="mr-2 size-4" />
+                          Sign up
+                        </Button>
+                      </motion.div>
                     </SheetClose>
                   </div>
                 </div>
