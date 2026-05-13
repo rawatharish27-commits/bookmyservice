@@ -2,7 +2,7 @@
 
 **India's Trusted Home Services Marketplace**
 
-A full-stack service marketplace platform connecting homeowners with verified service professionals for **Plumbing**, **Electrical**, and **HVAC** services. Built with Next.js 16, TypeScript, Prisma, and real-time WebSocket infrastructure.
+A full-stack service marketplace platform connecting homeowners with verified service professionals for **Plumbing**, **Electrical**, and **HVAC** services. This repository is structured for separate root-level deployment services: `frontend/`, `backend/`, `database/`, and `docker-compose.yml`.
 
 ---
 
@@ -114,22 +114,22 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 
 | Layer | Technology | Version |
 |---|---|---|
-| **Framework** | Next.js (App Router) | 16.x |
+| **Frontend** | React + Vite | 5.x / latest |
+| **Backend** | Hono.js | 4.x |
 | **Language** | TypeScript | 5.x |
 | **Styling** | Tailwind CSS | 4.x |
-| **UI Components** | shadcn/ui (New York) | Latest |
+| **UI Components** | shadcn/ui | Latest |
 | **Icons** | Lucide React | 0.525+ |
-| **Animations** | Framer Motion | 12.x |
-| **Database** | SQLite via Prisma ORM | 6.x |
+| **Database** | PostgreSQL via Prisma ORM | 6.x |
 | **Authentication** | JWT (jose) + bcryptjs | — |
 | **Real-Time** | Socket.IO | 4.x |
 | **State Management** | Zustand + React Context | 5.x |
 | **Server State** | TanStack React Query | 5.x |
 | **Forms** | React Hook Form + Zod | 7.x / 4.x |
 | **Charts** | Recharts | 2.x |
-| **Deployment** | Cloudflare Pages (@opennextjs/cloudflare) | 1.x |
-| **Runtime** | Bun (dev/seed) / Node.js (prod) | — |
-| **Reverse Proxy** | Caddy | — |
+| **Deployment** | Docker Compose | 3.x |
+| **Runtime** | Node.js 20+ | — |
+| **Reverse Proxy** | Caddy / Docker network | — |
 
 ---
 
@@ -137,95 +137,46 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 
 ```
 bookmyservice/
-├── prisma/
-│   ├── schema.prisma              # Database schema (22 models)
-│   └── seed.ts                    # Comprehensive seed data
+├── backend/                       # Hono.js API service
+│   ├── Dockerfile
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── tsconfig.json
+│   └── src/
+│       ├── index.ts
+│       ├── api/
+│       │   ├── auth/
+│       │   ├── bookings/
+│       │   ├── categories/
+│       │   ├── services/
+│       │   ├── users/
+│       │   └── reviews/
+│       └── shared/
 │
-├── src/
-│   ├── app/
-│   │   ├── api/                   # REST API routes (58 route files)
-│   │   │   ├── admin/             # Admin endpoints (analytics, bookings, categories, dashboard, faq, logs, revenue, services, users)
-│   │   │   ├── auth/              # Authentication (login, register, profile, change-password)
-│   │   │   ├── bookings/          # Booking CRUD + actions (accept, reject, start, complete, cancel)
-│   │   │   ├── categories/        # Category CRUD
-│   │   │   ├── contact/           # Contact form
-│   │   │   ├── disputes/          # Dispute management + messages
-│   │   │   ├── faq/               # FAQ listing
-│   │   │   ├── favorites/         # User favorites
-│   │   │   ├── kyc/               # KYC submit, approve, reject, status
-│   │   │   ├── legal/             # Legal page content
-│   │   │   ├── negotiations/      # Price negotiation
-│   │   │   ├── notifications/     # User notifications
-│   │   │   ├── payments/          # Payment create-order, verify, details
-│   │   │   ├── reviews/           # Review CRUD
-│   │   │   ├── services/          # Service CRUD, approve, availability, search, reviews
-│   │   │   ├── stats/             # Platform stats, visitor tracking, cleanup
-│   │   │   └── subcategories/     # Subcategory CRUD
-│   │   ├── globals.css            # Global styles
-│   │   ├── layout.tsx             # Root layout
-│   │   └── page.tsx               # SPA router (single-page app entry)
-│   │
-│   ├── components/
-│   │   ├── bys/                   # BookYourService page components (43 files)
-│   │   │   ├── header.tsx         # Navigation header
-│   │   │   ├── footer.tsx         # Footer with legal links
-│   │   │   ├── home-page.tsx      # Landing page
-│   │   │   ├── login-page.tsx     # Login form
-│   │   │   ├── register-page.tsx  # Registration form
-│   │   │   ├── categories-page.tsx
-│   │   │   ├── category-detail-page.tsx
-│   │   │   ├── service-detail-page.tsx
-│   │   │   ├── booking-page.tsx
-│   │   │   ├── booking-confirmation-page.tsx
-│   │   │   ├── search-page.tsx
-│   │   │   ├── about-page.tsx
-│   │   │   ├── how-it-works-page.tsx
-│   │   │   ├── faq-page.tsx
-│   │   │   ├── contact-page.tsx
-│   │   │   ├── legal-page.tsx     # All 7 legal pages rendered by type
-│   │   │   ├── client-*.tsx       # 7 client dashboard pages
-│   │   │   ├── provider-*.tsx     # 9 provider dashboard pages
-│   │   │   └── admin-*.tsx        # 10 admin dashboard pages
-│   │   └── ui/                    # shadcn/ui components (47 files)
-│   │
-│   ├── contexts/
-│   │   ├── app-context.tsx        # Navigation state + SPA routing
-│   │   └── auth-context.tsx       # Authentication state + JWT management
-│   │
-│   ├── hooks/
-│   │   ├── use-api.ts             # API request helper
-│   │   ├── use-mobile.ts          # Mobile detection
-│   │   └── use-toast.ts           # Toast notifications
-│   │
-│   └── lib/
-│       ├── auth.ts                # JWT sign/verify (jose, HS256)
-│       ├── db.ts                  # Prisma client singleton
-│       ├── middleware.ts          # Auth middleware helpers
-│       └── utils.ts               # Utility functions (cn, formatters)
+├── frontend/                      # React + Vite UI service
+│   ├── Dockerfile.dev
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── tsconfig.json
+│   ├── vite.config.ts
+│   ├── public/
+│   └── src/
+│       ├── App.tsx
+│       ├── main.tsx
+│       ├── components/
+│       └── styles/
 │
-├── mini-services/
-│   └── stats-service/             # Standalone Socket.IO server
-│       ├── index.ts               # WebSocket server (port 3003)
-│       ├── package.json
-│       └── bun.lock
+├── database/                      # PostgreSQL init and migrations
+│   └── migrations/
+│       └── 0001_init_postgres.sql
 │
-├── db/
-│   └── custom.db                  # SQLite database file
-│
-├── public/
-│   ├── hero-illustration.png      # Landing page illustration
-│   ├── logo.svg                   # Brand logo
-│   └── robots.txt                 # SEO robots file
-│
-├── next.config.ts                 # Next.js configuration
-├── open-next.config.ts            # Cloudflare OpenNext config
-├── Caddyfile                      # Reverse proxy configuration
-├── package.json
-├── bun.lock
-├── tsconfig.json
-├── postcss.config.mjs
-├── eslint.config.mjs
-└── components.json                # shadcn/ui config
+├── docker-compose.yml             # Root service orchestration
+├── README.md
+├── Caddyfile                      # Optional reverse proxy config
+├── DEPLOYMENT_SUMMARY.md
+├── package-lock.json
+├── .env                           # Local environment overrides
+└── worklog.md
 ```
 
 ---
@@ -250,39 +201,39 @@ bookmyservice/
 │                      CADDY REVERSE PROXY (:81)               │
 │                                                               │
 │  /api/*?XTransformPort=3003  ──►  Stats Service (port 3003) │
-│  /*                          ──►  Next.js App (port 3000)    │
+│  /*                          ──►  React + Vite Frontend (port 5173)    │
 └──────────────────────────────────────────────────────────────┘
         │                                     │
         ▼                                     ▼
 ┌───────────────────┐              ┌───────────────────────────┐
-│  Stats Service    │              │     Next.js App            │
-│  (Bun + Socket.IO)│              │     (Port 3000)            │
-│  Port 3003        │              │                             │
-│                   │              │  ┌───────────────────────┐ │
-│  • Real-time      │              │  │  Route Handlers (58)  │ │
-│    visitor count  │              │  │  /api/auth/*          │ │
-│  • Platform stats │              │  │  /api/bookings/*      │ │
-│  • 5s broadcast   │              │  │  /api/services/*      │ │
-│                   │              │  │  /api/admin/*         │ │
-│  Reads SQLite DB  │◄────────────┤  │  /api/payments/*      │ │
-│  (read-only)      │              │  │  ...and more          │ │
+│  Stats Service    │              │     Hono.js Backend        │
+│  (optional)       │              │     (Port 3000)            │
+│                   │              │                             │
+│  • Real-time      │              │  ┌───────────────────────┐ │
+│    visitor count  │              │  │  API routes            │ │
+│  • Platform stats │              │  │  /api/auth/*          │ │
+│  • data streams   │              │  │  /api/bookings/*      │ │
+│                   │              │  │  /api/services/*      │ │
+│  Reads PostgreSQL │◄────────────┤  │  /api/users/*         │ │
+│  database         │              │  │  /api/reviews/*       │ │
+│                   │              │  │  ...and more          │ │
 │                   │              │  └───────────┬───────────┘ │
 └───────────────────┘              │              │             │
                                    │  ┌───────────▼───────────┐ │
                                    │  │  Prisma ORM           │ │
-                                   │  │  (SQLite Client)      │ │
+                                   │  │  (PostgreSQL Client)  │ │
                                    │  └───────────┬───────────┘ │
                                    │              │             │
                                    │  ┌───────────▼───────────┐ │
-                                   │  │  SQLite Database      │ │
-                                   │  │  db/custom.db         │ │
+                                   │  │  PostgreSQL Database  │ │
+                                   │  │  database/migrations/  │ │
                                    │  └───────────────────────┘ │
                                    └─────────────────────────────┘
 ```
 
 ### SPA Routing
 
-The application uses a **single-page architecture** — `src/app/page.tsx` is the only route. All navigation happens through the `AppContext`:
+The current deployment uses a **single-page React application** — `frontend/src/App.tsx` is the entry point and routing is handled by the frontend React router and app state.
 
 1. **AppContext** manages `page` state and `params` (e.g., `{ page: 'service-detail', params: { id: '123' } }`)
 2. **AppRouter** renders the matching component via a `switch` statement
@@ -528,67 +479,68 @@ Dispute ──1:N──► DisputeMessage
 
 ### Prerequisites
 
-- **Node.js** 18+ (or Bun runtime)
-- **Bun** (for seed script and stats service)
+- **Node.js** 20+ (optional, only for local package install)
+- **Docker** 24+ and **Docker Compose**
+- **npm** (for local frontend/backend installs if not using Docker)
 
-### Installation
+### Local Deployment with Docker Compose
 
 ```bash
 # Clone the repository
 git clone https://github.com/rawatharish27-commits/bookmyservice.git
 cd bookmyservice
 
-# Install dependencies
-bun install
-
-# Set up environment variables
+# Copy environment example and update values as needed
 cp .env.example .env
-# Edit .env with your DATABASE_URL and JWT_SECRET
 
-# Push database schema
-bun run db:push
-
-# Seed the database with demo data
-bun run db:seed
-
-# Start the stats service (Socket.IO on port 3003)
-cd mini-services/stats-service && bun run dev &
-
-# Start the Next.js development server (port 3000)
-bun run dev
+# Start database, backend, and frontend services
+docker compose up -d
 ```
 
-### Available Scripts
+### Verify Services
+
+- Frontend: `http://localhost:5173`
+- Backend health: `http://localhost:3000/health`
+- Database: `localhost:5432`
+
+### Manual Install (Optional)
+
+```bash
+cd backend
+npm ci
+cd ../frontend
+npm ci
+```
+
+Then you can start services locally from their folders or use Docker Compose.
+
+### Available Commands
 
 | Command | Description |
 |---|---|
-| `bun run dev` | Start Next.js dev server (port 3000) |
-| `bun run build` | Build for production |
-| `bun run lint` | Run ESLint |
-| `bun run db:push` | Push Prisma schema to database |
-| `bun run db:seed` | Seed database with demo data |
-| `npm run pages:build` | Build for Cloudflare Pages |
-| `npm run pages:preview` | Preview Cloudflare Pages locally |
-| `npm run pages:deploy` | Deploy to Cloudflare Pages |
+| `docker compose up -d` | Start database, backend, and frontend services |
+| `docker compose down` | Stop and remove containers |
+| `cd backend && npm ci` | Install backend dependencies |
+| `cd frontend && npm ci` | Install frontend dependencies |
 
 ---
 
 ## Environment Variables
 
+The repository supports root-level Docker Compose overrides and service-specific environment configuration. Create or update `.env` with values like below:
+
 ```env
-# Database
-DATABASE_URL=file:./db/custom.db
-
-# JWT Authentication
+# Backend
+DATABASE_URL=postgresql://bookmyservice_user:bookmyservice_password@postgres:5432/bookmyservice
 JWT_SECRET=your-production-secret-key-change-this
+NODE_ENV=development
+PORT=3000
 
-# Payment Gateway (future)
-RAZORPAY_KEY_ID=your-razorpay-key
-RAZORPAY_KEY_SECRET=your-razorpay-secret
-
-# App
-NEXT_PUBLIC_APP_URL=https://bookyourservice.co.in
+# Frontend
+VITE_API_URL=http://localhost:3000
 ```
+
+This file can be used for local overrides. Docker Compose already sets default values for the root services.
 
 ---
 
