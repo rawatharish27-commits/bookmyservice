@@ -1657,3 +1657,25 @@ Stage Summary:
 - Legal pages will show comprehensive fallback content when database is unavailable
 - Terms checkbox on signup now works properly (no more double-toggle)
 - No git commits made - waiting for user's explicit command
+---
+Task ID: offer-images-msg
+Agent: Main Agent
+Task: Add launch offer banner, category images, and "services coming soon" message to homepage
+
+Work Log:
+- Generated 3 AI images for service categories: plumbing.jpg, electrical.jpg, hvac.jpg (saved to frontend/public/images/)
+- Added Launch Offer Banner at top of homepage with animated gradient background (amber→orange→rose), two offer cards (First 100 Clients / First 50 Service Providers = FREE 1-Year Subscription), animated sparkle elements, Crown/Gift/PartyPopper icons
+- Added CATEGORY_IMAGE_MAP constant mapping icon names to image paths in home-page.tsx
+- Replaced gradient-only category card headers with image+gradient overlay headers on homepage (images visible at 40% opacity with gradient overlay, zoom on hover)
+- Added "Services Coming Soon" notice banner after Live Stats Bar with Clock icon, emerald gradient styling, and "Register Now" CTA button explaining services start after first 100 clients and 50 providers
+- Added CATEGORY_IMAGE_MAP and image backgrounds to categories-page.tsx category cards
+- Added CATEGORY_IMAGE_MAP and background image to category-detail-page.tsx hero banner
+- Added Gift, Crown, PartyPopper icon imports to home-page.tsx
+- All TypeScript and lint checks pass clean
+
+Stage Summary:
+- Launch Offer Banner: Top of page, amber→orange→rose gradient, two offer cards with animated sparkles
+- Service Category Images: Plumbing/Electrical/HVAC images added to all 3 pages (home, categories, category-detail)
+- "Services Coming Soon" Message: Below stats bar, emerald-themed banner with Register Now CTA
+- 3 AI-generated images: /images/plumbing.jpg, /images/electrical.jpg, /images/hvac.jpg
+- No commits made (per user instruction)

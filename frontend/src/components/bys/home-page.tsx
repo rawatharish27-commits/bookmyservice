@@ -28,6 +28,9 @@ import {
   Clock,
   ThumbsUp,
   Lock,
+  Gift,
+  Crown,
+  PartyPopper,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -120,6 +123,12 @@ const CATEGORY_GLOW: Record<string, string> = {
   Droplets: 'shadow-blue-500/30',
   Zap: 'shadow-amber-500/30',
   Wind: 'shadow-teal-500/30',
+};
+
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  Droplets: '/images/plumbing.jpg',
+  Zap: '/images/electrical.jpg',
+  Wind: '/images/hvac.jpg',
 };
 
 // ─── Animated Counter ─────────────────────────────────────────────────────────
@@ -504,6 +513,74 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col">
+      {/* ═══════════ Launch Offer Banner ═══════════ */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500">
+        {/* Animated sparkle background */}
+        <div className="pointer-events-none absolute inset-0">
+          <motion.div
+            className="absolute left-[10%] top-1/2 -translate-y-1/2 size-20 rounded-full bg-white/10"
+            animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute right-[15%] top-1/2 -translate-y-1/2 size-14 rounded-full bg-white/10"
+            animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.5, 0.2] }}
+            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute left-[45%] top-1/2 -translate-y-1/2 size-10 rounded-full bg-yellow-300/15"
+            animate={{ scale: [1, 1.5, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-8">
+            {/* Left side - Client offer */}
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="flex items-center gap-3 rounded-2xl bg-white/15 px-5 py-3 backdrop-blur-sm ring-1 ring-white/20"
+            >
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white/20 shadow-md">
+                <Crown className="size-6 text-yellow-100" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white sm:text-base">First 100 Clients</p>
+                <p className="text-xs text-white/80 sm:text-sm">Get <span className="font-extrabold text-yellow-100">FREE Subscription</span> for 1 Year!</p>
+              </div>
+            </motion.div>
+
+            {/* Center sparkle divider */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.3, type: 'spring' }}
+              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm ring-1 ring-white/20"
+            >
+              <PartyPopper className="size-6 text-yellow-200" />
+            </motion.div>
+
+            {/* Right side - Provider offer */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center gap-3 rounded-2xl bg-white/15 px-5 py-3 backdrop-blur-sm ring-1 ring-white/20"
+            >
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-white/20 shadow-md">
+                <Gift className="size-6 text-yellow-100" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white sm:text-base">First 50 Service Providers</p>
+                <p className="text-xs text-white/80 sm:text-sm">Get <span className="font-extrabold text-yellow-100">FREE Subscription</span> for 1 Year!</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ Hero Section ═══════════ */}
       <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-800" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 25%, #0f766e 50%, #0e7490 75%, #164e63 100%)' }}>
         {/* Mesh gradient background */}
@@ -797,6 +874,40 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ Launch Notice Banner ═══════════ */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 top-0 size-[300px] rounded-full bg-emerald-200/30 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[300px] rounded-full bg-teal-200/30 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex flex-col items-center gap-3 rounded-2xl border border-emerald-200/50 bg-white/60 px-6 py-5 text-center shadow-sm backdrop-blur-sm sm:flex-row sm:text-left"
+          >
+            <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md shadow-emerald-500/25">
+              <Clock className="size-7 text-white" />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-emerald-900">Services Coming Soon!</h3>
+              <p className="mt-1 text-sm leading-relaxed text-emerald-700/80">
+                Our services will officially start after the selection of our <span className="font-bold text-emerald-900">first 100 clients</span> and <span className="font-bold text-emerald-900">50 service providers</span>. Register now to be among the first and enjoy <span className="font-extrabold text-amber-600">FREE subscription for one year</span>!
+              </p>
+            </div>
+            <Button
+              size="lg"
+              className="shimmer shrink-0 bg-gradient-to-r from-emerald-600 to-teal-600 px-6 text-white shadow-md shadow-emerald-500/25 hover:from-emerald-700 hover:to-teal-700"
+              onClick={() => navigate('register')}
+            >
+              Register Now
+              <ArrowRight className="ml-2 size-4" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ═══════════ Service Categories ═══════════ */}
       <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -864,8 +975,18 @@ export function HomePage() {
                               <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_2s_ease-in-out] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                             </div>
 
-                            {/* Gradient header */}
-                            <div className={`relative bg-gradient-to-r ${gradientBg} px-6 py-6`}>
+                            {/* Category image header */}
+                            <div className={`relative overflow-hidden bg-gradient-to-r ${gradientBg}`}>
+                              {/* Background image */}
+                              <img
+                                src={CATEGORY_IMAGE_MAP[cat.icon || ''] || '/images/plumbing.jpg'}
+                                alt={cat.name}
+                                className="size-full object-cover opacity-40 transition-transform duration-700 group-hover:scale-110"
+                                style={{ minHeight: '160px', maxHeight: '180px' }}
+                              />
+                              {/* Gradient overlay on image */}
+                              <div className={`absolute inset-0 bg-gradient-to-r ${gradientBg} opacity-70`} />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                               {/* Decorative pattern */}
                               <div className="pointer-events-none absolute inset-0 opacity-10">
                                 <div
@@ -876,23 +997,25 @@ export function HomePage() {
                                   }}
                                 />
                               </div>
-                              <div className="relative flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                  <motion.div
-                                    className={`flex size-16 items-center justify-center rounded-2xl bg-white/20 shadow-lg ${glowShadow} backdrop-blur-sm`}
-                                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                                    transition={{ duration: 0.5 }}
-                                  >
-                                    <span className="text-white">{iconEl}</span>
-                                  </motion.div>
-                                  <div>
-                                    <h3 className="text-2xl font-bold text-white">{cat.name}</h3>
-                                    <p className="text-sm text-white/80">
-                                      {cat.servicesCount} {cat.servicesCount === 1 ? 'service' : 'services'} available
-                                    </p>
+                              <div className="relative px-6 py-6">
+                                <div className="relative flex items-center justify-between">
+                                  <div className="flex items-center gap-4">
+                                    <motion.div
+                                      className={`flex size-16 items-center justify-center rounded-2xl bg-white/20 shadow-lg ${glowShadow} backdrop-blur-sm`}
+                                      whileHover={{ rotate: [0, -10, 10, 0] }}
+                                      transition={{ duration: 0.5 }}
+                                    >
+                                      <span className="text-white">{iconEl}</span>
+                                    </motion.div>
+                                    <div>
+                                      <h3 className="text-2xl font-bold text-white">{cat.name}</h3>
+                                      <p className="text-sm text-white/80">
+                                        {cat.servicesCount} {cat.servicesCount === 1 ? 'service' : 'services'} available
+                                      </p>
+                                    </div>
                                   </div>
+                                  <ArrowRight className="size-5 text-white/50 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white" />
                                 </div>
-                                <ArrowRight className="size-5 text-white/50 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white" />
                               </div>
                             </div>
 

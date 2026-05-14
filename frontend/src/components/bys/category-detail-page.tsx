@@ -163,6 +163,12 @@ const CATEGORY_STYLES: Record<string, {
   },
 };
 
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  plumbing: '/images/plumbing.jpg',
+  electrical: '/images/electrical.jpg',
+  'ac-hvac': '/images/hvac.jpg',
+};
+
 const DEFAULT_STYLE = {
   gradient: 'from-emerald-500 to-teal-500',
   headerGradient: 'from-emerald-600 via-emerald-500 to-teal-400',
@@ -312,6 +318,14 @@ export function CategoryDetailPage() {
     <div className="flex flex-col">
       {/* ═══════════ Category Hero Banner ═══════════ */}
       <section className={`relative overflow-hidden bg-gradient-to-r ${style.headerGradient}`}>
+        {/* Category background image */}
+        <img
+          src={CATEGORY_IMAGE_MAP[category?.slug || ''] || '/images/plumbing.jpg'}
+          alt={category?.name || 'Category'}
+          className="pointer-events-none absolute inset-0 size-full object-cover opacity-25"
+        />
+        {/* Gradient overlay on image */}
+        <div className={`absolute inset-0 bg-gradient-to-r ${style.headerGradient} opacity-80`} />
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-20 -top-20 size-[400px] rounded-full bg-white/5 blur-3xl" />

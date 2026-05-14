@@ -120,6 +120,12 @@ const CATEGORY_GRADIENTS: Record<string, {
   },
 };
 
+const CATEGORY_IMAGE_MAP: Record<string, string> = {
+  plumbing: '/images/plumbing.jpg',
+  electrical: '/images/electrical.jpg',
+  'ac-hvac': '/images/hvac.jpg',
+};
+
 const DEFAULT_GRADIENT = {
   gradient: 'from-emerald-500 to-teal-500',
   headerGradient: 'from-emerald-700 via-emerald-600 to-teal-500',
@@ -547,8 +553,18 @@ export function CategoriesPage() {
                             className="group cursor-pointer overflow-hidden rounded-2xl border-0 shadow-lg transition-all duration-500 hover:shadow-2xl"
                             onClick={() => navigate('category-detail', { categoryId: String(cat.id) })}
                           >
-                            {/* Gradient header with icon */}
-                            <div className={`relative bg-gradient-to-r ${colors.headerGradient} px-6 py-8`}>
+                            {/* Category image header with gradient overlay */}
+                            <div className={`relative overflow-hidden bg-gradient-to-r ${colors.headerGradient}`}>
+                              {/* Background image */}
+                              <img
+                                src={CATEGORY_IMAGE_MAP[cat.slug || ''] || '/images/plumbing.jpg'}
+                                alt={cat.name}
+                                className="size-full object-cover opacity-35 transition-transform duration-700 group-hover:scale-110"
+                                style={{ minHeight: '170px', maxHeight: '200px' }}
+                              />
+                              {/* Gradient overlay on image */}
+                              <div className={`absolute inset-0 bg-gradient-to-r ${colors.headerGradient} opacity-70`} />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
                               {/* Decorative dot pattern */}
                               <div className="pointer-events-none absolute inset-0 opacity-10">
                                 <div
@@ -564,28 +580,30 @@ export function CategoriesPage() {
                               <div className="pointer-events-none absolute -right-6 -top-6 size-32 rounded-full bg-white/[0.07]" />
                               <div className="pointer-events-none absolute -bottom-4 -left-4 size-20 rounded-full bg-white/[0.05]" />
 
-                              <div className="relative flex items-center gap-4">
-                                {/* Animated icon with float */}
-                                <motion.div
-                                  className={`flex size-16 items-center justify-center rounded-2xl bg-white/20 shadow-lg ${colors.glow} backdrop-blur-sm`}
-                                  whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
-                                  transition={{ duration: 0.5 }}
-                                >
-                                  <span className="text-white float-animation">{iconEl}</span>
-                                </motion.div>
+                              <div className="relative px-6 py-8">
+                                <div className="relative flex items-center gap-4">
+                                  {/* Animated icon with float */}
+                                  <motion.div
+                                    className={`flex size-16 items-center justify-center rounded-2xl bg-white/20 shadow-lg ${colors.glow} backdrop-blur-sm`}
+                                    whileHover={{ rotate: [0, -10, 10, 0], scale: 1.1 }}
+                                    transition={{ duration: 0.5 }}
+                                  >
+                                    <span className="text-white float-animation">{iconEl}</span>
+                                  </motion.div>
 
-                                <div className="flex-1">
-                                  <h3 className="text-2xl font-bold text-white">{cat.name}</h3>
-                                  <p className="mt-0.5 text-sm text-white/80">
-                                    {cat.subcategoriesCount} subcategories
-                                  </p>
-                                </div>
+                                  <div className="flex-1">
+                                    <h3 className="text-2xl font-bold text-white">{cat.name}</h3>
+                                    <p className="mt-0.5 text-sm text-white/80">
+                                      {cat.subcategoriesCount} subcategories
+                                    </p>
+                                  </div>
 
-                                {/* Service count badge */}
-                                <div className="flex flex-col items-end gap-2">
-                                  <Badge className="rounded-full border-0 bg-white/25 px-4 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
-                                    {cat.servicesCount} {cat.servicesCount === 1 ? 'Service' : 'Services'}
-                                  </Badge>
+                                  {/* Service count badge */}
+                                  <div className="flex flex-col items-end gap-2">
+                                    <Badge className="rounded-full border-0 bg-white/25 px-4 py-1.5 text-sm font-bold text-white backdrop-blur-sm">
+                                      {cat.servicesCount} {cat.servicesCount === 1 ? 'Service' : 'Services'}
+                                    </Badge>
+                                  </div>
                                 </div>
                               </div>
                             </div>
