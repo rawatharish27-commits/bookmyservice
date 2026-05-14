@@ -1,0 +1,13 @@
+{
+  "name": "bookmyservice",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "build": "npm --workspaces run build",
+    "dev": "npm --workspaces run dev",
+    "lint": "npm --workspaces run lint"
+  }
+}
