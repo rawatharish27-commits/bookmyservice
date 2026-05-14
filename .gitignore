@@ -50,5 +50,12 @@ test
 prompt
 
 server.log
+# Vite build output
+dist/
+
+# Cloudflare
+.open-next/
+.wrangler/
+
 # Skills directory
 /skills/
