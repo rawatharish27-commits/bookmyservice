@@ -19,7 +19,7 @@ export async function signAccessToken(payload: TokenPayload, env: { JWT_SECRET?:
   return new SignJWT({ ...payload })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('15m')
+    .setExpirationTime('24h')
     .setIssuer('bookyourservice')
     .setAudience('bookyourservice-api')
     .sign(getJwtSecret(env));

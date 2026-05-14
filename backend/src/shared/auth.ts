@@ -60,7 +60,7 @@ export async function createAccessToken(user: UserRecord) {
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('15m')
+    .setExpirationTime('24h')
     .setIssuer(ISSUER)
     .setAudience(AUDIENCE)
     .sign(SECRET)

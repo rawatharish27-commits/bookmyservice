@@ -404,7 +404,7 @@ export function ContactPage() {
 
           {/* Map Placeholder */}
           <div className="overflow-hidden rounded-2xl border-0 glass-emerald shadow-lg">
-            <div className="relative flex aspect-video items-center justify-center mesh-bg">
+            <div className="relative flex aspect-video items-center justify-center bg-white">
               {/* Map grid lines */}
               <div className="absolute inset-0 opacity-20" style={{
                 backgroundImage: `

@@ -404,7 +404,7 @@ export function AboutPage() {
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
       >
-        <div className="relative overflow-hidden rounded-3xl mesh-bg p-10 text-center sm:p-14">
+        <div className="relative overflow-hidden rounded-3xl bg-white p-10 text-center sm:p-14">
           {/* Decorative */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -right-16 -top-16 size-48 rounded-full bg-emerald-100/50" />

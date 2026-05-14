@@ -190,11 +190,11 @@
 /* ─── Glassmorphism Utilities ──────────────────────────────────────────────── */
 @layer utilities {
   .glass {
-    background: rgba(255, 255, 255, 0.72);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px) saturate(2);
     -webkit-backdrop-filter: blur(20px) saturate(2);
-    border: 1px solid rgba(255, 255, 255, 0.45);
-    box-shadow: 0 4px 24px rgba(16, 185, 129, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
   .glass-dark {
     background: rgba(0, 0, 0, 0.3);
@@ -204,11 +204,11 @@
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
   }
   .glass-emerald {
-    background: rgba(16, 185, 129, 0.1);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px) saturate(2);
     -webkit-backdrop-filter: blur(20px) saturate(2);
-    border: 1px solid rgba(16, 185, 129, 0.2);
-    box-shadow: 0 4px 24px rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
   }
   .glass-warm {
     background: rgba(245, 158, 11, 0.08);
@@ -218,11 +218,11 @@
     box-shadow: 0 4px 24px rgba(245, 158, 11, 0.06);
   }
   .glass-card {
-    background: rgba(255, 255, 255, 0.65);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(24px) saturate(2.2);
     -webkit-backdrop-filter: blur(24px) saturate(2.2);
-    border: 1px solid rgba(16, 185, 129, 0.12);
-    box-shadow: 0 8px 32px rgba(16, 185, 129, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     border-radius: 1rem;
   }
 
@@ -337,11 +337,7 @@
 
   /* ─── Mesh Backgrounds ────────────────────────────────────────────────────── */
   .mesh-bg {
-    background:
-      radial-gradient(at 20% 30%, rgba(5, 150, 105, 0.18) 0%, transparent 50%),
-      radial-gradient(at 80% 20%, rgba(20, 184, 166, 0.14) 0%, transparent 50%),
-      radial-gradient(at 40% 80%, rgba(8, 145, 178, 0.12) 0%, transparent 50%),
-      radial-gradient(at 90% 70%, rgba(217, 119, 6, 0.08) 0%, transparent 40%);
+    background: #ffffff;
   }
   .bg-mesh-1 {
     background:

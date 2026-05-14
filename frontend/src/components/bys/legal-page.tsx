@@ -29,13 +29,13 @@ import {
 } from 'lucide-react';
 
 const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.ReactNode; gradient: string }> = {
-  terms: { title: 'Terms of Service', type: 'TERMS', icon: <Shield className="size-5" />, gradient: 'from-emerald-700 to-teal-600' },
-  privacy: { title: 'Privacy Policy', type: 'PRIVACY', icon: <Lock className="size-5" />, gradient: 'from-teal-700 to-cyan-600' },
-  'refund-policy': { title: 'Refund Policy', type: 'REFUND', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-orange-500' },
-  'cookie-policy': { title: 'Cookie Policy', type: 'COOKIES', icon: <Cookie className="size-5" />, gradient: 'from-violet-600 to-purple-500' },
-  aup: { title: 'Acceptable Usage Policy', type: 'AUP', icon: <Scale className="size-5" />, gradient: 'from-rose-600 to-red-500' },
-  'provider-agreement': { title: 'Provider Agreement', type: 'PROVIDER_AGREEMENT', icon: <HandshakeIcon className="size-5" />, gradient: 'from-sky-600 to-blue-500' },
-  'community-guidelines': { title: 'Community Guidelines', type: 'COMMUNITY_GUIDELINES', icon: <Users className="size-5" />, gradient: 'from-fuchsia-600 to-pink-500' },
+  terms: { title: 'Terms of Service', type: 'terms', icon: <Shield className="size-5" />, gradient: 'from-emerald-700 to-teal-600' },
+  privacy: { title: 'Privacy Policy', type: 'privacy', icon: <Lock className="size-5" />, gradient: 'from-teal-700 to-cyan-600' },
+  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-orange-500' },
+  'cookie-policy': { title: 'Cookie Policy', type: 'cookies', icon: <Cookie className="size-5" />, gradient: 'from-violet-600 to-purple-500' },
+  aup: { title: 'Acceptable Usage Policy', type: 'aup', icon: <Scale className="size-5" />, gradient: 'from-rose-600 to-red-500' },
+  'provider-agreement': { title: 'Provider Agreement', type: 'provider-agreement', icon: <HandshakeIcon className="size-5" />, gradient: 'from-sky-600 to-blue-500' },
+  'community-guidelines': { title: 'Community Guidelines', type: 'community-guidelines', icon: <Users className="size-5" />, gradient: 'from-fuchsia-600 to-pink-500' },
 };
 
 interface LegalPageData {
@@ -55,7 +55,7 @@ const fadeUp = {
 export function LegalPage() {
   const { navigate, nav } = useApp();
   const pageType = nav.params.type || nav.page;
-  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType.toUpperCase(), icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600' };
+  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(
     `/api/legal/${pageInfo.type}`
@@ -137,7 +137,7 @@ export function LegalPage() {
   };
 
   return (
-    <div className="mesh-bg min-h-screen mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="bg-white min-h-screen mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       {/* Breadcrumb */}
       <motion.div {...fadeUp} transition={{ duration: 0.4 }}>
         <Breadcrumb className="mb-6">

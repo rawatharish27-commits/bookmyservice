@@ -755,7 +755,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Live Stats Bar ═══════════ */}
-      <section className="relative z-10 -mt-2 mesh-bg">
+      <section className="relative z-10 -mt-2 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {[
@@ -798,7 +798,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Service Categories ═══════════ */}
-      <section className="mesh-bg py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -943,7 +943,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ How It Works ═══════════ */}
-      <section className="mesh-bg py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1052,7 +1052,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Featured Services ═══════════ */}
-      <section className="mesh-bg py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-end justify-between">
             <motion.div
@@ -1308,7 +1308,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Testimonials / Reviews Section ═══════════ */}
-      <section className="mesh-bg py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1340,7 +1340,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Trust & Safety Section ═══════════ */}
-      <section className="mesh-bg py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"

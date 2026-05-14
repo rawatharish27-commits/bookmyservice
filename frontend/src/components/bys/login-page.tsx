@@ -179,13 +179,11 @@ export function LoginPage() {
       </div>
 
       {/* ========== RIGHT FORM PANEL ========== */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-white">
         {/* Subtle background orbs */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/25 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-100/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        {/* Animated dot pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, rgba(16,185,129,0.8) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+        <div className="absolute top-0 right-0 w-72 h-72 bg-gray-100/40 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-100/30 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gray-50/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -206,9 +204,9 @@ export function LoginPage() {
           </motion.button>
 
           {/* ========== GLASSMORPHISM CARD ========== */}
-          <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/8 border-emerald-100/50 relative overflow-hidden backdrop-blur-xl">
+          <div className="glass-emerald rounded-2xl shadow-xl border-gray-200/50 relative overflow-hidden backdrop-blur-xl">
             {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-200/30 pointer-events-none" />
             {/* Gradient top accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 
@@ -401,8 +399,8 @@ export function LoginPage() {
                     {/* Social login button */}
                     <button
                       type="button"
-                      onClick={() => toast.info('Google sign-in coming soon! Please use email/password to sign in.')}
-                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-white hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-100/80"
+                      onClick={() => toast.info('Google sign-in is coming soon! Please use email/password to sign in.')}
+                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm cursor-pointer"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -417,7 +415,7 @@ export function LoginPage() {
                     <button
                       type="button"
                       onClick={() => toast.info('Phone sign-in coming soon!')}
-                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/50 to-teal-50/30 hover:from-emerald-50 hover:to-teal-50 hover:border-emerald-300 transition-all text-sm font-medium text-emerald-700"
+                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 transition-all text-sm font-medium text-gray-700 cursor-pointer"
                     >
                       <Phone className="size-4" />
                       Continue with Phone
@@ -428,7 +426,7 @@ export function LoginPage() {
                       <button
                         type="button"
                         onClick={() => navigate('register')}
-                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
+                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2 cursor-pointer"
                       >
                         Sign up
                       </button>
@@ -575,8 +573,8 @@ export function LoginPage() {
                     {/* Social login button */}
                     <button
                       type="button"
-                      onClick={() => toast.info('Google sign-in coming soon! Please use email/password to sign in.')}
-                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-white hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-100/80"
+                      onClick={() => toast.info('Google sign-in is coming soon! Please use email/password to sign in.')}
+                      className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm cursor-pointer"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
                         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
@@ -592,7 +590,7 @@ export function LoginPage() {
                       <button
                         type="button"
                         onClick={() => navigate('register')}
-                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
+                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2 cursor-pointer"
                       >
                         Sign up
                       </button>

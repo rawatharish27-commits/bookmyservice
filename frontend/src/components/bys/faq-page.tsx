@@ -305,7 +305,7 @@ export function FaqPage() {
                           </span>
                         </AccordionTrigger>
                         <AccordionContent className="text-muted-foreground pb-4 pl-9">
-                          <div className="rounded-lg mesh-bg p-3 text-sm leading-relaxed">
+                          <div className="rounded-lg bg-white p-3 text-sm leading-relaxed">
                             {item.answer}
                           </div>
                         </AccordionContent>
@@ -327,7 +327,7 @@ export function FaqPage() {
           className="py-16 text-center"
         >
           <div className="glass-emerald mx-auto max-w-md rounded-3xl p-10">
-            <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl mesh-bg">
+            <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl bg-white">
               <HelpCircle className="size-10 text-emerald-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-800">No FAQs Found</h3>

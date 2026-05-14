@@ -464,7 +464,7 @@ export function CategoriesPage() {
       </section>
 
       {/* ═══════════ Trust Badges ═══════════ */}
-      <section className="relative z-10 mesh-bg">
+      <section className="relative z-10 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -498,7 +498,7 @@ export function CategoriesPage() {
       </section>
 
       {/* ═══════════ Categories Grid ═══════════ */}
-      <section className="mesh-bg py-16">
+      <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Error State */}
           {error && (
@@ -688,7 +688,7 @@ export function CategoriesPage() {
 
       {/* ═══════════ Why Choose Us Section ═══════════ */}
       {!loading && !error && categories.length > 0 && (
-        <section className="mesh-bg py-16">
+        <section className="bg-white py-16">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
               initial="hidden"

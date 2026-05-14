@@ -217,13 +217,11 @@ export function RegisterPage() {
       </div>
 
       {/* ========== RIGHT FORM PANEL ========== */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-white">
         {/* Subtle background orbs */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/25 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-100/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        {/* Animated dot pattern */}
-        <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, rgba(16,185,129,0.8) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+        <div className="absolute top-0 right-0 w-72 h-72 bg-gray-100/40 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-gray-100/30 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-gray-50/40 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -244,9 +242,9 @@ export function RegisterPage() {
           </motion.button>
 
           {/* ========== GLASSMORPHISM CARD ========== */}
-          <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/8 border-emerald-100/50 relative overflow-hidden backdrop-blur-xl">
+          <div className="glass-emerald rounded-2xl shadow-xl border-gray-200/50 relative overflow-hidden backdrop-blur-xl">
             {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-200/30 pointer-events-none" />
             {/* Gradient top accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 
@@ -512,20 +510,23 @@ export function RegisterPage() {
                     </div>
 
                     {/* Terms with better styling */}
-                    <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100/50">
+                    <div
+                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none"
+                      onClick={() => setTermsAccepted(!termsAccepted)}
+                    >
                       <Checkbox
                         id="client-terms"
                         checked={termsAccepted}
                         onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                        className="mt-0.5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                        className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
                       />
-                      <Label htmlFor="client-terms" className="text-sm font-normal leading-snug text-muted-foreground">
+                      <Label htmlFor="client-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                         I agree to the{' '}
-                        <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
                         {', '}
-                        <button type="button" onClick={() => navigate('aup', { type: 'aup' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
                         {' '}and{' '}
-                        <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
                       </Label>
                     </div>
                   </div>
@@ -796,20 +797,23 @@ export function RegisterPage() {
                     </div>
 
                     {/* Terms with better styling */}
-                    <div className="flex items-start gap-3 p-3 rounded-xl bg-emerald-50/50 border border-emerald-100/50">
+                    <div
+                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none"
+                      onClick={() => setTermsAccepted(!termsAccepted)}
+                    >
                       <Checkbox
                         id="provider-terms"
                         checked={termsAccepted}
                         onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                        className="mt-0.5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
+                        className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
                       />
-                      <Label htmlFor="provider-terms" className="text-sm font-normal leading-snug text-muted-foreground">
+                      <Label htmlFor="provider-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                         I agree to the{' '}
-                        <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
                         {', '}
-                        <button type="button" onClick={() => navigate('provider-agreement', { type: 'provider-agreement' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('provider-agreement', { type: 'provider-agreement' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
                         {' '}and{' '}
-                        <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
                       </Label>
                     </div>
                   </div>

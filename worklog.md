@@ -1604,3 +1604,31 @@ Stage Summary:
 - 0 errors from tsc --noEmit
 - 0 errors from ESLint
 - No functional changes to any business logic
+---
+Task ID: 11
+Agent: Main Agent
+Task: Fix multiple UI and functional issues - white background, legal pages, checkbox, forgot password, change password, Google auth, sign up navigation
+
+Work Log:
+- Updated globals.css: changed mesh-bg to white background, glass-emerald/glass/glass-card to white-based backgrounds
+- Updated login-page.tsx: white background, fixed glass card styling, added cursor-pointer to Google/Phone/Sign up buttons
+- Updated register-page.tsx: white background, fixed glass card styling, made terms checkbox larger (size-5) and entire container clickable with cursor-pointer, added stopPropagation on legal link buttons
+- Updated legal-page.tsx: fixed PAGE_TYPE_MAP to use lowercase type values (terms, privacy, etc.) matching the Hono backend's TYPE_MAP, fixed fallback type mapping, changed background from mesh-bg to bg-white
+- Created backend/api/api/auth/forgot-password.ts for Cloudflare Pages Functions deployment
+- Extended JWT access token expiry from 15m to 24h in both backend/src/shared/auth.ts and backend/api/_shared/auth.ts to fix change password token expiry issues
+- Updated footer.tsx: changed from mesh-bg gradient to bg-white
+- Updated home-page.tsx: changed all mesh-bg to bg-white
+- Updated about-page.tsx, faq-page.tsx, how-it-works-page.tsx, categories-page.tsx, contact-page.tsx: changed mesh-bg to bg-white
+- Updated vite.config.ts: changed port from 3000 to 5173 to match Caddy config
+- Updated Caddyfile: confirmed port 5173 for frontend proxy
+- Installed http-proxy package for proxy.js support
+
+Stage Summary:
+- White background and black font applied across all pages
+- Legal pages now work: type mapping fixed (lowercase), API response handled correctly
+- Terms checkbox is now larger, clickable, and the entire container is clickable
+- Forgot Password: Hono backend already has endpoint at /api/auth/forgot-password; added Cloudflare Pages Functions version too
+- Change Password: Token expiry extended to 24h, should now work properly
+- Google Sign-in: Shows clear "coming soon" toast message with cursor-pointer
+- Sign Up navigation: Added cursor-pointer class to Sign up buttons on login page
+- All existing file structure and code patterns preserved - no new files added outside existing structure

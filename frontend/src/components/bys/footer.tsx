@@ -138,7 +138,7 @@ export function Footer() {
       <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-cyan-400 via-40% to-teal-500 via-70% to-amber-400" />
 
       {/* Main footer content */}
-      <div className="mesh-bg bg-gradient-to-b from-emerald-50/30 via-gray-50/95 to-gray-100/80">
+      <div className="bg-white">
         <div className="mx-auto max-w-7xl px-4 pt-12 pb-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-5">
             {/* About Column (spans 2 on lg) */}

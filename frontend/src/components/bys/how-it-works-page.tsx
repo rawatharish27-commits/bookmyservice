@@ -400,7 +400,7 @@ export function HowItWorksPage() {
         className="mt-8"
       >
         {activeTab === 'client' ? (
-          <div className="relative overflow-hidden rounded-3xl mesh-bg p-10 text-center">
+          <div className="relative overflow-hidden rounded-3xl bg-white p-10 text-center">
             <div className="pointer-events-none absolute inset-0">
               <div className="absolute -right-16 -top-16 size-48 rounded-full bg-emerald-100/50" />
               <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-teal-100/50" />
