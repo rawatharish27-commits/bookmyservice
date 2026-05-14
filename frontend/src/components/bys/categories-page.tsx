@@ -290,8 +290,8 @@ const scaleIn = {
 
 export function CategoriesPage() {
   const { navigate } = useApp();
-  const { data: categoriesData, loading, error, refetch } = useApi<Category[]>('/api/categories');
-  const categories = Array.isArray(categoriesData) ? categoriesData : [];
+  const { data: categoriesData, loading, error, refetch } = useApi<{ categories: Category[]; total: number }>('/api/categories');
+  const categories = categoriesData?.categories || [];
 
   // Fetch subcategories for preview
   const [subcategoriesMap, setSubcategoriesMap] = useState<Record<number, Subcategory[]>>({});

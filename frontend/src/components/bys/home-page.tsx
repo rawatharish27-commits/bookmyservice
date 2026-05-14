@@ -411,10 +411,10 @@ export function HomePage() {
   const { user } = useAuth();
 
   // Data fetching - REAL API only, no mock/demo data
-  const { data: categoriesData, loading: categoriesLoading, refetch: refetchCategories } = useApi<Category[]>('/api/categories');
+  const { data: categoriesData, loading: categoriesLoading, refetch: refetchCategories } = useApi<{ categories: Category[]; total: number }>('/api/categories');
   const { data: servicesData, loading: servicesLoading } = useApi<{ services: ServiceItem[]; pagination: { total: number } }>('/api/services?limit=6');
 
-  const categories = Array.isArray(categoriesData) ? categoriesData : [];
+  const categories = categoriesData?.categories || [];
   const services = servicesData?.services || [];
 
   // Subcategories per category
@@ -435,7 +435,7 @@ export function HomePage() {
             const res = await fetch(`/api/subcategories?categoryId=${cat.id}`);
             if (res.ok) {
               const data = await res.json();
-              map[cat.id] = data;
+              map[cat.id] = data.subcategories || data;
             }
           } catch {
             // ignore
@@ -933,7 +933,7 @@ export function HomePage() {
 
           {!categoriesLoading && categories.length === 0 ? (
             <div className="mt-10 text-center">
-              <p className="text-sm text-muted-foreground">Unable to load categories. Showing demo data.</p>
+              <p className="text-sm text-muted-foreground">Unable to load categories. Please try again.</p>
               <Button variant="outline" size="sm" onClick={refetchCategories} className="mt-2">
                 Retry
               </Button>

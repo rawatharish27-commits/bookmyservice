@@ -7,6 +7,7 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     react(),
+    
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -68,6 +69,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
+        timeout: 30000,
       },
     },
   },

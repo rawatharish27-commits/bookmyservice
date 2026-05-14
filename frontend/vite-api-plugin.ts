@@ -8,9 +8,9 @@ async function getPool() {
     pool = new Pool({
       connectionString: 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
       ssl: { rejectUnauthorized: false },
-      max: 2,
-      idleTimeoutMillis: 20000,
-      connectionTimeoutMillis: 8000,
+      max: 1,
+      idleTimeoutMillis: 10000,
+      connectionTimeoutMillis: 5000,
     });
     pool.on('error', (err: Error) => {
       console.error('DB pool error:', err.message);
@@ -93,6 +93,23 @@ export default function apiPlugin(): Plugin {
             const result = await query('SELECT * FROM "ServiceCategory" WHERE id = $1 OR slug = $1', [catMatch[1]]);
             if (!result.rows[0]) return jsonResponse(res, { error: 'Not found' }, 404);
             return jsonResponse(res, result.rows[0]);
+          }
+
+          // Subcategories
+          if (path === '/subcategories' && req.method === 'GET') {
+            const categoryId = url.searchParams.get('categoryId');
+            if (categoryId) {
+              const result = await query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [categoryId]);
+              return jsonResponse(res, { subcategories: result.rows, total: result.rows.length });
+            }
+            const result = await query('SELECT * FROM "ServiceSubcategory" WHERE "isActive" = true ORDER BY "displayOrder"');
+            return jsonResponse(res, { subcategories: result.rows, total: result.rows.length });
+          }
+
+          // Stats - Platform
+          if (path === '/stats/platform' && req.method === 'GET') {
+            const result = await query('SELECT * FROM "PlatformStats" ORDER BY id DESC LIMIT 1');
+            return jsonResponse(res, result.rows[0] || { totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 });
           }
 
           // FAQ
@@ -227,7 +244,9 @@ export default function apiPlugin(): Plugin {
 
           // Contact
           if (path === '/contact' && req.method === 'POST') {
-            const { name, email, subject, message } = b || {};
+            const body = await readBody(req);
+            const b = body ? JSON.parse(body) : {};
+            const { name, email, subject, message } = b;
             if (!name || !email || !subject || !message) return jsonResponse(res, { error: 'All fields required' }, 400);
             const id = 'msg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
             await query('INSERT INTO "ContactMessage" (id, name, email, subject, message) VALUES ($1, $2, $3, $4, $5)', [id, name, email, subject, message]);

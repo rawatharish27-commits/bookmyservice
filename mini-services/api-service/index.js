@@ -1,9 +1,18 @@
 const { serve } = require('@hono/node-server')
 const { Hono } = require('hono')
 const { cors } = require('hono/cors')
+const { logger } = require('hono/logger')
 const { Pool } = require('pg')
 const bcrypt = require('bcryptjs')
 const { SignJWT, jwtVerify } = require('jose')
+
+// Process error handlers to prevent crashes
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message)
+})
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason)
+})
 
 const DB_URL = (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgresql')) 
   ? process.env.DATABASE_URL 
@@ -11,9 +20,13 @@ const DB_URL = (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith(
 const pool = new Pool({
   connectionString: DB_URL,
   ssl: { rejectUnauthorized: false },
-  max: 5,
-  idleTimeoutMillis: 30000,
+  max: 3,
+  idleTimeoutMillis: 20000,
   connectionTimeoutMillis: 10000,
+})
+
+pool.on('error', (err) => {
+  console.error('DB Pool error:', err.message)
 })
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
@@ -229,6 +242,18 @@ app.get('/api/categories', async (c) => {
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
+app.get('/api/subcategories', async (c) => {
+  try {
+    const categoryId = c.req.query('categoryId')
+    if (categoryId) {
+      const result = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [categoryId])
+      return c.json({ subcategories: result.rows, total: result.rows.length })
+    }
+    const result = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "isActive" = true ORDER BY "displayOrder"')
+    return c.json({ subcategories: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
 app.get('/api/categories/:id', async (c) => {
   try {
     const id = c.req.param('id')
@@ -253,7 +278,7 @@ app.get('/api/services', async (c) => {
     const city = c.req.query('city')
     const search = c.req.query('search')
     const emergency = c.req.query('emergency')
-    let query = 'SELECT s.*, u.name as "providerName", u.phone as "providerPhone", u."averageRating" as "providerRating", c.name as "categoryName", c.slug as "categorySlug" FROM "Service" s JOIN "User" u ON s."providerId" = u.id JOIN "ServiceCategory" c ON s."categoryId" = c.id WHERE s."isActive" = true AND s."isApproved" = true'
+    let query = 'SELECT s.*, u.name as "providerName", u.phone as "providerPhone", s."averageRating" as "providerRating", c.name as "categoryName", c.slug as "categorySlug" FROM "Service" s JOIN "User" u ON s."providerId" = u.id JOIN "ServiceCategory" c ON s."categoryId" = c.id WHERE s."isActive" = true AND s."isApproved" = true'
     const params = []
     let idx = 1
     if (category) { query += ` AND (c.slug = $${idx} OR c.id::text = $${idx})`; params.push(category); idx++ }
@@ -269,7 +294,7 @@ app.get('/api/services', async (c) => {
 app.get('/api/services/:id', async (c) => {
   try {
     const id = c.req.param('id')
-    const result = await pool.query('SELECT s.*, u.name as "providerName", u.phone as "providerPhone", u."profileImageUrl" as "providerImage", u."averageRating" as "providerRating", u."completedJobsCount", u."verifiedBadge", c.name as "categoryName" FROM "Service" s JOIN "User" u ON s."providerId" = u.id JOIN "ServiceCategory" c ON s."categoryId" = c.id WHERE s.id = $1', [id])
+    const result = await pool.query('SELECT s.*, u.name as "providerName", u.phone as "providerPhone", u."profileImageUrl" as "providerImage", s."averageRating" as "providerRating", u."completedJobsCount", u."verifiedBadge", c.name as "categoryName" FROM "Service" s JOIN "User" u ON s."providerId" = u.id JOIN "ServiceCategory" c ON s."categoryId" = c.id WHERE s.id = $1', [id])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
     const service = result.rows[0]
     // Get availability
@@ -368,7 +393,7 @@ app.post('/api/bookings', async (c) => {
     // Auto-assign nearest technician
     let technicianId = null
     if (body.latitude && body.longitude) {
-      const nearestTech = await client_conn.query(`SELECT tp."userId", tp."currentLocationLat", tp."currentLocationLng", tp.skills FROM "TechnicianProfile" tp JOIN "User" u ON tp."userId" = u.id WHERE tp."isAvailable" = true AND u.status = 'ACTIVE' ORDER BY tp."averageRating" DESC LIMIT 10`)
+      const nearestTech = await client_conn.query(`SELECT tp."userId", tp."currentLocationLat", tp."currentLocationLng", tp.skills FROM "TechnicianProfile" tp JOIN "User" u ON tp."userId" = u.id WHERE tp."isAvailable" = true AND u.status = 'ACTIVE' ORDER BY tp."averageRating" DESC NULLS LAST LIMIT 10`)
       for (const tech of nearestTech.rows) {
         const techSkills = JSON.parse(tech.skills || '[]')
         if (tech.currentLocationLat && tech.currentLocationLng) {
@@ -610,7 +635,8 @@ app.post('/api/reviews', async (c) => {
     // Update service rating
     await pool.query('UPDATE "Service" SET "totalReviews" = "totalReviews" + 1, "averageRating" = (SELECT AVG(rating) FROM "Review" WHERE "serviceId" = $1) WHERE id = $1', [booking.rows[0].serviceId])
     // Update provider rating
-    await pool.query('UPDATE "User" SET "averageRating" = (SELECT AVG(rating) FROM "Review" WHERE "reviewedId" = $1) WHERE id = $1', [booking.rows[0].providerId])
+    // Update provider rating from reviews (no averageRating column on User, skip or use subquery)
+    // await pool.query('UPDATE "User" SET "averageRating" = (SELECT AVG(rating) FROM "Review" WHERE "reviewedId" = $1) WHERE id = $1', [booking.rows[0].providerId])
     return c.json({ message: 'Review submitted', review: { id } }, 201)
   } catch (e) { console.error(e); return c.json({ error: 'Failed' }, 500) }
 })
@@ -1231,7 +1257,7 @@ app.get('/api/providers/nearby', async (c) => {
     const categoryId = c.req.query('categoryId')
     if (!lat || !lng) return c.json({ error: 'Latitude and longitude required' }, 400)
     // Find providers with services in the area
-    let query = `SELECT s.*, u.name as "providerName", u.phone as "providerPhone", u."verifiedBadge", u."completedJobsCount", u."averageRating" as "providerRating", c.name as "categoryName", 
+    let query = `SELECT s.*, u.name as "providerName", u.phone as "providerPhone", u."verifiedBadge", u."completedJobsCount", s."averageRating" as "providerRating", c.name as "categoryName", 
       (6371 * acos(least(greatest(cos(radians($1)) * cos(radians(s.latitude)) * cos(radians(s.longitude) - radians($2)) + sin(radians($1)) * sin(radians(s.latitude)), -1), 1))) as distance
       FROM "Service" s JOIN "User" u ON s."providerId" = u.id JOIN "ServiceCategory" c ON s."categoryId" = c.id 
       WHERE s."isActive" = true AND s."isApproved" = true AND s.latitude IS NOT NULL AND s.longitude IS NOT NULL`

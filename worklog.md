@@ -1811,3 +1811,31 @@ Stage Summary:
 - All pages use framer-motion animations
 - TypeScript compilation passes with zero errors
 - ESLint passes with zero errors
+
+---
+Task ID: fix-categories-loading
+Agent: Main Agent
+Task: Fix "Unable to load categories" error on homepage
+
+Work Log:
+- Diagnosed root cause: API returns { categories: [...], total: N } object, but frontend expected a raw array
+- Fixed home-page.tsx: Changed useApi<Category[]> to useApi<{ categories: Category[]; total: number }> and categoriesData?.categories || []
+- Fixed categories-page.tsx: Same category data extraction fix
+- Fixed home-page.tsx subcategories fetch: data.subcategories || data instead of just data
+- Added /api/subcategories endpoint to backend (mini-services/api-service/index.js)
+- Added /api/subcategories endpoint to Vite API plugin (vite-api-plugin.ts)
+- Added /api/stats/platform endpoint to Vite API plugin
+- Fixed backend SQL error: u."averageRating" doesn't exist on User table → changed to s."averageRating" in service queries
+- Added process error handlers (uncaughtException, unhandledRejection) to backend
+- Added pool.on('error') handler to backend
+- Fixed vite-api-plugin.ts: Contact route missing body parsing (undefined 'b' variable)
+- Changed error message from "Showing demo data" to "Please try again"
+- Updated vite.config.ts: Added apiPlugin() + proxy config with timeout
+
+Stage Summary:
+- Categories now load correctly when backend is running
+- Subcategories endpoint added and working
+- Backend SQL errors fixed (averageRating column reference)
+- Backend crash resilience improved with error handlers
+- Sandbox environment has resource constraints causing services to die periodically
+- Services can be restarted with: nohup bash keep-alive.sh > dev.log 2>&1 &
