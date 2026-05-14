@@ -20,6 +20,7 @@ import { LegalPage } from '@/components/bys/legal-page';
 // Auth pages
 import { LoginPage } from '@/components/bys/login-page';
 import { RegisterPage } from '@/components/bys/register-page';
+import { ForgotPasswordPage } from '@/components/bys/forgot-password-page';
 
 // Client pages
 import { ClientDashboardPage } from '@/components/bys/client-dashboard-page';
@@ -95,6 +96,8 @@ function AppRouter() {
         return <LegalPage />;
       case 'community-guidelines':
         return <LegalPage />;
+      case 'forgot-password':
+        return <ForgotPasswordPage />;
 
       // Auth pages
       case 'login':

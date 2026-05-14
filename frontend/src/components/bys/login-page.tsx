@@ -141,7 +141,7 @@ export function LoginPage() {
       </div>
 
       {/* ========== RIGHT FORM PANEL ========== */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-white text-slate-900">
         {/* Subtle background orbs */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/25 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />

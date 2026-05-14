@@ -54,11 +54,11 @@ const fadeUp = {
 
 export function LegalPage() {
   const { navigate, nav } = useApp();
-  const pageType = nav.params.type || 'terms';
+  const pageType = nav.params.type || nav.page || 'terms';
   const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType.toUpperCase(), icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(
-    `/api/legal/${pageInfo.type}`
+    `/api/legal/${pageType}`
   );
 
   const [showBackToTop, setShowBackToTop] = useState(false);

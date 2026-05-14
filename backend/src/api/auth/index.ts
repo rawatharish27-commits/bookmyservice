@@ -44,4 +44,20 @@ app.post('/logout', async (c) => {
   return c.json({ success: true, message: 'Logged out successfully' })
 })
 
+// POST /api/auth/forgot-password
+app.post('/forgot-password', async (c) => {
+  try {
+    const { email } = await c.req.json()
+
+    if (!email || typeof email !== 'string') {
+      return c.json({ error: 'Email is required' }, 400)
+    }
+
+    // TODO: Implement password reset flow (send email/token)
+    return c.json({ success: true, message: 'Password reset instructions have been sent if the email exists.' })
+  } catch (error) {
+    return c.json({ error: 'Invalid request' }, 400)
+  }
+})
+
 export default app

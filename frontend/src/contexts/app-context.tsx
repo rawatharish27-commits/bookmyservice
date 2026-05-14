@@ -4,6 +4,7 @@ export type Page =
   | 'home'
   | 'login'
   | 'register'
+  | 'forgot-password'
   | 'categories'
   | 'category-detail'
   | 'service-detail'

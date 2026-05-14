@@ -217,7 +217,7 @@ export function RegisterPage() {
       </div>
 
       {/* ========== RIGHT FORM PANEL ========== */}
-      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-emerald-50/50 via-white to-teal-50/30">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-white text-slate-900">
         {/* Subtle background orbs */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-teal-100/25 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
@@ -519,14 +519,14 @@ export function RegisterPage() {
                         onCheckedChange={(checked) => setTermsAccepted(checked === true)}
                         className="mt-0.5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
                       />
-                      <Label htmlFor="client-terms" className="text-sm font-normal leading-snug text-muted-foreground">
-                        I agree to the{' '}
-                        <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
-                        {', '}
-                        <button type="button" onClick={() => navigate('aup', { type: 'aup' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
-                        {' '}and{' '}
-                        <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
-                      </Label>
+                      <div className="text-sm font-normal leading-snug text-muted-foreground">
+                        <Label htmlFor="client-terms" className="cursor-pointer">I agree to the</Label>{' '}
+                        <span className="inline-flex flex-wrap gap-1">
+                          <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>,
+                          <button type="button" onClick={() => navigate('aup', { type: 'aup' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button> and
+                          <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -803,14 +803,14 @@ export function RegisterPage() {
                         onCheckedChange={(checked) => setTermsAccepted(checked === true)}
                         className="mt-0.5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500"
                       />
-                      <Label htmlFor="provider-terms" className="text-sm font-normal leading-snug text-muted-foreground">
-                        I agree to the{' '}
-                        <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
-                        {', '}
-                        <button type="button" onClick={() => navigate('provider-agreement', { type: 'provider-agreement' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
-                        {' '}and{' '}
-                        <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
-                      </Label>
+                      <div className="text-sm font-normal leading-snug text-muted-foreground">
+                        <Label htmlFor="provider-terms" className="cursor-pointer">I agree to the</Label>{' '}
+                        <span className="inline-flex flex-wrap gap-1">
+                          <button type="button" onClick={() => navigate('terms', { type: 'terms' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>,
+                          <button type="button" onClick={() => navigate('provider-agreement', { type: 'provider-agreement' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button> and
+                          <button type="button" onClick={() => navigate('privacy', { type: 'privacy' })} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        </span>
+                      </div>
                     </div>
                   </div>
 
