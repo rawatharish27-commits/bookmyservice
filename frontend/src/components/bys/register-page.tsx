@@ -246,7 +246,7 @@ export function RegisterPage() {
           {/* ========== GLASSMORPHISM CARD ========== */}
           <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/8 border-emerald-100/50 relative overflow-hidden backdrop-blur-xl">
             {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70 pointer-events-none" />
             {/* Gradient top accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 

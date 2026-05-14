@@ -5,6 +5,9 @@ const pool = new Pool({
     process.env.DATABASE_URL ||
     'postgresql://bookmyservice_user:bookmyservice_password@postgres:5432/bookmyservice',
   ssl: process.env.DATABASE_SSL === 'true' ? { rejectUnauthorized: false } : undefined,
+  max: 5,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 })
 
 pool.on('error', (err) => {

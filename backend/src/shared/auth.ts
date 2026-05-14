@@ -75,7 +75,7 @@ export async function verifyAccessToken(token: string) {
 }
 
 export async function getCurrentUser(c: any) {
-  const authHeader = c.req.headers.get('authorization')
+  const authHeader = c.req.header('authorization')
   if (!authHeader?.startsWith('Bearer ')) {
     return null
   }

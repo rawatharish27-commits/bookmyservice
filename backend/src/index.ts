@@ -10,6 +10,10 @@ import categoryRoutes from './api/categories/index.ts'
 import serviceRoutes from './api/services/index.ts'
 import userRoutes from './api/users/index.ts'
 import reviewRoutes from './api/reviews/index.ts'
+import legalRoutes from './api/legal/index.ts'
+import faqRoutes from './api/faq/index.ts'
+import contactRoutes from './api/contact/index.ts'
+import statsRoutes from './api/stats/index.ts'
 
 const app = new Hono()
 
@@ -34,6 +38,10 @@ app.route('/api/categories', categoryRoutes)
 app.route('/api/services', serviceRoutes)
 app.route('/api/users', userRoutes)
 app.route('/api/reviews', reviewRoutes)
+app.route('/api/legal', legalRoutes)
+app.route('/api/faq', faqRoutes)
+app.route('/api/contact', contactRoutes)
+app.route('/api/stats', statsRoutes)
 
 // 404 handler
 app.notFound((c) => {

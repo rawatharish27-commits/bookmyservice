@@ -6,6 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useApiMutation } from '@/hooks/use-api';
+import { toast } from 'sonner';
+import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
   Droplets, Zap, Wind, Shield, Clock, BadgeCheck, Phone
 } from 'lucide-react';
@@ -34,6 +44,11 @@ export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [forgotDialogOpen, setForgotDialogOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSuccess, setForgotSuccess] = useState(false);
+  const forgotMutation = useApiMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,6 +62,29 @@ export function LoginPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    try {
+      await forgotMutation.mutate('/api/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      setForgotSuccess(true);
+    } catch {
+      // Still show success message for security (don't reveal if email exists)
+      setForgotSuccess(true);
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const openForgotDialog = () => {
+    setForgotEmail('');
+    setForgotSuccess(false);
+    setForgotDialogOpen(true);
   };
 
   return (
@@ -170,12 +208,12 @@ export function LoginPage() {
           {/* ========== GLASSMORPHISM CARD ========== */}
           <div className="glass-emerald rounded-2xl shadow-xl shadow-emerald-900/8 border-emerald-100/50 relative overflow-hidden backdrop-blur-xl">
             {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/70 pointer-events-none" />
             {/* Gradient top accent */}
             <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 
             {/* Header */}
-            <div className="text-center pt-8 pb-2 px-6">
+            <div className="relative pointer-events-auto text-center pt-8 pb-2 px-6">
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -303,6 +341,7 @@ export function LoginPage() {
                         </Label>
                         <button
                           type="button"
+                          onClick={openForgotDialog}
                           className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
                         >
                           Forgot password?
@@ -359,9 +398,10 @@ export function LoginPage() {
                       <div className="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-200 to-transparent" />
                     </div>
 
-                    {/* Social login button (UI only) */}
+                    {/* Social login button */}
                     <button
                       type="button"
+                      onClick={() => toast.info('Google sign-in coming soon! Please use email/password to sign in.')}
                       className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-white hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-100/80"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
@@ -376,6 +416,7 @@ export function LoginPage() {
                     {/* Phone login option */}
                     <button
                       type="button"
+                      onClick={() => toast.info('Phone sign-in coming soon!')}
                       className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-emerald-200/80 bg-gradient-to-r from-emerald-50/50 to-teal-50/30 hover:from-emerald-50 hover:to-teal-50 hover:border-emerald-300 transition-all text-sm font-medium text-emerald-700"
                     >
                       <Phone className="size-4" />
@@ -474,6 +515,7 @@ export function LoginPage() {
                         </Label>
                         <button
                           type="button"
+                          onClick={openForgotDialog}
                           className="text-xs font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
                         >
                           Forgot password?
@@ -533,6 +575,7 @@ export function LoginPage() {
                     {/* Social login button */}
                     <button
                       type="button"
+                      onClick={() => toast.info('Google sign-in coming soon! Please use email/password to sign in.')}
                       className="w-full flex items-center justify-center gap-3 h-11 rounded-xl border border-gray-200/80 bg-white/80 hover:bg-white hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm ring-1 ring-gray-100/80"
                     >
                       <svg className="size-5" viewBox="0 0 24 24">
@@ -589,6 +632,80 @@ export function LoginPage() {
           </motion.p>
         </motion.div>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotDialogOpen} onOpenChange={setForgotDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Reset your password</DialogTitle>
+            <DialogDescription>
+              Enter your email address and we&apos;ll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          {forgotSuccess ? (
+            <div className="flex flex-col items-center gap-3 py-4">
+              <div className="flex size-12 items-center justify-center rounded-full bg-emerald-100">
+                <Mail className="size-6 text-emerald-600" />
+              </div>
+              <p className="text-sm text-center text-muted-foreground">
+                If an account with that email exists, a reset link has been sent.
+              </p>
+              <Button
+                type="button"
+                onClick={() => setForgotDialogOpen(false)}
+                className="mt-2 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600"
+              >
+                Back to Login
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleForgotPassword}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="forgot-email">Email Address</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Input
+                      id="forgot-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="mt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setForgotDialogOpen(false)}
+                  disabled={forgotLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600"
+                >
+                  {forgotLoading ? (
+                    <>
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Reset Link'
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

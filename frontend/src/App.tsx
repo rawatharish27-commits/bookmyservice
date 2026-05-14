@@ -4,6 +4,7 @@ import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
 import { Toaster } from '@/components/ui/toaster';
+import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 
 // Public pages
 import { HomePage } from '@/components/bys/home-page';
@@ -188,6 +189,7 @@ export default function App() {
       <AppProvider>
         <AppRouter />
         <Toaster />
+        <SonnerToaster />
       </AppProvider>
     </AuthProvider>
   );
