@@ -17,7 +17,7 @@ const app = new Hono()
 app.use('*', cors({
   origin: ['http://localhost:5173', 'http://localhost:3000'],
   allowHeaders: ['Content-Type', 'Authorization'],
-  allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+  allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
 }))
 
 app.use('*', logger())
@@ -46,7 +46,7 @@ app.onError((err, c) => {
   return c.json({ error: 'Internal Server Error', message: 'Something went wrong' }, 500)
 })
 
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 console.log(`🚀 Server is running on http://localhost:${port}`)
 
