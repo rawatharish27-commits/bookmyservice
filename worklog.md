@@ -1679,3 +1679,135 @@ Stage Summary:
 - "Services Coming Soon" Message: Below stats bar, emerald-themed banner with Register Now CTA
 - 3 AI-generated images: /images/plumbing.jpg, /images/electrical.jpg, /images/hvac.jpg
 - No commits made (per user instruction)
+
+---
+Task ID: 2-5
+Agent: Backend Developer Agent
+Task: Implement Backend Location-Based Provider Assignment & Contact Number Visibility
+
+Work Log:
+- Modified /backend/api/api/bookings/index.ts POST handler:
+  - Added haversineDistance() function for calculating distance between lat/lng points
+  - Added categoryId to service select query
+  - Added location-based nearest provider assignment logic using Haversine formula
+  - Accepts optional latitude/longitude from booking request body
+  - Finds all approved services in same category, calculates distances, filters by serviceAreaRadiusKm (default 10km), picks nearest provider
+  - Falls back to original service's providerId if no nearby providers found
+  - Populates serviceLatitude, serviceLongitude, distanceKm on booking insert
+  - Changed booking insert to use assignedProviderId instead of providerId
+  - Changed notification to go to assignedProviderId instead of providerId
+- Modified /backend/api/api/bookings/index.ts GET handler:
+  - Added conditional contact number visibility in booking list formatting
+  - Client phone visible to provider/admin only when booking status is CONFIRMED/IN_PROGRESS/COMPLETED
+  - Provider phone visible to client/admin only when booking status is CONFIRMED/IN_PROGRESS/COMPLETED
+- Modified /backend/api/api/bookings/[id].ts:
+  - Added conditional contact number visibility in booking detail flattening
+  - Same rules as GET list: phones only shown after booking is confirmed
+- Modified /backend/api/api/auth/profile.ts:
+  - Extended UpdateProfileBody interface with address, pincode, latitude, longitude fields
+  - Added validation for pincode (6-digit format), latitude (-90 to 90), longitude (-180 to 180)
+  - Added sanitize+update logic for address and pincode
+- Created /backend/api/api/providers/nearby.ts:
+  - New GET /api/providers/nearby endpoint (public, no auth required)
+  - Accepts query params: latitude, longitude, categoryId, radius (default 10km)
+  - Validates lat/lng coordinates
+  - Queries all active approved services with provider and category joins
+  - Calculates Haversine distances, filters by both requested radius and service's serviceAreaRadiusKm
+  - Returns sorted list of nearby providers with distance, service info, provider info, and category info
+- Created /backend/api/api/providers/ directory
+
+TypeScript Check: All modified/new files pass tsc --noEmit with no new errors (pre-existing EventContext type reference in profile.ts is unrelated)
+
+Stage Summary:
+- 4 files modified, 1 new file created
+- Location-based nearest provider assignment on booking creation
+- Conditional phone number visibility based on booking status (privacy feature)
+- Profile update supports address, pincode, latitude, longitude
+- New public nearby providers API endpoint
+---
+Task ID: 2
+Agent: Main Agent
+Task: Update database schema for all new features
+
+Work Log:
+- Created comprehensive Prisma schema with 20+ new models
+- Created SQL migration script at database/migrations/0002_enhanced_schema.sql
+- Ran migration against Supabase PostgreSQL database
+- 129 SQL statements executed successfully
+
+Stage Summary:
+- Added new models: TechnicianProfile, BookingTimeline, Wallet, WalletTransaction, PricingRule, AMCPlan, AMCSubscription, AMCSReminder, Franchise, FranchiseVendor, FranchiseAnalytics, Coupon, CouponUsage, Referral, Invoice, CRMActivity, FollowUp, PayoutRequest, B2BContract, InventoryItem, InventoryUsage, City, ServiceArea, WorkPhoto
+- Updated existing models with new fields: User (isVerified, verifiedBadge, completedJobsCount, referralCode), Booking (technicianId, bookingType, emergency/weekend/distance charges, OTP verification, contact sharing, warranty), Service (isEmergencyAvailable, isFeatured), ProviderKyc (skill verification, bank details, service area)
+- Added new roles: TECHNICIAN, VENDOR, FRANCHISE, SUB_ADMIN, AREA_MANAGER
+- Seeded 16 Indian cities, 3 AMC plans, 3 coupons, 2 pricing rules
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Build comprehensive backend API
+
+Work Log:
+- Rewrote mini-services/api-service/index.js with 700+ lines
+- Fixed DATABASE_URL env override issue (SQLite path was overriding Supabase connection)
+- Added 50+ API endpoints covering all features
+- Tested all endpoints successfully
+
+Stage Summary:
+- Auth: login, register (8 roles), forgot-password, reset-password, change-password, profile get/patch
+- Bookings: create (with auto-assignment, dynamic pricing, coupons), list (role-based), detail (with contact sharing), accept/reject/start-travel/arrive/start/complete/cancel
+- Services: list, detail, create, search, nearby providers
+- Categories: list, detail (with subcategories, pricing rules, AMC plans)
+- Wallet: balance, transactions, withdraw
+- AMC: plans list, subscribe, subscriptions list
+- Coupons: list, validate
+- Franchise: list, create, detail
+- Notifications: list, mark read, read all
+- Technician: profile get/patch, jobs, earnings
+- Reviews: create, list
+- Referrals: list
+- Invoices: list, detail
+- CRM: activities, follow-ups (list + create)
+- Admin: dashboard (analytics), users, bookings, revenue, payouts, disputes, logs
+- Cities: list
+- Pricing rules: list
+- B2B contracts: list, create
+- Inventory: list
+- KYC: submit, status
+- Favorites: list, add, remove
+
+---
+Task ID: 6-11
+Agent: Subagents
+Task: Build all frontend pages and components
+
+Work Log:
+- Updated app-context.tsx with 30+ new page types
+- Updated auth-context.tsx with multi-role support (8 roles)
+- Updated App.tsx with all new page routes and placeholder pages
+- Built technician-dashboard-page.tsx (jobs, availability toggle, OTP verification)
+- Built client-wallet-page.tsx (balance, transactions, withdrawal)
+- Built client-amc-page.tsx (subscriptions, plans, subscribe)
+- Built client-coupons-page.tsx (coupon list, validate, copy code)
+- Built client-referrals-page.tsx (referral code, share, history)
+- Built client-invoices-page.tsx (invoice list, filter)
+- Built client-invoice-detail-page.tsx (full invoice with GST)
+- Built client-booking-detail-page.tsx (live tracking timeline, contact sharing, review)
+- Built provider-booking-detail-page.tsx (action buttons, OTP verify)
+- Built admin-analytics-page.tsx (stats, revenue chart, top categories)
+- Built admin-crm-page.tsx (activities, follow-ups, create follow-up)
+- Built admin-franchises-page.tsx (franchise list, create, status badges)
+- Built admin-payouts-page.tsx (payout list, approve/reject)
+- Built admin-amc-page.tsx (plans, subscriptions)
+- Built admin-coupons-page.tsx (coupon management, create)
+- Built technician-earnings-page.tsx (earnings cards, chart, transactions)
+- Built technician-profile-page.tsx (skills, bank details, location)
+- Updated header.tsx with multi-role navigation
+- Updated register-page.tsx with 5 role cards
+
+Stage Summary:
+- 25+ new frontend pages built
+- All pages use emerald/teal gradient color scheme
+- All pages are mobile responsive
+- All pages use framer-motion animations
+- TypeScript compilation passes with zero errors
+- ESLint passes with zero errors

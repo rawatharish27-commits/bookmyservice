@@ -7,9 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// ============================================================================
+// ROLES & USERS
+// ============================================================================
+
 model Role {
   id          Int      @id @default(autoincrement())
-  name        String   @unique
+  name        String   @unique // CLIENT, TECHNICIAN, VENDOR, FRANCHISE, ADMIN, SUB_ADMIN, AREA_MANAGER
   description String?
   users       User[]
   createdAt   DateTime @default(now())
@@ -38,57 +42,131 @@ model User {
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  // Trust & Verification
+  isVerified       Boolean  @default(false) // Background checked
+  verifiedBadge    Boolean  @default(false) // Shows verified badge
+  completedJobsCount Int    @default(0)
+
   // Relations
-  providerKyc      ProviderKyc[]
-  services         Service[]
-  clientBookings   Booking[]      @relation("ClientBookings")
-  providerBookings Booking[]      @relation("ProviderBookings")
-  reviewsGiven     Review[]       @relation("ReviewGiven")
-  reviewsReceived  Review[]       @relation("ReviewReceived")
-  notifications    Notification[]
-  negotiations     Negotiation[]
-  disputesRaised   Dispute[]      @relation("DisputeRaised")
-  disputesAssigned Dispute[]      @relation("DisputeAssigned")
-  adminLogs        AdminLog[]
-  favorites        Favorite[]
+  providerKyc        ProviderKyc[]
+  technicianProfile  TechnicianProfile?
+  services           Service[]
+  clientBookings     Booking[]      @relation("ClientBookings")
+  providerBookings   Booking[]      @relation("ProviderBookings")
+  technicianBookings Booking[]      @relation("TechnicianBookings")
+  reviewsGiven       Review[]       @relation("ReviewGiven")
+  reviewsReceived    Review[]       @relation("ReviewReceived")
+  notifications      Notification[]
+  negotiations      Negotiation[]
+  disputesRaised    Dispute[]      @relation("DisputeRaised")
+  disputesAssigned  Dispute[]      @relation("DisputeAssigned")
+  adminLogs         AdminLog[]
+  favorites         Favorite[]
+  wallet            Wallet?
+  walletTransactions WalletTransaction[]
+  referralCode      String?   @unique
+  referredBy        String?
+  referrals         Referral[] @relation("Referrer")
+  referralEarnings  Referral[] @relation("Referee")
+  crmActivities     CRMActivity[] @relation("CRMUser")
+  assignedFollowUps FollowUp[]    @relation("FollowUpAssignee")
+  franchiseOwned    Franchise?
+  b2bContracts      B2BContract[] @relation("B2BClient")
+  payoutRequests    PayoutRequest[]
 }
+
+// ============================================================================
+// TECHNICIAN PROFILE
+// ============================================================================
+
+model TechnicianProfile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills              String   // JSON array of skill/category IDs
+  isAvailable         Boolean  @default(true) // Availability toggle
+  serviceAreaRadiusKm Int      @default(15)
+  serviceAreaPincodes String?  // JSON array of pincodes
+  dailyEarnings       Float    @default(0)
+  weeklyEarnings      Float    @default(0)
+  monthlyEarnings     Float    @default(0)
+  totalEarnings       Float    @default(0)
+  totalJobsCompleted  Int      @default(0)
+  totalJobsRejected   Int      @default(0)
+  averageRating       Float    @default(0)
+  currentLocationLat  Float?
+  currentLocationLng  Float?
+  locationUpdatedAt   DateTime?
+  bankAccountName     String?
+  bankAccountNumber   String?
+  bankIfsc            String?
+  bankName            String?
+  upiId               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+// ============================================================================
+// PROVIDER KYC / VENDOR ONBOARDING
+// ============================================================================
 
 model ProviderKyc {
-  id                String   @id @default(cuid())
-  providerId        String   @unique
-  provider          User     @relation(fields: [providerId], references: [id], onDelete: Cascade)
-  documentType      String   // AADHAAR, PAN, DRIVING_LICENSE, PASSPORT
-  documentNumber    String
-  documentFrontUrl  String
-  documentBackUrl   String?
-  selfieUrl         String
-  verificationStatus String  @default("PENDING") // PENDING, APPROVED, REJECTED
-  verifiedBy        String?
-  verifiedAt        DateTime?
-  rejectionReason   String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  providerId         String   @unique
+  provider           User     @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  documentType       String   // AADHAAR, PAN, DRIVING_LICENSE, PASSPORT
+  documentNumber     String
+  documentFrontUrl   String
+  documentBackUrl    String?
+  selfieUrl          String
+  verificationStatus String   @default("PENDING") // PENDING, APPROVED, REJECTED
+  verifiedBy         String?
+  verifiedAt         DateTime?
+  rejectionReason    String?
+  // Skill Verification
+  skillVerified      Boolean  @default(false)
+  skillVerifiedBy    String?
+  skillVerifiedAt    DateTime?
+  // Bank Details
+  bankAccountName    String?
+  bankAccountNumber  String?
+  bankIfsc           String?
+  bankName           String?
+  upiId              String?
+  // Service Area
+  serviceAreaPincodes String? // JSON array
+  serviceAreaCity    String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
-model ServiceCategory {
-  id            Int      @id @default(autoincrement())
-  name          String   @unique
-  slug          String   @unique
-  description   String?
-  iconUrl       String?
-  icon          String?  // Lucide icon name
-  parentId      Int?     
-  parent        ServiceCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children      ServiceCategory[] @relation("CategoryHierarchy")
-  isActive      Boolean  @default(true)
-  displayOrder  Int      @default(0)
-  seoTitle      String?
-  seoDescription String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+// ============================================================================
+// SERVICE CATEGORIES & SERVICES
+// ============================================================================
 
-  services     Service[]
+model ServiceCategory {
+  id             Int      @id @default(autoincrement())
+  name           String   @unique
+  slug           String   @unique
+  description    String?
+  iconUrl        String?
+  icon           String?  // Lucide icon name
+  imageUrl       String?  // Category image
+  parentId       Int?
+  parent         ServiceCategory?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children       ServiceCategory[] @relation("CategoryHierarchy")
+  isActive       Boolean  @default(true)
+  displayOrder   Int      @default(0)
+  isEmergency    Boolean  @default(false) // Available for emergency booking
+  seoTitle       String?
+  seoDescription String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  services      Service[]
   subcategories ServiceSubcategory[]
+  pricingRules  PricingRule[]
+  amcPlans      AMCPlan[]
 }
 
 model ServiceSubcategory {
@@ -139,6 +217,8 @@ model Service {
   averageRating       Float    @default(0)
   totalBookings       Int      @default(0)
   totalReviews        Int      @default(0)
+  isEmergencyAvailable Boolean @default(false)
+  isFeatured          Boolean  @default(false)
   seoTitle            String?
   seoDescription      String?
   createdAt           DateTime @default(now())
@@ -149,6 +229,8 @@ model Service {
   reviews             Review[]
   negotiations        Negotiation[]
   favorites           Favorite[]
+  serviceAreas        ServiceArea[]
+  workPhotos          WorkPhoto[]
 }
 
 model ServiceAvailability {
@@ -163,6 +245,33 @@ model ServiceAvailability {
   createdAt         DateTime @default(now())
 }
 
+model ServiceArea {
+  id          String  @id @default(cuid())
+  serviceId   String
+  service     Service @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  pincode     String
+  city        String
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  @@unique([serviceId, pincode])
+}
+
+model WorkPhoto {
+  id          String   @id @default(cuid())
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  bookingId   String?
+  uploadedBy  String
+  imageUrl    String
+  caption     String?
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================================
+// BOOKINGS & ORDER LIFECYCLE
+// ============================================================================
+
 model Booking {
   id                 String   @id @default(cuid())
   bookingNumber      String   @unique
@@ -170,16 +279,25 @@ model Booking {
   client             User     @relation("ClientBookings", fields: [clientId], references: [id])
   providerId         String
   provider           User     @relation("ProviderBookings", fields: [providerId], references: [id])
+  technicianId       String?  // Assigned technician
+  technician         User?    @relation("TechnicianBookings", fields: [technicianId], references: [id])
   serviceId          String
   service            Service  @relation(fields: [serviceId], references: [id])
-  status             String   @default("PENDING") // PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED, REFUNDED
+  status             String   @default("PENDING") // PENDING, ASSIGNED, ACCEPTED, ON_THE_WAY, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED, REFUNDED
+  bookingType        String   @default("NORMAL") // NORMAL, EMERGENCY, AMC
   scheduledDate      String   // YYYY-MM-DD
   scheduledTime      String   // HH:mm
   serviceAddress     String
+  serviceCity        String?
+  servicePincode     String?
   serviceLatitude    Float?
   serviceLongitude   Float?
   distanceKm         Float?
   basePrice          Float
+  emergencyCharge    Float    @default(0)
+  weekendCharge      Float    @default(0)
+  distanceCharge     Float    @default(0)
+  timeSlotCharge     Float    @default(0)
   negotiatedPrice    Float?
   finalPrice         Float
   platformFee        Float    @default(5.0)
@@ -188,16 +306,57 @@ model Booking {
   cancellationReason String?
   cancelledBy        String?
   cancelledAt        DateTime?
+  // Live Tracking timestamps
+  assignedAt         DateTime?
+  acceptedAt         DateTime?
+  onTheWayAt         DateTime?
+  arrivedAt          DateTime?
+  startedAt          DateTime?
   completedAt        DateTime?
-  paymentStatus      String   @default("PENDING") // PENDING, PAID, REFUNDED, FAILED
+  // OTP Verification
+  otpCode            String?
+  otpVerified        Boolean  @default(false)
+  otpVerifiedAt      DateTime?
+  // Contact Sharing
+  contactShared      Boolean  @default(false)
+  // Payment
+  paymentStatus      String   @default("PENDING") // PENDING, PAID, REFUNDED, FAILED, ESCROW
+  paymentMethod      String?  // CARD, UPI, WALLET, NET_BANKING, CASH
+  // Coupon
+  couponId           String?
+  couponDiscount     Float    @default(0)
+  // Warranty
+  warrantyDays       Int      @default(7)
+  warrantyExpiresAt  DateTime?
+  // B2B
+  b2bContractId      String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
   payment            Payment?
   review             Review?
-  negotiations      Negotiation[]
+  negotiations       Negotiation[]
   disputes           Dispute[]
+  timeline           BookingTimeline[]
+  invoice            Invoice?
+  workPhotos         WorkPhoto[]
+  coupon             Coupon?  @relation(fields: [couponId], references: [id])
 }
+
+model BookingTimeline {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  status      String   // PENDING, ASSIGNED, ACCEPTED, ON_THE_WAY, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED
+  description String?
+  performedBy String?
+  metadata    String?  // JSON
+  createdAt   DateTime @default(now())
+}
+
+// ============================================================================
+// PAYMENTS & WALLET
+// ============================================================================
 
 model Payment {
   id              String   @id @default(cuid())
@@ -205,11 +364,12 @@ model Payment {
   booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount          Float
   currency        String   @default("INR")
-  paymentMethod   String?  // CARD, UPI, WALLET, NET_BANKING
+  paymentMethod   String?  // CARD, UPI, WALLET, NET_BANKING, CASH
   gateway         String?  // RAZORPAY, STRIPE
   gatewayOrderId  String?
   gatewayPaymentId String?
-  status          String   @default("CREATED") // CREATED, PROCESSING, SUCCESS, FAILED, REFUNDED
+  status          String   @default("CREATED") // CREATED, PROCESSING, SUCCESS, FAILED, REFUNDED, ESCROW_HELD, ESCROW_RELEASED
+  escrowStatus    String   @default("NONE") // NONE, HELD, RELEASED, REFUNDED
   refundAmount    Float?
   refundReason    String?
   refundedAt      DateTime?
@@ -217,6 +377,382 @@ model Payment {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
+
+model Wallet {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance         Float    @default(0)
+  cashbackBalance Float    @default(0)
+  promoBalance    Float    @default(0)
+  totalDeposited  Float    @default(0)
+  totalWithdrawn  Float    @default(0)
+  totalSpent      Float    @default(0)
+  totalEarned     Float    @default(0) // For technicians
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  transactions    WalletTransaction[]
+}
+
+model WalletTransaction {
+  id              String   @id @default(cuid())
+  walletId        String
+  wallet          Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  type            String   // CREDIT, DEBIT
+  category        String   // CASHBACK, REFUND, PROMO, EARNING, WITHDRAWAL, PAYMENT, PAYOUT, REFERRAL
+  amount          Float
+  description     String
+  referenceId     String?  // Booking ID or payout ID
+  referenceType   String?  // BOOKING, PAYOUT, REFERRAL, COUPON
+  status          String   @default("COMPLETED") // PENDING, COMPLETED, FAILED, CANCELLED
+  metadata        String?  // JSON
+  createdAt       DateTime @default(now())
+}
+
+// ============================================================================
+// DYNAMIC PRICING
+// ============================================================================
+
+model PricingRule {
+  id            Int      @id @default(autoincrement())
+  categoryId    Int
+  category      ServiceCategory @relation(fields: [categoryId], references: [id])
+  ruleType      String   // EMERGENCY, WEEKEND, DISTANCE, TIME_SLOT, CITY, PEAK_HOURS
+  name          String
+  description   String?
+  chargeType    String   // PERCENTAGE, FIXED
+  chargeValue   Float    // Percentage or fixed amount
+  conditionJson String?  // JSON with conditions like city, time range, distance range
+  isActive      Boolean  @default(true)
+  priority      Int      @default(0)
+  validFrom     DateTime?
+  validTo       DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ============================================================================
+// AMC / SUBSCRIPTION SYSTEM
+// ============================================================================
+
+model AMCPlan {
+  id              Int      @id @default(autoincrement())
+  categoryId      Int
+  category        ServiceCategory @relation(fields: [categoryId], references: [id])
+  name            String
+  slug            String   @unique
+  description     String
+  price           Float
+  durationMonths  Int      @default(12)
+  visitsIncluded  Int      @default(4) // Number of service visits per year
+  features        String?  // JSON array of features
+  isActive        Boolean  @default(true)
+  displayOrder    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  subscriptions   AMCSubscription[]
+}
+
+model AMCSubscription {
+  id              String   @id @default(cuid())
+  planId          Int
+  plan            AMCPlan  @relation(fields: [planId], references: [id])
+  clientId        String
+  client          User     @relation(fields: [clientId], references: [id])
+  status          String   @default("ACTIVE") // ACTIVE, EXPIRED, CANCELLED
+  startDate       DateTime
+  endDate         DateTime
+  visitsUsed      Int      @default(0)
+  visitsRemaining Int
+  autoRenew       Boolean  @default(true)
+  lastReminderAt  DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  bookings        Booking[]
+  reminders       AMCSReminder[]
+}
+
+model AMCSReminder {
+  id             String        @id @default(cuid())
+  subscriptionId String
+  subscription   AMCSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  type           String   // RENEWAL, UPCOMING_VISIT, EXPIRY
+  message        String
+  scheduledAt    DateTime
+  sentAt         DateTime?
+  status         String   @default("PENDING") // PENDING, SENT, FAILED
+  createdAt      DateTime @default(now())
+}
+
+// ============================================================================
+// FRANCHISE SYSTEM
+// ============================================================================
+
+model Franchise {
+  id              String   @id @default(cuid())
+  ownerId         String   @unique
+  owner           User     @relation(fields: [ownerId], references: [id])
+  name            String
+  slug            String   @unique
+  city            String
+  state           String
+  country         String   @default("India")
+  pincode         String?
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  contactPhone    String
+  contactEmail    String
+  commissionRate  Float    @default(10) // Percentage
+  status          String   @default("PENDING") // PENDING, ACTIVE, SUSPENDED, TERMINATED
+  totalRevenue    Float    @default(0)
+  totalBookings   Int      @default(0)
+  totalProviders  Int      @default(0)
+  agreementStart  DateTime?
+  agreementEnd    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  vendors         FranchiseVendor[]
+  payouts         PayoutRequest[]
+  analytics       FranchiseAnalytics[]
+}
+
+model FranchiseVendor {
+  id          String   @id @default(cuid())
+  franchiseId String
+  franchise   Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+  vendorId    String
+  vendor      User     @relation(fields: [vendorId], references: [id])
+  status      String   @default("ACTIVE") // ACTIVE, INACTIVE, SUSPENDED
+  joinedAt    DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@unique([franchiseId, vendorId])
+}
+
+model FranchiseAnalytics {
+  id              String   @id @default(cuid())
+  franchiseId     String
+  franchise       Franchise @relation(fields: [franchiseId], references: [id], onDelete: Cascade)
+  date            String   // YYYY-MM-DD
+  totalBookings   Int      @default(0)
+  totalRevenue    Float    @default(0)
+  commissionEarned Float   @default(0)
+  activeProviders Int      @default(0)
+  newCustomers    Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([franchiseId, date])
+}
+
+// ============================================================================
+// COUPON & OFFER SYSTEM
+// ============================================================================
+
+model Coupon {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  description     String?
+  discountType    String   // PERCENTAGE, FIXED
+  discountValue   Float
+  minOrderAmount  Float    @default(0)
+  maxDiscount     Float?
+  usageLimit      Int?     // Total usage limit
+  usageCount      Int      @default(0)
+  perUserLimit    Int      @default(1)
+  validFrom       DateTime
+  validTo         DateTime
+  applicableType  String   @default("ALL") // ALL, FIRST_BOOKING, SPECIFIC_CATEGORY, SPECIFIC_SERVICE, AREA_BASED
+  applicableIds   String?  // JSON array of category/service/city IDs
+  isActive        Boolean  @default(true)
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  usages          CouponUsage[]
+  bookings        Booking[]
+}
+
+model CouponUsage {
+  id          String   @id @default(cuid())
+  couponId    String
+  coupon      Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId      String
+  bookingId   String
+  discountApplied Float
+  createdAt   DateTime @default(now())
+
+  @@unique([couponId, userId, bookingId])
+}
+
+// ============================================================================
+// REFERRAL PROGRAM
+// ============================================================================
+
+model Referral {
+  id              String   @id @default(cuid())
+  referrerId      String
+  referrer        User     @relation("Referrer", fields: [referrerId], references: [id])
+  refereeId       String   @unique
+  referee         User     @relation("Referee", fields: [refereeId], references: [id])
+  referrerReward  Float    @default(0)
+  refereeReward   Float    @default(0)
+  status          String   @default("PENDING") // PENDING, COMPLETED, EXPIRED
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+}
+
+// ============================================================================
+// INVOICE & GST
+// ============================================================================
+
+model Invoice {
+  id              String   @id @default(cuid())
+  bookingId       String   @unique
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  invoiceNumber   String   @unique
+  clientId        String
+  providerId      String
+  franchiseId     String?
+  subtotal        Float
+  gstAmount       Float    @default(0)
+  gstRate         Float    @default(18)
+  discountAmount  Float    @default(0)
+  totalAmount     Float
+  gstin           String?  // Provider's GSTIN
+  hsnCode         String?  // HSN/SAC code
+  invoiceDate     DateTime @default(now())
+  dueDate         DateTime?
+  pdfUrl          String?
+  status          String   @default("GENERATED") // GENERATED, SENT, PAID, CANCELLED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================================================
+// CRM & FOLLOW-UP SYSTEM
+// ============================================================================
+
+model CRMActivity {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("CRMUser", fields: [userId], references: [id])
+  activityType String  // BOOKING, REMINDER, FOLLOW_UP, PROMOTION, INACTIVE_REENGAGE, SERVICE_DUE
+  title       String
+  description String?
+  status      String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  scheduledAt DateTime?
+  completedAt DateTime?
+  metadata    String?  // JSON
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model FollowUp {
+  id          String   @id @default(cuid())
+  userId      String
+  assignedTo  String
+  assignee    User     @relation("FollowUpAssignee", fields: [assignedTo], references: [id])
+  type        String   // ABANDONED_BOOKING, SERVICE_DUE, REPEAT_CUSTOMER, INACTIVE_CUSTOMER, COMPLAINT
+  title       String
+  notes       String?
+  status      String   @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+  priority    String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
+  dueDate     DateTime?
+  completedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ============================================================================
+// PAYOUT MANAGEMENT
+// ============================================================================
+
+model PayoutRequest {
+  id              String   @id @default(cuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  franchiseId     String?
+  franchise       Franchise? @relation(fields: [franchiseId], references: [id])
+  amount          Float
+  method          String   // BANK_TRANSFER, UPI
+  status          String   @default("PENDING") // PENDING, APPROVED, PROCESSING, COMPLETED, REJECTED, CANCELLED
+  bankRef         String?
+  processedBy     String?
+  processedAt     DateTime?
+  rejectionReason String?
+  metadata        String?  // JSON
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================================================
+// B2B SERVICE MODULE
+// ============================================================================
+
+model B2BContract {
+  id              String   @id @default(cuid())
+  clientId        String
+  client          User     @relation("B2BClient", fields: [clientId], references: [id])
+  companyName     String
+  contactPerson   String
+  contactPhone    String
+  contactEmail    String
+  address         String
+  city            String
+  contractType    String   // OFFICE_MAINTENANCE, SOCIETY_CONTRACT, BULK_BOOKING
+  description     String?
+  monthlyAmount   Float?
+  startDate       DateTime
+  endDate         DateTime
+  status          String   @default("ACTIVE") // ACTIVE, EXPIRED, CANCELLED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// ============================================================================
+// INVENTORY & SPARE PARTS
+// ============================================================================
+
+model InventoryItem {
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  sku           String?  @unique
+  categoryId    Int?
+  price         Float
+  quantity      Int      @default(0)
+  minQuantity   Int      @default(5)
+  vendorId      String?  // Supplier
+  vendorSource  String?  // External vendor name
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  usages        InventoryUsage[]
+}
+
+model InventoryUsage {
+  id            String   @id @default(cuid())
+  inventoryId   String
+  inventory     InventoryItem @relation(fields: [inventoryId], references: [id])
+  bookingId     String
+  quantity      Int
+  unitPrice     Float
+  totalPrice    Float
+  createdAt     DateTime @default(now())
+}
+
+// ============================================================================
+// EXISTING MODELS (Reviews, Negotiations, Disputes)
+// ============================================================================
 
 model Review {
   id           String   @id @default(cuid())
@@ -260,13 +796,15 @@ model Dispute {
   booking       Booking  @relation(fields: [bookingId], references: [id])
   raisedBy      String
   raiser        User     @relation("DisputeRaised", fields: [raisedBy], references: [id])
-  disputeType   String   // PAYMENT, SERVICE_QUALITY, NO_SHOW, CANCELLATION, OTHER
+  disputeType   String   // PAYMENT, SERVICE_QUALITY, NO_SHOW, CANCELLATION, WARRANTY, OTHER
   description   String
   evidence      String?  // JSON array of evidence URLs
-  status        String   @default("OPEN") // OPEN, UNDER_REVIEW, RESOLVED, CLOSED
+  status        String   @default("OPEN") // OPEN, UNDER_REVIEW, RESOLVED, CLOSED, ESCALATED
+  priority      String   @default("MEDIUM") // LOW, MEDIUM, HIGH, URGENT
   assignedTo    String?
   assignee      User?    @relation("DisputeAssigned", fields: [assignedTo], references: [id])
   resolution    String?
+  refundAmount  Float?
   resolvedAt    DateTime?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
@@ -284,18 +822,30 @@ model DisputeMessage {
   createdAt   DateTime @default(now())
 }
 
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
 model Notification {
-  id         String   @id @default(cuid())
-  userId     String
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type       String
-  title      String
-  message    String
-  actionUrl  String?
-  isRead     Boolean  @default(false)
-  readAt     DateTime?
-  createdAt  DateTime @default(now())
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type          String   // BOOKING, PAYMENT, REMINDER, PROMOTION, SYSTEM, TECHNICIAN, DISPUTE
+  channel       String   @default("IN_APP") // IN_APP, SMS, WHATSAPP, EMAIL, PUSH
+  title         String
+  message       String
+  actionUrl     String?
+  isRead        Boolean  @default(false)
+  readAt        DateTime?
+  deliveryStatus String  @default("PENDING") // PENDING, SENT, DELIVERED, FAILED
+  sentAt        DateTime?
+  metadata      String?  // JSON
+  createdAt     DateTime @default(now())
 }
+
+// ============================================================================
+// STATIC / CONTENT MODELS
+// ============================================================================
 
 model Faq {
   id           Int      @id @default(autoincrement())
@@ -310,7 +860,7 @@ model Faq {
 
 model LegalPage {
   id            Int      @id @default(autoincrement())
-  pageType      String   @unique // TERMS, PRIVACY, REFUND, COOKIES
+  pageType      String   @unique // TERMS, PRIVACY, REFUND, COOKIES, COMMUNITY_GUIDELINES
   title         String
   content       String
   version       String?
@@ -402,4 +952,22 @@ model PlatformStats {
   totalServices   Int      @default(0)
   activeVisitors  Int      @default(0)
   updatedAt       DateTime @updatedAt
+}
+
+// ============================================================================
+// CITY MANAGEMENT (Multi-City)
+// ============================================================================
+
+model City {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  state       String
+  country     String   @default("India")
+  slug        String   @unique
+  isActive    Boolean  @default(true)
+  displayOrder Int     @default(0)
+  latitude    Float?
+  longitude   Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

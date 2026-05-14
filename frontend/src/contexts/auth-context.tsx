@@ -1,5 +1,14 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
+export interface TechnicianProfile {
+  id: string;
+  specialization: string;
+  experienceYears: number;
+  certifications: string[];
+  availabilityStatus: 'available' | 'busy' | 'offline';
+  rating: number;
+}
+
 export interface User {
   id: string;
   email: string;
@@ -14,7 +23,52 @@ export interface User {
   country?: string;
   emailVerified?: boolean;
   phoneVerified?: boolean;
+  isVerified?: boolean;
+  verifiedBadge?: boolean;
+  completedJobsCount?: number;
+  referralCode?: string;
+  kycStatus?: 'pending' | 'submitted' | 'verified' | 'rejected' | 'not_started';
+  technicianProfile?: TechnicianProfile | null;
+  walletBalance?: number;
 }
+
+// Role ID constants for the multi-role system
+export const ROLE_IDS = {
+  CLIENT: 1,
+  PROVIDER: 2,
+  ADMIN: 3,
+  TECHNICIAN: 4,
+  VENDOR: 5,
+  FRANCHISE: 6,
+  SUB_ADMIN: 7,
+  AREA_MANAGER: 8,
+} as const;
+
+export type RoleName = keyof typeof ROLE_IDS;
+
+// Map roleId to role string
+export const ROLE_MAP: Record<number, string> = {
+  [ROLE_IDS.CLIENT]: 'CLIENT',
+  [ROLE_IDS.PROVIDER]: 'PROVIDER',
+  [ROLE_IDS.ADMIN]: 'ADMIN',
+  [ROLE_IDS.TECHNICIAN]: 'TECHNICIAN',
+  [ROLE_IDS.VENDOR]: 'VENDOR',
+  [ROLE_IDS.FRANCHISE]: 'FRANCHISE',
+  [ROLE_IDS.SUB_ADMIN]: 'SUB_ADMIN',
+  [ROLE_IDS.AREA_MANAGER]: 'AREA_MANAGER',
+};
+
+// Map role string to roleId (reverse lookup)
+export const ROLE_ID_MAP: Record<string, number> = {
+  CLIENT: ROLE_IDS.CLIENT,
+  PROVIDER: ROLE_IDS.PROVIDER,
+  ADMIN: ROLE_IDS.ADMIN,
+  TECHNICIAN: ROLE_IDS.TECHNICIAN,
+  VENDOR: ROLE_IDS.VENDOR,
+  FRANCHISE: ROLE_IDS.FRANCHISE,
+  SUB_ADMIN: ROLE_IDS.SUB_ADMIN,
+  AREA_MANAGER: ROLE_IDS.AREA_MANAGER,
+};
 
 interface AuthContextType {
   user: User | null;
@@ -70,11 +124,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = useCallback(async (data: RegisterData) => {
-    // Map roleId to role string for the API, but also pass roleId for compatibility
-    const roleMap: Record<number, string> = { 1: 'CLIENT', 2: 'PROVIDER' };
+    // Map roleId to role string for the API, supporting all new roles
     const payload = {
       ...data,
-      role: data.role || roleMap[data.roleId] || 'CLIENT',
+      role: data.role || ROLE_MAP[data.roleId] || 'CLIENT',
     };
     const res = await fetch('/api/auth/register', {
       method: 'POST',

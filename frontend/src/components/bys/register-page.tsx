@@ -1,14 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { useAuth } from '@/contexts/auth-context';
-import { useApp } from '@/contexts/app-context';
+import { useAuth, ROLE_IDS } from '@/contexts/auth-context';
+import { useApp, type Page } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
-  Droplets, Zap, Wind, CheckCircle2, TrendingUp, Users, Shield, ShieldCheck, BadgeCheck, Clock
+  Droplets, Zap, Wind, CheckCircle2, TrendingUp, Users, Shield, ShieldCheck, BadgeCheck, Clock,
+  Building2, Package,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -18,10 +18,77 @@ const specializations = [
   { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
 ];
 
-const trustBadges = [
-  { icon: BadgeCheck, label: 'KYC Verified' },
-  { icon: Shield, label: 'Secure Payments' },
-  { icon: Clock, label: '24/7 Support' },
+const roleOptions = [
+  {
+    key: 'client',
+    roleId: ROLE_IDS.CLIENT,
+    roleName: 'CLIENT',
+    label: 'Client',
+    Icon: User,
+    gradient: 'from-emerald-600 via-teal-500 to-cyan-500',
+    bgColor: 'bg-emerald-50 border-emerald-200',
+    activeBg: 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-300',
+    textColor: 'text-emerald-700',
+    desc: 'Book home services',
+    banner: 'Book trusted professionals for Plumbing, Electrical & AC services',
+    dashboard: 'client-dashboard' as Page,
+  },
+  {
+    key: 'technician',
+    roleId: ROLE_IDS.TECHNICIAN,
+    roleName: 'TECHNICIAN',
+    label: 'Technician',
+    Icon: Wrench,
+    gradient: 'from-blue-500 via-indigo-500 to-violet-500',
+    bgColor: 'bg-blue-50 border-blue-200',
+    activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300',
+    textColor: 'text-blue-700',
+    desc: 'Accept jobs & earn',
+    banner: 'Join as a skilled technician and grow your career',
+    dashboard: 'technician-dashboard' as Page,
+  },
+  {
+    key: 'provider',
+    roleId: ROLE_IDS.PROVIDER,
+    roleName: 'PROVIDER',
+    label: 'Service Provider',
+    Icon: Briefcase,
+    gradient: 'from-amber-500 via-orange-500 to-rose-500',
+    bgColor: 'bg-amber-50 border-amber-200',
+    activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300',
+    textColor: 'text-amber-700',
+    desc: 'List & manage services',
+    banner: 'Reach thousands of customers, grow your business',
+    dashboard: 'provider-dashboard' as Page,
+  },
+  {
+    key: 'vendor',
+    roleId: ROLE_IDS.VENDOR,
+    roleName: 'VENDOR',
+    label: 'Vendor',
+    Icon: Package,
+    gradient: 'from-rose-500 via-pink-500 to-fuchsia-500',
+    bgColor: 'bg-rose-50 border-rose-200',
+    activeBg: 'bg-rose-100 border-rose-400 ring-2 ring-rose-300',
+    textColor: 'text-rose-700',
+    desc: 'Supply materials & parts',
+    banner: 'Supply materials and parts to service providers',
+    dashboard: 'vendor-dashboard' as Page,
+  },
+  {
+    key: 'franchise',
+    roleId: ROLE_IDS.FRANCHISE,
+    roleName: 'FRANCHISE',
+    label: 'Franchise Owner',
+    Icon: Building2,
+    gradient: 'from-slate-600 via-zinc-600 to-gray-700',
+    bgColor: 'bg-slate-50 border-slate-200',
+    activeBg: 'bg-slate-100 border-slate-400 ring-2 ring-slate-300',
+    textColor: 'text-slate-700',
+    desc: 'Manage a franchise area',
+    banner: 'Manage and grow your franchise territory',
+    dashboard: 'franchise-dashboard' as Page,
+  },
 ];
 
 function getPasswordStrength(password: string): { label: string; color: string; width: string; emoji: string; score: number } {
@@ -42,7 +109,7 @@ function getPasswordStrength(password: string): { label: string; color: string; 
 export function RegisterPage() {
   const { register } = useAuth();
   const { navigate } = useApp();
-  const [activeTab, setActiveTab] = useState<string>('client');
+  const [selectedRole, setSelectedRole] = useState<string>('client');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -56,18 +123,21 @@ export function RegisterPage() {
 
   const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
 
-  // Step indicator: count filled fields out of total
-  const totalSteps = activeTab === 'provider' ? 6 : 5;
+  const needsSpecialization = selectedRole === 'provider' || selectedRole === 'technician';
+
+  const totalSteps = needsSpecialization ? 6 : 5;
   const filledSteps = useMemo(() => {
     let count = 0;
     if (name.trim()) count++;
     if (email.trim()) count++;
     if (phone.trim()) count++;
-    if (activeTab === 'provider' && specialization) count++;
+    if (needsSpecialization && specialization) count++;
     if (password.length >= 8) count++;
     if (confirmPassword && confirmPassword === password) count++;
     return count;
-  }, [name, email, phone, password, confirmPassword, specialization, activeTab]);
+  }, [name, email, phone, password, confirmPassword, specialization, needsSpecialization]);
+
+  const currentRole = roleOptions.find(r => r.key === selectedRole) || roleOptions[0];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +155,7 @@ export function RegisterPage() {
       setError('You must accept the terms and conditions');
       return;
     }
-    if (activeTab === 'provider' && !specialization) {
+    if (needsSpecialization && !specialization) {
       setError('Please select your specialization');
       return;
     }
@@ -97,31 +167,16 @@ export function RegisterPage() {
         email,
         phone,
         password,
-        roleId: activeTab === 'client' ? 1 : 2,
-        role: activeTab === 'client' ? 'CLIENT' : 'PROVIDER',
+        roleId: currentRole.roleId,
+        role: currentRole.roleName,
       });
-      navigate(activeTab === 'client' ? 'client-dashboard' : 'provider-dashboard');
+      navigate(currentRole.dashboard);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
   };
-
-  const clientBenefits = [
-    { icon: CheckCircle2, text: 'Verified & trusted professionals' },
-    { icon: Shield, text: 'Secure booking & payments' },
-    { icon: Droplets, text: 'Plumbing services' },
-    { icon: Zap, text: 'Electrical services' },
-    { icon: Wind, text: 'AC & HVAC services' },
-  ];
-
-  const providerBenefits = [
-    { icon: TrendingUp, text: 'Reach thousands of customers' },
-    { icon: Users, text: 'Grow your business faster' },
-    { icon: CheckCircle2, text: 'Professional profile & reviews' },
-    { icon: Shield, text: 'Secure payment collection' },
-  ];
 
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
@@ -293,377 +348,145 @@ export function RegisterPage() {
               </div>
             </div>
 
-            {/* Animated Tabs */}
-            <Tabs value={activeTab} onValueChange={(v) => { setActiveTab(v); setError(''); }} className="w-full">
-              <div className="px-6 pt-3">
-                <TabsList className="w-full h-auto p-1.5 bg-gradient-to-r from-emerald-50/80 to-cyan-50/60 rounded-xl border border-emerald-100/50">
-                  {['client', 'provider'].map((tab) => (
-                    <TabsTrigger
-                      key={tab}
-                      value={tab}
-                      className={`flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium ${
-                        tab === 'client'
-                          ? 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:via-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-600/30'
-                          : 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-orange-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30'
-                      }`}
-                    >
-                      {tab === 'client' ? (
-                        <><User className="size-4 mr-2" />Sign up as Client</>
-                      ) : (
-                        <><Briefcase className="size-4 mr-2" />Sign up as Provider</>
-                      )}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
+            {/* ========== UNIFIED FORM ========== */}
+            <form onSubmit={handleSubmit}>
+              {/* Role Selection Grid */}
+              <div className="px-6 pt-4">
+                <Label className="text-sm font-medium text-foreground/80 mb-2 block">I want to join as</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {roleOptions.map((role) => {
+                    const isSelected = selectedRole === role.key;
+                    return (
+                      <motion.button
+                        key={role.key}
+                        type="button"
+                        onClick={() => { setSelectedRole(role.key); setError(''); }}
+                        whileTap={{ scale: 0.97 }}
+                        className={`relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
+                          isSelected ? role.activeBg : role.bgColor
+                        }`}
+                      >
+                        <div className={`flex size-8 items-center justify-center rounded-lg bg-gradient-to-br ${role.gradient} shadow-sm`}>
+                          <role.Icon className="size-4 text-white" />
+                        </div>
+                        <span className={`text-[11px] font-semibold leading-tight text-center ${isSelected ? role.textColor : 'text-foreground/70'}`}>
+                          {role.label}
+                        </span>
+                        {isSelected && (
+                          <motion.div
+                            layoutId="role-check"
+                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                          >
+                            <CheckCircle2 className="size-2.5 text-white" />
+                          </motion.div>
+                        )}
+                      </motion.button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* ========== CLIENT TAB ========== */}
-              <TabsContent value="client" className="mt-0">
-                <form onSubmit={handleSubmit}>
-                  <div className="space-y-4 pt-5 px-6">
-                    {/* Client benefit banner with animated gradient */}
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key="client-banner"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.3 }}
-                        className="relative rounded-xl overflow-hidden p-4 border border-emerald-100/70"
-                      >
-                        {/* Animated gradient background */}
-                        <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
-                        <div className="relative">
-                          <p className="text-sm font-semibold text-emerald-800 mb-2.5">
-                            Book trusted professionals for Plumbing, Electrical &amp; AC services
-                          </p>
-                          <div className="space-y-1.5">
-                            {clientBenefits.map((benefit, i) => (
-                              <div key={i} className="flex items-center gap-2">
-                                <benefit.icon className="size-3.5 text-emerald-600 shrink-0" />
-                                <span className="text-xs text-emerald-700">{benefit.text}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Error message */}
-                    <AnimatePresence>
-                      {error && (
-                        <motion.div
-                          initial={{ opacity: 0, x: -20, height: 0 }}
-                          animate={{ opacity: 1, x: 0, height: 'auto' }}
-                          exit={{ opacity: 0, x: 20, height: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                          className="flex items-start gap-2 rounded-xl bg-red-50 p-3.5 border border-red-200/70"
-                        >
-                          <div className="size-5 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-red-600 text-xs font-bold">!</span>
-                          </div>
-                          <p className="text-sm text-red-700">{error}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Name */}
-                    <div className="space-y-2">
-                      <Label htmlFor="client-name" className="text-sm font-medium text-foreground/80">Full Name</Label>
-                      <div className="relative group">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="client-name"
-                          placeholder="John Doe"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          required
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
+              {/* Form Fields */}
+              <div className="space-y-4 pt-4 px-6">
+                {/* Role benefit banner */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedRole}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3 }}
+                    className="relative rounded-xl overflow-hidden p-4 border border-emerald-100/70"
+                  >
+                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
+                    <div className="relative">
+                      <p className="text-sm font-semibold text-emerald-800">
+                        {currentRole.banner}
+                      </p>
+                      <p className="text-xs text-emerald-600 mt-1">
+                        Sign up as a {currentRole.label} to get started
+                      </p>
                     </div>
+                  </motion.div>
+                </AnimatePresence>
 
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <Label htmlFor="client-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
-                      <div className="relative group">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="client-email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          required
-                          autoComplete="email"
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Phone */}
-                    <div className="space-y-2">
-                      <Label htmlFor="client-phone" className="text-sm font-medium text-foreground/80">Phone Number</Label>
-                      <Input
-                        id="client-phone"
-                        type="tel"
-                        placeholder="+91 9876543210"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                        className="h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                      />
-                    </div>
-
-                    {/* Password with animated strength bar */}
-                    <div className="space-y-2">
-                      <Label htmlFor="client-password" className="text-sm font-medium text-foreground/80">Password</Label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="client-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a strong password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          autoComplete="new-password"
-                          className="pl-10 pr-11 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                        </button>
-                      </div>
-                      {password && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-1.5"
-                        >
-                          <div className="flex gap-1">
-                            {[1, 2, 3, 4, 5].map((segment) => (
-                              <div key={segment} className="h-2 flex-1 rounded-full bg-gray-100 overflow-hidden">
-                                <motion.div
-                                  className={`h-full rounded-full ${passwordStrength.score >= segment ? passwordStrength.color : ''}`}
-                                  initial={{ width: 0 }}
-                                  animate={{ width: passwordStrength.score >= segment ? '100%' : '0%' }}
-                                  transition={{ duration: 0.3, delay: segment * 0.05 }}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-xs text-muted-foreground">{passwordStrength.label}</p>
-                            <span className="text-sm">{passwordStrength.emoji}</span>
-                          </div>
-                        </motion.div>
-                      )}
-                    </div>
-
-                    {/* Confirm Password */}
-                    <div className="space-y-2">
-                      <Label htmlFor="client-confirm" className="text-sm font-medium text-foreground/80">Confirm Password</Label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="client-confirm"
-                          type="password"
-                          placeholder="Re-enter your password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          required
-                          autoComplete="new-password"
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
-                      <AnimatePresence>
-                        {confirmPassword && password !== confirmPassword && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="text-xs text-red-500 flex items-center gap-1"
-                          >
-                            <span className="size-3.5 rounded-full bg-red-100 flex items-center justify-center">
-                              <span className="text-red-600 text-[8px] font-bold">✕</span>
-                            </span>
-                            Passwords do not match
-                          </motion.p>
-                        )}
-                        {confirmPassword && password === confirmPassword && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="text-xs text-emerald-600 flex items-center gap-1"
-                          >
-                            <CheckCircle2 className="size-3.5" />
-                            Passwords match
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Terms with better styling */}
-                    <div
-                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
+                {/* Error message */}
+                <AnimatePresence>
+                  {error && (
+                    <motion.div
+                      initial={{ opacity: 0, x: -20, height: 0 }}
+                      animate={{ opacity: 1, x: 0, height: 'auto' }}
+                      exit={{ opacity: 0, x: 20, height: 0 }}
+                      transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+                      className="flex items-start gap-2 rounded-xl bg-red-50 p-3.5 border border-red-200/70"
                     >
-                      <Checkbox
-                        id="client-terms"
-                        checked={termsAccepted}
-                        onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                        className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
-                      />
-                      <Label htmlFor="client-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
-                        I agree to the{' '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
-                        {', '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
-                        {' '}and{' '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
-                      </Label>
-                    </div>
-                  </div>
+                      <div className="size-5 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="text-red-600 text-xs font-bold">!</span>
+                      </div>
+                      <p className="text-sm text-red-700">{error}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                  {/* Footer */}
-                  <div className="px-6 pt-5 pb-6 space-y-4">
-                    {/* Gradient shimmer submit button */}
-                    <Button
-                      type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
-                      disabled={loading}
+                {/* Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="reg-name" className="text-sm font-medium text-foreground/80">Full Name</Label>
+                  <div className="relative group">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Input
+                      id="reg-name"
+                      placeholder="John Doe"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                {/* Email */}
+                <div className="space-y-2">
+                  <Label htmlFor="reg-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Input
+                      id="reg-email"
+                      type="email"
+                      placeholder="you@example.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="space-y-2">
+                  <Label htmlFor="reg-phone" className="text-sm font-medium text-foreground/80">Phone Number</Label>
+                  <Input
+                    id="reg-phone"
+                    type="tel"
+                    placeholder="+91 9876543210"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                    className="h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                  />
+                </div>
+
+                {/* Specialization Cards (only for provider/technician) */}
+                <AnimatePresence>
+                  {needsSpecialization && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="space-y-2"
                     >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 size-5 animate-spin" />
-                          Creating Account...
-                        </>
-                      ) : (
-                        <>
-                          <User className="mr-2 size-5" />
-                          Create Client Account
-                        </>
-                      )}
-                    </Button>
-
-                    <p className="text-center text-sm text-muted-foreground">
-                      Already have an account?{' '}
-                      <button
-                        type="button"
-                        onClick={() => navigate('login')}
-                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
-                      >
-                        Log in
-                      </button>
-                    </p>
-                  </div>
-                </form>
-              </TabsContent>
-
-              {/* ========== PROVIDER TAB ========== */}
-              <TabsContent value="provider" className="mt-0">
-                <form onSubmit={handleSubmit}>
-                  <div className="space-y-4 pt-5 px-6 max-h-[65vh] overflow-y-auto">
-                    {/* Provider benefit banner */}
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key="provider-banner"
-                        initial={{ opacity: 0, y: 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{ duration: 0.3 }}
-                        className="relative rounded-xl overflow-hidden p-4 border border-amber-100/70"
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-amber-50 via-emerald-50 to-amber-50 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
-                        <div className="relative">
-                          <p className="text-sm font-semibold text-emerald-800 mb-2.5">
-                            Reach thousands of customers, grow your business
-                          </p>
-                          <div className="space-y-1.5">
-                            {providerBenefits.map((benefit, i) => (
-                              <div key={i} className="flex items-center gap-2">
-                                <benefit.icon className="size-3.5 text-emerald-600 shrink-0" />
-                                <span className="text-xs text-emerald-700">{benefit.text}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Error message */}
-                    <AnimatePresence>
-                      {error && (
-                        <motion.div
-                          initial={{ opacity: 0, x: -20, height: 0 }}
-                          animate={{ opacity: 1, x: 0, height: 'auto' }}
-                          exit={{ opacity: 0, x: 20, height: 0 }}
-                          transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                          className="flex items-start gap-2 rounded-xl bg-red-50 p-3.5 border border-red-200/70"
-                        >
-                          <div className="size-5 rounded-full bg-red-100 flex items-center justify-center shrink-0 mt-0.5">
-                            <span className="text-red-600 text-xs font-bold">!</span>
-                          </div>
-                          <p className="text-sm text-red-700">{error}</p>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Name */}
-                    <div className="space-y-2">
-                      <Label htmlFor="provider-name" className="text-sm font-medium text-foreground/80">Full Name</Label>
-                      <div className="relative group">
-                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="provider-name"
-                          placeholder="John Doe"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          required
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Email */}
-                    <div className="space-y-2">
-                      <Label htmlFor="provider-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
-                      <div className="relative group">
-                        <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="provider-email"
-                          type="email"
-                          placeholder="you@example.com"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          required
-                          autoComplete="email"
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Phone */}
-                    <div className="space-y-2">
-                      <Label htmlFor="provider-phone" className="text-sm font-medium text-foreground/80">Phone Number</Label>
-                      <Input
-                        id="provider-phone"
-                        type="tel"
-                        placeholder="+91 9876543210"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                        className="h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                      />
-                    </div>
-
-                    {/* Specialization Cards (instead of dropdown) */}
-                    <div className="space-y-2">
                       <Label className="text-sm font-medium text-foreground/80">Specialization</Label>
                       <div className="grid grid-cols-3 gap-2.5">
                         {specializations.map((spec) => {
@@ -699,187 +522,159 @@ export function RegisterPage() {
                           );
                         })}
                       </div>
-                    </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                    {/* Password with animated strength bar */}
-                    <div className="space-y-2">
-                      <Label htmlFor="provider-password" className="text-sm font-medium text-foreground/80">Password</Label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="provider-password"
-                          type={showPassword ? 'text' : 'password'}
-                          placeholder="Create a strong password"
-                          value={password}
-                          onChange={(e) => setPassword(e.target.value)}
-                          required
-                          autoComplete="new-password"
-                          className="pl-10 pr-11 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                        >
-                          {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-                        </button>
-                      </div>
-                      {password && (
-                        <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="space-y-1.5"
-                        >
-                          <div className="flex gap-1">
-                            {[1, 2, 3, 4, 5].map((segment) => (
-                              <div key={segment} className="h-2 flex-1 rounded-full bg-gray-100 overflow-hidden">
-                                <motion.div
-                                  className={`h-full rounded-full ${passwordStrength.score >= segment ? passwordStrength.color : ''}`}
-                                  initial={{ width: 0 }}
-                                  animate={{ width: passwordStrength.score >= segment ? '100%' : '0%' }}
-                                  transition={{ duration: 0.3, delay: segment * 0.05 }}
-                                />
-                              </div>
-                            ))}
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-xs text-muted-foreground">{passwordStrength.label}</p>
-                            <span className="text-sm">{passwordStrength.emoji}</span>
-                          </div>
-                        </motion.div>
-                      )}
-                    </div>
-
-                    {/* Confirm Password */}
-                    <div className="space-y-2">
-                      <Label htmlFor="provider-confirm" className="text-sm font-medium text-foreground/80">Confirm Password</Label>
-                      <div className="relative group">
-                        <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
-                        <Input
-                          id="provider-confirm"
-                          type="password"
-                          placeholder="Re-enter your password"
-                          value={confirmPassword}
-                          onChange={(e) => setConfirmPassword(e.target.value)}
-                          required
-                          autoComplete="new-password"
-                          className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
-                        />
-                      </div>
-                      <AnimatePresence>
-                        {confirmPassword && password !== confirmPassword && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="text-xs text-red-500 flex items-center gap-1"
-                          >
-                            <span className="size-3.5 rounded-full bg-red-100 flex items-center justify-center">
-                              <span className="text-red-600 text-[8px] font-bold">✕</span>
-                            </span>
-                            Passwords do not match
-                          </motion.p>
-                        )}
-                        {confirmPassword && password === confirmPassword && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            className="text-xs text-emerald-600 flex items-center gap-1"
-                          >
-                            <CheckCircle2 className="size-3.5" />
-                            Passwords match
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Terms with better styling */}
-                    <div
-                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
+                {/* Password with animated strength bar */}
+                <div className="space-y-2">
+                  <Label htmlFor="reg-password" className="text-sm font-medium text-foreground/80">Password</Label>
+                  <div className="relative group">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Input
+                      id="reg-password"
+                      type={showPassword ? 'text' : 'password'}
+                      placeholder="Create a strong password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      autoComplete="new-password"
+                      className="pl-10 pr-11 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      <Checkbox
-                        id="provider-terms"
-                        checked={termsAccepted}
-                        onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                        className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
-                      />
-                      <Label htmlFor="provider-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
-                        I agree to the{' '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
-                        {', '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('provider-agreement', { type: 'provider-agreement' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
-                        {' '}and{' '}
-                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
-                      </Label>
-                    </div>
+                      {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                    </button>
                   </div>
-
-                  {/* Footer */}
-                  <div className="px-6 pt-5 pb-6 space-y-4">
-                    {/* Gradient shimmer submit button */}
-                    <Button
-                      type="submit"
-                      className="w-full shimmer bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 shadow-lg shadow-amber-500/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
-                      disabled={loading}
+                  {password && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="space-y-1.5"
                     >
-                      {loading ? (
-                        <>
-                          <Loader2 className="mr-2 size-5 animate-spin" />
-                          Creating Account...
-                        </>
-                      ) : (
-                        <>
-                          <Briefcase className="mr-2 size-5" />
-                          Create Provider Account
-                        </>
-                      )}
-                    </Button>
-
-                    <p className="text-center text-sm text-muted-foreground">
-                      Already have an account?{' '}
-                      <button
-                        type="button"
-                        onClick={() => navigate('login')}
-                        className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
-                      >
-                        Log in
-                      </button>
-                    </p>
-                  </div>
-                </form>
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          {/* Trust Badges */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex items-center justify-center gap-6 mt-6"
-          >
-            {trustBadges.map(({ icon: Icon, label }) => (
-              <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <div className="flex size-6 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-cyan-100 border border-emerald-200/80 shadow-sm shadow-emerald-200/50">
-                  <Icon className="size-3 text-emerald-700" />
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((segment) => (
+                          <div key={segment} className="h-2 flex-1 rounded-full bg-gray-100 overflow-hidden">
+                            <motion.div
+                              className={`h-full rounded-full ${passwordStrength.score >= segment ? passwordStrength.color : ''}`}
+                              initial={{ width: 0 }}
+                              animate={{ width: passwordStrength.score >= segment ? '100%' : '0%' }}
+                              transition={{ duration: 0.3, delay: segment * 0.05 }}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground">{passwordStrength.label}</p>
+                        <span className="text-sm">{passwordStrength.emoji}</span>
+                      </div>
+                    </motion.div>
+                  )}
                 </div>
-                <span>{label}</span>
-              </div>
-            ))}
-          </motion.div>
 
-          {/* Branding */}
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7 }}
-            className="mt-4 text-center text-xs text-muted-foreground/60"
-          >
-            <Wrench className="size-3 inline -mt-0.5 mr-1" />
-            BookYourService &mdash; Trusted Home Services
-          </motion.p>
+                {/* Confirm Password */}
+                <div className="space-y-2">
+                  <Label htmlFor="reg-confirm" className="text-sm font-medium text-foreground/80">Confirm Password</Label>
+                  <div className="relative group">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Input
+                      id="reg-confirm"
+                      type="password"
+                      placeholder="Re-enter your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      autoComplete="new-password"
+                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                  </div>
+                  <AnimatePresence>
+                    {confirmPassword && password !== confirmPassword && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="text-xs text-red-500 flex items-center gap-1"
+                      >
+                        <span className="size-3.5 rounded-full bg-red-100 flex items-center justify-center">
+                          <span className="text-red-600 text-[8px] font-bold">✕</span>
+                        </span>
+                        Passwords do not match
+                      </motion.p>
+                    )}
+                    {confirmPassword && password === confirmPassword && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -5 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -5 }}
+                        className="text-xs text-emerald-600 flex items-center gap-1"
+                      >
+                        <CheckCircle2 className="size-3.5" />
+                        Passwords match
+                      </motion.p>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Terms */}
+                <div
+                  className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
+                >
+                  <Checkbox
+                    id="reg-terms"
+                    checked={termsAccepted}
+                    onCheckedChange={(checked) => setTermsAccepted(checked === true)}
+                    className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
+                  />
+                  <Label htmlFor="reg-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
+                    I agree to the{' '}
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                    {', '}
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
+                    {' '}and{' '}
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                  </Label>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 pt-5 pb-6 space-y-4">
+                {/* Submit button */}
+                <Button
+                  type="submit"
+                  className="w-full shimmer bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                  disabled={loading}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 size-5 animate-spin" />
+                      Creating Account...
+                    </>
+                  ) : (
+                    <>
+                      <currentRole.Icon className="mr-2 size-5" />
+                      Create {currentRole.label} Account
+                    </>
+                  )}
+                </Button>
+
+                <p className="text-center text-sm text-muted-foreground">
+                  Already have an account?{' '}
+                  <button
+                    type="button"
+                    onClick={() => navigate('login')}
+                    className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
+                  >
+                    Log in
+                  </button>
+                </p>
+              </div>
+            </form>
+          </div>
         </motion.div>
       </div>
     </div>

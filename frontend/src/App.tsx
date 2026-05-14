@@ -31,9 +31,21 @@ import { ClientReviewsPage } from '@/components/bys/client-reviews-page';
 import { ClientFavoritesPage } from '@/components/bys/client-favorites-page';
 import { ClientNotificationsPage } from '@/components/bys/client-notifications-page';
 
+// Client enhanced pages
+import { ClientWalletPage } from '@/components/bys/client-wallet-page';
+import { ClientAmcPage } from '@/components/bys/client-amc-page';
+import { ClientAmcDetailPage } from '@/components/bys/client-amc-detail-page';
+import { ClientCouponsPage } from '@/components/bys/client-coupons-page';
+import { ClientReferralsPage } from '@/components/bys/client-referrals-page';
+import { ClientInvoicesPage } from '@/components/bys/client-invoices-page';
+import { ClientInvoiceDetailPage } from '@/components/bys/client-invoice-detail-page';
+
 // Booking pages
 import { BookingPage } from '@/components/bys/booking-page';
 import { BookingConfirmationPage } from '@/components/bys/booking-confirmation-page';
+
+// Emergency booking page
+import { EmergencyBookingPage } from '@/components/bys/emergency-booking-page';
 
 // Provider pages
 import { ProviderDashboardPage } from '@/components/bys/provider-dashboard-page';
@@ -46,6 +58,19 @@ import { ProviderReviewsPage } from '@/components/bys/provider-reviews-page';
 import { ProviderProfilePage } from '@/components/bys/provider-profile-page';
 import { ProviderKycPage } from '@/components/bys/provider-kyc-page';
 
+// Provider enhanced pages
+import { ProviderWalletPage } from '@/components/bys/provider-wallet-page';
+import { ProviderPayoutsPage } from '@/components/bys/provider-payouts-page';
+import { ProviderInvoicesPage } from '@/components/bys/provider-invoices-page';
+
+// Technician pages
+import { TechnicianDashboardPage } from '@/components/bys/technician-dashboard-page';
+import { TechnicianJobsPage } from '@/components/bys/technician-jobs-page';
+import { TechnicianJobDetailPage } from '@/components/bys/technician-job-detail-page';
+import { TechnicianEarningsPage } from '@/components/bys/technician-earnings-page';
+import { TechnicianProfilePage } from '@/components/bys/technician-profile-page';
+import { TechnicianAvailabilityPage } from '@/components/bys/technician-availability-page';
+
 // Admin pages
 import { AdminDashboardPage } from '@/components/bys/admin-dashboard-page';
 import { AdminUsersPage } from '@/components/bys/admin-users-page';
@@ -57,6 +82,30 @@ import { AdminCategoriesPage } from '@/components/bys/admin-categories-page';
 import { AdminFaqPage } from '@/components/bys/admin-faq-page';
 import { AdminRevenuePage } from '@/components/bys/admin-revenue-page';
 import { AdminLogsPage } from '@/components/bys/admin-logs-page';
+
+// Admin enhanced pages
+import { AdminAnalyticsPage } from '@/components/bys/admin-analytics-page';
+import { AdminFranchisesPage } from '@/components/bys/admin-franchises-page';
+import { AdminFranchiseDetailPage } from '@/components/bys/admin-franchise-detail-page';
+import { AdminCrmPage } from '@/components/bys/admin-crm-page';
+import { AdminPayoutsPage } from '@/components/bys/admin-payouts-page';
+import { AdminInventoryPage } from '@/components/bys/admin-inventory-page';
+import { AdminCouponsPage } from '@/components/bys/admin-coupons-page';
+import { AdminAmcPage } from '@/components/bys/admin-amc-page';
+import { AdminB2bPage } from '@/components/bys/admin-b2b-page';
+
+// Franchise pages
+import { FranchiseDashboardPage } from '@/components/bys/franchise-dashboard-page';
+import { FranchiseVendorsPage } from '@/components/bys/franchise-vendors-page';
+import { FranchiseAnalyticsPage } from '@/components/bys/franchise-analytics-page';
+
+// Vendor pages
+import { VendorDashboardPage } from '@/components/bys/vendor-dashboard-page';
+import { VendorBookingsPage } from '@/components/bys/vendor-bookings-page';
+import { VendorServicesPage } from '@/components/bys/vendor-services-page';
+import { VendorProfilePage } from '@/components/bys/vendor-profile-page';
+import { VendorKycPage } from '@/components/bys/vendor-kyc-page';
+import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
 
 function AppRouter() {
   const { nav } = useApp();
@@ -119,11 +168,31 @@ function AppRouter() {
       case 'client-notifications':
         return <ClientNotificationsPage />;
 
+      // Client enhanced pages
+      case 'client-wallet':
+        return <ClientWalletPage />;
+      case 'client-amc':
+        return <ClientAmcPage />;
+      case 'client-amc-detail':
+        return <ClientAmcDetailPage />;
+      case 'client-coupons':
+        return <ClientCouponsPage />;
+      case 'client-referrals':
+        return <ClientReferralsPage />;
+      case 'client-invoices':
+        return <ClientInvoicesPage />;
+      case 'client-invoice-detail':
+        return <ClientInvoiceDetailPage />;
+
       // Booking pages
       case 'booking':
         return <BookingPage />;
       case 'booking-confirmation':
         return <BookingConfirmationPage />;
+
+      // Emergency booking
+      case 'emergency-booking':
+        return <EmergencyBookingPage />;
 
       // Provider pages
       case 'provider-dashboard':
@@ -144,6 +213,28 @@ function AppRouter() {
         return <ProviderProfilePage />;
       case 'provider-kyc':
         return <ProviderKycPage />;
+
+      // Provider enhanced pages
+      case 'provider-wallet':
+        return <ProviderWalletPage />;
+      case 'provider-payouts':
+        return <ProviderPayoutsPage />;
+      case 'provider-invoices':
+        return <ProviderInvoicesPage />;
+
+      // Technician pages
+      case 'technician-dashboard':
+        return <TechnicianDashboardPage />;
+      case 'technician-jobs':
+        return <TechnicianJobsPage />;
+      case 'technician-job-detail':
+        return <TechnicianJobDetailPage />;
+      case 'technician-earnings':
+        return <TechnicianEarningsPage />;
+      case 'technician-profile':
+        return <TechnicianProfilePage />;
+      case 'technician-availability':
+        return <TechnicianAvailabilityPage />;
 
       // Admin pages
       case 'admin-dashboard':
@@ -166,6 +257,48 @@ function AppRouter() {
         return <AdminRevenuePage />;
       case 'admin-logs':
         return <AdminLogsPage />;
+
+      // Admin enhanced pages
+      case 'admin-analytics':
+        return <AdminAnalyticsPage />;
+      case 'admin-franchises':
+        return <AdminFranchisesPage />;
+      case 'admin-franchise-detail':
+        return <AdminFranchiseDetailPage />;
+      case 'admin-crm':
+        return <AdminCrmPage />;
+      case 'admin-payouts':
+        return <AdminPayoutsPage />;
+      case 'admin-inventory':
+        return <AdminInventoryPage />;
+      case 'admin-coupons':
+        return <AdminCouponsPage />;
+      case 'admin-amc':
+        return <AdminAmcPage />;
+      case 'admin-b2b':
+        return <AdminB2bPage />;
+
+      // Franchise pages
+      case 'franchise-dashboard':
+        return <FranchiseDashboardPage />;
+      case 'franchise-vendors':
+        return <FranchiseVendorsPage />;
+      case 'franchise-analytics':
+        return <FranchiseAnalyticsPage />;
+
+      // Vendor pages
+      case 'vendor-dashboard':
+        return <VendorDashboardPage />;
+      case 'vendor-bookings':
+        return <VendorBookingsPage />;
+      case 'vendor-services':
+        return <VendorServicesPage />;
+      case 'vendor-profile':
+        return <VendorProfilePage />;
+      case 'vendor-kyc':
+        return <VendorKycPage />;
+      case 'vendor-wallet':
+        return <VendorWalletPage />;
 
       default:
         return <HomePage />;

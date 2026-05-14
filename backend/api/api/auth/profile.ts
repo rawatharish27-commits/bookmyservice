@@ -74,6 +74,10 @@ interface UpdateProfileBody {
   city?: string;
   state?: string;
   country?: string;
+  address?: string;
+  pincode?: string;
+  latitude?: number;
+  longitude?: number;
 }
 
 export async function onRequestPatch(context: EventContext<Record<string, unknown>, string, unknown>): Promise<Response> {
@@ -131,6 +135,34 @@ export async function onRequestPatch(context: EventContext<Record<string, unknow
 
     if (body.country !== undefined) {
       updateData.country = sanitizeString(String(body.country));
+    }
+
+    if (body.address !== undefined) {
+      updateData.address = sanitizeString(String(body.address));
+    }
+
+    if (body.pincode !== undefined) {
+      const sanitizedPincode = sanitizeString(String(body.pincode));
+      if (sanitizedPincode && !/^\d{6}$/.test(sanitizedPincode)) {
+        return error('pincode must be a 6-digit number', 400);
+      }
+      updateData.pincode = sanitizedPincode;
+    }
+
+    if (body.latitude !== undefined) {
+      const lat = Number(body.latitude);
+      if (isNaN(lat) || lat < -90 || lat > 90) {
+        return error('latitude must be between -90 and 90', 400);
+      }
+      updateData.latitude = lat;
+    }
+
+    if (body.longitude !== undefined) {
+      const lng = Number(body.longitude);
+      if (isNaN(lng) || lng < -180 || lng > 180) {
+        return error('longitude must be between -180 and 180', 400);
+      }
+      updateData.longitude = lng;
     }
 
     if (Object.keys(updateData).length === 0) {

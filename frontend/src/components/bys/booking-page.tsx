@@ -1,8 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
+import { useGeolocation } from '@/hooks/use-geolocation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -23,6 +24,8 @@ import {
   Check,
   Shield,
   Zap,
+  Navigation,
+  RefreshCw,
 } from 'lucide-react';
 
 interface ServiceData {
@@ -71,9 +74,20 @@ export function BookingPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedTime, setSelectedTime] = useState('');
   const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [pincode, setPincode] = useState('');
   const [specialInstructions, setSpecialInstructions] = useState('');
   const [negotiatePrice, setNegotiatePrice] = useState('');
   const [error, setError] = useState('');
+
+  const { latitude, longitude, city: detectedCity, loading: geoLoading, error: geoError, refreshLocation } = useGeolocation();
+
+  // Auto-fill city when geolocation detects it and step reaches address
+  useEffect(() => {
+    if (detectedCity && !city) {
+      setCity(detectedCity);
+    }
+  }, [detectedCity, city]);
 
   const availability = availData?.availability || [];
 
@@ -128,7 +142,11 @@ export function BookingPage() {
         scheduledDate: selectedDate.toISOString().split('T')[0],
         scheduledTime: selectedTime,
         serviceAddress: address,
+        city,
+        pincode,
         specialInstructions,
+        latitude,
+        longitude,
       };
       if (service.priceNegotiable && negotiatePrice) {
         body.proposedPrice = parseFloat(negotiatePrice);
@@ -423,6 +441,35 @@ export function BookingPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Location Detection Indicator */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {geoLoading ? (
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+                        <Loader2 className="size-3 animate-spin" /> Detecting location...
+                      </Badge>
+                    ) : detectedCity && !geoError ? (
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <Navigation className="size-3" /> Location Detected
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
+                        <MapPin className="size-3" /> Location unavailable
+                      </Badge>
+                    )}
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-emerald-600"
+                    onClick={refreshLocation}
+                    disabled={geoLoading}
+                  >
+                    <RefreshCw className={`size-3 ${geoLoading ? 'animate-spin' : ''}`} />
+                    Retry
+                  </Button>
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="address">Full Address *</Label>
                   <Textarea
@@ -433,6 +480,28 @@ export function BookingPage() {
                     rows={3}
                     className="rounded-xl"
                   />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={city}
+                      onChange={(e) => setCity(e.target.value)}
+                      placeholder="Your city"
+                      className="rounded-xl h-11"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="pincode">Pincode</Label>
+                    <Input
+                      id="pincode"
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value)}
+                      placeholder="Area pincode"
+                      className="rounded-xl h-11"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="instructions">Special Instructions (optional)</Label>

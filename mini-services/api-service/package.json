@@ -6,10 +6,10 @@
     "dev": "bun --hot index.ts"
   },
   "dependencies": {
-    "hono": "^4.12.0",
-    "@hono/node-server": "^2.0.0",
-    "pg": "^8.13.0",
+    "@hono/node-server": "^2.0.2",
     "bcryptjs": "^2.4.3",
-    "jose": "^5.9.0"
+    "hono": "^4.12.18",
+    "jose": "^5.10.0",
+    "pg": "^8.20.0"
   }
 }

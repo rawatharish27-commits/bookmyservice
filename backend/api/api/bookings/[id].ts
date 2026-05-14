@@ -55,6 +55,9 @@ export async function onRequestGet(context: { request: Request; env: Env; params
     const client = (bookingData.client as Record<string, unknown>) || {};
     const provider = (bookingData.provider as Record<string, unknown>) || {};
 
+    const bookingStatus = String(bookingData.status || '');
+    const isConfirmedOrLater = ['CONFIRMED', 'IN_PROGRESS', 'COMPLETED'].includes(bookingStatus);
+
     const flatBooking = {
       ...bookingData,
       serviceTitle: service.title ?? null,
@@ -66,11 +69,13 @@ export async function onRequestGet(context: { request: Request; env: Env; params
       categoryIcon: serviceCategory.icon ?? null,
       clientName: client.name ?? null,
       clientEmail: client.email ?? null,
-      clientPhone: client.phone ?? null,
+      // Client phone visible to provider only after booking is confirmed
+      clientPhone: (user.role === 'ADMIN' || (user.role === 'PROVIDER' && isConfirmedOrLater)) ? (client.phone ?? null) : null,
       clientProfileImage: client.profileImageUrl ?? null,
       providerName: provider.name ?? null,
       providerEmail: provider.email ?? null,
-      providerPhone: provider.phone ?? null,
+      // Provider phone visible to client only after booking is confirmed
+      providerPhone: (user.role === 'ADMIN' || (user.role === 'CLIENT' && isConfirmedOrLater)) ? (provider.phone ?? null) : null,
       providerProfileImage: provider.profileImageUrl ?? null,
       review: review || null,
       // Remove nested objects

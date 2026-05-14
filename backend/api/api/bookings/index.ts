@@ -13,6 +13,19 @@ import { requireAuth, requireRole } from '../../_shared/auth';
 import { json, error, unauthorized, forbidden } from '../../_shared/response';
 import { sanitizeString, sanitizeObject, validatePrice } from '../../_shared/security';
 
+// Haversine distance between two lat/lng points (returns km)
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 // Generate a unique booking number
 function generateBookingNumber(): string {
   const timestamp = Date.now().toString(36).toUpperCase();
@@ -115,10 +128,15 @@ export async function onRequestGet(context: { request: Request; env: Env; params
     }
 
     // Transform nested objects into flat format for backward compatibility
+    // Conditional contact visibility: phone numbers only shown after booking is confirmed
+    const confirmedStatuses = ['CONFIRMED', 'IN_PROGRESS', 'COMPLETED'];
+
     const formattedBookings = bookingsData.map((b) => {
       const service = (b.service as Record<string, unknown>) || {};
       const client = (b.client as Record<string, unknown>) || {};
       const provider = (b.provider as Record<string, unknown>) || {};
+      const bookingStatus = String(b.status || '');
+      const isConfirmedOrLater = confirmedStatuses.includes(bookingStatus);
 
       return {
         ...b,
@@ -127,12 +145,14 @@ export async function onRequestGet(context: { request: Request; env: Env; params
         ...(Object.keys(client).length > 0 ? {
           clientName: client.name ?? null,
           clientEmail: client.email ?? null,
-          clientPhone: client.phone ?? null,
+          // Client phone visible to provider/admin only after booking is confirmed
+          clientPhone: (user.role === 'ADMIN' || (user.role === 'PROVIDER' && isConfirmedOrLater)) ? (client.phone ?? null) : null,
         } : {}),
         ...(Object.keys(provider).length > 0 ? {
           providerName: provider.name ?? null,
           providerEmail: provider.email ?? null,
-          providerPhone: provider.phone ?? null,
+          // Provider phone visible to client/admin only after booking is confirmed
+          providerPhone: (user.role === 'ADMIN' || (user.role === 'CLIENT' && isConfirmedOrLater)) ? (provider.phone ?? null) : null,
         } : {}),
         // Remove nested objects to keep response clean
         service: undefined,
@@ -206,7 +226,7 @@ export async function onRequestPost(context: { request: Request; env: Env; param
     // Look up the service to get basePrice and providerId
     const { data: service, error: svcError } = await supabase
       .from('Service')
-      .select('id,providerId,basePrice,title,city')
+      .select('id,providerId,basePrice,title,city,categoryId')
       .eq('id', serviceId)
       .eq('isActive', true)
       .eq('approvalStatus', 'APPROVED')
@@ -235,6 +255,59 @@ export async function onRequestPost(context: { request: Request; env: Env; param
       return error('You cannot book your own service');
     }
 
+    // Get client location from request
+    const clientLatitude = sanitized.latitude ? Number(sanitized.latitude) : null;
+    const clientLongitude = sanitized.longitude ? Number(sanitized.longitude) : null;
+
+    // Find nearest provider for this service category in the same city
+    let assignedProviderId = providerId; // fallback to service's provider
+    let distanceKm: number | null = null;
+    let serviceLatitude: number | null = null;
+    let serviceLongitude: number | null = null;
+
+    if (clientLatitude && clientLongitude) {
+      // Find all approved services in the same category and city
+      const { data: nearbyServices } = await supabase
+        .from('Service')
+        .select('id,providerId,latitude,longitude,serviceAreaRadiusKm,city')
+        .eq('categoryId', Number(serviceData.categoryId || serviceData.category_id))
+        .eq('isActive', true)
+        .eq('approvalStatus', 'APPROVED');
+
+      if (nearbyServices && nearbyServices.length > 0) {
+        // Calculate distances and find nearest provider
+        interface NearbyService {
+          id: string;
+          providerId: string;
+          latitude: number | null;
+          longitude: number | null;
+          serviceAreaRadiusKm: number | null;
+          city: string | null;
+        }
+
+        const providersWithDistance = (nearbyServices as NearbyService[])
+          .filter(s => s.latitude && s.longitude && s.providerId !== user.userId)
+          .map(s => ({
+            providerId: s.providerId,
+            serviceId: s.id,
+            distance: haversineDistance(clientLatitude!, clientLongitude!, s.latitude!, s.longitude!),
+            radius: s.serviceAreaRadiusKm || 10,
+            latitude: s.latitude,
+            longitude: s.longitude,
+          }))
+          .filter(s => s.distance <= s.radius)
+          .sort((a, b) => a.distance - b.distance);
+
+        if (providersWithDistance.length > 0) {
+          const nearest = providersWithDistance[0];
+          assignedProviderId = nearest.providerId;
+          distanceKm = Math.round(nearest.distance * 10) / 10;
+          serviceLatitude = nearest.latitude;
+          serviceLongitude = nearest.longitude;
+        }
+      }
+    }
+
     // Check that the scheduled date is not in the past
     const scheduledDateTime = new Date(`${scheduledDate}T${scheduledTime}`);
     if (scheduledDateTime < new Date()) {
@@ -256,7 +329,7 @@ export async function onRequestPost(context: { request: Request; env: Env; param
         id: bookingId,
         bookingNumber,
         clientId: user.userId,
-        providerId,
+        providerId: assignedProviderId,
         serviceId,
         status: 'PENDING',
         scheduledDate,
@@ -268,6 +341,9 @@ export async function onRequestPost(context: { request: Request; env: Env; param
         providerEarnings,
         specialInstructions: notes,
         paymentStatus: 'PENDING',
+        serviceLatitude,
+        serviceLongitude,
+        distanceKm,
         createdAt: now,
         updatedAt: now,
       });
@@ -277,13 +353,13 @@ export async function onRequestPost(context: { request: Request; env: Env; param
       return error('Failed to create booking', 500);
     }
 
-    // Create notification for the provider
+    // Create notification for the assigned provider
     const notifId = `notif_${Date.now().toString(36)}_${Math.random().toString(36).substring(2, 8)}`;
     await supabase
       .from('Notification')
       .insert({
         id: notifId,
-        userId: providerId,
+        userId: assignedProviderId,
         type: 'BOOKING',
         title: 'New Booking Request',
         message: `You have a new booking request for ${String(serviceData.title)}`,

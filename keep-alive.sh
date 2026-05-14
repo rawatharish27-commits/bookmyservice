@@ -4,9 +4,9 @@ cd /home/z/my-project/frontend
 node ./node_modules/.bin/vite --host &
 VITE_PID=$!
 
-# Start backend in background
-cd /home/z/my-project/backend
-PORT=3001 npx tsx src/index.ts &
+# Start backend API service in background
+cd /home/z/my-project/mini-services/api-service
+PORT=3001 node index.js &
 BACKEND_PID=$!
 
 # Start proxy in background

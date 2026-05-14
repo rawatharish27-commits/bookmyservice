@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Users,
   Shield,
+  ShieldCheck,
   CheckCircle2,
   CalendarCheck,
   Star,
@@ -1302,6 +1303,43 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ Emergency Service Banner ═══════════ */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-red-600 via-rose-500 to-orange-500 py-8">
+        <div className="pointer-events-none absolute inset-0">
+          <motion.div
+            className="absolute left-[10%] top-1/2 -translate-y-1/2 size-16 rounded-full bg-white/10"
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="absolute right-[20%] top-1/2 -translate-y-1/2 size-12 rounded-full bg-white/10"
+            animate={{ scale: [1.2, 1, 1.2] }}
+            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
+            <div className="flex items-center gap-4">
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+                <Zap className="size-7 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Need Emergency Service?</h3>
+                <p className="text-sm text-white/80">Same-day service available for urgent plumbing, electrical & AC repairs</p>
+              </div>
+            </div>
+            <Button
+              size="lg"
+              className="shrink-0 bg-white text-red-600 shadow-lg hover:bg-red-50"
+              onClick={() => navigate('categories')}
+            >
+              Book Emergency Service
+              <ArrowRight className="ml-2 size-4" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ Provider CTA Section ═══════════ */}
       <section className="relative overflow-hidden py-20" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 20%, #0f766e 45%, #0e7490 70%, #1e3a5f 100%)' }}>
         {/* Parallax-like decorative elements */}
@@ -1535,6 +1573,24 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════ Pay After Service Badge ═══════════ */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8"
+      >
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 via-white to-teal-50 p-6 text-center shadow-sm sm:flex-row sm:text-left">
+          <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-md">
+            <ShieldCheck className="size-7 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-emerald-900">Pay After Service is Done</h3>
+            <p className="text-sm text-emerald-700/80">No advance payment needed. Pay only after the service is completed to your satisfaction.</p>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
