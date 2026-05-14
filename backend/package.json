@@ -11,23 +11,23 @@
   },
   "dependencies": {
     "@hono/node-server": "^2.0.2",
-    "hono": "^4.12.18",
-    "@prisma/client": "6",
     "@prisma/adapter-pg": "6",
-    "pg": "^8.20.0",
+    "@prisma/client": "6",
+    "esbuild": "^0.25.12",
     "@types/pg": "^8.20.0",
     "bcryptjs": "^3.0.3",
+    "hono": "^4.12.18",
     "jose": "^6.2.3",
+    "pg": "^8.20.0",
     "zod": "^4.0.2"
   },
   "devDependencies": {
-    "@types/node": "^25.7.0",
+    "@eslint/js": "^9.0.0",
     "@types/bcryptjs": "^2.4.6",
-    "esbuild": "^0.25.0",
+    "@types/node": "^25.7.0",
+    "eslint": "^9",
     "tsx": "^4.19.2",
     "typescript": "^5",
-    "eslint": "^9",
-    "@eslint/js": "^9.0.0",
     "typescript-eslint": "^8.59.3"
   }
 }
