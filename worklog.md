@@ -1632,3 +1632,28 @@ Stage Summary:
 - Google Sign-in: Shows clear "coming soon" toast message with cursor-pointer
 - Sign Up navigation: Added cursor-pointer class to Sign up buttons on login page
 - All existing file structure and code patterns preserved - no new files added outside existing structure
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix UI issues and auth bugs in BookYourService
+
+Work Log:
+- Fixed white background + black font: Removed `class="dark"` from `<html>` tag in index.html
+- Changed theme-color meta from #0f172a to #ffffff
+- Changed PWA manifest theme_color from #0f172a to #047857
+- Fixed Legal Pages (Terms, Privacy, Refund, Community Guidelines, etc.): Added fallback content that displays when API fails or returns no data
+- Fixed Terms checkbox on signup: Removed parent div onClick that was conflicting with Checkbox onCheckedChange (double-toggle issue)
+- Fixed same checkbox issue in Provider tab
+- Verified Forgot Password dialog code is correct (uses useApiMutation properly)
+- Verified Change Password dialog code is correct (uses useApiMutation properly)
+- Verified Google Sign-in shows "coming soon" toast (working as designed)
+- Verified Sign Up navigation on login page (navigate('register') works correctly)
+- Did NOT commit any changes (following user's strict instruction)
+
+Stage Summary:
+- All frontend fixes applied to: index.html, legal-page.tsx, register-page.tsx, manifest.json
+- App should now display with white background and black font in light mode
+- Legal pages will show comprehensive fallback content when database is unavailable
+- Terms checkbox on signup now works properly (no more double-toggle)
+- No git commits made - waiting for user's explicit command

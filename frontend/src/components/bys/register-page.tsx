@@ -511,8 +511,7 @@ export function RegisterPage() {
 
                     {/* Terms with better styling */}
                     <div
-                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none"
-                      onClick={() => setTermsAccepted(!termsAccepted)}
+                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
                     >
                       <Checkbox
                         id="client-terms"
@@ -522,11 +521,11 @@ export function RegisterPage() {
                       />
                       <Label htmlFor="client-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                         I agree to the{' '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
                         {', '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
                         {' '}and{' '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
                       </Label>
                     </div>
                   </div>
@@ -798,8 +797,7 @@ export function RegisterPage() {
 
                     {/* Terms with better styling */}
                     <div
-                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 cursor-pointer select-none"
-                      onClick={() => setTermsAccepted(!termsAccepted)}
+                      className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
                     >
                       <Checkbox
                         id="provider-terms"
@@ -809,11 +807,11 @@ export function RegisterPage() {
                       />
                       <Label htmlFor="provider-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                         I agree to the{' '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
                         {', '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('provider-agreement', { type: 'provider-agreement' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('provider-agreement', { type: 'provider-agreement' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Provider Agreement</button>
                         {' '}and{' '}
-                        <button type="button" onClick={(e) => { e.stopPropagation(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                        <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
                       </Label>
                     </div>
                   </div>
