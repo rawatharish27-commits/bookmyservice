@@ -22,13 +22,12 @@ import {
   Clock,
   Send,
   CheckCircle2,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
+  Globe,
+  Rss,
+  Camera,
+  Link2,
   MessageSquare,
   ArrowRight,
-  Globe,
   Headphones,
 } from 'lucide-react';
 
@@ -381,10 +380,10 @@ export function ContactPage() {
               <h3 className="mb-4 text-lg font-bold text-gray-900">Follow Us</h3>
               <div className="grid grid-cols-4 gap-3">
                 {[
-                  { icon: <Facebook className="size-5" />, label: 'Facebook', color: 'hover:bg-blue-50 hover:text-blue-600' },
-                  { icon: <Twitter className="size-5" />, label: 'Twitter', color: 'hover:bg-sky-50 hover:text-sky-600' },
-                  { icon: <Instagram className="size-5" />, label: 'Instagram', color: 'hover:bg-pink-50 hover:text-pink-600' },
-                  { icon: <Linkedin className="size-5" />, label: 'LinkedIn', color: 'hover:bg-blue-50 hover:text-blue-700' },
+                  { icon: <Globe className="size-5" />, label: 'Facebook', color: 'hover:bg-blue-50 hover:text-blue-600' },
+                  { icon: <Rss className="size-5" />, label: 'Twitter', color: 'hover:bg-sky-50 hover:text-sky-600' },
+                  { icon: <Camera className="size-5" />, label: 'Instagram', color: 'hover:bg-pink-50 hover:text-pink-600' },
+                  { icon: <Link2 className="size-5" />, label: 'LinkedIn', color: 'hover:bg-blue-50 hover:text-blue-700' },
                 ].map((social) => (
                   <motion.a
                     key={social.label}

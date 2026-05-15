@@ -78,6 +78,9 @@ export type Page =
   | 'vendor-profile'
   | 'vendor-kyc'
   | 'vendor-wallet'
+  // Area Manager pages
+  | 'area-manager-dashboard'
+  | 'client-commissions'
   // Legal / static pages
   | 'about'
   | 'how-it-works'

@@ -5,10 +5,10 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import {
   Wrench,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
+  Globe,
+  Rss,
+  Camera,
+  Link2,
   Mail,
   Phone,
   MapPin,
@@ -76,10 +76,10 @@ const legalLinks: { label: string; page: Page }[] = [
 // ─── Social Icons Config ─────────────────────────────────────────────────────
 
 const socialLinks = [
-  { icon: <Facebook className="size-4" />, label: 'Facebook', href: '#' },
-  { icon: <Twitter className="size-4" />, label: 'Twitter', href: '#' },
-  { icon: <Instagram className="size-4" />, label: 'Instagram', href: '#' },
-  { icon: <Linkedin className="size-4" />, label: 'LinkedIn', href: '#' },
+  { icon: <Globe className="size-4" />, label: 'Facebook', href: '#' },
+  { icon: <Rss className="size-4" />, label: 'Twitter', href: '#' },
+  { icon: <Camera className="size-4" />, label: 'Instagram', href: '#' },
+  { icon: <Link2 className="size-4" />, label: 'LinkedIn', href: '#' },
 ];
 
 // ─── Section Header with Gradient Dot ────────────────────────────────────────

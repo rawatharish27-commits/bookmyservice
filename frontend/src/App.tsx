@@ -107,6 +107,9 @@ import { VendorProfilePage } from '@/components/bys/vendor-profile-page';
 import { VendorKycPage } from '@/components/bys/vendor-kyc-page';
 import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
 
+// Area Manager pages
+import { AreaManagerDashboardPage } from '@/components/bys/area-manager-dashboard-page';
+
 function AppRouter() {
   const { nav } = useApp();
 
@@ -299,6 +302,12 @@ function AppRouter() {
         return <VendorKycPage />;
       case 'vendor-wallet':
         return <VendorWalletPage />;
+
+      // Area Manager pages
+      case 'area-manager-dashboard':
+        return <AreaManagerDashboardPage />;
+      case 'client-commissions':
+        return <ClientReferralsPage />;
 
       default:
         return <HomePage />;

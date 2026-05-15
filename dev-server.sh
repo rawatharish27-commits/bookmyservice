@@ -3,7 +3,7 @@
 while true; do
   cd /home/z/my-project
   rm -rf .next 2>/dev/null
-  npx next dev --port 3000
+  node node_modules/.bin/next dev --port 3000
   echo "[$(date)] Server died, restarting in 3s..."
   sleep 3
 done

@@ -93,6 +93,7 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
       { label: 'AMC Plans', page: 'client-amc', icon: <ShieldCheck className="size-4" /> },
       { label: 'Coupons', page: 'client-coupons', icon: <Tag className="size-4" /> },
       { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+      { label: 'Commissions', page: 'client-commissions', icon: <Banknote className="size-4" /> },
       { label: 'Invoices', page: 'client-invoices', icon: <FileText className="size-4" /> },
     ];
   }
@@ -140,6 +141,16 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
       { label: 'Dashboard', page: 'franchise-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Vendors', page: 'franchise-vendors', icon: <Users className="size-4" /> },
       { label: 'Analytics', page: 'franchise-analytics', icon: <BarChart3 className="size-4" /> },
+    ];
+  }
+
+  // AREA_MANAGER (roleId=8)
+  if (roleId === ROLE_IDS.AREA_MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+      { label: 'Commissions', page: 'client-commissions', icon: <Banknote className="size-4" /> },
+      { label: 'Profile', page: 'client-profile', icon: <User className="size-4" /> },
     ];
   }
 
@@ -233,6 +244,16 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     ];
   }
 
+  // AREA_MANAGER
+  if (roleId === ROLE_IDS.AREA_MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+      { label: 'Commissions', page: 'client-commissions', icon: <Banknote className="size-4" /> },
+      { label: 'Profile', page: 'client-profile', icon: <User className="size-4" /> },
+    ];
+  }
+
   // ADMIN
   if (roleId === ROLE_IDS.ADMIN) {
     return [
@@ -267,6 +288,8 @@ function getRoleBadgeStyle(roleId: number | undefined): string {
       return 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm shadow-rose-500/30';
     case ROLE_IDS.FRANCHISE:
       return 'bg-gradient-to-r from-slate-600 to-zinc-700 text-white shadow-sm shadow-slate-500/30';
+    case ROLE_IDS.AREA_MANAGER:
+      return 'bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-sm shadow-[#1e3a5f]/30';
     case ROLE_IDS.CLIENT:
     default:
       return 'bg-gradient-to-r from-blue-800 to-sky-500 text-white shadow-sm shadow-blue-500/30';
@@ -281,6 +304,7 @@ function getRoleLabel(roleId: number | undefined): string {
     case ROLE_IDS.TECHNICIAN: return 'Technician';
     case ROLE_IDS.VENDOR: return 'Vendor';
     case ROLE_IDS.FRANCHISE: return 'Franchise';
+    case ROLE_IDS.AREA_MANAGER: return 'Area Manager';
     case ROLE_IDS.CLIENT: return 'Client';
     default: return 'User';
   }
@@ -447,6 +471,7 @@ export function Header() {
     if (roleId === ROLE_IDS.TECHNICIAN) return 'technician-dashboard';
     if (roleId === ROLE_IDS.VENDOR) return 'vendor-dashboard';
     if (roleId === ROLE_IDS.FRANCHISE) return 'franchise-dashboard';
+    if (roleId === ROLE_IDS.AREA_MANAGER) return 'area-manager-dashboard';
     if (roleId === ROLE_IDS.ADMIN) return 'admin-dashboard';
     return 'client-notifications';
   };

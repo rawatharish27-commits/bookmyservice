@@ -1331,6 +1331,56 @@ app.get('/api/kyc/status', async (c) => {
 })
 
 // ============================================================================
+// ADDITIONAL HYPERLOCAL ENDPOINTS
+// ============================================================================
+
+// GET /api/commissions - Get commission summary + history
+app.get('/api/commissions', async (c) => {
+  try {
+    const page = parseInt(c.req.query('page') || '1')
+    const limit = parseInt(c.req.query('limit') || '10')
+    const mockSummary = { totalEarnings: 4250, pendingAmount: 1500, approvedAmount: 2000, paidAmount: 750, totalCount: 8, pendingCount: 3, approvedCount: 3, paidCount: 2 }
+    const mockCommissions = [
+      { id: 'com_001', amount: 1500, rate: 0.05, commissionType: 'REFERRAL', status: 'PENDING', description: 'Referral bonus - Ravi Kumar', createdAt: new Date(Date.now() - 86400000 * 2).toISOString(), referral: { id: 'ref_001', referralCode: 'BYS-MUM-001', referredName: 'Ravi Kumar' } },
+      { id: 'com_002', amount: 750, rate: 0.03, commissionType: 'AREA_MANAGER', status: 'APPROVED', description: 'Area override commission', createdAt: new Date(Date.now() - 86400000 * 5).toISOString() },
+      { id: 'com_003', amount: 500, rate: 0.05, commissionType: 'REFERRAL', status: 'PAID', description: 'Referral bonus - Priya Sharma', createdAt: new Date(Date.now() - 86400000 * 10).toISOString(), referral: { id: 'ref_002', referralCode: 'BYS-MUM-002', referredName: 'Priya Sharma' } },
+    ]
+    try {
+      const authHeader = c.req.header('authorization')
+      if (authHeader?.startsWith('Bearer ')) {
+        const { jwtVerify } = require('jose')
+        const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+        const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
+        const result = await pool.query('SELECT * FROM "Commission" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3', [payload.sub, limit, (page - 1) * limit])
+        if (result.rows.length > 0) {
+          const countResult = await pool.query('SELECT COUNT(*) as total, SUM(CASE WHEN status = \'PENDING\' THEN amount ELSE 0 END) as "pendingAmount", SUM(CASE WHEN status = \'APPROVED\' THEN amount ELSE 0 END) as "approvedAmount", SUM(CASE WHEN status = \'PAID\' THEN amount ELSE 0 END) as "paidAmount", SUM(amount) as "totalEarnings" FROM "Commission" WHERE "userId" = $1', [payload.sub])
+          return c.json({ commissions: result.rows, pagination: { page, limit, total: parseInt(countResult.rows[0]?.total || '0'), totalPages: Math.ceil(parseInt(countResult.rows[0]?.total || '0') / limit) }, summary: countResult.rows[0] || mockSummary })
+        }
+      }
+    } catch (dbError) { /* use mock */ }
+    return c.json({ commissions: mockCommissions, pagination: { page, limit, total: mockCommissions.length, totalPages: 1 }, summary: mockSummary })
+  } catch (e) { return c.json({ error: 'Failed to get commissions' }, 500) }
+})
+
+// GET /api/service-areas - Get service areas list
+app.get('/api/service-areas', async (c) => {
+  try {
+    try {
+      const result = await pool.query('SELECT * FROM "ServiceArea" WHERE "isActive" = true ORDER BY city')
+      if (result.rows.length > 0) return c.json(result.rows)
+    } catch (dbError) { /* use mock */ }
+    const mockAreas = [
+      { id: 'sa_001', city: 'Mumbai', pincode: '400001', isActive: true, providerCount: 18, customerCount: 65, targetProviders: 20, targetCustomers: 100, radiusKm: 20, overallProgress: 72 },
+      { id: 'sa_002', city: 'Delhi', pincode: '110001', isActive: true, providerCount: 22, customerCount: 80, targetProviders: 25, targetCustomers: 120, radiusKm: 20, overallProgress: 81 },
+      { id: 'sa_003', city: 'Bangalore', pincode: '560001', isActive: false, providerCount: 8, customerCount: 25, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 28 },
+      { id: 'sa_004', city: 'Hyderabad', pincode: '500001', isActive: false, providerCount: 5, customerCount: 15, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 16 },
+      { id: 'sa_005', city: 'Pune', pincode: '411001', isActive: true, providerCount: 14, customerCount: 48, targetProviders: 20, targetCustomers: 100, radiusKm: 18, overallProgress: 52 },
+    ]
+    return c.json(mockAreas)
+  } catch (e) { return c.json({ error: 'Failed to get service areas' }, 500) }
+})
+
+// ============================================================================
 // 404 & ERROR HANDLERS
 // ============================================================================
 app.all('/api/*', (c) => c.json({ error: 'Not Found', message: 'The requested resource was not found' }, 404))

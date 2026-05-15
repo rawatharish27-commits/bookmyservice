@@ -827,20 +827,21 @@ export function HomePage() {
                         className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
                         style={{ height: '280px' }}
                       >
-                        {/* Service Image */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a1628]/90">
-                          <img
-                            src={service.image}
-                            alt={service.name}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        </div>
+                        {/* Fallback gradient background (always visible, serves as base) */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f] via-[#0a1628] to-[#0a1628]" />
 
-                        {/* Fallback gradient if no image */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f]/80 via-[#0a1628]/60 to-[#0a1628]" />
+                        {/* Service Image (on top of fallback) */}
+                        <img
+                          src={service.image}
+                          alt={service.name}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.opacity = '0';
+                          }}
+                        />
+
+                        {/* Bottom gradient overlay for text readability */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a1628]/90" />
 
                         {/* Icon overlay */}
                         <div className="absolute top-4 left-4 z-10 flex size-12 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-md ring-1 ring-white/20 shadow-lg">
