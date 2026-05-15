@@ -505,7 +505,7 @@ export function HomePage() {
   return (
     <div className="flex flex-col">
       {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-800" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 25%, #0f766e 50%, #0e7490 75%, #164e63 100%)' }}>
+      <section className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800" style={{ background: 'linear-gradient(135deg, #0F172A 0%, #12283A 30%, #1E3A8A 60%, #2563EB 100%)' }}>
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Large gradient orbs */}
@@ -596,7 +596,7 @@ export function HomePage() {
               variants={staggerContainer}
             >
               <motion.div variants={fadeUp} custom={0}>
-                <Badge className="mb-6 border-emerald-300/20 bg-emerald-500/20 px-4 py-1.5 text-emerald-100 hover:bg-emerald-500/30">
+                <Badge className="mb-6 border-primary/20 bg-primary/10 px-4 py-1.5 text-primary hover:bg-primary/15">
                   <Sparkles className="mr-1.5 size-3.5" /> India&apos;s Trusted Home Service Platform
                 </Badge>
               </motion.div>
@@ -645,7 +645,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('categories')}
-                  className="shimmer group bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 px-8 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-500 hover:via-teal-500 hover:to-cyan-500"
+                  className="bg-primary text-white shadow-lg shadow-primary/30 px-8 hover:bg-primary/90"
                 >
                   Book a Service
                   <ArrowRight className="ml-2 size-4 transition-transform group-hover:translate-x-1" />
@@ -655,7 +655,7 @@ export function HomePage() {
                     <Button
                       size="lg"
                       onClick={() => navigate('login')}
-                      className="border-2 border-cyan-300/50 bg-gradient-to-r from-teal-600/40 to-cyan-600/40 px-8 text-white shadow-lg shadow-cyan-900/30 backdrop-blur-sm hover:border-cyan-300/70 hover:from-teal-600/50 hover:to-cyan-600/50"
+                      className="border-2 border-primary/40 bg-primary/10 px-8 text-primary shadow-lg shadow-primary/10 hover:bg-primary/15"
                     >
                       Client Login
                     </Button>
@@ -663,7 +663,7 @@ export function HomePage() {
                       size="lg"
                       variant="outline"
                       onClick={() => navigate('register')}
-                      className="border-amber-300/40 text-amber-100 hover:bg-amber-600/20 hover:border-amber-300/60"
+                      className="border-accent/30 text-accent hover:bg-accent/10 hover:border-accent/40"
                     >
                       Join as Provider
                     </Button>
