@@ -669,7 +669,7 @@ export function HomePage() {
                     </Button>
                   </>
                 )}
-                {user && user.role === 'CLIENT' && (
+                {user && user.role === 'CUSTOMER' && (
                   <Button
                     size="lg"
                     onClick={() => navigate('client-dashboard')}
@@ -678,7 +678,7 @@ export function HomePage() {
                     My Dashboard
                   </Button>
                 )}
-                {user && user.role === 'PROVIDER' && (
+                {user && user.role === 'TECHNICIAN' && (
                   <Button
                     size="lg"
                     onClick={() => navigate('provider-dashboard')}

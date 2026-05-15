@@ -179,7 +179,7 @@ export function AdminUserDetailPage() {
         </div>
 
         {/* KYC for providers */}
-        {user.role === 'PROVIDER' && (
+        {user.role && ['TECHNICIAN', 'VENDOR'].includes(user.role.toString().toUpperCase()) && (
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-base">KYC Documents</CardTitle>

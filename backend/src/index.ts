@@ -6,10 +6,18 @@ import { logger } from 'hono/logger'
 // Import API routes
 import authRoutes from './api/auth/index.ts'
 import bookingRoutes from './api/bookings/index.ts'
+import technicianRoutes from './api/technicians/index.ts'
 import categoryRoutes from './api/categories/index.ts'
+import subcategoryRoutes from './api/subcategories/index.ts'
 import serviceRoutes from './api/services/index.ts'
+import walletRoutes from './api/wallet/index.ts'
+import areaRoutes from './api/areas/index.ts'
+import franchiseRoutes from './api/franchise/index.ts'
 import userRoutes from './api/users/index.ts'
+import notificationRoutes from './api/notifications/index.ts'
 import reviewRoutes from './api/reviews/index.ts'
+import statsRoutes from './api/stats/index.ts'
+import contactRoutes from './api/contact/index.ts'
 
 const app = new Hono()
 
@@ -30,10 +38,18 @@ app.get('/health', (c) => {
 // API routes
 app.route('/api/auth', authRoutes)
 app.route('/api/bookings', bookingRoutes)
+app.route('/api/technicians', technicianRoutes)
 app.route('/api/categories', categoryRoutes)
+app.route('/api/subcategories', subcategoryRoutes)
 app.route('/api/services', serviceRoutes)
+app.route('/api/wallet', walletRoutes)
+app.route('/api/areas', areaRoutes)
+app.route('/api/franchise', franchiseRoutes)
 app.route('/api/users', userRoutes)
+app.route('/api/notifications', notificationRoutes)
 app.route('/api/reviews', reviewRoutes)
+app.route('/api/stats', statsRoutes)
+app.route('/api/contact', contactRoutes)
 
 // 404 handler
 app.notFound((c) => {

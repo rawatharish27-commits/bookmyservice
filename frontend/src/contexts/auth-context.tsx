@@ -71,7 +71,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = useCallback(async (data: RegisterData) => {
     // Map roleId to role string for the API, but also pass roleId for compatibility
-    const roleMap: Record<number, string> = { 1: 'CLIENT', 2: 'PROVIDER' };
+    const roleMap: Record<number, string> = {
+      1: 'CUSTOMER',
+      2: 'TECHNICIAN',
+      3: 'VENDOR',
+      4: 'FRANCHISE',
+      5: 'ADMIN',
+      6: 'SUB_ADMIN',
+      7: 'AREA_MANAGER',
+    };
     const payload = {
       ...data,
       role: data.role || roleMap[data.roleId] || 'CLIENT',

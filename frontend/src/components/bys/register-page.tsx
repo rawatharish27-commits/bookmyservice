@@ -98,7 +98,7 @@ export function RegisterPage() {
         phone,
         password,
         roleId: activeTab === 'client' ? 1 : 2,
-        role: activeTab === 'client' ? 'CLIENT' : 'PROVIDER',
+        role: activeTab === 'client' ? 'CUSTOMER' : 'TECHNICIAN',
       });
       navigate(activeTab === 'client' ? 'client-dashboard' : 'provider-dashboard');
     } catch (err) {

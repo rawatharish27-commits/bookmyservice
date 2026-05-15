@@ -8,9 +8,13 @@ const AUDIENCE = 'bookyourservice'
 const SECRET = new TextEncoder().encode(JWT_SECRET)
 
 const ROLE_MAP: Record<number, string> = {
-  1: 'CLIENT',
-  2: 'PROVIDER',
-  3: 'ADMIN',
+  1: 'CUSTOMER',
+  2: 'TECHNICIAN',
+  3: 'VENDOR',
+  4: 'FRANCHISE',
+  5: 'ADMIN',
+  6: 'SUB_ADMIN',
+  7: 'AREA_MANAGER',
 }
 
 export interface UserRecord {
@@ -33,7 +37,7 @@ export function formatUser(user: UserRecord) {
     phone: user.phone,
     name: user.name,
     roleId: user.roleId,
-    role: ROLE_MAP[user.roleId] || 'CLIENT',
+    role: ROLE_MAP[user.roleId] || 'CUSTOMER',
     status: user.status,
     profileImageUrl: user.profileImageUrl || null,
     city: user.city || null,
@@ -55,7 +59,7 @@ export async function createAccessToken(user: UserRecord) {
     sub: user.id,
     email: user.email,
     name: user.name,
-    role: ROLE_MAP[user.roleId] || 'CLIENT',
+    role: ROLE_MAP[user.roleId] || 'CUSTOMER',
     roleId: user.roleId,
   })
     .setProtectedHeader({ alg: 'HS256' })

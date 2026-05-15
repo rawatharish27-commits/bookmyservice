@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from 'pg'
+import { Pool, QueryResult, QueryResultRow } from 'pg'
 
 const pool = new Pool({
   connectionString:
@@ -11,7 +11,7 @@ pool.on('error', (err) => {
   console.error('Unexpected database error', err)
 })
 
-export async function query<T = any>(text: string, params: any[] = []): Promise<QueryResult<T>> {
+export async function query<T extends QueryResultRow = QueryResultRow>(text: string, params: any[] = []): Promise<QueryResult<T>> {
   return pool.query<T>(text, params)
 }
 

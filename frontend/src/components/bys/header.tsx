@@ -60,6 +60,7 @@ interface NavLink {
 }
 
 function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
+  const r = role ? role.toString().toLowerCase() : null;
   if (!role) {
     return [
       { label: 'Home', page: 'home', icon: <Home className="size-4" /> },
@@ -72,7 +73,7 @@ function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
     ];
   }
 
-  if (role === 'admin') {
+  if (r === 'admin') {
     return [
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
@@ -83,7 +84,7 @@ function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
     ];
   }
 
-  if (role === 'provider') {
+  if (r === 'technician' || r === 'provider' || r === 'vendor') {
     return [
       { label: 'Home', page: 'home', icon: <Home className="size-4" /> },
       { label: 'My Services', page: 'provider-services', icon: <Briefcase className="size-4" /> },
@@ -104,7 +105,8 @@ function getNavLinks(role: string | null, unreadCount: number): NavLink[] {
 }
 
 function getUserDropdownLinks(role: string | null): { label: string; page: Page; icon: React.ReactNode }[] {
-  if (role === 'admin') {
+  const r = role ? role.toString().toLowerCase() : null;
+  if (r === 'admin') {
     return [
       { label: 'Profile', page: 'admin-dashboard', icon: <User className="size-4" /> },
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
@@ -112,7 +114,7 @@ function getUserDropdownLinks(role: string | null): { label: string; page: Page;
     ];
   }
 
-  if (role === 'provider') {
+  if (r === 'technician' || r === 'provider' || r === 'vendor') {
     return [
       { label: 'Profile', page: 'provider-profile', icon: <User className="size-4" /> },
       { label: 'Dashboard', page: 'provider-dashboard', icon: <LayoutDashboard className="size-4" /> },
@@ -143,15 +145,30 @@ function getInitials(name: string): string {
 }
 
 function getRoleBadgeStyle(role: string): string {
-  switch (role) {
+  const r = role ? role.toString().toLowerCase() : '';
+  switch (r) {
     case 'admin':
       return 'bg-gradient-to-r from-violet-500 to-purple-600 text-white';
+    case 'technician':
     case 'provider':
-    case 'PROVIDER':
+    case 'vendor':
       return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white';
     default:
       return 'bg-gradient-to-r from-emerald-500 to-teal-500 text-white';
   }
+}
+
+function getRoleLabel(role: string | null) {
+  if (!role) return '';
+  const r = role.toString().toUpperCase();
+  if (r === 'TECHNICIAN') return 'Technician';
+  if (r === 'VENDOR') return 'Vendor';
+  if (r === 'FRANCHISE') return 'Franchise';
+  if (r === 'SUB_ADMIN') return 'Sub-admin';
+  if (r === 'AREA_MANAGER') return 'Area Manager';
+  if (r === 'ADMIN') return 'Admin';
+  if (r === 'CUSTOMER') return 'Customer';
+  return role;
 }
 
 // ─── Active Nav Indicator ────────────────────────────────────────────────────
@@ -315,11 +332,11 @@ export function Header() {
                     variant="ghost"
                     size="icon"
                     className="relative hidden lg:inline-flex hover:bg-emerald-50"
-                    onClick={() =>
-                      handleNavigate(
-                        user.role === 'provider' ? 'provider-reviews' : 'client-notifications'
-                      )
-                    }
+                      onClick={() =>
+                        handleNavigate(
+                          (user.role && ['technician', 'provider', 'vendor'].includes(user.role.toString().toLowerCase())) ? 'provider-reviews' : 'client-notifications'
+                        )
+                      }
                     aria-label={`Notifications${effectiveUnreadCount > 0 ? `, ${effectiveUnreadCount} unread` : ''}`}
                   >
                     <Bell className="size-[18px] text-muted-foreground" />
@@ -379,7 +396,7 @@ export function Header() {
                         <Badge
                           className={`mt-1.5 border-0 px-2 py-0.5 text-[10px] font-semibold capitalize ${getRoleBadgeStyle(user.role)}`}
                         >
-                          {user.role === 'PROVIDER' ? 'Provider' : user.role}
+                          {getRoleLabel(user.role)}
                         </Badge>
                       </div>
                     </div>
@@ -483,7 +500,7 @@ export function Header() {
                       <Badge
                         className={`mt-1 border-0 px-2 py-0.5 text-[10px] font-semibold capitalize ${getRoleBadgeStyle(user.role)}`}
                       >
-                        {user.role === 'PROVIDER' ? 'Provider' : user.role}
+                        {getRoleLabel(user.role)}
                       </Badge>
                     </div>
                   </div>

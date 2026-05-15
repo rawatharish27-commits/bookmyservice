@@ -36,15 +36,14 @@ async function main() {
   // 1. ROLES
   // ========================================
   console.log('📋 Creating roles...');
-  const clientRole = await db.role.create({
-    data: { name: 'CLIENT', description: 'Regular client who books services' },
-  });
-  const providerRole = await db.role.create({
-    data: { name: 'PROVIDER', description: 'Service provider who offers services' },
-  });
-  const adminRole = await db.role.create({
-    data: { name: 'ADMIN', description: 'Platform administrator with full access' },
-  });
+  // Create roles in a predictable order so role IDs are stable for seed data
+  const customerRole = await db.role.create({ data: { name: 'CUSTOMER', description: 'Regular customer who books services' } });
+  const technicianRole = await db.role.create({ data: { name: 'TECHNICIAN', description: 'Field technician who performs services' } });
+  const vendorRole = await db.role.create({ data: { name: 'VENDOR', description: 'Vendor or business listing services' } });
+  const franchiseRole = await db.role.create({ data: { name: 'FRANCHISE', description: 'Franchise owner/manager' } });
+  const adminRole = await db.role.create({ data: { name: 'ADMIN', description: 'Platform administrator with full access' } });
+  const subadminRole = await db.role.create({ data: { name: 'SUB_ADMIN', description: 'Sub-administrator with limited admin privileges' } });
+  const areaManagerRole = await db.role.create({ data: { name: 'AREA_MANAGER', description: 'Area manager responsible for local operations' } });
 
   // ========================================
   // 2. SERVICE CATEGORIES (3 categories)
@@ -263,7 +262,7 @@ async function main() {
       data: {
         ...userData,
         passwordHash: providerPasswordHash,
-        roleId: providerRole.id,
+        roleId: technicianRole.id,
         status: 'ACTIVE',
         emailVerified: true,
         phoneVerified: true,
@@ -297,7 +296,7 @@ async function main() {
 
   for (const cInfo of clientInfos) {
     const client = await db.user.create({
-      data: { ...cInfo, passwordHash: clientPasswordHash, roleId: clientRole.id },
+      data: { ...cInfo, passwordHash: clientPasswordHash, roleId: customerRole.id },
     });
     clients.push(client);
   }
@@ -1965,6 +1964,44 @@ For questions about these Community Guidelines:
 
   for (const notif of notifications) {
     await db.notification.create({ data: notif });
+  }
+
+  // ========================================
+  // ADDITIONAL SEED: Wallets, Areas, Franchises, Subscriptions, Referrals, TechnicianLocations, JobAssignments
+  // ========================================
+  console.log('🪙 Creating wallets and additional records...');
+
+  // Wallets for all users
+  const allUsers = [...providers, ...clients, admin];
+  for (const u of allUsers) {
+    await db.wallet.create({ data: { userId: u.id, balance: Math.round(Math.random() * 5000) / 100, pending: 0 } });
+  }
+
+  // Sample Areas
+  const delhiArea = await db.area.create({ data: { name: 'Connaught Place', city: 'Delhi', pincode: '110001', active: true, providerCount: 5, customerCount: 120 } });
+  const mumbaiArea = await db.area.create({ data: { name: 'Andheri West', city: 'Mumbai', pincode: '400051', active: true, providerCount: 4, customerCount: 90 } });
+
+  // Sample Franchise
+  await db.franchise.create({ data: { name: 'Mumbai Central Franchise', ownerId: admin.id, city: 'Mumbai', state: 'Maharashtra', country: 'India', commissionPct: 12.5 } });
+
+  // Sample Subscriptions (AMC)
+  for (const client of clients.slice(0, 2)) {
+    await db.subscription.create({ data: { userId: client.id, startDate: new Date('2025-06-01'), endDate: new Date('2026-06-01'), interval: 'YEARLY', amount: 2999 } });
+  }
+
+  // Sample referrals
+  await db.referral.create({ data: { code: 'REF-LOCAL-100', referrerId: clients[0].id, type: 'CUSTOMER', rewardAmt: 100 } });
+
+  // Technician locations for sample providers
+  for (const p of providers) {
+    if (p.latitude && p.longitude) {
+      await db.technicianLocation.create({ data: { technicianId: p.id, latitude: p.latitude, longitude: p.longitude, accuracy: 20 } });
+    }
+  }
+
+  // Job assignments for some completed bookings
+  for (const b of bookings.slice(0, 3)) {
+    await db.jobAssignment.create({ data: { bookingId: b.id, technicianId: b.providerId, status: b.status === 'COMPLETED' ? 'COMPLETED' : 'ASSIGNED', assignedAt: b.createdAt, acceptedAt: b.completedAt || null } });
   }
 
   // ========================================
