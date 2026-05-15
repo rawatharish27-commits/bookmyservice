@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -260,7 +258,7 @@ export function AdminDisputesPage() {
                   />
                 </div>
                 <Button
-                  className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
+                  className="bg-emerald-600 text-white hover:bg-emerald-700"
                   onClick={handleResolve}
                   disabled={resolving || !resolution}
                 >

@@ -69,7 +69,7 @@ function StatusBadge({ status }: { status: string }) {
     ACCEPTED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
     ARRIVED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REJECTED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
@@ -391,7 +391,7 @@ export function ProviderBookingDetailPage() {
       case 'ARRIVED':
         return (
           <Button
-            className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-500/25 sm:w-auto"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-amber-600 text-white shadow-lg shadow-blue-500/25 sm:w-auto"
             onClick={() => handleAction('start')}
             disabled={actionLoading}
           >
@@ -446,7 +446,7 @@ export function ProviderBookingDetailPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-orange-50 p-4"
+          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-blue-50 p-4"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-100">
             <Zap className="size-5 text-red-500" />

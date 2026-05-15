@@ -137,7 +137,7 @@ export function ProviderServicesPage() {
               transition={{ delay: idx * 0.05 }}
             >
               <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-amber-400 to-orange-500'}`} />
+                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-amber-400 to-blue-500'}`} />
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">

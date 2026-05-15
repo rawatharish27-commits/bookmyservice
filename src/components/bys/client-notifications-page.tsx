@@ -1,12 +1,10 @@
-'use client';
-
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Bell,
@@ -30,18 +28,18 @@ interface Notification {
   createdAt: string;
 }
 
-function getNotifIcon(type: string) {
+function getNotifConfig(type: string) {
   switch (type) {
     case 'BOOKING':
-      return <CalendarCheck className="size-5 text-blue-600" />;
+      return { icon: CalendarCheck, gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-100' };
     case 'REVIEW':
-      return <Star className="size-5 text-amber-500" />;
+      return { icon: Star, gradient: 'from-amber-400 to-blue-500', bg: 'bg-amber-100' };
     case 'DISPUTE':
-      return <AlertTriangle className="size-5 text-orange-600" />;
+      return { icon: AlertTriangle, gradient: 'from-sky-400 to-red-500', bg: 'bg-sky-100' };
     case 'MESSAGE':
-      return <MessageSquare className="size-5 text-blue-700" />;
+      return { icon: MessageSquare, gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-100' };
     default:
-      return <Info className="size-5 text-gray-500" />;
+      return { icon: Info, gradient: 'from-gray-400 to-gray-500', bg: 'bg-gray-100' };
   }
 }
 
@@ -76,9 +74,7 @@ export function ClientNotificationsPage() {
     if (!notif.isRead) {
       handleMarkRead(notif.id);
     }
-    // Navigate based on actionUrl or type
     if (notif.actionUrl) {
-      // Parse actionUrl to determine navigation
       if (notif.actionUrl.includes('booking')) {
         const bookingId = notif.actionUrl.split('/').pop();
         if (bookingId) {
@@ -89,12 +85,21 @@ export function ClientNotificationsPage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6">
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="mb-6 flex items-center justify-between"
+      >
         <div>
           <h1 className="text-2xl font-bold">Notifications</h1>
           <p className="text-sm text-muted-foreground">
-            {unreadCount > 0 ? `You have ${unreadCount} unread notification${unreadCount > 1 ? 's' : ''}` : 'All caught up!'}
+            {unreadCount > 0 ? (
+              <span className="flex items-center gap-1.5">
+                <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                You have {unreadCount} unread notification{unreadCount > 1 ? 's' : ''}
+              </span>
+            ) : 'All caught up!'}
           </p>
         </div>
         {unreadCount > 0 && (
@@ -103,78 +108,90 @@ export function ClientNotificationsPage() {
             size="sm"
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="border-blue-200 text-blue-700 hover:bg-blue-50"
+            className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50"
           >
             {markingAll ? <Loader2 className="mr-2 size-4 animate-spin" /> : <CheckCheck className="mr-2 size-4" />}
             Mark all read
           </Button>
         )}
-      </div>
+      </motion.div>
 
       {loading ? (
         <div className="space-y-3">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Skeleton key={i} className="h-20 w-full" />
+            <div key={i} className="h-20 animate-pulse rounded-2xl bg-muted/50" />
           ))}
         </div>
       ) : notifications.length === 0 ? (
-        <div className="py-16 text-center">
-          <BellOff className="mx-auto size-12 text-muted-foreground/40" />
-          <p className="mt-3 text-muted-foreground">No notifications</p>
-          <p className="text-sm text-muted-foreground">You&apos;ll see notifications about your bookings here</p>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col items-center py-16 text-center"
+        >
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
+            <BellOff className="size-10 text-emerald-300" />
+          </div>
+          <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No notifications</h3>
+          <p className="mt-1 text-sm text-muted-foreground/70">You&apos;ll see notifications about your bookings here</p>
+        </motion.div>
       ) : (
         <ScrollArea className="max-h-[70vh]">
           <div className="space-y-2">
-            {notifications.map((notif) => (
-              <button
-                key={notif.id}
-                onClick={() => handleNotificationClick(notif)}
-                className={`flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-colors hover:bg-gray-50 ${
-                  !notif.isRead ? 'bg-blue-50/50 border-blue-100' : 'bg-white'
-                }`}
-              >
-                <div className={`mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full ${
-                  !notif.isRead ? 'bg-blue-100' : 'bg-gray-100'
-                }`}>
-                  {getNotifIcon(notif.type)}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className={`text-sm ${!notif.isRead ? 'font-semibold' : 'font-medium'}`}>
-                      {notif.title}
-                    </p>
-                    {!notif.isRead && (
-                      <span className="size-2 shrink-0 rounded-full bg-blue-800" />
-                    )}
+            {notifications.map((notif, idx) => {
+              const config = getNotifConfig(notif.type);
+              return (
+                <motion.button
+                  key={notif.id}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.03 }}
+                  onClick={() => handleNotificationClick(notif)}
+                  className={`flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-sm ${
+                    !notif.isRead
+                      ? 'border-emerald-100 bg-gradient-to-r from-emerald-50/60 to-white'
+                      : 'border-transparent bg-white hover:bg-gray-50/50'
+                  }`}
+                >
+                  <div className={`mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${config.gradient} shadow-sm`}>
+                    <config.icon className="size-5 text-white" />
                   </div>
-                  <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">{notif.message}</p>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {new Date(notif.createdAt).toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </p>
-                </div>
-                {!notif.isRead && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="shrink-0 text-blue-700 hover:text-blue-800"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMarkRead(notif.id);
-                    }}
-                    disabled={markingRead}
-                  >
-                    <CheckCheck className="size-4" />
-                  </Button>
-                )}
-              </button>
-            ))}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className={`text-sm ${!notif.isRead ? 'font-semibold' : 'font-medium'}`}>
+                        {notif.title}
+                      </p>
+                      {!notif.isRead && (
+                        <span className="size-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+                      )}
+                    </div>
+                    <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">{notif.message}</p>
+                    <p className="mt-1 text-xs text-muted-foreground/60">
+                      {new Date(notif.createdAt).toLocaleDateString('en-IN', {
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                  {!notif.isRead && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="shrink-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkRead(notif.id);
+                      }}
+                      disabled={markingRead}
+                    >
+                      <CheckCheck className="size-4" />
+                    </Button>
+                  )}
+                </motion.button>
+              );
+            })}
           </div>
         </ScrollArea>
       )}

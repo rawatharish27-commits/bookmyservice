@@ -71,7 +71,7 @@ function StatusBadge({ status }: { status: string }) {
     ACCEPTED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
     ARRIVED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
@@ -338,7 +338,7 @@ export function ClientBookingDetailPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-orange-50 p-4"
+          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-blue-50 p-4"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-100">
             <Zap className="size-5 text-red-500" />
@@ -461,7 +461,7 @@ export function ClientBookingDetailPage() {
             {booking.otp && ['ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'].includes(booking.status) && (
               <>
                 <Separator />
-                <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-amber-50 to-orange-50 p-4">
+                <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-amber-50 to-blue-50 p-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 items-center justify-center rounded-xl bg-amber-100">
                       <Hash className="size-5 text-amber-600" />
@@ -702,7 +702,7 @@ export function ClientBookingDetailPage() {
           <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
                   <Star className="size-4 text-white" />
                 </div>
                 Your Review
@@ -737,7 +737,7 @@ export function ClientBookingDetailPage() {
             <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-amber-400">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
                     <Star className="size-4 text-white" />
                   </div>
                   Leave a Review
@@ -818,7 +818,7 @@ export function ClientBookingDetailPage() {
             </Button>
             <Button
               variant="outline"
-              className="rounded-xl border-orange-200 text-orange-600 hover:bg-orange-50"
+              className="rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50"
               onClick={() => navigate('home', {})}
             >
               <AlertTriangle className="mr-2 size-4" />

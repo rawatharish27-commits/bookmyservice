@@ -37,7 +37,7 @@ function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
     ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
@@ -125,7 +125,7 @@ export function ClientDashboardPage() {
       title: 'Total Spent',
       value: `₹${totalSpent.toLocaleString()}`,
       icon: DollarSign,
-      gradient: 'from-amber-400 to-orange-500',
+      gradient: 'from-amber-400 to-blue-500',
       bgGlow: 'bg-amber-500/10',
     },
   ];
@@ -134,7 +134,7 @@ export function ClientDashboardPage() {
     { icon: Briefcase, label: 'Book a Service', nav: 'categories', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
     { icon: CalendarCheck, label: 'My Bookings', nav: 'client-bookings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
     { icon: Heart, label: 'Favorites', nav: 'client-favorites', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
-    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-500/25' },
+    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
   ];
 
   return (
@@ -277,7 +277,7 @@ export function ClientDashboardPage() {
         {/* Recent Reviews */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-orange-50/50 pb-3">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
               <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
               <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
                 View All

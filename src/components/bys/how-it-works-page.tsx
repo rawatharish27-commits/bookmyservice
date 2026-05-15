@@ -1,9 +1,7 @@
-'use client';
-
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import {
   Accordion,
   AccordionContent,
@@ -11,12 +9,19 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import {
   Search,
   CalendarCheck,
   CheckCircle2,
   Star,
   CreditCard,
-  MessageSquare,
   Wrench,
   ClipboardList,
   DollarSign,
@@ -26,6 +31,9 @@ import {
   ArrowRight,
   Users,
   Shield,
+  Sparkles,
+  Handshake,
+  ThumbsUp,
 } from 'lucide-react';
 
 const clientSteps = [
@@ -34,42 +42,56 @@ const clientSteps = [
     title: 'Create Your Account',
     description: 'Sign up for free with your email and phone number. Verify your account to get started.',
     icon: <UserPlus className="size-6" />,
+    gradient: 'from-emerald-600 to-teal-600',
+    illustration: '📝',
   },
   {
     step: 2,
     title: 'Search for Services',
     description: 'Browse through categories or use our search to find the service you need. Filter by location, price, and ratings.',
     icon: <Search className="size-6" />,
+    gradient: 'from-teal-600 to-cyan-600',
+    illustration: '🔍',
   },
   {
     step: 3,
     title: 'Compare Providers',
     description: 'View detailed profiles, read reviews, compare prices, and check availability to find the best match.',
     icon: <Users className="size-6" />,
+    gradient: 'from-cyan-600 to-blue-600',
+    illustration: '⚖️',
   },
   {
     step: 4,
     title: 'Book & Schedule',
     description: 'Select your preferred date and time, add any special instructions, and confirm your booking.',
     icon: <CalendarCheck className="size-6" />,
+    gradient: 'from-emerald-600 to-emerald-700',
+    illustration: '📅',
   },
   {
     step: 5,
     title: 'Make Secure Payment',
     description: 'Pay securely through our platform. Your payment is held in escrow until the service is completed.',
     icon: <CreditCard className="size-6" />,
+    gradient: 'from-amber-600 to-blue-600',
+    illustration: '💳',
   },
   {
     step: 6,
     title: 'Get Service Done',
     description: 'A verified professional arrives at your location and completes the work as agreed.',
     icon: <CheckCircle2 className="size-6" />,
+    gradient: 'from-emerald-700 to-teal-700',
+    illustration: '✅',
   },
   {
     step: 7,
     title: 'Review & Rate',
     description: 'After completion, rate the service and leave a review to help other users make informed decisions.',
     icon: <Star className="size-6" />,
+    gradient: 'from-amber-500 to-yellow-600',
+    illustration: '⭐',
   },
 ];
 
@@ -79,42 +101,56 @@ const providerSteps = [
     title: 'Register as Provider',
     description: 'Sign up with a provider account. Fill in your professional details and areas of expertise.',
     icon: <UserPlus className="size-6" />,
+    gradient: 'from-emerald-600 to-teal-600',
+    illustration: '📝',
   },
   {
     step: 2,
     title: 'Complete KYC Verification',
     description: 'Submit your identity documents for verification. This builds trust with potential customers.',
     icon: <Shield className="size-6" />,
+    gradient: 'from-teal-600 to-cyan-600',
+    illustration: '🛡️',
   },
   {
     step: 3,
     title: 'List Your Services',
     description: 'Create detailed service listings with pricing, availability, and service areas. Add photos to attract customers.',
     icon: <Briefcase className="size-6" />,
+    gradient: 'from-cyan-600 to-blue-600',
+    illustration: '📋',
   },
   {
     step: 4,
     title: 'Set Your Schedule',
     description: 'Define your availability for each day of the week. Manage your calendar to avoid conflicts.',
     icon: <Clock className="size-6" />,
+    gradient: 'from-emerald-600 to-emerald-700',
+    illustration: '🕐',
   },
   {
     step: 5,
     title: 'Receive Bookings',
     description: 'Get notified of new booking requests. Accept or reject based on your availability and preferences.',
     icon: <ClipboardList className="size-6" />,
+    gradient: 'from-amber-600 to-blue-600',
+    illustration: '📩',
   },
   {
     step: 6,
     title: 'Complete the Service',
     description: 'Arrive on time, deliver quality work, and mark the service as completed through the platform.',
     icon: <CheckCircle2 className="size-6" />,
+    gradient: 'from-emerald-700 to-teal-700',
+    illustration: '✅',
   },
   {
     step: 7,
     title: 'Get Paid',
     description: 'Receive your earnings directly to your account. Track all payments and earnings through your dashboard.',
     icon: <DollarSign className="size-6" />,
+    gradient: 'from-emerald-500 to-teal-600',
+    illustration: '💰',
   },
 ];
 
@@ -145,6 +181,11 @@ const faqs = [
   },
 ];
 
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+};
+
 export function HowItWorksPage() {
   const { navigate } = useApp();
   const [activeTab, setActiveTab] = useState<'client' | 'provider'>('client');
@@ -153,149 +194,319 @@ export function HowItWorksPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Header */}
-      <div className="mb-10 text-center">
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">How It Works</h1>
-        <p className="mx-auto mt-3 max-w-2xl text-muted-foreground">
-          Whether you need a service or provide one, our platform makes the process simple and secure
-        </p>
-      </div>
+      {/* Breadcrumb */}
+      <motion.div {...fadeUp} transition={{ duration: 0.4 }}>
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink onClick={() => navigate('home')} className="cursor-pointer">
+                Home
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage className="text-gradient-ocean font-semibold">How It Works</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+      </motion.div>
+
+      {/* Hero Section */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700 p-10 sm:p-14"
+      >
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
+          <div className="absolute -bottom-20 -left-20 size-80 rounded-full bg-white/5" />
+          <div className="absolute inset-0 opacity-10" style={{
+            backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+            backgroundSize: '24px 24px',
+          }} />
+        </div>
+        <div className="relative text-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-white/15 backdrop-blur-sm"
+          >
+            <Sparkles className="size-7 text-white" />
+          </motion.div>
+          <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
+            How It <span className="text-emerald-200">Works</span>
+          </h1>
+          <p className="mx-auto max-w-2xl text-lg text-emerald-100">
+            Whether you need a service or provide one, our platform makes the process simple and secure
+          </p>
+        </div>
+      </motion.div>
 
       {/* Tab Switcher */}
-      <div className="mx-auto mb-10 flex max-w-md overflow-hidden rounded-xl border">
-        <button
-          onClick={() => setActiveTab('client')}
-          className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'client'
-              ? 'bg-blue-800 text-white'
-              : 'bg-white text-muted-foreground hover:bg-gray-50'
-          }`}
-        >
-          <Search className="size-4" />
-          For Clients
-        </button>
-        <button
-          onClick={() => setActiveTab('provider')}
-          className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
-            activeTab === 'provider'
-              ? 'bg-blue-800 text-white'
-              : 'bg-white text-muted-foreground hover:bg-gray-50'
-          }`}
-        >
-          <Wrench className="size-4" />
-          For Providers
-        </button>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="mx-auto mb-12 max-w-md"
+      >
+        <div className="flex overflow-hidden rounded-2xl border border-emerald-100 bg-white p-1 shadow-lg">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setActiveTab('client')}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium transition-all duration-300 ${
+              activeTab === 'client'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                : 'text-muted-foreground hover:bg-gray-50'
+            }`}
+          >
+            <Search className="size-4" />
+            For Clients
+          </motion.button>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setActiveTab('provider')}
+            className={`relative flex flex-1 items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-medium transition-all duration-300 ${
+              activeTab === 'provider'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                : 'text-muted-foreground hover:bg-gray-50'
+            }`}
+          >
+            <Wrench className="size-4" />
+            For Providers
+          </motion.button>
+        </div>
+      </motion.div>
 
       {/* Timeline Steps */}
-      <div className="relative">
-        {/* Vertical line */}
-        <div className="absolute left-6 top-0 bottom-0 hidden w-0.5 bg-blue-200 sm:block" />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeTab}
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -20 }}
+          transition={{ duration: 0.3 }}
+          className="relative"
+        >
+          {/* Animated vertical line */}
+          <div className="absolute left-6 top-0 bottom-0 hidden w-0.5 sm:block">
+            <motion.div
+              initial={{ height: 0 }}
+              animate={{ height: '100%' }}
+              transition={{ duration: 1.5, ease: 'easeOut' }}
+              className="w-full bg-gradient-to-b from-emerald-500 via-teal-500 to-cyan-500"
+            />
+          </div>
 
-        <div className="space-y-6">
-          {steps.map((step, idx) => (
-            <div key={step.step} className="relative flex gap-6">
-              {/* Step Circle */}
-              <div className="relative z-10 hidden shrink-0 sm:block">
-                <div
-                  className={`flex size-12 items-center justify-center rounded-full ${
-                    idx === steps.length - 1
-                      ? 'bg-blue-800 text-white'
-                      : 'bg-blue-100 text-blue-700'
-                  }`}
-                >
-                  {step.icon}
-                </div>
-              </div>
-
-              {/* Card */}
-              <Card className="flex-1 rounded-xl border-l-4 border-l-blue-500 transition-all hover:shadow-md">
-                <CardContent className="p-5">
-                  <div className="flex items-center gap-3">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 sm:hidden">
-                  {step.icon}
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="flex size-6 items-center justify-center rounded-full bg-blue-800 text-xs font-bold text-white">
-                      {step.step}
-                    </span>
-                    <h3 className="font-semibold">{step.title}</h3>
+          <div className="space-y-8">
+            {steps.map((step, idx) => (
+              <motion.div
+                key={step.step}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.08, duration: 0.4 }}
+                className="relative flex gap-6"
+              >
+                {/* Step Circle - Desktop */}
+                <div className="relative z-10 hidden shrink-0 sm:block">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: idx * 0.08 + 0.2, type: 'spring', stiffness: 200, damping: 15 }}
+                    className={`flex size-12 items-center justify-center rounded-full bg-gradient-to-br ${step.gradient} text-white shadow-lg`}
+                  >
+                    {step.icon}
+                  </motion.div>
+                  {/* Step number badge */}
+                  <div className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-white text-xs font-bold text-emerald-700 shadow-md ring-2 ring-emerald-300">
+                    {step.step}
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{step.description}</p>
                 </div>
+
+                {/* Card */}
+                <div className="group flex-1 overflow-hidden rounded-2xl border border-gray-100 glass-emerald shadow-md transition-all duration-300 hover:shadow-xl hover:border-emerald-300/50">
+                  <div className="flex">
+                    {/* Left gradient accent bar */}
+                    <div className={`hidden w-1.5 shrink-0 bg-gradient-to-b ${step.gradient} sm:block`} />
+
+                    <div className="flex-1 p-6">
+                      <div className="flex items-start gap-4">
+                        {/* Mobile icon */}
+                        <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${step.gradient} text-white shadow-md sm:hidden`}>
+                          {step.icon}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3">
+                            <span className={`flex size-7 items-center justify-center rounded-lg bg-gradient-to-br ${step.gradient} text-xs font-bold text-white shadow-sm`}>
+                              {step.step}
+                            </span>
+                            <h3 className="text-lg font-semibold text-gray-900">{step.title}</h3>
+                          </div>
+                          <p className="mt-2 leading-relaxed text-muted-foreground">{step.description}</p>
+                        </div>
+                        {/* Illustration */}
+                        <div className="hidden shrink-0 text-4xl lg:block opacity-50 group-hover:opacity-100 transition-opacity">
+                          {step.illustration}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Quick Benefits */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-16 mb-16"
+      >
+        <div className="grid gap-4 sm:grid-cols-3">
+          {[
+            { icon: <Handshake className="size-5" />, title: 'Trusted Professionals', desc: 'All providers are KYC-verified' },
+            { icon: <Shield className="size-5" />, title: 'Secure Payments', desc: 'Escrow protection for every booking' },
+            { icon: <ThumbsUp className="size-5" />, title: 'Satisfaction Guaranteed', desc: 'Full refund if service is unsatisfactory' },
+          ].map((item, idx) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.3 }}
+              className="glass-emerald rounded-2xl p-5 text-center shadow-md"
+            >
+              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-white">
+                {item.icon}
               </div>
-                </CardContent>
-              </Card>
-            </div>
+              <h4 className="font-semibold text-gray-900">{item.title}</h4>
+              <p className="mt-1 text-xs text-muted-foreground">{item.desc}</p>
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* CTA Section */}
-      <div className="mt-12 text-center">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-8"
+      >
         {activeTab === 'client' ? (
-          <div className="rounded-2xl bg-gradient-to-r from-blue-50 to-sky-50 p-8">
-            <h2 className="text-2xl font-bold">Ready to Find a Service?</h2>
-            <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-              Browse through thousands of verified service providers and book with confidence
-            </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                onClick={() => navigate('categories')}
-                className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
-              >
-                Browse Services <ArrowRight className="ml-2 size-4" />
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('register')}>
-                Create Account
-              </Button>
+          <div className="relative overflow-hidden rounded-3xl bg-white p-10 text-center">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -right-16 -top-16 size-48 rounded-full bg-emerald-100/50" />
+              <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-teal-100/50" />
+            </div>
+            <div className="relative">
+              <h2 className="text-3xl font-bold text-gray-900">
+                Ready to Find a <span className="text-gradient-ocean">Service</span>?
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-muted-foreground">
+                Browse through thousands of verified service providers and book with confidence
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button
+                  size="lg"
+                  onClick={() => navigate('categories')}
+                  className="shimmer rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-8 text-white shadow-lg shadow-emerald-600/25 hover:from-emerald-700 hover:to-teal-700"
+                >
+                  Browse Services <ArrowRight className="ml-2 size-4" />
+                </Button>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={() => navigate('register')}
+                  className="rounded-xl border-emerald-300 px-8 text-emerald-700 hover:bg-emerald-50"
+                >
+                  Create Account
+                </Button>
+              </div>
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl bg-gradient-to-r from-blue-800 to-sky-600 p-8">
-            <h2 className="text-2xl font-bold text-white">Ready to Grow Your Business?</h2>
-            <p className="mx-auto mt-2 max-w-md text-blue-100">
-              Join our network of professionals and reach thousands of customers
-            </p>
-            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-              <Button
-                size="lg"
-                className="bg-white text-blue-700 hover:bg-blue-50"
-                onClick={() => navigate('register')}
-              >
-                Join as Provider <ArrowRight className="ml-2 size-4" />
-              </Button>
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-700 p-10 text-center">
+            <div className="pointer-events-none absolute inset-0">
+              <div className="absolute -right-16 -top-16 size-48 rounded-full bg-white/5" />
+              <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-white/5" />
+              <div className="absolute inset-0 opacity-10" style={{
+                backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }} />
+            </div>
+            <div className="relative">
+              <h2 className="text-3xl font-bold text-white">
+                Ready to Grow Your <span className="text-emerald-200">Business</span>?
+              </h2>
+              <p className="mx-auto mt-3 max-w-md text-emerald-100">
+                Join our network of professionals and reach thousands of customers
+              </p>
+              <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                <Button
+                  size="lg"
+                  className="shimmer rounded-xl bg-white px-8 text-emerald-600 shadow-lg hover:bg-emerald-50"
+                  onClick={() => navigate('register')}
+                >
+                  Join as Provider <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </div>
             </div>
           </div>
         )}
-      </div>
+      </motion.div>
 
       {/* FAQ Section */}
-      <section className="mt-16">
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5 }}
+        className="mt-16"
+      >
         <div className="text-center">
-          <h2 className="text-2xl font-bold tracking-tight">Frequently Asked Questions</h2>
-          <p className="mt-2 text-muted-foreground">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            Frequently Asked <span className="text-gradient-ocean">Questions</span>
+          </h2>
+          <p className="mt-3 text-muted-foreground">
             Common questions about how BookYourService works
           </p>
         </div>
         <div className="mx-auto mt-8 max-w-2xl">
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`}>
-                <AccordionTrigger className="text-left">{faq.q}</AccordionTrigger>
-                <AccordionContent className="text-muted-foreground">{faq.a}</AccordionContent>
+              <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl border border-gray-100 glass-emerald px-4 shadow-sm mb-3 data-[state=open]:shadow-md data-[state=open]:border-emerald-300/50 transition-all">
+                <AccordionTrigger className="text-left hover:no-underline py-4">
+                  <span className="flex items-center gap-3">
+                    <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-600 to-teal-600 text-xs font-bold text-white">
+                      {i + 1}
+                    </span>
+                    {faq.q}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted-foreground pb-4 pl-9">
+                  {faq.a}
+                </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
         </div>
         <div className="mt-6 text-center">
-          <Button variant="outline" onClick={() => navigate('faq')} className="border-blue-200 text-blue-700">
+          <Button
+            variant="outline"
+            onClick={() => navigate('faq')}
+            className="rounded-xl border-emerald-300 text-emerald-700 hover:bg-emerald-50"
+          >
             View All FAQs <ArrowRight className="ml-1 size-4" />
           </Button>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 }

@@ -142,7 +142,7 @@ Effective Date: January 1, 2025
 
 10. CONTACT US
 For privacy concerns, contact: privacy@bookyourservice.in` },
-  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-orange-500',
+  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-blue-500',
     fallbackContent: `REFUND POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 

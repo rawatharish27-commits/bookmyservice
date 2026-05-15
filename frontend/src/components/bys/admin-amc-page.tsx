@@ -155,7 +155,7 @@ export function AdminAmcPage() {
         {[
           { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
           { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-amber-400 to-orange-500', bgGlow: 'bg-amber-500/10' },
+          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-amber-400 to-blue-500', bgGlow: 'bg-amber-500/10' },
           { label: 'Revenue (Active)', value: `₹${totalRevenue.toLocaleString('en-IN')}`, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>

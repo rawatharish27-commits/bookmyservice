@@ -221,7 +221,7 @@ export function AdminCouponsPage() {
         {[
           { label: 'Total Coupons', value: coupons.length, icon: Tag, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
           { label: 'Active', value: activeCoupons, icon: CheckCircle2, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'Expired', value: expiredCoupons, icon: Clock, gradient: 'from-amber-400 to-orange-500', bgGlow: 'bg-amber-500/10' },
+          { label: 'Expired', value: expiredCoupons, icon: Clock, gradient: 'from-amber-400 to-blue-500', bgGlow: 'bg-amber-500/10' },
           { label: 'Total Usage', value: totalUsage, icon: BarChart3, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>

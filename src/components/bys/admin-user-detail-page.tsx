@@ -1,5 +1,3 @@
-'use client';
-
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -159,7 +157,7 @@ export function AdminUserDetailPage() {
         <div className="grid grid-cols-3 gap-4">
           <Card>
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <CalendarCheck className="size-5 text-blue-700" />
+              <CalendarCheck className="size-5 text-emerald-600" />
               <p className="mt-2 text-lg font-bold">—</p>
               <p className="text-xs text-muted-foreground">Bookings</p>
             </CardContent>
@@ -201,7 +199,7 @@ export function AdminUserDetailPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             {user.status === 'ACTIVE' ? (
-              <Button variant="outline" className="text-orange-600" onClick={() => handleStatusChange('BLOCKED')}>
+              <Button variant="outline" className="text-blue-600" onClick={() => handleStatusChange('BLOCKED')}>
                 <Ban className="mr-2 size-4" /> Block User
               </Button>
             ) : (

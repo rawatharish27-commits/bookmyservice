@@ -354,7 +354,7 @@ export function ClientReferralsPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-blue-500 shadow-lg">
                   <Trophy className="size-6 text-white" />
                 </div>
               </div>
@@ -507,7 +507,7 @@ export function ClientReferralsPage() {
                           <div className={`flex size-11 shrink-0 items-center justify-center rounded-full font-semibold text-white shadow-md ${
                             isCompleted
                               ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
-                              : 'bg-gradient-to-br from-amber-400 to-orange-500'
+                              : 'bg-gradient-to-br from-amber-400 to-blue-500'
                           }`}>
                             {getInitials(entry.referredName)}
                           </div>

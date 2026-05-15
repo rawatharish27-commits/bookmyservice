@@ -71,7 +71,7 @@ const TYPE_CONFIG: Record<string, { gradient: string; bg: string; label: string 
   HVAC: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'HVAC' },
   CLEANING: { gradient: 'from-violet-400 to-purple-500', bg: 'bg-violet-50 text-violet-700 border-violet-200', label: 'Cleaning' },
   APPLIANCE: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'Appliance' },
-  PAINTING: { gradient: 'from-orange-400 to-red-500', bg: 'bg-orange-50 text-orange-700 border-orange-200', label: 'Painting' },
+  PAINTING: { gradient: 'from-sky-400 to-red-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Painting' },
 };
 
 function getTypeConfig(type: string) {

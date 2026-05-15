@@ -109,7 +109,7 @@ export function ClientReviewsPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center py-16 text-center"
         >
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-50">
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-blue-50">
             <MessageSquare className="size-10 text-amber-300" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>

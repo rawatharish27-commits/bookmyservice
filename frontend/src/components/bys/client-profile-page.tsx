@@ -232,7 +232,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
                 <Key className="size-4 text-white" />
               </div>
               Security

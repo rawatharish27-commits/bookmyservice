@@ -177,7 +177,7 @@ export function BookingConfirmationPage() {
                 {[
                   { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-emerald-400 to-teal-500' },
                   { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-sky-400 to-blue-500' },
-                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-amber-400 to-orange-500' },
+                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-amber-400 to-blue-500' },
                   { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-violet-400 to-purple-500' },
                   { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-pink-400 to-rose-500' },
                 ].map((item) => (

@@ -45,7 +45,6 @@ import {
   Settings,
   ChevronRight,
   LogIn,
-  Zap,
   Sparkles,
   UserPlus,
   Wallet,
@@ -256,12 +255,12 @@ function getInitials(name: string): string {
 }
 
 function getRoleBadgeStyle(roleId: number | undefined): string {
-  if (!roleId) return 'bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] text-white';
+  if (!roleId) return 'bg-gradient-to-r from-blue-800 to-blue-500 text-white';
   switch (roleId) {
     case ROLE_IDS.ADMIN:
       return 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-sm shadow-violet-500/30';
     case ROLE_IDS.PROVIDER:
-      return 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/30';
+      return 'bg-gradient-to-r from-blue-800 to-blue-500 text-white shadow-sm shadow-blue-500/30';
     case ROLE_IDS.TECHNICIAN:
       return 'bg-gradient-to-r from-blue-500 to-indigo-500 text-white shadow-sm shadow-blue-500/30';
     case ROLE_IDS.VENDOR:
@@ -270,7 +269,7 @@ function getRoleBadgeStyle(roleId: number | undefined): string {
       return 'bg-gradient-to-r from-slate-600 to-zinc-700 text-white shadow-sm shadow-slate-500/30';
     case ROLE_IDS.CLIENT:
     default:
-      return 'bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] text-white shadow-sm shadow-blue-500/30';
+      return 'bg-gradient-to-r from-blue-800 to-sky-500 text-white shadow-sm shadow-blue-500/30';
   }
 }
 
@@ -295,13 +294,13 @@ function ActiveIndicator() {
       {/* Bottom gradient bar */}
       <motion.div
         layoutId="activeNavIndicator"
-        className="absolute -bottom-[1px] left-3 right-3 h-[2.5px] rounded-full bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6]"
+        className="absolute -bottom-[1px] left-3 right-3 h-[2.5px] rounded-full bg-gradient-to-r from-blue-900 via-blue-600 to-sky-400"
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
       />
       {/* Subtle glow */}
       <motion.div
         layoutId="activeNavGlow"
-        className="absolute -bottom-1 left-4 right-4 h-3 rounded-full bg-gradient-to-r from-[#1e3a5f]/30 via-[#2d5a8e]/20 to-[#3b82f6]/30 blur-sm"
+        className="absolute -bottom-1 left-4 right-4 h-3 rounded-full bg-gradient-to-r from-blue-400/30 via-blue-400/20 to-sky-400/30 blur-sm"
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
       />
     </>
@@ -314,8 +313,8 @@ function NotificationBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
     <span className="relative flex items-center justify-center">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 opacity-60" />
-      <span className="relative flex size-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-amber-500 via-orange-500 to-rose-500 text-[9px] font-bold text-white shadow-md shadow-orange-500/40 ring-[1.5px] ring-white/30">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-blue-400 via-blue-500 to-sky-400 opacity-60" />
+      <span className="relative flex size-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-500 text-[9px] font-bold text-white shadow-md shadow-blue-500/40 ring-[1.5px] ring-white/30">
         {count > 9 ? '9+' : count}
       </span>
     </span>
@@ -350,7 +349,7 @@ function WalletIndicator({ balance }: { balance: number }) {
   );
 }
 
-// ─── Emergency Booking Button (Warm Coral/Amber) ─────────────────────────────
+// ─── Emergency Booking Button (Deep Red) ─────────────────────────────────────
 
 function EmergencyBookingButton({ onClick }: { onClick: () => void }) {
   return (
@@ -358,7 +357,7 @@ function EmergencyBookingButton({ onClick }: { onClick: () => void }) {
       <Button
         size="sm"
         onClick={onClick}
-        className="group relative gap-1.5 overflow-hidden bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/30 hover:from-rose-700 hover:via-orange-600 hover:to-amber-600 hover:shadow-xl hover:shadow-orange-500/40"
+        className="group relative gap-1.5 overflow-hidden bg-gradient-to-r from-red-700 via-red-600 to-red-500 text-white shadow-lg shadow-red-500/30 hover:from-red-800 hover:via-red-700 hover:to-red-600 hover:shadow-xl hover:shadow-red-500/40"
       >
         {/* Animated shimmer */}
         <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -470,21 +469,20 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 relative ${
         scrolled
-          ? 'bg-white/85 backdrop-blur-2xl shadow-lg shadow-blue-900/[0.06] border-b border-blue-100/40'
-          : 'bg-white/70 backdrop-blur-xl border-b border-transparent'
+          ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-blue-100/50'
+          : 'bg-white/60 backdrop-blur-md border-b border-transparent'
       }`}
-      style={scrolled ? { boxShadow: '0 8px 32px rgba(30,58,95,0.06), 0 1px 2px rgba(0,0,0,0.04)' } : undefined}
     >
       {/* Animated gradient line at bottom on scroll */}
       {scrolled && (
         <motion.div
           initial={{ opacity: 0, scaleX: 0.8 }}
           animate={{ opacity: 1, scaleX: 1 }}
-          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#1e3a5f]/50 to-[#3b82f6]/50"
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-blue-600/60 to-transparent"
         />
       )}
 
-      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8" style={{ WebkitFontSmoothing: 'antialiased' }}>
+      <div className="mx-auto flex h-18 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* ── Logo ──────────────────────────────────────────────────────── */}
         <motion.button
           onClick={() => handleNavigate('home')}
@@ -493,13 +491,13 @@ export function Header() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] shadow-lg shadow-blue-500/30 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-blue-400/40 group-hover:scale-105">
+          <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-900 via-blue-700 to-sky-400 shadow-lg shadow-blue-500/30 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-sky-400/40">
             <Wrench className="size-[18px] text-white drop-shadow-sm" />
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/30 via-white/5 to-transparent" />
-            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-[#1e3a5f]/20 to-[#3b82f6]/20 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-blue-400/20 to-sky-400/20 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
           <span className="text-2xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] bg-clip-text text-transparent">BookYour</span>
+            <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 bg-clip-text text-transparent">BookYour</span>
             <span className="text-foreground">Service</span>
           </span>
         </motion.button>
@@ -518,14 +516,14 @@ export function Header() {
                 onClick={() => handleNavigate(link.page)}
                 className={`relative inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[15px] font-semibold transition-all duration-300 ${
                   active
-                    ? 'bg-blue-50/60 text-blue-700 shadow-sm shadow-blue-200/30'
-                    : 'text-muted-foreground hover:bg-blue-50/60 hover:text-foreground hover:shadow-sm hover:shadow-blue-100/20'
+                    ? 'bg-blue-50/50 text-blue-600'
+                    : 'text-muted-foreground hover:bg-blue-50/30 hover:text-foreground'
                 }`}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {active && <ActiveIndicator />}
-                <span className={`transition-colors duration-200 ${active ? 'text-blue-700' : ''}`}>
+                <span className={`transition-colors duration-200 ${active ? 'text-blue-600' : ''}`}>
                   {link.icon}
                 </span>
                 {link.label}
@@ -543,7 +541,7 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.button
-                  className="relative inline-flex items-center gap-1 rounded-xl px-3 py-2.5 text-[15px] font-semibold text-muted-foreground transition-all hover:bg-blue-50/60 hover:text-foreground hover:shadow-sm hover:shadow-blue-100/20"
+                  className="relative inline-flex items-center gap-1 rounded-xl px-3 py-2.5 text-[15px] font-semibold text-muted-foreground transition-all hover:bg-blue-50/30 hover:text-foreground"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -551,12 +549,12 @@ export function Header() {
                   More
                 </motion.button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1.5 shadow-xl shadow-blue-900/10 border-blue-100/40 backdrop-blur-xl">
+              <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5 shadow-xl shadow-black/10 border-blue-100/50">
                 {overflowLinks.map((link) => (
                   <DropdownMenuItem
                     key={link.page}
                     onClick={() => handleNavigate(link.page)}
-                    className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-blue-50 focus:text-blue-700 hover:bg-blue-50/60"
+                    className="cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-blue-50 focus:text-blue-700"
                   >
                     <span className="mr-2.5 text-muted-foreground">{link.icon}</span>
                     {link.label}
@@ -625,12 +623,12 @@ export function Header() {
                     aria-label="User menu"
                   >
                     {/* Avatar with gradient ring */}
-                    <div className="rounded-full bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] p-[2.5px] transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/30">
+                    <div className="rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-400 p-[2.5px] transition-all duration-300 hover:shadow-lg hover:shadow-blue-400/30">
                       <Avatar className="size-8 ring-2 ring-white ring-offset-0">
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] text-xs font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-xs font-bold text-white">
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -642,18 +640,18 @@ export function Header() {
                   </motion.button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-64 overflow-hidden rounded-2xl p-1.5 shadow-xl shadow-blue-900/10 border-blue-100/40 backdrop-blur-xl"
+                  className="w-64 overflow-hidden rounded-2xl p-1.5 shadow-xl shadow-black/10 border-blue-100/50"
                   align="end"
                   forceMount
                 >
                   <DropdownMenuLabel className="font-normal px-2 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] p-[2.5px]">
+                      <div className="rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-400 p-[2.5px]">
                         <Avatar className="size-11 ring-2 ring-white">
                           {user.profileImageUrl && (
                             <AvatarImage src={user.profileImageUrl} alt={user.name} />
                           )}
-                          <AvatarFallback className="bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] text-sm font-bold text-white">
+                          <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white">
                             {getInitials(user.name)}
                           </AvatarFallback>
                         </Avatar>
@@ -680,20 +678,20 @@ export function Header() {
                       </div>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="my-1 bg-gradient-to-r from-transparent via-blue-100/60 to-transparent" />
+                  <DropdownMenuSeparator className="my-1 bg-blue-100/50" />
                   <DropdownMenuGroup>
                     {dropdownLinks.map((link) => (
                       <DropdownMenuItem
                         key={link.page}
                         onClick={() => handleNavigate(link.page)}
-                        className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-blue-50 focus:text-blue-700 hover:bg-blue-50/60"
+                        className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-blue-50 focus:text-blue-700"
                       >
                         <span className="mr-2.5 text-muted-foreground">{link.icon}</span>
                         {link.label}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator className="my-1 bg-gradient-to-r from-transparent via-blue-100/60 to-transparent" />
+                  <DropdownMenuSeparator className="my-1 bg-blue-100/50" />
                   <DropdownMenuItem
                     onClick={logout}
                     className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition-all duration-200 focus:bg-red-50 focus:text-destructive"
@@ -711,7 +709,7 @@ export function Header() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleNavigate('login')}
-                  className="gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700 hover:shadow-sm hover:shadow-blue-200/30"
+                  className="gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700"
                 >
                   <LogIn className="size-4" />
                   Login
@@ -721,7 +719,7 @@ export function Header() {
                 <Button
                   size="sm"
                   onClick={() => handleNavigate('register')}
-                  className="gap-1.5 rounded-xl bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:from-[#1e3a5f] hover:via-[#2d5a8e] hover:to-[#3b82f6] hover:shadow-xl hover:shadow-blue-500/35 hover:scale-105"
+                  className="gap-1.5 rounded-xl bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 transition-all duration-300 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600 hover:shadow-xl hover:shadow-blue-500/35"
                 >
                   <UserPlus className="size-4" />
                   Sign up
@@ -744,17 +742,17 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-[340px] overflow-y-auto border-l border-blue-200/30 p-0 shadow-2xl shadow-blue-900/10 bg-gradient-to-b from-blue-50/60 via-white/90 to-sky-50/60 backdrop-blur-2xl"
+              className="w-[340px] overflow-y-auto border-l border-blue-200/30 p-0 shadow-2xl shadow-blue-900/10 bg-gradient-to-b from-blue-50/60 via-white/80 to-sky-50/60 backdrop-blur-xl"
             >
               {/* ── Mobile Header ────────────────────────────────────────── */}
-              <SheetHeader className="border-b border-blue-200/40 px-6 py-5 bg-gradient-to-r from-blue-50/60 via-white/50 to-sky-50/40">
+              <SheetHeader className="border-b border-blue-200/50 px-6 py-5 bg-gradient-to-r from-blue-50/60 via-white/40 to-sky-50/40">
                 <SheetTitle className="flex items-center gap-2.5">
-                  <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] shadow-lg shadow-blue-500/30">
+                  <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-900 via-blue-700 to-sky-400 shadow-lg shadow-blue-500/30">
                     <Wrench className="size-[18px] text-white" />
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 via-white/5 to-transparent" />
                   </div>
                   <span className="text-2xl font-black tracking-tight">
-                    <span className="bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] bg-clip-text text-transparent">BookYour</span>
+                    <span className="bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 bg-clip-text text-transparent">BookYour</span>
                     <span className="text-foreground">Service</span>
                   </span>
                 </SheetTitle>
@@ -762,15 +760,15 @@ export function Header() {
 
               {/* ── Mobile User Info ─────────────────────────────────────── */}
               {user && (
-                <div className="border-b border-blue-200/40 px-6 py-5 bg-gradient-to-r from-blue-50/30 via-white/30 to-sky-50/30">
+                <div className="border-b border-blue-200/50 px-6 py-5 bg-gradient-to-r from-blue-50/30 via-white/20 to-sky-50/20">
                   <div className="flex items-center gap-3.5">
                     {/* Avatar with premium gradient ring */}
-                    <div className="rounded-full bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] p-[2.5px] shadow-md shadow-blue-400/20">
+                    <div className="rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-400 p-[2.5px] shadow-md shadow-blue-400/20">
                       <Avatar className="size-12 ring-2 ring-white">
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] text-sm font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white">
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -802,7 +800,7 @@ export function Header() {
                     <div className="mt-4">
                       <SheetClose asChild>
                         <Button
-                          className="group relative w-full gap-2 overflow-hidden bg-gradient-to-r from-rose-600 via-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25 hover:from-rose-700 hover:via-orange-600 hover:to-amber-600"
+                          className="group relative w-full gap-2 overflow-hidden bg-gradient-to-r from-red-700 via-red-600 to-red-500 text-white shadow-lg shadow-red-500/25 hover:from-red-800 hover:via-red-700 hover:to-red-600"
                           onClick={() => handleNavigate('emergency-booking')}
                         >
                           <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -825,8 +823,8 @@ export function Header() {
                         onClick={() => handleNavigate(link.page)}
                         className={`flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300 ${
                           active
-                            ? 'bg-gradient-to-r from-blue-50 via-[#2d5a8e]/5 to-sky-50/40 text-blue-700 shadow-sm shadow-blue-500/10 ring-1 ring-blue-200/40'
-                            : 'text-muted-foreground hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-sky-50/30 hover:text-foreground hover:shadow-sm hover:shadow-blue-100/20'
+                            ? 'bg-gradient-to-r from-blue-50 via-sky-50/60 to-blue-50/40 text-blue-700 shadow-sm shadow-blue-500/10 ring-1 ring-blue-200/50'
+                            : 'text-muted-foreground hover:bg-gradient-to-r hover:from-blue-50/50 hover:to-sky-50/30 hover:text-foreground'
                         }`}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -834,7 +832,7 @@ export function Header() {
                       >
                         <span className={`flex size-8 items-center justify-center rounded-lg transition-all duration-200 ${
                           active
-                            ? 'bg-blue-100/80 text-blue-700 shadow-sm shadow-blue-200/30'
+                            ? 'bg-blue-100/80 text-blue-600'
                             : 'text-muted-foreground'
                         }`}>
                           {link.icon}
@@ -845,122 +843,44 @@ export function Header() {
                             <NotificationBadge count={link.badge > 99 ? 99 : link.badge} />
                           </span>
                         )}
-                        {active && (
-                          <ChevronRight className="ml-auto size-4 text-blue-500" />
-                        )}
                       </motion.button>
                     </SheetClose>
                   );
                 })}
               </nav>
 
-              {/* ── Mobile Auth Section ──────────────────────────────────── */}
-              {user ? (
-                <>
-                  <div className="border-t border-blue-200/50 px-3 py-3">
-                    <p className="px-4 pb-2.5 text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                      Account
-                    </p>
-                    {dropdownLinks.map((link, idx) => (
-                      <SheetClose asChild key={link.page}>
-                        <motion.button
-                          onClick={() => handleNavigate(link.page)}
-                          className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-blue-50/50 hover:text-foreground"
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.04 + 0.15, duration: 0.3 }}
-                        >
-                          <span className="flex size-7 items-center justify-center rounded-lg">
-                            {link.icon}
-                          </span>
-                          {link.label}
-                        </motion.button>
-                      </SheetClose>
-                    ))}
+              {/* ── Mobile Footer ────────────────────────────────────────── */}
+              <div className="border-t border-blue-100/50 px-6 py-4">
+                {!user && (
+                  <div className="flex flex-col gap-2.5">
+                    <Button
+                      className="w-full gap-2 bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 text-white shadow-lg shadow-blue-500/20 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600"
+                      onClick={() => { handleNavigate('register'); setMobileOpen(false); }}
+                    >
+                      <UserPlus className="size-4" />
+                      Sign up
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full gap-2 border-blue-200 text-blue-700 hover:bg-blue-50"
+                      onClick={() => { handleNavigate('login'); setMobileOpen(false); }}
+                    >
+                      <LogIn className="size-4" />
+                      Login
+                    </Button>
                   </div>
-                  <div className="border-t border-blue-200/50 px-3 py-3">
-                    <SheetClose asChild>
-                      <motion.button
-                        onClick={() => {
-                          logout();
-                          setMobileOpen(false);
-                        }}
-                        className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium text-destructive transition-all duration-200 hover:bg-red-50"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.35, duration: 0.3 }}
-                      >
-                        <LogOut className="size-4" />
-                        Log out
-                      </motion.button>
-                    </SheetClose>
-                  </div>
-                </>
-              ) : (
-                <div className="border-t border-blue-200/50 px-6 py-6 bg-gradient-to-b from-blue-50/30 via-white/20 to-transparent">
-                  <div className="flex flex-col gap-3">
-                    <SheetClose asChild>
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.15, duration: 0.3 }}
-                      >
-                        <Button
-                          className="w-full gap-2 rounded-xl bg-gradient-to-r from-[#1e3a5f] via-[#2d5a8e] to-[#3b82f6] py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/25 hover:from-[#1e3a5f] hover:via-[#2d5a8e] hover:to-[#3b82f6]"
-                          onClick={() => handleNavigate('login')}
-                        >
-                          <LogIn className="size-4" />
-                          Login
-                        </Button>
-                      </motion.div>
-                    </SheetClose>
-                    <SheetClose asChild>
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.25, duration: 0.3 }}
-                      >
-                        <Button
-                          variant="outline"
-                          className="w-full rounded-xl border-blue-300/70 py-2.5 text-sm font-semibold text-blue-700 transition-all duration-300 hover:bg-gradient-to-r hover:from-blue-50 hover:to-sky-50 hover:text-blue-800 hover:border-blue-400/80"
-                          onClick={() => handleNavigate('register')}
-                        >
-                          <UserPlus className="mr-2 size-4" />
-                          Sign up
-                        </Button>
-                      </motion.div>
-                    </SheetClose>
-
-                    {/* Role options preview for unauthenticated mobile users */}
-                    <div className="mt-3 flex flex-col gap-2">
-                      <p className="text-center text-[10px] font-bold uppercase tracking-[0.15em] text-muted-foreground">
-                        Join as
-                      </p>
-                      <div className="grid grid-cols-2 gap-2">
-                        {[
-                          { label: 'Client', roleId: ROLE_IDS.CLIENT, icon: <User className="size-3.5" /> },
-                          { label: 'Technician', roleId: ROLE_IDS.TECHNICIAN, icon: <Wrench className="size-3.5" /> },
-                          { label: 'Provider', roleId: ROLE_IDS.PROVIDER, icon: <Briefcase className="size-3.5" /> },
-                          { label: 'Vendor', roleId: ROLE_IDS.VENDOR, icon: <Package className="size-3.5" /> },
-                          { label: 'Franchise', roleId: ROLE_IDS.FRANCHISE, icon: <Building2 className="size-3.5" /> },
-                        ].map((roleOption) => (
-                          <SheetClose key={roleOption.roleId}>
-                            <motion.button
-                              onClick={() => handleNavigate('register')}
-                              className="flex w-full items-center gap-1.5 rounded-xl border border-blue-200/50 bg-white/70 px-3 py-2.5 text-xs font-semibold text-blue-700 transition-all duration-300 hover:border-blue-300 hover:bg-blue-50/80 hover:shadow-sm hover:shadow-blue-500/10"
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              {roleOption.icon}
-                              {roleOption.label}
-                            </motion.button>
-                          </SheetClose>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
+                )}
+                {user && (
+                  <Button
+                    variant="outline"
+                    className="w-full gap-2 text-destructive border-red-100 hover:bg-red-50 hover:text-destructive"
+                    onClick={() => { logout(); setMobileOpen(false); }}
+                  >
+                    <LogOut className="size-4" />
+                    Log out
+                  </Button>
+                )}
+              </div>
             </SheetContent>
           </Sheet>
         </div>

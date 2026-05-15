@@ -1,5 +1,3 @@
-'use client';
-
 import { useApp } from '@/contexts/app-context';
 import { useApi } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -57,7 +55,7 @@ function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-orange-100 text-orange-800 border-orange-200',
+    IN_PROGRESS: 'bg-sky-100 text-blue-800 border-blue-200',
     COMPLETED: 'bg-green-100 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
@@ -98,14 +96,14 @@ export function AdminDashboardPage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-l-4 border-l-emerald-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Total Users</p>
                 <p className="mt-1 text-2xl font-bold">{stats?.totalUsers || 0}</p>
               </div>
-              <Users className="size-5 text-blue-700" />
+              <Users className="size-5 text-emerald-600" />
             </div>
           </CardContent>
         </Card>
@@ -173,9 +171,9 @@ export function AdminDashboardPage() {
           <p className="text-xs text-muted-foreground">Pending KYC</p>
           <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingKyc || 0}</p>
         </div>
-        <div className="rounded-lg bg-orange-50 p-3 text-center">
+        <div className="rounded-lg bg-blue-50 p-3 text-center">
           <p className="text-xs text-muted-foreground">Pending Approvals</p>
-          <p className="mt-1 text-lg font-bold text-orange-700">{stats?.pendingServiceApprovals || 0}</p>
+          <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingServiceApprovals || 0}</p>
         </div>
       </div>
 

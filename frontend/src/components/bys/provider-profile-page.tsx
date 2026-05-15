@@ -96,7 +96,7 @@ export function ProviderProfilePage() {
         <h2 className="mt-3 text-xl font-bold">{user?.name}</h2>
         <p className="text-sm text-muted-foreground">{user?.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-amber-500 to-orange-600 text-white border-0 font-semibold">Provider</Badge>
+          <Badge className="bg-gradient-to-r from-amber-500 to-blue-600 text-white border-0 font-semibold">Provider</Badge>
           <Badge
             variant="outline"
             className={
@@ -187,7 +187,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-orange-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
                   <Shield className="size-4 text-white" />
                 </div>
                 KYC Verification
@@ -205,8 +205,8 @@ export function ProviderProfilePage() {
                       <Clock className="size-6 text-amber-500" />
                     </div>
                   ) : (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-orange-100">
-                      <AlertCircle className="size-6 text-orange-500" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-sky-100">
+                      <AlertCircle className="size-6 text-blue-500" />
                     </div>
                   )}
                   <div>

@@ -200,7 +200,7 @@ export function AdminUsersPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-8 text-orange-600"
+                              className="size-8 text-blue-600"
                               onClick={() => handleStatusChange(user.id, 'BLOCKED')}
                             >
                               <Ban className="size-4" />

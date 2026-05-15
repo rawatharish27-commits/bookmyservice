@@ -115,7 +115,7 @@ export function ProviderKycPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6 flex items-center gap-4"
       >
-        <Button variant="ghost" size="icon" onClick={() => navigate('provider-profile')} className="rounded-xl hover:bg-blue-50">
+        <Button variant="ghost" size="icon" onClick={() => navigate('provider-profile')} className="rounded-xl hover:bg-emerald-50">
           <ArrowLeft className="size-4" />
         </Button>
         <div>
@@ -132,7 +132,7 @@ export function ProviderKycPage() {
             exit={{ opacity: 0, y: -10 }}
             className={`mb-4 rounded-xl p-3 text-sm border ${
               message.includes('success')
-                ? 'bg-blue-50 text-blue-800 border-blue-200'
+                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                 : 'bg-red-50 text-red-700 border-red-200'
             }`}
           >
@@ -150,19 +150,19 @@ export function ProviderKycPage() {
       >
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <div className={`h-1.5 ${
-            effectiveStatus === 'APPROVED' ? 'bg-gradient-to-r from-blue-600 to-sky-500' :
-            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
+            effectiveStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
+            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-amber-400 to-blue-500' :
             effectiveStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
-            'bg-gradient-to-r from-orange-400 to-amber-500'
+            'bg-gradient-to-r from-sky-400 to-amber-500'
           }`} />
           <CardContent className="flex items-center gap-4 p-6">
             {effectiveStatus === 'APPROVED' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-blue-100">
-                  <CheckCircle2 className="size-7 text-blue-600" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-emerald-100">
+                  <CheckCircle2 className="size-7 text-emerald-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-blue-800">Verified</h3>
+                  <h3 className="text-lg font-semibold text-emerald-700">Verified</h3>
                   <p className="text-sm text-muted-foreground">
                     Your identity has been verified{kycStatus?.verifiedAt ? ` on ${new Date(kycStatus.verifiedAt).toLocaleDateString()}` : ''}
                   </p>
@@ -197,11 +197,11 @@ export function ProviderKycPage() {
             )}
             {effectiveStatus === 'NOT_SUBMITTED' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-orange-100">
-                  <Shield className="size-7 text-orange-500" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-sky-100">
+                  <Shield className="size-7 text-blue-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-orange-700">Not Submitted</h3>
+                  <h3 className="text-lg font-semibold text-blue-700">Not Submitted</h3>
                   <p className="text-sm text-muted-foreground">Complete KYC verification to unlock full provider features</p>
                 </div>
               </>
@@ -218,10 +218,10 @@ export function ProviderKycPage() {
           transition={{ delay: 0.2 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-blue-600 via-sky-500 to-cyan-500" />
+            <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-sky-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
                   <Shield className="size-4 text-white" />
                 </div>
                 {effectiveStatus === 'REJECTED' ? 'Resubmit Documents' : 'Submit Documents'}
@@ -277,7 +277,7 @@ export function ProviderKycPage() {
               </div>
 
               <Button
-                className="shimmer w-full bg-gradient-to-r from-blue-700 to-sky-600 text-white shadow-lg shadow-blue-500/25 h-11 rounded-xl"
+                className="shimmer w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 h-11 rounded-xl"
                 onClick={handleSubmit}
                 disabled={loading}
               >

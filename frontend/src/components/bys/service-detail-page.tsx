@@ -526,7 +526,7 @@ export function ServiceDetailPage() {
             >
               {[
                 { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-emerald-500 to-teal-500' },
-                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-amber-500 to-orange-500' },
+                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-amber-500 to-blue-500' },
                 { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-blue-500 to-cyan-500' },
                 { icon: <TrendingUp className="size-4" />, label: 'Popularity', value: service.totalBookings > 20 ? 'High' : service.totalBookings > 5 ? 'Growing' : 'New', color: 'from-purple-500 to-pink-500' },
               ].map((item, idx) => (
@@ -578,7 +578,7 @@ export function ServiceDetailPage() {
                 custom={0}
               >
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-blue-500 text-white shadow-sm">
                     <Calendar className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Availability</h2>
@@ -720,7 +720,7 @@ export function ServiceDetailPage() {
                       <span className="text-sm text-muted-foreground">/service</span>
                     </div>
                     {service.priceNegotiable && (
-                      <Badge className="mt-2 border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 hover:from-amber-100 hover:to-orange-100">
+                      <Badge className="mt-2 border-amber-200 bg-gradient-to-r from-amber-50 to-blue-50 text-amber-700 hover:from-amber-100 hover:to-sky-100">
                         <Zap className="mr-1 size-3" /> Price Negotiable
                       </Badge>
                     )}

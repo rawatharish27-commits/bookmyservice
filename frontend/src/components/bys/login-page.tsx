@@ -54,10 +54,10 @@ export function LoginPage() {
   const focusColor = isClient ? 'emerald' : 'amber';
   const tabGradient = isClient
     ? 'from-emerald-600 via-teal-500 to-cyan-500'
-    : 'from-amber-500 via-orange-500 to-rose-500';
+    : 'from-amber-500 via-blue-500 to-rose-500';
   const tabGradientHover = isClient
     ? 'hover:from-emerald-700 hover:via-teal-600 hover:to-cyan-600'
-    : 'hover:from-amber-600 hover:via-orange-600 hover:to-rose-600';
+    : 'hover:from-amber-600 hover:via-blue-600 hover:to-rose-600';
   const tabShadow = isClient
     ? 'shadow-emerald-600/30'
     : 'shadow-amber-500/30';
@@ -75,14 +75,14 @@ export function LoginPage() {
     : 'text-amber-600 hover:text-amber-700';
   const bannerBg = isClient
     ? 'from-emerald-50 to-teal-50 border-emerald-100/70'
-    : 'from-amber-50 to-orange-50 border-amber-100/70';
+    : 'from-amber-50 to-blue-50 border-amber-100/70';
   const dividerVia = isClient ? 'via-emerald-200' : 'via-amber-200';
   const inputBorder = isClient
     ? 'border-emerald-100/50'
     : 'border-amber-100/50';
   const tabBg = isClient
     ? 'from-emerald-50/80 to-cyan-50/60 border-emerald-100/50'
-    : 'from-amber-50/80 to-orange-50/60 border-amber-100/50';
+    : 'from-amber-50/80 to-blue-50/60 border-amber-100/50';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -295,7 +295,7 @@ export function LoginPage() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="provider"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-orange-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-blue-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30"
                   >
                     <Briefcase className="size-4 mr-2" />Provider Login
                   </TabsTrigger>

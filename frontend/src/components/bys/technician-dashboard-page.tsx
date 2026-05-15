@@ -113,7 +113,7 @@ function StatusBadge({ status }: { status: string }) {
     ACCEPTED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
     ON_THE_WAY: { className: 'bg-cyan-50 text-cyan-700 border-cyan-200', dotColor: 'bg-cyan-400' },
     ARRIVED: { className: 'bg-teal-50 text-teal-700 border-teal-200', dotColor: 'bg-teal-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
@@ -331,7 +331,7 @@ export function TechnicianDashboardPage() {
       title: 'Average Rating',
       value: avgRating > 0 ? avgRating.toFixed(1) : '—',
       icon: Star,
-      gradient: 'from-amber-400 to-orange-500',
+      gradient: 'from-amber-400 to-blue-500',
       bgGlow: 'bg-amber-500/10',
       valueColor: 'text-amber-600',
     },
@@ -341,7 +341,7 @@ export function TechnicianDashboardPage() {
   const quickActions = [
     { icon: Wallet, label: 'Earnings', nav: 'technician-earnings' as Page, gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
     { icon: User, label: 'My Profile', nav: 'technician-profile' as Page, gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-500/25' },
+    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
     { icon: Briefcase, label: 'All Jobs', nav: 'technician-jobs' as Page, gradient: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/25' },
   ];
 
@@ -613,7 +613,7 @@ export function TechnicianDashboardPage() {
                   <Button
                     className={`w-full font-semibold shadow-lg transition-all ${
                       isOnline
-                        ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white shadow-red-500/25 hover:shadow-xl'
+                        ? 'bg-gradient-to-r from-red-500 to-blue-500 text-white shadow-red-500/25 hover:shadow-xl'
                         : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/25 hover:shadow-xl'
                     }`}
                     onClick={handleToggleAvailability}
@@ -749,7 +749,7 @@ export function TechnicianDashboardPage() {
                 {[
                   { label: 'Today', value: `₹${todayEarnings.toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
                   { label: 'This Week', value: `₹${(earningsData?.thisWeekEarnings || 0).toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
-                  { label: 'This Month', value: `₹${(earningsData?.thisMonthEarnings || 0).toLocaleString()}`, gradient: 'from-amber-400 to-orange-500' },
+                  { label: 'This Month', value: `₹${(earningsData?.thisMonthEarnings || 0).toLocaleString()}`, gradient: 'from-amber-400 to-blue-500' },
                   { label: 'All Time', value: `₹${totalEarnings.toLocaleString()}`, gradient: 'from-rose-400 to-pink-500' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center transition-colors hover:bg-muted/50">

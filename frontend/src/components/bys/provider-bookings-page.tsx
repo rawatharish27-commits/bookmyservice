@@ -35,7 +35,7 @@ function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
     ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
@@ -49,9 +49,9 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 const TABS = [
-  { key: 'PENDING', label: 'New Requests', gradient: 'from-amber-400 to-orange-500', icon: Clock },
+  { key: 'PENDING', label: 'New Requests', gradient: 'from-amber-400 to-blue-500', icon: Clock },
   { key: 'ACCEPTED', label: 'Accepted', gradient: 'from-sky-400 to-blue-500', icon: CheckCircle2 },
-  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-orange-400 to-amber-500', icon: Play },
+  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-sky-400 to-amber-500', icon: Play },
   { key: 'COMPLETED', label: 'Completed', gradient: 'from-emerald-400 to-teal-500', icon: CheckCircle2 },
   { key: 'CANCELLED', label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 ];
@@ -94,7 +94,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-gradient-to-r from-orange-500 to-amber-600 text-white shadow-sm rounded-lg"
+            className="bg-gradient-to-r from-blue-500 to-amber-600 text-white shadow-sm rounded-lg"
             onClick={() => handleAction(booking.id, 'start')}
           >
             <Play className="mr-1 size-3" /> Start Service

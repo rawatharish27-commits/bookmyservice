@@ -53,7 +53,7 @@ function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
     ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-orange-50 text-orange-700 border-orange-200', dotColor: 'bg-orange-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
@@ -132,7 +132,7 @@ export function ProviderDashboardPage() {
       title: 'Average Rating',
       value: avgRating,
       icon: Star,
-      gradient: 'from-amber-400 to-orange-500',
+      gradient: 'from-amber-400 to-blue-500',
       bgGlow: 'bg-amber-500/10',
     },
     {
@@ -147,7 +147,7 @@ export function ProviderDashboardPage() {
   const quickActions = [
     { icon: Plus, label: 'Create Service', nav: 'provider-create-service', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
     { icon: DollarSign, label: 'View Earnings', nav: 'provider-earnings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: Star, label: 'View Reviews', nav: 'provider-reviews', gradient: 'from-amber-500 to-orange-600', shadow: 'shadow-amber-500/25' },
+    { icon: Star, label: 'View Reviews', nav: 'provider-reviews', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
     { icon: CalendarCheck, label: 'All Bookings', nav: 'provider-bookings', gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/25' },
   ];
 
@@ -211,9 +211,9 @@ export function ProviderDashboardPage() {
         {/* New Booking Requests */}
         <motion.div className="lg:col-span-2" {...fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-orange-50/50 pb-3">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
               <CardTitle className="text-lg font-semibold">New Booking Requests</CardTitle>
-              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0 shadow-sm">
+              <Badge className="bg-gradient-to-r from-amber-500 to-blue-500 text-white border-0 shadow-sm">
                 {pendingBookings.length} pending
               </Badge>
             </CardHeader>
@@ -353,7 +353,7 @@ export function ProviderDashboardPage() {
                 { label: 'Today', value: `₹${todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
                 { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
                 { label: 'Total', value: `₹${completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-violet-400 to-purple-500' },
-                { label: 'In Progress', value: `${bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}`, gradient: 'from-orange-400 to-amber-500' },
+                { label: 'In Progress', value: `${bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}`, gradient: 'from-sky-400 to-amber-500' },
               ].map((item) => (
                 <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center">
                   <p className="text-xs text-muted-foreground">{item.label}</p>

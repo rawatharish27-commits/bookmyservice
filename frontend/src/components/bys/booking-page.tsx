@@ -434,7 +434,7 @@ export function BookingPage() {
               <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-orange-400 to-amber-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-amber-500">
                     <MapPin className="size-4 text-white" />
                   </div>
                   Service Address
@@ -598,7 +598,7 @@ export function BookingPage() {
 
                 {/* Negotiate Price */}
                 {service.priceNegotiable && (
-                  <div className="rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 p-4">
+                  <div className="rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-blue-50 p-4">
                     <div className="flex items-center gap-2">
                       <Badge className="bg-amber-100 text-amber-800 border-amber-200">Negotiable</Badge>
                       <span className="text-sm font-medium">This service allows price negotiation</span>

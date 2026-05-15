@@ -51,7 +51,7 @@ const values = [
     icon: <Star className="size-6" />,
     title: 'Quality First',
     description: 'We maintain high standards through reviews, ratings, and continuous quality monitoring.',
-    gradient: 'from-amber-600 to-orange-600',
+    gradient: 'from-amber-600 to-blue-600',
     bg: 'bg-amber-50',
   },
   {

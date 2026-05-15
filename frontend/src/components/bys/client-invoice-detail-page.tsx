@@ -76,7 +76,7 @@ const STATUS_CONFIG: Record<string, { className: string; gradient: string; icon:
   },
   PENDING: {
     className: 'bg-amber-50 text-amber-700 border-amber-200',
-    gradient: 'from-amber-400 to-orange-500',
+    gradient: 'from-amber-400 to-blue-500',
     icon: Clock,
     label: 'Pending',
   },

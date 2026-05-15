@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState } from 'react';
 import { useApp } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
@@ -33,7 +31,13 @@ import {
   MessageSquare,
   CheckCircle2,
   AlertCircle,
+  Share2,
+  Zap,
+  Award,
+  TrendingUp,
+  ArrowRight,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ServiceDetail {
   id: string;
@@ -93,6 +97,7 @@ interface SimilarService {
 }
 
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_SHORT = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 function getInitials(name: string): string {
   return name
@@ -103,6 +108,54 @@ function getInitials(name: string): string {
     .slice(0, 2);
 }
 
+// ─── Motion Variants ─────────────────────────────────────────────────────────
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.6 } },
+};
+
+const scaleIn = {
+  hidden: { opacity: 0, scale: 0.9 },
+  visible: (i: number) => ({
+    opacity: 1,
+    scale: 1,
+    transition: { delay: i * 0.08, duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] as const },
+  }),
+};
+
+// ─── Star Rating with Gradient ───────────────────────────────────────────────
+
+function GradientStars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md' | 'lg' }) {
+  const sizeClass = size === 'lg' ? 'size-5' : size === 'md' ? 'size-4' : 'size-3.5';
+  return (
+    <div className="flex items-center gap-0.5">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <div key={i} className="relative">
+          <Star
+            className={`${sizeClass} ${
+              i < Math.round(rating)
+                ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]'
+                : 'fill-gray-200 text-gray-200'
+            }`}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ─── Main Component ──────────────────────────────────────────────────────────
+
 export function ServiceDetailPage() {
   const { navigate, nav } = useApp();
   const { user, token } = useAuth();
@@ -110,6 +163,7 @@ export function ServiceDetailPage() {
   const [currentImage, setCurrentImage] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [favoriteAnimating, setFavoriteAnimating] = useState(false);
   const { mutate } = useApiMutation();
 
   const { data: service, loading, error, refetch } = useApi<ServiceDetail>(
@@ -135,6 +189,7 @@ export function ServiceDetailPage() {
       return;
     }
     setFavoriteLoading(true);
+    setFavoriteAnimating(true);
     try {
       await mutate('/api/favorites', {
         method: 'POST',
@@ -145,6 +200,7 @@ export function ServiceDetailPage() {
       // already favorited or error
     } finally {
       setFavoriteLoading(false);
+      setTimeout(() => setFavoriteAnimating(false), 400);
     }
   };
 
@@ -154,11 +210,22 @@ export function ServiceDetailPage() {
   if (error) {
     return (
       <div className="mx-auto max-w-7xl px-4 py-16 text-center sm:px-6 lg:px-8">
-        <AlertCircle className="mx-auto size-12 text-muted-foreground" />
-        <p className="mt-4 text-muted-foreground">Failed to load service details</p>
-        <Button variant="outline" size="sm" onClick={refetch} className="mt-2">
-          Retry
-        </Button>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="glass mx-auto max-w-md rounded-3xl p-10 shadow-lg"
+        >
+          <AlertCircle className="mx-auto size-14 text-rose-400" />
+          <p className="mt-4 text-lg font-semibold text-foreground">Failed to load service details</p>
+          <p className="mt-1 text-sm text-muted-foreground">Something went wrong. Please try again.</p>
+          <Button
+            variant="outline"
+            onClick={refetch}
+            className="mt-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+          >
+            Try Again
+          </Button>
+        </motion.div>
       </div>
     );
   }
@@ -169,13 +236,18 @@ export function ServiceDetailPage() {
         <Skeleton className="mb-6 h-4 w-64" />
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="lg:col-span-2">
-            <Skeleton className="aspect-video w-full rounded-xl" />
-            <Skeleton className="mt-4 h-8 w-3/4" />
+            <Skeleton className="aspect-video w-full rounded-2xl" />
+            <div className="mt-4 flex gap-2">
+              {[0, 1, 2, 3].map((i) => (
+                <Skeleton key={i} className="size-20 rounded-xl" />
+              ))}
+            </div>
+            <Skeleton className="mt-6 h-8 w-3/4" />
             <Skeleton className="mt-2 h-4 w-1/2" />
             <Skeleton className="mt-4 h-20 w-full" />
           </div>
           <div>
-            <Skeleton className="h-64 w-full rounded-xl" />
+            <Skeleton className="h-80 w-full rounded-2xl" />
           </div>
         </div>
       </div>
@@ -185,381 +257,664 @@ export function ServiceDetailPage() {
   if (!service) return null;
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Breadcrumb */}
-      <Breadcrumb className="mb-6">
-        <BreadcrumbList>
-          <BreadcrumbItem>
-            <BreadcrumbLink onClick={() => navigate('home')} className="cursor-pointer">
-              Home
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink onClick={() => navigate('categories')} className="cursor-pointer">
-              Categories
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbLink
-              onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
-              className="cursor-pointer"
+    <div className="relative min-h-screen">
+      {/* Subtle background pattern */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div
+          className="absolute inset-0 opacity-[0.015]"
+          style={{
+            backgroundImage: 'radial-gradient(circle, #059669 1px, transparent 1px)',
+            backgroundSize: '32px 32px',
+          }}
+        />
+        <div className="absolute -left-40 top-20 size-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
+        <div className="absolute -right-40 bottom-20 size-[400px] rounded-full bg-teal-100/20 blur-3xl" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        {/* ─── Breadcrumb ─────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+        >
+          <Breadcrumb className="mb-5">
+            <BreadcrumbList className="text-sm">
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  onClick={() => navigate('home')}
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                >
+                  Home
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-muted-foreground/40" />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  onClick={() => navigate('categories')}
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                >
+                  Categories
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-muted-foreground/40" />
+              <BreadcrumbItem>
+                <BreadcrumbLink
+                  onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                >
+                  {service.category.name}
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="text-muted-foreground/40" />
+              <BreadcrumbItem>
+                <BreadcrumbPage className="max-w-[200px] truncate font-semibold text-gradient">
+                  {service.title}
+                </BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </motion.div>
+
+        {/* ─── Back Button ────────────────────────────────────────────── */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+            className="group mb-5 gap-2 text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50"
+          >
+            <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /> Back to{' '}
+            {service.category.name}
+          </Button>
+        </motion.div>
+
+        <div className="grid gap-8 lg:grid-cols-3">
+          {/* ═══════════ Left Column - Main Content ═══════════ */}
+          <div className="lg:col-span-2">
+            {/* ─── Image Gallery with Thumbnails ────────────────────── */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={0}
             >
-              {service.category.name}
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
-            <BreadcrumbPage className="max-w-[200px] truncate">{service.title}</BreadcrumbPage>
-          </BreadcrumbItem>
-        </BreadcrumbList>
-      </Breadcrumb>
-
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
-        className="mb-4 text-muted-foreground"
-      >
-        <ArrowLeft className="mr-1 size-4" /> Back
-      </Button>
-
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* Left Column - Main Content */}
-        <div className="lg:col-span-2">
-          {/* Image Gallery */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-sky-50">
-            {images.length > 0 ? (
-              <>
-                <img
-                  src={images[currentImage]}
-                  alt={service.title}
-                  className="aspect-video w-full object-cover"
-                />
-                {images.length > 1 && (
-                  <>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm"
-                      onClick={prevImage}
-                    >
-                      <ChevronLeft className="size-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 backdrop-blur-sm"
-                      onClick={nextImage}
-                    >
-                      <ChevronRight className="size-4" />
-                    </Button>
-                    <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
-                      {images.map((_: string, i: number) => (
-                        <button
-                          key={i}
-                          onClick={() => setCurrentImage(i)}
-                          className={`size-2 rounded-full transition-colors ${
-                            i === currentImage ? 'bg-white' : 'bg-white/50'
-                          }`}
+              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 shadow-lg ring-1 ring-emerald-100/50">
+                {/* Main Image with Crossfade */}
+                <div className="relative aspect-video overflow-hidden">
+                  {images.length > 0 ? (
+                    <>
+                      <AnimatePresence mode="wait">
+                        <motion.img
+                          key={currentImage}
+                          src={images[currentImage]}
+                          alt={`${service.title} - Image ${currentImage + 1}`}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3, ease: 'easeInOut' }}
+                          className="size-full object-cover"
                         />
-                      ))}
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="flex aspect-video items-center justify-center">
-                <Wrench className="size-20 text-blue-400" />
-              </div>
-            )}
-          </div>
+                      </AnimatePresence>
 
-          {/* Title and Details */}
-          <div className="mt-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{service.title}</h1>
-                <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-                  <Badge variant="secondary">{service.category.name}</Badge>
-                  {service.subcategory && (
-                    <Badge variant="outline">{service.subcategory.name}</Badge>
-                  )}
-                  {service.city && (
-                    <span className="flex items-center gap-1">
-                      <MapPin className="size-3" /> {service.city}
-                      {service.state && `, ${service.state}`}
-                    </span>
+                      {/* Gradient overlay at bottom */}
+                      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent" />
+
+                      {/* Image counter badge */}
+                      <div className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/40 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-md">
+                        <span>{currentImage + 1}</span>
+                        <span className="text-white/60">/</span>
+                        <span>{images.length}</span>
+                      </div>
+
+                      {/* Share button */}
+                      <button className="absolute right-3 top-3 flex size-9 items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-md transition-all hover:bg-black/50 hover:scale-110">
+                        <Share2 className="size-4" />
+                      </button>
+
+                      {images.length > 1 && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute left-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-white/80 text-foreground shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110"
+                            onClick={prevImage}
+                          >
+                            <ChevronLeft className="size-5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-3 top-1/2 -translate-y-1/2 size-10 rounded-full bg-white/80 text-foreground shadow-md backdrop-blur-sm transition-all hover:bg-white hover:scale-110"
+                            onClick={nextImage}
+                          >
+                            <ChevronRight className="size-5" />
+                          </Button>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+                      <div className="text-center">
+                        <Wrench className="mx-auto size-20 text-emerald-300" />
+                        <p className="mt-2 text-sm text-emerald-400">No images available</p>
+                      </div>
+                    </div>
                   )}
                 </div>
+
+                {/* Thumbnail Strip */}
+                {images.length > 1 && (
+                  <div className="flex gap-2 overflow-x-auto p-3">
+                    {images.map((img: string, i: number) => (
+                      <motion.button
+                        key={i}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => setCurrentImage(i)}
+                        className={`relative shrink-0 size-20 overflow-hidden rounded-xl transition-all duration-300 ${
+                          i === currentImage
+                            ? 'ring-2 ring-emerald-500 ring-offset-2 shadow-md shadow-emerald-500/20'
+                            : 'ring-1 ring-gray-200 opacity-60 hover:opacity-100'
+                        }`}
+                      >
+                        <img
+                          src={img}
+                          alt={`Thumbnail ${i + 1}`}
+                          className="size-full object-cover"
+                        />
+                        {i === currentImage && (
+                          <div className="absolute inset-0 bg-emerald-500/10" />
+                        )}
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
               </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="shrink-0"
-                onClick={handleFavorite}
-                disabled={favoriteLoading}
+            </motion.div>
+
+            {/* ─── Title, Badges, and Favorite ──────────────────────── */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={1}
+              className="mt-6"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl">
+                    {service.title}
+                  </h1>
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
+                      {service.category.name}
+                    </Badge>
+                    {service.subcategory && (
+                      <Badge variant="outline" className="border-teal-200 text-teal-700">
+                        {service.subcategory.name}
+                      </Badge>
+                    )}
+                    {service.city && (
+                      <span className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <MapPin className="size-3.5 text-emerald-500" /> {service.city}
+                        {service.state && `, ${service.state}`}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Favorite Button with Animation */}
+                <motion.button
+                  whileTap={{ scale: 0.7 }}
+                  onClick={handleFavorite}
+                  disabled={favoriteLoading}
+                  className="group flex size-12 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-white shadow-sm transition-all hover:shadow-md hover:border-rose-100"
+                  aria-label={isFavorited ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  <motion.div
+                    animate={{
+                      scale: favoriteAnimating ? [1, 1.4, 1] : 1,
+                      color: isFavorited ? '#ef4444' : '#9ca3af',
+                    }}
+                    transition={{ duration: 0.4, ease: 'easeInOut' }}
+                  >
+                    <Heart
+                      className={`size-5 transition-colors duration-300 ${
+                        isFavorited ? 'fill-red-500 text-red-500' : 'text-gray-400 group-hover:text-red-400'
+                      }`}
+                    />
+                  </motion.div>
+                </motion.button>
+              </div>
+
+              {/* Rating and Stats Row */}
+              <div className="mt-4 flex flex-wrap items-center gap-4 sm:gap-6">
+                <div className="flex items-center gap-2">
+                  <GradientStars rating={service.averageRating} size="md" />
+                  <span className="text-sm font-semibold">{service.averageRating.toFixed(1)}</span>
+                  <span className="text-sm text-muted-foreground">({service.totalReviews} reviews)</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-50">
+                    <Users className="size-3.5 text-emerald-600" />
+                  </div>
+                  <span className="font-medium">{service.totalBookings}</span> bookings
+                </div>
+                {service.serviceDurationMinutes && (
+                  <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-amber-50">
+                      <Clock className="size-3.5 text-amber-600" />
+                    </div>
+                    <span className="font-medium">{service.serviceDurationMinutes} min</span>
+                  </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* ─── Quick Info Cards ──────────────────────────────────── */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={2}
+              className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
+            >
+              {[
+                { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-emerald-500 to-teal-500' },
+                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-amber-500 to-blue-500' },
+                { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-blue-500 to-cyan-500' },
+                { icon: <TrendingUp className="size-4" />, label: 'Popularity', value: service.totalBookings > 20 ? 'High' : service.totalBookings > 5 ? 'Growing' : 'New', color: 'from-purple-500 to-pink-500' },
+              ].map((item, idx) => (
+                <motion.div
+                  key={item.label}
+                  variants={scaleIn}
+                  custom={idx}
+                  className="glass rounded-2xl p-4 shadow-sm transition-all duration-300 hover:shadow-md"
+                >
+                  <div className={`mb-2 flex size-9 items-center justify-center rounded-xl bg-gradient-to-br ${item.color} text-white shadow-sm`}>
+                    {item.icon}
+                  </div>
+                  <p className="text-xs font-medium text-muted-foreground">{item.label}</p>
+                  <p className="text-sm font-semibold">{item.value}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            <Separator className="my-8" />
+
+            {/* ─── Description ────────────────────────────────────────── */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={0}
+            >
+              <div className="flex items-center gap-2">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm">
+                  <Wrench className="size-4" />
+                </div>
+                <h2 className="text-lg font-bold">About This Service</h2>
+              </div>
+              <div className="mt-4 rounded-2xl bg-gradient-to-br from-emerald-50/50 to-teal-50/50 p-5 ring-1 ring-emerald-100/50">
+                <p className="whitespace-pre-line leading-relaxed text-foreground/80">{service.description}</p>
+              </div>
+            </motion.div>
+
+            <Separator className="my-8" />
+
+            {/* ─── Availability ───────────────────────────────────────── */}
+            {service.availability && service.availability.length > 0 && (
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={0}
               >
-                <Heart
-                  className={`size-5 ${
-                    isFavorited ? 'fill-red-500 text-red-500' : 'text-muted-foreground'
-                  }`}
-                />
-              </Button>
-            </div>
-
-            {/* Rating and Stats */}
-            <div className="mt-4 flex flex-wrap items-center gap-4">
-              <div className="flex items-center gap-1">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`size-4 ${
-                      i < Math.round(service.averageRating)
-                        ? 'fill-amber-400 text-amber-400'
-                        : 'text-gray-300'
-                    }`}
-                  />
-                ))}
-                <span className="ml-1 text-sm font-medium">{service.averageRating.toFixed(1)}</span>
-                <span className="text-sm text-muted-foreground">({service.totalReviews} reviews)</span>
-              </div>
-              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <Users className="size-4" />
-                <span>{service.totalBookings} bookings</span>
-              </div>
-            </div>
-          </div>
-
-          <Separator className="my-6" />
-
-          {/* Description */}
-          <div>
-            <h2 className="text-lg font-semibold">About This Service</h2>
-            <p className="mt-2 whitespace-pre-line text-muted-foreground">{service.description}</p>
-          </div>
-
-          <Separator className="my-6" />
-
-          {/* Availability */}
-          {service.availability && service.availability.length > 0 && (
-            <>
-              <div>
-                <h2 className="text-lg font-semibold">Availability</h2>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-blue-500 text-white shadow-sm">
+                    <Calendar className="size-4" />
+                  </div>
+                  <h2 className="text-lg font-bold">Availability</h2>
+                </div>
+                <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {service.availability
                     .filter((a) => a.isAvailable)
-                    .map((slot) => (
-                      <div
+                    .map((slot, idx) => (
+                      <motion.div
                         key={slot.id}
-                        className="flex items-center gap-2 rounded-lg border bg-blue-50/50 p-3 text-sm"
+                        variants={scaleIn}
+                        custom={idx}
+                        className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-200"
                       >
-                        <Calendar className="size-4 text-blue-700" />
-                        <span className="font-medium">{DAY_NAMES[slot.dayOfWeek]}</span>
-                        <span className="text-muted-foreground">
-                          {slot.startTime} - {slot.endTime}
-                        </span>
-                      </div>
+                        {/* Gradient active indicator */}
+                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-500 rounded-r-full transition-all duration-300 group-hover:w-1.5" />
+                        <div className="ml-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-sm font-bold text-emerald-700">
+                              {DAY_SHORT[slot.dayOfWeek]}
+                            </div>
+                            <div>
+                              <p className="font-semibold text-foreground">{DAY_NAMES[slot.dayOfWeek]}</p>
+                              <p className="text-sm text-muted-foreground">
+                                {slot.startTime} - {slot.endTime}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="flex size-6 items-center justify-center rounded-full bg-emerald-50">
+                            <CheckCircle2 className="size-3.5 text-emerald-500" />
+                          </div>
+                        </div>
+                      </motion.div>
                     ))}
                 </div>
-              </div>
-              <Separator className="my-6" />
-            </>
-          )}
+                <Separator className="my-8" />
+              </motion.div>
+            )}
 
-          {/* Reviews */}
-          <div>
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Reviews</h2>
-              <span className="text-sm text-muted-foreground">{service.totalReviews} total</span>
-            </div>
-            {reviews.length > 0 ? (
-              <div className="mt-4 space-y-4">
-                {reviews.map((review) => (
-                  <Card key={review.id} className="rounded-xl">
-                    <CardContent className="p-4">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="size-9">
-                          {review.reviewer.profileImageUrl && (
-                            <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer.name} />
-                          )}
-                          <AvatarFallback className="bg-blue-100 text-xs text-blue-800">
-                            {getInitials(review.reviewer.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <p className="text-sm font-medium">{review.reviewer.name}</p>
-                          <div className="flex items-center gap-1">
-                            {Array.from({ length: review.rating }).map((_, i) => (
-                              <Star key={i} className="size-3 fill-amber-400 text-amber-400" />
-                            ))}
-                            <span className="ml-1 text-xs text-muted-foreground">
+            {/* ─── Reviews ────────────────────────────────────────────── */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={fadeUp}
+              custom={0}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 text-white shadow-sm">
+                    <Star className="size-4" />
+                  </div>
+                  <h2 className="text-lg font-bold">Reviews</h2>
+                </div>
+                <span className="rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">
+                  {service.totalReviews} total
+                </span>
+              </div>
+
+              {reviews.length > 0 ? (
+                <div className="mt-5 space-y-4">
+                  {reviews.map((review, idx) => (
+                    <motion.div
+                      key={review.id}
+                      variants={scaleIn}
+                      custom={idx}
+                      className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-100"
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Avatar with gradient ring */}
+                        <div className="relative shrink-0">
+                          <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2px]">
+                            <Avatar className="size-10 ring-2 ring-white">
+                              {review.reviewer.profileImageUrl && (
+                                <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer.name} />
+                              )}
+                              <AvatarFallback className="bg-emerald-50 text-xs font-bold text-emerald-700">
+                                {getInitials(review.reviewer.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="font-semibold text-foreground">{review.reviewer.name}</p>
+                            <span className="shrink-0 text-xs text-muted-foreground">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </span>
                           </div>
+                          <div className="mt-1 flex items-center gap-2">
+                            <GradientStars rating={review.rating} size="sm" />
+                            <span className="text-xs font-semibold text-amber-600">{review.rating}.0</span>
+                          </div>
+                          {review.comment && (
+                            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                              {review.comment}
+                            </p>
+                          )}
                         </div>
                       </div>
-                      {review.comment && (
-                        <p className="mt-2 text-sm text-muted-foreground">{review.comment}</p>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <div className="mt-4 rounded-lg border p-6 text-center">
-                <MessageSquare className="mx-auto size-8 text-muted-foreground" />
-                <p className="mt-2 text-sm text-muted-foreground">No reviews yet</p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right Column - Sidebar */}
-        <div className="space-y-6">
-          {/* Price Card */}
-          <Card className="sticky top-20 rounded-xl">
-            <CardContent className="p-6">
-              <div className="mb-4">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-blue-700">₹{service.basePrice}</span>
-                  {service.priceNegotiable && (
-                    <Badge className="ml-2 bg-amber-100 text-amber-700 hover:bg-amber-100">
-                      Negotiable
-                    </Badge>
-                  )}
+                    </motion.div>
+                  ))}
                 </div>
-                {service.serviceDurationMinutes && (
-                  <p className="mt-1 flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="size-3" /> {service.serviceDurationMinutes} minutes
-                  </p>
-                )}
-              </div>
-
-              <Button
-                className="w-full bg-blue-800 text-white hover:bg-[#1e3a5f]"
-                size="lg"
-                onClick={() => navigate('booking', { serviceId: service.id })}
-              >
-                Book Now
-              </Button>
-
-              {service.priceNegotiable && (
-                <Button
-                  variant="outline"
-                  className="mt-2 w-full border-blue-200 text-blue-800 hover:bg-blue-50"
-                  onClick={() => navigate('booking', { serviceId: service.id })}
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-10 text-center"
                 >
-                  Negotiate Price
-                </Button>
+                  <div className="flex size-16 items-center justify-center rounded-2xl bg-amber-50">
+                    <MessageSquare className="size-8 text-amber-400" />
+                  </div>
+                  <p className="mt-3 font-semibold text-foreground">No reviews yet</p>
+                  <p className="mt-1 text-sm text-muted-foreground">Be the first to share your experience</p>
+                </motion.div>
               )}
+            </motion.div>
+          </div>
 
-              <Separator className="my-4" />
+          {/* ═══════════ Right Column - Sidebar ═══════════ */}
+          <div className="space-y-6">
+            {/* ─── Glassmorphism Price Card ──────────────────────────── */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeUp}
+              custom={1}
+              className="sticky top-24"
+            >
+              <div className="glass overflow-hidden rounded-2xl shadow-xl ring-1 ring-emerald-100/50">
+                {/* Gradient top accent */}
+                <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
 
-              {/* Provider Info */}
-              <div>
-                <h3 className="mb-3 text-sm font-semibold">Service Provider</h3>
-                <div
-                  className="flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50"
-                  onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
-                >
-                  <Avatar className="size-10">
-                    {service.provider.profileImageUrl && (
-                      <AvatarImage src={service.provider.profileImageUrl} alt={service.provider.name} />
-                    )}
-                    <AvatarFallback className="bg-blue-100 text-sm text-blue-800">
-                      {getInitials(service.provider.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium">{service.provider.name}</p>
-                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <ShieldCheck className="size-3 text-blue-700" />
-                      <span>Verified Provider</span>
+                <div className="p-6">
+                  {/* Price Display */}
+                  <div className="mb-5">
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-4xl font-extrabold text-gradient">₹{service.basePrice}</span>
+                      <span className="text-sm text-muted-foreground">/service</span>
                     </div>
+                    {service.priceNegotiable && (
+                      <Badge className="mt-2 border-amber-200 bg-gradient-to-r from-amber-50 to-blue-50 text-amber-700 hover:from-amber-100 hover:to-sky-100">
+                        <Zap className="mr-1 size-3" /> Price Negotiable
+                      </Badge>
+                    )}
                   </div>
-                </div>
-                <div className="mt-2 space-y-1 text-sm text-muted-foreground">
-                  {service.totalBookings > 0 && (
-                    <p>{service.totalBookings} completed bookings</p>
-                  )}
-                  {service.averageRating > 0 && (
-                    <p className="flex items-center gap-1">
-                      <Star className="size-3 fill-amber-400 text-amber-400" />
-                      {service.averageRating.toFixed(1)} average rating
-                    </p>
-                  )}
-                </div>
-              </div>
 
-              <Separator className="my-4" />
-
-              {/* Service Details */}
-              <div className="space-y-2 text-sm">
-                {service.address && (
-                  <div className="flex items-start gap-2">
-                    <MapPin className="mt-0.5 size-4 shrink-0 text-blue-700" />
-                    <span className="text-muted-foreground">{service.address}</span>
-                  </div>
-                )}
-                {service.serviceAreaRadiusKm && (
-                  <div className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-700" />
-                    <span className="text-muted-foreground">
-                      Serves within {service.serviceAreaRadiusKm} km radius
-                    </span>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Similar Services */}
-          {similarServices.length > 0 && (
-            <div>
-              <h3 className="mb-3 text-lg font-semibold">Similar Services</h3>
-              <div className="space-y-3">
-                {similarServices.map((s) => (
-                  <Card
-                    key={s.id}
-                    className="cursor-pointer rounded-xl transition-all hover:border-blue-200 hover:shadow-md"
-                    onClick={() => {
-                      navigate('service-detail', { serviceId: s.id });
-                      window.scrollTo(0, 0);
-                    }}
+                  {/* Book Now Button with Shimmer */}
+                  <Button
+                    className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 py-6 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-500/30"
+                    size="lg"
+                    onClick={() => navigate('booking', { serviceId: service.id })}
                   >
-                    <CardContent className="flex gap-3 p-3">
-                      <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-sky-50">
-                        {s.images ? (
-                          <img
-                            src={JSON.parse(s.images)[0] || ''}
-                            alt={s.title}
-                            className="size-full object-cover"
-                          />
-                        ) : (
-                          <div className="flex size-full items-center justify-center">
-                            <Wrench className="size-6 text-blue-400" />
-                          </div>
-                        )}
+                    Book Now
+                    <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
+                  </Button>
+
+                  {service.priceNegotiable && (
+                    <Button
+                      variant="outline"
+                      className="mt-3 w-full border-emerald-200 py-5 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
+                      onClick={() => navigate('booking', { serviceId: service.id })}
+                    >
+                      Negotiate Price
+                    </Button>
+                  )}
+
+                  <Separator className="my-5" />
+
+                  {/* Provider Info */}
+                  <div>
+                    <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-muted-foreground">
+                      Service Provider
+                    </h3>
+                    <div
+                      className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-emerald-50/50"
+                      onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+                    >
+                      {/* Avatar with Gradient Ring */}
+                      <div className="relative shrink-0">
+                        <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2.5px] shadow-md shadow-emerald-500/20">
+                          <Avatar className="size-12 ring-2 ring-white">
+                            {service.provider.profileImageUrl && (
+                              <AvatarImage src={service.provider.profileImageUrl} alt={service.provider.name} />
+                            )}
+                            <AvatarFallback className="bg-emerald-50 text-sm font-bold text-emerald-700">
+                              {getInitials(service.provider.name)}
+                            </AvatarFallback>
+                          </Avatar>
+                        </div>
+                        {/* Verified Badge with Glow */}
+                        <div className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-emerald-500 shadow-md shadow-emerald-500/30 ring-2 ring-white">
+                          <ShieldCheck className="size-3 text-white" />
+                        </div>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="line-clamp-1 text-sm font-semibold">{s.title}</p>
-                        <p className="text-xs text-muted-foreground">{s.provider.name}</p>
-                        <div className="mt-1 flex items-center justify-between">
-                          <div className="flex items-center gap-0.5">
-                            <Star className="size-3 fill-amber-400 text-amber-400" />
-                            <span className="text-xs">{s.averageRating.toFixed(1)}</span>
-                          </div>
-                          <span className="text-sm font-bold text-blue-700">₹{s.basePrice}</span>
+                        <p className="truncate font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                          {service.provider.name}
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <Award className="size-3 text-emerald-500" />
+                          <span className="text-xs font-medium text-emerald-600">Verified Provider</span>
                         </div>
                       </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      <ArrowRight className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                    </div>
+
+                    {/* Provider Stats */}
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      {service.totalBookings > 0 && (
+                        <div className="rounded-xl bg-emerald-50/50 p-2.5 text-center ring-1 ring-emerald-100/50">
+                          <p className="text-lg font-bold text-emerald-700">{service.totalBookings}</p>
+                          <p className="text-xs text-emerald-600">Bookings</p>
+                        </div>
+                      )}
+                      {service.averageRating > 0 && (
+                        <div className="rounded-xl bg-amber-50/50 p-2.5 text-center ring-1 ring-amber-100/50">
+                          <div className="flex items-center justify-center gap-1">
+                            <Star className="size-4 fill-amber-400 text-amber-400" />
+                            <p className="text-lg font-bold text-amber-700">{service.averageRating.toFixed(1)}</p>
+                          </div>
+                          <p className="text-xs text-amber-600">Rating</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <Separator className="my-5" />
+
+                  {/* Service Details */}
+                  <div className="space-y-3">
+                    {service.address && (
+                      <div className="flex items-start gap-3 rounded-xl bg-gray-50/50 p-3 ring-1 ring-gray-100">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
+                          <MapPin className="size-4 text-emerald-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-muted-foreground">Location</p>
+                          <p className="text-sm font-medium text-foreground">{service.address}</p>
+                        </div>
+                      </div>
+                    )}
+                    {service.serviceAreaRadiusKm && (
+                      <div className="flex items-start gap-3 rounded-xl bg-gray-50/50 p-3 ring-1 ring-gray-100">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                          <CheckCircle2 className="size-4 text-blue-600" />
+                        </div>
+                        <div>
+                          <p className="text-xs font-medium text-muted-foreground">Service Area</p>
+                          <p className="text-sm font-medium text-foreground">
+                            Within {service.serviceAreaRadiusKm} km radius
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          )}
+            </motion.div>
+
+            {/* ─── Similar Services - Horizontal Scrollable ──────────── */}
+            {similarServices.length > 0 && (
+              <motion.div
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={fadeUp}
+                custom={0}
+              >
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
+                    <Wrench className="size-3.5" />
+                  </div>
+                  Similar Services
+                </h3>
+                <div className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                  {similarServices.map((s, idx) => {
+                    const sImages = s.images ? JSON.parse(s.images) : [];
+                    return (
+                      <motion.div
+                        key={s.id}
+                        variants={scaleIn}
+                        custom={idx}
+                        className="group w-64 shrink-0 cursor-pointer"
+                        onClick={() => {
+                          navigate('service-detail', { serviceId: s.id });
+                          window.scrollTo(0, 0);
+                        }}
+                      >
+                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1">
+                          {/* Service Image */}
+                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
+                            {sImages[0] ? (
+                              <img
+                                src={sImages[0]}
+                                alt={s.title}
+                                className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              />
+                            ) : (
+                              <div className="flex size-full items-center justify-center">
+                                <Wrench className="size-10 text-emerald-200" />
+                              </div>
+                            )}
+                            {/* Gradient overlay on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            {/* Price badge */}
+                            <div className="absolute right-2 top-2 rounded-lg bg-white/90 px-2 py-1 text-sm font-bold text-gradient backdrop-blur-sm shadow-sm">
+                              ₹{s.basePrice}
+                            </div>
+                          </div>
+                          <div className="p-3">
+                            <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                              {s.title}
+                            </p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">{s.provider.name}</p>
+                            <div className="mt-2 flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <Star className="size-3 fill-amber-400 text-amber-400" />
+                                <span className="text-xs font-semibold">{s.averageRating.toFixed(1)}</span>
+                                <span className="text-xs text-muted-foreground">({s.totalReviews})</span>
+                              </div>
+                              {s.city && (
+                                <span className="flex items-center gap-0.5 text-xs text-muted-foreground">
+                                  <MapPin className="size-2.5" /> {s.city}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            )}
+          </div>
         </div>
       </div>
     </div>

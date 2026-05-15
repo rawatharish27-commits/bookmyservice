@@ -81,14 +81,14 @@ export function AdminRevenuePage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-orange-500">
+        <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Planned Streams</p>
                 <p className="mt-1 text-2xl font-bold">{plannedStreams.length}</p>
               </div>
-              <Clock className="size-5 text-orange-600" />
+              <Clock className="size-5 text-blue-600" />
             </div>
           </CardContent>
         </Card>

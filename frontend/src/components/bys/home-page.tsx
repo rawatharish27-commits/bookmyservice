@@ -6,6 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Progress } from '@/components/ui/progress';
+import { Input } from '@/components/ui/input';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   Droplets,
   Zap,
@@ -17,10 +26,8 @@ import {
   CheckCircle2,
   CalendarCheck,
   Star,
-  Search,
   Wrench,
   Eye,
-  Activity,
   Sparkles,
   MapPin,
   ChevronLeft,
@@ -28,8 +35,6 @@ import {
   Quote,
   Clock,
   ThumbsUp,
-  Lock,
-  Phone,
   Snowflake,
   Shirt,
   ChefHat,
@@ -38,6 +43,13 @@ import {
   Truck,
   Droplet,
   Home,
+  Navigation,
+  MessageCircle,
+  UserPlus,
+  Rocket,
+  Briefcase,
+  Handshake,
+  X,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
@@ -55,12 +67,6 @@ interface Category {
   servicesCount: number;
 }
 
-interface Subcategory {
-  id: number;
-  name: string;
-  slug: string;
-}
-
 interface ServiceItem {
   id: string;
   title: string;
@@ -76,15 +82,6 @@ interface ServiceItem {
   category: { id: number; name: string; slug: string };
 }
 
-interface ReviewItem {
-  id: string;
-  rating: number;
-  comment?: string;
-  reviewer: { id: string; name: string };
-  service: { id: string; title: string };
-  createdAt: string;
-}
-
 interface PlatformStats {
   activeVisitors: number;
   totalVisitors: number;
@@ -95,211 +92,47 @@ interface PlatformStats {
   timestamp: string;
 }
 
-// ─── Helper: Generate or persist sessionId ────────────────────────────────────
-
-function getSessionId(): string {
-  if (typeof window === 'undefined') return '';
-  const KEY = 'bys_session_id';
-  let id = localStorage.getItem(KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem(KEY, id);
-  }
-  return id;
+interface LocationData {
+  city: string;
+  state: string;
+  pincode: string;
+  lat: number;
+  lng: number;
 }
 
-// ─── Helper: Dynamic Category icon map (supports all 11+ categories) ──────────
+// ─── Static 11 Service Definitions ────────────────────────────────────────────
+
+const SERVICE_CATEGORIES = [
+  { name: 'Air Conditioner', slug: 'air-conditioner', icon: 'Wind', description: 'AC repair, gas refill & servicing', image: '/images/air-conditioner.jpg' },
+  { name: 'Refrigerator', slug: 'refrigerator', icon: 'Snowflake', description: 'Fridge repair & maintenance', image: '/images/refrigerator.jpg' },
+  { name: 'Washing Machine', slug: 'washing-machine', icon: 'Shirt', description: 'Washer repair & installation', image: '/images/washing-machine.jpg' },
+  { name: 'Kitchen Appliances', slug: 'kitchen-appliances', icon: 'ChefHat', description: 'Mixer, chimney & appliance repair', image: '/images/kitchen-appliances.jpg' },
+  { name: 'TV Repair', slug: 'tv-repair', icon: 'Tv', description: 'LED, LCD & smart TV repair', image: '/images/tv-repair.jpg' },
+  { name: 'Water Purifier', slug: 'water-purifier', icon: 'Droplets', description: 'RO, UV & water filter service', image: '/images/water-purifier.jpg' },
+  { name: 'Geyser', slug: 'geyser', icon: 'Flame', description: 'Water heater repair & install', image: '/images/geyser.jpg' },
+  { name: 'Plumber', slug: 'plumber', icon: 'Wrench', description: 'Pipe fitting, leakage & plumbing', image: '/images/plumber.jpg' },
+  { name: 'Electrician', slug: 'electrician', icon: 'Zap', description: 'Wiring, switches & electrical work', image: '/images/electrician.jpg' },
+  { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', icon: 'Droplet', description: 'Tank cleaning & sanitization', image: '/images/water-tank-cleaning.jpg' },
+  { name: 'Movers and Packers', slug: 'movers-and-packers', icon: 'Truck', description: 'Home shifting & packing services', image: '/images/movers-and-packers.jpg' },
+] as const;
+
+// ─── Category Icon Map ────────────────────────────────────────────────────────
 
 const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
-  Wind: <Wind className="size-8" />,
-  Snowflake: <Snowflake className="size-8" />,
-  Shirt: <Shirt className="size-8" />,
-  ChefHat: <ChefHat className="size-8" />,
-  Tv: <Tv className="size-8" />,
-  Droplets: <Droplets className="size-8" />,
-  Flame: <Flame className="size-8" />,
-  Wrench: <Wrench className="size-8" />,
-  Zap: <Zap className="size-8" />,
-  Droplet: <Droplet className="size-8" />,
-  Truck: <Truck className="size-8" />,
+  Wind: <Wind className="size-7" />,
+  Snowflake: <Snowflake className="size-7" />,
+  Shirt: <Shirt className="size-7" />,
+  ChefHat: <ChefHat className="size-7" />,
+  Tv: <Tv className="size-7" />,
+  Droplets: <Droplets className="size-7" />,
+  Flame: <Flame className="size-7" />,
+  Wrench: <Wrench className="size-7" />,
+  Zap: <Zap className="size-7" />,
+  Droplet: <Droplet className="size-7" />,
+  Truck: <Truck className="size-7" />,
 };
 
-// Dynamic category gradient map - navy blue based per category
-const CATEGORY_BG_MAP: Record<string, string> = {
-  Wind: 'from-blue-800 via-blue-600 to-sky-400',
-  Snowflake: 'from-slate-800 via-blue-600 to-cyan-400',
-  Shirt: 'from-blue-900 via-indigo-500 to-blue-400',
-  ChefHat: 'from-slate-800 via-amber-600 to-yellow-400',
-  Tv: 'from-blue-900 via-blue-700 to-sky-400',
-  Droplets: 'from-blue-800 via-blue-500 to-cyan-400',
-  Flame: 'from-red-800 via-red-500 to-orange-400',
-  Wrench: 'from-slate-800 via-slate-600 to-blue-400',
-  Zap: 'from-blue-900 via-yellow-500 to-amber-400',
-  Droplet: 'from-blue-800 via-cyan-500 to-sky-400',
-  Truck: 'from-slate-800 via-blue-600 to-indigo-400',
-};
-
-const CATEGORY_LIGHT_BG: Record<string, string> = {
-  Wind: 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50',
-  Snowflake: 'bg-gradient-to-r from-slate-50 to-cyan-50 text-slate-700 border border-slate-100/50',
-  Shirt: 'bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 border border-indigo-100/50',
-  ChefHat: 'bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-100/50',
-  Tv: 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50',
-  Droplets: 'bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100/50',
-  Flame: 'bg-gradient-to-r from-red-50 to-orange-50 text-red-700 border border-red-100/50',
-  Wrench: 'bg-gradient-to-r from-slate-50 to-blue-50 text-slate-700 border border-slate-100/50',
-  Zap: 'bg-gradient-to-r from-blue-50 to-amber-50 text-blue-700 border border-blue-100/50',
-  Droplet: 'bg-gradient-to-r from-cyan-50 to-sky-50 text-cyan-700 border border-cyan-100/50',
-  Truck: 'bg-gradient-to-r from-slate-50 to-indigo-50 text-slate-700 border border-slate-100/50',
-};
-
-const CATEGORY_GLOW: Record<string, string> = {
-  Wind: 'shadow-blue-500/30',
-  Snowflake: 'shadow-slate-500/30',
-  Shirt: 'shadow-indigo-500/30',
-  ChefHat: 'shadow-amber-500/30',
-  Tv: 'shadow-blue-500/30',
-  Droplets: 'shadow-blue-500/30',
-  Flame: 'shadow-red-500/30',
-  Wrench: 'shadow-slate-500/30',
-  Zap: 'shadow-blue-500/30',
-  Droplet: 'shadow-cyan-500/30',
-  Truck: 'shadow-slate-500/30',
-};
-
-// Default fallback values
-const DEFAULT_BG = 'from-blue-900 via-blue-700 to-sky-400';
-const DEFAULT_LIGHT_BG = 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50';
-const DEFAULT_GLOW = 'shadow-blue-500/30';
-
-// ─── Animated Counter ─────────────────────────────────────────────────────────
-
-function AnimatedCounter({ value, loading, className = '' }: { value: number; loading: boolean; className?: string }) {
-  const [display, setDisplay] = useState(0);
-  const ref = useRef(value);
-
-  useEffect(() => {
-    if (loading) return;
-    const start = ref.current;
-    const end = value;
-    const duration = 1200;
-    const startTime = performance.now();
-
-    function animate(currentTime: number) {
-      const elapsed = currentTime - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setDisplay(Math.round(start + (end - start) * eased));
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        ref.current = end;
-      }
-    }
-    requestAnimationFrame(animate);
-  }, [value, loading]);
-
-  if (loading) return <span className={`inline-block h-7 w-16 animate-pulse rounded-md bg-accent ${className}`} />;
-  return <span className={className}>{display.toLocaleString()}</span>;
-}
-
-// ─── Rotating Text Component ──────────────────────────────────────────────────
-
-function RotatingText({ words }: { words: string[] }) {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % words.length);
-    }, 2500);
-    return () => clearInterval(timer);
-  }, [words.length]);
-
-  return (
-    <AnimatePresence mode="wait">
-      <motion.span
-        key={words[index]}
-        initial={{ y: 30, opacity: 0, scale: 0.85 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
-        exit={{ y: -30, opacity: 0, scale: 1.15 }}
-        transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-        className="inline-block text-gradient"
-        style={{ textShadow: '0 0 40px rgba(30,58,95,0.5), 0 0 80px rgba(59,130,246,0.25), 0 0 120px rgba(14,165,233,0.15)' }}
-      >
-        {words[index]}
-      </motion.span>
-    </AnimatePresence>
-  );
-}
-
-// ─── 3D Tilt Card ─────────────────────────────────────────────────────────────
-
-function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = ((y - centerY) / centerY) * -6;
-    const rotateY = ((x - centerX) / centerX) * 6;
-    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    if (!cardRef.current) return;
-    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-  }, []);
-
-  return (
-    <div
-      ref={cardRef}
-      className={`transition-transform duration-300 ease-out ${className}`}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {children}
-    </div>
-  );
-}
-
-// ─── Skeleton Components ──────────────────────────────────────────────────────
-
-function CategorySkeleton() {
-  return (
-    <Card className="overflow-hidden rounded-2xl">
-      <Skeleton className="h-48 w-full" />
-      <CardContent className="p-6">
-        <Skeleton className="mb-3 size-14 rounded-2xl" />
-        <Skeleton className="mb-2 h-6 w-28" />
-        <Skeleton className="mb-4 h-4 w-40" />
-        <div className="flex gap-2">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-7 w-20 rounded-full" />
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ServiceSkeleton() {
-  return (
-    <Card className="overflow-hidden rounded-2xl">
-      <Skeleton className="aspect-video w-full" />
-      <CardContent className="p-4">
-        <Skeleton className="mb-2 h-5 w-3/4" />
-        <Skeleton className="mb-2 h-4 w-1/2" />
-        <Skeleton className="h-4 w-1/4" />
-      </CardContent>
-    </Card>
-  );
-}
-
-// ─── Testimonial Data (real reviews from API or defaults) ─────────────────────
+// ─── Testimonial Data ─────────────────────────────────────────────────────────
 
 interface Testimonial {
   name: string;
@@ -353,6 +186,100 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
   },
 ];
 
+// ─── Animated Counter ─────────────────────────────────────────────────────────
+
+function AnimatedCounter({ value, loading, className = '' }: { value: number; loading: boolean; className?: string }) {
+  const [display, setDisplay] = useState(0);
+  const ref = useRef(value);
+
+  useEffect(() => {
+    if (loading) return;
+    const start = ref.current;
+    const end = value;
+    const duration = 1200;
+    const startTime = performance.now();
+
+    function animate(currentTime: number) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(start + (end - start) * eased));
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        ref.current = end;
+      }
+    }
+    requestAnimationFrame(animate);
+  }, [value, loading]);
+
+  if (loading) return <span className={`inline-block h-7 w-16 animate-pulse rounded-md bg-[#1e3a5f]/20 ${className}`} />;
+  return <span className={className}>{display.toLocaleString()}</span>;
+}
+
+// ─── Rotating Text Component ──────────────────────────────────────────────────
+
+function RotatingText({ words }: { words: string[] }) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % words.length);
+    }, 2500);
+    return () => clearInterval(timer);
+  }, [words.length]);
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.span
+        key={words[index]}
+        initial={{ y: 30, opacity: 0, scale: 0.85 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: -30, opacity: 0, scale: 1.15 }}
+        transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+        className="inline-block bg-gradient-to-r from-sky-300 via-blue-200 to-cyan-300 bg-clip-text text-transparent"
+        style={{ textShadow: '0 0 40px rgba(30,58,95,0.5), 0 0 80px rgba(59,130,246,0.25)' }}
+      >
+        {words[index]}
+      </motion.span>
+    </AnimatePresence>
+  );
+}
+
+// ─── 3D Tilt Card ─────────────────────────────────────────────────────────────
+
+function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -6;
+    const rotateY = ((x - centerX) / centerX) * 6;
+    cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    if (!cardRef.current) return;
+    cardRef.current.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+  }, []);
+
+  return (
+    <div
+      ref={cardRef}
+      className={`transition-transform duration-300 ease-out ${className}`}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </div>
+  );
+}
+
 // ─── Testimonial Carousel ─────────────────────────────────────────────────────
 
 function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) {
@@ -367,14 +294,8 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
     return () => clearInterval(timer);
   }, [autoPlay, testimonials.length]);
 
-  const next = () => {
-    setAutoPlay(false);
-    setCurrent((prev) => (prev + 1) % testimonials.length);
-  };
-  const prev = () => {
-    setAutoPlay(false);
-    setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+  const next = () => { setAutoPlay(false); setCurrent((prev) => (prev + 1) % testimonials.length); };
+  const prev = () => { setAutoPlay(false); setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length); };
 
   const t = testimonials[current];
 
@@ -389,40 +310,32 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
           className="relative overflow-hidden rounded-3xl p-8 text-center shadow-2xl sm:p-12"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(239,246,255,0.7) 40%, rgba(240,249,255,0.6) 70%, rgba(255,255,255,0.9) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(239,246,255,0.8) 40%, rgba(240,249,255,0.7) 70%, rgba(255,255,255,0.95) 100%)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(30,58,95,0.15)',
+            border: '1px solid rgba(30,58,95,0.12)',
           }}
         >
-          {/* Decorative gradient blob */}
-          <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-gradient-to-br from-blue-200/30 to-sky-200/20 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-12 -left-12 size-40 rounded-full bg-gradient-to-br from-slate-200/20 to-blue-200/15 blur-2xl" />
-
+          <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-gradient-to-br from-[#1e3a5f]/10 to-sky-200/10 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-12 -left-12 size-40 rounded-full bg-gradient-to-br from-slate-200/15 to-[#1e3a5f]/5 blur-2xl" />
           <div className="relative">
-            <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/10 to-sky-500/10">
-              <Quote className="size-7 text-blue-500/60" />
+            <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f]/10 to-[#2d5a8e]/10">
+              <Quote className="size-7 text-[#1e3a5f]/60" />
             </div>
-            <p className="mb-7 text-lg leading-relaxed text-foreground/85 sm:text-xl sm:leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
+            <p className="mb-7 text-lg leading-relaxed text-foreground/85 sm:text-xl">&ldquo;{t.quote}&rdquo;</p>
             <div className="mb-5 flex items-center justify-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star
-                  key={i}
-                  className={`size-5 ${i < t.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]' : 'fill-gray-200 text-gray-200'}`}
-                />
+                <Star key={i} className={`size-5 ${i < t.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]' : 'fill-gray-200 text-gray-200'}`} />
               ))}
             </div>
             <div className="flex items-center justify-center gap-4">
-              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-500 text-base font-bold text-white shadow-lg shadow-blue-500/30 ring-2 ring-white/50">
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-base font-bold text-white shadow-lg shadow-[#1e3a5f]/30 ring-2 ring-white/50">
                 {t.avatar}
               </div>
               <div className="text-left">
                 <p className="text-base font-semibold text-foreground">{t.name}</p>
                 <p className="text-sm text-muted-foreground">{t.role}</p>
               </div>
-              <Badge
-                className="ml-2 border-blue-200/60 bg-gradient-to-r from-blue-50 to-sky-50 px-3 py-1 text-blue-700"
-                variant="outline"
-              >
+              <Badge className="ml-2 border-[#1e3a5f]/20 bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5 px-3 py-1 text-[#1e3a5f]" variant="outline">
                 {t.service}
               </Badge>
             </div>
@@ -430,30 +343,16 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
         </motion.div>
       </AnimatePresence>
 
-      {/* Navigation */}
       <div className="mt-8 flex items-center justify-center gap-5">
-        <button
-          onClick={prev}
-          className="group flex size-11 items-center justify-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-sm transition-all duration-300 hover:bg-blue-50 hover:shadow-md hover:border-blue-300 hover:scale-110"
-          aria-label="Previous testimonial"
-        >
+        <button onClick={prev} className="group flex size-11 items-center justify-center rounded-full border border-[#1e3a5f]/20 bg-white text-[#1e3a5f] shadow-sm transition-all duration-300 hover:bg-[#0a1628]/5 hover:shadow-md hover:scale-110" aria-label="Previous testimonial">
           <ChevronLeft className="size-5 transition-transform group-hover:-translate-x-0.5" />
         </button>
         <div className="flex gap-2.5">
           {testimonials.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => { setCurrent(idx); setAutoPlay(false); }}
-              className={`h-3 rounded-full transition-all duration-400 ${idx === current ? 'w-10 bg-gradient-to-r from-blue-800 to-sky-400 shadow-md shadow-blue-400/40' : 'w-3 bg-blue-200 hover:bg-blue-300 hover:scale-125'}`}
-              aria-label={`Go to testimonial ${idx + 1}`}
-            />
+            <button key={idx} onClick={() => { setCurrent(idx); setAutoPlay(false); }} className={`h-3 rounded-full transition-all duration-400 ${idx === current ? 'w-10 bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] shadow-md shadow-[#1e3a5f]/30' : 'w-3 bg-[#1e3a5f]/20 hover:bg-[#1e3a5f]/30 hover:scale-125'}`} aria-label={`Go to testimonial ${idx + 1}`} />
           ))}
         </div>
-        <button
-          onClick={next}
-          className="group flex size-11 items-center justify-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-sm transition-all duration-300 hover:bg-blue-50 hover:shadow-md hover:border-blue-300 hover:scale-110"
-          aria-label="Next testimonial"
-        >
+        <button onClick={next} className="group flex size-11 items-center justify-center rounded-full border border-[#1e3a5f]/20 bg-white text-[#1e3a5f] shadow-sm transition-all duration-300 hover:bg-[#0a1628]/5 hover:shadow-md hover:scale-110" aria-label="Next testimonial">
           <ChevronRight className="size-5 transition-transform group-hover:translate-x-0.5" />
         </button>
       </div>
@@ -467,49 +366,80 @@ export function HomePage() {
   const { navigate } = useApp();
   const { user } = useAuth();
 
-  // Data fetching - REAL API only, no mock/demo data
-  const { data: categoriesData, loading: categoriesLoading, refetch: refetchCategories } = useApi<{ categories: Category[]; total: number }>('/api/categories');
+  // Data fetching
+  const { data: categoriesData, loading: categoriesLoading } = useApi<{ categories: Category[]; total: number }>('/api/categories');
   const { data: servicesData, loading: servicesLoading } = useApi<{ services: ServiceItem[]; pagination: { total: number } }>('/api/services?limit=6');
 
   const categories = categoriesData?.categories || [];
   const services = servicesData?.services || [];
 
-  // Subcategories per category
-  const [subcategoriesMap, setSubcategoriesMap] = useState<Record<number, Subcategory[]>>({});
+  // Location state
+  const geoAvailable = typeof window !== 'undefined' && !!navigator.geolocation;
+  const [location, setLocation] = useState<LocationData | null>(null);
+  const [locationLoading, setLocationLoading] = useState(geoAvailable);
+  const [locationError, setLocationError] = useState(!geoAvailable);
+  const [pincodeInput, setPincodeInput] = useState('');
 
-  // Real-time stats from API
+  // Area activation state
+  const [areaProviders, setAreaProviders] = useState(0);
+  const [areaCustomers, setAreaCustomers] = useState(0);
+
+  // Popup funnel state
+  const [showPopup, setShowPopup] = useState(false);
+  const [dontShowAgain, setDontShowAgain] = useState(false);
+
+  // Real-time stats
   const [liveStats, setLiveStats] = useState<PlatformStats | null>(null);
 
-  // ─── Fetch subcategories for each category ──────────────────────────────────
+  // Horizontal scroll ref
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Service availability - check if providers exist in user's area
+  const hasProvidersInArea = areaProviders > 0;
+  const hasLimitedServices = areaProviders > 0 && areaProviders < 10;
+
+  // ─── Auto Location Detection ──────────────────────────────────────────────
 
   useEffect(() => {
-    if (categories.length === 0) return;
-    async function fetchSubcategories() {
-      const map: Record<number, Subcategory[]> = {};
-      await Promise.all(
-        categories.map(async (cat) => {
-          try {
-            const res = await fetch(apiUrl(`/api/subcategories?categoryId=${cat.id}`));
-            if (res.ok) {
-              const data = await res.json();
-              map[cat.id] = data.subcategories || data;
-            }
-          } catch {
-            // ignore
+    if (!geoAvailable) return;
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&accept-language=en`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data.address || {};
+            setLocation({
+              city: addr.city || addr.town || addr.village || addr.county || 'Unknown',
+              state: addr.state || '',
+              pincode: addr.postcode || '',
+              lat: latitude,
+              lng: longitude,
+            });
+          } else {
+            setLocation({ city: 'Your Area', state: '', pincode: '', lat: latitude, lng: longitude });
           }
-        })
-      );
-      if (Object.keys(map).length > 0) {
-        setSubcategoriesMap(map);
-      }
-    }
-    fetchSubcategories();
-  }, [categories]);
+        } catch {
+          setLocation({ city: 'Your Area', state: '', pincode: '', lat: latitude, lng: longitude });
+        }
+        setLocationLoading(false);
+      },
+      () => {
+        setLocationLoading(false);
+        setLocationError(true);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+    );
+  }, [geoAvailable]);
 
-  // ─── Fetch live stats from API ──────────────────────────────────────────────
+  // ─── Fetch area activation data ────────────────────────────────────────────
 
   useEffect(() => {
-    async function fetchStats() {
+    async function fetchAreaData() {
       try {
         const res = await fetch(apiUrl('/api/stats/platform'));
         if (res.ok) {
@@ -523,15 +453,92 @@ export function HomePage() {
             totalBookings: data.totalBookings || 0,
             timestamp: new Date().toISOString(),
           });
+          setAreaProviders(data.totalProviders || 0);
+          setAreaCustomers(data.totalClients || data.totalUsers || 0);
         }
       } catch {
-        // Stats will remain null - shows loading state
+        // Will use defaults (0)
       }
     }
-    fetchStats();
-    const interval = setInterval(fetchStats, 30000);
+    fetchAreaData();
+    const interval = setInterval(fetchAreaData, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // ─── Popup Funnel Logic ────────────────────────────────────────────────────
+
+  useEffect(() => {
+    const dismissed = localStorage.getItem('bys_popup_dismissed');
+    if (!dismissed) {
+      const timer = setTimeout(() => setShowPopup(true), 2000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  const closePopup = (permanent: boolean) => {
+    setShowPopup(false);
+    if (permanent) {
+      localStorage.setItem('bys_popup_dismissed', 'true');
+      setDontShowAgain(true);
+    }
+  };
+
+  // ─── Horizontal Scroll Handlers ────────────────────────────────────────────
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+  };
+
+  // ─── WhatsApp Referral ─────────────────────────────────────────────────────
+
+  const openWhatsAppReferral = () => {
+    const message = encodeURIComponent(
+      'Hamare area me Book My Service start ho raha hai. Agar aap AC repair / electrician / plumber service provide karte ho to join karo aur customers pao. 🛠️🏠'
+    );
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+  };
+
+  const openWhatsAppProviderReferral = () => {
+    const message = encodeURIComponent(
+      'BookYourService me ek bahut achha opportunity hai! Agar aap koi service provider jaante ho (AC repair, plumber, electrician), unhe refer karein aur 5% referral commission paayein har booking pe. 🤝'
+    );
+    window.open(`https://wa.me/?text=${message}`, '_blank');
+  };
+
+  // ─── Pincode Lookup ────────────────────────────────────────────────────────
+
+  const handlePincodeLookup = async () => {
+    if (!pincodeInput || pincodeInput.length < 5) return;
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${pincodeInput}+India&addressdetails=1&limit=1`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data[0]) {
+          const addr = data[0].address || {};
+          setLocation({
+            city: addr.city || addr.town || addr.village || addr.county || pincodeInput,
+            state: addr.state || '',
+            pincode: pincodeInput,
+            lat: parseFloat(data[0].lat),
+            lng: parseFloat(data[0].lon),
+          });
+          setLocationError(false);
+        }
+      }
+    } catch {
+      // Keep existing state
+    }
+  };
 
   // ─── Motion Variants ────────────────────────────────────────────────────────
 
@@ -544,70 +551,39 @@ export function HomePage() {
     }),
   };
 
-  const fadeIn = {
-    hidden: { opacity: 0 },
-    visible: { opacity: 1, transition: { duration: 0.8 } },
-  };
-
-  const scaleIn = {
-    hidden: { opacity: 0, scale: 0.9, y: 20 },
-    visible: (i: number) => ({
-      opacity: 1,
-      scale: 1,
-      y: 0,
-      transition: { delay: i * 0.15, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
-    }),
-  };
-
   const staggerContainer = {
     hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.12 },
-    },
+    visible: { opacity: 1, transition: { staggerChildren: 0.12 } },
+  };
+
+  // ─── Map API categories to our service definitions ────────────────────────
+
+  const getServiceAvailability = (slug: string): boolean => {
+    const apiCategory = categories.find((c) => c.slug === slug);
+    if (apiCategory) return (apiCategory.servicesCount || 0) > 0;
+    return false;
   };
 
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="flex flex-col">
-      {/* ═══════════ Navy Blue Announcement Bar ═══════════ */}
+      {/* ═══════════ 1. Announcement Bar (Navy Blue) ═══════════ */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2d5a8e 100%)' }}>
         <div className="pointer-events-none absolute inset-0">
-          <motion.div
-            className="absolute left-[8%] top-1/2 -translate-y-1/2 size-24 rounded-full bg-white/5"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
-            transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute right-[12%] top-1/2 -translate-y-1/2 size-16 rounded-full bg-white/5"
-            animate={{ scale: [1.3, 1, 1.3], opacity: [0.1, 0.25, 0.1] }}
-            transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          />
+          <motion.div className="absolute left-[8%] top-1/2 -translate-y-1/2 size-24 rounded-full bg-white/5" animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.div className="absolute right-[12%] top-1/2 -translate-y-1/2 size-16 rounded-full bg-white/5" animate={{ scale: [1.3, 1, 1.3], opacity: [0.1, 0.25, 0.1] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }} />
         </div>
-
         <div className="relative mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="flex items-center gap-3"
-            >
+            <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="flex items-center gap-3">
               <Sparkles className="size-5 text-sky-300" />
               <p className="text-sm font-medium text-blue-100">
                 <span className="font-bold text-white">First 100 Clients</span> — Get FREE Subscription for 1 Year!
               </p>
             </motion.div>
-
             <div className="hidden h-4 w-px bg-white/20 sm:block" />
-
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="flex items-center gap-3"
-            >
+            <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="flex items-center gap-3">
               <ShieldCheck className="size-5 text-sky-300" />
               <p className="text-sm font-medium text-blue-100">
                 <span className="font-bold text-white">First 50 Providers</span> — Get FREE Subscription for 1 Year!
@@ -617,263 +593,122 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 20%, #2d5a8e 45%, #3b82f6 70%, #0ea5e9 100%)' }}>
-        {/* Mesh gradient background */}
+      {/* ═══════════ 2. Hero Section (Navy Blue Gradient) ═══════════ */}
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 25%, #2d5a8e 50%, #1e3a5f 75%, #0a1628 100%)' }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          {/* Large gradient orbs */}
-          <div className="absolute -left-40 -top-40 size-[800px] rounded-full bg-gradient-to-br from-blue-700/30 to-sky-400/20 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[700px] rounded-full bg-gradient-to-tl from-blue-500/30 to-slate-400/15 blur-3xl" />
-          <div className="absolute left-1/2 top-1/4 size-[400px] -translate-x-1/2 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-400/10 blur-3xl" />
-          <div className="absolute right-1/4 bottom-1/4 size-[300px] rounded-full bg-gradient-to-br from-indigo-500/10 to-blue-400/5 blur-3xl" />
-          {/* Deep blue accent orb */}
-          <div className="absolute left-1/4 top-1/2 size-[250px] rounded-full bg-gradient-to-br from-blue-600/15 to-sky-400/8 blur-3xl" />
-          {/* Light accent orb */}
-          <div className="absolute right-1/3 top-1/5 size-[200px] rounded-full bg-gradient-to-br from-sky-400/15 to-cyan-300/8 blur-3xl" />
-
-          {/* Animated floating shapes */}
-          <motion.div
-            className="absolute -left-20 -top-20 size-96 rounded-full bg-sky-400/[0.06]"
-            animate={{ x: [0, 50, 0], y: [0, -40, 0] }}
-            transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute -bottom-10 right-10 size-72 rounded-full bg-blue-400/[0.06]"
-            animate={{ x: [0, -40, 0], y: [0, 40, 0] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute left-1/4 top-1/4 size-48 rounded-full bg-sky-400/[0.05]"
-            animate={{ scale: [1, 1.4, 1] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute right-1/4 top-1/3 size-36 rounded-full bg-blue-300/[0.06]"
-            animate={{ x: [0, -25, 0], y: [0, 30, 0] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute left-1/6 bottom-1/3 size-28 rounded-full bg-sky-400/[0.05]"
-            animate={{ x: [0, 30, 0], scale: [1, 1.3, 1] }}
-            transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
-          />
-
-          {/* Particle-like dots animation */}
-          {Array.from({ length: 25 }).map((_, i) => {
+          <div className="absolute -left-40 -top-40 size-[800px] rounded-full bg-gradient-to-br from-[#2d5a8e]/30 to-sky-400/15 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[700px] rounded-full bg-gradient-to-tl from-[#1e3a5f]/25 to-slate-400/10 blur-3xl" />
+          <motion.div className="absolute -left-20 -top-20 size-96 rounded-full bg-sky-400/[0.06]" animate={{ x: [0, 50, 0], y: [0, -40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
+          <motion.div className="absolute -bottom-10 right-10 size-72 rounded-full bg-[#2d5a8e]/[0.06]" animate={{ x: [0, -40, 0], y: [0, 40, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
+          {Array.from({ length: 20 }).map((_, i) => {
             const seed = (i * 2654435761) >>> 0;
-            const w = 2 + (seed % 300) / 100;
-            const h = 2 + ((seed * 7) % 300) / 100;
-            const l = (seed * 13) % 100;
-            const t = (seed * 17) % 100;
-            const dur = 2 + (seed % 300) / 100;
-            const del = (seed * 3 % 300) / 100;
             return (
               <motion.div
-                key={`particle-${i}`}
-                className="absolute rounded-full bg-white/[0.12]"
-                style={{
-                  width: `${w}px`,
-                  height: `${h}px`,
-                  left: `${l}%`,
-                  top: `${t}%`,
-                }}
-                animate={{
-                  opacity: [0, 0.7, 0],
-                  scale: [0.5, 1.2, 0.5],
-                }}
-                transition={{
-                  duration: dur,
-                  repeat: Infinity,
-                  delay: del,
-                  ease: 'easeInOut',
-                }}
+                key={`p-${i}`}
+                className="absolute rounded-full bg-white/[0.08]"
+                style={{ width: `${2 + (seed % 300) / 100}px`, height: `${2 + ((seed * 7) % 300) / 100}px`, left: `${(seed * 13) % 100}%`, top: `${(seed * 17) % 100}%` }}
+                animate={{ opacity: [0, 0.7, 0], scale: [0.5, 1.2, 0.5] }}
+                transition={{ duration: 2 + (seed % 300) / 100, repeat: Infinity, delay: (seed * 3 % 300) / 100, ease: 'easeInOut' }}
               />
             );
           })}
-
-          {/* Grid pattern overlay */}
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
-            }}
-          />
+          <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-44">
-          <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-24">
-            <motion.div
-              initial="hidden"
-              animate="visible"
-              variants={staggerContainer}
-            >
+        <div className="relative mx-auto max-w-7xl px-4 py-20 sm:px-6 sm:py-28 lg:px-8 lg:py-40">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+            <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
               <motion.div variants={fadeUp} custom={0}>
-                <Badge className="mb-8 border-blue-300/20 bg-blue-500/20 px-5 py-2 text-blue-100 hover:bg-blue-500/30 text-sm">
+                <Badge className="mb-6 border-sky-300/20 bg-[#1e3a5f]/50 px-5 py-2 text-sky-100 hover:bg-[#1e3a5f]/60 text-sm">
                   <Sparkles className="mr-2 size-4" /> India&apos;s Trusted Home Service Platform
                 </Badge>
               </motion.div>
 
-              <motion.h1
-                variants={fadeUp}
-                custom={1}
-                className="text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl"
-              >
+              <motion.h1 variants={fadeUp} custom={1} className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Expert{' '}
                 <RotatingText words={['AC Repair', 'Plumbing', 'Electrical', 'Appliance Repair']} />
                 <br />
-                <span className="text-gradient" style={{ textShadow: '0 0 40px rgba(30,58,95,0.5), 0 0 80px rgba(59,130,246,0.3)' }}>at Your Doorstep</span>
+                <span className="bg-gradient-to-r from-sky-300 via-blue-200 to-cyan-300 bg-clip-text text-transparent" style={{ textShadow: '0 0 40px rgba(30,58,95,0.5)' }}>at Your Doorstep</span>
               </motion.h1>
 
-              <motion.p
-                variants={fadeUp}
-                custom={2}
-                className="mt-8 max-w-xl text-lg leading-relaxed text-blue-100/70 sm:text-xl"
-              >
+              <motion.p variants={fadeUp} custom={2} className="mt-6 max-w-xl text-lg leading-relaxed text-blue-100/70">
                 Book verified professionals for AC repair, plumbing, electrical, appliance repair, and more.
                 Quality work, transparent pricing, and our satisfaction guarantee.
               </motion.p>
 
-              {/* Real-time visitor counter */}
-              <motion.div
-                variants={fadeUp}
-                custom={3}
-                className="mt-6 flex items-center gap-2.5"
-              >
-                <span className="relative flex size-3.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-300 opacity-75" />
-                  <span className="relative inline-flex size-3.5 rounded-full bg-sky-300 shadow-md shadow-sky-300/50" />
+              {/* Location Detection Display */}
+              <motion.div variants={fadeUp} custom={3} className="mt-5 flex items-center gap-2.5">
+                <Navigation className="size-4 text-sky-300" />
+                {locationLoading ? (
+                  <span className="text-sm text-blue-200">📍 Detecting your location...</span>
+                ) : location ? (
+                  <span className="text-sm text-blue-200">📍 {location.city}{location.state ? `, ${location.state}` : ''}</span>
+                ) : (
+                  <span className="text-sm text-blue-200/70">📍 Location unavailable</span>
+                )}
+                <span className="relative flex size-3">
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-300/60" />
+                  <span className="relative inline-flex size-3 rounded-full bg-sky-300 shadow-md shadow-sky-300/50" />
                 </span>
                 <span className="text-sm font-medium text-blue-200">
-                  <AnimatedCounter value={liveStats?.activeVisitors || 0} loading={!liveStats} className="font-bold" />{' '}
-                  {liveStats?.activeVisitors === 1 ? 'person' : 'people'} viewing right now
+                  <AnimatedCounter value={liveStats?.activeVisitors || 0} loading={!liveStats} className="font-bold" /> viewing
                 </span>
               </motion.div>
 
-              <motion.div
-                variants={fadeUp}
-                custom={4}
-                className="mt-10 flex flex-col gap-4 sm:flex-row sm:flex-wrap"
-              >
-                <Button
-                  size="lg"
-                  onClick={() => navigate('categories')}
-                  className="shimmer group h-13 bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 px-10 text-base font-bold text-white shadow-xl shadow-blue-500/30 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600 hover:shadow-2xl hover:shadow-blue-500/40"
-                >
-                  Book a Service
-                  <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
+              <motion.div variants={fadeUp} custom={4} className="mt-8 flex flex-col gap-4 sm:flex-row sm:flex-wrap">
+                <Button size="lg" onClick={() => navigate('categories')} className="group h-13 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] px-10 text-base font-bold text-white shadow-xl shadow-[#1e3a5f]/30 hover:from-[#0a1628] hover:via-[#2d5a8e] hover:to-sky-600 hover:shadow-2xl hover:shadow-[#1e3a5f]/40">
+                  Book a Service <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
                 </Button>
                 {!user && (
                   <>
-                    <Button
-                      size="lg"
-                      onClick={() => navigate('login')}
-                      className="h-13 border-2 border-sky-300/40 bg-gradient-to-r from-blue-600/30 to-sky-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-sky-300/60 hover:from-blue-600/40 hover:to-sky-600/40 hover:shadow-xl"
-                    >
+                    <Button size="lg" onClick={() => navigate('login')} className="h-13 border-2 border-sky-300/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-sky-300/60 hover:bg-[#1e3a5f]/40">
                       Client Login
                     </Button>
-                    <Button
-                      size="lg"
-                      variant="outline"
-                      onClick={() => navigate('register')}
-                      className="h-13 border-blue-300/30 text-base text-blue-100 hover:bg-blue-600/15 hover:border-blue-300/50"
-                    >
+                    <Button size="lg" variant="outline" onClick={() => navigate('register')} className="h-13 border-[#2d5a8e]/40 text-base text-blue-100 hover:bg-[#1e3a5f]/15 hover:border-[#2d5a8e]/60">
                       Join as Provider
                     </Button>
                   </>
                 )}
                 {user && user.role === 'CLIENT' && (
-                  <Button
-                    size="lg"
-                    onClick={() => navigate('client-dashboard')}
-                    className="h-13 border-2 border-sky-300/40 bg-gradient-to-r from-blue-600/30 to-sky-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-sky-300/60 hover:from-blue-600/40 hover:to-sky-600/40"
-                  >
+                  <Button size="lg" onClick={() => navigate('client-dashboard')} className="h-13 border-2 border-sky-300/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-sky-300/60">
                     My Dashboard
                   </Button>
                 )}
                 {user && user.role === 'PROVIDER' && (
-                  <Button
-                    size="lg"
-                    onClick={() => navigate('provider-dashboard')}
-                    className="h-13 border-2 border-blue-300/40 bg-gradient-to-r from-blue-600/30 to-slate-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-blue-300/60 hover:from-blue-600/40 hover:to-slate-600/40"
-                  >
+                  <Button size="lg" onClick={() => navigate('provider-dashboard')} className="h-13 border-2 border-[#2d5a8e]/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-[#2d5a8e]/60">
                     Provider Dashboard
                   </Button>
                 )}
               </motion.div>
             </motion.div>
 
-            {/* Hero visual - "Your Home, Our Expertise" concept */}
-            <motion.div
-              className="hidden lg:flex lg:items-center lg:justify-center"
-              initial="hidden"
-              animate="visible"
-              variants={fadeIn}
-            >
-              <div className="relative flex size-[440px] items-center justify-center">
-                {/* Outer glow rings */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/15 to-sky-400/8 blur-3xl" />
-                <motion.div
-                  className="absolute inset-4 rounded-full border border-white/[0.08]"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 60, repeat: Infinity, ease: 'linear' }}
-                />
+            {/* Hero Visual - Floating Icons */}
+            <motion.div className="hidden lg:flex lg:items-center lg:justify-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
+              <div className="relative flex size-[400px] items-center justify-center">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#2d5a8e]/15 to-sky-400/8 blur-3xl" />
+                <motion.div className="absolute inset-4 rounded-full border border-white/[0.08]" animate={{ rotate: 360 }} transition={{ duration: 60, repeat: Infinity, ease: 'linear' }} />
                 <div className="absolute inset-12 rounded-full border border-white/[0.05]" />
-                <div className="absolute inset-24 rounded-full border border-white/[0.03]" />
 
-                {/* Rotating dots on outer ring */}
-                {[0, 60, 120, 180, 240, 300].map((angle, i) => (
-                  <motion.div
-                    key={`orbit-dot-${i}`}
-                    className="absolute size-2 rounded-full bg-blue-400/40"
-                    style={{
-                      left: '50%',
-                      top: '50%',
-                      transformOrigin: '0 0',
-                      transform: `rotate(${angle}deg) translateX(200px) translate(-50%, -50%)`,
-                    }}
-                    animate={{ opacity: [0.3, 0.8, 0.3] }}
-                    transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
-                  />
-                ))}
-
-                {/* Floating service icon - AC/Wind */}
-                <motion.div
-                  className="absolute -left-4 top-4 float-animation"
-                  animate={{ y: [0, -20, 0] }}
-                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500/25 to-sky-400/15 shadow-2xl shadow-blue-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Wind className="size-12 text-blue-200 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
+                {/* Floating service icons */}
+                <motion.div className="absolute -left-4 top-4" animate={{ y: [0, -20, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}>
+                  <div className="flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#1e3a5f]/40 to-sky-400/20 shadow-2xl shadow-[#1e3a5f]/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Wind className="size-10 text-sky-200 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
+                  </div>
+                </motion.div>
+                <motion.div className="absolute right-0 top-16" animate={{ y: [0, 18, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
+                  <div className="flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-slate-500/30 to-[#2d5a8e]/15 shadow-2xl shadow-slate-500/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Wrench className="size-10 text-slate-200 drop-shadow-[0_0_12px_rgba(203,213,225,0.6)]" />
+                  </div>
+                </motion.div>
+                <motion.div className="absolute bottom-4 left-1/2 -translate-x-1/2" animate={{ y: [0, -15, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
+                  <div className="flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500/30 to-[#1e3a5f]/15 shadow-2xl shadow-sky-500/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Zap className="size-10 text-sky-200 drop-shadow-[0_0_12px_rgba(125,211,252,0.6)]" />
                   </div>
                 </motion.div>
 
-                {/* Floating service icon - Plumbing/Wrench */}
-                <motion.div
-                  className="absolute right-0 top-16"
-                  animate={{ y: [0, 18, 0] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-slate-500/25 to-blue-400/15 shadow-2xl shadow-slate-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Wrench className="size-12 text-slate-200 drop-shadow-[0_0_12px_rgba(203,213,225,0.6)]" />
-                  </div>
-                </motion.div>
-
-                {/* Floating service icon - Electrical/Zap */}
-                <motion.div
-                  className="absolute bottom-4 left-1/2 -translate-x-1/2"
-                  animate={{ y: [0, -15, 0] }}
-                  transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500/25 to-blue-400/15 shadow-2xl shadow-sky-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Zap className="size-12 text-sky-200 drop-shadow-[0_0_12px_rgba(125,211,252,0.6)]" />
-                  </div>
-                </motion.div>
-
-                {/* Center element - "Your Home, Our Expertise" */}
-                <div className="rounded-3xl bg-white/10 px-10 py-6 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20">
-                  <Home className="mx-auto mb-2 size-8 text-sky-200/80" />
-                  <p className="text-2xl font-bold text-white">Your Home</p>
+                <div className="rounded-3xl bg-white/10 px-8 py-5 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20">
+                  <Home className="mx-auto mb-2 size-7 text-sky-200/80" />
+                  <p className="text-xl font-bold text-white">Your Home</p>
                   <p className="text-sm font-medium text-blue-200/80">Our Expertise</p>
                 </div>
               </div>
@@ -881,7 +716,6 @@ export function HomePage() {
           </div>
         </div>
 
-        {/* Bottom wave separator */}
         <div className="absolute bottom-0 left-0 right-0">
           <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
             <path d="M0 100V50C180 80 360 20 540 50C720 80 900 20 1080 50C1260 80 1350 35 1440 50V100H0Z" fill="white" fillOpacity="0.95" />
@@ -889,483 +723,657 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════ Live Stats Bar ═══════════ */}
-      <section className="relative z-10 -mt-3 bg-white">
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {[
-              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-blue-800 to-blue-500', cardBg: 'bg-gradient-to-br from-blue-50/80 to-sky-50/60', hoverGlow: 'hover:shadow-blue-300/40', live: true, iconBg: 'from-blue-800 via-blue-600 to-sky-400' },
-              { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-600 to-cyan-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-cyan-50/60', hoverGlow: 'hover:shadow-blue-300/40', iconBg: 'from-blue-600 via-blue-500 to-cyan-400' },
-              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-slate-700 to-slate-400', cardBg: 'bg-gradient-to-br from-slate-50/80 to-blue-50/60', hoverGlow: 'hover:shadow-slate-300/40', iconBg: 'from-slate-700 via-slate-500 to-blue-400' },
-              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-blue-700 to-sky-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-sky-50/60', hoverGlow: 'hover:shadow-blue-300/40', iconBg: 'from-blue-700 via-blue-500 to-sky-400' },
-              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-blue-800 to-indigo-400', cardBg: 'bg-gradient-to-br from-indigo-50/80 to-blue-50/60', hoverGlow: 'hover:shadow-indigo-300/40', iconBg: 'from-blue-800 via-indigo-500 to-blue-400' },
-            ].map((stat, idx) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-                className={`group ${stat.cardBg} rounded-2xl p-5 shadow-sm backdrop-blur-sm ring-1 ring-white/60 transition-all duration-300 hover:shadow-xl ${stat.hoverGlow} hover:ring-white/80 hover:-translate-y-1`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.iconBg} text-white shadow-lg`}>
-                    {stat.icon}
+      {/* ═══════════ 3. Location Bar ═══════════ */}
+      <section className="relative z-10 -mt-2 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="flex flex-col items-center gap-4 rounded-2xl border border-[#1e3a5f]/10 bg-gradient-to-r from-[#0a1628]/5 via-white to-[#2d5a8e]/5 p-4 shadow-sm sm:flex-row sm:justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-md">
+                <MapPin className="size-5" />
+              </div>
+              <div>
+                {locationLoading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="h-4 w-32 animate-pulse rounded bg-[#1e3a5f]/10" />
+                    <span className="text-xs text-muted-foreground">Detecting...</span>
                   </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-2xl font-extrabold text-foreground">
-                        <AnimatedCounter value={stat.value} loading={!liveStats} />
-                      </p>
-                      {stat.live && (
-                        <span className="relative flex size-3.5">
-                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-blue-400 opacity-80" />
-                          <span className="relative inline-flex size-3.5 rounded-full bg-blue-400 shadow-md shadow-blue-400/50" />
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-xs font-medium text-muted-foreground">{stat.label}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+                ) : location ? (
+                  <>
+                    <p className="text-sm font-semibold text-[#0a1628]">
+                      📍 {location.city}{location.state ? `, ${location.state}` : ''} {location.pincode ? `— ${location.pincode}` : ''}
+                    </p>
+                    <p className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                      <CheckCircle2 className="size-3" /> Serving in your area
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-[#0a1628]">📍 Location not detected</p>
+                    <p className="text-xs text-amber-600 font-medium">Enter your pincode below</p>
+                  </>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Input
+                placeholder="Enter pincode"
+                value={pincodeInput}
+                onChange={(e) => setPincodeInput(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handlePincodeLookup()}
+                className="h-9 w-36 border-[#1e3a5f]/20 text-sm focus-visible:border-[#2d5a8e] focus-visible:ring-[#2d5a8e]/20"
+              />
+              <Button onClick={handlePincodeLookup} size="sm" className="bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                Check
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4. Service Categories — HORIZONTAL SCROLL ═══════════ */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Our Service Categories</h2>
+            <p className="mt-3 text-lg text-muted-foreground">Professional home services at your doorstep</p>
+          </motion.div>
+
+          {/* Scroll Controls + Container */}
+          <div className="relative">
+            {/* Left Arrow */}
+            <button
+              onClick={scrollLeft}
+              className="absolute left-0 top-1/2 z-20 -translate-y-1/2 flex size-11 items-center justify-center rounded-full border border-[#1e3a5f]/20 bg-white text-[#1e3a5f] shadow-lg transition-all hover:bg-[#0a1628] hover:text-white hover:shadow-xl hover:scale-110"
+              aria-label="Scroll left"
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+
+            {/* Right Arrow */}
+            <button
+              onClick={scrollRight}
+              className="absolute right-0 top-1/2 z-20 -translate-y-1/2 flex size-11 items-center justify-center rounded-full border border-[#1e3a5f]/20 bg-white text-[#1e3a5f] shadow-lg transition-all hover:bg-[#0a1628] hover:text-white hover:shadow-xl hover:scale-110"
+              aria-label="Scroll right"
+            >
+              <ChevronRight className="size-5" />
+            </button>
+
+            {/* Horizontal Scroll Container */}
+            <div
+              ref={scrollRef}
+              className="scrollbar-thin flex gap-5 overflow-x-auto px-8 py-2 scroll-smooth"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: '#2d5a8e transparent' }}
+            >
+              {SERVICE_CATEGORIES.map((service, idx) => {
+                const isAvailable = getServiceAvailability(service.slug);
+                return (
+                  <motion.div
+                    key={service.slug}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: idx * 0.08, duration: 0.5 }}
+                    className="group relative flex-shrink-0"
+                    style={{ width: '200px' }}
+                  >
+                    <TiltCard>
+                      <div
+                        onClick={() => isAvailable ? navigate('category-detail', { slug: service.slug }) : undefined}
+                        className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
+                        style={{ height: '280px' }}
+                      >
+                        {/* Service Image */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a1628]/90">
+                          <img
+                            src={service.image}
+                            alt={service.name}
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            onError={(e) => {
+                              (e.target as HTMLImageElement).style.display = 'none';
+                            }}
+                          />
+                        </div>
+
+                        {/* Fallback gradient if no image */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f]/80 via-[#0a1628]/60 to-[#0a1628]" />
+
+                        {/* Icon overlay */}
+                        <div className="absolute top-4 left-4 z-10 flex size-12 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-md ring-1 ring-white/20 shadow-lg">
+                          {CATEGORY_ICON_MAP[service.icon] || <Wrench className="size-7" />}
+                        </div>
+
+                        {/* Content overlay */}
+                        <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
+                          <h3 className="text-base font-bold text-white drop-shadow-md">{service.name}</h3>
+                          <p className="mt-1 text-xs text-blue-100/80 leading-relaxed">{service.description}</p>
+                          {isAvailable && (
+                            <div className="mt-2 flex items-center gap-1 text-xs text-sky-300 font-medium">
+                              <span>View Services</span>
+                              <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Coming Soon Overlay */}
+                        {!isAvailable && (
+                          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a1628]/60 backdrop-blur-[2px]">
+                            <Badge className="bg-[#1e3a5f]/80 text-sky-200 border-[#2d5a8e]/30 backdrop-blur-sm px-4 py-1.5 text-sm font-semibold">
+                              Coming Soon
+                            </Badge>
+                            <p className="mt-2 text-xs text-blue-100/70">In Your Area</p>
+                          </div>
+                        )}
+                      </div>
+                    </TiltCard>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════════ Launch Notice Banner ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50">
+      {/* ═══════════ 5. Area Activation Meter ═══════════ */}
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%)' }}>
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[300px] rounded-full bg-blue-200/30 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[300px] rounded-full bg-sky-200/30 blur-3xl" />
-          <div className="absolute right-1/3 top-0 size-[200px] rounded-full bg-slate-200/20 blur-3xl" />
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#2d5a8e]/15 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-sky-500/10 blur-3xl" />
         </div>
-        <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
+        <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 to-[#2d5a8e]/20 ring-1 ring-white/10">
+              <Rocket className="size-8 text-sky-300" />
+            </div>
+            <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
+              🚀 {location?.city || 'Your City'} Area Launch Progress
+            </h2>
+            <p className="mt-2 text-blue-100/60">Help us launch faster — join as a provider or refer one!</p>
+          </motion.div>
+
           <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex flex-col items-center gap-5 rounded-3xl border border-blue-200/50 bg-white/70 px-8 py-7 text-center shadow-lg backdrop-blur-xl sm:flex-row sm:text-left"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="mx-auto mt-10 max-w-xl rounded-3xl bg-white/5 p-8 backdrop-blur-sm ring-1 ring-white/10 shadow-2xl"
           >
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-900 to-blue-600 shadow-xl shadow-blue-500/30">
-              <Clock className="size-8 text-white" />
+            {/* Providers Progress */}
+            <div className="mb-6">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <Shield className="size-4 text-sky-300" /> Providers Joined
+                </span>
+                <span className="text-sm font-bold text-sky-300">
+                  {areaProviders}/20 <span className="text-blue-100/50 font-normal">({Math.round((areaProviders / 20) * 100)}%)</span>
+                </span>
+              </div>
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/10">
+                <motion.div
+                  className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e]"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${Math.min((areaProviders / 20) * 100, 100)}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: 'easeOut' }}
+                />
+              </div>
             </div>
-            <div className="flex-1">
-              <h3 className="text-xl font-bold text-blue-900">Services Coming Soon!</h3>
-              <p className="mt-2 text-sm leading-relaxed text-blue-700/80">
-                Our services will officially start after the selection of our <span className="font-bold text-blue-900">first 100 clients</span> and <span className="font-bold text-blue-900">50 service providers</span>. Register now to be among the first and enjoy <span className="font-extrabold text-amber-600">FREE subscription for one year</span>!
-              </p>
+
+            {/* Customers Progress */}
+            <div className="mb-6">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="flex items-center gap-2 text-sm font-semibold text-white">
+                  <Users className="size-4 text-sky-300" /> Customers Joined
+                </span>
+                <span className="text-sm font-bold text-sky-300">
+                  {areaCustomers}/100 <span className="text-blue-100/50 font-normal">({Math.round((areaCustomers / 100) * 100)}%)</span>
+                </span>
+              </div>
+              <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/10">
+                <motion.div
+                  className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r from-[#2d5a8e] to-sky-400"
+                  initial={{ width: 0 }}
+                  whileInView={{ width: `${Math.min((areaCustomers / 100) * 100, 100)}%` }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 1.5, ease: 'easeOut' }}
+                />
+              </div>
             </div>
-            <Button
-              size="lg"
-              className="shimmer shrink-0 bg-gradient-to-r from-blue-900 to-blue-600 px-8 text-white shadow-lg shadow-blue-500/30 hover:from-blue-950 hover:to-blue-700 hover:shadow-xl"
-              onClick={() => navigate('register')}
-            >
-              Register Now
-              <ArrowRight className="ml-2 size-4" />
-            </Button>
+
+            {/* Milestone markers */}
+            <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-blue-100/50">
+              <span>🚀 Launching</span>
+              <span>⚡ 25% — Early Access</span>
+              <span>🔥 50% — Active</span>
+              <span>🎉 100% — Fully Live</span>
+            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ═══════════ Service Categories ═══════════ */}
-      <section className="bg-white py-24">
+      {/* ═══════════ 6. Smart Service Visibility Section ═══════════ */}
+      <section className="bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            variants={fadeUp}
-            custom={0}
-            className="text-center"
-          >
-            <Badge className="mb-5 border-blue-200 bg-blue-50 px-4 py-1.5 text-blue-700 hover:bg-blue-100">
-              <Sparkles className="mr-1.5 size-3.5" /> Specialized Services
-            </Badge>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              Our <span className="text-gradient">Service Categories</span>
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
-              We offer 11 specialized home services, each staffed by verified professionals
-            </p>
-          </motion.div>
+          {hasProvidersInArea ? (
+            /* Services Available — Show popular services */
+            <>
+              <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+                <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Popular Services in Your Area</h2>
+                <p className="mt-3 text-lg text-muted-foreground">Top-rated services with verified providers near you</p>
+              </motion.div>
 
-          {!categoriesLoading && categories.length === 0 ? (
-            <div className="mt-12 text-center">
-              <p className="text-sm text-muted-foreground">Unable to load categories. Please try again.</p>
-              <Button variant="outline" size="sm" onClick={refetchCategories} className="mt-3">
-                Retry
-              </Button>
-            </div>
-          ) : (
-            <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              {categoriesLoading ? (
-                Array.from({ length: 6 }).map((_, i) => <CategorySkeleton key={i} />)
-              ) : (
-                categories.map((cat, idx) => {
-                  const iconKey = cat.icon || 'Wrench';
-                  const bgClass = CATEGORY_BG_MAP[iconKey] || DEFAULT_BG;
-                  const lightBgClass = CATEGORY_LIGHT_BG[iconKey] || DEFAULT_LIGHT_BG;
-                  const glowClass = CATEGORY_GLOW[iconKey] || DEFAULT_GLOW;
-                  const catImageUrl = cat.imageUrl || `/images/${cat.slug}.jpg`;
-                  const subs = subcategoriesMap[cat.id] || [];
-
-                  return (
+              {servicesLoading ? (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <Card key={i} className="overflow-hidden rounded-2xl">
+                      <Skeleton className="aspect-video w-full" />
+                      <CardContent className="p-4">
+                        <Skeleton className="mb-2 h-5 w-3/4" />
+                        <Skeleton className="mb-2 h-4 w-1/2" />
+                        <Skeleton className="h-4 w-1/4" />
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              ) : services.length > 0 ? (
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                  {services.slice(0, 6).map((service, idx) => (
                     <motion.div
-                      key={cat.id}
-                      initial="hidden"
-                      whileInView="visible"
-                      viewport={{ once: true, margin: '-30px' }}
-                      variants={scaleIn}
-                      custom={idx}
+                      key={service.id}
+                      initial={{ opacity: 0, y: 30 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: idx * 0.1, duration: 0.5 }}
                     >
                       <TiltCard>
-                        <Card
-                          className={`group cursor-pointer overflow-hidden rounded-3xl border-0 shadow-lg transition-all duration-500 hover:shadow-2xl ${glowClass}`}
-                          onClick={() => navigate('category-detail', { slug: cat.slug })}
-                        >
-                          {/* Image header with gradient overlay */}
-                          <div className="relative h-56 overflow-hidden">
-                            <img
-                              src={catImageUrl}
-                              alt={cat.name}
-                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                              }}
-                            />
-                            {/* Gradient overlay */}
-                            <div className={`absolute inset-0 bg-gradient-to-t ${bgClass} opacity-75`} />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-
-                            {/* Icon badge */}
-                            <div className="absolute left-5 top-5 flex size-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-xl ring-1 ring-white/30 shadow-lg">
-                              <div className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-                                {CATEGORY_ICON_MAP[iconKey] || <Wrench className="size-8" />}
-                              </div>
-                            </div>
-
-                            {/* Title on image */}
-                            <div className="absolute bottom-5 left-5 right-5">
-                              <h3 className="text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{cat.name}</h3>
-                              <p className="mt-1 text-sm text-white/80 line-clamp-2">{cat.description || `Professional ${cat.name.toLowerCase()} services`}</p>
-                            </div>
-                          </div>
-
-                          <CardContent className="p-6">
-                            {/* Stats row */}
-                            <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
-                              <span className="flex items-center gap-1.5 font-medium">
-                                <Wrench className="size-4" />
-                                {cat.subcategoriesCount || subs.length} Subcategories
-                              </span>
-                              <span className="flex items-center gap-1.5 font-medium">
-                                <Star className="size-4 text-amber-400" />
-                                {cat.servicesCount} Services
-                              </span>
-                            </div>
-
-                            {/* Subcategory pills */}
-                            {subs.length > 0 && (
-                              <div className="flex flex-wrap gap-2">
-                                {subs.slice(0, 4).map((sub) => (
-                                  <span
-                                    key={sub.id}
-                                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${lightBgClass}`}
-                                  >
-                                    {sub.name}
-                                  </span>
-                                ))}
-                                {subs.length > 4 && (
-                                  <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
-                                    +{subs.length - 4} more
-                                  </span>
-                                )}
+                        <Card className="group cursor-pointer overflow-hidden rounded-2xl border-[#1e3a5f]/10 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('service-detail', { id: service.id })}>
+                          <div className="relative overflow-hidden">
+                            {service.images ? (
+                              <img src={service.images.split(',')[0]} alt={service.title} className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                            ) : (
+                              <div className="aspect-video w-full bg-gradient-to-br from-[#1e3a5f]/20 to-[#2d5a8e]/10 flex items-center justify-center">
+                                <Wrench className="size-12 text-[#1e3a5f]/30" />
                               </div>
                             )}
-
-                            {/* View all link */}
-                            <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-blue-600 transition-colors group-hover:text-blue-700">
-                              Explore {cat.name}
-                              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                            <Badge className="absolute top-3 right-3 bg-[#0a1628]/80 text-sky-200 backdrop-blur-sm border-[#2d5a8e]/30">
+                              {service.category.name}
+                            </Badge>
+                          </div>
+                          <CardContent className="p-4">
+                            <h3 className="text-base font-bold text-[#0a1628] line-clamp-1">{service.title}</h3>
+                            <p className="mt-1 text-sm text-muted-foreground line-clamp-1">{service.description}</p>
+                            <div className="mt-3 flex items-center justify-between">
+                              <div className="flex items-center gap-1">
+                                <Star className="size-4 fill-amber-400 text-amber-400" />
+                                <span className="text-sm font-semibold text-[#0a1628]">{service.averageRating?.toFixed(1) || '4.5'}</span>
+                                <span className="text-xs text-muted-foreground">({service.totalReviews || 0})</span>
+                              </div>
+                              <span className="text-sm font-bold text-[#1e3a5f]">₹{service.basePrice}</span>
                             </div>
                           </CardContent>
                         </Card>
                       </TiltCard>
                     </motion.div>
-                  );
-                })
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-12">
+                  <Wrench className="mx-auto size-16 text-[#1e3a5f]/20" />
+                  <p className="mt-4 text-lg text-muted-foreground">No services listed yet in your area. Be the first provider!</p>
+                </div>
               )}
-            </div>
-          )}
+            </>
+          ) : (
+            /* No Providers — Show Coming Soon with CTAs */
+            <>
+              <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+                <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f]/10 to-[#2d5a8e]/10">
+                  <MapPin className="size-8 text-[#1e3a5f]" />
+                </div>
+                <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Service Coming Soon In Your Area</h2>
+                <p className="mt-3 text-lg text-muted-foreground">
+                  Hamare area me abhi providers nahi hain. Aap help kar sakte ho services jaldi start karne me!
+                </p>
+              </motion.div>
 
-          {/* View all categories CTA */}
-          {categories.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4, duration: 0.6 }}
-              className="mt-12 text-center"
-            >
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => navigate('categories')}
-                className="rounded-full border-2 border-blue-200 px-8 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
-              >
-                View All Categories
-                <ArrowRight className="ml-2 size-4" />
-              </Button>
-            </motion.div>
+              <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.2, duration: 0.6 }} className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
+                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('register', { role: 'PROVIDER' })}>
+                  <CardContent className="flex flex-col items-center p-6 text-center">
+                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/20">
+                      <UserPlus className="size-7" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0a1628]">Become Service Provider</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Join as a professional & get customers</p>
+                    <Button className="mt-4 bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                      Join Now <ArrowRight className="ml-1 size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={openWhatsAppReferral}>
+                  <CardContent className="flex flex-col items-center p-6 text-center">
+                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-emerald-400 text-white shadow-lg shadow-emerald-500/20">
+                      <MessageCircle className="size-7" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0a1628]">Refer Service Provider</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Know a provider? Refer via WhatsApp & earn</p>
+                    <Button className="mt-4 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white hover:from-emerald-700 hover:to-emerald-500">
+                      <MessageCircle className="mr-1 size-4" /> WhatsApp Refer
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('register', { role: 'AREA_MANAGER' })}>
+                  <CardContent className="flex flex-col items-center p-6 text-center">
+                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f] to-sky-500 text-white shadow-lg shadow-[#1e3a5f]/20">
+                      <Briefcase className="size-7" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0a1628]">Become Area Manager</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Manage operations in your locality</p>
+                    <Button className="mt-4 bg-gradient-to-r from-[#1e3a5f] to-sky-500 text-white hover:from-[#1e3a5f] hover:to-sky-600">
+                      Apply Now <ArrowRight className="ml-1 size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20">
+                  <CardContent className="flex flex-col items-center p-6 text-center">
+                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-amber-300 text-white shadow-lg shadow-amber-400/20">
+                      <Clock className="size-7" />
+                    </div>
+                    <h3 className="text-lg font-bold text-[#0a1628]">Join Waiting List</h3>
+                    <p className="mt-1 text-sm text-muted-foreground">Get notified when services launch near you</p>
+                    <Button variant="outline" className="mt-4 border-[#1e3a5f]/20 text-[#1e3a5f] hover:bg-[#0a1628]/5">
+                      Join List <ArrowRight className="ml-1 size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            </>
           )}
         </div>
       </section>
 
-      {/* ═══════════ How It Works ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-24">
-        {/* Decorative blobs */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-40 top-1/3 size-[500px] rounded-full bg-blue-100/30 blur-3xl" />
-          <div className="absolute -right-40 bottom-1/3 size-[500px] rounded-full bg-sky-100/30 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            variants={fadeUp}
-            custom={0}
-            className="text-center"
-          >
-            <Badge className="mb-5 border-blue-200 bg-blue-50 px-4 py-1.5 text-blue-700 hover:bg-blue-100">
-              <Activity className="mr-1.5 size-3.5" /> Simple Process
-            </Badge>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              How It <span className="text-gradient">Works</span>
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
-              Get your home services done in three easy steps
-            </p>
+      {/* ═══════════ 7. How It Works Section ═══════════ */}
+      <section className="bg-gradient-to-b from-[#0a1628]/5 to-white py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-12 text-center">
+            <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">How It Works</h2>
+            <p className="mt-3 text-lg text-muted-foreground">Getting expert help is just 4 steps away</p>
           </motion.div>
 
-          <div className="relative mt-16">
-            {/* Connecting dashed line */}
-            <div className="absolute left-0 right-0 top-24 hidden lg:block">
-              <div className="mx-auto max-w-3xl border-t-2 border-dashed border-blue-200" />
-            </div>
-
-            <div className="grid gap-12 lg:grid-cols-3 lg:gap-8">
-              {[
-                {
-                  step: 1,
-                  icon: <Search className="size-7" />,
-                  title: 'Choose Your Service',
-                  desc: 'Browse our curated categories and find the exact service you need for your home or business.',
-                  gradient: 'from-blue-900 via-blue-700 to-sky-400',
-                  ringColor: 'ring-blue-200',
-                  shadowColor: 'shadow-blue-500/30',
-                },
-                {
-                  step: 2,
-                  icon: <CalendarCheck className="size-7" />,
-                  title: 'Book a Professional',
-                  desc: 'Select a verified professional, pick a convenient time slot, and book instantly with transparent pricing.',
-                  gradient: 'from-slate-800 via-slate-600 to-blue-400',
-                  ringColor: 'ring-slate-200',
-                  shadowColor: 'shadow-slate-500/30',
-                },
-                {
-                  step: 3,
-                  icon: <CheckCircle2 className="size-7" />,
-                  title: 'Get It Done Right',
-                  desc: 'Sit back and relax. Our verified professional arrives on time and delivers quality work guaranteed.',
-                  gradient: 'from-blue-800 via-blue-600 to-sky-400',
-                  ringColor: 'ring-blue-200',
-                  shadowColor: 'shadow-blue-500/30',
-                },
-              ].map((item, idx) => (
-                <motion.div
-                  key={item.step}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: '-30px' }}
-                  variants={fadeUp}
-                  custom={idx + 1}
-                  className="relative text-center"
-                >
-                  {/* Step number */}
-                  <div className="relative mx-auto mb-8">
-                    <div className={`mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-xl ${item.shadowColor} ring-4 ${item.ringColor}`}>
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: <CalendarCheck className="size-8" />, title: 'Book Service', desc: 'Choose a service, pick a time, and book in minutes', step: '01' },
+              { icon: <Handshake className="size-8" />, title: 'Get Matched', desc: 'We match you with a verified, top-rated provider', step: '02' },
+              { icon: <Home className="size-8" />, title: 'Service at Door', desc: 'Provider arrives on time with all required tools', step: '03' },
+              { icon: <Star className="size-8" />, title: 'Rate & Review', desc: 'Pay securely, rate the service, and share feedback', step: '04' },
+            ].map((item, idx) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.15, duration: 0.5 }}
+              >
+                <TiltCard>
+                  <div className="relative overflow-hidden rounded-2xl border border-[#1e3a5f]/10 bg-white p-6 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20 text-center">
+                    <div className="absolute -right-3 -top-3 text-6xl font-black text-[#1e3a5f]/5">{item.step}</div>
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/20">
                       {item.icon}
                     </div>
-                    {/* Step badge */}
-                    <div className="absolute -right-1 -top-1 flex size-8 items-center justify-center rounded-full bg-white text-sm font-bold text-blue-700 shadow-lg ring-2 ring-blue-100">
-                      {item.step}
-                    </div>
+                    <h3 className="text-lg font-bold text-[#0a1628]">{item.title}</h3>
+                    <p className="mt-2 text-sm text-muted-foreground">{item.desc}</p>
+                    {idx < 3 && (
+                      <div className="hidden lg:block absolute -right-6 top-1/2 -translate-y-1/2 text-[#1e3a5f]/20">
+                        <ArrowRight className="size-6" />
+                      </div>
+                    )}
                   </div>
-
-                  <h3 className="text-xl font-bold text-foreground">{item.title}</h3>
-                  <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">{item.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ Testimonials ═══════════ */}
-      <section className="relative overflow-hidden bg-white py-24">
-        {/* Decorative */}
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 size-[400px] rounded-full bg-blue-50/50 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 size-[400px] rounded-full bg-sky-50/50 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: '-50px' }}
-            variants={fadeUp}
-            custom={0}
-            className="text-center"
-          >
-            <Badge className="mb-5 border-amber-200 bg-amber-50 px-4 py-1.5 text-amber-700 hover:bg-amber-100">
-              <Star className="mr-1.5 size-3.5 fill-amber-400" /> Customer Love
-            </Badge>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
-              What Our <span className="text-gradient">Customers Say</span>
-            </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
-              Real reviews from real customers who trust our platform
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.3, duration: 0.7 }}
-            className="mt-14"
-          >
-            <TestimonialCarousel testimonials={DEFAULT_TESTIMONIALS} />
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════ Trust Badges ═══════════ */}
-      <section className="bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-          >
-            {[
-              { icon: <ShieldCheck className="size-6" />, title: 'KYC Verified', desc: 'All providers undergo thorough verification', gradient: 'from-blue-900 to-blue-500' },
-              { icon: <Lock className="size-6" />, title: 'Secure Payments', desc: 'Encrypted transactions & refund protection', gradient: 'from-blue-600 to-cyan-400' },
-              { icon: <ThumbsUp className="size-6" />, title: 'Quality Guaranteed', desc: 'Satisfaction guarantee on every booking', gradient: 'from-slate-700 to-slate-400' },
-              { icon: <Clock className="size-6" />, title: 'On-Time Service', desc: 'Punctual professionals who respect your time', gradient: 'from-blue-700 to-sky-400' },
-            ].map((badge, idx) => (
-              <motion.div
-                key={badge.title}
-                variants={fadeUp}
-                custom={idx}
-                className="group flex items-start gap-4 rounded-2xl bg-white/70 p-6 shadow-sm backdrop-blur-sm ring-1 ring-white/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-              >
-                <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${badge.gradient} text-white shadow-lg`}>
-                  {badge.icon}
-                </div>
-                <div>
-                  <h4 className="font-bold text-foreground">{badge.title}</h4>
-                  <p className="mt-1 text-sm text-muted-foreground">{badge.desc}</p>
-                </div>
+                </TiltCard>
               </motion.div>
             ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════ CTA Section ═══════════ */}
-      <section className="relative overflow-hidden bg-white py-24">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[500px] rounded-full bg-blue-100/20 blur-3xl" />
-          <div className="absolute -right-20 bottom-0 size-[500px] rounded-full bg-sky-100/20 blur-3xl" />
-        </div>
-
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7 }}
-            className="relative overflow-hidden rounded-3xl"
-            style={{
-              background: 'linear-gradient(135deg, rgba(10,22,40,0.95) 0%, rgba(30,58,95,0.95) 40%, rgba(45,90,142,0.95) 70%, rgba(59,130,246,0.95) 100%)',
-              padding: '3rem',
-            }}
-          >
-            {/* Gradient border effect */}
-            <div className="absolute inset-0 rounded-3xl ring-1 ring-white/10" />
-
-            {/* Decorative orbs */}
-            <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-gradient-to-br from-sky-400/10 to-blue-400/5 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-gradient-to-br from-blue-400/10 to-sky-400/5 blur-3xl" />
-
-            <div className="relative flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
-              <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 shadow-2xl shadow-blue-500/30">
-                <Phone className="size-9 text-white" />
-              </div>
-              <div className="flex-1">
-                <h2 className="text-3xl font-bold text-white sm:text-4xl">Need a Custom Service?</h2>
-                <p className="mt-3 max-w-xl text-lg text-blue-100/70">
-                  Can&apos;t find what you&apos;re looking for? We offer custom solutions for all your home service needs. Get in touch with us today!
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button
-                  size="lg"
-                  onClick={() => navigate('register')}
-                  className="shimmer h-13 bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 px-8 text-base font-bold text-white shadow-xl shadow-blue-500/30 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600 hover:shadow-2xl hover:shadow-blue-500/40"
-                >
-                  Register Now
-                  <ArrowRight className="ml-2 size-5" />
-                </Button>
-                <Button
-                  size="lg"
-                  onClick={() => navigate('contact')}
-                  className="h-13 border-2 border-white/20 bg-white/10 px-8 text-base font-semibold text-white backdrop-blur-sm hover:bg-white/20 hover:border-white/30"
-                >
-                  Contact Us
-                </Button>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════ Footer Mini ═══════════ */}
-      <section className="border-t bg-gray-50 py-10">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
-            <div>
-              <h3 className="text-lg font-bold text-foreground">BookYourService</h3>
-              <p className="text-sm text-muted-foreground">India&apos;s trusted home service platform</p>
-            </div>
-            <div className="flex gap-6 text-sm text-muted-foreground">
-              <button onClick={() => navigate('about')} className="transition-colors hover:text-blue-600">About</button>
-              <button onClick={() => navigate('faq')} className="transition-colors hover:text-blue-600">FAQ</button>
-              <button onClick={() => navigate('contact')} className="transition-colors hover:text-blue-600">Contact</button>
-              <button onClick={() => navigate('terms')} className="transition-colors hover:text-blue-600">Terms</button>
-              <button onClick={() => navigate('privacy')} className="transition-colors hover:text-blue-600">Privacy</button>
-            </div>
           </div>
         </div>
       </section>
+
+      {/* ═══════════ 8. Testimonials Carousel ═══════════ */}
+      <section className="bg-white py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">What Our Customers Say</h2>
+            <p className="mt-3 text-lg text-muted-foreground">Real reviews from real customers</p>
+          </motion.div>
+          <TestimonialCarousel testimonials={DEFAULT_TESTIMONIALS} />
+        </div>
+      </section>
+
+      {/* ═══════════ 9. Career / Join Our Team Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%)' }}>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-12 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/20">
+              <Briefcase className="size-8" />
+            </div>
+            <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Join Our Team</h2>
+            <p className="mt-3 text-lg text-muted-foreground">Be part of the hyperlocal service revolution</p>
+          </motion.div>
+
+          <div className="mx-auto grid max-w-4xl gap-6 sm:grid-cols-2">
+            {/* Area Manager Card */}
+            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <TiltCard>
+                <Card className="h-full overflow-hidden rounded-2xl border-[#1e3a5f]/10 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20">
+                  <div className="h-2 bg-gradient-to-r from-[#0a1628] to-[#2d5a8e]" />
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/20">
+                      <Shield className="size-7" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0a1628]">Area Manager</h3>
+                    <p className="mt-1 text-sm text-[#2d5a8e] font-medium">Local Operations Leader</p>
+                    <ul className="mt-4 space-y-2">
+                      {['Local providers onboarding', 'Customer acquisition', 'Local operations management', 'Community building'].map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="size-4 text-[#2d5a8e] flex-shrink-0" /> {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button onClick={() => navigate('register', { role: 'AREA_MANAGER' })} className="mt-6 w-full bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                      Apply as Area Manager <ArrowRight className="ml-1 size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+            </motion.div>
+
+            {/* Local Admin Card */}
+            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <TiltCard>
+                <Card className="h-full overflow-hidden rounded-2xl border-[#1e3a5f]/10 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20">
+                  <div className="h-2 bg-gradient-to-r from-[#1e3a5f] to-sky-500" />
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f] to-sky-500 text-white shadow-lg shadow-[#1e3a5f]/20">
+                      <ThumbsUp className="size-7" />
+                    </div>
+                    <h3 className="text-xl font-bold text-[#0a1628]">Local Admin</h3>
+                    <p className="mt-1 text-sm text-[#2d5a8e] font-medium">Support & Quality Champion</p>
+                    <ul className="mt-4 space-y-2">
+                      {['Complaint handling & resolution', 'Provider verification & KYC', 'Local support operations', 'Quality assurance'].map((item) => (
+                        <li key={item} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <CheckCircle2 className="size-4 text-[#2d5a8e] flex-shrink-0" /> {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button onClick={() => navigate('register', { role: 'SUB_ADMIN' })} className="mt-6 w-full bg-gradient-to-r from-[#1e3a5f] to-sky-500 text-white hover:from-[#1e3a5f] hover:to-sky-600">
+                      Apply as Local Admin <ArrowRight className="ml-1 size-4" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TiltCard>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 10. Referral Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2d5a8e 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 top-0 size-80 rounded-full bg-sky-400/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-80 rounded-full bg-[#2d5a8e]/15 blur-3xl" />
+        </div>
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mx-auto grid max-w-4xl items-center gap-10 lg:grid-cols-2">
+            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400/20 to-emerald-600/20 ring-1 ring-white/10">
+                <Handshake className="size-8 text-emerald-300" />
+              </div>
+              <h2 className="mt-6 text-3xl font-extrabold text-white sm:text-4xl">Refer & Earn</h2>
+              <p className="mt-4 text-lg text-blue-100/70 leading-relaxed">
+                Apne area ke service providers ko refer karein aur har booking pe 5% referral commission paayein. Jitne zyada referrals, utni zyada earning!
+              </p>
+
+              <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur-sm">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-300 text-[#0a1628] font-bold shadow-lg shadow-amber-400/20">
+                  5%
+                </div>
+                <div>
+                  <p className="font-bold text-white">Referral Commission</p>
+                  <p className="text-sm text-blue-100/60">On every booking from your referral</p>
+                </div>
+              </div>
+
+              <Button
+                size="lg"
+                onClick={openWhatsAppProviderReferral}
+                className="mt-8 bg-gradient-to-r from-emerald-600 to-emerald-400 text-white shadow-xl shadow-emerald-500/20 hover:from-emerald-700 hover:to-emerald-500 hover:shadow-2xl hover:shadow-emerald-500/30"
+              >
+                <MessageCircle className="mr-2 size-5" /> Refer via WhatsApp
+              </Button>
+            </motion.div>
+
+            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
+              <Card className="overflow-hidden rounded-2xl border-white/10 bg-white/5 backdrop-blur-sm shadow-2xl">
+                <div className="h-2 bg-gradient-to-r from-emerald-400 to-emerald-600" />
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-bold text-white mb-4">How Referral Works</h3>
+                  <div className="space-y-4">
+                    {[
+                      { step: '1', title: 'Share WhatsApp Link', desc: 'Send referral message to providers you know' },
+                      { step: '2', title: 'Provider Joins', desc: 'They register using your referral' },
+                      { step: '3', title: 'Start Earning', desc: 'Get 5% commission on every booking they complete' },
+                    ].map((item) => (
+                      <div key={item.step} className="flex items-start gap-3">
+                        <div className="flex size-8 flex-shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-sm font-bold text-white">
+                          {item.step}
+                        </div>
+                        <div>
+                          <p className="font-semibold text-white text-sm">{item.title}</p>
+                          <p className="text-xs text-blue-100/60">{item.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 11. Pop-Up Funnel ═══════════ */}
+      <Dialog open={showPopup} onOpenChange={(open) => { if (!open) closePopup(false); }}>
+        <DialogContent className="max-w-md rounded-3xl border-[#1e3a5f]/20 p-0 overflow-hidden" showCloseButton={false}>
+          <div className="relative">
+            {/* Navy Header */}
+            <div className="px-6 pt-8 pb-6" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%)' }}>
+              <button onClick={() => closePopup(false)} className="absolute right-4 top-4 flex size-8 items-center justify-center rounded-full bg-white/10 text-white/70 hover:bg-white/20 hover:text-white transition-colors">
+                <X className="size-4" />
+              </button>
+
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-400/20 to-[#2d5a8e]/20 ring-1 ring-white/10 mx-auto">
+                <Rocket className="size-7 text-sky-300" />
+              </div>
+
+              <h3 className="mt-4 text-center text-xl font-bold text-white">
+                {!hasProvidersInArea
+                  ? 'Book My Service abhi aapke area me launch nahi hua'
+                  : hasLimitedServices
+                  ? 'Sirf kuch services available hain. Apne area me aur services start karne me help kare.'
+                  : 'Welcome to BookYourService!'
+                }
+              </h3>
+            </div>
+
+            <div className="px-6 pb-6 pt-4">
+              {/* Area Progress Mini */}
+              <div className="mb-5 rounded-2xl bg-[#0a1628]/5 p-4">
+                <p className="text-xs font-semibold text-[#0a1628] mb-2">🚀 Area Launch Progress</p>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Providers</span>
+                    <span className="font-bold text-[#1e3a5f]">{areaProviders}/20</span>
+                  </div>
+                  <Progress value={(areaProviders / 20) * 100} className="h-2 bg-[#1e3a5f]/10 [&>div]:bg-gradient-to-r [&>div]:from-[#0a1628] [&>div]:to-[#2d5a8e]" />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">Customers</span>
+                    <span className="font-bold text-[#1e3a5f]">{areaCustomers}/100</span>
+                  </div>
+                  <Progress value={(areaCustomers / 100) * 100} className="h-2 bg-[#1e3a5f]/10 [&>div]:bg-gradient-to-r [&>div]:from-[#2d5a8e] [&>div]:to-sky-400" />
+                </div>
+              </div>
+
+              {/* Dynamic CTA Buttons */}
+              <div className="space-y-3">
+                {!hasProvidersInArea && (
+                  <>
+                    <Button onClick={() => { closePopup(false); navigate('register', { role: 'PROVIDER' }); }} className="w-full bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                      <UserPlus className="mr-2 size-4" /> Become Provider
+                    </Button>
+                    <Button onClick={() => { closePopup(false); openWhatsAppReferral(); }} className="w-full bg-gradient-to-r from-emerald-600 to-emerald-400 text-white hover:from-emerald-700 hover:to-emerald-500">
+                      <MessageCircle className="mr-2 size-4" /> Refer Provider via WhatsApp
+                    </Button>
+                    <Button onClick={() => { closePopup(false); navigate('register', { role: 'AREA_MANAGER' }); }} className="w-full bg-gradient-to-r from-[#1e3a5f] to-sky-500 text-white hover:from-[#1e3a5f] hover:to-sky-600">
+                      <Briefcase className="mr-2 size-4" /> Become Area Manager
+                    </Button>
+                  </>
+                )}
+                {hasLimitedServices && (
+                  <>
+                    <Button onClick={() => { closePopup(false); openWhatsAppReferral(); }} className="w-full bg-gradient-to-r from-emerald-600 to-emerald-400 text-white hover:from-emerald-700 hover:to-emerald-500">
+                      <MessageCircle className="mr-2 size-4" /> Refer Provider via WhatsApp
+                    </Button>
+                    <Button onClick={() => { closePopup(false); navigate('register', { role: 'AREA_MANAGER' }); }} className="w-full bg-gradient-to-r from-[#1e3a5f] to-sky-500 text-white hover:from-[#1e3a5f] hover:to-sky-600">
+                      <Briefcase className="mr-2 size-4" /> Join Our Team
+                    </Button>
+                  </>
+                )}
+                {hasProvidersInArea && !hasLimitedServices && (
+                  <Button onClick={() => { closePopup(false); navigate('categories'); }} className="w-full bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                    <CalendarCheck className="mr-2 size-4" /> Book a Service Now
+                  </Button>
+                )}
+              </div>
+
+              {/* Don't show again */}
+              <label className="mt-4 flex items-center gap-2 text-xs text-muted-foreground cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={dontShowAgain}
+                  onChange={(e) => setDontShowAgain(e.target.checked)}
+                  className="rounded border-[#1e3a5f]/20 text-[#1e3a5f] focus:ring-[#2d5a8e]/20"
+                />
+                Don&apos;t show this again
+              </label>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

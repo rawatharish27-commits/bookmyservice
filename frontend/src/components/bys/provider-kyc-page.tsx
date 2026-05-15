@@ -151,9 +151,9 @@ export function ProviderKycPage() {
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <div className={`h-1.5 ${
             effectiveStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' :
-            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-amber-400 to-orange-500' :
+            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-amber-400 to-blue-500' :
             effectiveStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
-            'bg-gradient-to-r from-orange-400 to-amber-500'
+            'bg-gradient-to-r from-sky-400 to-amber-500'
           }`} />
           <CardContent className="flex items-center gap-4 p-6">
             {effectiveStatus === 'APPROVED' && (
@@ -197,11 +197,11 @@ export function ProviderKycPage() {
             )}
             {effectiveStatus === 'NOT_SUBMITTED' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-orange-100">
-                  <Shield className="size-7 text-orange-500" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-sky-100">
+                  <Shield className="size-7 text-blue-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-orange-700">Not Submitted</h3>
+                  <h3 className="text-lg font-semibold text-blue-700">Not Submitted</h3>
                   <p className="text-sm text-muted-foreground">Complete KYC verification to unlock full provider features</p>
                 </div>
               </>

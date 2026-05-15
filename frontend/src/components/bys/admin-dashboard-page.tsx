@@ -55,7 +55,7 @@ function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
     ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-orange-100 text-orange-800 border-orange-200',
+    IN_PROGRESS: 'bg-sky-100 text-blue-800 border-blue-200',
     COMPLETED: 'bg-green-100 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
@@ -171,9 +171,9 @@ export function AdminDashboardPage() {
           <p className="text-xs text-muted-foreground">Pending KYC</p>
           <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingKyc || 0}</p>
         </div>
-        <div className="rounded-lg bg-orange-50 p-3 text-center">
+        <div className="rounded-lg bg-blue-50 p-3 text-center">
           <p className="text-xs text-muted-foreground">Pending Approvals</p>
-          <p className="mt-1 text-lg font-bold text-orange-700">{stats?.pendingServiceApprovals || 0}</p>
+          <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingServiceApprovals || 0}</p>
         </div>
       </div>
 

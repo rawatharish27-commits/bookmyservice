@@ -187,7 +187,7 @@ export function AdminPayoutsPage() {
       bgLight: 'bg-amber-50',
       textColor: 'text-amber-700',
       borderColor: 'border-l-amber-500',
-      gradient: 'from-amber-500 to-orange-500',
+      gradient: 'from-amber-500 to-blue-500',
     },
     {
       label: 'Approved Amount',

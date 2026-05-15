@@ -33,9 +33,9 @@ function getNotifConfig(type: string) {
     case 'BOOKING':
       return { icon: CalendarCheck, gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-100' };
     case 'REVIEW':
-      return { icon: Star, gradient: 'from-amber-400 to-orange-500', bg: 'bg-amber-100' };
+      return { icon: Star, gradient: 'from-amber-400 to-blue-500', bg: 'bg-amber-100' };
     case 'DISPUTE':
-      return { icon: AlertTriangle, gradient: 'from-orange-400 to-red-500', bg: 'bg-orange-100' };
+      return { icon: AlertTriangle, gradient: 'from-sky-400 to-red-500', bg: 'bg-sky-100' };
     case 'MESSAGE':
       return { icon: MessageSquare, gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-100' };
     default:

@@ -123,7 +123,7 @@ export function TechnicianEarningsPage() {
         {[
           { label: 'Today', value: earnings.today, icon: Zap, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
           { label: 'This Week', value: earnings.week, icon: Calendar, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'This Month', value: earnings.month, icon: TrendingUp, gradient: 'from-amber-400 to-orange-500', bgGlow: 'bg-amber-500/10' },
+          { label: 'This Month', value: earnings.month, icon: TrendingUp, gradient: 'from-amber-400 to-blue-500', bgGlow: 'bg-amber-500/10' },
           { label: 'All Time', value: earnings.allTime, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat, idx) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -265,7 +265,7 @@ export function TechnicianEarningsPage() {
                       <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl shadow-md ${
                         isCompleted
                           ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
-                          : 'bg-gradient-to-br from-amber-400 to-orange-500'
+                          : 'bg-gradient-to-br from-amber-400 to-blue-500'
                       }`}>
                         <Briefcase className="size-5 text-white" />
                       </div>

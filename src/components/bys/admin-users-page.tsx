@@ -1,5 +1,3 @@
-'use client';
-
 import { useState } from 'react';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
@@ -202,7 +200,7 @@ export function AdminUsersPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-8 text-orange-600"
+                              className="size-8 text-blue-600"
                               onClick={() => handleStatusChange(user.id, 'BLOCKED')}
                             >
                               <Ban className="size-4" />

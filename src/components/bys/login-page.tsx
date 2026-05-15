@@ -24,15 +24,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 const floatingIcons = [
   { Icon: Droplets, color: 'from-blue-400 to-cyan-400', glow: 'shadow-blue-400/30', x: '15%', y: '20%', delay: 0, size: 48 },
   { Icon: Zap, color: 'from-amber-400 to-yellow-400', glow: 'shadow-amber-400/30', x: '70%', y: '15%', delay: 0.5, size: 44 },
-  { Icon: Wind, color: 'from-sky-400 to-blue-600', glow: 'shadow-sky-400/30', x: '50%', y: '65%', delay: 1, size: 46 },
-  { Icon: Wrench, color: 'from-blue-600 to-green-400', glow: 'shadow-blue-400/30', x: '25%', y: '75%', delay: 1.5, size: 40 },
-  { Icon: Shield, color: 'from-blue-700 to-sky-500', glow: 'shadow-blue-500/30', x: '80%', y: '55%', delay: 2, size: 42 },
+  { Icon: Wind, color: 'from-teal-400 to-emerald-400', glow: 'shadow-teal-400/30', x: '50%', y: '65%', delay: 1, size: 46 },
+  { Icon: Wrench, color: 'from-emerald-400 to-green-400', glow: 'shadow-emerald-400/30', x: '25%', y: '75%', delay: 1.5, size: 40 },
+  { Icon: Shield, color: 'from-emerald-500 to-teal-500', glow: 'shadow-emerald-500/30', x: '80%', y: '55%', delay: 2, size: 42 },
 ];
 
 const trustBadges = [
-  { icon: BadgeCheck, label: 'KYC Verified', gradient: 'from-blue-100 to-cyan-100', iconColor: 'text-blue-800', border: 'border-blue-200/80', shadow: 'shadow-blue-200/50' },
-  { icon: Shield, label: 'Secure Payments', gradient: 'from-sky-100 to-cyan-100', iconColor: 'text-sky-700', border: 'border-sky-200/80', shadow: 'shadow-sky-200/50' },
-  { icon: Clock, label: '24/7 Support', gradient: 'from-cyan-100 to-blue-100', iconColor: 'text-cyan-700', border: 'border-cyan-200/80', shadow: 'shadow-cyan-200/50' },
+  { icon: BadgeCheck, label: 'KYC Verified', gradient: 'from-emerald-100 to-cyan-100', iconColor: 'text-emerald-700', border: 'border-emerald-200/80', shadow: 'shadow-emerald-200/50' },
+  { icon: Shield, label: 'Secure Payments', gradient: 'from-teal-100 to-cyan-100', iconColor: 'text-teal-700', border: 'border-teal-200/80', shadow: 'shadow-teal-200/50' },
+  { icon: Clock, label: '24/7 Support', gradient: 'from-cyan-100 to-emerald-100', iconColor: 'text-cyan-700', border: 'border-cyan-200/80', shadow: 'shadow-cyan-200/50' },
 ];
 
 export function LoginPage() {
@@ -51,38 +51,38 @@ export function LoginPage() {
   const forgotMutation = useApiMutation();
 
   const isClient = activeTab === 'client';
-  const focusColor = isClient ? 'blue' : 'amber';
+  const focusColor = isClient ? 'emerald' : 'amber';
   const tabGradient = isClient
-    ? 'from-blue-800 via-sky-500 to-cyan-500'
-    : 'from-amber-500 via-orange-500 to-rose-500';
+    ? 'from-emerald-600 via-teal-500 to-cyan-500'
+    : 'from-amber-500 via-blue-500 to-rose-500';
   const tabGradientHover = isClient
-    ? 'hover:from-[#1e3a5f] hover:via-sky-600 hover:to-cyan-600'
-    : 'hover:from-amber-600 hover:via-orange-600 hover:to-rose-600';
+    ? 'hover:from-emerald-700 hover:via-teal-600 hover:to-cyan-600'
+    : 'hover:from-amber-600 hover:via-blue-600 hover:to-rose-600';
   const tabShadow = isClient
-    ? 'shadow-blue-600/30'
+    ? 'shadow-emerald-600/30'
     : 'shadow-amber-500/30';
   const focusIconClass = isClient
-    ? 'group-focus-within:text-blue-700'
+    ? 'group-focus-within:text-emerald-600'
     : 'group-focus-within:text-amber-600';
   const focusBorderClass = isClient
-    ? 'focus:border-blue-400 focus:ring-blue-400/20'
+    ? 'focus:border-emerald-400 focus:ring-emerald-400/20'
     : 'focus:border-amber-400 focus:ring-amber-400/20';
   const forgotLinkClass = isClient
-    ? 'text-blue-700 hover:text-blue-800'
+    ? 'text-emerald-600 hover:text-emerald-700'
     : 'text-amber-600 hover:text-amber-700';
   const signUpLinkClass = isClient
-    ? 'text-blue-700 hover:text-blue-800'
+    ? 'text-emerald-600 hover:text-emerald-700'
     : 'text-amber-600 hover:text-amber-700';
   const bannerBg = isClient
-    ? 'from-blue-50 to-sky-50 border-blue-100/70'
-    : 'from-amber-50 to-orange-50 border-amber-100/70';
-  const dividerVia = isClient ? 'via-blue-300' : 'via-amber-200';
+    ? 'from-emerald-50 to-teal-50 border-emerald-100/70'
+    : 'from-amber-50 to-blue-50 border-amber-100/70';
+  const dividerVia = isClient ? 'via-emerald-200' : 'via-amber-200';
   const inputBorder = isClient
-    ? 'border-blue-100/50'
+    ? 'border-emerald-100/50'
     : 'border-amber-100/50';
   const tabBg = isClient
-    ? 'from-blue-50/80 to-cyan-50/60 border-blue-100/50'
-    : 'from-amber-50/80 to-orange-50/60 border-amber-100/50';
+    ? 'from-emerald-50/80 to-cyan-50/60 border-emerald-100/50'
+    : 'from-amber-50/80 to-blue-50/60 border-amber-100/50';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -133,7 +133,7 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-blue-950 via-sky-800 to-cyan-900">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-950 via-teal-800 to-cyan-900">
         {/* Mesh gradient overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(16,185,129,0.55),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(6,182,212,0.4),transparent_50%)]" />
@@ -186,10 +186,10 @@ export function LoginPage() {
 
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
               Your Home,<br />
-              <span className="bg-gradient-to-r from-blue-300 via-sky-200 to-cyan-200 bg-clip-text text-transparent">Perfectly Served.</span>
+              <span className="bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent">Perfectly Served.</span>
             </h2>
 
-            <p className="text-blue-100/80 text-lg mb-10 max-w-md leading-relaxed">
+            <p className="text-emerald-100/80 text-lg mb-10 max-w-md leading-relaxed">
               Connect with verified professionals for plumbing, electrical, and AC &amp; HVAC services — all in one place.
             </p>
 
@@ -208,7 +208,7 @@ export function LoginPage() {
                   className="text-center"
                 >
                   <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-blue-300/70 mt-0.5">{stat.label}</div>
+                  <div className="text-xs text-emerald-200/70 mt-0.5">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
@@ -226,8 +226,8 @@ export function LoginPage() {
       {/* ========== RIGHT FORM PANEL ========== */}
       <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-white via-gray-50/30 to-white">
         {/* Subtle background orbs */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-blue-50/40 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-sky-50/30 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-50/40 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-teal-50/30 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
         <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-cyan-50/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <motion.div
@@ -242,7 +242,7 @@ export function LoginPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             onClick={() => navigate('home')}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-blue-800 mb-6 transition-colors group"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-emerald-700 mb-6 transition-colors group"
           >
             <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
@@ -253,7 +253,7 @@ export function LoginPage() {
             {/* Subtle inner ring */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/40 pointer-events-none" />
             {/* Gradient top accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-600 via-sky-400 to-cyan-400" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
 
             {/* Header */}
             <div className="relative pointer-events-auto text-center pt-8 pb-2 px-6">
@@ -261,7 +261,7 @@ export function LoginPage() {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-800 via-sky-500 to-cyan-500 text-white shadow-lg shadow-blue-500/30"
+                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30"
               >
                 <Wrench className="size-8" />
               </motion.div>
@@ -289,13 +289,13 @@ export function LoginPage() {
                 <TabsList className={`w-full h-auto p-1.5 bg-gradient-to-r ${tabBg} rounded-xl border transition-colors duration-300`}>
                   <TabsTrigger
                     value="client"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-800 data-[state=active]:via-sky-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-blue-600/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-600 data-[state=active]:via-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-emerald-600/30"
                   >
                     <User className="size-4 mr-2" />Client Login
                   </TabsTrigger>
                   <TabsTrigger
                     value="provider"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-orange-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-blue-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30"
                   >
                     <Briefcase className="size-4 mr-2" />Provider Login
                   </TabsTrigger>
@@ -316,14 +316,14 @@ export function LoginPage() {
                         transition={{ duration: 0.3 }}
                         className={`rounded-xl bg-gradient-to-r ${bannerBg} p-4 border`}
                       >
-                        <p className="text-sm font-semibold text-blue-900 mb-3">
+                        <p className="text-sm font-semibold text-emerald-800 mb-3">
                           Book trusted professionals for:
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {[
                             { Icon: Droplets, label: 'Plumbing', color: 'bg-blue-50 text-blue-600 border-blue-100' },
                             { Icon: Zap, label: 'Electrical', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                            { Icon: Wind, label: 'AC & HVAC', color: 'bg-sky-50 text-sky-600 border-sky-100' },
+                            { Icon: Wind, label: 'AC & HVAC', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}
@@ -492,7 +492,7 @@ export function LoginPage() {
                           {[
                             { Icon: Droplets, label: 'Plumbing Jobs', color: 'bg-blue-50 text-blue-600 border-blue-100' },
                             { Icon: Zap, label: 'Electrical Jobs', color: 'bg-amber-50 text-amber-600 border-amber-100' },
-                            { Icon: Wind, label: 'HVAC Jobs', color: 'bg-sky-50 text-sky-600 border-sky-100' },
+                            { Icon: Wind, label: 'HVAC Jobs', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}
@@ -672,8 +672,8 @@ export function LoginPage() {
           </DialogHeader>
           {forgotSuccess ? (
             <div className="flex flex-col items-center gap-3 py-4">
-              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-sky-100 border border-blue-200/80 shadow-md shadow-blue-200/30">
-                <Mail className="size-6 text-blue-700" />
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 border border-emerald-200/80 shadow-md shadow-emerald-200/30">
+                <Mail className="size-6 text-emerald-600" />
               </div>
               <p className="text-sm text-center text-muted-foreground max-w-xs leading-relaxed">
                 If an account with that email exists, a reset link has been sent to your inbox.
@@ -681,7 +681,7 @@ export function LoginPage() {
               <Button
                 type="button"
                 onClick={() => setForgotDialogOpen(false)}
-                className="mt-2 bg-gradient-to-r from-blue-800 via-sky-500 to-cyan-500 hover:from-[#1e3a5f] hover:via-sky-600 hover:to-cyan-600 shadow-lg shadow-blue-500/20 rounded-xl h-11 px-6"
+                className="mt-2 bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 hover:from-emerald-700 hover:via-teal-600 hover:to-cyan-600 shadow-lg shadow-emerald-500/20 rounded-xl h-11 px-6"
               >
                 Back to Login
               </Button>
@@ -692,7 +692,7 @@ export function LoginPage() {
                 <div className="space-y-2">
                   <Label htmlFor="forgot-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-blue-700 transition-colors" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
                     <Input
                       id="forgot-email"
                       type="email"
@@ -701,7 +701,7 @@ export function LoginPage() {
                       onChange={(e) => setForgotEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-12 bg-white/60 border-blue-100/50 focus:border-blue-400 focus:ring-blue-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-12 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -719,7 +719,7 @@ export function LoginPage() {
                 <Button
                   type="submit"
                   disabled={forgotLoading}
-                  className="bg-gradient-to-r from-blue-800 via-sky-500 to-cyan-500 hover:from-[#1e3a5f] hover:via-sky-600 hover:to-cyan-600 shadow-lg shadow-blue-500/20 rounded-xl h-11"
+                  className="bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 hover:from-emerald-700 hover:via-teal-600 hover:to-cyan-600 shadow-lg shadow-emerald-500/20 rounded-xl h-11"
                 >
                   {forgotLoading ? (
                     <>

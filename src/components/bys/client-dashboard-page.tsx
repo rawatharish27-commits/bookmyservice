@@ -1,14 +1,12 @@
-'use client';
-
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
-import { useApp } from '@/contexts/app-context';
+import { useApp, type Page } from '@/contexts/app-context';
 import { useApi } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Separator } from '@/components/ui/separator';
 import {
   CalendarCheck,
   CheckCircle2,
@@ -18,20 +16,36 @@ import {
   CalendarDays,
   Star,
   ArrowRight,
+  Droplets,
+  Zap,
+  Wind,
+  User,
+  Sparkles,
 } from 'lucide-react';
 
+const fadeUp = {
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 },
+};
+
+const stagger = {
+  animate: { transition: { staggerChildren: 0.08 } },
+};
+
 function StatusBadge({ status }: { status: string }) {
-  const config: Record<string, { className: string }> = {
-    PENDING: { className: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
-    ACCEPTED: { className: 'bg-blue-100 text-blue-800 border-blue-200' },
-    IN_PROGRESS: { className: 'bg-orange-100 text-orange-800 border-orange-200' },
-    COMPLETED: { className: 'bg-green-100 text-green-800 border-green-200' },
-    CANCELLED: { className: 'bg-red-100 text-red-800 border-red-200' },
-    REFUNDED: { className: 'bg-gray-100 text-gray-800 border-gray-200' },
+  const config: Record<string, { className: string; dotColor: string }> = {
+    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
+    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
+    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
+    REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
   };
   const c = config[status] || config.PENDING;
   return (
-    <Badge variant="outline" className={c.className}>
+    <Badge variant="outline" className={`${c.className} gap-1.5 text-xs font-semibold`}>
+      <span className={`size-1.5 rounded-full ${c.dotColor}`} />
       {status.replace('_', ' ')}
     </Badge>
   );
@@ -58,6 +72,12 @@ interface ReviewData {
   reviewed?: { name: string };
 }
 
+const SERVICE_ICONS = [
+  { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumbing' },
+  { icon: Zap, color: 'from-amber-400 to-yellow-400', label: 'Electrical' },
+  { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'AC & HVAC' },
+];
+
 export function ClientDashboardPage() {
   const { user } = useAuth();
   const { navigate } = useApp();
@@ -83,81 +103,133 @@ export function ClientDashboardPage() {
     {
       title: 'Upcoming Bookings',
       value: upcomingBookings.length,
-      icon: <CalendarCheck className="size-5" />,
-      color: 'text-blue-600 bg-blue-50',
+      icon: CalendarCheck,
+      gradient: 'from-sky-400 to-blue-500',
+      bgGlow: 'bg-sky-500/10',
     },
     {
       title: 'Completed Services',
       value: completedCount,
-      icon: <CheckCircle2 className="size-5" />,
-      color: 'text-blue-700 bg-blue-50',
+      icon: CheckCircle2,
+      gradient: 'from-emerald-400 to-teal-500',
+      bgGlow: 'bg-emerald-500/10',
     },
     {
       title: 'Favorite Providers',
       value: 0,
-      icon: <Heart className="size-5" />,
-      color: 'text-pink-600 bg-pink-50',
+      icon: Heart,
+      gradient: 'from-pink-400 to-rose-500',
+      bgGlow: 'bg-pink-500/10',
     },
     {
       title: 'Total Spent',
       value: `₹${totalSpent.toLocaleString()}`,
-      icon: <DollarSign className="size-5" />,
-      color: 'text-amber-600 bg-amber-50',
+      icon: DollarSign,
+      gradient: 'from-amber-400 to-blue-500',
+      bgGlow: 'bg-amber-500/10',
     },
   ];
 
+  const quickActions = [
+    { icon: Briefcase, label: 'Book a Service', nav: 'categories', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
+    { icon: CalendarCheck, label: 'My Bookings', nav: 'client-bookings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
+    { icon: Heart, label: 'Favorites', nav: 'client-favorites', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
+    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
+  ];
+
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-      {/* Welcome */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold sm:text-3xl">
-          Welcome back, <span className="text-blue-700">{user?.name || 'Client'}</span>!
-        </h1>
-        <p className="mt-1 text-muted-foreground">Here&apos;s an overview of your activity</p>
-      </div>
+    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+      {/* Welcome Banner */}
+      <motion.div
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+      >
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
+        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-white/5 blur-3xl" />
+        <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Sparkles className="size-5 text-emerald-200" />
+              <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+            </div>
+            <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+              {user?.name?.split(' ')[0] || 'Client'} 👋
+            </h1>
+            <p className="mt-1 text-emerald-100/80">Here&apos;s an overview of your activity</p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              className="shimmer bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 border border-white/20"
+              onClick={() => navigate('categories')}
+            >
+              <Briefcase className="mr-2 size-4" />
+              Book Service
+            </Button>
+            <Button
+              variant="outline"
+              className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              onClick={() => navigate('client-bookings')}
+            >
+              View Bookings
+            </Button>
+          </div>
+        </div>
+      </motion.div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <motion.div
+        variants={stagger}
+        initial="initial"
+        animate="animate"
+        className="grid grid-cols-2 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
         {stats.map((stat) => (
-          <Card key={stat.title} className="gap-4 py-5">
-            <CardContent className="flex items-center gap-4 p-0 px-5">
-              <div className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${stat.color}`}>
-                {stat.icon}
+          <motion.div key={stat.title} variants={fadeUp}>
+            <div className="glass group relative overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+              <div className={`absolute -right-3 -top-3 size-16 rounded-full ${stat.bgGlow} blur-xl transition-all duration-300 group-hover:scale-150`} />
+              <div className="relative flex items-center gap-4">
+                <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg`}>
+                  <stat.icon className="size-5 text-white" />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate text-xs text-muted-foreground">{stat.title}</p>
+                  <p className="text-xl font-bold">{stat.value}</p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <p className="text-xs text-muted-foreground">{stat.title}</p>
-                <p className="text-xl font-bold">{stat.value}</p>
-              </div>
-            </CardContent>
-          </Card>
+            </div>
+          </motion.div>
         ))}
-      </div>
+      </motion.div>
 
       <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Upcoming Bookings */}
-        <div className="lg:col-span-2">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg">Upcoming Bookings</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-blue-700">
+        <motion.div className="lg:col-span-2" {...fadeUp}>
+          <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+              <CardTitle className="text-lg font-semibold">Upcoming Bookings</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
                 View All <ArrowRight className="ml-1 size-4" />
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               {bookingsLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
-                    <Skeleton key={i} className="h-20 w-full" />
+                    <div key={i} className="h-20 animate-pulse rounded-xl bg-muted/50" />
                   ))}
                 </div>
               ) : upcomingBookings.length === 0 ? (
-                <div className="py-8 text-center">
-                  <CalendarDays className="mx-auto size-10 text-muted-foreground/40" />
-                  <p className="mt-2 text-sm text-muted-foreground">No upcoming bookings</p>
+                <div className="py-10 text-center">
+                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
+                    <CalendarDays className="size-8 text-emerald-300" />
+                  </div>
+                  <p className="mt-3 font-medium text-muted-foreground">No upcoming bookings</p>
+                  <p className="mt-1 text-sm text-muted-foreground/70">Book a service to get started</p>
                   <Button
-                    variant="outline"
+                    className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30"
                     size="sm"
-                    className="mt-3 border-blue-200 text-blue-700 hover:bg-blue-50"
                     onClick={() => navigate('categories')}
                   >
                     Browse Services
@@ -165,17 +237,20 @@ export function ClientDashboardPage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {upcomingBookings.map((booking) => (
-                    <button
+                  {upcomingBookings.map((booking, idx) => (
+                    <motion.button
                       key={booking.id}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.08 }}
                       onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
-                      className="flex w-full items-center gap-4 rounded-lg border p-4 text-left transition-colors hover:bg-gray-50"
+                      className="group flex w-full items-center gap-4 rounded-xl border border-transparent p-4 text-left transition-all hover:border-emerald-100 hover:bg-emerald-50/50 hover:shadow-sm"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                        <Briefcase className="size-5 text-blue-700" />
+                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md shadow-emerald-500/20">
+                        <Briefcase className="size-5 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-medium">
+                        <p className="truncate text-sm font-semibold">
                           {booking.service?.title || 'Service'}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -187,46 +262,51 @@ export function ClientDashboardPage() {
                           at {booking.scheduledTime}
                         </p>
                       </div>
-                      <StatusBadge status={booking.status} />
-                    </button>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <StatusBadge status={booking.status} />
+                        <span className="text-xs font-semibold text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+                      </div>
+                    </motion.button>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
 
         {/* Recent Reviews */}
-        <div>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg">Recent Reviews</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-blue-700">
+        <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
+          <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
+              <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
                 View All
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4">
               {reviewsLoading ? (
                 <div className="space-y-3">
                   {[1, 2].map((i) => (
-                    <Skeleton key={i} className="h-16 w-full" />
+                    <div key={i} className="h-16 animate-pulse rounded-xl bg-muted/50" />
                   ))}
                 </div>
               ) : recentReviews.length === 0 ? (
-                <div className="py-6 text-center">
-                  <Star className="mx-auto size-8 text-muted-foreground/40" />
-                  <p className="mt-2 text-sm text-muted-foreground">No reviews yet</p>
+                <div className="py-8 text-center">
+                  <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-amber-50">
+                    <Star className="size-7 text-amber-300" />
+                  </div>
+                  <p className="mt-3 text-sm text-muted-foreground">No reviews yet</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {recentReviews.map((review) => (
-                    <div key={review.id} className="rounded-lg border p-3">
+                    <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-amber-100 hover:bg-amber-50/30">
                       <div className="flex items-center gap-2">
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`size-3.5 ${i < review.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                              className={`size-3.5 ${i < review.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]' : 'text-gray-200'}`}
                             />
                           ))}
                         </div>
@@ -247,49 +327,69 @@ export function ClientDashboardPage() {
               )}
             </CardContent>
           </Card>
-        </div>
+        </motion.div>
       </div>
-
-      <Separator className="my-8" />
 
       {/* Quick Actions */}
-      <div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mt-8"
+      >
         <h2 className="mb-4 text-lg font-semibold">Quick Actions</h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-          <Button
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-blue-200 hover:bg-blue-50 hover:text-blue-800"
-            onClick={() => navigate('categories')}
-          >
-            <Briefcase className="size-5" />
-            <span className="text-sm">Book a Service</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 hover:bg-blue-50 hover:text-blue-700"
-            onClick={() => navigate('client-bookings')}
-          >
-            <CalendarCheck className="size-5" />
-            <span className="text-sm">View All Bookings</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 hover:bg-pink-50 hover:text-pink-700"
-            onClick={() => navigate('client-favorites')}
-          >
-            <Heart className="size-5" />
-            <span className="text-sm">Favorites</span>
-          </Button>
-          <Button
-            variant="outline"
-            className="h-auto flex-col gap-2 py-4 hover:bg-amber-50 hover:text-amber-700"
-            onClick={() => navigate('client-profile')}
-          >
-            <DollarSign className="size-5" />
-            <span className="text-sm">My Profile</span>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {quickActions.map((action) => (
+            <motion.button
+              key={action.label}
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => navigate(action.nav as Page)}
+              className={`flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br ${action.gradient} p-5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
+            >
+              <action.icon className="size-6" />
+              <span className="text-sm font-semibold">{action.label}</span>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Recommended Services */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="mt-8"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Explore Services</h2>
+          <Button variant="ghost" size="sm" onClick={() => navigate('categories')} className="text-emerald-600 hover:text-emerald-700">
+            See All <ArrowRight className="ml-1 size-4" />
           </Button>
         </div>
-      </div>
+        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+          {SERVICE_ICONS.map((svc, idx) => (
+            <motion.button
+              key={svc.label}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 + idx * 0.1 }}
+              whileHover={{ y: -4 }}
+              whileTap={{ scale: 0.97 }}
+              onClick={() => navigate('categories')}
+              className="group flex min-w-[180px] flex-col items-center gap-3 rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-all hover:border-emerald-100 hover:shadow-md"
+            >
+              <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${svc.color} shadow-lg transition-transform group-hover:scale-110`}>
+                <svc.icon className="size-7 text-white" />
+              </div>
+              <span className="font-semibold text-sm">{svc.label}</span>
+              <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium group-hover:gap-2 transition-all">
+                Explore <ArrowRight className="size-3" />
+              </span>
+            </motion.button>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }

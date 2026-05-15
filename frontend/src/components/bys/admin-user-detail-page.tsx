@@ -199,7 +199,7 @@ export function AdminUserDetailPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             {user.status === 'ACTIVE' ? (
-              <Button variant="outline" className="text-orange-600" onClick={() => handleStatusChange('BLOCKED')}>
+              <Button variant="outline" className="text-blue-600" onClick={() => handleStatusChange('BLOCKED')}>
                 <Ban className="mr-2 size-4" /> Block User
               </Button>
             ) : (

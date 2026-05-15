@@ -74,7 +74,7 @@ export function ProviderReviewsPage() {
           transition={{ delay: 0.1 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500" />
+            <div className="h-1 bg-gradient-to-r from-amber-400 via-blue-500 to-rose-500" />
             <CardContent className="flex items-center gap-6 p-6">
               <div className="text-center">
                 <p className="text-gradient text-4xl font-bold">{avgRating}</p>
@@ -91,7 +91,7 @@ export function ProviderReviewsPage() {
                         initial={{ width: 0 }}
                         animate={{ width: `${r.pct}%` }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-orange-400"
+                        className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-sky-400"
                       />
                     </div>
                     <span className="w-8 text-right text-xs text-muted-foreground">{r.count}</span>
@@ -131,7 +131,7 @@ export function ProviderReviewsPage() {
         >
           <Card className="rounded-2xl border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-12 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-orange-50">
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-blue-50">
                 <Star className="size-10 text-amber-300" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
