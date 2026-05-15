@@ -45,7 +45,10 @@ export type Page =
   | 'terms'
   | 'privacy'
   | 'refund-policy'
-  | 'cookie-policy';
+  | 'cookie-policy'
+  | 'client-referrals'
+  | 'area-manager-dashboard'
+  | 'client-commissions';
 
 interface NavigationState {
   page: Page;

@@ -67,6 +67,9 @@ async function loadPage(page: string): Promise<React.ComponentType | null> {
     'admin-faq': () => import('@/components/bys/admin-faq-page'),
     'admin-revenue': () => import('@/components/bys/admin-revenue-page'),
     'admin-logs': () => import('@/components/bys/admin-logs-page'),
+    'client-referrals': () => import('@/components/bys/client-referrals-page'),
+    'area-manager-dashboard': () => import('@/components/bys/area-manager-dashboard-page'),
+    'client-commissions': () => import('@/components/bys/client-commissions-page'),
   };
 
   const loader = pageModules[page];

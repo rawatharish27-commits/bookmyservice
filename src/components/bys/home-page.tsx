@@ -819,49 +819,51 @@ export function HomePage() {
                     viewport={{ once: true }}
                     transition={{ delay: idx * 0.08, duration: 0.5 }}
                     className="group relative flex-shrink-0"
-                    style={{ width: '200px' }}
+                    style={{ width: '220px' }}
                   >
                     <TiltCard>
                       <div
                         onClick={() => isAvailable ? navigate('category-detail', { slug: service.slug }) : undefined}
-                        className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
-                        style={{ height: '280px' }}
+                        className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
+                        style={{ height: '300px' }}
                       >
-                        {/* Service Image */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a1628]/90">
-                          <img
-                            src={service.image}
-                            alt={service.name}
-                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                          />
-                        </div>
+                        {/* Service Image - visible behind everything */}
+                        <img
+                          src={service.image}
+                          alt={service.name}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        />
 
-                        {/* Fallback gradient if no image */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f]/80 via-[#0a1628]/60 to-[#0a1628]" />
+                        {/* Gradient overlay for text readability - semi-transparent */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a1628] via-[#0a1628]/40 to-transparent" />
+
+                        {/* Fallback background when image fails */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-[#1e3a5f] to-[#0a1628] -z-10" />
 
                         {/* Icon overlay */}
-                        <div className="absolute top-4 left-4 z-10 flex size-12 items-center justify-center rounded-xl bg-white/15 text-white backdrop-blur-md ring-1 ring-white/20 shadow-lg">
+                        <div className="absolute top-4 left-4 z-10 flex size-12 items-center justify-center rounded-xl bg-white/20 text-white backdrop-blur-md ring-1 ring-white/25 shadow-lg">
                           {CATEGORY_ICON_MAP[service.icon] || <Wrench className="size-7" />}
                         </div>
 
-                        {/* Content overlay */}
+                        {/* Content overlay at bottom */}
                         <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
                           <h3 className="text-base font-bold text-white drop-shadow-md">{service.name}</h3>
-                          <p className="mt-1 text-xs text-blue-100/80 leading-relaxed">{service.description}</p>
-                          {isAvailable && (
-                            <div className="mt-2 flex items-center gap-1 text-xs text-sky-300 font-medium">
+                          <p className="mt-1 text-xs text-blue-100/90 leading-relaxed">{service.description}</p>
+                          {isAvailable ? (
+                            <div className="mt-2 flex items-center gap-1 text-xs text-sky-300 font-semibold">
                               <span>View Services</span>
                               <ArrowRight className="size-3 transition-transform group-hover:translate-x-1" />
                             </div>
+                          ) : (
+                            <Badge className="mt-2 bg-sky-500/20 text-sky-200 border-sky-400/30 backdrop-blur-sm px-3 py-0.5 text-[10px] font-semibold">
+                              Coming Soon
+                            </Badge>
                           )}
                         </div>
 
-                        {/* Coming Soon Overlay */}
+                        {/* Coming Soon Full Overlay */}
                         {!isAvailable && (
-                          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a1628]/60 backdrop-blur-[2px]">
+                          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0a1628]/50 backdrop-blur-[2px]">
                             <Badge className="bg-[#1e3a5f]/80 text-sky-200 border-[#2d5a8e]/30 backdrop-blur-sm px-4 py-1.5 text-sm font-semibold">
                               Coming Soon
                             </Badge>

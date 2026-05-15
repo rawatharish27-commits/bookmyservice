@@ -51,6 +51,10 @@ model User {
   disputesAssigned Dispute[]      @relation("DisputeAssigned")
   adminLogs        AdminLog[]
   favorites        Favorite[]
+  referralsGiven   Referral[]      @relation("ReferralsGiven")
+  referralsReceived Referral[]     @relation("ReferralsReceived")
+  areaManager      AreaManager?
+  commissions      Commission[]    @relation("CommissionsEarned")
 }
 
 model ProviderKyc {
@@ -376,4 +380,97 @@ model ContactMessage {
   message   String
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
+}
+
+model Referral {
+  id              String   @id @default(cuid())
+  referrerId      String   // User who referred
+  referrer        User     @relation("ReferralsGiven", fields: [referrerId], references: [id])
+  referredEmail   String?  // Email of referred person
+  referredPhone   String?  // Phone of referred person
+  referredName    String?  // Name of referred person
+  referredUserId  String?  // If they joined, link to their account
+  referredUser    User?    @relation("ReferralsReceived", fields: [referredUserId], references: [id])
+  referralCode    String   @unique // Unique referral code
+  referralType    String   @default("PROVIDER") // PROVIDER, CUSTOMER, AREA_MANAGER
+  source          String   @default("WHATSAPP") // WHATSAPP, WEBSITE, DIRECT, SOCIAL
+  status          String   @default("PENDING") // PENDING, REGISTERED, ACTIVE, COMPLETED, EXPIRED
+  rewardType      String?  // COMMISSION, CASH, CREDIT
+  rewardAmount    Float?   @default(0)
+  commissionRate  Float    @default(0.05) // 5% default commission
+  totalEarnings   Float    @default(0)
+  totalBookings   Int      @default(0)
+  message         String?  // Custom referral message
+  expiresAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  commissions     Commission[]
+}
+
+model AreaManager {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  assignedCity      String
+  assignedState     String?
+  assignedPincode   String?
+  assignedLatitude  Float?
+  assignedLongitude Float?
+  serviceRadiusKm   Float    @default(20)
+  targetProviders   Int      @default(20)
+  targetCustomers   Int      @default(100)
+  currentProviders  Int      @default(0)
+  currentCustomers  Int      @default(0)
+  commissionBalance Float    @default(0)
+  totalEarnings     Float    @default(0)
+  commissionRate    Float    @default(0.03) // 3% commission on all bookings in area
+  status            String   @default("PENDING") // PENDING, ACTIVE, SUSPENDED
+  joinedAt          DateTime @default(now())
+  activatedAt       DateTime?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  serviceAreas      ServiceArea[]
+}
+
+model ServiceArea {
+  id              String   @id @default(cuid())
+  city            String
+  state           String?
+  pincode         String?
+  latitude        Float?
+  longitude       Float?
+  radiusKm        Float    @default(20)
+  isActive        Boolean  @default(false)
+  providerCount   Int      @default(0)
+  customerCount   Int      @default(0)
+  bookingCount    Int      @default(0)
+  targetProviders Int      @default(20)
+  targetCustomers Int      @default(100)
+  launchDate      DateTime?
+  areaManagerId   String?
+  areaManager     AreaManager? @relation(fields: [areaManagerId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([city, pincode])
+}
+
+model Commission {
+  id              String   @id @default(cuid())
+  userId          String   // Who earns the commission
+  user            User     @relation("CommissionsEarned", fields: [userId], references: [id])
+  bookingId       String?  // Related booking
+  referralId      String?  // Related referral
+  referral        Referral? @relation(fields: [referralId], references: [id])
+  commissionType  String   // REFERRAL, AREA_MANAGER, PLATFORM
+  amount          Float
+  rate            Float    // Commission rate applied
+  baseAmount      Float    // Base amount commission was calculated on
+  status          String   @default("PENDING") // PENDING, APPROVED, PAID, CANCELLED
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

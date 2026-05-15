@@ -31,6 +31,10 @@ async function main() {
   await db.seoMetadata.deleteMany();
   await db.revenueStream.deleteMany();
   await db.contactMessage.deleteMany();
+  await db.commission.deleteMany();
+  await db.referral.deleteMany();
+  await db.serviceArea.deleteMany();
+  await db.areaManager.deleteMany();
 
   // ========================================
   // 1. ROLES
@@ -1507,6 +1511,28 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   console.log(`   Admin Logs: ${adminLogData.length}`);
   console.log(`   Favorites: ${favoriteData.length}`);
   console.log(`   Contact Messages: ${contactMessages.length}`);
+
+  // ========================================
+  // SERVICE AREAS (Major Indian Cities)
+  // ========================================
+  console.log('🗺️ Creating service areas...');
+  const serviceAreaData = [
+    { city: 'Mumbai', state: 'Maharashtra', pincode: '400001', latitude: 19.0760, longitude: 72.8777, radiusKm: 25, isActive: true, providerCount: 3, customerCount: 15, bookingCount: 8, targetProviders: 30, targetCustomers: 150, launchDate: new Date('2025-01-01') },
+    { city: 'Delhi', state: 'Delhi', pincode: '110001', latitude: 28.7041, longitude: 77.1025, radiusKm: 25, isActive: true, providerCount: 3, customerCount: 12, bookingCount: 6, targetProviders: 25, targetCustomers: 120, launchDate: new Date('2025-01-01') },
+    { city: 'Bengaluru', state: 'Karnataka', pincode: '560001', latitude: 12.9716, longitude: 77.5946, radiusKm: 25, isActive: true, providerCount: 3, customerCount: 10, bookingCount: 5, targetProviders: 25, targetCustomers: 120, launchDate: new Date('2025-01-15') },
+    { city: 'Hyderabad', state: 'Telangana', pincode: '500001', latitude: 17.3850, longitude: 78.4867, radiusKm: 20, isActive: true, providerCount: 1, customerCount: 5, bookingCount: 3, targetProviders: 20, targetCustomers: 100, launchDate: new Date('2025-02-01') },
+    { city: 'Pune', state: 'Maharashtra', pincode: '411001', latitude: 18.5204, longitude: 73.8567, radiusKm: 20, isActive: true, providerCount: 1, customerCount: 4, bookingCount: 2, targetProviders: 20, targetCustomers: 100, launchDate: new Date('2025-02-15') },
+    { city: 'Chennai', state: 'Tamil Nadu', pincode: '600001', latitude: 13.0827, longitude: 80.2707, radiusKm: 20, isActive: false, providerCount: 0, customerCount: 2, bookingCount: 0, targetProviders: 15, targetCustomers: 80, launchDate: null },
+    { city: 'Jaipur', state: 'Rajasthan', pincode: '302001', latitude: 26.9124, longitude: 75.7873, radiusKm: 15, isActive: false, providerCount: 0, customerCount: 1, bookingCount: 0, targetProviders: 15, targetCustomers: 80, launchDate: null },
+    { city: 'Kolkata', state: 'West Bengal', pincode: '700001', latitude: 22.5726, longitude: 88.3639, radiusKm: 20, isActive: false, providerCount: 0, customerCount: 0, bookingCount: 0, targetProviders: 15, targetCustomers: 80, launchDate: null },
+    { city: 'Ahmedabad', state: 'Gujarat', pincode: '380001', latitude: 23.0225, longitude: 72.5714, radiusKm: 20, isActive: false, providerCount: 0, customerCount: 0, bookingCount: 0, targetProviders: 15, targetCustomers: 80, launchDate: null },
+    { city: 'Lucknow', state: 'Uttar Pradesh', pincode: '226001', latitude: 26.8467, longitude: 80.9462, radiusKm: 15, isActive: false, providerCount: 0, customerCount: 0, bookingCount: 0, targetProviders: 10, targetCustomers: 60, launchDate: null },
+  ];
+
+  for (const saData of serviceAreaData) {
+    await db.serviceArea.create({ data: saData });
+  }
+  console.log('   Service Areas: ' + serviceAreaData.length);
   console.log('\n🔐 Login Credentials:');
   console.log('   Admin:    admin@bookyourservice.co.in / admin123');
   console.log('   Provider: rajesh.kumar@gmail.com / provider123');

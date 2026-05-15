@@ -22,14 +22,14 @@ import {
   Clock,
   Send,
   CheckCircle2,
-  Facebook,
   MessageCircle,
-  Instagram,
-  Linkedin,
   MessageSquare,
   ArrowRight,
   Globe,
   Headphones,
+  ExternalLink,
+  Camera,
+  Briefcase,
 } from 'lucide-react';
 
 const fadeUp = {
@@ -151,7 +151,7 @@ export function ContactPage() {
             action: 'mailto:hello@bookyourservice.com',
           },
           {
-            icon: <Headphones className="size-6" />,
+            icon: <MessageCircle className="size-6" />,
             title: 'Support Hours',
             detail: 'Mon-Fri: 9AM - 6PM\nSat: 10AM - 4PM',
             gradient: 'from-emerald-700 to-emerald-500',
@@ -381,10 +381,10 @@ export function ContactPage() {
               <h3 className="mb-4 text-lg font-bold text-gray-900">Follow Us</h3>
               <div className="grid grid-cols-4 gap-3">
                 {[
-                  { icon: <Facebook className="size-5" />, label: 'Facebook', color: 'hover:bg-blue-50 hover:text-blue-600' },
+                  { icon: <Globe className="size-5" />, label: 'Facebook', color: 'hover:bg-blue-50 hover:text-blue-600' },
                   { icon: <MessageCircle className="size-5" />, label: 'Twitter', color: 'hover:bg-sky-50 hover:text-sky-600' },
-                  { icon: <Instagram className="size-5" />, label: 'Instagram', color: 'hover:bg-pink-50 hover:text-pink-600' },
-                  { icon: <Linkedin className="size-5" />, label: 'LinkedIn', color: 'hover:bg-blue-50 hover:text-blue-700' },
+                  { icon: <Camera className="size-5" />, label: 'Instagram', color: 'hover:bg-pink-50 hover:text-pink-600' },
+                  { icon: <Briefcase className="size-5" />, label: 'LinkedIn', color: 'hover:bg-blue-50 hover:text-blue-700' },
                 ].map((social) => (
                   <motion.a
                     key={social.label}
