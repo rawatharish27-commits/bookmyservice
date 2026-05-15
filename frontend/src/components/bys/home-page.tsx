@@ -28,6 +28,7 @@ import {
   Clock,
   ThumbsUp,
   Lock,
+  MessageSquare,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -407,6 +408,17 @@ export function HomePage() {
   const categories = Array.isArray(categoriesData) ? categoriesData : [];
   const services = servicesData?.services || [];
 
+  const [nearbyData, setNearbyData] = useState<{
+    availableCategories: { id: number; name: string; slug: string; serviceCount: number; providerCount: number; minDistanceKm?: number }[];
+    providerCount: number;
+    serviceCount: number;
+    area?: { city?: string; pincode?: string; active?: boolean; providerCount: number; customerCount: number } | null;
+    hasNearbyProviders: boolean;
+  } | null>(null);
+  const [nearbyStatus, setNearbyStatus] = useState<'idle' | 'pending' | 'ready' | 'error'>('idle');
+  const [nearbyMessage, setNearbyMessage] = useState('Detecting services near you...');
+  const [locationCoords, setLocationCoords] = useState<{ lat: number; lng: number } | null>(null);
+
   // Subcategories per category
   const [subcategoriesMap, setSubcategoriesMap] = useState<Record<number, Subcategory[]>>({});
 
@@ -464,6 +476,46 @@ export function HomePage() {
     fetchStats();
     const interval = setInterval(fetchStats, 30000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || !navigator?.geolocation) {
+      setNearbyStatus('error');
+      setNearbyMessage('Browser geolocation is unavailable. Search by city to find local services.');
+      return;
+    }
+
+    setNearbyStatus('pending');
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setLocationCoords({ lat, lng });
+
+        try {
+          const res = await fetch(`/api/services/nearby?lat=${lat}&lng=${lng}`)
+          const data = await res.json()
+          if (!res.ok) {
+            throw new Error(data.error || 'Unable to detect nearby providers')
+          }
+          setNearbyData(data)
+          setNearbyStatus('ready')
+          setNearbyMessage('Showing availability in your area.')
+        } catch (error) {
+          setNearbyStatus('error')
+          setNearbyMessage(error instanceof Error ? error.message : 'Unable to detect local availability')
+        }
+      },
+      (error) => {
+        setNearbyStatus('error')
+        if (error.code === 1) {
+          setNearbyMessage('Location permission denied. Search by city or browse categories.')
+        } else {
+          setNearbyMessage('Unable to determine your location. Search by city instead.')
+        }
+      },
+      { timeout: 10000, maximumAge: 600000 }
+    )
   }, []);
 
   // ─── Motion Variants ────────────────────────────────────────────────────────
