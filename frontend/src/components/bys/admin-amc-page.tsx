@@ -68,7 +68,7 @@ interface SubscriptionsResponse {
 /* ---------- subscription status config ---------- */
 const SUB_STATUS_CONFIG: Record<string, { className: string; dotColor: string; label: string }> = {
   ACTIVE: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', label: 'Active' },
-  EXPIRED: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400', label: 'Expired' },
+  EXPIRED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
 };
 
@@ -155,7 +155,7 @@ export function AdminAmcPage() {
         {[
           { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
           { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-amber-400 to-blue-500', bgGlow: 'bg-amber-500/10' },
+          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-cyan-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
           { label: 'Revenue (Active)', value: `₹${totalRevenue.toLocaleString('en-IN')}`, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -406,7 +406,7 @@ export function AdminAmcPage() {
                                 <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                                   <div
                                     className={`h-full rounded-full transition-all ${
-                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-amber-400' : 'bg-emerald-400'
+                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-cyan-400' : 'bg-emerald-400'
                                     }`}
                                     style={{ width: `${Math.min(progress, 100)}%` }}
                                   />

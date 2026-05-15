@@ -324,7 +324,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
             <p className="mb-7 text-lg leading-relaxed text-foreground/85 sm:text-xl">&ldquo;{t.quote}&rdquo;</p>
             <div className="mb-5 flex items-center justify-center gap-1">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className={`size-5 ${i < t.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]' : 'fill-gray-200 text-gray-200'}`} />
+                <Star key={i} className={`size-5 ${i < t.rating ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]' : 'fill-gray-200 text-gray-200'}`} />
               ))}
             </div>
             <div className="flex items-center justify-center gap-4">
@@ -754,7 +754,7 @@ export function HomePage() {
                 ) : (
                   <>
                     <p className="text-sm font-semibold text-[#0a1628]">📍 Location not detected</p>
-                    <p className="text-xs text-amber-600 font-medium">Enter your pincode below</p>
+                    <p className="text-xs text-sky-600 font-medium">Enter your pincode below</p>
                   </>
                 )}
               </div>
@@ -1010,7 +1010,7 @@ export function HomePage() {
                             <p className="mt-1 text-sm text-muted-foreground line-clamp-1">{service.description}</p>
                             <div className="mt-3 flex items-center justify-between">
                               <div className="flex items-center gap-1">
-                                <Star className="size-4 fill-amber-400 text-amber-400" />
+                                <Star className="size-4 fill-cyan-400 text-cyan-400" />
                                 <span className="text-sm font-semibold text-[#0a1628]">{service.averageRating?.toFixed(1) || '4.5'}</span>
                                 <span className="text-xs text-muted-foreground">({service.totalReviews || 0})</span>
                               </div>
@@ -1084,7 +1084,7 @@ export function HomePage() {
 
                 <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20">
                   <CardContent className="flex flex-col items-center p-6 text-center">
-                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-amber-300 text-white shadow-lg shadow-amber-400/20">
+                    <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-sky-300 text-white shadow-lg shadow-cyan-400/20">
                       <Clock className="size-7" />
                     </div>
                     <h3 className="text-lg font-bold text-[#0a1628]">Join Waiting List</h3>
@@ -1240,7 +1240,7 @@ export function HomePage() {
               </p>
 
               <div className="mt-6 flex items-center gap-4 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 backdrop-blur-sm">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-300 text-[#0a1628] font-bold shadow-lg shadow-amber-400/20">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-sky-300 text-[#0a1628] font-bold shadow-lg shadow-cyan-400/20">
                   5%
                 </div>
                 <div>

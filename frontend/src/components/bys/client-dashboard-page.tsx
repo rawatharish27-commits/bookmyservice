@@ -35,7 +35,7 @@ const stagger = {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
     ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
     IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
@@ -74,7 +74,7 @@ interface ReviewData {
 
 const SERVICE_ICONS = [
   { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumbing' },
-  { icon: Zap, color: 'from-amber-400 to-yellow-400', label: 'Electrical' },
+  { icon: Zap, color: 'from-cyan-400 to-yellow-400', label: 'Electrical' },
   { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'AC & HVAC' },
 ];
 
@@ -125,8 +125,8 @@ export function ClientDashboardPage() {
       title: 'Total Spent',
       value: `₹${totalSpent.toLocaleString()}`,
       icon: DollarSign,
-      gradient: 'from-amber-400 to-blue-500',
-      bgGlow: 'bg-amber-500/10',
+      gradient: 'from-cyan-400 to-blue-500',
+      bgGlow: 'bg-sky-500/10',
     },
   ];
 
@@ -134,7 +134,7 @@ export function ClientDashboardPage() {
     { icon: Briefcase, label: 'Book a Service', nav: 'categories', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
     { icon: CalendarCheck, label: 'My Bookings', nav: 'client-bookings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
     { icon: Heart, label: 'Favorites', nav: 'client-favorites', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
-    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
+    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
   ];
 
   return (
@@ -277,9 +277,9 @@ export function ClientDashboardPage() {
         {/* Recent Reviews */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
               <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-sky-600 hover:text-sky-700 hover:bg-sky-50">
                 View All
               </Button>
             </CardHeader>
@@ -292,21 +292,21 @@ export function ClientDashboardPage() {
                 </div>
               ) : recentReviews.length === 0 ? (
                 <div className="py-8 text-center">
-                  <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-amber-50">
-                    <Star className="size-7 text-amber-300" />
+                  <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-sky-50">
+                    <Star className="size-7 text-sky-300" />
                   </div>
                   <p className="mt-3 text-sm text-muted-foreground">No reviews yet</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {recentReviews.map((review) => (
-                    <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-amber-100 hover:bg-amber-50/30">
+                    <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-sky-100 hover:bg-sky-50/30">
                       <div className="flex items-center gap-2">
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`size-3.5 ${i < review.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]' : 'text-gray-200'}`}
+                              className={`size-3.5 ${i < review.rating ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]' : 'text-gray-200'}`}
                             />
                           ))}
                         </div>

@@ -108,7 +108,7 @@ interface ProfileResponse {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
     ASSIGNED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
     ACCEPTED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
     ON_THE_WAY: { className: 'bg-cyan-50 text-cyan-700 border-cyan-200', dotColor: 'bg-cyan-400' },
@@ -137,9 +137,9 @@ function StarRating({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md
           key={i}
           className={`${iconSize} ${
             i < Math.floor(rating)
-              ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]'
+              ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
               : i < rating
-                ? 'fill-amber-200 text-amber-400'
+                ? 'fill-sky-200 text-cyan-400'
                 : 'text-gray-200'
           }`}
         />
@@ -331,9 +331,9 @@ export function TechnicianDashboardPage() {
       title: 'Average Rating',
       value: avgRating > 0 ? avgRating.toFixed(1) : '—',
       icon: Star,
-      gradient: 'from-amber-400 to-blue-500',
-      bgGlow: 'bg-amber-500/10',
-      valueColor: 'text-amber-600',
+      gradient: 'from-cyan-400 to-blue-500',
+      bgGlow: 'bg-sky-500/10',
+      valueColor: 'text-sky-600',
     },
   ];
 
@@ -341,7 +341,7 @@ export function TechnicianDashboardPage() {
   const quickActions = [
     { icon: Wallet, label: 'Earnings', nav: 'technician-earnings' as Page, gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
     { icon: User, label: 'My Profile', nav: 'technician-profile' as Page, gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
+    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
     { icon: Briefcase, label: 'All Jobs', nav: 'technician-jobs' as Page, gradient: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/25' },
   ];
 
@@ -749,7 +749,7 @@ export function TechnicianDashboardPage() {
                 {[
                   { label: 'Today', value: `₹${todayEarnings.toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
                   { label: 'This Week', value: `₹${(earningsData?.thisWeekEarnings || 0).toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
-                  { label: 'This Month', value: `₹${(earningsData?.thisMonthEarnings || 0).toLocaleString()}`, gradient: 'from-amber-400 to-blue-500' },
+                  { label: 'This Month', value: `₹${(earningsData?.thisMonthEarnings || 0).toLocaleString()}`, gradient: 'from-cyan-400 to-blue-500' },
                   { label: 'All Time', value: `₹${totalEarnings.toLocaleString()}`, gradient: 'from-rose-400 to-pink-500' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center transition-colors hover:bg-muted/50">

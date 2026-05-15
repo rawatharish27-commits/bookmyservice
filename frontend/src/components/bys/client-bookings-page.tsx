@@ -29,7 +29,7 @@ import {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string; iconBg: string }> = {
-    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400', iconBg: 'bg-amber-100' },
+    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', iconBg: 'bg-sky-100' },
     ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400', iconBg: 'bg-sky-100' },
     IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400', iconBg: 'bg-sky-100' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', iconBg: 'bg-emerald-100' },
@@ -61,7 +61,7 @@ interface Booking {
 const TAB_CONFIG: Record<string, { label: string; gradient: string; icon: typeof Briefcase }> = {
   all: { label: 'All', gradient: 'from-gray-400 to-gray-500', icon: Briefcase },
   upcoming: { label: 'Upcoming', gradient: 'from-sky-400 to-blue-500', icon: CalendarDays },
-  in_progress: { label: 'In Progress', gradient: 'from-sky-400 to-amber-500', icon: Clock },
+  in_progress: { label: 'In Progress', gradient: 'from-sky-400 to-sky-500', icon: Clock },
   completed: { label: 'Completed', gradient: 'from-emerald-400 to-teal-500', icon: Briefcase },
   cancelled: { label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 };

@@ -109,8 +109,8 @@ export function ClientReviewsPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center py-16 text-center"
         >
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-blue-50">
-            <MessageSquare className="size-10 text-amber-300" />
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-100 to-blue-50">
+            <MessageSquare className="size-10 text-sky-300" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
           <p className="mt-1 text-sm text-muted-foreground/70">Complete a booking to leave your first review</p>
@@ -175,7 +175,7 @@ export function ClientReviewsPage() {
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
-                          className={`size-4 ${i < review.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]' : 'text-gray-200'}`}
+                          className={`size-4 ${i < review.rating ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]' : 'text-gray-200'}`}
                         />
                       ))}
                     </div>
@@ -219,7 +219,7 @@ export function ClientReviewsPage() {
                     className="transition-transform hover:scale-110"
                   >
                     <Star
-                      className={`size-8 ${i < editRating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                      className={`size-8 ${i < editRating ? 'fill-cyan-400 text-cyan-400' : 'text-gray-300'}`}
                     />
                   </button>
                 ))}

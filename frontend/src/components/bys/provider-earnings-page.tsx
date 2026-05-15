@@ -70,7 +70,7 @@ export function ProviderEarningsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
           { label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, icon: DollarSign, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
-          { label: 'Pending Payout', value: `₹${pendingPayout.toLocaleString()}`, icon: Clock, gradient: 'from-sky-400 to-amber-500', bgGlow: 'bg-blue-500/10' },
+          { label: 'Pending Payout', value: `₹${pendingPayout.toLocaleString()}`, icon: Clock, gradient: 'from-sky-400 to-sky-500', bgGlow: 'bg-blue-500/10' },
           { label: 'This Month', value: `₹${thisMonthEarnings.toLocaleString()}`, icon: TrendingUp, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
         ].map((stat, idx) => (
           <motion.div

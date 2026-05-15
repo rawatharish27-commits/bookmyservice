@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const specializations = [
   { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
-  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-amber-500 via-blue-500 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Wiring, switches, fixtures' },
+  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-sky-500 via-blue-500 to-yellow-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Wiring, switches, fixtures' },
   { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
 ];
 
@@ -53,10 +53,10 @@ const roleOptions = [
     roleName: 'PROVIDER',
     label: 'Service Provider',
     Icon: Briefcase,
-    gradient: 'from-amber-500 via-blue-500 to-rose-500',
-    bgColor: 'bg-amber-50 border-amber-200',
-    activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300',
-    textColor: 'text-amber-700',
+    gradient: 'from-sky-500 via-blue-500 to-rose-500',
+    bgColor: 'bg-sky-50 border-sky-200',
+    activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300',
+    textColor: 'text-sky-700',
     desc: 'List & manage services',
     banner: 'Reach thousands of customers, grow your business',
     dashboard: 'provider-dashboard' as Page,
@@ -100,8 +100,8 @@ function getPasswordStrength(password: string): { label: string; color: string; 
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
   if (score <= 1) return { label: 'Very Weak', color: 'bg-gradient-to-r from-red-500 to-red-600', width: 'w-1/5', emoji: '😩', score };
-  if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-blue-500 to-amber-500', width: 'w-2/5', emoji: '😕', score };
-  if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-amber-400', width: 'w-3/5', emoji: '😐', score };
+  if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-blue-500 to-sky-500', width: 'w-2/5', emoji: '😕', score };
+  if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-cyan-400', width: 'w-3/5', emoji: '😐', score };
   if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-emerald-500 to-teal-400', width: 'w-4/5', emoji: '😊', score };
   return { label: 'Very Strong', color: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500', width: 'w-full', emoji: '💪', score };
 }

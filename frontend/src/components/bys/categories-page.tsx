@@ -92,18 +92,18 @@ const CATEGORY_GRADIENTS: Record<string, {
     heroGradient: 'from-blue-600 via-blue-500 to-cyan-400',
   },
   electrical: {
-    gradient: 'from-amber-500 to-yellow-500',
-    headerGradient: 'from-amber-700 via-amber-600 to-yellow-500',
-    lightBg: 'bg-amber-50',
-    lightText: 'text-amber-700',
-    glow: 'shadow-amber-500/25',
-    borderAccent: 'border-amber-200',
-    badgeBg: 'bg-amber-100/80',
-    badgeText: 'text-amber-700',
-    hoverBg: 'hover:bg-amber-50',
-    ringColor: 'ring-amber-500/30',
-    shadowGlow: 'shadow-amber-500/15',
-    heroGradient: 'from-amber-600 via-amber-500 to-yellow-400',
+    gradient: 'from-sky-500 to-yellow-500',
+    headerGradient: 'from-sky-700 via-sky-600 to-yellow-500',
+    lightBg: 'bg-sky-50',
+    lightText: 'text-sky-700',
+    glow: 'shadow-sky-500/25',
+    borderAccent: 'border-sky-200',
+    badgeBg: 'bg-sky-100/80',
+    badgeText: 'text-sky-700',
+    hoverBg: 'hover:bg-sky-50',
+    ringColor: 'ring-sky-500/30',
+    shadowGlow: 'shadow-sky-500/15',
+    heroGradient: 'from-sky-600 via-sky-500 to-yellow-400',
   },
   'ac-hvac': {
     gradient: 'from-teal-500 to-emerald-500',
@@ -365,7 +365,7 @@ export function CategoriesPage() {
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/3 top-1/4 size-[400px] rounded-full bg-gradient-to-br from-amber-400/15 to-cyan-300/8 blur-3xl"
+            className="absolute left-1/3 top-1/4 size-[400px] rounded-full bg-gradient-to-br from-cyan-400/15 to-cyan-300/8 blur-3xl"
             animate={{ scale: [1, 1.25, 1], x: [0, 20, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -528,7 +528,7 @@ export function CategoriesPage() {
             {[
               { icon: <ShieldCheck className="size-5" />, label: 'Verified Providers', gradient: 'from-emerald-600 to-teal-500' },
               { icon: <Clock className="size-5" />, label: 'On-Time Service', gradient: 'from-blue-600 to-cyan-500' },
-              { icon: <Users className="size-5" />, label: 'Trusted by Thousands', gradient: 'from-amber-500 to-amber-400' },
+              { icon: <Users className="size-5" />, label: 'Trusted by Thousands', gradient: 'from-sky-500 to-cyan-400' },
               { icon: <CheckCircle2 className="size-5" />, label: 'Satisfaction Guaranteed', gradient: 'from-rose-500 to-pink-400' },
             ].map((badge) => (
               <motion.div
@@ -754,7 +754,7 @@ export function CategoriesPage() {
                   <Search className="size-14 text-emerald-300" />
                 </div>
                 {/* Decorative dots */}
-                <div className="absolute -right-2 top-2 size-3 rounded-full bg-amber-300" />
+                <div className="absolute -right-2 top-2 size-3 rounded-full bg-sky-300" />
                 <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-blue-300" />
                 <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-teal-300" />
               </div>
@@ -824,9 +824,9 @@ export function CategoriesPage() {
                   icon: <Clock className="size-7" />,
                   title: 'On-Time Guarantee',
                   desc: 'Our professionals arrive on time or we compensate you for the delay. Your time is valuable and we respect it.',
-                  gradient: 'from-amber-500 to-amber-400',
-                  bg: 'bg-amber-50',
-                  shadow: 'shadow-amber-500/20',
+                  gradient: 'from-sky-500 to-cyan-400',
+                  bg: 'bg-sky-50',
+                  shadow: 'shadow-sky-500/20',
                 },
               ].map((item, idx) => (
                 <motion.div
@@ -864,7 +864,7 @@ export function CategoriesPage() {
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -left-32 top-0 size-[500px] rounded-full bg-emerald-100/50 blur-3xl" />
             <div className="absolute -bottom-32 -right-32 size-[500px] rounded-full bg-teal-100/50 blur-3xl" />
-            <div className="absolute left-1/2 top-1/2 size-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-50/30 blur-3xl" />
+            <div className="absolute left-1/2 top-1/2 size-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-sky-50/30 blur-3xl" />
           </div>
 
           <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

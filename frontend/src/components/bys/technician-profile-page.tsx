@@ -207,7 +207,7 @@ function ProfileForm({
                       {data?.specialization || 'Technician'}
                     </Badge>
                     {data?.rating ? (
-                      <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-700 text-xs gap-1">
+                      <Badge variant="outline" className="border-sky-200 bg-sky-50 text-sky-700 text-xs gap-1">
                         ⭐ {data.rating.toFixed(1)}
                       </Badge>
                     ) : null}
@@ -322,9 +322,9 @@ function ProfileForm({
                       <p className="text-xs text-emerald-600/70 mt-0.5">Location is active</p>
                     </div>
                   ) : (
-                    <div className="flex-1 rounded-xl bg-amber-50 p-3">
-                      <p className="text-sm text-amber-700 font-medium">Location not set</p>
-                      <p className="text-xs text-amber-600/70 mt-0.5">Update your location to receive nearby jobs</p>
+                    <div className="flex-1 rounded-xl bg-sky-50 p-3">
+                      <p className="text-sm text-sky-700 font-medium">Location not set</p>
+                      <p className="text-xs text-sky-600/70 mt-0.5">Update your location to receive nearby jobs</p>
                     </div>
                   )}
                   <Button variant="outline" onClick={handleUpdateLocation} disabled={updatingLocation} className="rounded-xl shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50">

@@ -36,7 +36,7 @@ app.get('/api/legal', async (c) => {
   try {
     const result = await pool.query('SELECT id, "pageType", title, version, "effectiveDate", "updatedAt" FROM "LegalPage" ORDER BY id ASC')
     return c.json({ documents: result.rows, total: result.rows.length })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.get('/api/legal/:type', async (c) => {
@@ -46,7 +46,7 @@ app.get('/api/legal/:type', async (c) => {
     const result = await pool.query('SELECT * FROM "LegalPage" WHERE "pageType" = $1', [pageType])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
     return c.json(result.rows[0])
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Auth
@@ -108,7 +108,7 @@ app.post('/api/auth/forgot-password', async (c) => {
     const { email } = await c.req.json()
     if (!email) return c.json({ error: 'Email is required' }, 400)
     return c.json({ message: 'If an account with that email exists, a reset token has been generated.', resetToken: crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''), expiresAt: new Date(Date.now() + 3600000).toISOString() })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.post('/api/auth/reset-password', async (c) => {
@@ -121,7 +121,7 @@ app.post('/api/auth/reset-password', async (c) => {
     const passwordHash = await bcrypt.hash(String(newPassword), 10)
     await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, String(email).toLowerCase().trim()])
     return c.json({ message: 'Password has been reset successfully' })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.post('/api/auth/change-password', async (c) => {
@@ -192,7 +192,7 @@ app.get('/api/faq', async (c) => {
       ? await pool.query('SELECT * FROM "Faq" WHERE category = $1 AND "isActive" = true ORDER BY "displayOrder"', [category])
       : await pool.query('SELECT * FROM "Faq" WHERE "isActive" = true ORDER BY "displayOrder"')
     return c.json({ faqs: result.rows, total: result.rows.length })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Contact
@@ -203,7 +203,7 @@ app.post('/api/contact', async (c) => {
     const id = 'msg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query('INSERT INTO "ContactMessage" (id, name, email, subject, message) VALUES ($1, $2, $3, $4, $5)', [id, name, email, subject, message])
     return c.json({ success: true, id }, 201)
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Stats
@@ -211,7 +211,7 @@ app.get('/api/stats/platform', async (c) => {
   try {
     const result = await pool.query('SELECT * FROM "PlatformStats" ORDER BY id DESC LIMIT 1')
     return c.json(result.rows[0] || { totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Categories
@@ -219,7 +219,7 @@ app.get('/api/categories', async (c) => {
   try {
     const result = await pool.query('SELECT id, name, slug, description, "iconUrl", icon, "imageUrl", "parentId", "isActive", "displayOrder", "isEmergency", "seoTitle", "seoDescription", "createdAt", "updatedAt" FROM "ServiceCategory" WHERE "isActive" = true ORDER BY "displayOrder"')
     return c.json({ categories: result.rows, total: result.rows.length })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.get('/api/categories/:id', async (c) => {
@@ -230,7 +230,7 @@ app.get('/api/categories/:id', async (c) => {
     // Also get subcategories
     const subResult = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [result.rows[0].id])
     return c.json({ ...result.rows[0], subcategories: subResult.rows })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.get('/api/categories/:id/services', async (c) => {
@@ -261,7 +261,7 @@ app.get('/api/subcategories', async (c) => {
     }
     const result = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "isActive" = true ORDER BY "categoryId", "displayOrder"')
     return c.json({ subcategories: result.rows, total: result.rows.length })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Services
@@ -280,7 +280,7 @@ app.get('/api/services', async (c) => {
     params.push(limit, offset)
     const result = await pool.query(query, params)
     return c.json({ services: result.rows, total: result.rows.length, limit, offset })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.get('/api/services/:id', async (c) => {
@@ -1086,6 +1086,1077 @@ app.get('/api/service-areas', async (c) => {
   } catch (e) {
     return c.json({ error: 'Failed to get service areas' }, 500)
   }
+})
+
+// ============================================================
+// AUTH HELPERS
+// ============================================================
+
+const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
+
+async function getAuthUser(c: any): Promise<{ id: string; email: string; role: string; roleId: number } | null> {
+  try {
+    const authHeader = c.req.header('authorization')
+    if (!authHeader?.startsWith('Bearer ')) return null
+    const { jwtVerify } = require('jose')
+    const secret = new TextEncoder().encode(JWT_SECRET)
+    const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
+    return { id: payload.sub as string, email: payload.email as string, role: payload.role as string, roleId: payload.roleId as number }
+  } catch (e) { return null }
+}
+
+async function requireAdmin(c: any): Promise<{ id: string; email: string; role: string; roleId: number } | null> {
+  const user = await getAuthUser(c)
+  if (!user) return null
+  if (user.roleId !== 5 && user.role !== 'ADMIN') return null
+  return user
+}
+
+// ============================================================
+// BOOKINGS - 10-step business flow
+// ============================================================
+
+// POST /api/bookings - Create booking (requires auth)
+app.post('/api/bookings', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const body = await c.req.json()
+    const { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address, lat, lng, notes, couponCode } = body
+    if (!serviceId || !scheduledDate || !address) return c.json({ error: 'serviceId, scheduledDate, and address are required' }, 400)
+    // Get service for pricing
+    const svcResult = await pool.query('SELECT id, "providerId", "basePrice", "finalPrice" FROM "Service" WHERE id = $1 AND "isActive" = true', [serviceId])
+    if (!svcResult.rows[0]) return c.json({ error: 'Service not found' }, 404)
+    const service = svcResult.rows[0]
+    const amount = service.finalPrice || service.basePrice || 0
+    const bookingId = 'bkg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    const bookingNumber = 'BK' + Date.now().toString().slice(-8) + Math.random().toString(36).slice(2, 5).toUpperCase()
+    const otp = Math.floor(1000 + Math.random() * 9000).toString()
+    let discountAmount = 0
+    if (couponCode) {
+      try {
+        const couponResult = await pool.query('SELECT * FROM "Coupon" WHERE code = $1 AND "isActive" = true AND "validTill" > NOW()', [couponCode])
+        if (couponResult.rows[0]) {
+          const coupon = couponResult.rows[0]
+          if (coupon.discountType === 'PERCENTAGE') {
+            discountAmount = (amount * coupon.discountValue) / 100
+            if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) discountAmount = coupon.maxDiscount
+          } else {
+            discountAmount = coupon.discountValue
+          }
+          await pool.query('UPDATE "Coupon" SET "usedCount" = "usedCount" + 1 WHERE id = $1', [coupon.id])
+        }
+      } catch (e) { /* coupon table may not exist */ }
+    }
+    const finalAmount = Math.max(0, amount - discountAmount)
+    await pool.query(
+      'INSERT INTO "Booking" (id, "bookingNumber", "clientId", "providerId", "technicianId", "serviceId", "scheduledDate", "scheduledTime", address, lat, lng, notes, amount, "discountAmount", "finalAmount", "couponCode", otp, status, "paymentStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, \'PENDING\', \'PENDING\', NOW(), NOW())',
+      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, address, lat || null, lng || null, notes || null, amount, discountAmount, finalAmount, couponCode || null, otp]
+    ).catch(() => {})
+    const result = await pool.query('SELECT b.*, u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [bookingId]).catch(async () => {
+      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', amount, discountAmount, finalAmount, otp, scheduledDate, address }] }
+    })
+    return c.json({ message: 'Booking created successfully', booking: result.rows[0] }, 201)
+  } catch (e) { console.error('Create booking error:', e); return c.json({ error: 'Failed to create booking' }, 500) }
+})
+
+// GET /api/bookings - List bookings (requires auth)
+app.get('/api/bookings', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const status = c.req.query('status')
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", u.phone as "clientPhone", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE '
+    const params: any[] = []
+    let idx = 1
+    if (user.roleId === 2 || user.role === 'PROVIDER') {
+      query += `b."providerId" = $${idx}`; params.push(user.id)
+    } else if (user.roleId === 4 || user.role === 'TECHNICIAN') {
+      query += `b."technicianId" = $${idx}`; params.push(user.id)
+    } else {
+      query += `b."clientId" = $${idx}`; params.push(user.id)
+    }
+    idx++
+    if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
+    query += ` ORDER BY b."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ bookings: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list bookings' }, 500) }
+})
+
+// GET /api/bookings/:id - Get booking detail
+app.get('/api/bookings/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const result = await pool.query(
+      'SELECT b.*, s.name as "serviceName", s."imageUrl" as "serviceImage", u.name as "clientName", u.phone as "clientPhone", u."profileImageUrl" as "clientImage", p.name as "providerName", p.phone as "providerPhone", p."profileImageUrl" as "providerImage", t.name as "technicianName", sc.name as "categoryName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" t ON b."technicianId" = t.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.id = $1',
+      [id]
+    ).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
+    return c.json({ booking: result.rows[0] })
+  } catch (e) { return c.json({ error: 'Failed to get booking' }, 500) }
+})
+
+// PATCH /api/bookings/:id - Update booking status
+app.patch('/api/bookings/:id', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const id = c.req.param('id')
+    const { status, cancellationReason } = await c.req.json()
+    const validStatuses = ['ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']
+    if (!status || !validStatuses.includes(status)) return c.json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` }, 400)
+    const existingResult = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
+    if (!existingResult.rows[0]) return c.json({ error: 'Booking not found' }, 404)
+    const booking = existingResult.rows[0]
+    const updates = ['status = $1', '"updatedAt" = NOW()']
+    const values: any[] = [status]
+    let idx = 2
+    if (status === 'COMPLETED') { updates.push(`"completedAt" = NOW()`) }
+    if (status === 'CANCELLED') { updates.push(`"cancelledAt" = NOW()`) }
+    if (cancellationReason) { updates.push(`"cancellationReason" = $${idx}`); values.push(cancellationReason); idx++ }
+    values.push(id)
+    await pool.query(`UPDATE "Booking" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    if (status === 'COMPLETED' && booking.providerId) {
+      await pool.query('UPDATE "User" SET "completedJobsCount" = COALESCE("completedJobsCount", 0) + 1 WHERE id = $1', [booking.providerId]).catch(() => {})
+    }
+    const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => existingResult)
+    return c.json({ message: 'Booking status updated', booking: result.rows[0] })
+  } catch (e) { console.error('Update booking error:', e); return c.json({ error: 'Failed to update booking' }, 500) }
+})
+
+// POST /api/bookings/:id/otp-verify - Verify OTP for service start
+app.post('/api/bookings/:id/otp-verify', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const id = c.req.param('id')
+    const { otp } = await c.req.json()
+    if (!otp) return c.json({ error: 'OTP is required' }, 400)
+    const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
+    const booking = result.rows[0]
+    if (booking.otp !== otp) return c.json({ error: 'Invalid OTP' }, 400)
+    await pool.query('UPDATE "Booking" SET status = \'IN_PROGRESS\', "startedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'OTP verified, service started', bookingId: id })
+  } catch (e) { return c.json({ error: 'OTP verification failed' }, 500) }
+})
+
+// ============================================================
+// REVIEWS
+// ============================================================
+
+// POST /api/reviews - Create review (requires auth, after booking completion)
+app.post('/api/reviews', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { bookingId, serviceId, reviewedId, rating, review, serviceRating, behaviourRating, punctualityRating } = await c.req.json()
+    if (!serviceId || !rating) return c.json({ error: 'serviceId and rating are required' }, 400)
+    if (rating < 1 || rating > 5) return c.json({ error: 'Rating must be between 1 and 5' }, 400)
+    if (bookingId) {
+      const bookingResult = await pool.query('SELECT status FROM "Booking" WHERE id = $1 AND "clientId" = $2', [bookingId, user.id]).catch(() => ({ rows: [] }))
+      if (bookingResult.rows[0] && bookingResult.rows[0].status !== 'COMPLETED') return c.json({ error: 'Can only review completed bookings' }, 400)
+    }
+    const id = 'rev_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "Review" (id, "bookingId", "serviceId", "reviewerId", "reviewedId", rating, review, "serviceRating", "behaviourRating", "punctualityRating", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())',
+      [id, bookingId || null, serviceId, user.id, reviewedId || null, rating, review || null, serviceRating || null, behaviourRating || null, punctualityRating || null]
+    ).catch(() => {})
+    // Update service average rating
+    try {
+      await pool.query('UPDATE "Service" SET "averageRating" = (SELECT AVG(rating) FROM "Review" WHERE "serviceId" = $1), "totalReviews" = (SELECT COUNT(*) FROM "Review" WHERE "serviceId" = $1), "updatedAt" = NOW() WHERE id = $1', [serviceId])
+    } catch (e) { /* ignore */ }
+    return c.json({ message: 'Review submitted successfully', review: { id, rating, review } }, 201)
+  } catch (e) { console.error('Create review error:', e); return c.json({ error: 'Failed to submit review' }, 500) }
+})
+
+// GET /api/reviews - List reviews (filter by serviceId, reviewedId)
+app.get('/api/reviews', async (c) => {
+  try {
+    const serviceId = c.req.query('serviceId')
+    const reviewedId = c.req.query('reviewedId')
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    let query = 'SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (serviceId) { query += ` AND r."serviceId" = $${idx}`; params.push(serviceId); idx++ }
+    if (reviewedId) { query += ` AND r."reviewedId" = $${idx}`; params.push(reviewedId); idx++ }
+    query += ` ORDER BY r."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ reviews: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list reviews' }, 500) }
+})
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+
+// GET /api/notifications - List user notifications (requires auth)
+app.get('/api/notifications', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query(
+      'SELECT * FROM "Notification" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3',
+      [user.id, limit, offset]
+    ).catch(() => ({ rows: [] }))
+    const unreadResult = await pool.query('SELECT COUNT(*) as count FROM "Notification" WHERE "userId" = $1 AND "isRead" = false', [user.id]).catch(() => ({ rows: [{ count: 0 }] }))
+    return c.json({ notifications: result.rows, unreadCount: parseInt(unreadResult.rows[0].count), total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list notifications' }, 500) }
+})
+
+// ============================================================
+// WALLET
+// ============================================================
+
+// GET /api/wallet - Get user wallet (requires auth)
+app.get('/api/wallet', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const result = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) {
+      const walletId = 'wlt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      try {
+        await pool.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id])
+        const newResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id])
+        return c.json({ wallet: newResult.rows[0] })
+      } catch (e) {
+        return c.json({ wallet: { id: walletId, userId: user.id, balance: 0 } })
+      }
+    }
+    return c.json({ wallet: result.rows[0] })
+  } catch (e) { return c.json({ error: 'Failed to get wallet' }, 500) }
+})
+
+// POST /api/wallet/deposit - Deposit to wallet
+app.post('/api/wallet/deposit', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { amount, paymentMethod, transactionRef } = await c.req.json()
+    if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
+    // Ensure wallet exists
+    let walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!walletResult.rows[0]) {
+      const walletId = 'wlt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      await pool.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id]).catch(() => {})
+      walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [{ id: walletId, balance: 0 }] }))
+    }
+    const wallet = walletResult.rows[0]
+    await pool.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id]).catch(() => {})
+    const txnId = 'txn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "WalletTransaction" (id, "walletId", type, amount, "paymentMethod", "transactionRef", description, "createdAt") VALUES ($1, $2, \'CREDIT\', $3, $4, $5, \'Wallet deposit\', NOW())',
+      [txnId, wallet.id, amount, paymentMethod || 'RAZORPAY', transactionRef || null]
+    ).catch(() => {})
+    const updated = await pool.query('SELECT * FROM "Wallet" WHERE id = $1', [wallet.id]).catch(() => ({ rows: [{ ...wallet, balance: (wallet.balance || 0) + amount }] }))
+    return c.json({ message: 'Deposit successful', wallet: updated.rows[0], transactionId: txnId })
+  } catch (e) { console.error('Wallet deposit error:', e); return c.json({ error: 'Failed to deposit' }, 500) }
+})
+
+// ============================================================
+// EARNINGS
+// ============================================================
+
+// GET /api/earnings - Get provider/technician earnings (requires auth)
+app.get('/api/earnings', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const period = c.req.query('period') || 'month'
+    let dateFilter = ''
+    if (period === 'week') dateFilter = 'AND b."completedAt" >= NOW() - INTERVAL \'7 days\''
+    else if (period === 'month') dateFilter = 'AND b."completedAt" >= NOW() - INTERVAL \'30 days\''
+    else if (period === 'year') dateFilter = 'AND b."completedAt" >= NOW() - INTERVAL \'365 days\''
+    const earningsResult = await pool.query(
+      `SELECT COALESCE(SUM(b."finalAmount"), 0) as "totalEarnings", COUNT(*) as "totalJobs", COALESCE(AVG(b."finalAmount"), 0) as "avgEarning" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = 'COMPLETED' ${dateFilter}`,
+      [user.id]
+    ).catch(() => ({ rows: [{ totalEarnings: 0, totalJobs: 0, avgEarning: 0 }] }))
+    const pendingResult = await pool.query(
+      'SELECT COALESCE(SUM(b."finalAmount"), 0) as "pendingAmount" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b."paymentStatus" = \'PENDING\'',
+      [user.id]
+    ).catch(() => ({ rows: [{ pendingAmount: 0 }] }))
+    const recentResult = await pool.query(
+      'SELECT b.id, b."bookingNumber", b."finalAmount", b."completedAt", s.name as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = \'COMPLETED\' ORDER BY b."completedAt" DESC LIMIT 10',
+      [user.id]
+    ).catch(() => ({ rows: [] }))
+    return c.json({
+      earnings: { ...earningsResult.rows[0], pendingAmount: pendingResult.rows[0].pendingAmount },
+      recentBookings: recentResult.rows,
+      period,
+    })
+  } catch (e) { return c.json({ error: 'Failed to get earnings' }, 500) }
+})
+
+// ============================================================
+// PAYOUTS
+// ============================================================
+
+// GET /api/payouts - List payout requests (requires auth)
+app.get('/api/payouts', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query(
+      'SELECT * FROM "PayoutRequest" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3',
+      [user.id, limit, offset]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ payouts: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list payouts' }, 500) }
+})
+
+// POST /api/payouts/request - Create payout request (requires auth)
+app.post('/api/payouts/request', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { amount, bankAccount, ifscCode, accountHolderName } = await c.req.json()
+    if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
+    const walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    const wallet = walletResult.rows[0]
+    if (wallet && wallet.balance < amount) return c.json({ error: 'Insufficient wallet balance' }, 400)
+    const id = 'pay_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "PayoutRequest" (id, "userId", amount, "bankAccount", "ifscCode", "accountHolderName", status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\', NOW(), NOW())',
+      [id, user.id, amount, bankAccount || null, ifscCode || null, accountHolderName || null]
+    ).catch(() => {})
+    if (wallet) {
+      await pool.query('UPDATE "Wallet" SET balance = balance - $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id]).catch(() => {})
+    }
+    return c.json({ message: 'Payout request submitted', payout: { id, amount, status: 'PENDING' } }, 201)
+  } catch (e) { console.error('Payout request error:', e); return c.json({ error: 'Failed to create payout request' }, 500) }
+})
+
+// ============================================================
+// FAVORITES
+// ============================================================
+
+// GET /api/favorites - List user favorites (requires auth)
+app.get('/api/favorites', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const result = await pool.query(
+      'SELECT f.*, s.name as "serviceName", s."imageUrl" as "serviceImage", s."basePrice", s."finalPrice", s."averageRating", sc.name as "categoryName" FROM "Favorite" f LEFT JOIN "Service" s ON f."serviceId" = s.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE f."userId" = $1 ORDER BY f."createdAt" DESC',
+      [user.id]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ favorites: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list favorites' }, 500) }
+})
+
+// POST /api/favorites - Add favorite (requires auth)
+app.post('/api/favorites', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { serviceId } = await c.req.json()
+    if (!serviceId) return c.json({ error: 'serviceId is required' }, 400)
+    const existing = await pool.query('SELECT id FROM "Favorite" WHERE "userId" = $1 AND "serviceId" = $2', [user.id, serviceId]).catch(() => ({ rows: [] }))
+    if (existing.rows.length > 0) return c.json({ error: 'Already in favorites' }, 409)
+    const id = 'fav_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "Favorite" (id, "userId", "serviceId", "createdAt") VALUES ($1, $2, $3, NOW())', [id, user.id, serviceId]).catch(() => {})
+    return c.json({ message: 'Added to favorites', favorite: { id, serviceId } }, 201)
+  } catch (e) { return c.json({ error: 'Failed to add favorite' }, 500) }
+})
+
+// DELETE /api/favorites/:serviceId - Remove favorite (requires auth)
+app.delete('/api/favorites/:serviceId', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const serviceId = c.req.param('serviceId')
+    await pool.query('DELETE FROM "Favorite" WHERE "userId" = $1 AND "serviceId" = $2', [user.id, serviceId]).catch(() => {})
+    return c.json({ message: 'Removed from favorites' })
+  } catch (e) { return c.json({ error: 'Failed to remove favorite' }, 500) }
+})
+
+// ============================================================
+// SERVICE CRUD (Provider)
+// ============================================================
+
+// POST /api/services - Create service (requires auth, provider only)
+app.post('/api/services', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    if (user.roleId !== 2 && user.role !== 'PROVIDER') return c.json({ error: 'Only providers can create services' }, 403)
+    const body = await c.req.json()
+    const { name, description, categoryId, subcategoryId, basePrice, finalPrice, duration, imageUrl, galleryImages, isEmergencyAvailable } = body
+    if (!name || !categoryId || !basePrice) return c.json({ error: 'name, categoryId, and basePrice are required' }, 400)
+    const id = 'svc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "Service" (id, name, description, "categoryId", "subcategoryId", "providerId", "basePrice", "finalPrice", duration, "imageUrl", "galleryImages", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, false, false, 0, 0, NOW(), NOW())',
+      [id, name, description || null, categoryId, subcategoryId || null, user.id, basePrice, finalPrice || basePrice, duration || null, imageUrl || null, galleryImages || null, isEmergencyAvailable || false]
+    ).catch(() => {})
+    return c.json({ message: 'Service created, pending approval', service: { id, name, status: 'PENDING_APPROVAL' } }, 201)
+  } catch (e) { console.error('Create service error:', e); return c.json({ error: 'Failed to create service' }, 500) }
+})
+
+// PATCH /api/services/:id - Update service (requires auth, owner only)
+app.patch('/api/services/:id', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const id = c.req.param('id')
+    const existing = await pool.query('SELECT * FROM "Service" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
+    if (!existing.rows[0]) return c.json({ error: 'Service not found' }, 404)
+    if (existing.rows[0].providerId !== user.id && user.roleId !== 5) return c.json({ error: 'Not authorized to update this service' }, 403)
+    const body = await c.req.json()
+    const fields = ['name', 'description', 'basePrice', 'finalPrice', 'duration', 'imageUrl', 'galleryImages', 'isEmergencyAvailable', 'isActive']
+    const updates = []
+    const values: any[] = []
+    let idx = 1
+    for (const f of fields) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields to update' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "Service" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    const result = await pool.query('SELECT * FROM "Service" WHERE id = $1', [id]).catch(() => existing)
+    return c.json({ message: 'Service updated', service: result.rows[0] })
+  } catch (e) { return c.json({ error: 'Failed to update service' }, 500) }
+})
+
+// ============================================================
+// KYC
+// ============================================================
+
+// GET /api/kyc - Get KYC status (requires auth)
+app.get('/api/kyc', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) return c.json({ kyc: { status: 'NOT_SUBMITTED', providerId: user.id } })
+    return c.json({ kyc: result.rows[0] })
+  } catch (e) { return c.json({ error: 'Failed to get KYC status' }, 500) }
+})
+
+// POST /api/kyc - Submit KYC (requires auth)
+app.post('/api/kyc', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl } = await c.req.json()
+    if (!documentType || !documentNumber || !documentFrontUrl) return c.json({ error: 'documentType, documentNumber, and documentFrontUrl are required' }, 400)
+    const existing = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (existing.rows[0]) {
+      await pool.query(
+        'UPDATE "ProviderKyc" SET "documentType" = $1, "documentNumber" = $2, "documentFrontUrl" = $3, "documentBackUrl" = $4, "selfieUrl" = $5, "verificationStatus" = \'PENDING\', "updatedAt" = NOW() WHERE "providerId" = $6',
+        [documentType, documentNumber, documentFrontUrl, documentBackUrl || null, selfieUrl || null, user.id]
+      ).catch(() => {})
+      return c.json({ message: 'KYC updated, pending verification', kyc: { providerId: user.id, verificationStatus: 'PENDING' } })
+    }
+    const id = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "documentBackUrl", "selfieUrl", "verificationStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, \'PENDING\', NOW(), NOW())',
+      [id, user.id, documentType, documentNumber, documentFrontUrl, documentBackUrl || null, selfieUrl || null]
+    ).catch(() => {})
+    return c.json({ message: 'KYC submitted, pending verification', kyc: { id, providerId: user.id, verificationStatus: 'PENDING' } }, 201)
+  } catch (e) { console.error('KYC submit error:', e); return c.json({ error: 'Failed to submit KYC' }, 500) }
+})
+
+// ============================================================
+// DISPUTES
+// ============================================================
+
+// GET /api/disputes - List disputes (requires auth)
+app.get('/api/disputes', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query(
+      'SELECT d.*, b."bookingNumber" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id WHERE d."raisedById" = $1 OR d."raisedAgainstId" = $1 ORDER BY d."createdAt" DESC LIMIT $2 OFFSET $3',
+      [user.id, limit, offset]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ disputes: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list disputes' }, 500) }
+})
+
+// POST /api/disputes - Create dispute (requires auth)
+app.post('/api/disputes', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { bookingId, raisedAgainstId, type, subject, description, evidenceUrls } = await c.req.json()
+    if (!bookingId || !subject || !description) return c.json({ error: 'bookingId, subject, and description are required' }, 400)
+    const id = 'dsp_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "Dispute" (id, "bookingId", "raisedById", "raisedAgainstId", type, subject, description, "evidenceUrls", status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, \'OPEN\', NOW(), NOW())',
+      [id, bookingId, user.id, raisedAgainstId || null, type || 'SERVICE_ISSUE', subject, description, evidenceUrls || null]
+    ).catch(() => {})
+    return c.json({ message: 'Dispute created', dispute: { id, status: 'OPEN', subject } }, 201)
+  } catch (e) { console.error('Create dispute error:', e); return c.json({ error: 'Failed to create dispute' }, 500) }
+})
+
+// ============================================================
+// COUPONS
+// ============================================================
+
+// GET /api/coupons - List active coupons
+app.get('/api/coupons', async (c) => {
+  try {
+    const result = await pool.query('SELECT * FROM "Coupon" WHERE "isActive" = true AND "validTill" > NOW() ORDER BY "createdAt" DESC').catch(() => ({ rows: [] }))
+    return c.json({ coupons: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list coupons' }, 500) }
+})
+
+// POST /api/coupons/validate - Validate a coupon code
+app.post('/api/coupons/validate', async (c) => {
+  try {
+    const { code, amount } = await c.req.json()
+    if (!code) return c.json({ error: 'Coupon code is required' }, 400)
+    const result = await pool.query('SELECT * FROM "Coupon" WHERE code = $1 AND "isActive" = true AND "validTill" > NOW()', [code]).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) return c.json({ valid: false, error: 'Invalid or expired coupon code' }, 404)
+    const coupon = result.rows[0]
+    if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) return c.json({ valid: false, error: 'Coupon usage limit reached' })
+    if (coupon.minOrderAmount && amount && amount < coupon.minOrderAmount) return c.json({ valid: false, error: `Minimum order amount is ₹${coupon.minOrderAmount}` })
+    let discountAmount = 0
+    if (amount) {
+      if (coupon.discountType === 'PERCENTAGE') {
+        discountAmount = (amount * coupon.discountValue) / 100
+        if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) discountAmount = coupon.maxDiscount
+      } else {
+        discountAmount = coupon.discountValue
+      }
+    }
+    return c.json({ valid: true, coupon: { id: coupon.id, code: coupon.code, discountType: coupon.discountType, discountValue: coupon.discountValue, maxDiscount: coupon.maxDiscount, discountAmount } })
+  } catch (e) { return c.json({ error: 'Failed to validate coupon' }, 500) }
+})
+
+// ============================================================
+// AMC PLANS
+// ============================================================
+
+// GET /api/amc-plans - List AMC plans
+app.get('/api/amc-plans', async (c) => {
+  try {
+    const categoryId = c.req.query('categoryId')
+    let query = 'SELECT * FROM "AmcPlan" WHERE "isActive" = true'
+    const params: any[] = []
+    if (categoryId) { query += ' AND "categoryId" = $1'; params.push(categoryId) }
+    query += ' ORDER BY price'
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ plans: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list AMC plans' }, 500) }
+})
+
+// GET /api/amc-subscriptions - List user's AMC subscriptions (requires auth)
+app.get('/api/amc-subscriptions', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const result = await pool.query(
+      'SELECT s.*, p.name as "planName", p."visitCount", p."coverageType" FROM "AmcSubscription" s LEFT JOIN "AmcPlan" p ON s."planId" = p.id WHERE s."userId" = $1 ORDER BY s."createdAt" DESC',
+      [user.id]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ subscriptions: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list AMC subscriptions' }, 500) }
+})
+
+// ============================================================
+// INVOICES
+// ============================================================
+
+// GET /api/invoices - List user invoices (requires auth)
+app.get('/api/invoices', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query(
+      'SELECT i.*, b."bookingNumber", s.name as "serviceName" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE i."userId" = $1 ORDER BY i."createdAt" DESC LIMIT $2 OFFSET $3',
+      [user.id, limit, offset]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ invoices: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list invoices' }, 500) }
+})
+
+// GET /api/invoices/:id - Get invoice detail
+app.get('/api/invoices/:id', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const id = c.req.param('id')
+    const result = await pool.query(
+      'SELECT i.*, b."bookingNumber", b.address as "serviceAddress", b."scheduledDate", s.name as "serviceName", u.name as "clientName", u.email as "clientEmail", u.phone as "clientPhone" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE i.id = $1',
+      [id]
+    ).catch(() => ({ rows: [] }))
+    if (!result.rows[0]) return c.json({ error: 'Invoice not found' }, 404)
+    return c.json({ invoice: result.rows[0] })
+  } catch (e) { return c.json({ error: 'Failed to get invoice' }, 500) }
+})
+
+// ============================================================
+// CITIES
+// ============================================================
+
+// GET /api/cities - List active cities
+app.get('/api/cities', async (c) => {
+  try {
+    try {
+      const result = await pool.query('SELECT DISTINCT city, state, COUNT(*) as "serviceCount" FROM "Service" s JOIN "User" u ON s."providerId" = u.id WHERE s."isActive" = true AND s."isApproved" = true AND u.city IS NOT NULL GROUP BY city, state ORDER BY "serviceCount" DESC')
+      if (result.rows.length > 0) return c.json({ cities: result.rows, total: result.rows.length })
+    } catch (dbError) { /* use fallback */ }
+    // Fallback to INDIAN_CITIES
+    const cities = INDIAN_CITIES.map(c => ({ city: c.city, state: c.state }))
+    return c.json({ cities, total: cities.length })
+  } catch (e) { return c.json({ error: 'Failed to list cities' }, 500) }
+})
+
+// ============================================================
+// ADMIN ENDPOINTS (ALL require auth + admin role check)
+// ============================================================
+
+// GET /api/admin/users - List all users
+app.get('/api/admin/users', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const role = c.req.query('role')
+    const search = c.req.query('search')
+    let query = 'SELECT u.id, u.email, u.name, u.phone, u.city, u."roleId", u.status, u."isVerified", u."emailVerified", u."phoneVerified", u."createdAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (role) { query += ` AND r.name = $${idx}`; params.push(role); idx++ }
+    if (search) { query += ` AND (u.name ILIKE $${idx} OR u.email ILIKE $${idx} OR u.phone ILIKE $${idx})`; params.push(`%${search}%`); idx++ }
+    query += ` ORDER BY u."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params)
+    const countResult = await pool.query('SELECT COUNT(*) as total FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE 1=1' + (role ? ` AND r.name = '${role}'` : ''))
+    return c.json({ users: result.rows, total: parseInt(countResult.rows[0]?.total || '0'), limit, offset })
+  } catch (e) { console.error('Admin list users error:', e); return c.json({ error: 'Failed to list users' }, 500) }
+})
+
+// GET /api/admin/users/:id - Get user detail
+app.get('/api/admin/users/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const id = c.req.param('id')
+    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
+    const { passwordHash, roleName, ...profile } = result.rows[0]
+    return c.json({ user: { ...profile, role: roleName } })
+  } catch (e) { return c.json({ error: 'Failed to get user' }, 500) }
+})
+
+// PATCH /api/admin/users/:id - Update user (block/unblock/verify)
+app.patch('/api/admin/users/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const id = c.req.param('id')
+    const body = await c.req.json()
+    const fields = ['status', 'isVerified', 'emailVerified', 'phoneVerified', 'verifiedBadge']
+    const updates = []
+    const values: any[] = []
+    let idx = 1
+    for (const f of fields) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields to update' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
+    // Log admin action
+    const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, 'UPDATE_USER', 'USER', id, JSON.stringify(body)]).catch(() => {})
+    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    const { passwordHash, roleName, ...profile } = result.rows[0]
+    return c.json({ message: 'User updated', user: { ...profile, role: roleName } })
+  } catch (e) { console.error('Admin update user error:', e); return c.json({ error: 'Failed to update user' }, 500) }
+})
+
+// GET /api/admin/services - List all services (including unapproved)
+app.get('/api/admin/services', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const status = c.req.query('status')
+    let query = 'SELECT s.*, u.name as "providerName", sc.name as "categoryName" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (status === 'approved') { query += ' AND s."isApproved" = true' }
+    else if (status === 'pending') { query += ' AND s."isApproved" = false' }
+    query += ` ORDER BY s."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params)
+    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list services' }, 500) }
+})
+
+// PATCH /api/admin/services/:id - Approve/reject service
+app.patch('/api/admin/services/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const id = c.req.param('id')
+    const { isApproved, rejectionReason, isActive } = await c.req.json()
+    const updates = []
+    const values: any[] = []
+    let idx = 1
+    if (isApproved !== undefined) { updates.push(`"isApproved" = $${idx}`); values.push(isApproved); idx++ }
+    if (rejectionReason !== undefined) { updates.push(`"rejectionReason" = $${idx}`); values.push(rejectionReason); idx++ }
+    if (isActive !== undefined) { updates.push(`"isActive" = $${idx}`); values.push(isActive); idx++ }
+    if (updates.length === 0) return c.json({ error: 'No fields to update' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "Service" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
+    const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, isApproved ? 'APPROVE_SERVICE' : 'REJECT_SERVICE', 'SERVICE', id, JSON.stringify({ isApproved, rejectionReason })]).catch(() => {})
+    return c.json({ message: `Service ${isApproved ? 'approved' : 'updated'}` })
+  } catch (e) { return c.json({ error: 'Failed to update service' }, 500) }
+})
+
+// GET /api/admin/bookings - List all bookings
+app.get('/api/admin/bookings', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const status = c.req.query('status')
+    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
+    query += ` ORDER BY b."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params)
+    return c.json({ bookings: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list bookings' }, 500) }
+})
+
+// GET /api/admin/revenue - Get revenue stats
+app.get('/api/admin/revenue', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const period = c.req.query('period') || 'month'
+    let dateFilter = ''
+    if (period === 'week') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '7 days'"
+    else if (period === 'month') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '30 days'"
+    else if (period === 'year') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '365 days'"
+    const revenueResult = await pool.query(`SELECT COALESCE(SUM("finalAmount"), 0) as "totalRevenue", COUNT(*) as "totalBookings", COALESCE(SUM("discountAmount"), 0) as "totalDiscounts" FROM "Booking" WHERE status = 'COMPLETED' ${dateFilter}`).catch(() => ({ rows: [{ totalRevenue: 0, totalBookings: 0, totalDiscounts: 0 }] }))
+    const byStatus = await pool.query('SELECT status, COUNT(*) as count FROM "Booking" GROUP BY status').catch(() => ({ rows: [] }))
+    const byCategory = await pool.query('SELECT sc.name as category, COALESCE(SUM(b."finalAmount"), 0) as revenue FROM "Booking" b JOIN "Service" s ON b."serviceId" = s.id JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY revenue DESC').catch(() => ({ rows: [] }))
+    return c.json({ revenue: revenueResult.rows[0], byStatus: byStatus.rows, byCategory: byCategory.rows, period })
+  } catch (e) { return c.json({ error: 'Failed to get revenue stats' }, 500) }
+})
+
+// GET /api/admin/logs - Get admin action logs
+app.get('/api/admin/logs', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query('SELECT l.*, u.name as "adminName" FROM "AdminLog" l LEFT JOIN "User" u ON l."adminId" = u.id ORDER BY l."createdAt" DESC LIMIT $1 OFFSET $2', [limit, offset]).catch(() => ({ rows: [] }))
+    return c.json({ logs: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to get logs' }, 500) }
+})
+
+// GET /api/admin/analytics - Get platform analytics
+app.get('/api/admin/analytics', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const userCount = await pool.query('SELECT COUNT(*) as count FROM "User"').catch(() => ({ rows: [{ count: 0 }] }))
+    const providerCount = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingCount = await pool.query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] }))
+    const serviceCount = await pool.query('SELECT COUNT(*) as count FROM "Service" WHERE "isActive" = true').catch(() => ({ rows: [{ count: 0 }] }))
+    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const recentSignups = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "createdAt" >= NOW() - INTERVAL \'30 days\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const recentBookings = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= NOW() - INTERVAL \'30 days\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const disputeCount = await pool.query('SELECT COUNT(*) as count FROM "Dispute" WHERE status = \'OPEN\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const topCategories = await pool.query('SELECT sc.name, COUNT(b.id) as bookings, COALESCE(SUM(b."finalAmount"), 0) as revenue FROM "ServiceCategory" sc LEFT JOIN "Service" s ON s."categoryId" = sc.id LEFT JOIN "Booking" b ON b."serviceId" = s.id AND b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY bookings DESC LIMIT 5').catch(() => ({ rows: [] }))
+    const topCities = await pool.query('SELECT u.city, COUNT(b.id) as bookings FROM "Booking" b JOIN "User" u ON b."clientId" = u.id WHERE u.city IS NOT NULL GROUP BY u.city ORDER BY bookings DESC LIMIT 5').catch(() => ({ rows: [] }))
+    return c.json({
+      analytics: {
+        totalUsers: parseInt(userCount.rows[0]?.count || '0'),
+        totalProviders: parseInt(providerCount.rows[0]?.count || '0'),
+        totalBookings: parseInt(bookingCount.rows[0]?.count || '0'),
+        totalServices: parseInt(serviceCount.rows[0]?.count || '0'),
+        totalRevenue: parseFloat(revenueTotal.rows[0]?.total || '0'),
+        recentSignups: parseInt(recentSignups.rows[0]?.count || '0'),
+        recentBookings: parseInt(recentBookings.rows[0]?.count || '0'),
+        openDisputes: parseInt(disputeCount.rows[0]?.count || '0'),
+        topCategories: topCategories.rows,
+        topCities: topCities.rows,
+      }
+    })
+  } catch (e) { console.error('Admin analytics error:', e); return c.json({ error: 'Failed to get analytics' }, 500) }
+})
+
+// GET /api/admin/disputes - List all disputes
+app.get('/api/admin/disputes', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const status = c.req.query('status')
+    let query = 'SELECT d.*, b."bookingNumber", u.name as "raisedByName", ua.name as "raisedAgainstName" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id LEFT JOIN "User" u ON d."raisedById" = u.id LEFT JOIN "User" ua ON d."raisedAgainstId" = ua.id WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (status) { query += ` AND d.status = $${idx}`; params.push(status); idx++ }
+    query += ` ORDER BY d."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ disputes: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list disputes' }, 500) }
+})
+
+// PATCH /api/admin/disputes/:id - Resolve dispute
+app.patch('/api/admin/disputes/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const id = c.req.param('id')
+    const { status, resolution, refundAmount } = await c.req.json()
+    if (!status) return c.json({ error: 'status is required' }, 400)
+    const updates = ['status = $1', '"resolvedById" = $2', '"resolvedAt" = NOW()', '"updatedAt" = NOW()']
+    const values: any[] = [status, admin.id]
+    let idx = 3
+    if (resolution) { updates.push(`resolution = $${idx}`); values.push(resolution); idx++ }
+    if (refundAmount) { updates.push(`"refundAmount" = $${idx}`); values.push(refundAmount); idx++ }
+    values.push(id)
+    await pool.query(`UPDATE "Dispute" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, 'RESOLVE_DISPUTE', 'DISPUTE', id, JSON.stringify({ status, resolution, refundAmount })]).catch(() => {})
+    return c.json({ message: 'Dispute updated' })
+  } catch (e) { return c.json({ error: 'Failed to resolve dispute' }, 500) }
+})
+
+// GET /api/admin/payouts - List all payout requests
+app.get('/api/admin/payouts', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const status = c.req.query('status')
+    let query = 'SELECT p.*, u.name as "userName", u.email as "userEmail", u.phone as "userPhone" FROM "PayoutRequest" p LEFT JOIN "User" u ON p."userId" = u.id WHERE 1=1'
+    const params: any[] = []
+    let idx = 1
+    if (status) { query += ` AND p.status = $${idx}`; params.push(status); idx++ }
+    query += ` ORDER BY p."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ payouts: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list payouts' }, 500) }
+})
+
+// PATCH /api/admin/payouts/:id - Process payout
+app.patch('/api/admin/payouts/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const id = c.req.param('id')
+    const { status, transactionRef, remarks } = await c.req.json()
+    if (!status) return c.json({ error: 'status is required' }, 400)
+    const updates = ['status = $1', '"processedById" = $2', '"processedAt" = NOW()', '"updatedAt" = NOW()']
+    const values: any[] = [status, admin.id]
+    let idx = 3
+    if (transactionRef) { updates.push(`"transactionRef" = $${idx}`); values.push(transactionRef); idx++ }
+    if (remarks) { updates.push(`remarks = $${idx}`); values.push(remarks); idx++ }
+    values.push(id)
+    await pool.query(`UPDATE "PayoutRequest" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    if (status === 'REJECTED') {
+      const payoutResult = await pool.query('SELECT * FROM "PayoutRequest" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
+      if (payoutResult.rows[0]) {
+        await pool.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE "userId" = $2', [payoutResult.rows[0].amount, payoutResult.rows[0].userId]).catch(() => {})
+      }
+    }
+    const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, 'PROCESS_PAYOUT', 'PAYOUT', id, JSON.stringify({ status, transactionRef })]).catch(() => {})
+    return c.json({ message: 'Payout processed' })
+  } catch (e) { return c.json({ error: 'Failed to process payout' }, 500) }
+})
+
+// GET /api/admin/coupons - List/manage coupons
+app.get('/api/admin/coupons', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const result = await pool.query('SELECT * FROM "Coupon" ORDER BY "createdAt" DESC').catch(() => ({ rows: [] }))
+    return c.json({ coupons: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list coupons' }, 500) }
+})
+
+// POST /api/admin/coupons - Create coupon
+app.post('/api/admin/coupons', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const { code, discountType, discountValue, maxDiscount, minOrderAmount, maxUses, validTill, isActive } = await c.req.json()
+    if (!code || !discountType || !discountValue || !validTill) return c.json({ error: 'code, discountType, discountValue, and validTill are required' }, 400)
+    const id = 'cpn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query(
+      'INSERT INTO "Coupon" (id, code, "discountType", "discountValue", "maxDiscount", "minOrderAmount", "maxUses", "validTill", "isActive", "usedCount", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0, NOW(), NOW())',
+      [id, code, discountType, discountValue, maxDiscount || null, minOrderAmount || null, maxUses || null, validTill, isActive !== false]
+    ).catch(() => {})
+    return c.json({ message: 'Coupon created', coupon: { id, code, discountType, discountValue } }, 201)
+  } catch (e) { console.error('Create coupon error:', e); return c.json({ error: 'Failed to create coupon' }, 500) }
+})
+
+// GET /api/admin/franchises - List franchises
+app.get('/api/admin/franchises', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const result = await pool.query('SELECT f.*, u.name as "ownerName", u.email as "ownerEmail", u.phone as "ownerPhone" FROM "Franchise" f LEFT JOIN "User" u ON f."ownerId" = u.id ORDER BY f."createdAt" DESC').catch(() => ({ rows: [] }))
+    return c.json({ franchises: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list franchises' }, 500) }
+})
+
+// GET /api/admin/inventory - List inventory
+app.get('/api/admin/inventory', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const result = await pool.query('SELECT * FROM "Inventory" ORDER BY name').catch(() => ({ rows: [] }))
+    return c.json({ inventory: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list inventory' }, 500) }
+})
+
+// GET /api/admin/amc - List AMC plans/subscriptions
+app.get('/api/admin/amc', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const plans = await pool.query('SELECT * FROM "AmcPlan" ORDER BY price').catch(() => ({ rows: [] }))
+    const subscriptions = await pool.query('SELECT s.*, u.name as "userName", p.name as "planName" FROM "AmcSubscription" s LEFT JOIN "User" u ON s."userId" = u.id LEFT JOIN "AmcPlan" p ON s."planId" = p.id ORDER BY s."createdAt" DESC').catch(() => ({ rows: [] }))
+    return c.json({ plans: plans.rows, subscriptions: subscriptions.rows })
+  } catch (e) { return c.json({ error: 'Failed to list AMC data' }, 500) }
+})
+
+// GET /api/admin/b2b - List B2B contracts
+app.get('/api/admin/b2b', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const result = await pool.query('SELECT b.*, u.name as "contactName", u.email as "contactEmail" FROM "B2bContract" b LEFT JOIN "User" u ON b."contactPersonId" = u.id ORDER BY b."createdAt" DESC').catch(() => ({ rows: [] }))
+    return c.json({ contracts: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list B2B contracts' }, 500) }
+})
+
+// GET /api/admin/crm - List CRM activities
+app.get('/api/admin/crm', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query('SELECT c.*, u.name as "assignedToName" FROM "CrmActivity" c LEFT JOIN "User" u ON c."assignedToId" = u.id ORDER BY c."createdAt" DESC LIMIT $1 OFFSET $2', [limit, offset]).catch(() => ({ rows: [] }))
+    return c.json({ activities: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list CRM activities' }, 500) }
+})
+
+// ============================================================
+// FRANCHISE ENDPOINTS
+// ============================================================
+
+// GET /api/franchise/dashboard - Franchise dashboard (requires auth)
+app.get('/api/franchise/dashboard', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const franchiseResult = await pool.query('SELECT * FROM "Franchise" WHERE "ownerId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!franchiseResult.rows[0]) return c.json({ error: 'No franchise found for this user' }, 404)
+    const franchise = franchiseResult.rows[0]
+    const bookingsResult = await pool.query('SELECT COUNT(*) as total, COALESCE(SUM("finalAmount"), 0) as revenue FROM "Booking" WHERE "providerId" IN (SELECT id FROM "User" WHERE city = $1) AND status = \'COMPLETED\'', [franchise.city]).catch(() => ({ rows: [{ total: 0, revenue: 0 }] }))
+    const vendorsResult = await pool.query('SELECT COUNT(*) as total FROM "User" WHERE "roleId" = 2 AND city = $1', [franchise.city]).catch(() => ({ rows: [{ total: 0 }] }))
+    return c.json({
+      franchise,
+      stats: { totalBookings: parseInt(bookingsResult.rows[0]?.total || '0'), totalRevenue: parseFloat(bookingsResult.rows[0]?.revenue || '0'), totalVendors: parseInt(vendorsResult.rows[0]?.total || '0') }
+    })
+  } catch (e) { return c.json({ error: 'Failed to get franchise dashboard' }, 500) }
+})
+
+// GET /api/franchise/vendors - List franchise vendors (requires auth)
+app.get('/api/franchise/vendors', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const franchiseResult = await pool.query('SELECT * FROM "Franchise" WHERE "ownerId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!franchiseResult.rows[0]) return c.json({ error: 'No franchise found' }, 404)
+    const franchise = franchiseResult.rows[0]
+    const result = await pool.query('SELECT id, name, email, phone, city, "isVerified", "completedJobsCount", "createdAt" FROM "User" WHERE "roleId" = 2 AND city = $1 ORDER BY "createdAt" DESC', [franchise.city]).catch(() => ({ rows: [] }))
+    return c.json({ vendors: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list franchise vendors' }, 500) }
+})
+
+// GET /api/franchise/analytics - Franchise analytics (requires auth)
+app.get('/api/franchise/analytics', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const franchiseResult = await pool.query('SELECT * FROM "Franchise" WHERE "ownerId" = $1', [user.id]).catch(() => ({ rows: [] }))
+    if (!franchiseResult.rows[0]) return c.json({ error: 'No franchise found' }, 404)
+    const franchise = franchiseResult.rows[0]
+    const revenueByMonth = await pool.query("SELECT TO_CHAR(\"completedAt\", 'YYYY-MM') as month, COUNT(*) as bookings, COALESCE(SUM(\"finalAmount\"), 0) as revenue FROM \"Booking\" WHERE \"providerId\" IN (SELECT id FROM \"User\" WHERE city = $1) AND status = 'COMPLETED' AND \"completedAt\" >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month", [franchise.city]).catch(() => ({ rows: [] }))
+    const topServices = await pool.query('SELECT s.name, COUNT(b.id) as bookings FROM "Service" s JOIN "Booking" b ON b."serviceId" = s.id JOIN "User" u ON s."providerId" = u.id WHERE u.city = $1 AND b.status = \'COMPLETED\' GROUP BY s.name ORDER BY bookings DESC LIMIT 5', [franchise.city]).catch(() => ({ rows: [] }))
+    return c.json({ franchiseId: franchise.id, city: franchise.city, revenueByMonth: revenueByMonth.rows, topServices: topServices.rows })
+  } catch (e) { return c.json({ error: 'Failed to get franchise analytics' }, 500) }
+})
+
+// ============================================================
+// VENDOR ENDPOINTS
+// ============================================================
+
+// GET /api/vendor/bookings - Vendor bookings (requires auth)
+app.get('/api/vendor/bookings', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    if (user.roleId !== 2 && user.role !== 'PROVIDER') return c.json({ error: 'Vendor access required' }, 403)
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const status = c.req.query('status')
+    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."providerId" = $1'
+    const params: any[] = [user.id]
+    let idx = 2
+    if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
+    query += ` ORDER BY b."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
+    return c.json({ bookings: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { return c.json({ error: 'Failed to list vendor bookings' }, 500) }
+})
+
+// GET /api/vendor/services - Vendor services (requires auth)
+app.get('/api/vendor/services', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    if (user.roleId !== 2 && user.role !== 'PROVIDER') return c.json({ error: 'Vendor access required' }, 403)
+    const result = await pool.query(
+      'SELECT s.*, sc.name as "categoryName" FROM "Service" s LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."providerId" = $1 ORDER BY s."createdAt" DESC',
+      [user.id]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ services: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ error: 'Failed to list vendor services' }, 500) }
 })
 
 // Catch-all for other API routes

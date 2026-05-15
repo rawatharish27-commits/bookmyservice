@@ -67,7 +67,7 @@ interface ValidationResult {
 const TYPE_CONFIG: Record<string, { gradient: string; bg: string; label: string }> = {
   ALL: { gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'All Services' },
   PLUMBING: { gradient: 'from-blue-400 to-cyan-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Plumbing' },
-  ELECTRICAL: { gradient: 'from-amber-400 to-yellow-500', bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Electrical' },
+  ELECTRICAL: { gradient: 'from-cyan-400 to-yellow-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Electrical' },
   HVAC: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'HVAC' },
   CLEANING: { gradient: 'from-violet-400 to-purple-500', bg: 'bg-violet-50 text-violet-700 border-violet-200', label: 'Cleaning' },
   APPLIANCE: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'Appliance' },
@@ -317,7 +317,7 @@ export function ClientCouponsPage() {
                             Expired
                           </Badge>
                         ) : upcoming ? (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-amber-200 bg-amber-50 text-amber-700">
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-sky-200 bg-sky-50 text-sky-700">
                             <Clock className="size-2.5" />
                             Upcoming
                           </Badge>

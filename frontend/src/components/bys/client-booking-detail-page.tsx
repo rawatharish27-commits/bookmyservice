@@ -66,7 +66,7 @@ const STATUS_STEPS = [
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
     ASSIGNED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
     ACCEPTED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
@@ -461,17 +461,17 @@ export function ClientBookingDetailPage() {
             {booking.otp && ['ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'].includes(booking.status) && (
               <>
                 <Separator />
-                <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-amber-50 to-blue-50 p-4">
+                <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-sky-50 to-blue-50 p-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-xl bg-amber-100">
-                      <Hash className="size-5 text-amber-600" />
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-sky-100">
+                      <Hash className="size-5 text-sky-600" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-amber-600">Service OTP</p>
-                      <p className="text-sm text-amber-800">Share with provider on arrival</p>
+                      <p className="text-xs font-medium text-sky-600">Service OTP</p>
+                      <p className="text-sm text-sky-800">Share with provider on arrival</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 rounded-lg bg-white px-3 py-2 font-mono text-2xl font-bold tracking-widest text-amber-700 shadow-sm">
+                  <div className="flex items-center gap-1 rounded-lg bg-white px-3 py-2 font-mono text-2xl font-bold tracking-widest text-sky-700 shadow-sm">
                     {booking.otp}
                   </div>
                 </div>
@@ -524,14 +524,14 @@ export function ClientBookingDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-100">
-                <Shield className="size-5 text-amber-500" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-100">
+                <Shield className="size-5 text-sky-500" />
               </div>
               <div>
-                <p className="text-sm font-medium text-amber-700">Contact will be available after provider accepts</p>
-                <p className="text-xs text-amber-600">Provider details are shared once the booking is confirmed</p>
+                <p className="text-sm font-medium text-sky-700">Contact will be available after provider accepts</p>
+                <p className="text-xs text-sky-600">Provider details are shared once the booking is confirmed</p>
               </div>
             </div>
           </div>
@@ -632,7 +632,7 @@ export function ClientBookingDetailPage() {
                     ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                     : booking.paymentStatus === 'REFUNDED'
                     ? 'bg-gray-50 text-gray-700 border-gray-200'
-                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-sky-50 text-sky-700 border-sky-200'
                 }
               >
                 {booking.paymentStatus}
@@ -702,7 +702,7 @@ export function ClientBookingDetailPage() {
           <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500">
                   <Star className="size-4 text-white" />
                 </div>
                 Your Review
@@ -713,7 +713,7 @@ export function ClientBookingDetailPage() {
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star
                     key={i}
-                    className={`size-5 ${i < booking.review!.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                    className={`size-5 ${i < booking.review!.rating ? 'fill-cyan-400 text-cyan-400' : 'text-gray-300'}`}
                   />
                 ))}
               </div>
@@ -734,10 +734,10 @@ export function ClientBookingDetailPage() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ delay: 0.4 }}
           >
-            <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-amber-400">
+            <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-cyan-400">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500">
                     <Star className="size-4 text-white" />
                   </div>
                   Leave a Review
@@ -759,7 +759,7 @@ export function ClientBookingDetailPage() {
                       className="transition-colors"
                     >
                       <Star
-                        className={`size-8 ${i < reviewRating ? 'fill-amber-400 text-amber-400' : 'text-gray-300'}`}
+                        className={`size-8 ${i < reviewRating ? 'fill-cyan-400 text-cyan-400' : 'text-gray-300'}`}
                       />
                     </motion.button>
                   ))}

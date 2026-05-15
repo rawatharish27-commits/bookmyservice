@@ -64,7 +64,7 @@ const STATUS_STEPS = [
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
+    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
     ASSIGNED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
     ACCEPTED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
@@ -391,7 +391,7 @@ export function ProviderBookingDetailPage() {
       case 'ARRIVED':
         return (
           <Button
-            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-amber-600 text-white shadow-lg shadow-blue-500/25 sm:w-auto"
+            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/25 sm:w-auto"
             onClick={() => handleAction('start')}
             disabled={actionLoading}
           >
@@ -555,14 +555,14 @@ export function ProviderBookingDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-100">
-                <Shield className="size-5 text-amber-500" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-100">
+                <Shield className="size-5 text-sky-500" />
               </div>
               <div>
-                <p className="text-sm font-medium text-amber-700">Client contact will be available after you accept the booking</p>
-                <p className="text-xs text-amber-600">Accept the booking to view client details</p>
+                <p className="text-sm font-medium text-sky-700">Client contact will be available after you accept the booking</p>
+                <p className="text-xs text-sky-600">Accept the booking to view client details</p>
               </div>
             </div>
           </div>

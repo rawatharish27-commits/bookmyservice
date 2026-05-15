@@ -67,13 +67,13 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 
 const CATEGORY_COLORS: Record<string, string> = {
   plumbing: 'from-blue-500 to-cyan-500',
-  electrical: 'from-amber-500 to-yellow-500',
+  electrical: 'from-sky-500 to-yellow-500',
   'ac-hvac': 'from-teal-500 to-emerald-500',
 };
 
 const CATEGORY_BG_COLORS: Record<string, string> = {
   plumbing: 'bg-blue-50 text-blue-700 border-blue-200',
-  electrical: 'bg-amber-50 text-amber-700 border-amber-200',
+  electrical: 'bg-sky-50 text-sky-700 border-sky-200',
   'ac-hvac': 'bg-teal-50 text-teal-700 border-teal-200',
 };
 
@@ -500,7 +500,7 @@ export function SearchPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         {/* Negotiable badge */}
                         {service.priceNegotiable && (
-                          <Badge className="absolute right-3 top-3 border-0 bg-amber-100/90 text-amber-700 backdrop-blur-sm hover:bg-amber-100/90">
+                          <Badge className="absolute right-3 top-3 border-0 bg-sky-100/90 text-sky-700 backdrop-blur-sm hover:bg-sky-100/90">
                             Negotiable
                           </Badge>
                         )}
@@ -540,7 +540,7 @@ export function SearchPage() {
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <div className="flex items-center gap-0.5">
-                              <Star className="size-4 fill-amber-400 text-amber-400 drop-shadow-[0_0_2px_rgba(251,191,36,0.4)]" />
+                              <Star className="size-4 fill-cyan-400 text-cyan-400 drop-shadow-[0_0_2px_rgba(6,182,212,0.4)]" />
                               <span className="text-sm font-semibold">{service.averageRating.toFixed(1)}</span>
                             </div>
                             <span className="text-xs text-muted-foreground">({service.totalReviews})</span>
@@ -618,7 +618,7 @@ export function SearchPage() {
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             {[
               { label: 'Plumbing', icon: <Droplets className="size-4" />, color: 'from-blue-500 to-cyan-500' },
-              { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-amber-500 to-yellow-500' },
+              { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-sky-500 to-yellow-500' },
               { label: 'AC & HVAC', icon: <Wind className="size-4" />, color: 'from-teal-500 to-emerald-500' },
             ].map((item) => (
               <motion.button

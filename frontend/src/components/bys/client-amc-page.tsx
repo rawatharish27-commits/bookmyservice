@@ -79,7 +79,7 @@ interface AMCPlan {
 /* ---------- category config ---------- */
 const CATEGORY_ICONS: Record<string, { icon: typeof Wrench; gradient: string }> = {
   PLUMBING: { icon: Droplets, gradient: 'from-blue-400 to-cyan-500' },
-  ELECTRICAL: { icon: Zap, gradient: 'from-amber-400 to-yellow-500' },
+  ELECTRICAL: { icon: Zap, gradient: 'from-cyan-400 to-yellow-500' },
   HVAC: { icon: Wind, gradient: 'from-teal-400 to-emerald-500' },
   APPLIANCE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
   GENERAL: { icon: Shield, gradient: 'from-emerald-400 to-teal-500' },
@@ -94,7 +94,7 @@ const STATUS_CONFIG: Record<string, { className: string; dotColor: string; label
   ACTIVE: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', label: 'Active' },
   EXPIRED: { className: 'bg-gray-50 text-gray-600 border-gray-200', dotColor: 'bg-gray-400', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
-  PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400', label: 'Pending' },
+  PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', label: 'Pending' },
 };
 
 /* ==================== MAIN COMPONENT ==================== */
@@ -271,7 +271,7 @@ export function ClientAmcPage() {
                           </span>
                         </div>
                         {isExpiringSoon && (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-amber-200 bg-amber-50 text-amber-700">
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-sky-200 bg-sky-50 text-sky-700">
                             <AlertTriangle className="size-2.5" />
                             {daysRemaining}d left
                           </Badge>
@@ -560,9 +560,9 @@ export function ClientAmcPage() {
                   </div>
 
                   {/* Info note */}
-                  <div className="flex items-start gap-3 rounded-xl bg-amber-50 p-4">
-                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-amber-600" />
-                    <p className="text-xs text-amber-800">
+                  <div className="flex items-start gap-3 rounded-xl bg-sky-50 p-4">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-sky-600" />
+                    <p className="text-xs text-sky-800">
                       The subscription amount will be deducted from your wallet balance. Make sure you have sufficient funds.
                     </p>
                   </div>

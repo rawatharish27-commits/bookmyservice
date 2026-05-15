@@ -116,7 +116,7 @@ export function ClientFavoritesPage() {
                         </span>
                       )}
                       <span className="flex items-center gap-1">
-                        <Star className="size-3 fill-amber-400 text-amber-400" />
+                        <Star className="size-3 fill-cyan-400 text-cyan-400" />
                         {service.averageRating?.toFixed(1) || '0.0'} ({service.totalReviews || 0})
                       </span>
                     </div>

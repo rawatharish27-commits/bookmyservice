@@ -37,7 +37,7 @@ interface ServicesResponse {
 
 function ApprovalBadge({ status }: { status: string }) {
   const config: Record<string, { class: string; label: string; dotColor: string }> = {
-    PENDING: { class: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Pending Review', dotColor: 'bg-amber-400' },
+    PENDING: { class: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Pending Review', dotColor: 'bg-cyan-400' },
     APPROVED: { class: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Approved', dotColor: 'bg-emerald-400' },
     REJECTED: { class: 'bg-red-50 text-red-700 border-red-200', label: 'Rejected', dotColor: 'bg-red-400' },
   };
@@ -137,7 +137,7 @@ export function ProviderServicesPage() {
               transition={{ delay: idx * 0.05 }}
             >
               <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-amber-400 to-blue-500'}`} />
+                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-cyan-400 to-blue-500'}`} />
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
@@ -187,7 +187,7 @@ export function ProviderServicesPage() {
 
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      <Star className="size-3 fill-amber-400 text-amber-400 drop-shadow-[0_0_2px_rgba(251,191,36,0.4)]" />
+                      <Star className="size-3 fill-cyan-400 text-cyan-400 drop-shadow-[0_0_2px_rgba(6,182,212,0.4)]" />
                       <span className="text-sm font-medium">{service.averageRating || '0'}</span>
                     </div>
                     <span className="text-xs text-muted-foreground">

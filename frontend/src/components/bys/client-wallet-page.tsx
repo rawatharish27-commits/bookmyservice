@@ -75,7 +75,7 @@ interface Transaction {
 const CATEGORY_CONFIG: Record<string, { icon: typeof Wallet; gradient: string; bg: string; label: string }> = {
   TOP_UP: { icon: Plus, gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-50', label: 'Top Up' },
   BOOKING: { icon: CreditCard, gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-50', label: 'Booking' },
-  CASHBACK: { icon: Gift, gradient: 'from-amber-400 to-blue-500', bg: 'bg-amber-50', label: 'Cashback' },
+  CASHBACK: { icon: Gift, gradient: 'from-cyan-400 to-blue-500', bg: 'bg-sky-50', label: 'Cashback' },
   REFUND: { icon: ArrowDownLeft, gradient: 'from-violet-400 to-purple-500', bg: 'bg-violet-50', label: 'Refund' },
   WITHDRAWAL: { icon: Banknote, gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50', label: 'Withdrawal' },
   PROMO: { icon: Gift, gradient: 'from-teal-400 to-cyan-500', bg: 'bg-teal-50', label: 'Promo' },
@@ -256,7 +256,7 @@ export function ClientWalletPage() {
         <motion.div variants={fadeUp}>
           <button
             onClick={() => navigate('client-coupons')}
-            className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-amber-500 to-blue-600 p-5 text-white shadow-lg shadow-amber-500/25 transition-shadow hover:shadow-xl"
+            className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 p-5 text-white shadow-lg shadow-sky-500/25 transition-shadow hover:shadow-xl"
           >
             <Gift className="size-6" />
             <span className="text-sm font-semibold">Promos</span>

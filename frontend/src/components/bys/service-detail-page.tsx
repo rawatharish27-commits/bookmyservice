@@ -144,7 +144,7 @@ function GradientStars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 
           <Star
             className={`${sizeClass} ${
               i < Math.round(rating)
-                ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]'
+                ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
                 : 'fill-gray-200 text-gray-200'
             }`}
           />
@@ -507,8 +507,8 @@ export function ServiceDetailPage() {
                 </div>
                 {service.serviceDurationMinutes && (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <div className="flex size-7 items-center justify-center rounded-lg bg-amber-50">
-                      <Clock className="size-3.5 text-amber-600" />
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-sky-50">
+                      <Clock className="size-3.5 text-sky-600" />
                     </div>
                     <span className="font-medium">{service.serviceDurationMinutes} min</span>
                   </div>
@@ -526,7 +526,7 @@ export function ServiceDetailPage() {
             >
               {[
                 { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-emerald-500 to-teal-500' },
-                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-amber-500 to-blue-500' },
+                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-sky-500 to-blue-500' },
                 { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-blue-500 to-cyan-500' },
                 { icon: <TrendingUp className="size-4" />, label: 'Popularity', value: service.totalBookings > 20 ? 'High' : service.totalBookings > 5 ? 'Growing' : 'New', color: 'from-purple-500 to-pink-500' },
               ].map((item, idx) => (
@@ -578,7 +578,7 @@ export function ServiceDetailPage() {
                 custom={0}
               >
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-blue-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-sm">
                     <Calendar className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Availability</h2>
@@ -628,12 +628,12 @@ export function ServiceDetailPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-yellow-500 text-white shadow-sm">
                     <Star className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Reviews</h2>
                 </div>
-                <span className="rounded-full bg-amber-50 px-3 py-1 text-sm font-medium text-amber-700">
+                <span className="rounded-full bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">
                   {service.totalReviews} total
                 </span>
               </div>
@@ -670,7 +670,7 @@ export function ServiceDetailPage() {
                           </div>
                           <div className="mt-1 flex items-center gap-2">
                             <GradientStars rating={review.rating} size="sm" />
-                            <span className="text-xs font-semibold text-amber-600">{review.rating}.0</span>
+                            <span className="text-xs font-semibold text-sky-600">{review.rating}.0</span>
                           </div>
                           {review.comment && (
                             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -688,8 +688,8 @@ export function ServiceDetailPage() {
                   animate={{ opacity: 1 }}
                   className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-10 text-center"
                 >
-                  <div className="flex size-16 items-center justify-center rounded-2xl bg-amber-50">
-                    <MessageSquare className="size-8 text-amber-400" />
+                  <div className="flex size-16 items-center justify-center rounded-2xl bg-sky-50">
+                    <MessageSquare className="size-8 text-cyan-400" />
                   </div>
                   <p className="mt-3 font-semibold text-foreground">No reviews yet</p>
                   <p className="mt-1 text-sm text-muted-foreground">Be the first to share your experience</p>
@@ -720,7 +720,7 @@ export function ServiceDetailPage() {
                       <span className="text-sm text-muted-foreground">/service</span>
                     </div>
                     {service.priceNegotiable && (
-                      <Badge className="mt-2 border-amber-200 bg-gradient-to-r from-amber-50 to-blue-50 text-amber-700 hover:from-amber-100 hover:to-sky-100">
+                      <Badge className="mt-2 border-sky-200 bg-gradient-to-r from-sky-50 to-blue-50 text-sky-700 hover:from-sky-100 hover:to-sky-100">
                         <Zap className="mr-1 size-3" /> Price Negotiable
                       </Badge>
                     )}
@@ -795,12 +795,12 @@ export function ServiceDetailPage() {
                         </div>
                       )}
                       {service.averageRating > 0 && (
-                        <div className="rounded-xl bg-amber-50/50 p-2.5 text-center ring-1 ring-amber-100/50">
+                        <div className="rounded-xl bg-sky-50/50 p-2.5 text-center ring-1 ring-sky-100/50">
                           <div className="flex items-center justify-center gap-1">
-                            <Star className="size-4 fill-amber-400 text-amber-400" />
-                            <p className="text-lg font-bold text-amber-700">{service.averageRating.toFixed(1)}</p>
+                            <Star className="size-4 fill-cyan-400 text-cyan-400" />
+                            <p className="text-lg font-bold text-sky-700">{service.averageRating.toFixed(1)}</p>
                           </div>
-                          <p className="text-xs text-amber-600">Rating</p>
+                          <p className="text-xs text-sky-600">Rating</p>
                         </div>
                       )}
                     </div>
@@ -896,7 +896,7 @@ export function ServiceDetailPage() {
                             <p className="mt-0.5 text-xs text-muted-foreground">{s.provider.name}</p>
                             <div className="mt-2 flex items-center justify-between">
                               <div className="flex items-center gap-1">
-                                <Star className="size-3 fill-amber-400 text-amber-400" />
+                                <Star className="size-3 fill-cyan-400 text-cyan-400" />
                                 <span className="text-xs font-semibold">{s.averageRating.toFixed(1)}</span>
                                 <span className="text-xs text-muted-foreground">({s.totalReviews})</span>
                               </div>

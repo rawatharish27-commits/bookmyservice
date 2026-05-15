@@ -285,7 +285,7 @@ export function BookingPage() {
             <div className="text-right">
               <p className="text-gradient text-lg font-bold">₹{service.basePrice?.toLocaleString()}</p>
               {service.priceNegotiable && (
-                <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[10px]">Negotiable</Badge>
+                <Badge className="bg-sky-100 text-sky-700 border-sky-200 text-[10px]">Negotiable</Badge>
               )}
             </div>
           </div>
@@ -434,7 +434,7 @@ export function BookingPage() {
               <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-amber-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-sky-500">
                     <MapPin className="size-4 text-white" />
                   </div>
                   Service Address
@@ -453,7 +453,7 @@ export function BookingPage() {
                         <Navigation className="size-3" /> Location Detected
                       </Badge>
                     ) : (
-                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-amber-50 text-amber-700 border border-amber-200">
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200">
                         <MapPin className="size-3" /> Location unavailable
                       </Badge>
                     )}
@@ -598,9 +598,9 @@ export function BookingPage() {
 
                 {/* Negotiate Price */}
                 {service.priceNegotiable && (
-                  <div className="rounded-xl border border-amber-200 bg-gradient-to-r from-amber-50 to-blue-50 p-4">
+                  <div className="rounded-xl border border-sky-200 bg-gradient-to-r from-sky-50 to-blue-50 p-4">
                     <div className="flex items-center gap-2">
-                      <Badge className="bg-amber-100 text-amber-800 border-amber-200">Negotiable</Badge>
+                      <Badge className="bg-sky-100 text-sky-800 border-sky-200">Negotiable</Badge>
                       <span className="text-sm font-medium">This service allows price negotiation</span>
                     </div>
                     <div className="mt-3 space-y-2">

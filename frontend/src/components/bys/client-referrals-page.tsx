@@ -63,8 +63,8 @@ interface ReferralEntry {
 /* ---------- status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; icon: typeof Clock; label: string }> = {
   PENDING: {
-    className: 'bg-amber-50 text-amber-700 border-amber-200',
-    dotColor: 'bg-amber-400',
+    className: 'bg-sky-50 text-sky-700 border-sky-200',
+    dotColor: 'bg-cyan-400',
     icon: Clock,
     label: 'Pending',
   },
@@ -354,7 +354,7 @@ export function ClientReferralsPage() {
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-blue-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg">
                   <Trophy className="size-6 text-white" />
                 </div>
               </div>
@@ -373,14 +373,14 @@ export function ClientReferralsPage() {
                     <Skeleton className="mt-1 h-8 w-20" />
                   ) : (
                     <div className="mt-1 flex items-baseline gap-1">
-                      <IndianRupee className="size-5 text-amber-600" />
-                      <span className="text-3xl font-bold text-amber-600">
+                      <IndianRupee className="size-5 text-sky-600" />
+                      <span className="text-3xl font-bold text-sky-600">
                         {referral.pendingRewards?.toLocaleString('en-IN') || '0'}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-yellow-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-yellow-500 shadow-lg">
                   <Star className="size-6 text-white" />
                 </div>
               </div>
@@ -507,7 +507,7 @@ export function ClientReferralsPage() {
                           <div className={`flex size-11 shrink-0 items-center justify-center rounded-full font-semibold text-white shadow-md ${
                             isCompleted
                               ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
-                              : 'bg-gradient-to-br from-amber-400 to-blue-500'
+                              : 'bg-gradient-to-br from-cyan-400 to-blue-500'
                           }`}>
                             {getInitials(entry.referredName)}
                           </div>
@@ -527,7 +527,7 @@ export function ClientReferralsPage() {
 
                           {/* Reward & status */}
                           <div className="shrink-0 text-right">
-                            <p className={`text-sm font-bold ${isCompleted ? 'text-emerald-600' : 'text-amber-600'}`}>
+                            <p className={`text-sm font-bold ${isCompleted ? 'text-emerald-600' : 'text-sky-600'}`}>
                               {isCompleted ? '+' : ''}₹{entry.rewardEarned?.toLocaleString('en-IN')}
                             </p>
                             <Badge variant="outline" className={`mt-0.5 gap-1 text-[10px] font-semibold ${statusConf.className}`}>

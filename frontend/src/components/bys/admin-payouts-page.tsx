@@ -90,7 +90,7 @@ const itemVariants = {
 function PayoutStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; icon: React.ReactNode }> = {
     PENDING: {
-      className: 'bg-amber-100 text-amber-800 border-amber-200',
+      className: 'bg-sky-100 text-sky-800 border-sky-200',
       icon: <Clock className="mr-1 size-3" />,
     },
     APPROVED: {
@@ -184,10 +184,10 @@ export function AdminPayoutsPage() {
       label: 'Pending Amount',
       value: formatCurrency(stats.totalPendingAmount),
       icon: Clock,
-      bgLight: 'bg-amber-50',
-      textColor: 'text-amber-700',
-      borderColor: 'border-l-amber-500',
-      gradient: 'from-amber-500 to-blue-500',
+      bgLight: 'bg-sky-50',
+      textColor: 'text-sky-700',
+      borderColor: 'border-l-sky-500',
+      gradient: 'from-sky-500 to-blue-500',
     },
     {
       label: 'Approved Amount',

@@ -93,7 +93,7 @@ function ActivityTypeIcon({ type }: { type: string }) {
     CALL: <PhoneCall className="size-4 text-emerald-600" />,
     EMAIL: <Mail className="size-4 text-teal-600" />,
     MEETING: <Video className="size-4 text-cyan-600" />,
-    CHAT: <MessageSquare className="size-4 text-amber-600" />,
+    CHAT: <MessageSquare className="size-4 text-sky-600" />,
   };
   return (
     <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-50">
@@ -107,7 +107,7 @@ function ActivityTypeBadge({ type }: { type: string }) {
     CALL: 'bg-emerald-100 text-emerald-800 border-emerald-200',
     EMAIL: 'bg-teal-100 text-teal-800 border-teal-200',
     MEETING: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-    CHAT: 'bg-amber-100 text-amber-800 border-amber-200',
+    CHAT: 'bg-sky-100 text-sky-800 border-sky-200',
   };
   return (
     <Badge variant="outline" className={colors[type] || 'bg-gray-100 text-gray-800'}>
@@ -133,7 +133,7 @@ function ActivityStatusBadge({ status }: { status: string }) {
 function PriorityBadge({ priority }: { priority: string }) {
   const colors: Record<string, string> = {
     HIGH: 'bg-red-100 text-red-800 border-red-200',
-    MEDIUM: 'bg-amber-100 text-amber-800 border-amber-200',
+    MEDIUM: 'bg-sky-100 text-sky-800 border-sky-200',
     LOW: 'bg-green-100 text-green-800 border-green-200',
     URGENT: 'bg-red-200 text-red-900 border-red-300',
   };
@@ -160,7 +160,7 @@ function FollowUpStatusIcon({ status }: { status: string }) {
     case 'OVERDUE':
       return <AlertCircle className="size-4 text-red-600" />;
     default:
-      return <Clock className="size-4 text-amber-500" />;
+      return <Clock className="size-4 text-sky-500" />;
   }
 }
 
@@ -290,10 +290,10 @@ export function AdminCrmPage() {
             <p className="mt-1 text-2xl font-bold text-teal-700">{followUps.length}</p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-amber-500">
+        <Card className="border-l-4 border-l-sky-500">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Pending</p>
-            <p className="mt-1 text-2xl font-bold text-amber-700">{pendingFollowUps}</p>
+            <p className="mt-1 text-2xl font-bold text-sky-700">{pendingFollowUps}</p>
           </CardContent>
         </Card>
         <Card className="border-l-4 border-l-red-500">

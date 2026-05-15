@@ -48,9 +48,9 @@ const STATUS_CONFIG: Record<string, { className: string; dotColor: string; gradi
     label: 'Paid',
   },
   PENDING: {
-    className: 'bg-amber-50 text-amber-700 border-amber-200',
-    dotColor: 'bg-amber-400',
-    gradient: 'from-amber-400 to-blue-500',
+    className: 'bg-sky-50 text-sky-700 border-sky-200',
+    dotColor: 'bg-cyan-400',
+    gradient: 'from-cyan-400 to-blue-500',
     label: 'Pending',
   },
   OVERDUE: {
@@ -183,11 +183,11 @@ export function ClientInvoicesPage() {
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-amber-400 to-blue-500 p-4 text-white shadow-lg shadow-amber-400/20">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 p-4 text-white shadow-lg shadow-cyan-400/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Clock className="size-5 text-amber-200" />
+            <Clock className="size-5 text-sky-200" />
             <p className="mt-2 text-2xl font-bold">₹{totalPending.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-amber-100">Pending</p>
+            <p className="text-xs text-sky-100">Pending</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>

@@ -74,7 +74,7 @@ const clientSteps = [
     title: 'Make Secure Payment',
     description: 'Pay securely through our platform. Your payment is held in escrow until the service is completed.',
     icon: <CreditCard className="size-6" />,
-    gradient: 'from-amber-600 to-blue-600',
+    gradient: 'from-sky-600 to-blue-600',
     illustration: '💳',
   },
   {
@@ -90,7 +90,7 @@ const clientSteps = [
     title: 'Review & Rate',
     description: 'After completion, rate the service and leave a review to help other users make informed decisions.',
     icon: <Star className="size-6" />,
-    gradient: 'from-amber-500 to-yellow-600',
+    gradient: 'from-sky-500 to-yellow-600',
     illustration: '⭐',
   },
 ];
@@ -133,7 +133,7 @@ const providerSteps = [
     title: 'Receive Bookings',
     description: 'Get notified of new booking requests. Accept or reject based on your availability and preferences.',
     icon: <ClipboardList className="size-6" />,
-    gradient: 'from-amber-600 to-blue-600',
+    gradient: 'from-sky-600 to-blue-600',
     illustration: '📩',
   },
   {

@@ -40,7 +40,7 @@ interface BookingData {
 
 // Confetti particles
 function ConfettiParticle({ delay, x, index }: { delay: number; x: number; index: number }) {
-  const colors = ['#10b981', '#14b8a6', '#06b6d4', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+  const colors = ['#10b981', '#14b8a6', '#06b6d4', '#06b6d4', '#ef4444', '#8b5cf6', '#ec4899'];
   const color = colors[index % colors.length];
   // Deterministic pseudo-random values based on index to avoid hydration mismatch
   const seed = (index * 2654435761) >>> 0;
@@ -177,7 +177,7 @@ export function BookingConfirmationPage() {
                 {[
                   { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-emerald-400 to-teal-500' },
                   { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-sky-400 to-blue-500' },
-                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-amber-400 to-blue-500' },
+                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-cyan-400 to-blue-500' },
                   { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-violet-400 to-purple-500' },
                   { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-pink-400 to-rose-500' },
                 ].map((item) => (

@@ -75,8 +75,8 @@ const STATUS_CONFIG: Record<string, { className: string; gradient: string; icon:
     label: 'Paid',
   },
   PENDING: {
-    className: 'bg-amber-50 text-amber-700 border-amber-200',
-    gradient: 'from-amber-400 to-blue-500',
+    className: 'bg-sky-50 text-sky-700 border-sky-200',
+    gradient: 'from-cyan-400 to-blue-500',
     icon: Clock,
     label: 'Pending',
   },
@@ -402,8 +402,8 @@ export function ClientInvoiceDetailPage() {
                     </div>
                     {invoice.total - invoice.paidAmount > 0 && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-amber-600">Balance Due</span>
-                        <span className="font-bold text-amber-600">
+                        <span className="text-sky-600">Balance Due</span>
+                        <span className="font-bold text-sky-600">
                           ₹{(invoice.total - invoice.paidAmount)?.toLocaleString('en-IN')}
                         </span>
                       </div>

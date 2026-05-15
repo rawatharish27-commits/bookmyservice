@@ -132,19 +132,19 @@ const CATEGORY_STYLES: Record<string, {
     cardAccent: 'ring-blue-200/50',
   },
   electrical: {
-    gradient: 'from-amber-500 to-yellow-500',
-    headerGradient: 'from-amber-600 via-amber-500 to-yellow-400',
-    lightBg: 'bg-amber-50',
-    lightText: 'text-amber-700',
-    borderColor: 'border-l-amber-500',
-    hoverBorder: 'hover:border-l-amber-400',
-    glow: 'shadow-amber-500/20',
-    accentBadge: 'bg-amber-100 text-amber-700',
-    iconBg: 'bg-amber-100',
-    pillBg: 'bg-amber-50',
-    pillText: 'text-amber-700',
-    heroAccent: 'from-amber-400/30 to-yellow-400/20',
-    cardAccent: 'ring-amber-200/50',
+    gradient: 'from-sky-500 to-yellow-500',
+    headerGradient: 'from-sky-600 via-sky-500 to-yellow-400',
+    lightBg: 'bg-sky-50',
+    lightText: 'text-sky-700',
+    borderColor: 'border-l-sky-500',
+    hoverBorder: 'hover:border-l-cyan-400',
+    glow: 'shadow-sky-500/20',
+    accentBadge: 'bg-sky-100 text-sky-700',
+    iconBg: 'bg-sky-100',
+    pillBg: 'bg-sky-50',
+    pillText: 'text-sky-700',
+    heroAccent: 'from-cyan-400/30 to-yellow-400/20',
+    cardAccent: 'ring-sky-200/50',
   },
   'ac-hvac': {
     gradient: 'from-teal-500 to-emerald-500',
@@ -229,9 +229,9 @@ function StarRating({ rating, totalReviews }: { rating: number; totalReviews: nu
             key={i}
             className={`size-3.5 ${
               i < fullStars
-                ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]'
+                ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
                 : i === fullStars && hasHalf
-                  ? 'fill-amber-200 text-amber-400'
+                  ? 'fill-sky-200 text-cyan-400'
                   : 'fill-gray-200 text-gray-200'
             }`}
           />
@@ -655,7 +655,7 @@ export function CategoryDetailPage() {
 
                           {/* Negotiable badge */}
                           {service.priceNegotiable && (
-                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-amber-100/90 px-2.5 py-0.5 text-xs font-semibold text-amber-700 backdrop-blur-sm">
+                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-sky-100/90 px-2.5 py-0.5 text-xs font-semibold text-sky-700 backdrop-blur-sm">
                               Negotiable
                             </Badge>
                           )}
@@ -752,7 +752,7 @@ export function CategoryDetailPage() {
                   </motion.div>
                 </div>
                 {/* Decorative dots */}
-                <div className="absolute -right-2 top-2 size-3 rounded-full bg-amber-300" />
+                <div className="absolute -right-2 top-2 size-3 rounded-full bg-sky-300" />
                 <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-blue-300" />
                 <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-teal-300" />
                 <div className="absolute -top-1 left-1/2 size-2 rounded-full bg-rose-300" />
@@ -763,7 +763,7 @@ export function CategoryDetailPage() {
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                  className="absolute left-0 -top-3 size-3 rounded-full bg-amber-200/50"
+                  className="absolute left-0 -top-3 size-3 rounded-full bg-sky-200/50"
                   animate={{ scale: [1, 1.4, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 />

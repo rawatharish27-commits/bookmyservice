@@ -23,7 +23,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const floatingIcons = [
   { Icon: Droplets, color: 'from-blue-400 to-cyan-400', glow: 'shadow-blue-400/30', x: '15%', y: '20%', delay: 0, size: 48 },
-  { Icon: Zap, color: 'from-amber-400 to-yellow-400', glow: 'shadow-amber-400/30', x: '70%', y: '15%', delay: 0.5, size: 44 },
+  { Icon: Zap, color: 'from-cyan-400 to-yellow-400', glow: 'shadow-cyan-400/30', x: '70%', y: '15%', delay: 0.5, size: 44 },
   { Icon: Wind, color: 'from-teal-400 to-emerald-400', glow: 'shadow-teal-400/30', x: '50%', y: '65%', delay: 1, size: 46 },
   { Icon: Wrench, color: 'from-emerald-400 to-green-400', glow: 'shadow-emerald-400/30', x: '25%', y: '75%', delay: 1.5, size: 40 },
   { Icon: Shield, color: 'from-emerald-500 to-teal-500', glow: 'shadow-emerald-500/30', x: '80%', y: '55%', delay: 2, size: 42 },
@@ -51,38 +51,38 @@ export function LoginPage() {
   const forgotMutation = useApiMutation();
 
   const isClient = activeTab === 'client';
-  const focusColor = isClient ? 'emerald' : 'amber';
+  const focusColor = isClient ? 'emerald' : 'sky';
   const tabGradient = isClient
     ? 'from-emerald-600 via-teal-500 to-cyan-500'
-    : 'from-amber-500 via-blue-500 to-rose-500';
+    : 'from-sky-500 via-blue-500 to-rose-500';
   const tabGradientHover = isClient
     ? 'hover:from-emerald-700 hover:via-teal-600 hover:to-cyan-600'
-    : 'hover:from-amber-600 hover:via-blue-600 hover:to-rose-600';
+    : 'hover:from-sky-600 hover:via-blue-600 hover:to-rose-600';
   const tabShadow = isClient
     ? 'shadow-emerald-600/30'
-    : 'shadow-amber-500/30';
+    : 'shadow-sky-500/30';
   const focusIconClass = isClient
     ? 'group-focus-within:text-emerald-600'
-    : 'group-focus-within:text-amber-600';
+    : 'group-focus-within:text-sky-600';
   const focusBorderClass = isClient
     ? 'focus:border-emerald-400 focus:ring-emerald-400/20'
-    : 'focus:border-amber-400 focus:ring-amber-400/20';
+    : 'focus:border-cyan-400 focus:ring-cyan-400/20';
   const forgotLinkClass = isClient
     ? 'text-emerald-600 hover:text-emerald-700'
-    : 'text-amber-600 hover:text-amber-700';
+    : 'text-sky-600 hover:text-sky-700';
   const signUpLinkClass = isClient
     ? 'text-emerald-600 hover:text-emerald-700'
-    : 'text-amber-600 hover:text-amber-700';
+    : 'text-sky-600 hover:text-sky-700';
   const bannerBg = isClient
     ? 'from-emerald-50 to-teal-50 border-emerald-100/70'
-    : 'from-amber-50 to-blue-50 border-amber-100/70';
-  const dividerVia = isClient ? 'via-emerald-200' : 'via-amber-200';
+    : 'from-sky-50 to-blue-50 border-sky-100/70';
+  const dividerVia = isClient ? 'via-emerald-200' : 'via-sky-200';
   const inputBorder = isClient
     ? 'border-emerald-100/50'
-    : 'border-amber-100/50';
+    : 'border-sky-100/50';
   const tabBg = isClient
     ? 'from-emerald-50/80 to-cyan-50/60 border-emerald-100/50'
-    : 'from-amber-50/80 to-blue-50/60 border-amber-100/50';
+    : 'from-sky-50/80 to-blue-50/60 border-sky-100/50';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -295,7 +295,7 @@ export function LoginPage() {
                   </TabsTrigger>
                   <TabsTrigger
                     value="provider"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:via-blue-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-amber-500/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-sky-500 data-[state=active]:via-blue-500 data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-sky-500/30"
                   >
                     <Briefcase className="size-4 mr-2" />Provider Login
                   </TabsTrigger>
@@ -322,7 +322,7 @@ export function LoginPage() {
                         <div className="flex flex-wrap gap-2">
                           {[
                             { Icon: Droplets, label: 'Plumbing', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-                            { Icon: Zap, label: 'Electrical', color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                            { Icon: Zap, label: 'Electrical', color: 'bg-sky-50 text-sky-600 border-sky-100' },
                             { Icon: Wind, label: 'AC & HVAC', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
@@ -484,14 +484,14 @@ export function LoginPage() {
                         transition={{ duration: 0.3 }}
                         className={`rounded-xl bg-gradient-to-r ${bannerBg} p-4 border`}
                       >
-                        <p className="text-sm font-semibold text-amber-800 flex items-center gap-2">
-                          <Briefcase className="size-4 text-amber-600" />
+                        <p className="text-sm font-semibold text-sky-800 flex items-center gap-2">
+                          <Briefcase className="size-4 text-sky-600" />
                           Reach thousands of customers and grow your business
                         </p>
                         <div className="flex flex-wrap gap-2 mt-3">
                           {[
                             { Icon: Droplets, label: 'Plumbing Jobs', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-                            { Icon: Zap, label: 'Electrical Jobs', color: 'bg-amber-50 text-amber-600 border-amber-100' },
+                            { Icon: Zap, label: 'Electrical Jobs', color: 'bg-sky-50 text-sky-600 border-sky-100' },
                             { Icon: Wind, label: 'HVAC Jobs', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>

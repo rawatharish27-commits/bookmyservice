@@ -96,16 +96,16 @@ export function ProviderProfilePage() {
         <h2 className="mt-3 text-xl font-bold">{user?.name}</h2>
         <p className="text-sm text-muted-foreground">{user?.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-amber-500 to-blue-600 text-white border-0 font-semibold">Provider</Badge>
+          <Badge className="bg-gradient-to-r from-sky-500 to-blue-600 text-white border-0 font-semibold">Provider</Badge>
           <Badge
             variant="outline"
             className={
               user?.status === 'ACTIVE'
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                : 'bg-amber-50 text-amber-700 border-amber-200'
+                : 'bg-sky-50 text-sky-700 border-sky-200'
             }
           >
-            <span className={`mr-1.5 size-1.5 rounded-full ${user?.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+            <span className={`mr-1.5 size-1.5 rounded-full ${user?.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-cyan-400'}`} />
             {user?.status || 'ACTIVE'}
           </Badge>
         </div>
@@ -187,7 +187,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500">
                   <Shield className="size-4 text-white" />
                 </div>
                 KYC Verification
@@ -201,8 +201,8 @@ export function ProviderProfilePage() {
                       <CheckCircle2 className="size-6 text-emerald-500" />
                     </div>
                   ) : kycStatus === 'PENDING' ? (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-amber-100">
-                      <Clock className="size-6 text-amber-500" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-sky-100">
+                      <Clock className="size-6 text-sky-500" />
                     </div>
                   ) : (
                     <div className="flex size-12 items-center justify-center rounded-xl bg-sky-100">

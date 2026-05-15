@@ -135,11 +135,11 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
               user.status === 'ACTIVE'
                 ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                 : user.status === 'PENDING'
-                ? 'bg-amber-50 text-amber-700 border-amber-200'
+                ? 'bg-sky-50 text-sky-700 border-sky-200'
                 : 'bg-red-50 text-red-700 border-red-200'
             }
           >
-            <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-400' : user.status === 'PENDING' ? 'bg-amber-400' : 'bg-red-400'}`} />
+            <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-400' : user.status === 'PENDING' ? 'bg-cyan-400' : 'bg-red-400'}`} />
             {user.status}
           </Badge>
         </div>
@@ -232,7 +232,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-blue-500">
                 <Key className="size-4 text-white" />
               </div>
               Security
@@ -275,15 +275,15 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
                 <span className="text-sm">{item.label}</span>
                 {item.isStatus ? (
                   <Badge variant="outline" className={
-                    user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                    user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-sky-50 text-sky-700 border-sky-200'
                   }>
-                    <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                    <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-cyan-400'}`} />
                     {item.value}
                   </Badge>
                 ) : item.isRole ? (
                   <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 capitalize">{item.value}</Badge>
                 ) : (
-                  <Badge variant="outline" className={item.isVerified ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}>
+                  <Badge variant="outline" className={item.isVerified ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-sky-50 text-sky-700 border-sky-200'}>
                     {item.isVerified && <CheckCircle2 className="mr-1 size-3" />}
                     {item.value}
                   </Badge>
