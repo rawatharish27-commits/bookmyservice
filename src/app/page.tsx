@@ -1,176 +1,133 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { AuthProvider } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
-
-// Public pages
 import { HomePage } from '@/components/bys/home-page';
-import { CategoriesPage } from '@/components/bys/categories-page';
-import { CategoryDetailPage } from '@/components/bys/category-detail-page';
-import { ServiceDetailPage } from '@/components/bys/service-detail-page';
-import { SearchPage } from '@/components/bys/search-page';
-import { AboutPage } from '@/components/bys/about-page';
-import { HowItWorksPage } from '@/components/bys/how-it-works-page';
-import { FaqPage } from '@/components/bys/faq-page';
-import { ContactPage } from '@/components/bys/contact-page';
-import { LegalPage } from '@/components/bys/legal-page';
 
-// Auth pages
-import { LoginPage } from '@/components/bys/login-page';
-import { RegisterPage } from '@/components/bys/register-page';
+function PageLoader() {
+  return (
+    <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="size-10 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600" />
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    </div>
+  );
+}
 
-// Client pages
-import { ClientDashboardPage } from '@/components/bys/client-dashboard-page';
-import { ClientBookingsPage } from '@/components/bys/client-bookings-page';
-import { ClientBookingDetailPage } from '@/components/bys/client-booking-detail-page';
-import { ClientProfilePage } from '@/components/bys/client-profile-page';
-import { ClientReviewsPage } from '@/components/bys/client-reviews-page';
-import { ClientFavoritesPage } from '@/components/bys/client-favorites-page';
-import { ClientNotificationsPage } from '@/components/bys/client-notifications-page';
+// Simple page map using dynamic imports only when needed
+const pageCache: Record<string, React.ComponentType> = {};
 
-// Booking pages
-import { BookingPage } from '@/components/bys/booking-page';
-import { BookingConfirmationPage } from '@/components/bys/booking-confirmation-page';
+async function loadPage(page: string): Promise<React.ComponentType | null> {
+  if (pageCache[page]) return pageCache[page];
+  
+  const pageModules: Record<string, () => Promise<Record<string, any>>> = {
+    'categories': () => import('@/components/bys/categories-page'),
+    'category-detail': () => import('@/components/bys/category-detail-page'),
+    'service-detail': () => import('@/components/bys/service-detail-page'),
+    'search': () => import('@/components/bys/search-page'),
+    'about': () => import('@/components/bys/about-page'),
+    'how-it-works': () => import('@/components/bys/how-it-works-page'),
+    'faq': () => import('@/components/bys/faq-page'),
+    'contact': () => import('@/components/bys/contact-page'),
+    'terms': () => import('@/components/bys/legal-page'),
+    'privacy': () => import('@/components/bys/legal-page'),
+    'refund-policy': () => import('@/components/bys/legal-page'),
+    'cookie-policy': () => import('@/components/bys/legal-page'),
+    'login': () => import('@/components/bys/login-page'),
+    'register': () => import('@/components/bys/register-page'),
+    'client-dashboard': () => import('@/components/bys/client-dashboard-page'),
+    'client-bookings': () => import('@/components/bys/client-bookings-page'),
+    'client-booking-detail': () => import('@/components/bys/client-booking-detail-page'),
+    'client-profile': () => import('@/components/bys/client-profile-page'),
+    'client-reviews': () => import('@/components/bys/client-reviews-page'),
+    'client-favorites': () => import('@/components/bys/client-favorites-page'),
+    'client-notifications': () => import('@/components/bys/client-notifications-page'),
+    'booking': () => import('@/components/bys/booking-page'),
+    'booking-confirmation': () => import('@/components/bys/booking-confirmation-page'),
+    'provider-dashboard': () => import('@/components/bys/provider-dashboard-page'),
+    'provider-services': () => import('@/components/bys/provider-services-page'),
+    'provider-create-service': () => import('@/components/bys/provider-create-service-page'),
+    'provider-bookings': () => import('@/components/bys/provider-bookings-page'),
+    'provider-booking-detail': () => import('@/components/bys/provider-booking-detail-page'),
+    'provider-earnings': () => import('@/components/bys/provider-earnings-page'),
+    'provider-reviews': () => import('@/components/bys/provider-reviews-page'),
+    'provider-profile': () => import('@/components/bys/provider-profile-page'),
+    'provider-kyc': () => import('@/components/bys/provider-kyc-page'),
+    'admin-dashboard': () => import('@/components/bys/admin-dashboard-page'),
+    'admin-users': () => import('@/components/bys/admin-users-page'),
+    'admin-user-detail': () => import('@/components/bys/admin-user-detail-page'),
+    'admin-services': () => import('@/components/bys/admin-services-page'),
+    'admin-bookings': () => import('@/components/bys/admin-bookings-page'),
+    'admin-disputes': () => import('@/components/bys/admin-disputes-page'),
+    'admin-categories': () => import('@/components/bys/admin-categories-page'),
+    'admin-faq': () => import('@/components/bys/admin-faq-page'),
+    'admin-revenue': () => import('@/components/bys/admin-revenue-page'),
+    'admin-logs': () => import('@/components/bys/admin-logs-page'),
+  };
 
-// Provider pages
-import { ProviderDashboardPage } from '@/components/bys/provider-dashboard-page';
-import { ProviderServicesPage } from '@/components/bys/provider-services-page';
-import { ProviderCreateServicePage } from '@/components/bys/provider-create-service-page';
-import { ProviderBookingsPage } from '@/components/bys/provider-bookings-page';
-import { ProviderBookingDetailPage } from '@/components/bys/provider-booking-detail-page';
-import { ProviderEarningsPage } from '@/components/bys/provider-earnings-page';
-import { ProviderReviewsPage } from '@/components/bys/provider-reviews-page';
-import { ProviderProfilePage } from '@/components/bys/provider-profile-page';
-import { ProviderKycPage } from '@/components/bys/provider-kyc-page';
+  const loader = pageModules[page];
+  if (!loader) return null;
 
-// Admin pages
-import { AdminDashboardPage } from '@/components/bys/admin-dashboard-page';
-import { AdminUsersPage } from '@/components/bys/admin-users-page';
-import { AdminUserDetailPage } from '@/components/bys/admin-user-detail-page';
-import { AdminServicesPage } from '@/components/bys/admin-services-page';
-import { AdminBookingsPage } from '@/components/bys/admin-bookings-page';
-import { AdminDisputesPage } from '@/components/bys/admin-disputes-page';
-import { AdminCategoriesPage } from '@/components/bys/admin-categories-page';
-import { AdminFaqPage } from '@/components/bys/admin-faq-page';
-import { AdminRevenuePage } from '@/components/bys/admin-revenue-page';
-import { AdminLogsPage } from '@/components/bys/admin-logs-page';
+  try {
+    const mod = await loader();
+    // Find the exported component (first exported function that's a component)
+    const Comp = Object.values(mod).find(v => typeof v === 'function') as React.ComponentType;
+    if (Comp) {
+      pageCache[page] = Comp;
+      return Comp;
+    }
+  } catch (e) {
+    console.error('Failed to load page:', page, e);
+  }
+  return null;
+}
+
+function DynamicPage({ page }: { page: string }) {
+  const [Component, setComponent] = useState<React.ComponentType | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(true);
+    loadPage(page).then(comp => {
+      setComponent(() => comp);
+      setLoading(false);
+    });
+  }, [page]);
+
+  if (loading || !Component) {
+    return <PageLoader />;
+  }
+
+  return <Component />;
+}
 
 function AppRouter() {
   const { nav } = useApp();
 
-  const renderPage = () => {
-    switch (nav.page) {
-      // Public pages
-      case 'home':
-        return <HomePage />;
-      case 'categories':
-        return <CategoriesPage />;
-      case 'category-detail':
-        return <CategoryDetailPage />;
-      case 'service-detail':
-        return <ServiceDetailPage />;
-      case 'search':
-        return <SearchPage />;
-      case 'about':
-        return <AboutPage />;
-      case 'how-it-works':
-        return <HowItWorksPage />;
-      case 'faq':
-        return <FaqPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'terms':
-        return <LegalPage />;
-      case 'privacy':
-        return <LegalPage />;
-      case 'refund-policy':
-        return <LegalPage />;
-      case 'cookie-policy':
-        return <LegalPage />;
-
-      // Auth pages
-      case 'login':
-        return <LoginPage />;
-      case 'register':
-        return <RegisterPage />;
-
-      // Client pages
-      case 'client-dashboard':
-        return <ClientDashboardPage />;
-      case 'client-bookings':
-        return <ClientBookingsPage />;
-      case 'client-booking-detail':
-        return <ClientBookingDetailPage />;
-      case 'client-profile':
-        return <ClientProfilePage />;
-      case 'client-reviews':
-        return <ClientReviewsPage />;
-      case 'client-favorites':
-        return <ClientFavoritesPage />;
-      case 'client-notifications':
-        return <ClientNotificationsPage />;
-
-      // Booking pages
-      case 'booking':
-        return <BookingPage />;
-      case 'booking-confirmation':
-        return <BookingConfirmationPage />;
-
-      // Provider pages
-      case 'provider-dashboard':
-        return <ProviderDashboardPage />;
-      case 'provider-services':
-        return <ProviderServicesPage />;
-      case 'provider-create-service':
-        return <ProviderCreateServicePage />;
-      case 'provider-bookings':
-        return <ProviderBookingsPage />;
-      case 'provider-booking-detail':
-        return <ProviderBookingDetailPage />;
-      case 'provider-earnings':
-        return <ProviderEarningsPage />;
-      case 'provider-reviews':
-        return <ProviderReviewsPage />;
-      case 'provider-profile':
-        return <ProviderProfilePage />;
-      case 'provider-kyc':
-        return <ProviderKycPage />;
-
-      // Admin pages
-      case 'admin-dashboard':
-        return <AdminDashboardPage />;
-      case 'admin-users':
-        return <AdminUsersPage />;
-      case 'admin-user-detail':
-        return <AdminUserDetailPage />;
-      case 'admin-services':
-        return <AdminServicesPage />;
-      case 'admin-bookings':
-        return <AdminBookingsPage />;
-      case 'admin-disputes':
-        return <AdminDisputesPage />;
-      case 'admin-categories':
-        return <AdminCategoriesPage />;
-      case 'admin-faq':
-        return <AdminFaqPage />;
-      case 'admin-revenue':
-        return <AdminRevenuePage />;
-      case 'admin-logs':
-        return <AdminLogsPage />;
-
-      default:
-        return <HomePage />;
-    }
-  };
+  // Home page is loaded eagerly, everything else is lazy
+  if (nav.page === 'home') {
+    return (
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <main className="flex-1">
+          <HomePage />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {renderPage()}
+        <Suspense fallback={<PageLoader />}>
+          <DynamicPage page={nav.page} />
+        </Suspense>
       </main>
       <Footer />
     </div>

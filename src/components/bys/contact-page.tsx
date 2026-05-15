@@ -23,10 +23,9 @@ import {
   Clock,
   Send,
   CheckCircle2,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
+  Globe,
+  MessageCircle,
+  Share2,
 } from 'lucide-react';
 
 export function ContactPage() {
@@ -235,10 +234,9 @@ export function ContactPage() {
               <h3 className="mb-4 font-semibold">Follow Us</h3>
               <div className="flex gap-3">
                 {[
-                  { icon: <Facebook className="size-4" />, label: 'Facebook' },
-                  { icon: <Twitter className="size-4" />, label: 'Twitter' },
-                  { icon: <Instagram className="size-4" />, label: 'Instagram' },
-                  { icon: <Linkedin className="size-4" />, label: 'LinkedIn' },
+                  { icon: <Globe className="size-4" />, label: 'Website' },
+                  { icon: <MessageCircle className="size-4" />, label: 'Social' },
+                  { icon: <Share2 className="size-4" />, label: 'Share' },
                 ].map((social) => (
                   <a
                     key={social.label}

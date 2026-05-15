@@ -5,10 +5,9 @@ import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import {
   Wrench,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
+  Globe,
+  MessageCircle,
+  Share2,
   Mail,
   Phone,
   MapPin,
@@ -60,18 +59,17 @@ const legalLinks: { label: string; page: Page }[] = [
 // ─── Social Icons Config ─────────────────────────────────────────────────────
 
 const socialLinks = [
-  { icon: <Facebook className="size-4" />, label: 'Facebook', href: '#' },
-  { icon: <Twitter className="size-4" />, label: 'Twitter', href: '#' },
-  { icon: <Instagram className="size-4" />, label: 'Instagram', href: '#' },
-  { icon: <Linkedin className="size-4" />, label: 'LinkedIn', href: '#' },
+  { icon: <Globe className="size-4" />, label: 'Website', href: '#' },
+  { icon: <MessageCircle className="size-4" />, label: 'Social', href: '#' },
+  { icon: <Share2 className="size-4" />, label: 'Share', href: '#' },
 ];
 
 // ─── Section Header with Gradient Dot ────────────────────────────────────────
 
 function SectionHeader({ children, dotFrom, dotTo }: { children: React.ReactNode; dotFrom: string; dotTo: string }) {
   return (
-    <h3 className="mb-5 flex items-center gap-2.5 text-sm font-bold uppercase tracking-widest text-foreground">
-      <span className={`size-2 rounded-full bg-gradient-to-r ${dotFrom} ${dotTo} shadow-sm`} />
+    <h3 className="mb-5 flex items-center gap-2.5 text-sm font-bold uppercase tracking-widest text-foreground/90">
+      <span className={`size-2 rounded-full bg-gradient-to-r ${dotFrom} ${dotTo} shadow-sm`} style={{ boxShadow: '0 0 8px rgba(16,185,129,0.3)' }} />
       {children}
     </h3>
   );
@@ -83,7 +81,7 @@ function FooterLinkButton({ link, onNavigate }: { link: FooterLink; onNavigate: 
   return (
     <motion.button
       onClick={() => onNavigate(link.page)}
-      className="group relative inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+      className="group relative inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:translate-x-0.5"
       whileHover={{ x: 4 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
@@ -108,7 +106,7 @@ function ServiceLinkButton({
   return (
     <motion.button
       onClick={() => onNavigate(link.page)}
-      className="group flex items-center gap-3 text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+      className="group flex items-center gap-3 text-[15px] font-medium text-muted-foreground transition-all duration-300 hover:text-emerald-600 hover:translate-x-0.5"
       whileHover={{ x: 4 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
@@ -140,7 +138,7 @@ function ContactPill({
   return (
     <Wrapper
       {...(href ? { href } : {})}
-      className="flex items-start gap-3 text-[15px] text-muted-foreground transition-colors duration-200 hover:text-emerald-600"
+      className="flex items-start gap-3 text-[15px] text-muted-foreground transition-all duration-300 hover:text-emerald-600"
     >
       <span className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} shadow-sm`}>
         {icon}
@@ -174,10 +172,10 @@ export function Footer() {
   return (
     <footer className="mt-auto">
       {/* ── Premium Multi-Color Gradient Top Bar ─────────────────────────────── */}
-      <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-400 via-cyan-400 via-amber-400 to-orange-400" />
+      <div className="h-2 w-full bg-gradient-to-r from-emerald-500 via-teal-400 via-cyan-400 via-amber-400 to-orange-400" style={{ boxShadow: '0 2px 8px rgba(16,185,129,0.3), 0 1px 3px rgba(245,158,11,0.2)' }} />
 
       {/* ── Main Footer Content ──────────────────────────────────────────────── */}
-      <div className="bg-white">
+      <div className="bg-gradient-to-b from-white to-emerald-50/10">
         <div className="mx-auto max-w-7xl px-4 pt-16 pb-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
 
@@ -191,7 +189,7 @@ export function Footer() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-700 via-teal-500 to-cyan-400 shadow-lg shadow-emerald-500/25 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-cyan-500/30">
+                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-700 via-teal-500 to-cyan-400 shadow-lg shadow-emerald-500/25 transition-all duration-300 group-hover:shadow-xl group-hover:shadow-cyan-500/30 group-hover:scale-105">
                   <Wrench className="size-4.5 text-white" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 via-white/5 to-transparent" />
                 </div>
@@ -213,10 +211,10 @@ export function Footer() {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="group flex size-10 items-center justify-center rounded-xl bg-gray-50 text-muted-foreground ring-1 ring-gray-200/60 transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:text-white hover:ring-transparent hover:shadow-lg hover:shadow-teal-500/25"
+                    className="group flex size-10 items-center justify-center rounded-xl bg-gray-50 text-muted-foreground ring-1 ring-gray-200/60 transition-all duration-300 hover:bg-gradient-to-br hover:from-emerald-600 hover:via-teal-500 hover:to-cyan-500 hover:text-white hover:ring-transparent hover:shadow-lg hover:shadow-teal-500/25 hover:scale-110 hover:-translate-y-0.5"
                     aria-label={social.label}
                     onClick={(e) => e.preventDefault()}
-                    whileHover={{ scale: 1.1, y: -2 }}
+                    whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
                     {social.icon}
@@ -286,7 +284,7 @@ export function Footer() {
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-10 rounded-xl border-amber-200/60 bg-amber-50/30 pl-10 text-sm placeholder:text-amber-400/40 focus:border-amber-400 focus-visible:ring-amber-500/30"
+                      className="h-10 rounded-xl border-amber-200/60 bg-gradient-to-r from-amber-50/40 to-orange-50/30 pl-10 text-sm placeholder:text-amber-400/40 focus:border-amber-400 focus-visible:ring-amber-500/30 backdrop-blur-sm"
                       required
                     />
                   </div>
@@ -294,7 +292,7 @@ export function Footer() {
                     <Button
                       type="submit"
                       size="sm"
-                      className="h-10 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 px-4 text-white shadow-md shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/30"
+                      className="h-10 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 px-4 text-white shadow-md shadow-amber-500/20 transition-all duration-300 hover:from-amber-600 hover:via-orange-600 hover:to-rose-600 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-105"
                     >
                       <Send className="size-4" />
                     </Button>
@@ -353,17 +351,17 @@ export function Footer() {
 
           {/* ── Gradient Divider ──────────────────────────────────────────────── */}
           <div className="relative my-10">
-            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-400/40 via-50% to-transparent" />
-            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-amber-300/20 via-50% to-transparent blur-sm" />
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-emerald-400/50 via-50% to-transparent" />
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-amber-300/30 via-50% to-transparent blur-sm" />
           </div>
 
           {/* ── Bottom Bar ────────────────────────────────────────────────────── */}
-          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-gray-50 via-emerald-50/20 to-gray-50 px-6 py-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-emerald-50/40 via-white/60 to-teal-50/40 px-6 py-4 backdrop-blur-sm shadow-sm ring-1 ring-emerald-100/30 sm:flex-row">
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               &copy; 2025{' '}
               <span className="font-bold text-foreground">BookYourService</span>
               . Made with{' '}
-              <Heart className="inline size-3.5 fill-emerald-500 text-emerald-500 drop-shadow-sm" />{' '}
+              <Heart className="inline size-3.5 fill-emerald-500 text-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.4)]" />{' '}
               in India. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
@@ -374,7 +372,7 @@ export function Footer() {
                   )}
                   <motion.button
                     onClick={() => handleNavigate(link.page)}
-                    className="text-xs font-medium text-muted-foreground/70 transition-colors duration-200 hover:text-emerald-600"
+                    className="text-xs font-medium text-muted-foreground/70 transition-all duration-200 hover:text-emerald-600 hover:-translate-y-px"
                     whileHover={{ y: -1 }}
                   >
                     {link.label}

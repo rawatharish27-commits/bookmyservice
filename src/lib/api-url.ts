@@ -1,10 +1,7 @@
 /**
- * Build an API URL with the XTransformPort query parameter for Caddy gateway routing.
- * All API calls must go through the Caddy gateway, which requires XTransformPort=3001
- * to route requests to the backend API service.
+ * Build an API URL for the Next.js app.
+ * Since this Next.js app has its own API routes, no port transformation is needed.
  */
 export function apiUrl(path: string): string {
-  if (!path.startsWith('/api/')) return path;
-  const separator = path.includes('?') ? '&' : '?';
-  return `${path}${separator}XTransformPort=3001`;
+  return path;
 }

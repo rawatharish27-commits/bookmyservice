@@ -13,8 +13,8 @@ export async function GET() {
       orderBy: { displayOrder: 'asc' },
     });
 
-    return NextResponse.json(
-      categories.map((cat) => ({
+    const categoriesWithSubs = await Promise.all(
+      categories.map(async (cat) => ({
         id: cat.id,
         name: cat.name,
         slug: cat.slug,
@@ -28,10 +28,15 @@ export async function GET() {
         seoDescription: cat.seoDescription,
       }))
     );
+
+    return NextResponse.json({
+      categories: categoriesWithSubs,
+      total: categories.length,
+    });
   } catch (error) {
     console.error('Categories fetch error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { categories: [], total: 0, error: 'Internal server error' },
       { status: 500 }
     );
   }

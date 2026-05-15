@@ -111,21 +111,21 @@ const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_BG_MAP: Record<string, string> = {
-  Droplets: 'from-blue-600 via-blue-500 to-cyan-400',
-  Zap: 'from-amber-600 via-amber-500 to-orange-400',
-  Wind: 'from-teal-600 via-emerald-500 to-cyan-400',
+  Droplets: 'from-blue-700 via-indigo-500 to-cyan-400',
+  Zap: 'from-amber-600 via-orange-500 to-rose-400',
+  Wind: 'from-teal-700 via-emerald-500 to-cyan-400',
 };
 
 const CATEGORY_LIGHT_BG: Record<string, string> = {
-  Droplets: 'bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100/50',
-  Zap: 'bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-100/50',
-  Wind: 'bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 border border-teal-100/50',
+  Droplets: 'bg-gradient-to-r from-blue-50/80 to-indigo-50/60 text-blue-700 border border-blue-200/40 backdrop-blur-sm',
+  Zap: 'bg-gradient-to-r from-amber-50/80 to-rose-50/60 text-amber-700 border border-amber-200/40 backdrop-blur-sm',
+  Wind: 'bg-gradient-to-r from-teal-50/80 to-emerald-50/60 text-teal-700 border border-teal-200/40 backdrop-blur-sm',
 };
 
 const CATEGORY_GLOW: Record<string, string> = {
-  Droplets: 'shadow-blue-500/30',
-  Zap: 'shadow-amber-500/30',
-  Wind: 'shadow-teal-500/30',
+  Droplets: 'shadow-blue-500/40',
+  Zap: 'shadow-amber-500/40',
+  Wind: 'shadow-teal-500/40',
 };
 
 const CATEGORY_IMAGE_MAP: Record<string, string> = {
@@ -617,7 +617,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 20%, #0f766e 45%, #0e7490 70%, #164e63 100%)' }}>
+      <section className="relative overflow-hidden noise-bg" style={{ background: 'linear-gradient(135deg, #011a15 0%, #022c22 15%, #064e3b 30%, #0f766e 50%, #0e7490 70%, #155e75 85%, #164e63 100%)' }}>
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Large gradient orbs */}
@@ -692,12 +692,14 @@ export function HomePage() {
 
           {/* Grid pattern overlay */}
           <div
-            className="absolute inset-0 opacity-[0.03]"
+            className="absolute inset-0 opacity-[0.04]"
             style={{
               backgroundImage: 'radial-gradient(circle, white 1px, transparent 1px)',
-              backgroundSize: '40px 40px',
+              backgroundSize: '32px 32px',
             }}
           />
+          {/* Diagonal light beam */}
+          <div className="pointer-events-none absolute inset-0" style={{ background: 'linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.02) 45%, rgba(255,255,255,0.04) 50%, rgba(255,255,255,0.02) 55%, transparent 60%)' }} />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8 lg:py-44">
@@ -708,7 +710,7 @@ export function HomePage() {
               variants={staggerContainer}
             >
               <motion.div variants={fadeUp} custom={0}>
-                <Badge className="mb-8 border-emerald-300/20 bg-emerald-500/20 px-5 py-2 text-emerald-100 hover:bg-emerald-500/30 text-sm">
+                <Badge className="mb-8 border-emerald-300/25 bg-emerald-500/20 px-5 py-2 text-emerald-100 hover:bg-emerald-500/30 text-sm backdrop-blur-md shadow-lg shadow-emerald-500/10">
                   <Sparkles className="mr-2 size-4" /> India&apos;s Trusted Home Service Platform
                 </Badge>
               </motion.div>
@@ -716,7 +718,7 @@ export function HomePage() {
               <motion.h1
                 variants={fadeUp}
                 custom={1}
-                className="text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl"
+                className="text-5xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl lg:text-7xl"
               >
                 Expert{' '}
                 <RotatingText words={['Plumbing', 'Electrical', 'AC & HVAC']} />
@@ -727,7 +729,7 @@ export function HomePage() {
               <motion.p
                 variants={fadeUp}
                 custom={2}
-                className="mt-8 max-w-xl text-lg leading-relaxed text-emerald-100/70 sm:text-xl"
+                className="mt-8 max-w-xl text-lg leading-relaxed text-emerald-100/80 sm:text-xl"
               >
                 Book verified professionals for plumbing, electrical, and AC/HVAC services.
                 Quality work, transparent pricing, and our satisfaction guarantee.
@@ -757,7 +759,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('categories')}
-                  className="shimmer group h-13 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 px-10 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-amber-500 hover:to-yellow-500 hover:shadow-2xl hover:shadow-amber-500/40"
+                  className="shimmer group h-13 bg-gradient-to-r from-amber-500 via-orange-400 to-rose-400 px-10 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-orange-500 hover:to-rose-500 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-300"
                 >
                   Book a Service
                   <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
@@ -870,9 +872,9 @@ export function HomePage() {
                 </motion.div>
 
                 {/* Center element */}
-                <div className="rounded-3xl bg-white/10 px-10 py-6 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20">
+                <div className="rounded-3xl bg-white/10 px-10 py-6 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20" style={{ boxShadow: '0 0 60px rgba(16,185,129,0.15), 0 0 120px rgba(20,184,166,0.08)' }}>
                   <p className="text-2xl font-bold text-white">Your Home</p>
-                  <p className="text-sm font-medium text-emerald-200/80">Our Expertise</p>
+                  <p className="text-sm font-medium bg-gradient-to-r from-emerald-200 to-cyan-200 bg-clip-text text-transparent">Our Expertise</p>
                 </div>
               </div>
             </motion.div>
@@ -888,22 +890,22 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Live Stats Bar ═══════════ */}
-      <section className="relative z-10 -mt-3 bg-white">
+      <section className="relative z-10 -mt-3 bg-gradient-to-b from-white to-gray-50/50">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {[
-              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-emerald-600 to-emerald-400', cardBg: 'bg-gradient-to-br from-emerald-50/80 to-teal-50/60', hoverGlow: 'hover:shadow-emerald-300/40', live: true, iconBg: 'from-emerald-600 via-emerald-500 to-teal-400' },
-              { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-600 to-cyan-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-cyan-50/60', hoverGlow: 'hover:shadow-blue-300/40', iconBg: 'from-blue-600 via-blue-500 to-cyan-400' },
-              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-amber-600 to-amber-400', cardBg: 'bg-gradient-to-br from-amber-50/80 to-orange-50/60', hoverGlow: 'hover:shadow-amber-300/40', iconBg: 'from-amber-600 via-amber-500 to-orange-400' },
-              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-teal-600 to-teal-400', cardBg: 'bg-gradient-to-br from-teal-50/80 to-emerald-50/60', hoverGlow: 'hover:shadow-teal-300/40', iconBg: 'from-teal-600 via-teal-500 to-emerald-400' },
-              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-rose-600 to-pink-400', cardBg: 'bg-gradient-to-br from-rose-50/80 to-pink-50/60', hoverGlow: 'hover:shadow-rose-300/40', iconBg: 'from-rose-600 via-rose-500 to-pink-400' },
+              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-emerald-600 to-emerald-400', cardBg: 'bg-gradient-to-br from-emerald-50/80 to-teal-50/60', hoverGlow: 'hover:shadow-emerald-400/50', live: true, iconBg: 'from-emerald-600 via-emerald-500 to-teal-400' },
+              { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-600 to-cyan-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-indigo-50/60', hoverGlow: 'hover:shadow-blue-400/50', iconBg: 'from-blue-600 via-indigo-500 to-cyan-400' },
+              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-amber-600 to-amber-400', cardBg: 'bg-gradient-to-br from-amber-50/80 to-orange-50/60', hoverGlow: 'hover:shadow-amber-400/50', iconBg: 'from-amber-600 via-orange-500 to-rose-400' },
+              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-teal-600 to-teal-400', cardBg: 'bg-gradient-to-br from-teal-50/80 to-cyan-50/60', hoverGlow: 'hover:shadow-teal-400/50', iconBg: 'from-teal-600 via-teal-500 to-emerald-400' },
+              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-rose-600 to-pink-400', cardBg: 'bg-gradient-to-br from-rose-50/80 to-pink-50/60', hoverGlow: 'hover:shadow-rose-400/50', iconBg: 'from-rose-600 via-rose-500 to-fuchsia-400' },
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-                className={`group ${stat.cardBg} rounded-2xl p-5 shadow-sm backdrop-blur-sm ring-1 ring-white/60 transition-all duration-300 hover:shadow-xl ${stat.hoverGlow} hover:ring-white/80 hover:-translate-y-1`}
+                className={`group ${stat.cardBg} rounded-2xl p-5 shadow-sm backdrop-blur-sm ring-1 ring-white/60 transition-all duration-300 hover:shadow-xl ${stat.hoverGlow} hover:ring-white hover:-translate-y-1 hover:scale-[1.02]`}
               >
                 <div className="flex items-center gap-4">
                   <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.iconBg} text-white shadow-lg`}>
@@ -966,7 +968,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Service Categories ═══════════ */}
-      <section className="bg-white py-24">
+      <section className="relative bg-gradient-to-b from-white via-emerald-50/20 to-white py-24 noise-bg">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -976,13 +978,13 @@ export function HomePage() {
             custom={0}
             className="text-center"
           >
-            <Badge className="mb-5 border-emerald-200 bg-emerald-50 px-4 py-1.5 text-emerald-700 hover:bg-emerald-100">
+            <Badge className="mb-5 border-emerald-200/60 bg-emerald-50/80 px-4 py-1.5 text-emerald-700 hover:bg-emerald-100 backdrop-blur-sm shadow-sm shadow-emerald-200/30">
               <Sparkles className="mr-1.5 size-3.5" /> Specialized Services
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
               Our <span className="text-gradient">Service Categories</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground/80">
               We specialize in three core home services, each staffed by verified professionals
             </p>
           </motion.div>
@@ -1018,7 +1020,7 @@ export function HomePage() {
                     >
                       <TiltCard>
                         <Card
-                          className={`group cursor-pointer overflow-hidden rounded-3xl border-0 shadow-lg transition-all duration-500 hover:shadow-2xl ${glowClass}`}
+                          className={`group cursor-pointer overflow-hidden rounded-3xl border-0 shadow-lg shadow-premium transition-all duration-500 hover:shadow-2xl ${glowClass} hover:scale-[1.02]`}
                           onClick={() => navigate('category-detail', { slug: cat.slug })}
                         >
                           {/* Image header with gradient overlay */}
@@ -1037,20 +1039,20 @@ export function HomePage() {
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
                             {/* Icon badge */}
-                            <div className="absolute left-5 top-5 flex size-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-xl ring-1 ring-white/30 shadow-lg">
-                              <div className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
+                            <div className="absolute left-5 top-5 flex size-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-xl ring-1 ring-white/30 shadow-lg" style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.15)' }}>
+                              <div className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
                                 {CATEGORY_ICON_MAP[iconKey] || <Wrench className="size-8" />}
                               </div>
                             </div>
 
                             {/* Title on image */}
                             <div className="absolute bottom-5 left-5 right-5">
-                              <h3 className="text-2xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">{cat.name}</h3>
-                              <p className="mt-1 text-sm text-white/80 line-clamp-2">{cat.description || `Professional ${cat.name.toLowerCase()} services`}</p>
+                              <h3 className="text-2xl font-bold text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]">{cat.name}</h3>
+                              <p className="mt-1 text-sm text-white/85 line-clamp-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.3)]">{cat.description || `Professional ${cat.name.toLowerCase()} services`}</p>
                             </div>
                           </div>
 
-                          <CardContent className="p-6">
+                          <CardContent className="relative p-6 bg-gradient-to-b from-white to-emerald-50/30">
                             {/* Stats row */}
                             <div className="mb-4 flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1.5 font-medium">
@@ -1083,9 +1085,9 @@ export function HomePage() {
                             )}
 
                             {/* View all link */}
-                            <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors group-hover:text-emerald-700">
+                            <div className="mt-5 flex items-center gap-2 text-sm font-semibold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent group-hover:from-emerald-700 group-hover:to-teal-700 transition-all duration-300">
                               Explore {cat.name}
-                              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1 text-emerald-600" />
                             </div>
                           </CardContent>
                         </Card>
@@ -1121,7 +1123,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ How It Works ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-emerald-50/30 via-white to-teal-50/20 py-24 noise-bg">
         {/* Decorative blobs */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-40 top-1/3 size-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
@@ -1137,13 +1139,13 @@ export function HomePage() {
             custom={0}
             className="text-center"
           >
-            <Badge className="mb-5 border-teal-200 bg-teal-50 px-4 py-1.5 text-teal-700 hover:bg-teal-100">
+            <Badge className="mb-5 border-teal-200/60 bg-teal-50/80 px-4 py-1.5 text-teal-700 hover:bg-teal-100 backdrop-blur-sm shadow-sm shadow-teal-200/30">
               <Activity className="mr-1.5 size-3.5" /> Simple Process
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
               How It <span className="text-gradient">Works</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground/80">
               Get your home services done in three easy steps
             </p>
           </motion.div>
@@ -1161,27 +1163,27 @@ export function HomePage() {
                   icon: <Search className="size-7" />,
                   title: 'Choose Your Service',
                   desc: 'Browse our curated categories and find the exact service you need for your home or business.',
-                  gradient: 'from-emerald-600 via-emerald-500 to-teal-400',
-                  ringColor: 'ring-emerald-200',
-                  shadowColor: 'shadow-emerald-500/30',
+                  gradient: 'from-emerald-600 via-teal-500 to-cyan-400',
+                  ringColor: 'ring-emerald-200/60',
+                  shadowColor: 'shadow-emerald-500/40',
                 },
                 {
                   step: 2,
                   icon: <CalendarCheck className="size-7" />,
                   title: 'Book a Professional',
                   desc: 'Select a verified professional, pick a convenient time slot, and book instantly with transparent pricing.',
-                  gradient: 'from-amber-600 via-amber-500 to-orange-400',
-                  ringColor: 'ring-amber-200',
-                  shadowColor: 'shadow-amber-500/30',
+                  gradient: 'from-amber-600 via-orange-500 to-rose-400',
+                  ringColor: 'ring-amber-200/60',
+                  shadowColor: 'shadow-amber-500/40',
                 },
                 {
                   step: 3,
                   icon: <CheckCircle2 className="size-7" />,
                   title: 'Get It Done Right',
                   desc: 'Sit back and relax. Our verified professional arrives on time and delivers quality work guaranteed.',
-                  gradient: 'from-teal-600 via-teal-500 to-cyan-400',
-                  ringColor: 'ring-teal-200',
-                  shadowColor: 'shadow-teal-500/30',
+                  gradient: 'from-teal-600 via-emerald-500 to-cyan-400',
+                  ringColor: 'ring-teal-200/60',
+                  shadowColor: 'shadow-teal-500/40',
                 },
               ].map((item, idx) => (
                 <motion.div
@@ -1195,11 +1197,11 @@ export function HomePage() {
                 >
                   {/* Step number */}
                   <div className="relative mx-auto mb-8">
-                    <div className={`mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-xl ${item.shadowColor} ring-4 ${item.ringColor}`}>
+                    <div className={`mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br ${item.gradient} text-white shadow-xl ${item.shadowColor} ring-4 ${item.ringColor} transition-transform duration-300 hover:scale-110 hover:shadow-2xl`}>
                       {item.icon}
                     </div>
                     {/* Step badge */}
-                    <div className="absolute -right-1 -top-1 flex size-8 items-center justify-center rounded-full bg-white text-sm font-bold text-emerald-700 shadow-lg ring-2 ring-emerald-100">
+                    <div className="absolute -right-1 -top-1 flex size-8 items-center justify-center rounded-full bg-white text-sm font-bold bg-gradient-to-br from-emerald-600 to-teal-500 bg-clip-text text-transparent shadow-lg ring-2 ring-emerald-100">
                       {item.step}
                     </div>
                   </div>
@@ -1214,7 +1216,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Testimonials ═══════════ */}
-      <section className="relative overflow-hidden bg-white py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white via-amber-50/15 to-white py-24">
         {/* Decorative */}
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/4 top-0 size-[400px] rounded-full bg-emerald-50/50 blur-3xl" />
@@ -1230,13 +1232,13 @@ export function HomePage() {
             custom={0}
             className="text-center"
           >
-            <Badge className="mb-5 border-amber-200 bg-amber-50 px-4 py-1.5 text-amber-700 hover:bg-amber-100">
+            <Badge className="mb-5 border-amber-200/60 bg-amber-50/80 px-4 py-1.5 text-amber-700 hover:bg-amber-100 backdrop-blur-sm shadow-sm shadow-amber-200/30">
               <Star className="mr-1.5 size-3.5 fill-amber-400" /> Customer Love
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
               What Our <span className="text-gradient">Customers Say</span>
             </h2>
-            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
+            <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground/80">
               Real reviews from real customers who trust our platform
             </p>
           </motion.div>
@@ -1254,7 +1256,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Trust Badges ═══════════ */}
-      <section className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 py-16">
+      <section className="relative bg-gradient-to-r from-emerald-50/60 via-teal-50/40 to-cyan-50/60 py-16 noise-bg">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1273,7 +1275,7 @@ export function HomePage() {
                 key={badge.title}
                 variants={fadeUp}
                 custom={idx}
-                className="group flex items-start gap-4 rounded-2xl bg-white/70 p-6 shadow-sm backdrop-blur-sm ring-1 ring-white/80 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+                className="group flex items-start gap-4 rounded-2xl bg-white/70 p-6 shadow-sm backdrop-blur-sm ring-1 ring-white/80 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:scale-[1.02]"
               >
                 <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${badge.gradient} text-white shadow-lg`}>
                   {badge.icon}
@@ -1289,7 +1291,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ CTA Section ═══════════ */}
-      <section className="relative overflow-hidden bg-white py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-white to-emerald-50/10 py-24">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-20 top-0 size-[500px] rounded-full bg-emerald-100/20 blur-3xl" />
           <div className="absolute -right-20 bottom-0 size-[500px] rounded-full bg-teal-100/20 blur-3xl" />
@@ -1303,7 +1305,7 @@ export function HomePage() {
             transition={{ duration: 0.7 }}
             className="relative overflow-hidden rounded-3xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(6,78,59,0.95) 0%, rgba(15,118,110,0.95) 40%, rgba(14,116,144,0.95) 70%, rgba(22,78,99,0.95) 100%)',
+              background: 'linear-gradient(135deg, rgba(2,44,34,0.97) 0%, rgba(6,78,59,0.95) 25%, rgba(15,118,110,0.95) 50%, rgba(14,116,144,0.95) 75%, rgba(22,78,99,0.97) 100%)',
               padding: '3rem',
             }}
           >
@@ -1315,7 +1317,7 @@ export function HomePage() {
             <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-gradient-to-br from-cyan-400/10 to-blue-400/5 blur-3xl" />
 
             <div className="relative flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
-              <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-400 shadow-2xl shadow-amber-500/30">
+              <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500 via-orange-400 to-rose-400 shadow-2xl shadow-amber-500/30" style={{ boxShadow: '0 0 40px rgba(245,158,11,0.3), 0 8px 32px rgba(0,0,0,0.2)' }}>
                 <Phone className="size-9 text-white" />
               </div>
               <div className="flex-1">
@@ -1328,7 +1330,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('register')}
-                  className="shimmer h-13 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 px-8 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-amber-500 hover:to-yellow-500 hover:shadow-2xl hover:shadow-amber-500/40"
+                  className="shimmer h-13 bg-gradient-to-r from-amber-500 via-orange-400 to-rose-400 px-8 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-orange-500 hover:to-rose-500 hover:shadow-2xl hover:shadow-amber-500/40 transition-all duration-300"
                 >
                   Register Now
                   <ArrowRight className="ml-2 size-5" />
@@ -1347,7 +1349,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Footer Mini ═══════════ */}
-      <section className="border-t bg-gray-50 py-10">
+      <section className="border-t border-emerald-100/50 bg-gradient-to-b from-gray-50 to-emerald-50/20 py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:justify-between sm:text-left">
             <div>

@@ -1,47 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 
-// Helper to add XTransformPort for Caddy gateway routing
-function addTransformPort(url: string): string {
-  if (!url.startsWith('/api/')) return url;
-  const separator = url.includes('?') ? '&' : '?';
-  return `${url}${separator}XTransformPort=3001`;
-}
-
 export function useApi<T>(url: string | null, options?: RequestInit) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
   const optionsRef = useRef(options);
-
-  const fetchData = useCallback(async () => {
-    if (!url) {
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        ...(optionsRef.current?.headers as Record<string, string>),
-      };
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-      }
-      const res = await fetch(addTransformPort(url), { ...optionsRef.current, headers });
-      const result = await res.json();
-      if (!res.ok) {
-        throw new Error(result.error || 'Request failed');
-      }
-      setData(result);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
-    } finally {
-      setLoading(false);
-    }
-  }, [url, token]);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,7 +25,7 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
         if (token) {
           headers['Authorization'] = `Bearer ${token}`;
         }
-        const res = await fetch(addTransformPort(url), { ...optionsRef.current, headers });
+        const res = await fetch(url, { ...optionsRef.current, headers });
         const result = await res.json();
         if (!res.ok) {
           throw new Error(result.error || 'Request failed');
@@ -82,7 +47,32 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
     return () => { cancelled = true; };
   }, [url, token]);
 
-  return { data, loading, error, refetch: fetchData };
+  const refetch = useCallback(async () => {
+    if (!url) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(optionsRef.current?.headers as Record<string, string>),
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const res = await fetch(url, { ...optionsRef.current, headers });
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.error || 'Request failed');
+      }
+      setData(result);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An error occurred');
+    } finally {
+      setLoading(false);
+    }
+  }, [url, token]);
+
+  return { data, loading, error, refetch };
 }
 
 export function useApiMutation() {
@@ -101,7 +91,7 @@ export function useApiMutation() {
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      const res = await fetch(addTransformPort(url), { ...options, headers });
+      const res = await fetch(url, { ...options, headers });
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');
