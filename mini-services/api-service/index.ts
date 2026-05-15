@@ -217,7 +217,7 @@ app.get('/api/stats/platform', async (c) => {
 // Categories
 app.get('/api/categories', async (c) => {
   try {
-    const result = await pool.query('SELECT * FROM "ServiceCategory" WHERE "isActive" = true ORDER BY "displayOrder"')
+    const result = await pool.query('SELECT id, name, slug, description, "iconUrl", icon, "imageUrl", "parentId", "isActive", "displayOrder", "isEmergency", "seoTitle", "seoDescription", "createdAt", "updatedAt" FROM "ServiceCategory" WHERE "isActive" = true ORDER BY "displayOrder"')
     return c.json({ categories: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -225,18 +225,78 @@ app.get('/api/categories', async (c) => {
 app.get('/api/categories/:id', async (c) => {
   try {
     const id = c.req.param('id')
-    const result = await pool.query('SELECT * FROM "ServiceCategory" WHERE id = $1 OR slug = $1', [id])
+    const result = await pool.query('SELECT * FROM "ServiceCategory" WHERE id::text = $1 OR slug = $1', [id])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
-    return c.json(result.rows[0])
+    // Also get subcategories
+    const subResult = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [result.rows[0].id])
+    return c.json({ ...result.rows[0], subcategories: subResult.rows })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.get('/api/categories/:id/services', async (c) => {
+  try {
+    const id = c.req.param('id')
+    // Find category first
+    const catResult = await pool.query('SELECT id FROM "ServiceCategory" WHERE id::text = $1 OR slug = $1', [id])
+    if (!catResult.rows[0]) return c.json({ error: 'Category not found' }, 404)
+    const categoryId = catResult.rows[0].id
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query(
+      'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage", ss.name as "subcategoryName" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id LEFT JOIN "ServiceSubcategory" ss ON s."subcategoryId" = ss.id WHERE s."categoryId" = $1 AND s."isActive" = true AND s."isApproved" = true ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $2 OFFSET $3',
+      [categoryId, limit, offset]
+    )
+    const countResult = await pool.query('SELECT COUNT(*) as total FROM "Service" WHERE "categoryId" = $1 AND "isActive" = true AND "isApproved" = true', [categoryId])
+    return c.json({ services: result.rows, total: parseInt(countResult.rows[0].total), limit, offset })
+  } catch (e) { console.error('Category services error:', e); return c.json({ error: 'Failed' }, 500) }
+})
+
+// Subcategories
+app.get('/api/subcategories', async (c) => {
+  try {
+    const categoryId = c.req.query('categoryId')
+    if (categoryId) {
+      const result = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [parseInt(categoryId)])
+      return c.json({ subcategories: result.rows, total: result.rows.length })
+    }
+    const result = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "isActive" = true ORDER BY "categoryId", "displayOrder"')
+    return c.json({ subcategories: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
 // Services
 app.get('/api/services', async (c) => {
   try {
-    const result = await pool.query('SELECT * FROM "Service" WHERE "isActive" = true AND "isApproved" = true LIMIT 20')
-    return c.json({ services: result.rows, total: result.rows.length })
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const categoryId = c.req.query('categoryId')
+    let query = 'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."isActive" = true AND s."isApproved" = true'
+    const params: any[] = []
+    if (categoryId) {
+      query += ' AND s."categoryId" = $' + (params.length + 1)
+      params.push(parseInt(categoryId))
+    }
+    query += ' ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2)
+    params.push(limit, offset)
+    const result = await pool.query(query, params)
+    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.get('/api/services/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const result = await pool.query(
+      'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", u.phone as "providerPhone", u.city as "providerCity", u."isVerified" as "providerVerified", u."completedJobsCount" as "providerCompletedJobs", u."verifiedBadge" as "providerVerifiedBadge", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage", ss.name as "subcategoryName" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id LEFT JOIN "ServiceSubcategory" ss ON s."subcategoryId" = ss.id WHERE s.id = $1',
+      [id]
+    )
+    if (!result.rows[0]) return c.json({ error: 'Service not found' }, 404)
+    // Also get availability slots
+    const availResult = await pool.query('SELECT * FROM "ServiceAvailability" WHERE "serviceId" = $1 AND "isAvailable" = true ORDER BY "dayOfWeek"', [id])
+    // Get reviews
+    const reviewResult = await pool.query('SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE r."serviceId" = $1 ORDER BY r."createdAt" DESC LIMIT 10', [id])
+    return c.json({ ...result.rows[0], availability: availResult.rows, reviews: reviewResult.rows })
+  } catch (e) { console.error('Service detail error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
 // Catch-all for other API routes

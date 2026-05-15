@@ -29,10 +29,15 @@ import {
   Clock,
   ThumbsUp,
   Lock,
-  Gift,
-  Crown,
-  PartyPopper,
   Phone,
+  Snowflake,
+  Shirt,
+  ChefHat,
+  Tv,
+  Flame,
+  Truck,
+  Droplet,
+  Home,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
@@ -45,6 +50,7 @@ interface Category {
   slug: string;
   description?: string;
   icon?: string;
+  imageUrl?: string;
   subcategoriesCount: number;
   servicesCount: number;
 }
@@ -102,37 +108,69 @@ function getSessionId(): string {
   return id;
 }
 
-// ─── Helper: Category icon map ────────────────────────────────────────────────
+// ─── Helper: Dynamic Category icon map (supports all 11+ categories) ──────────
 
 const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
-  Droplets: <Droplets className="size-8" />,
-  Zap: <Zap className="size-8" />,
   Wind: <Wind className="size-8" />,
+  Snowflake: <Snowflake className="size-8" />,
+  Shirt: <Shirt className="size-8" />,
+  ChefHat: <ChefHat className="size-8" />,
+  Tv: <Tv className="size-8" />,
+  Droplets: <Droplets className="size-8" />,
+  Flame: <Flame className="size-8" />,
+  Wrench: <Wrench className="size-8" />,
+  Zap: <Zap className="size-8" />,
+  Droplet: <Droplet className="size-8" />,
+  Truck: <Truck className="size-8" />,
 };
 
+// Dynamic category gradient map - navy blue based per category
 const CATEGORY_BG_MAP: Record<string, string> = {
-  Droplets: 'from-blue-600 via-blue-500 to-cyan-400',
-  Zap: 'from-amber-600 via-amber-500 to-orange-400',
-  Wind: 'from-teal-600 via-emerald-500 to-cyan-400',
+  Wind: 'from-blue-800 via-blue-600 to-sky-400',
+  Snowflake: 'from-slate-800 via-blue-600 to-cyan-400',
+  Shirt: 'from-blue-900 via-indigo-500 to-blue-400',
+  ChefHat: 'from-slate-800 via-amber-600 to-yellow-400',
+  Tv: 'from-blue-900 via-blue-700 to-sky-400',
+  Droplets: 'from-blue-800 via-blue-500 to-cyan-400',
+  Flame: 'from-red-800 via-red-500 to-orange-400',
+  Wrench: 'from-slate-800 via-slate-600 to-blue-400',
+  Zap: 'from-blue-900 via-yellow-500 to-amber-400',
+  Droplet: 'from-blue-800 via-cyan-500 to-sky-400',
+  Truck: 'from-slate-800 via-blue-600 to-indigo-400',
 };
 
 const CATEGORY_LIGHT_BG: Record<string, string> = {
+  Wind: 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50',
+  Snowflake: 'bg-gradient-to-r from-slate-50 to-cyan-50 text-slate-700 border border-slate-100/50',
+  Shirt: 'bg-gradient-to-r from-indigo-50 to-blue-50 text-indigo-700 border border-indigo-100/50',
+  ChefHat: 'bg-gradient-to-r from-amber-50 to-yellow-50 text-amber-700 border border-amber-100/50',
+  Tv: 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50',
   Droplets: 'bg-gradient-to-r from-blue-50 to-cyan-50 text-blue-700 border border-blue-100/50',
-  Zap: 'bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 border border-amber-100/50',
-  Wind: 'bg-gradient-to-r from-teal-50 to-emerald-50 text-teal-700 border border-teal-100/50',
+  Flame: 'bg-gradient-to-r from-red-50 to-orange-50 text-red-700 border border-red-100/50',
+  Wrench: 'bg-gradient-to-r from-slate-50 to-blue-50 text-slate-700 border border-slate-100/50',
+  Zap: 'bg-gradient-to-r from-blue-50 to-amber-50 text-blue-700 border border-blue-100/50',
+  Droplet: 'bg-gradient-to-r from-cyan-50 to-sky-50 text-cyan-700 border border-cyan-100/50',
+  Truck: 'bg-gradient-to-r from-slate-50 to-indigo-50 text-slate-700 border border-slate-100/50',
 };
 
 const CATEGORY_GLOW: Record<string, string> = {
+  Wind: 'shadow-blue-500/30',
+  Snowflake: 'shadow-slate-500/30',
+  Shirt: 'shadow-indigo-500/30',
+  ChefHat: 'shadow-amber-500/30',
+  Tv: 'shadow-blue-500/30',
   Droplets: 'shadow-blue-500/30',
-  Zap: 'shadow-amber-500/30',
-  Wind: 'shadow-teal-500/30',
+  Flame: 'shadow-red-500/30',
+  Wrench: 'shadow-slate-500/30',
+  Zap: 'shadow-blue-500/30',
+  Droplet: 'shadow-cyan-500/30',
+  Truck: 'shadow-slate-500/30',
 };
 
-const CATEGORY_IMAGE_MAP: Record<string, string> = {
-  Droplets: '/images/plumbing.jpg',
-  Zap: '/images/electrical.jpg',
-  Wind: '/images/hvac.jpg',
-};
+// Default fallback values
+const DEFAULT_BG = 'from-blue-900 via-blue-700 to-sky-400';
+const DEFAULT_LIGHT_BG = 'bg-gradient-to-r from-blue-50 to-sky-50 text-blue-700 border border-blue-100/50';
+const DEFAULT_GLOW = 'shadow-blue-500/30';
 
 // ─── Animated Counter ─────────────────────────────────────────────────────────
 
@@ -186,7 +224,7 @@ function RotatingText({ words }: { words: string[] }) {
         exit={{ y: -30, opacity: 0, scale: 1.15 }}
         transition={{ duration: 0.55, ease: [0.25, 0.46, 0.45, 0.94] as const }}
         className="inline-block text-gradient"
-        style={{ textShadow: '0 0 40px rgba(16,185,129,0.5), 0 0 80px rgba(20,184,166,0.25), 0 0 120px rgba(6,182,212,0.15)' }}
+        style={{ textShadow: '0 0 40px rgba(30,58,95,0.5), 0 0 80px rgba(59,130,246,0.25), 0 0 120px rgba(14,165,233,0.15)' }}
       >
         {words[index]}
       </motion.span>
@@ -277,17 +315,17 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     name: 'Priya Sharma',
     role: 'Homeowner, Mumbai',
     rating: 5,
-    quote: 'The plumber arrived within 30 minutes and fixed the leakage perfectly. Transparent pricing and professional service. Highly recommend!',
+    quote: 'The AC technician arrived within 30 minutes and fixed the cooling issue perfectly. Transparent pricing and professional service. Highly recommend!',
     avatar: 'PS',
-    service: 'Plumbing',
+    service: 'AC Repair',
   },
   {
     name: 'Rajesh Kumar',
     role: 'Business Owner, Delhi',
     rating: 5,
-    quote: 'Got our office AC serviced before summer. The technician was well-trained and explained everything clearly. Great experience overall.',
+    quote: 'Got our office plumbing fixed before an important meeting. The plumber was well-trained and explained everything clearly. Great experience overall.',
     avatar: 'RK',
-    service: 'AC & HVAC',
+    service: 'Plumbing',
   },
   {
     name: 'Ananya Patel',
@@ -301,9 +339,9 @@ const DEFAULT_TESTIMONIALS: Testimonial[] = [
     name: 'Vikram Singh',
     role: 'Property Manager, Pune',
     rating: 5,
-    quote: 'Managing multiple properties, I rely on BookYourService for all maintenance. Their verified providers never disappoint.',
+    quote: 'Managing multiple properties, I rely on BookYourService for all maintenance. From appliance repair to plumbing, their verified providers never disappoint.',
     avatar: 'VS',
-    service: 'Plumbing',
+    service: 'Appliance Repair',
   },
   {
     name: 'Meera Joshi',
@@ -351,18 +389,18 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
           transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
           className="relative overflow-hidden rounded-3xl p-8 text-center shadow-2xl sm:p-12"
           style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(236,253,245,0.7) 40%, rgba(240,253,250,0.6) 70%, rgba(255,255,255,0.9) 100%)',
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(239,246,255,0.7) 40%, rgba(240,249,255,0.6) 70%, rgba(255,255,255,0.9) 100%)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(16,185,129,0.15)',
+            border: '1px solid rgba(30,58,95,0.15)',
           }}
         >
           {/* Decorative gradient blob */}
-          <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-gradient-to-br from-emerald-200/30 to-teal-200/20 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-12 -left-12 size-40 rounded-full bg-gradient-to-br from-amber-200/20 to-orange-200/15 blur-2xl" />
+          <div className="pointer-events-none absolute -right-12 -top-12 size-40 rounded-full bg-gradient-to-br from-blue-200/30 to-sky-200/20 blur-2xl" />
+          <div className="pointer-events-none absolute -bottom-12 -left-12 size-40 rounded-full bg-gradient-to-br from-slate-200/20 to-blue-200/15 blur-2xl" />
 
           <div className="relative">
-            <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500/10 to-teal-500/10">
-              <Quote className="size-7 text-emerald-500/60" />
+            <div className="mx-auto mb-5 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500/10 to-sky-500/10">
+              <Quote className="size-7 text-blue-500/60" />
             </div>
             <p className="mb-7 text-lg leading-relaxed text-foreground/85 sm:text-xl sm:leading-relaxed">&ldquo;{t.quote}&rdquo;</p>
             <div className="mb-5 flex items-center justify-center gap-1">
@@ -374,7 +412,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
               ))}
             </div>
             <div className="flex items-center justify-center gap-4">
-              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 via-teal-500 to-cyan-500 text-base font-bold text-white shadow-lg shadow-emerald-500/30 ring-2 ring-white/50">
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 via-blue-600 to-sky-500 text-base font-bold text-white shadow-lg shadow-blue-500/30 ring-2 ring-white/50">
                 {t.avatar}
               </div>
               <div className="text-left">
@@ -382,7 +420,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
                 <p className="text-sm text-muted-foreground">{t.role}</p>
               </div>
               <Badge
-                className="ml-2 border-amber-200/60 bg-gradient-to-r from-amber-50 to-orange-50 px-3 py-1 text-amber-700"
+                className="ml-2 border-blue-200/60 bg-gradient-to-r from-blue-50 to-sky-50 px-3 py-1 text-blue-700"
                 variant="outline"
               >
                 {t.service}
@@ -396,7 +434,7 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
       <div className="mt-8 flex items-center justify-center gap-5">
         <button
           onClick={prev}
-          className="group flex size-11 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-600 shadow-sm transition-all duration-300 hover:bg-emerald-50 hover:shadow-md hover:border-emerald-300 hover:scale-110"
+          className="group flex size-11 items-center justify-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-sm transition-all duration-300 hover:bg-blue-50 hover:shadow-md hover:border-blue-300 hover:scale-110"
           aria-label="Previous testimonial"
         >
           <ChevronLeft className="size-5 transition-transform group-hover:-translate-x-0.5" />
@@ -406,14 +444,14 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
             <button
               key={idx}
               onClick={() => { setCurrent(idx); setAutoPlay(false); }}
-              className={`h-3 rounded-full transition-all duration-400 ${idx === current ? 'w-10 bg-gradient-to-r from-emerald-500 to-teal-400 shadow-md shadow-emerald-400/40' : 'w-3 bg-emerald-200 hover:bg-emerald-300 hover:scale-125'}`}
+              className={`h-3 rounded-full transition-all duration-400 ${idx === current ? 'w-10 bg-gradient-to-r from-blue-800 to-sky-400 shadow-md shadow-blue-400/40' : 'w-3 bg-blue-200 hover:bg-blue-300 hover:scale-125'}`}
               aria-label={`Go to testimonial ${idx + 1}`}
             />
           ))}
         </div>
         <button
           onClick={next}
-          className="group flex size-11 items-center justify-center rounded-full border border-emerald-200 bg-white text-emerald-600 shadow-sm transition-all duration-300 hover:bg-emerald-50 hover:shadow-md hover:border-emerald-300 hover:scale-110"
+          className="group flex size-11 items-center justify-center rounded-full border border-blue-200 bg-white text-blue-600 shadow-sm transition-all duration-300 hover:bg-blue-50 hover:shadow-md hover:border-blue-300 hover:scale-110"
           aria-label="Next testimonial"
         >
           <ChevronRight className="size-5 transition-transform group-hover:translate-x-0.5" />
@@ -533,126 +571,89 @@ export function HomePage() {
 
   return (
     <div className="flex flex-col">
-      {/* ═══════════ Launch Offer Banner ═══════════ */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #d97706 0%, #ea580c 30%, #e11d48 70%, #f43f5e 100%)' }}>
-        {/* Animated sparkle background */}
+      {/* ═══════════ Navy Blue Announcement Bar ═══════════ */}
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2d5a8e 100%)' }}>
         <div className="pointer-events-none absolute inset-0">
           <motion.div
-            className="absolute left-[8%] top-1/2 -translate-y-1/2 size-24 rounded-full bg-white/10"
-            animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+            className="absolute left-[8%] top-1/2 -translate-y-1/2 size-24 rounded-full bg-white/5"
+            animate={{ scale: [1, 1.5, 1], opacity: [0.1, 0.3, 0.1] }}
             transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute right-[12%] top-1/2 -translate-y-1/2 size-16 rounded-full bg-white/10"
-            animate={{ scale: [1.3, 1, 1.3], opacity: [0.15, 0.4, 0.15] }}
+            className="absolute right-[12%] top-1/2 -translate-y-1/2 size-16 rounded-full bg-white/5"
+            animate={{ scale: [1.3, 1, 1.3], opacity: [0.1, 0.25, 0.1] }}
             transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
           />
-          <motion.div
-            className="absolute left-[40%] top-1/2 -translate-y-1/2 size-12 rounded-full bg-yellow-300/20"
-            animate={{ scale: [1, 1.6, 1], rotate: [0, 180, 360] }}
-            transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          {/* Animated sparkle dots */}
-          {Array.from({ length: 8 }).map((_, i) => {
-            const seed = ((i + 3) * 2654435761) >>> 0;
-            const l = (seed * 13) % 90 + 5;
-            const dur = 1.5 + (seed % 200) / 100;
-            return (
-              <motion.div
-                key={`sparkle-${i}`}
-                className="absolute size-1 rounded-full bg-yellow-200/60"
-                style={{ left: `${l}%`, top: '50%', transform: 'translateY(-50%)' }}
-                animate={{ opacity: [0, 1, 0], scale: [0.5, 1.5, 0.5] }}
-                transition={{ duration: dur, repeat: Infinity, delay: i * 0.3, ease: 'easeInOut' }}
-              />
-            );
-          })}
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8">
-          <div className="flex flex-col items-center gap-5 sm:flex-row sm:justify-center sm:gap-10">
-            {/* Left side - Client offer */}
+        <div className="relative mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-8">
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
+              initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-              className="flex items-center gap-4 rounded-2xl bg-white/10 px-6 py-4 backdrop-blur-xl ring-1 ring-white/20 shadow-lg shadow-black/10"
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="flex items-center gap-3"
             >
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-white/20 shadow-lg" style={{ boxShadow: '0 0 20px rgba(253,224,71,0.3)' }}>
-                <Crown className="size-7 text-yellow-100 drop-shadow-[0_0_8px_rgba(253,224,71,0.5)]" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white sm:text-base">First 100 Clients</p>
-                <p className="text-xs text-white/80 sm:text-sm">Get <span className="font-extrabold text-yellow-100 drop-shadow-[0_0_8px_rgba(253,224,71,0.4)]">FREE Subscription</span> for 1 Year!</p>
-              </div>
+              <Sparkles className="size-5 text-sky-300" />
+              <p className="text-sm font-medium text-blue-100">
+                <span className="font-bold text-white">First 100 Clients</span> — Get FREE Subscription for 1 Year!
+              </p>
             </motion.div>
 
-            {/* Center sparkle divider */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3, type: 'spring', stiffness: 200 }}
-              className="flex size-14 shrink-0 items-center justify-center rounded-full bg-white/15 backdrop-blur-xl ring-1 ring-white/20 shadow-lg"
-            >
-              <PartyPopper className="size-7 text-yellow-200 drop-shadow-[0_0_10px_rgba(253,224,71,0.4)]" />
-            </motion.div>
+            <div className="hidden h-4 w-px bg-white/20 sm:block" />
 
-            {/* Right side - Provider offer */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-              className="flex items-center gap-4 rounded-2xl bg-white/10 px-6 py-4 backdrop-blur-xl ring-1 ring-white/20 shadow-lg shadow-black/10"
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="flex items-center gap-3"
             >
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-white/20 shadow-lg" style={{ boxShadow: '0 0 20px rgba(253,224,71,0.3)' }}>
-                <Gift className="size-7 text-yellow-100 drop-shadow-[0_0_8px_rgba(253,224,71,0.5)]" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-white sm:text-base">First 50 Service Providers</p>
-                <p className="text-xs text-white/80 sm:text-sm">Get <span className="font-extrabold text-yellow-100 drop-shadow-[0_0_8px_rgba(253,224,71,0.4)]">FREE Subscription</span> for 1 Year!</p>
-              </div>
+              <ShieldCheck className="size-5 text-sky-300" />
+              <p className="text-sm font-medium text-blue-100">
+                <span className="font-bold text-white">First 50 Providers</span> — Get FREE Subscription for 1 Year!
+              </p>
             </motion.div>
           </div>
         </div>
       </section>
 
       {/* ═══════════ Hero Section ═══════════ */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #022c22 0%, #064e3b 20%, #0f766e 45%, #0e7490 70%, #164e63 100%)' }}>
+      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 20%, #2d5a8e 45%, #3b82f6 70%, #0ea5e9 100%)' }}>
         {/* Mesh gradient background */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Large gradient orbs */}
-          <div className="absolute -left-40 -top-40 size-[800px] rounded-full bg-gradient-to-br from-blue-700/30 to-cyan-400/20 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[700px] rounded-full bg-gradient-to-tl from-teal-500/30 to-emerald-400/15 blur-3xl" />
-          <div className="absolute left-1/2 top-1/4 size-[400px] -translate-x-1/2 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-400/10 blur-3xl" />
-          <div className="absolute right-1/4 bottom-1/4 size-[300px] rounded-full bg-gradient-to-br from-violet-500/10 to-fuchsia-400/5 blur-3xl" />
+          <div className="absolute -left-40 -top-40 size-[800px] rounded-full bg-gradient-to-br from-blue-700/30 to-sky-400/20 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[700px] rounded-full bg-gradient-to-tl from-blue-500/30 to-slate-400/15 blur-3xl" />
+          <div className="absolute left-1/2 top-1/4 size-[400px] -translate-x-1/2 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-400/10 blur-3xl" />
+          <div className="absolute right-1/4 bottom-1/4 size-[300px] rounded-full bg-gradient-to-br from-indigo-500/10 to-blue-400/5 blur-3xl" />
           {/* Deep blue accent orb */}
-          <div className="absolute left-1/4 top-1/2 size-[250px] rounded-full bg-gradient-to-br from-indigo-600/15 to-blue-400/8 blur-3xl" />
-          {/* Warm amber orb */}
-          <div className="absolute right-1/3 top-1/5 size-[200px] rounded-full bg-gradient-to-br from-amber-400/15 to-yellow-300/8 blur-3xl" />
+          <div className="absolute left-1/4 top-1/2 size-[250px] rounded-full bg-gradient-to-br from-blue-600/15 to-sky-400/8 blur-3xl" />
+          {/* Light accent orb */}
+          <div className="absolute right-1/3 top-1/5 size-[200px] rounded-full bg-gradient-to-br from-sky-400/15 to-cyan-300/8 blur-3xl" />
 
           {/* Animated floating shapes */}
           <motion.div
-            className="absolute -left-20 -top-20 size-96 rounded-full bg-cyan-400/[0.06]"
+            className="absolute -left-20 -top-20 size-96 rounded-full bg-sky-400/[0.06]"
             animate={{ x: [0, 50, 0], y: [0, -40, 0] }}
             transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute -bottom-10 right-10 size-72 rounded-full bg-emerald-400/[0.06]"
+            className="absolute -bottom-10 right-10 size-72 rounded-full bg-blue-400/[0.06]"
             animate={{ x: [0, -40, 0], y: [0, 40, 0] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/4 top-1/4 size-48 rounded-full bg-amber-400/[0.05]"
+            className="absolute left-1/4 top-1/4 size-48 rounded-full bg-sky-400/[0.05]"
             animate={{ scale: [1, 1.4, 1] }}
             transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute right-1/4 top-1/3 size-36 rounded-full bg-amber-300/[0.06]"
+            className="absolute right-1/4 top-1/3 size-36 rounded-full bg-blue-300/[0.06]"
             animate={{ x: [0, -25, 0], y: [0, 30, 0] }}
             transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
           />
           <motion.div
-            className="absolute left-1/6 bottom-1/3 size-28 rounded-full bg-blue-400/[0.05]"
+            className="absolute left-1/6 bottom-1/3 size-28 rounded-full bg-sky-400/[0.05]"
             animate={{ x: [0, 30, 0], scale: [1, 1.3, 1] }}
             transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
           />
@@ -708,7 +709,7 @@ export function HomePage() {
               variants={staggerContainer}
             >
               <motion.div variants={fadeUp} custom={0}>
-                <Badge className="mb-8 border-emerald-300/20 bg-emerald-500/20 px-5 py-2 text-emerald-100 hover:bg-emerald-500/30 text-sm">
+                <Badge className="mb-8 border-blue-300/20 bg-blue-500/20 px-5 py-2 text-blue-100 hover:bg-blue-500/30 text-sm">
                   <Sparkles className="mr-2 size-4" /> India&apos;s Trusted Home Service Platform
                 </Badge>
               </motion.div>
@@ -719,17 +720,17 @@ export function HomePage() {
                 className="text-5xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-6xl lg:text-7xl"
               >
                 Expert{' '}
-                <RotatingText words={['Plumbing', 'Electrical', 'AC & HVAC']} />
+                <RotatingText words={['AC Repair', 'Plumbing', 'Electrical', 'Appliance Repair']} />
                 <br />
-                <span className="text-gradient" style={{ textShadow: '0 0 40px rgba(16,185,129,0.5), 0 0 80px rgba(20,184,166,0.3)' }}>at Your Doorstep</span>
+                <span className="text-gradient" style={{ textShadow: '0 0 40px rgba(30,58,95,0.5), 0 0 80px rgba(59,130,246,0.3)' }}>at Your Doorstep</span>
               </motion.h1>
 
               <motion.p
                 variants={fadeUp}
                 custom={2}
-                className="mt-8 max-w-xl text-lg leading-relaxed text-emerald-100/70 sm:text-xl"
+                className="mt-8 max-w-xl text-lg leading-relaxed text-blue-100/70 sm:text-xl"
               >
-                Book verified professionals for plumbing, electrical, and AC/HVAC services.
+                Book verified professionals for AC repair, plumbing, electrical, appliance repair, and more.
                 Quality work, transparent pricing, and our satisfaction guarantee.
               </motion.p>
 
@@ -740,10 +741,10 @@ export function HomePage() {
                 className="mt-6 flex items-center gap-2.5"
               >
                 <span className="relative flex size-3.5">
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-300 opacity-75" />
-                  <span className="relative inline-flex size-3.5 rounded-full bg-emerald-300 shadow-md shadow-emerald-300/50" />
+                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-sky-300 opacity-75" />
+                  <span className="relative inline-flex size-3.5 rounded-full bg-sky-300 shadow-md shadow-sky-300/50" />
                 </span>
-                <span className="text-sm font-medium text-emerald-200">
+                <span className="text-sm font-medium text-blue-200">
                   <AnimatedCounter value={liveStats?.activeVisitors || 0} loading={!liveStats} className="font-bold" />{' '}
                   {liveStats?.activeVisitors === 1 ? 'person' : 'people'} viewing right now
                 </span>
@@ -757,7 +758,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('categories')}
-                  className="shimmer group h-13 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 px-10 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-amber-500 hover:to-yellow-500 hover:shadow-2xl hover:shadow-amber-500/40"
+                  className="shimmer group h-13 bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 px-10 text-base font-bold text-white shadow-xl shadow-blue-500/30 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600 hover:shadow-2xl hover:shadow-blue-500/40"
                 >
                   Book a Service
                   <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
@@ -767,7 +768,7 @@ export function HomePage() {
                     <Button
                       size="lg"
                       onClick={() => navigate('login')}
-                      className="h-13 border-2 border-cyan-300/40 bg-gradient-to-r from-teal-600/30 to-cyan-600/30 px-8 text-base text-white shadow-lg shadow-cyan-900/20 backdrop-blur-sm hover:border-cyan-300/60 hover:from-teal-600/40 hover:to-cyan-600/40 hover:shadow-xl"
+                      className="h-13 border-2 border-sky-300/40 bg-gradient-to-r from-blue-600/30 to-sky-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-sky-300/60 hover:from-blue-600/40 hover:to-sky-600/40 hover:shadow-xl"
                     >
                       Client Login
                     </Button>
@@ -775,7 +776,7 @@ export function HomePage() {
                       size="lg"
                       variant="outline"
                       onClick={() => navigate('register')}
-                      className="h-13 border-amber-300/30 text-base text-amber-100 hover:bg-amber-600/15 hover:border-amber-300/50"
+                      className="h-13 border-blue-300/30 text-base text-blue-100 hover:bg-blue-600/15 hover:border-blue-300/50"
                     >
                       Join as Provider
                     </Button>
@@ -785,7 +786,7 @@ export function HomePage() {
                   <Button
                     size="lg"
                     onClick={() => navigate('client-dashboard')}
-                    className="h-13 border-2 border-cyan-300/40 bg-gradient-to-r from-teal-600/30 to-cyan-600/30 px-8 text-base text-white shadow-lg shadow-cyan-900/20 backdrop-blur-sm hover:border-cyan-300/60 hover:from-teal-600/40 hover:to-cyan-600/40"
+                    className="h-13 border-2 border-sky-300/40 bg-gradient-to-r from-blue-600/30 to-sky-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-sky-300/60 hover:from-blue-600/40 hover:to-sky-600/40"
                   >
                     My Dashboard
                   </Button>
@@ -794,7 +795,7 @@ export function HomePage() {
                   <Button
                     size="lg"
                     onClick={() => navigate('provider-dashboard')}
-                    className="h-13 border-2 border-amber-300/40 bg-gradient-to-r from-amber-600/30 to-orange-600/30 px-8 text-base text-white shadow-lg shadow-amber-900/20 backdrop-blur-sm hover:border-amber-300/60 hover:from-amber-600/40 hover:to-orange-600/40"
+                    className="h-13 border-2 border-blue-300/40 bg-gradient-to-r from-blue-600/30 to-slate-600/30 px-8 text-base text-white shadow-lg shadow-blue-900/20 backdrop-blur-sm hover:border-blue-300/60 hover:from-blue-600/40 hover:to-slate-600/40"
                   >
                     Provider Dashboard
                   </Button>
@@ -802,7 +803,7 @@ export function HomePage() {
               </motion.div>
             </motion.div>
 
-            {/* Hero visual - floating service icons with glow */}
+            {/* Hero visual - "Your Home, Our Expertise" concept */}
             <motion.div
               className="hidden lg:flex lg:items-center lg:justify-center"
               initial="hidden"
@@ -811,7 +812,7 @@ export function HomePage() {
             >
               <div className="relative flex size-[440px] items-center justify-center">
                 {/* Outer glow rings */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400/15 to-teal-400/8 blur-3xl" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-blue-400/15 to-sky-400/8 blur-3xl" />
                 <motion.div
                   className="absolute inset-4 rounded-full border border-white/[0.08]"
                   animate={{ rotate: 360 }}
@@ -824,7 +825,7 @@ export function HomePage() {
                 {[0, 60, 120, 180, 240, 300].map((angle, i) => (
                   <motion.div
                     key={`orbit-dot-${i}`}
-                    className="absolute size-2 rounded-full bg-emerald-400/40"
+                    className="absolute size-2 rounded-full bg-blue-400/40"
                     style={{
                       left: '50%',
                       top: '50%',
@@ -836,43 +837,44 @@ export function HomePage() {
                   />
                 ))}
 
-                {/* Plumbing */}
+                {/* Floating service icon - AC/Wind */}
                 <motion.div
                   className="absolute -left-4 top-4 float-animation"
                   animate={{ y: [0, -20, 0] }}
                   transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <div className="flex size-32 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500/25 to-cyan-400/15 shadow-2xl shadow-blue-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Droplets className="size-14 text-blue-200 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
+                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500/25 to-sky-400/15 shadow-2xl shadow-blue-500/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Wind className="size-12 text-blue-200 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
                   </div>
                 </motion.div>
 
-                {/* Electrical */}
+                {/* Floating service icon - Plumbing/Wrench */}
                 <motion.div
                   className="absolute right-0 top-16"
                   animate={{ y: [0, 18, 0] }}
                   transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <div className="flex size-32 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500/25 to-yellow-400/15 shadow-2xl shadow-amber-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Zap className="size-14 text-yellow-200 drop-shadow-[0_0_12px_rgba(253,224,71,0.6)]" />
+                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-slate-500/25 to-blue-400/15 shadow-2xl shadow-slate-500/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Wrench className="size-12 text-slate-200 drop-shadow-[0_0_12px_rgba(203,213,225,0.6)]" />
                   </div>
                 </motion.div>
 
-                {/* AC & HVAC */}
+                {/* Floating service icon - Electrical/Zap */}
                 <motion.div
                   className="absolute bottom-4 left-1/2 -translate-x-1/2"
                   animate={{ y: [0, -15, 0] }}
                   transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <div className="flex size-32 items-center justify-center rounded-3xl bg-gradient-to-br from-teal-500/25 to-emerald-400/15 shadow-2xl shadow-teal-500/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Wind className="size-14 text-teal-200 drop-shadow-[0_0_12px_rgba(94,234,212,0.6)]" />
+                  <div className="flex size-28 items-center justify-center rounded-3xl bg-gradient-to-br from-sky-500/25 to-blue-400/15 shadow-2xl shadow-sky-500/25 backdrop-blur-xl ring-1 ring-white/20">
+                    <Zap className="size-12 text-sky-200 drop-shadow-[0_0_12px_rgba(125,211,252,0.6)]" />
                   </div>
                 </motion.div>
 
-                {/* Center element */}
+                {/* Center element - "Your Home, Our Expertise" */}
                 <div className="rounded-3xl bg-white/10 px-10 py-6 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20">
+                  <Home className="mx-auto mb-2 size-8 text-sky-200/80" />
                   <p className="text-2xl font-bold text-white">Your Home</p>
-                  <p className="text-sm font-medium text-emerald-200/80">Our Expertise</p>
+                  <p className="text-sm font-medium text-blue-200/80">Our Expertise</p>
                 </div>
               </div>
             </motion.div>
@@ -892,11 +894,11 @@ export function HomePage() {
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {[
-              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-emerald-600 to-emerald-400', cardBg: 'bg-gradient-to-br from-emerald-50/80 to-teal-50/60', hoverGlow: 'hover:shadow-emerald-300/40', live: true, iconBg: 'from-emerald-600 via-emerald-500 to-teal-400' },
+              { icon: <Eye className="size-5" />, label: 'Active Visitors', value: liveStats?.activeVisitors || 0, color: 'from-blue-800 to-blue-500', cardBg: 'bg-gradient-to-br from-blue-50/80 to-sky-50/60', hoverGlow: 'hover:shadow-blue-300/40', live: true, iconBg: 'from-blue-800 via-blue-600 to-sky-400' },
               { icon: <Users className="size-5" />, label: 'Registered Clients', value: liveStats?.totalUsers || 0, color: 'from-blue-600 to-cyan-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-cyan-50/60', hoverGlow: 'hover:shadow-blue-300/40', iconBg: 'from-blue-600 via-blue-500 to-cyan-400' },
-              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-amber-600 to-amber-400', cardBg: 'bg-gradient-to-br from-amber-50/80 to-orange-50/60', hoverGlow: 'hover:shadow-amber-300/40', iconBg: 'from-amber-600 via-amber-500 to-orange-400' },
-              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-teal-600 to-teal-400', cardBg: 'bg-gradient-to-br from-teal-50/80 to-emerald-50/60', hoverGlow: 'hover:shadow-teal-300/40', iconBg: 'from-teal-600 via-teal-500 to-emerald-400' },
-              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-rose-600 to-pink-400', cardBg: 'bg-gradient-to-br from-rose-50/80 to-pink-50/60', hoverGlow: 'hover:shadow-rose-300/40', iconBg: 'from-rose-600 via-rose-500 to-pink-400' },
+              { icon: <Shield className="size-5" />, label: 'Verified Providers', value: liveStats?.totalProviders || 0, color: 'from-slate-700 to-slate-400', cardBg: 'bg-gradient-to-br from-slate-50/80 to-blue-50/60', hoverGlow: 'hover:shadow-slate-300/40', iconBg: 'from-slate-700 via-slate-500 to-blue-400' },
+              { icon: <Wrench className="size-5" />, label: 'Services Available', value: liveStats?.totalServices || 0, color: 'from-blue-700 to-sky-400', cardBg: 'bg-gradient-to-br from-blue-50/80 to-sky-50/60', hoverGlow: 'hover:shadow-blue-300/40', iconBg: 'from-blue-700 via-blue-500 to-sky-400' },
+              { icon: <CalendarCheck className="size-5" />, label: 'Total Bookings', value: liveStats?.totalBookings || 0, color: 'from-blue-800 to-indigo-400', cardBg: 'bg-gradient-to-br from-indigo-50/80 to-blue-50/60', hoverGlow: 'hover:shadow-indigo-300/40', iconBg: 'from-blue-800 via-indigo-500 to-blue-400' },
             ].map((stat, idx) => (
               <motion.div
                 key={stat.label}
@@ -916,8 +918,8 @@ export function HomePage() {
                       </p>
                       {stat.live && (
                         <span className="relative flex size-3.5">
-                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-80" />
-                          <span className="relative inline-flex size-3.5 rounded-full bg-emerald-400 shadow-md shadow-emerald-400/50" />
+                          <span className="absolute inline-flex size-full animate-ping rounded-full bg-blue-400 opacity-80" />
+                          <span className="relative inline-flex size-3.5 rounded-full bg-blue-400 shadow-md shadow-blue-400/50" />
                         </span>
                       )}
                     </div>
@@ -931,31 +933,31 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Launch Notice Banner ═══════════ */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50">
+      <section className="relative overflow-hidden bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[300px] rounded-full bg-emerald-200/30 blur-3xl" />
-          <div className="absolute -bottom-20 -right-20 size-[300px] rounded-full bg-teal-200/30 blur-3xl" />
-          <div className="absolute right-1/3 top-0 size-[200px] rounded-full bg-amber-200/20 blur-3xl" />
+          <div className="absolute -left-20 top-0 size-[300px] rounded-full bg-blue-200/30 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-[300px] rounded-full bg-sky-200/30 blur-3xl" />
+          <div className="absolute right-1/3 top-0 size-[200px] rounded-full bg-slate-200/20 blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="flex flex-col items-center gap-5 rounded-3xl border border-emerald-200/50 bg-white/70 px-8 py-7 text-center shadow-lg backdrop-blur-xl sm:flex-row sm:text-left"
+            className="flex flex-col items-center gap-5 rounded-3xl border border-blue-200/50 bg-white/70 px-8 py-7 text-center shadow-lg backdrop-blur-xl sm:flex-row sm:text-left"
           >
-            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 shadow-xl shadow-emerald-500/30">
+            <div className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-900 to-blue-600 shadow-xl shadow-blue-500/30">
               <Clock className="size-8 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="text-xl font-bold text-emerald-900">Services Coming Soon!</h3>
-              <p className="mt-2 text-sm leading-relaxed text-emerald-700/80">
-                Our services will officially start after the selection of our <span className="font-bold text-emerald-900">first 100 clients</span> and <span className="font-bold text-emerald-900">50 service providers</span>. Register now to be among the first and enjoy <span className="font-extrabold text-amber-600">FREE subscription for one year</span>!
+              <h3 className="text-xl font-bold text-blue-900">Services Coming Soon!</h3>
+              <p className="mt-2 text-sm leading-relaxed text-blue-700/80">
+                Our services will officially start after the selection of our <span className="font-bold text-blue-900">first 100 clients</span> and <span className="font-bold text-blue-900">50 service providers</span>. Register now to be among the first and enjoy <span className="font-extrabold text-amber-600">FREE subscription for one year</span>!
               </p>
             </div>
             <Button
               size="lg"
-              className="shimmer shrink-0 bg-gradient-to-r from-emerald-600 to-teal-600 px-8 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl"
+              className="shimmer shrink-0 bg-gradient-to-r from-blue-900 to-blue-600 px-8 text-white shadow-lg shadow-blue-500/30 hover:from-blue-950 hover:to-blue-700 hover:shadow-xl"
               onClick={() => navigate('register')}
             >
               Register Now
@@ -976,14 +978,14 @@ export function HomePage() {
             custom={0}
             className="text-center"
           >
-            <Badge className="mb-5 border-emerald-200 bg-emerald-50 px-4 py-1.5 text-emerald-700 hover:bg-emerald-100">
+            <Badge className="mb-5 border-blue-200 bg-blue-50 px-4 py-1.5 text-blue-700 hover:bg-blue-100">
               <Sparkles className="mr-1.5 size-3.5" /> Specialized Services
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
               Our <span className="text-gradient">Service Categories</span>
             </h2>
             <p className="mx-auto mt-4 max-w-lg text-lg text-muted-foreground">
-              We specialize in three core home services, each staffed by verified professionals
+              We offer 11 specialized home services, each staffed by verified professionals
             </p>
           </motion.div>
 
@@ -997,14 +999,14 @@ export function HomePage() {
           ) : (
             <div className="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {categoriesLoading ? (
-                Array.from({ length: 3 }).map((_, i) => <CategorySkeleton key={i} />)
+                Array.from({ length: 6 }).map((_, i) => <CategorySkeleton key={i} />)
               ) : (
                 categories.map((cat, idx) => {
-                  const iconKey = cat.icon || 'Droplets';
-                  const bgClass = CATEGORY_BG_MAP[iconKey] || 'from-emerald-600 via-teal-500 to-cyan-400';
-                  const lightBgClass = CATEGORY_LIGHT_BG[iconKey] || 'bg-emerald-50 text-emerald-700';
-                  const glowClass = CATEGORY_GLOW[iconKey] || 'shadow-emerald-500/30';
-                  const imageUrl = CATEGORY_IMAGE_MAP[iconKey] || '/images/plumbing.jpg';
+                  const iconKey = cat.icon || 'Wrench';
+                  const bgClass = CATEGORY_BG_MAP[iconKey] || DEFAULT_BG;
+                  const lightBgClass = CATEGORY_LIGHT_BG[iconKey] || DEFAULT_LIGHT_BG;
+                  const glowClass = CATEGORY_GLOW[iconKey] || DEFAULT_GLOW;
+                  const catImageUrl = cat.imageUrl || `/images/${cat.slug}.jpg`;
                   const subs = subcategoriesMap[cat.id] || [];
 
                   return (
@@ -1024,7 +1026,7 @@ export function HomePage() {
                           {/* Image header with gradient overlay */}
                           <div className="relative h-56 overflow-hidden">
                             <img
-                              src={imageUrl}
+                              src={catImageUrl}
                               alt={cat.name}
                               className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                               onError={(e) => {
@@ -1083,7 +1085,7 @@ export function HomePage() {
                             )}
 
                             {/* View all link */}
-                            <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-emerald-600 transition-colors group-hover:text-emerald-700">
+                            <div className="mt-5 flex items-center gap-2 text-sm font-semibold text-blue-600 transition-colors group-hover:text-blue-700">
                               Explore {cat.name}
                               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                             </div>
@@ -1110,7 +1112,7 @@ export function HomePage() {
                 size="lg"
                 variant="outline"
                 onClick={() => navigate('categories')}
-                className="rounded-full border-2 border-emerald-200 px-8 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
+                className="rounded-full border-2 border-blue-200 px-8 text-blue-700 hover:bg-blue-50 hover:border-blue-300"
               >
                 View All Categories
                 <ArrowRight className="ml-2 size-4" />
@@ -1124,8 +1126,8 @@ export function HomePage() {
       <section className="relative overflow-hidden bg-gradient-to-b from-gray-50 to-white py-24">
         {/* Decorative blobs */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-40 top-1/3 size-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
-          <div className="absolute -right-40 bottom-1/3 size-[500px] rounded-full bg-teal-100/30 blur-3xl" />
+          <div className="absolute -left-40 top-1/3 size-[500px] rounded-full bg-blue-100/30 blur-3xl" />
+          <div className="absolute -right-40 bottom-1/3 size-[500px] rounded-full bg-sky-100/30 blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1137,7 +1139,7 @@ export function HomePage() {
             custom={0}
             className="text-center"
           >
-            <Badge className="mb-5 border-teal-200 bg-teal-50 px-4 py-1.5 text-teal-700 hover:bg-teal-100">
+            <Badge className="mb-5 border-blue-200 bg-blue-50 px-4 py-1.5 text-blue-700 hover:bg-blue-100">
               <Activity className="mr-1.5 size-3.5" /> Simple Process
             </Badge>
             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">
@@ -1151,7 +1153,7 @@ export function HomePage() {
           <div className="relative mt-16">
             {/* Connecting dashed line */}
             <div className="absolute left-0 right-0 top-24 hidden lg:block">
-              <div className="mx-auto max-w-3xl border-t-2 border-dashed border-emerald-200" />
+              <div className="mx-auto max-w-3xl border-t-2 border-dashed border-blue-200" />
             </div>
 
             <div className="grid gap-12 lg:grid-cols-3 lg:gap-8">
@@ -1161,27 +1163,27 @@ export function HomePage() {
                   icon: <Search className="size-7" />,
                   title: 'Choose Your Service',
                   desc: 'Browse our curated categories and find the exact service you need for your home or business.',
-                  gradient: 'from-emerald-600 via-emerald-500 to-teal-400',
-                  ringColor: 'ring-emerald-200',
-                  shadowColor: 'shadow-emerald-500/30',
+                  gradient: 'from-blue-900 via-blue-700 to-sky-400',
+                  ringColor: 'ring-blue-200',
+                  shadowColor: 'shadow-blue-500/30',
                 },
                 {
                   step: 2,
                   icon: <CalendarCheck className="size-7" />,
                   title: 'Book a Professional',
                   desc: 'Select a verified professional, pick a convenient time slot, and book instantly with transparent pricing.',
-                  gradient: 'from-amber-600 via-amber-500 to-orange-400',
-                  ringColor: 'ring-amber-200',
-                  shadowColor: 'shadow-amber-500/30',
+                  gradient: 'from-slate-800 via-slate-600 to-blue-400',
+                  ringColor: 'ring-slate-200',
+                  shadowColor: 'shadow-slate-500/30',
                 },
                 {
                   step: 3,
                   icon: <CheckCircle2 className="size-7" />,
                   title: 'Get It Done Right',
                   desc: 'Sit back and relax. Our verified professional arrives on time and delivers quality work guaranteed.',
-                  gradient: 'from-teal-600 via-teal-500 to-cyan-400',
-                  ringColor: 'ring-teal-200',
-                  shadowColor: 'shadow-teal-500/30',
+                  gradient: 'from-blue-800 via-blue-600 to-sky-400',
+                  ringColor: 'ring-blue-200',
+                  shadowColor: 'shadow-blue-500/30',
                 },
               ].map((item, idx) => (
                 <motion.div
@@ -1199,7 +1201,7 @@ export function HomePage() {
                       {item.icon}
                     </div>
                     {/* Step badge */}
-                    <div className="absolute -right-1 -top-1 flex size-8 items-center justify-center rounded-full bg-white text-sm font-bold text-emerald-700 shadow-lg ring-2 ring-emerald-100">
+                    <div className="absolute -right-1 -top-1 flex size-8 items-center justify-center rounded-full bg-white text-sm font-bold text-blue-700 shadow-lg ring-2 ring-blue-100">
                       {item.step}
                     </div>
                   </div>
@@ -1217,8 +1219,8 @@ export function HomePage() {
       <section className="relative overflow-hidden bg-white py-24">
         {/* Decorative */}
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute left-1/4 top-0 size-[400px] rounded-full bg-emerald-50/50 blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 size-[400px] rounded-full bg-teal-50/50 blur-3xl" />
+          <div className="absolute left-1/4 top-0 size-[400px] rounded-full bg-blue-50/50 blur-3xl" />
+          <div className="absolute bottom-0 right-1/4 size-[400px] rounded-full bg-sky-50/50 blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1254,7 +1256,7 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ Trust Badges ═══════════ */}
-      <section className="bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 py-16">
+      <section className="bg-gradient-to-r from-blue-50 via-sky-50 to-slate-50 py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <motion.div
             initial="hidden"
@@ -1264,10 +1266,10 @@ export function HomePage() {
             className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
           >
             {[
-              { icon: <ShieldCheck className="size-6" />, title: 'KYC Verified', desc: 'All providers undergo thorough verification', gradient: 'from-emerald-600 to-emerald-400' },
+              { icon: <ShieldCheck className="size-6" />, title: 'KYC Verified', desc: 'All providers undergo thorough verification', gradient: 'from-blue-900 to-blue-500' },
               { icon: <Lock className="size-6" />, title: 'Secure Payments', desc: 'Encrypted transactions & refund protection', gradient: 'from-blue-600 to-cyan-400' },
-              { icon: <ThumbsUp className="size-6" />, title: 'Quality Guaranteed', desc: 'Satisfaction guarantee on every booking', gradient: 'from-amber-600 to-amber-400' },
-              { icon: <Clock className="size-6" />, title: 'On-Time Service', desc: 'Punctual professionals who respect your time', gradient: 'from-teal-600 to-teal-400' },
+              { icon: <ThumbsUp className="size-6" />, title: 'Quality Guaranteed', desc: 'Satisfaction guarantee on every booking', gradient: 'from-slate-700 to-slate-400' },
+              { icon: <Clock className="size-6" />, title: 'On-Time Service', desc: 'Punctual professionals who respect your time', gradient: 'from-blue-700 to-sky-400' },
             ].map((badge, idx) => (
               <motion.div
                 key={badge.title}
@@ -1291,8 +1293,8 @@ export function HomePage() {
       {/* ═══════════ CTA Section ═══════════ */}
       <section className="relative overflow-hidden bg-white py-24">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -left-20 top-0 size-[500px] rounded-full bg-emerald-100/20 blur-3xl" />
-          <div className="absolute -right-20 bottom-0 size-[500px] rounded-full bg-teal-100/20 blur-3xl" />
+          <div className="absolute -left-20 top-0 size-[500px] rounded-full bg-blue-100/20 blur-3xl" />
+          <div className="absolute -right-20 bottom-0 size-[500px] rounded-full bg-sky-100/20 blur-3xl" />
         </div>
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -1303,7 +1305,7 @@ export function HomePage() {
             transition={{ duration: 0.7 }}
             className="relative overflow-hidden rounded-3xl"
             style={{
-              background: 'linear-gradient(135deg, rgba(6,78,59,0.95) 0%, rgba(15,118,110,0.95) 40%, rgba(14,116,144,0.95) 70%, rgba(22,78,99,0.95) 100%)',
+              background: 'linear-gradient(135deg, rgba(10,22,40,0.95) 0%, rgba(30,58,95,0.95) 40%, rgba(45,90,142,0.95) 70%, rgba(59,130,246,0.95) 100%)',
               padding: '3rem',
             }}
           >
@@ -1311,16 +1313,16 @@ export function HomePage() {
             <div className="absolute inset-0 rounded-3xl ring-1 ring-white/10" />
 
             {/* Decorative orbs */}
-            <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-gradient-to-br from-amber-400/10 to-orange-400/5 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-gradient-to-br from-cyan-400/10 to-blue-400/5 blur-3xl" />
+            <div className="pointer-events-none absolute -right-16 -top-16 size-64 rounded-full bg-gradient-to-br from-sky-400/10 to-blue-400/5 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-16 -left-16 size-64 rounded-full bg-gradient-to-br from-blue-400/10 to-sky-400/5 blur-3xl" />
 
             <div className="relative flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left">
-              <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-amber-500 via-amber-400 to-yellow-400 shadow-2xl shadow-amber-500/30">
+              <div className="flex size-20 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 shadow-2xl shadow-blue-500/30">
                 <Phone className="size-9 text-white" />
               </div>
               <div className="flex-1">
                 <h2 className="text-3xl font-bold text-white sm:text-4xl">Need a Custom Service?</h2>
-                <p className="mt-3 max-w-xl text-lg text-emerald-100/70">
+                <p className="mt-3 max-w-xl text-lg text-blue-100/70">
                   Can&apos;t find what you&apos;re looking for? We offer custom solutions for all your home service needs. Get in touch with us today!
                 </p>
               </div>
@@ -1328,7 +1330,7 @@ export function HomePage() {
                 <Button
                   size="lg"
                   onClick={() => navigate('register')}
-                  className="shimmer h-13 bg-gradient-to-r from-amber-500 via-amber-400 to-yellow-400 px-8 text-base font-bold text-white shadow-xl shadow-amber-500/30 hover:from-amber-600 hover:via-amber-500 hover:to-yellow-500 hover:shadow-2xl hover:shadow-amber-500/40"
+                  className="shimmer h-13 bg-gradient-to-r from-blue-900 via-blue-700 to-sky-500 px-8 text-base font-bold text-white shadow-xl shadow-blue-500/30 hover:from-blue-950 hover:via-blue-800 hover:to-sky-600 hover:shadow-2xl hover:shadow-blue-500/40"
                 >
                   Register Now
                   <ArrowRight className="ml-2 size-5" />
@@ -1355,11 +1357,11 @@ export function HomePage() {
               <p className="text-sm text-muted-foreground">India&apos;s trusted home service platform</p>
             </div>
             <div className="flex gap-6 text-sm text-muted-foreground">
-              <button onClick={() => navigate('about')} className="transition-colors hover:text-emerald-600">About</button>
-              <button onClick={() => navigate('faq')} className="transition-colors hover:text-emerald-600">FAQ</button>
-              <button onClick={() => navigate('contact')} className="transition-colors hover:text-emerald-600">Contact</button>
-              <button onClick={() => navigate('terms')} className="transition-colors hover:text-emerald-600">Terms</button>
-              <button onClick={() => navigate('privacy')} className="transition-colors hover:text-emerald-600">Privacy</button>
+              <button onClick={() => navigate('about')} className="transition-colors hover:text-blue-600">About</button>
+              <button onClick={() => navigate('faq')} className="transition-colors hover:text-blue-600">FAQ</button>
+              <button onClick={() => navigate('contact')} className="transition-colors hover:text-blue-600">Contact</button>
+              <button onClick={() => navigate('terms')} className="transition-colors hover:text-blue-600">Terms</button>
+              <button onClick={() => navigate('privacy')} className="transition-colors hover:text-blue-600">Privacy</button>
             </div>
           </div>
         </div>
