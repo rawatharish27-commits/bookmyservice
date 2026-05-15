@@ -3,12 +3,12 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000 & cd mini-services/api-service && node index.js & wait",
-    "dev:frontend": "node ./frontend/node_modules/.bin/vite --host",
-    "dev:backend": "cd backend && PORT=3001 npx tsx src/index.ts",
+    "dev": "node launcher.js",
+    "dev:frontend": "cd frontend && npx vite --host",
+    "dev:backend": "cd mini-services/api-service && npx tsx index.ts",
     "lint": "next lint",
-    "db:push": "npx prisma db push",
-    "db:seed": "npx tsx prisma/seed.ts"
+    "db:push": "cd database && npx prisma db push",
+    "db:seed": "cd database && npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
