@@ -143,6 +143,15 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
     ];
   }
 
+  // AREA_MANAGER (roleId=8)
+  if (roleId === ROLE_IDS.AREA_MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Commissions', page: 'client-commissions', icon: <DollarSign className="size-4" /> },
+      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+    ];
+  }
+
   // ADMIN (roleId=3)
   if (roleId === ROLE_IDS.ADMIN) {
     return [
@@ -230,6 +239,15 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
       { label: 'Dashboard', page: 'franchise-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Vendors', page: 'franchise-vendors', icon: <Users className="size-4" /> },
       { label: 'Analytics', page: 'franchise-analytics', icon: <BarChart3 className="size-4" /> },
+    ];
+  }
+
+  // AREA_MANAGER
+  if (roleId === ROLE_IDS.AREA_MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Commissions', page: 'client-commissions', icon: <DollarSign className="size-4" /> },
+      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
     ];
   }
 

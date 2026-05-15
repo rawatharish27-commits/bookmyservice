@@ -1,8 +1,8 @@
 import React from 'react';
-import { useApp } from '@/contexts/app-context';
+import { useAuth } from '@/contexts/auth-context';
 
 export function ClientCommissionsPage() {
-  const { user } = useApp();
+  const { user } = useAuth();
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
