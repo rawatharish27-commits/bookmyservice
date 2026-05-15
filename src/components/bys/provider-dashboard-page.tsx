@@ -114,15 +114,15 @@ export function ProviderDashboardPage() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Today&apos;s Bookings</p>
                 <p className="mt-1 text-2xl font-bold">{todayBookings.length}</p>
               </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100">
-                <CalendarCheck className="size-5 text-emerald-600" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                <CalendarCheck className="size-5 text-blue-700" />
               </div>
             </div>
           </CardContent>
@@ -177,7 +177,7 @@ export function ProviderDashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-3">
               <CardTitle className="text-lg">New Booking Requests</CardTitle>
-              <Badge className="bg-emerald-600 text-white hover:bg-emerald-700">
+              <Badge className="bg-blue-800 text-white hover:bg-[#1e3a5f]">
                 {pendingBookings.length} pending
               </Badge>
             </CardHeader>
@@ -203,14 +203,14 @@ export function ProviderDashboardPage() {
                         <p className="mt-1 text-sm text-muted-foreground">
                           {booking.client?.name} • {booking.scheduledDate} at {booking.scheduledTime}
                         </p>
-                        <p className="text-sm font-semibold text-emerald-600">
+                        <p className="text-sm font-semibold text-blue-700">
                           ₹{booking.finalPrice?.toLocaleString()}
                         </p>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="bg-emerald-600 text-white hover:bg-emerald-700"
+                          className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
                           onClick={() => handleBookingAction(booking.id, 'accept')}
                         >
                           <CheckCircle2 className="mr-1 size-3" />
@@ -242,7 +242,7 @@ export function ProviderDashboardPage() {
             <Separator />
             <CardContent className="space-y-3 pt-4">
               <Button
-                className="w-full justify-start bg-emerald-600 text-white hover:bg-emerald-700"
+                className="w-full justify-start bg-blue-800 text-white hover:bg-[#1e3a5f]"
                 onClick={() => navigate('provider-create-service')}
               >
                 <Plus className="mr-2 size-4" />
@@ -297,7 +297,7 @@ export function ProviderDashboardPage() {
               <ScrollArea className="max-h-64">
                 {todayBookings.map((booking, i) => (
                   <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0">
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-600">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">
                       {i + 1}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -327,9 +327,9 @@ export function ProviderDashboardPage() {
           <Separator />
           <CardContent className="pt-4">
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-              <div className="rounded-lg bg-emerald-50 p-3 text-center">
+              <div className="rounded-lg bg-blue-50 p-3 text-center">
                 <p className="text-sm text-muted-foreground">Today</p>
-                <p className="mt-1 text-lg font-bold text-emerald-600">
+                <p className="mt-1 text-lg font-bold text-blue-700">
                   ₹{todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}
                 </p>
               </div>

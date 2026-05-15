@@ -167,7 +167,7 @@ export function HowItWorksPage() {
           onClick={() => setActiveTab('client')}
           className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
             activeTab === 'client'
-              ? 'bg-emerald-600 text-white'
+              ? 'bg-blue-800 text-white'
               : 'bg-white text-muted-foreground hover:bg-gray-50'
           }`}
         >
@@ -178,7 +178,7 @@ export function HowItWorksPage() {
           onClick={() => setActiveTab('provider')}
           className={`flex flex-1 items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
             activeTab === 'provider'
-              ? 'bg-emerald-600 text-white'
+              ? 'bg-blue-800 text-white'
               : 'bg-white text-muted-foreground hover:bg-gray-50'
           }`}
         >
@@ -190,7 +190,7 @@ export function HowItWorksPage() {
       {/* Timeline Steps */}
       <div className="relative">
         {/* Vertical line */}
-        <div className="absolute left-6 top-0 bottom-0 hidden w-0.5 bg-emerald-200 sm:block" />
+        <div className="absolute left-6 top-0 bottom-0 hidden w-0.5 bg-blue-200 sm:block" />
 
         <div className="space-y-6">
           {steps.map((step, idx) => (
@@ -200,8 +200,8 @@ export function HowItWorksPage() {
                 <div
                   className={`flex size-12 items-center justify-center rounded-full ${
                     idx === steps.length - 1
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-emerald-100 text-emerald-600'
+                      ? 'bg-blue-800 text-white'
+                      : 'bg-blue-100 text-blue-700'
                   }`}
                 >
                   {step.icon}
@@ -209,15 +209,15 @@ export function HowItWorksPage() {
               </div>
 
               {/* Card */}
-              <Card className="flex-1 rounded-xl border-l-4 border-l-emerald-500 transition-all hover:shadow-md">
+              <Card className="flex-1 rounded-xl border-l-4 border-l-blue-500 transition-all hover:shadow-md">
                 <CardContent className="p-5">
                   <div className="flex items-center gap-3">
-                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 sm:hidden">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 sm:hidden">
                   {step.icon}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="flex size-6 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                    <span className="flex size-6 items-center justify-center rounded-full bg-blue-800 text-xs font-bold text-white">
                       {step.step}
                     </span>
                     <h3 className="font-semibold">{step.title}</h3>
@@ -235,7 +235,7 @@ export function HowItWorksPage() {
       {/* CTA Section */}
       <div className="mt-12 text-center">
         {activeTab === 'client' ? (
-          <div className="rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 p-8">
+          <div className="rounded-2xl bg-gradient-to-r from-blue-50 to-sky-50 p-8">
             <h2 className="text-2xl font-bold">Ready to Find a Service?</h2>
             <p className="mx-auto mt-2 max-w-md text-muted-foreground">
               Browse through thousands of verified service providers and book with confidence
@@ -244,7 +244,7 @@ export function HowItWorksPage() {
               <Button
                 size="lg"
                 onClick={() => navigate('categories')}
-                className="bg-emerald-600 text-white hover:bg-emerald-700"
+                className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
               >
                 Browse Services <ArrowRight className="ml-2 size-4" />
               </Button>
@@ -254,15 +254,15 @@ export function HowItWorksPage() {
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-8">
+          <div className="rounded-2xl bg-gradient-to-r from-blue-800 to-sky-600 p-8">
             <h2 className="text-2xl font-bold text-white">Ready to Grow Your Business?</h2>
-            <p className="mx-auto mt-2 max-w-md text-emerald-100">
+            <p className="mx-auto mt-2 max-w-md text-blue-100">
               Join our network of professionals and reach thousands of customers
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button
                 size="lg"
-                className="bg-white text-emerald-600 hover:bg-emerald-50"
+                className="bg-white text-blue-700 hover:bg-blue-50"
                 onClick={() => navigate('register')}
               >
                 Join as Provider <ArrowRight className="ml-2 size-4" />
@@ -291,7 +291,7 @@ export function HowItWorksPage() {
           </Accordion>
         </div>
         <div className="mt-6 text-center">
-          <Button variant="outline" onClick={() => navigate('faq')} className="border-emerald-200 text-emerald-600">
+          <Button variant="outline" onClick={() => navigate('faq')} className="border-blue-200 text-blue-700">
             View All FAQs <ArrowRight className="ml-1 size-4" />
           </Button>
         </div>

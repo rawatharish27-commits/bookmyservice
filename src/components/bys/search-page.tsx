@@ -152,12 +152,12 @@ export function SearchPage() {
         <Button
           variant="outline"
           onClick={() => setShowFilters(!showFilters)}
-          className={showFilters ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : ''}
+          className={showFilters ? 'border-blue-200 bg-blue-50 text-blue-800' : ''}
         >
           <SlidersHorizontal className="mr-1 size-4" />
           Filters
         </Button>
-        <Button onClick={handleSearch} className="bg-emerald-600 text-white hover:bg-emerald-700">
+        <Button onClick={handleSearch} className="bg-blue-800 text-white hover:bg-[#1e3a5f]">
           Search
         </Button>
       </div>
@@ -286,10 +286,10 @@ export function SearchPage() {
               : services.map((service) => (
                   <Card
                     key={service.id}
-                    className="cursor-pointer overflow-hidden rounded-xl transition-all hover:border-emerald-200 hover:shadow-md"
+                    className="cursor-pointer overflow-hidden rounded-xl transition-all hover:border-blue-200 hover:shadow-md"
                     onClick={() => navigate('service-detail', { serviceId: service.id })}
                   >
-                    <div className="relative aspect-video bg-gradient-to-br from-emerald-50 to-teal-50">
+                    <div className="relative aspect-video bg-gradient-to-br from-blue-50 to-sky-50">
                       {service.images ? (
                         <img
                           src={JSON.parse(service.images)[0] || ''}
@@ -298,7 +298,7 @@ export function SearchPage() {
                         />
                       ) : (
                         <div className="flex size-full items-center justify-center">
-                          <Wrench className="size-12 text-emerald-300" />
+                          <Wrench className="size-12 text-blue-400" />
                         </div>
                       )}
                       {service.priceNegotiable && (
@@ -325,11 +325,11 @@ export function SearchPage() {
                           <span className="text-sm font-medium">{service.averageRating.toFixed(1)}</span>
                           <span className="text-xs text-muted-foreground">({service.totalReviews})</span>
                         </div>
-                        <span className="text-lg font-bold text-emerald-600">₹{service.basePrice}</span>
+                        <span className="text-lg font-bold text-blue-700">₹{service.basePrice}</span>
                       </div>
                       <Button
                         size="sm"
-                        className="mt-3 w-full bg-emerald-600 text-white hover:bg-emerald-700"
+                        className="mt-3 w-full bg-blue-800 text-white hover:bg-[#1e3a5f]"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigate('service-detail', { serviceId: service.id });
@@ -358,7 +358,7 @@ export function SearchPage() {
       {/* Initial State */}
       {!searched && !loading && (
         <div className="py-16 text-center">
-          <Search className="mx-auto size-16 text-emerald-200" />
+          <Search className="mx-auto size-16 text-blue-300" />
           <p className="mt-4 text-lg font-medium text-muted-foreground">
             Search for services to get started
           </p>

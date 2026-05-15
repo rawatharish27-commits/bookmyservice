@@ -159,7 +159,7 @@ export function AdminUserDetailPage() {
         <div className="grid grid-cols-3 gap-4">
           <Card>
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <CalendarCheck className="size-5 text-emerald-600" />
+              <CalendarCheck className="size-5 text-blue-700" />
               <p className="mt-2 text-lg font-bold">—</p>
               <p className="text-xs text-muted-foreground">Bookings</p>
             </CardContent>

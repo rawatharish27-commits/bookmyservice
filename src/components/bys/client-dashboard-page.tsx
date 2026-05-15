@@ -90,7 +90,7 @@ export function ClientDashboardPage() {
       title: 'Completed Services',
       value: completedCount,
       icon: <CheckCircle2 className="size-5" />,
-      color: 'text-emerald-600 bg-emerald-50',
+      color: 'text-blue-700 bg-blue-50',
     },
     {
       title: 'Favorite Providers',
@@ -111,7 +111,7 @@ export function ClientDashboardPage() {
       {/* Welcome */}
       <div className="mb-8">
         <h1 className="text-2xl font-bold sm:text-3xl">
-          Welcome back, <span className="text-emerald-600">{user?.name || 'Client'}</span>!
+          Welcome back, <span className="text-blue-700">{user?.name || 'Client'}</span>!
         </h1>
         <p className="mt-1 text-muted-foreground">Here&apos;s an overview of your activity</p>
       </div>
@@ -139,7 +139,7 @@ export function ClientDashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg">Upcoming Bookings</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-emerald-600">
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-blue-700">
                 View All <ArrowRight className="ml-1 size-4" />
               </Button>
             </CardHeader>
@@ -157,7 +157,7 @@ export function ClientDashboardPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="mt-3 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                    className="mt-3 border-blue-200 text-blue-700 hover:bg-blue-50"
                     onClick={() => navigate('categories')}
                   >
                     Browse Services
@@ -171,8 +171,8 @@ export function ClientDashboardPage() {
                       onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
                       className="flex w-full items-center gap-4 rounded-lg border p-4 text-left transition-colors hover:bg-gray-50"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
-                        <Briefcase className="size-5 text-emerald-600" />
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                        <Briefcase className="size-5 text-blue-700" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-medium">
@@ -201,7 +201,7 @@ export function ClientDashboardPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-lg">Recent Reviews</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-emerald-600">
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-blue-700">
                 View All
               </Button>
             </CardHeader>
@@ -258,7 +258,7 @@ export function ClientDashboardPage() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           <Button
             variant="outline"
-            className="h-auto flex-col gap-2 py-4 border-emerald-200 hover:bg-emerald-50 hover:text-emerald-700"
+            className="h-auto flex-col gap-2 py-4 border-blue-200 hover:bg-blue-50 hover:text-blue-800"
             onClick={() => navigate('categories')}
           >
             <Briefcase className="size-5" />

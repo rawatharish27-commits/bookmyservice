@@ -39,7 +39,7 @@ function getNotifIcon(type: string) {
     case 'DISPUTE':
       return <AlertTriangle className="size-5 text-orange-600" />;
     case 'MESSAGE':
-      return <MessageSquare className="size-5 text-emerald-600" />;
+      return <MessageSquare className="size-5 text-blue-700" />;
     default:
       return <Info className="size-5 text-gray-500" />;
   }
@@ -103,7 +103,7 @@ export function ClientNotificationsPage() {
             size="sm"
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="border-blue-200 text-blue-700 hover:bg-blue-50"
           >
             {markingAll ? <Loader2 className="mr-2 size-4 animate-spin" /> : <CheckCheck className="mr-2 size-4" />}
             Mark all read
@@ -131,11 +131,11 @@ export function ClientNotificationsPage() {
                 key={notif.id}
                 onClick={() => handleNotificationClick(notif)}
                 className={`flex w-full items-start gap-3 rounded-lg border p-4 text-left transition-colors hover:bg-gray-50 ${
-                  !notif.isRead ? 'bg-emerald-50/50 border-emerald-100' : 'bg-white'
+                  !notif.isRead ? 'bg-blue-50/50 border-blue-100' : 'bg-white'
                 }`}
               >
                 <div className={`mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full ${
-                  !notif.isRead ? 'bg-emerald-100' : 'bg-gray-100'
+                  !notif.isRead ? 'bg-blue-100' : 'bg-gray-100'
                 }`}>
                   {getNotifIcon(notif.type)}
                 </div>
@@ -145,7 +145,7 @@ export function ClientNotificationsPage() {
                       {notif.title}
                     </p>
                     {!notif.isRead && (
-                      <span className="size-2 shrink-0 rounded-full bg-emerald-600" />
+                      <span className="size-2 shrink-0 rounded-full bg-blue-800" />
                     )}
                   </div>
                   <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">{notif.message}</p>
@@ -163,7 +163,7 @@ export function ClientNotificationsPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="shrink-0 text-emerald-600 hover:text-emerald-700"
+                    className="shrink-0 text-blue-700 hover:text-blue-800"
                     onClick={(e) => {
                       e.stopPropagation();
                       handleMarkRead(notif.id);

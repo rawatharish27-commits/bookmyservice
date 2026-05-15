@@ -47,36 +47,21 @@ async function main() {
   });
 
   // ========================================
-  // 2. SERVICE CATEGORIES (26 categories)
+  // 2. SERVICE CATEGORIES (11 categories)
   // ========================================
   console.log('📂 Creating service categories...');
   const categoryData = [
-    { name: 'Home Maintenance & Repairs', slug: 'home-maintenance-repairs', icon: 'Wrench', description: 'General home maintenance and repair services' },
-    { name: 'Plumbing Services', slug: 'plumbing-services', icon: 'Droplets', description: 'Professional plumbing installation, repair, and maintenance' },
-    { name: 'Electrical Services', slug: 'electrical-services', icon: 'Zap', description: 'Licensed electrical work and installations' },
-    { name: 'AC & HVAC Services', slug: 'ac-hvac-services', icon: 'Thermometer', description: 'Air conditioning and HVAC system services' },
-    { name: 'Carpentry & Woodwork', slug: 'carpentry-woodwork', icon: 'Hammer', description: 'Custom carpentry and woodworking services' },
-    { name: 'Painting & Decoration', slug: 'painting-decoration', icon: 'PaintBucket', description: 'Interior and exterior painting and decoration' },
-    { name: 'Handyman Services', slug: 'handyman-services', icon: 'Tool', description: 'Multi-purpose handyman for odd jobs' },
-    { name: 'Masonry & Tiling', slug: 'masonry-tiling', icon: 'Grid3x3', description: 'Masonry, tiling, and stone work' },
-    { name: 'Pest Control', slug: 'pest-control', icon: 'Bug', description: 'Professional pest control and extermination' },
-    { name: 'Home Cleaning', slug: 'home-cleaning', icon: 'Sparkles', description: 'Deep cleaning and regular home cleaning services' },
-    { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', icon: 'Container', description: 'Water tank cleaning and sanitization' },
-    { name: 'Appliance Repair', slug: 'appliance-repair', icon: 'Settings', description: 'Home appliance repair and servicing' },
-    { name: 'Gadget Repair', slug: 'gadget-repair', icon: 'Smartphone', description: 'Mobile, tablet, and gadget repair' },
-    { name: 'Lawn & Gardening', slug: 'lawn-gardening', icon: 'Flower2', description: 'Lawn maintenance and gardening services' },
-    { name: 'Exterior Cleaning', slug: 'exterior-cleaning', icon: 'SprayCan', description: 'Exterior wall, driveway, and facade cleaning' },
-    { name: 'Moving & Relocation', slug: 'moving-relocation', icon: 'Truck', description: 'Packing, moving, and relocation services' },
-    { name: 'Salon for Women', slug: 'salon-women', icon: 'Scissors', description: 'At-home salon services for women' },
-    { name: 'Barber for Men', slug: 'barber-men', icon: 'Scissors', description: 'At-home barber and grooming services for men' },
-    { name: 'Massage & Spa', slug: 'massage-spa', icon: 'Heart', description: 'At-home massage and spa services' },
-    { name: 'Fitness Training', slug: 'fitness-training', icon: 'Dumbbell', description: 'Personal fitness training at home' },
-    { name: 'Home Tutoring', slug: 'home-tutoring', icon: 'GraduationCap', description: 'At-home academic tutoring and coaching' },
-    { name: 'Event Planning', slug: 'event-planning', icon: 'PartyPopper', description: 'Event planning and management services' },
-    { name: 'Photography & Video', slug: 'photography-video', icon: 'Camera', description: 'Professional photography and videography' },
-    { name: 'Tailoring & Alteration', slug: 'tailoring-alteration', icon: 'PenTool', description: 'Custom tailoring and clothing alterations' },
-    { name: 'Pet Care', slug: 'pet-care', icon: 'PawPrint', description: 'Pet grooming, walking, and veterinary care' },
-    { name: 'Car Care', slug: 'car-care', icon: 'Car', description: 'Car washing, detailing, and maintenance' },
+    { name: 'Air Conditioner', slug: 'air-conditioner', icon: 'Thermometer', description: 'AC installation, repair, gas refill, and maintenance services' },
+    { name: 'Refrigerator', slug: 'refrigerator', icon: 'Snowflake', description: 'Fridge repair, servicing, and installation for all brands' },
+    { name: 'Washing Machine', slug: 'washing-machine', icon: 'RotateCcw', description: 'Washing machine repair, servicing, and installation' },
+    { name: 'Kitchen Appliances', slug: 'kitchen-appliances', icon: 'Utensils', description: 'Repair and servicing of kitchen appliances like microwave, chimney, dishwasher' },
+    { name: 'TV Repair', slug: 'tv-repair', icon: 'Tv', description: 'LED, LCD, OLED TV repair, installation, and wall mounting' },
+    { name: 'Water Purifier', slug: 'water-purifier', icon: 'Droplets', description: 'RO, UV, UF water purifier installation, repair, and filter replacement' },
+    { name: 'Geyser', slug: 'geyser', icon: 'Flame', description: 'Water heater installation, repair, and servicing' },
+    { name: 'Plumber', slug: 'plumber', icon: 'Wrench', description: 'Professional plumbing installation, repair, and maintenance' },
+    { name: 'Electrician', slug: 'electrician', icon: 'Zap', description: 'Licensed electrical work, wiring, and installations' },
+    { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', icon: 'GlassWater', description: 'Overhead and underground water tank cleaning and sanitization' },
+    { name: 'Movers and Packers', slug: 'movers-packers', icon: 'Truck', description: 'Home and office relocation, packing, and moving services' },
   ];
 
   const categories: Record<string, any> = {};
@@ -88,136 +73,109 @@ async function main() {
   }
 
   // ========================================
-  // 3. SUBCATEGORIES (10+ per top 10 categories)
+  // 3. SUBCATEGORIES (5-8 per category)
   // ========================================
   console.log('📁 Creating subcategories...');
   const subcategoryData: Record<string, Array<{ name: string; slug: string; description: string }>> = {
-    'home-maintenance-repairs': [
-      { name: 'Wall Crack Repair', slug: 'wall-crack-repair', description: 'Repair of wall cracks and plaster damage' },
-      { name: 'Door & Window Repair', slug: 'door-window-repair', description: 'Door and window frame repair and alignment' },
-      { name: 'Roof Leak Repair', slug: 'roof-leak-repair', description: 'Roof leak detection and waterproofing' },
-      { name: 'Floor Repair', slug: 'floor-repair', description: 'Floor tile, marble, and wooden floor repair' },
-      { name: 'Ceiling Repair', slug: 'ceiling-repair', description: 'False ceiling and POP ceiling repair' },
-      { name: 'Gate & Fence Repair', slug: 'gate-fence-repair', description: 'Main gate and boundary fence repair' },
-      { name: 'Lock & Latch Repair', slug: 'lock-latch-repair', description: 'Door lock and latch replacement and repair' },
-      { name: 'Waterproofing', slug: 'waterproofing', description: 'Bathroom and terrace waterproofing' },
-      { name: 'Grout & Sealant Work', slug: 'grout-sealant-work', description: 'Tile grouting and sealant application' },
-      { name: 'General Home Inspection', slug: 'general-home-inspection', description: 'Complete home inspection and assessment' },
-      { name: 'Termite Treatment', slug: 'termite-treatment', description: 'Pre and post construction anti-termite treatment' },
-      { name: 'Wall Putty & Finishing', slug: 'wall-putty-finishing', description: 'Wall putty application and surface finishing' },
+    'air-conditioner': [
+      { name: 'AC Installation', slug: 'ac-installation', description: 'Split and window AC installation' },
+      { name: 'AC Repair & Troubleshooting', slug: 'ac-repair-troubleshooting', description: 'AC cooling issues, noise, and repair' },
+      { name: 'AC Gas Refill', slug: 'ac-gas-refill', description: 'Refrigerant gas refill and leak fixing' },
+      { name: 'AC Deep Cleaning', slug: 'ac-deep-cleaning', description: 'Foam wash and deep cleaning of AC units' },
+      { name: 'AC Uninstallation', slug: 'ac-uninstallation', description: 'Safe AC unit removal and packing' },
+      { name: 'AC Annual Maintenance', slug: 'ac-annual-maintenance', description: 'Annual service contract for AC maintenance' },
+      { name: 'Compressor Repair', slug: 'compressor-repair', description: 'AC compressor diagnosis and repair' },
+      { name: 'Thermostat Repair', slug: 'thermostat-repair', description: 'AC thermostat replacement and calibration' },
     ],
-    'plumbing-services': [
+    'refrigerator': [
+      { name: 'Fridge Cooling Repair', slug: 'fridge-cooling-repair', description: 'Fixing refrigerator cooling and temperature issues' },
+      { name: 'Compressor Replacement', slug: 'fridge-compressor-replacement', description: 'Refrigerator compressor diagnosis and replacement' },
+      { name: 'Gas Charging', slug: 'fridge-gas-charging', description: 'Refrigerant gas refill for refrigerators' },
+      { name: 'Thermostat & Sensor Repair', slug: 'fridge-thermostat-sensor-repair', description: 'Thermostat and sensor repair and calibration' },
+      { name: 'Door Seal & Gasket Replacement', slug: 'fridge-door-seal-replacement', description: 'Rubber gasket and door seal replacement' },
+      { name: 'Deep Cleaning & Defrost', slug: 'fridge-deep-cleaning-defrost', description: 'Deep cleaning and defrost service for refrigerators' },
+      { name: 'Ice Maker Repair', slug: 'ice-maker-repair', description: 'Ice maker and water dispenser repair' },
+    ],
+    'washing-machine': [
+      { name: 'Drum & Spin Repair', slug: 'drum-spin-repair', description: 'Washing machine drum and spin cycle issues' },
+      { name: 'Water Inlet & Drain Repair', slug: 'water-inlet-drain-repair', description: 'Fixing water inlet valve and drain pump problems' },
+      { name: 'Motor Repair', slug: 'washing-machine-motor-repair', description: 'Motor diagnosis, repair, and replacement' },
+      { name: 'Control Panel Repair', slug: 'control-panel-repair', description: 'Electronic control board and panel repair' },
+      { name: 'Leak Fixing', slug: 'washing-machine-leak-fixing', description: 'Detection and repair of water leaks' },
+      { name: 'Installation & Demo', slug: 'washing-machine-installation-demo', description: 'New washing machine installation and demo' },
+      { name: 'Rubber Seal Replacement', slug: 'rubber-seal-replacement', description: 'Door rubber seal and gasket replacement' },
+    ],
+    'kitchen-appliances': [
+      { name: 'Microwave Repair', slug: 'microwave-repair', description: 'Microwave oven repair and servicing' },
+      { name: 'Chimney Repair & Cleaning', slug: 'chimney-repair-cleaning', description: 'Kitchen chimney repair and deep cleaning' },
+      { name: 'Dishwasher Repair', slug: 'dishwasher-repair', description: 'Dishwasher repair and servicing' },
+      { name: 'Gas Stove Repair', slug: 'gas-stove-repair', description: 'Gas stove and cooktop repair' },
+      { name: 'Mixer Grinder Repair', slug: 'mixer-grinder-repair', description: 'Mixer, grinder, and blender repair' },
+      { name: 'Water Dispenser Repair', slug: 'water-dispenser-repair', description: 'Hot and cold water dispenser repair' },
+    ],
+    'tv-repair': [
+      { name: 'LED/LCD Panel Repair', slug: 'led-lcd-panel-repair', description: 'TV screen and panel repair for LED/LCD TVs' },
+      { name: 'TV Motherboard Repair', slug: 'tv-motherboard-repair', description: 'Main board and power board repair' },
+      { name: 'TV Installation & Wall Mount', slug: 'tv-installation-wall-mount', description: 'TV wall mounting and setup' },
+      { name: 'Sound & Speaker Repair', slug: 'tv-sound-speaker-repair', description: 'TV sound, speaker, and audio issues' },
+      { name: 'Smart TV Software Update', slug: 'smart-tv-software-update', description: 'Smart TV firmware update and troubleshooting' },
+      { name: 'Remote & Sensor Repair', slug: 'remote-sensor-repair', description: 'TV remote and IR sensor repair' },
+      { name: 'Backlight Repair', slug: 'tv-backlight-repair', description: 'TV backlight and LED strip replacement' },
+    ],
+    'water-purifier': [
+      { name: 'RO Installation', slug: 'ro-installation', description: 'New RO water purifier installation and setup' },
+      { name: 'Filter Replacement', slug: 'filter-replacement', description: 'RO filter and membrane replacement' },
+      { name: 'RO Repair & Service', slug: 'ro-repair-service', description: 'Water purifier repair and general servicing' },
+      { name: 'UV Lamp Replacement', slug: 'uv-lamp-replacement', description: 'UV lamp and UF membrane replacement' },
+      { name: 'Leak & Noise Fixing', slug: 'ro-leak-noise-fixing', description: 'Fixing water leaks and unusual noise issues' },
+      { name: 'AMC Plans', slug: 'ro-amc-plans', description: 'Annual maintenance contract for water purifiers' },
+      { name: 'TDS Controller Adjustment', slug: 'tds-controller-adjustment', description: 'TDS controller calibration and mineral adjustment' },
+    ],
+    'geyser': [
+      { name: 'Geyser Installation', slug: 'geyser-installation', description: 'New water heater installation and plumbing' },
+      { name: 'Heating Element Replacement', slug: 'heating-element-replacement', description: 'Heating element and thermostat replacement' },
+      { name: 'Leak Repair', slug: 'geyser-leak-repair', description: 'Water leak detection and repair in geysers' },
+      { name: 'Temperature Control Repair', slug: 'temperature-control-repair', description: 'Thermostat and temperature control fixing' },
+      { name: 'Tank Cleaning & Descaling', slug: 'tank-cleaning-descaling', description: 'Geyser tank cleaning and descaling service' },
+      { name: 'Gas Geyser Repair', slug: 'gas-geyser-repair', description: 'Gas water heater repair and safety check' },
+      { name: 'Solar Water Heater Service', slug: 'solar-water-heater-service', description: 'Solar water heater maintenance and repair' },
+    ],
+    'plumber': [
       { name: 'Pipe Leakage Repair', slug: 'pipe-leakage-repair', description: 'Detection and repair of pipe leaks' },
       { name: 'Tap & Faucet Installation', slug: 'tap-faucet-installation', description: 'New tap and faucet installation' },
-      { name: 'Water Heater Installation', slug: 'water-heater-installation', description: 'Geyser and water heater installation' },
       { name: 'Toilet Repair', slug: 'toilet-repair', description: 'Toilet flush, seat, and cistern repair' },
       { name: 'Drain Cleaning', slug: 'drain-cleaning', description: 'Blocked drain and sewer line cleaning' },
       { name: 'Bathroom Fittings', slug: 'bathroom-fittings', description: 'Shower, jet spray, and bathroom fitting installation' },
       { name: 'Water Pump Installation', slug: 'water-pump-installation', description: 'Motor and water pump installation and repair' },
       { name: 'Kitchen Sink Plumbing', slug: 'kitchen-sink-plumbing', description: 'Kitchen sink pipe and drain installation' },
       { name: 'Sewage Line Repair', slug: 'sewage-line-repair', description: 'Sewage pipe repair and replacement' },
-      { name: 'RO & Water Purifier Installation', slug: 'ro-water-purifier-installation', description: 'RO system and water purifier setup' },
-      { name: 'Overhead Tank Plumbing', slug: 'overhead-tank-plumbing', description: 'Overhead water tank pipe connections' },
     ],
-    'electrical-services': [
+    'electrician': [
       { name: 'Wiring & Rewiring', slug: 'wiring-rewiring', description: 'Complete house wiring and rewiring' },
       { name: 'Switch & Socket Installation', slug: 'switch-socket-installation', description: 'New switch and socket point installation' },
       { name: 'Ceiling Fan Installation', slug: 'ceiling-fan-installation', description: 'Ceiling fan mounting and wiring' },
       { name: 'MCB & DB Box Setup', slug: 'mcb-db-box-setup', description: 'Distribution board and MCB configuration' },
       { name: 'Inverter & UPS Installation', slug: 'inverter-ups-installation', description: 'Power backup system installation' },
       { name: 'Light Fixture Installation', slug: 'light-fixture-installation', description: 'Chandelier, tube light, and LED installation' },
-      { name: 'CCTV Wiring', slug: 'cctv-wiring', description: 'Security camera wiring and setup' },
       { name: 'Electrical Safety Audit', slug: 'electrical-safety-audit', description: 'Home electrical safety inspection' },
-      { name: 'Earthing & Grounding', slug: 'earthing-grounding', description: 'Proper earthing and grounding installation' },
-      { name: 'Smart Home Wiring', slug: 'smart-home-wiring', description: 'Smart home automation wiring setup' },
-      { name: 'Doorbell & Intercom', slug: 'doorbell-intercom', description: 'Doorbell and video intercom installation' },
     ],
-    'ac-hvac-services': [
-      { name: 'AC Installation', slug: 'ac-installation', description: 'Split and window AC installation' },
-      { name: 'AC Repair & Troubleshooting', slug: 'ac-repair-troubleshooting', description: 'AC cooling issues and repair' },
-      { name: 'AC Gas Refill', slug: 'ac-gas-refill', description: 'Refrigerant gas refill and leak fixing' },
-      { name: 'AC Deep Cleaning', slug: 'ac-deep-cleaning', description: 'Foam wash and deep cleaning of AC units' },
-      { name: 'AC Uninstallation', slug: 'ac-uninstallation', description: 'Safe AC unit removal and packing' },
-      { name: 'AC Annual Maintenance', slug: 'ac-annual-maintenance', description: 'Annual service contract for AC maintenance' },
-      { name: 'Central AC Servicing', slug: 'central-ac-servicing', description: 'Central air conditioning system service' },
-      { name: 'Duct Cleaning', slug: 'duct-cleaning', description: 'HVAC duct cleaning and sanitization' },
-      { name: 'Thermostat Repair', slug: 'thermostat-repair', description: 'AC thermostat replacement and calibration' },
-      { name: 'Compressor Repair', slug: 'compressor-repair', description: 'AC compressor diagnosis and repair' },
-      { name: 'HVAC System Design', slug: 'hvac-system-design', description: 'Custom HVAC system planning and installation' },
+    'water-tank-cleaning': [
+      { name: 'Overhead Tank Cleaning', slug: 'overhead-tank-cleaning', description: 'Rooftop overhead water tank cleaning and sanitization' },
+      { name: 'Underground Tank Cleaning', slug: 'underground-tank-cleaning', description: 'Underground sump tank cleaning and disinfection' },
+      { name: 'Tank Disinfection & Sanitization', slug: 'tank-disinfection-sanitization', description: 'Chemical disinfection and UV sanitization of tanks' },
+      { name: 'Sediment & Sludge Removal', slug: 'sediment-sludge-removal', description: 'Removal of sediment, sludge, and deposits from tanks' },
+      { name: 'Tank Repair & Waterproofing', slug: 'tank-repair-waterproofing', description: 'Water tank crack repair and waterproofing' },
+      { name: 'Annual Tank Maintenance', slug: 'annual-tank-maintenance', description: 'Scheduled annual tank cleaning and maintenance' },
     ],
-    'carpentry-woodwork': [
-      { name: 'Modular Kitchen', slug: 'modular-kitchen', description: 'Custom modular kitchen design and installation' },
-      { name: 'Wardrobe & Closet', slug: 'wardrobe-closet', description: 'Custom wardrobe and closet construction' },
-      { name: 'Door & Frame Work', slug: 'door-frame-work', description: 'Wooden door and frame fabrication' },
-      { name: 'Furniture Repair', slug: 'furniture-repair', description: 'Repair of wooden furniture and fixtures' },
-      { name: 'TV Unit & Shelving', slug: 'tv-unit-shelving', description: 'Custom TV unit and wall shelving' },
-      { name: 'Bookshelf & Storage', slug: 'bookshelf-storage', description: 'Custom bookshelf and storage solutions' },
-      { name: 'Window Frame & Grill', slug: 'window-frame-grill', description: 'Wooden window frame work' },
-      { name: 'False Ceiling Woodwork', slug: 'false-ceiling-woodwork', description: 'Wooden false ceiling and paneling' },
-      { name: 'Pooja Room Design', slug: 'pooja-room-design', description: 'Custom pooja room and mandir woodwork' },
-      { name: 'Flooring & Decking', slug: 'flooring-decking', description: 'Wooden flooring and deck installation' },
-      { name: 'Study Table & Workstation', slug: 'study-table-workstation', description: 'Custom study table and home office workstation' },
-    ],
-    'painting-decoration': [
-      { name: 'Interior Wall Painting', slug: 'interior-wall-painting', description: 'Interior wall painting and color consultation' },
-      { name: 'Exterior Wall Painting', slug: 'exterior-wall-painting', description: 'Exterior wall painting and weatherproofing' },
-      { name: 'Texture Painting', slug: 'texture-painting', description: 'Decorative texture and stucco painting' },
-      { name: 'Wood Polish & Varnish', slug: 'wood-polish-varnish', description: 'Wood furniture and door polishing' },
-      { name: 'Wallpaper Installation', slug: 'wallpaper-installation', description: 'Wallpaper selection and installation' },
-      { name: 'Stenciling & Murals', slug: 'stenciling-murals', description: 'Custom wall stenciling and mural painting' },
-      { name: 'Metal Paint & Anti-Rust', slug: 'metal-paint-anti-rust', description: 'Metal gate and grille painting' },
-      { name: 'Waterproof Paint', slug: 'waterproof-paint', description: 'Waterproof coating for walls and roofs' },
-      { name: 'Pop & Cornice Work', slug: 'pop-cornice-work', description: 'Plaster of Paris and decorative cornice work' },
-      { name: 'Wall Putty & Primer', slug: 'wall-putty-primer', description: 'Wall surface preparation and priming' },
-    ],
-    'handyman-services': [
-      { name: 'Furniture Assembly', slug: 'furniture-assembly', description: 'Flat-pack furniture assembly' },
-      { name: 'Picture & Mirror Hanging', slug: 'picture-mirror-hanging', description: 'Wall mounting for pictures and mirrors' },
-      { name: 'TV Wall Mounting', slug: 'tv-wall-mounting', description: 'TV bracket installation and cable management' },
-      { name: 'Shelf Installation', slug: 'shelf-installation', description: 'Floating and wall shelf installation' },
-      { name: 'Curtain Rod Installation', slug: 'curtain-rod-installation', description: 'Curtain rod and blind fitting' },
-      { name: 'Small Repairs', slug: 'small-repairs', description: 'General small repair and fix-up jobs' },
-      { name: 'Appliance Installation', slug: 'appliance-installation', description: 'Home appliance mounting and setup' },
-      { name: 'Weather Stripping', slug: 'weather-stripping', description: 'Door and window weather stripping' },
-      { name: 'Gutter Cleaning', slug: 'gutter-cleaning', description: 'Rain gutter cleaning and maintenance' },
-      { name: 'Smoke Detector Installation', slug: 'smoke-detector-installation', description: 'Smoke and CO detector installation' },
-    ],
-    'masonry-tiling': [
-      { name: 'Floor Tiling', slug: 'floor-tiling', description: 'Floor tile laying and grouting' },
-      { name: 'Wall Tiling', slug: 'wall-tiling', description: 'Bathroom and kitchen wall tiling' },
-      { name: 'Marble & Granite Work', slug: 'marble-granite-work', description: 'Marble and granite flooring and countertops' },
-      { name: 'Brick Work', slug: 'brick-work', description: 'Brick wall construction and repair' },
-      { name: 'Plastering', slug: 'plastering', description: 'Wall plastering and finishing' },
-      { name: 'Concrete Work', slug: 'concrete-work', description: 'Concrete pouring and finishing' },
-      { name: 'Kitchen Counter Tiling', slug: 'kitchen-counter-tiling', description: 'Kitchen countertop tiling and backsplash' },
-      { name: 'Bathroom Renovation', slug: 'bathroom-renovation', description: 'Complete bathroom tile renovation' },
-      { name: 'Grout Replacement', slug: 'grout-replacement', description: 'Old grout removal and replacement' },
-      { name: 'Stone Cladding', slug: 'stone-cladding', description: 'Natural stone wall cladding' },
-    ],
-    'pest-control': [
-      { name: 'Cockroach Control', slug: 'cockroach-control', description: 'Complete cockroach extermination and prevention' },
-      { name: 'Termite Control', slug: 'termite-control', description: 'Anti-termite treatment and protection' },
-      { name: 'Mosquito Control', slug: 'mosquito-control', description: 'Mosquito fogging and larvicide treatment' },
-      { name: 'Bed Bug Treatment', slug: 'bed-bug-treatment', description: 'Bed bug heat treatment and chemical control' },
-      { name: 'Rodent Control', slug: 'rodent-control', description: 'Rat and mice trapping and extermination' },
-      { name: 'Ant Control', slug: 'ant-control', description: 'Ant infestation treatment and barrier' },
-      { name: 'Spider Control', slug: 'spider-control', description: 'Spider removal and web cleaning' },
-      { name: 'Flea & Tick Control', slug: 'flea-tick-control', description: 'Pet area flea and tick treatment' },
-      { name: 'Lizard Control', slug: 'lizard-control', description: 'Lizard repellent and removal' },
-      { name: 'Annual Pest Contract', slug: 'annual-pest-contract', description: 'Year-round pest control maintenance' },
-      { name: 'Commercial Pest Control', slug: 'commercial-pest-control', description: 'Office and commercial space pest management' },
-    ],
-    'home-cleaning': [
-      { name: 'Deep Home Cleaning', slug: 'deep-home-cleaning', description: 'Complete deep cleaning of entire home' },
-      { name: 'Kitchen Deep Cleaning', slug: 'kitchen-deep-cleaning', description: 'Kitchen chimney, cabinet, and surface cleaning' },
-      { name: 'Bathroom Deep Cleaning', slug: 'bathroom-deep-cleaning', description: 'Bathroom tile, fixture, and sanitization' },
-      { name: 'Sofa & Carpet Cleaning', slug: 'sofa-carpet-cleaning', description: 'Sofa shampooing and carpet deep clean' },
-      { name: 'Move-In Cleaning', slug: 'move-in-cleaning', description: 'Pre-move-in deep cleaning service' },
-      { name: 'Post-Construction Cleaning', slug: 'post-construction-cleaning', description: 'After renovation debris and dust cleaning' },
-      { name: 'Window & Glass Cleaning', slug: 'window-glass-cleaning', description: 'Interior and exterior window cleaning' },
-      { name: 'Regular Housekeeping', slug: 'regular-housekeeping', description: 'Daily or weekly housekeeping service' },
-      { name: 'Mattress Cleaning', slug: 'mattress-cleaning', description: 'Mattress deep cleaning and sanitization' },
-      { name: 'Office Cleaning', slug: 'office-cleaning', description: 'Commercial office cleaning service' },
+    'movers-packers': [
+      { name: 'Local Home Shifting', slug: 'local-home-shifting', description: 'Within-city home relocation and shifting' },
+      { name: 'Intercity Moving', slug: 'intercity-moving', description: 'Long-distance intercity home relocation' },
+      { name: 'Office Relocation', slug: 'office-relocation', description: 'Corporate and office moving services' },
+      { name: 'Packing & Unpacking', slug: 'packing-unpacking', description: 'Professional packing and unpacking service' },
+      { name: 'Vehicle Transport', slug: 'vehicle-transport', description: 'Car and bike transportation services' },
+      { name: 'Storage & Warehousing', slug: 'storage-warehousing', description: 'Temporary storage and warehousing solutions' },
+      { name: 'Furniture Moving', slug: 'furniture-moving', description: 'Single item and furniture moving service' },
+      { name: 'Insurance & Claims', slug: 'insurance-claims', description: 'Transit insurance and damage claims assistance' },
     ],
   };
 
@@ -372,15 +330,209 @@ async function main() {
   }
 
   // ========================================
-  // 7. SAMPLE SERVICES (18 services across categories)
+  // 7. SAMPLE SERVICES (17 services across all 11 categories)
   // ========================================
   console.log('🔧 Creating sample services...');
   const serviceData = [
-    // Rajesh Kumar - Delhi provider
+    // Air Conditioner
+    {
+      providerId: providers[2].id,
+      categoryId: categories['air-conditioner'].id,
+      subcategoryId: subcategories['air-conditioner']?.[0]?.id,
+      title: 'Split AC Installation Service',
+      description: 'Professional split AC installation by certified technician. Includes copper piping, drainage pipe setup, gas charging, and performance testing. We install all major brands. 30-day service warranty included.',
+      basePrice: 1299,
+      priceNegotiable: false,
+      serviceDurationMinutes: 120,
+      serviceAreaRadiusKm: 20,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      address: '78, Koramangala, Bengaluru',
+      pincode: '560001',
+      latitude: 12.9352,
+      longitude: 77.6245,
+    },
+    {
+      providerId: providers[2].id,
+      categoryId: categories['air-conditioner'].id,
+      subcategoryId: subcategories['air-conditioner']?.[2]?.id,
+      title: 'AC Gas Refill & Leak Fixing',
+      description: 'Complete AC gas refill service with leak detection and fixing. We use genuine refrigerant gas and ensure optimal cooling performance. Includes pressure testing and performance verification.',
+      basePrice: 1899,
+      priceNegotiable: true,
+      serviceDurationMinutes: 90,
+      serviceAreaRadiusKm: 20,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      address: '78, Koramangala, Bengaluru',
+      pincode: '560001',
+      latitude: 12.9352,
+      longitude: 77.6245,
+    },
+
+    // Refrigerator
     {
       providerId: providers[0].id,
-      categoryId: categories['plumbing-services'].id,
-      subcategoryId: subcategories['plumbing-services']?.[0]?.id,
+      categoryId: categories['refrigerator'].id,
+      subcategoryId: subcategories['refrigerator']?.[0]?.id,
+      title: 'Refrigerator Cooling Repair Service',
+      description: 'Expert repair for all refrigerator cooling issues. Whether your fridge is not cooling enough, too cold, or has uneven temperature, our technicians diagnose and fix the problem quickly. We service all brands including Samsung, LG, Whirlpool, and Godrej.',
+      basePrice: 499,
+      priceNegotiable: true,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 15,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      address: '45, Connaught Place, New Delhi',
+      pincode: '110001',
+      latitude: 28.6315,
+      longitude: 77.2167,
+    },
+
+    // Washing Machine
+    {
+      providerId: providers[1].id,
+      categoryId: categories['washing-machine'].id,
+      subcategoryId: subcategories['washing-machine']?.[0]?.id,
+      title: 'Washing Machine Drum & Spin Repair',
+      description: 'Expert repair for washing machine drum issues, spin cycle problems, and unusual vibrations. We fix top-load, front-load, and semi-automatic machines. Diagnosis, spare parts replacement, and testing included. All major brands serviced.',
+      basePrice: 549,
+      priceNegotiable: true,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 15,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      address: '12, Andheri West, Mumbai',
+      pincode: '400051',
+      latitude: 19.1197,
+      longitude: 72.8464,
+    },
+
+    // Kitchen Appliances
+    {
+      providerId: providers[0].id,
+      categoryId: categories['kitchen-appliances'].id,
+      subcategoryId: subcategories['kitchen-appliances']?.[1]?.id,
+      title: 'Kitchen Chimney Repair & Deep Cleaning',
+      description: 'Professional kitchen chimney repair and deep cleaning service. We fix suction issues, motor problems, and replace filters. Deep cleaning includes degreasing, filter wash, and duct cleaning. Service covers all chimney brands and types.',
+      basePrice: 699,
+      priceNegotiable: false,
+      serviceDurationMinutes: 90,
+      serviceAreaRadiusKm: 15,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      address: '45, Connaught Place, New Delhi',
+      pincode: '110001',
+      latitude: 28.6315,
+      longitude: 77.2167,
+    },
+    {
+      providerId: providers[1].id,
+      categoryId: categories['kitchen-appliances'].id,
+      subcategoryId: subcategories['kitchen-appliances']?.[0]?.id,
+      title: 'Microwave Oven Repair & Service',
+      description: 'Expert microwave oven repair for all types - solo, grill, and convection. We fix heating issues, turntable problems, display errors, and more. Genuine spare parts used with service warranty. All brands including Samsung, LG, IFB, and Bajaj.',
+      basePrice: 399,
+      priceNegotiable: false,
+      serviceDurationMinutes: 45,
+      serviceAreaRadiusKm: 20,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      address: '12, Andheri West, Mumbai',
+      pincode: '400051',
+      latitude: 19.1197,
+      longitude: 72.8464,
+    },
+
+    // TV Repair
+    {
+      providerId: providers[0].id,
+      categoryId: categories['tv-repair'].id,
+      subcategoryId: subcategories['tv-repair']?.[2]?.id,
+      title: 'TV Installation & Wall Mounting',
+      description: 'Professional TV wall mounting service for LED, LCD, OLED, and QLED TVs. Includes bracket installation, cable management, wall concealment, and TV setup. We mount all TV sizes from 32" to 85". Hidden cable routing available.',
+      basePrice: 599,
+      priceNegotiable: false,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 15,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      address: '45, Connaught Place, New Delhi',
+      pincode: '110001',
+      latitude: 28.6315,
+      longitude: 77.2167,
+    },
+    {
+      providerId: providers[2].id,
+      categoryId: categories['tv-repair'].id,
+      subcategoryId: subcategories['tv-repair']?.[0]?.id,
+      title: 'LED/LCD TV Panel Repair',
+      description: 'Expert TV panel repair for LED and LCD televisions. We fix display issues including lines on screen, dead pixels, backlight failure, and color distortion. Component-level repair by experienced technicians. Service warranty included.',
+      basePrice: 1499,
+      priceNegotiable: true,
+      serviceDurationMinutes: 120,
+      serviceAreaRadiusKm: 20,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      address: '78, Koramangala, Bengaluru',
+      pincode: '560001',
+      latitude: 12.9352,
+      longitude: 77.6245,
+    },
+
+    // Water Purifier
+    {
+      providerId: providers[1].id,
+      categoryId: categories['water-purifier'].id,
+      subcategoryId: subcategories['water-purifier']?.[0]?.id,
+      title: 'RO Water Purifier Installation',
+      description: 'Professional RO water purifier installation and setup. Includes mounting, pipe connections, initial filter flushing, and TDS testing. We install all RO brands - Kent, Aquaguard, Livpure, Pureit, and more. Free first-month service check included.',
+      basePrice: 599,
+      priceNegotiable: false,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 20,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      address: '12, Andheri West, Mumbai',
+      pincode: '400051',
+      latitude: 19.1197,
+      longitude: 72.8464,
+    },
+
+    // Geyser
+    {
+      providerId: providers[0].id,
+      categoryId: categories['geyser'].id,
+      subcategoryId: subcategories['geyser']?.[0]?.id,
+      title: 'Geyser Installation Service',
+      description: 'Professional water heater installation by certified technician. Includes wall mounting, plumbing connections, electrical wiring, safety valve setup, and temperature testing. We install storage, instant, and gas geysers. Safety inspection included.',
+      basePrice: 699,
+      priceNegotiable: false,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 15,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      address: '45, Connaught Place, New Delhi',
+      pincode: '110001',
+      latitude: 28.6315,
+      longitude: 77.2167,
+    },
+
+    // Plumber
+    {
+      providerId: providers[0].id,
+      categoryId: categories['plumber'].id,
+      subcategoryId: subcategories['plumber']?.[0]?.id,
       title: 'Professional Pipe Leakage Repair & Fixing',
       description: 'Expert plumbing service for detecting and repairing all types of pipe leakages. We use advanced leak detection equipment and provide long-lasting solutions for residential and commercial properties. Service includes inspection, repair, and post-repair testing.',
       basePrice: 499,
@@ -396,9 +548,29 @@ async function main() {
       longitude: 77.2167,
     },
     {
+      providerId: providers[1].id,
+      categoryId: categories['plumber'].id,
+      subcategoryId: subcategories['plumber']?.[3]?.id,
+      title: 'Blocked Drain Cleaning Service',
+      description: 'Professional drain and sewer line cleaning service. We use high-pressure jetting machines and specialized tools to clear blockages. Covers kitchen sinks, bathroom drains, toilet blocks, and main sewer lines. Preventive tips included.',
+      basePrice: 599,
+      priceNegotiable: false,
+      serviceDurationMinutes: 60,
+      serviceAreaRadiusKm: 20,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      address: '12, Andheri West, Mumbai',
+      pincode: '400051',
+      latitude: 19.1197,
+      longitude: 72.8464,
+    },
+
+    // Electrician
+    {
       providerId: providers[0].id,
-      categoryId: categories['electrical-services'].id,
-      subcategoryId: subcategories['electrical-services']?.[1]?.id,
+      categoryId: categories['electrician'].id,
+      subcategoryId: subcategories['electrician']?.[1]?.id,
       title: 'Switch & Socket Installation Service',
       description: 'Professional installation of switches, sockets, and electrical points. Licensed electrician with 10+ years of experience. Includes wiring, fitting, and safety testing. We ensure all installations meet ISI standards.',
       basePrice: 299,
@@ -414,160 +586,35 @@ async function main() {
       longitude: 77.2167,
     },
     {
-      providerId: providers[0].id,
-      categoryId: categories['home-maintenance-repairs'].id,
-      subcategoryId: subcategories['home-maintenance-repairs']?.[0]?.id,
-      title: 'Wall Crack & Plaster Repair Service',
-      description: 'Complete wall crack repair service including plaster damage restoration. Professional technicians use quality materials for long-lasting repairs. Includes surface preparation, crack filling, and finishing.',
-      basePrice: 599,
-      priceNegotiable: true,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 15,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    // Priya Sharma - Mumbai provider
-    {
-      providerId: providers[1].id,
-      categoryId: categories['home-cleaning'].id,
-      subcategoryId: subcategories['home-cleaning']?.[0]?.id,
-      title: 'Deep Home Cleaning - Complete House',
-      description: 'Thorough deep cleaning service for your entire home. Includes kitchen, bathrooms, bedrooms, living area, and balconies. We use eco-friendly cleaning products and professional-grade equipment. Service covers dusting, mopping, scrubbing, and sanitization.',
-      basePrice: 2499,
-      priceNegotiable: false,
-      serviceDurationMinutes: 240,
-      serviceAreaRadiusKm: 25,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['salon-women'].id,
-      title: 'At-Home Salon Service for Women',
-      description: 'Complete salon experience at your doorstep. Includes haircut, facial, manicure, pedicure, waxing, and threading. Professional beautician with premium products. Relax in the comfort of your home.',
-      basePrice: 1499,
-      priceNegotiable: false,
-      serviceDurationMinutes: 180,
-      serviceAreaRadiusKm: 20,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['painting-decoration'].id,
-      subcategoryId: subcategories['painting-decoration']?.[0]?.id,
-      title: 'Interior Wall Painting - Professional Finish',
-      description: 'Transform your home with professional interior painting. Includes surface preparation, putty, primer, and two coats of premium emulsion paint. Color consultation available. We protect your furniture and ensure a clean workspace.',
-      basePrice: 3999,
+      providerId: providers[2].id,
+      categoryId: categories['electrician'].id,
+      subcategoryId: subcategories['electrician']?.[0]?.id,
+      title: 'Complete House Wiring & Rewiring',
+      description: 'Full house wiring and rewiring by licensed electricians. Includes concealed wiring, MCB distribution board setup, earthing, and safety certification. We use ISI-marked wires and accessories. Ideal for new construction and renovation projects.',
+      basePrice: 4999,
       priceNegotiable: true,
       serviceDurationMinutes: 480,
       serviceAreaRadiusKm: 25,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    // Arun Patel - Bengaluru provider
-    {
-      providerId: providers[2].id,
-      categoryId: categories['ac-hvac-services'].id,
-      subcategoryId: subcategories['ac-hvac-services']?.[0]?.id,
-      title: 'Split AC Installation Service',
-      description: 'Professional split AC installation by certified technician. Includes copper piping, drainage pipe setup, gas charging, and performance testing. We install all major brands. 30-day service warranty included.',
-      basePrice: 1299,
-      priceNegotiable: false,
-      serviceDurationMinutes: 120,
-      serviceAreaRadiusKm: 20,
       city: 'Bengaluru',
       state: 'Karnataka',
       country: 'India',
       address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
+      pincode: '560001',
       latitude: 12.9352,
       longitude: 77.6245,
     },
+
+    // Water Tank Cleaning
     {
-      providerId: providers[2].id,
-      categoryId: categories['ac-hvac-services'].id,
-      subcategoryId: subcategories['ac-hvac-services']?.[2]?.id,
-      title: 'AC Gas Refill & Leak Fixing',
-      description: 'Complete AC gas refill service with leak detection and fixing. We use genuine refrigerant gas and ensure optimal cooling performance. Includes pressure testing and performance verification.',
-      basePrice: 1899,
-      priceNegotiable: true,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 20,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
-    {
-      providerId: providers[2].id,
-      categoryId: categories['pest-control'].id,
-      subcategoryId: subcategories['pest-control']?.[0]?.id,
-      title: 'Cockroach Control - Complete Extermination',
-      description: 'Professional cockroach control using safe, herbal-based chemicals. Includes kitchen, bathroom, and all affected areas treatment. 3-month warranty with follow-up visit. Safe for children and pets.',
+      providerId: providers[1].id,
+      categoryId: categories['water-tank-cleaning'].id,
+      subcategoryId: subcategories['water-tank-cleaning']?.[0]?.id,
+      title: 'Overhead Water Tank Cleaning & Sanitization',
+      description: 'Professional overhead water tank cleaning and sanitization. Includes draining, sludge removal, high-pressure washing, anti-bacterial treatment, and UV sanitization. We ensure safe and hygienic drinking water. Suitable for residential and commercial buildings.',
       basePrice: 999,
       priceNegotiable: false,
-      serviceDurationMinutes: 60,
+      serviceDurationMinutes: 120,
       serviceAreaRadiusKm: 25,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
-    // More services across various categories
-    {
-      providerId: providers[0].id,
-      categoryId: categories['carpentry-woodwork'].id,
-      subcategoryId: subcategories['carpentry-woodwork']?.[0]?.id,
-      title: 'Modular Kitchen Design & Installation',
-      description: 'Custom modular kitchen design, fabrication, and installation. Wide range of finishes and accessories. Includes 3D design consultation, material selection, and professional installation with 5-year warranty.',
-      basePrice: 49999,
-      priceNegotiable: true,
-      serviceDurationMinutes: 480,
-      serviceAreaRadiusKm: 30,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['massage-spa'].id,
-      title: 'Full Body Massage & Relaxation Therapy',
-      description: 'Professional at-home full body massage service. Choose from Swedish, Deep Tissue, or Aromatherapy massage. Certified therapist brings all equipment and oils. 60 or 90 minute sessions available.',
-      basePrice: 1799,
-      priceNegotiable: false,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 15,
       city: 'Mumbai',
       state: 'Maharashtra',
       country: 'India',
@@ -576,29 +623,15 @@ async function main() {
       latitude: 19.1197,
       longitude: 72.8464,
     },
-    {
-      providerId: providers[2].id,
-      categoryId: categories['appliance-repair'].id,
-      title: 'Washing Machine Repair & Service',
-      description: 'Expert repair for all types of washing machines - top load, front load, and semi-automatic. Diagnosis, spare parts replacement, and testing included. We service all major brands.',
-      basePrice: 399,
-      priceNegotiable: true,
-      serviceDurationMinutes: 60,
-      serviceAreaRadiusKm: 15,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
+
+    // Movers and Packers
     {
       providerId: providers[0].id,
-      categoryId: categories['moving-relocation'].id,
-      title: 'Home Relocation & Packing Service',
-      description: 'Complete home shifting service including packing, loading, transportation, and unpacking. Professional team with quality packing materials. Insurance coverage available. Local and intercity moves.',
-      basePrice: 5999,
+      categoryId: categories['movers-packers'].id,
+      subcategoryId: subcategories['movers-packers']?.[0]?.id,
+      title: 'Local Home Shifting Service',
+      description: 'Complete local home shifting service including packing, loading, transportation, and unpacking. Professional team with quality packing materials. Insurance coverage available. Within-city relocation made hassle-free with our experienced movers.',
+      basePrice: 3999,
       priceNegotiable: true,
       serviceDurationMinutes: 480,
       serviceAreaRadiusKm: 50,
@@ -611,88 +644,20 @@ async function main() {
       longitude: 77.2167,
     },
     {
-      providerId: providers[1].id,
-      categoryId: categories['fitness-training'].id,
-      title: 'Personal Fitness Training at Home',
-      description: 'Certified personal trainer for home workouts. Customized fitness plans including weight training, cardio, and yoga. Suitable for all fitness levels. Monthly packages available.',
-      basePrice: 799,
-      priceNegotiable: false,
-      serviceDurationMinutes: 60,
-      serviceAreaRadiusKm: 10,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
       providerId: providers[2].id,
-      categoryId: categories['photography-video'].id,
-      title: 'Professional Event Photography',
-      description: 'Professional photography for events, parties, and celebrations. Includes candid and traditional shots. High-resolution images delivered via cloud within 7 days. Album design available at extra cost.',
-      basePrice: 4999,
+      categoryId: categories['movers-packers'].id,
+      subcategoryId: subcategories['movers-packers']?.[1]?.id,
+      title: 'Intercity Home Relocation',
+      description: 'Long-distance intercity home relocation service. Includes professional packing with premium materials, safe transportation in enclosed carriers, transit insurance, and doorstep delivery. We handle moves across all major Indian cities with care and reliability.',
+      basePrice: 14999,
       priceNegotiable: true,
-      serviceDurationMinutes: 360,
-      serviceAreaRadiusKm: 30,
+      serviceDurationMinutes: 480,
+      serviceAreaRadiusKm: 100,
       city: 'Bengaluru',
       state: 'Karnataka',
       country: 'India',
       address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
-      latitude: 12.9352,
-      longitude: 77.6245,
-    },
-    {
-      providerId: providers[0].id,
-      categoryId: categories['handyman-services'].id,
-      subcategoryId: subcategories['handyman-services']?.[2]?.id,
-      title: 'TV Wall Mounting & Installation',
-      description: 'Professional TV wall mounting service. Includes bracket installation, cable management, and TV setup. We mount all TV sizes from 32" to 75". Hidden cable routing available for an extra charge.',
-      basePrice: 499,
-      priceNegotiable: false,
-      serviceDurationMinutes: 45,
-      serviceAreaRadiusKm: 15,
-      city: 'Delhi',
-      state: 'Delhi',
-      country: 'India',
-      address: '45, Connaught Place, New Delhi',
-      pincode: '110001',
-      latitude: 28.6315,
-      longitude: 77.2167,
-    },
-    {
-      providerId: providers[1].id,
-      categoryId: categories['pet-care'].id,
-      title: 'Pet Grooming at Home',
-      description: 'Professional pet grooming service at your doorstep. Includes bathing, hair trimming, nail clipping, ear cleaning, and teeth brushing. Experienced groomers handle dogs and cats of all breeds.',
-      basePrice: 899,
-      priceNegotiable: false,
-      serviceDurationMinutes: 90,
-      serviceAreaRadiusKm: 15,
-      city: 'Mumbai',
-      state: 'Maharashtra',
-      country: 'India',
-      address: '12, Andheri West, Mumbai',
-      pincode: '400051',
-      latitude: 19.1197,
-      longitude: 72.8464,
-    },
-    {
-      providerId: providers[2].id,
-      categoryId: categories['car-care'].id,
-      title: 'Car Detailing & Deep Clean',
-      description: 'Premium car detailing service at your doorstep. Includes exterior wash, clay bar treatment, wax coating, interior vacuuming, dashboard polish, and seat cleaning. Ceramic coating available at extra cost.',
-      basePrice: 2499,
-      priceNegotiable: true,
-      serviceDurationMinutes: 180,
-      serviceAreaRadiusKm: 15,
-      city: 'Bengaluru',
-      state: 'Karnataka',
-      country: 'India',
-      address: '78, Koramangala, Bengaluru',
-      pincode: '560034',
+      pincode: '560001',
       latitude: 12.9352,
       longitude: 77.6245,
     },
@@ -751,27 +716,26 @@ async function main() {
   }
 
   // ========================================
-  // 8. SAMPLE BOOKINGS (12 bookings in various states)
+  // 8. SAMPLE BOOKINGS
   // ========================================
   console.log('📝 Creating sample bookings...');
-  const bookingStatuses = ['PENDING', 'ACCEPTED', 'IN_PROGRESS', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'COMPLETED', 'CANCELLED', 'CANCELLED', 'PENDING', 'ACCEPTED'];
   const bookings: any[] = [];
 
   const bookingDataList = [
-    { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[0].id, scheduledDate: '2025-07-10', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 499, finalPrice: 499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-10T11:30:00') },
-    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[3].id, scheduledDate: '2025-07-12', scheduledTime: '09:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 2499, finalPrice: 2499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-12T13:30:00') },
-    { clientId: clients[2].id, providerId: providers[2].id, serviceId: services[6].id, scheduledDate: '2025-07-15', scheduledTime: '11:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 1299, finalPrice: 1299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-15T13:00:00') },
-    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[1].id, scheduledDate: '2025-07-18', scheduledTime: '14:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 299, finalPrice: 299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-18T15:00:00') },
-    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[8].id, scheduledDate: '2025-07-20', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 999, finalPrice: 999, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-20T11:00:00') },
-    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[4].id, scheduledDate: '2025-07-25', scheduledTime: '10:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 1499, finalPrice: 1499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-25T13:00:00') },
-    { clientId: clients[3].id, providerId: providers[2].id, serviceId: services[7].id, scheduledDate: '2025-08-01', scheduledTime: '15:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 1899, finalPrice: 1899, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-01T16:30:00') },
-    { clientId: clients[0].id, providerId: providers[1].id, serviceId: services[10].id, scheduledDate: '2025-08-05', scheduledTime: '09:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 1799, finalPrice: 1799, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-05T10:30:00') },
-    { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[15].id, scheduledDate: '2025-08-10', scheduledTime: '11:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 499, finalPrice: 499, status: 'PENDING', paymentStatus: 'PENDING' },
-    { clientId: clients[1].id, providerId: providers[2].id, serviceId: services[11].id, scheduledDate: '2025-08-12', scheduledTime: '14:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 399, finalPrice: 399, status: 'ACCEPTED', paymentStatus: 'PAID' },
-    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[12].id, scheduledDate: '2025-08-15', scheduledTime: '08:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 5999, negotiatedPrice: 5499, finalPrice: 5499, status: 'IN_PROGRESS', paymentStatus: 'PAID' },
-    { clientId: clients[4].id, providerId: providers[1].id, serviceId: services[5].id, scheduledDate: '2025-07-22', scheduledTime: '09:00', serviceAddress: '67, Malviya Nagar, Jaipur', basePrice: 3999, finalPrice: 3999, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Schedule conflict - provider unavailable', cancelledBy: providers[1].id, cancelledAt: new Date('2025-07-21T18:00:00') },
-    { clientId: clients[2].id, providerId: providers[2].id, serviceId: services[13].id, scheduledDate: '2025-07-28', scheduledTime: '07:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 799, finalPrice: 799, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Changed my mind', cancelledBy: clients[2].id, cancelledAt: new Date('2025-07-27T20:00:00') },
-    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[17].id, scheduledDate: '2025-08-18', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 2499, finalPrice: 2499, status: 'PENDING', paymentStatus: 'PENDING' },
+    { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[9].id, scheduledDate: '2025-07-10', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 499, finalPrice: 499, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-10T11:30:00') },
+    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[12].id, scheduledDate: '2025-07-12', scheduledTime: '09:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 599, finalPrice: 599, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-12T10:30:00') },
+    { clientId: clients[2].id, providerId: providers[2].id, serviceId: services[0].id, scheduledDate: '2025-07-15', scheduledTime: '11:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 1299, finalPrice: 1299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-15T13:00:00') },
+    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[11].id, scheduledDate: '2025-07-18', scheduledTime: '14:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 299, finalPrice: 299, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-18T15:00:00') },
+    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[1].id, scheduledDate: '2025-07-20', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 1899, finalPrice: 1899, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-20T11:30:00') },
+    { clientId: clients[1].id, providerId: providers[1].id, serviceId: services[7].id, scheduledDate: '2025-07-25', scheduledTime: '10:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 599, finalPrice: 599, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-07-25T11:00:00') },
+    { clientId: clients[3].id, providerId: providers[2].id, serviceId: services[13].id, scheduledDate: '2025-08-01', scheduledTime: '15:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 4999, negotiatedPrice: 4500, finalPrice: 4500, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-01T16:30:00') },
+    { clientId: clients[0].id, providerId: providers[0].id, serviceId: services[8].id, scheduledDate: '2025-08-05', scheduledTime: '09:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 699, finalPrice: 699, status: 'COMPLETED', paymentStatus: 'PAID', completedAt: new Date('2025-08-05T10:30:00') },
+    { clientId: clients[0].id, providerId: providers[1].id, serviceId: services[14].id, scheduledDate: '2025-08-10', scheduledTime: '11:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 999, finalPrice: 999, status: 'PENDING', paymentStatus: 'PENDING' },
+    { clientId: clients[1].id, providerId: providers[0].id, serviceId: services[2].id, scheduledDate: '2025-08-12', scheduledTime: '14:00', serviceAddress: '56, Koregaon Park, Pune', basePrice: 499, finalPrice: 499, status: 'ACCEPTED', paymentStatus: 'PAID' },
+    { clientId: clients[3].id, providerId: providers[0].id, serviceId: services[15].id, scheduledDate: '2025-08-15', scheduledTime: '08:00', serviceAddress: '34, Whitefield, Bengaluru', basePrice: 3999, negotiatedPrice: 3699, finalPrice: 3699, status: 'IN_PROGRESS', paymentStatus: 'PAID' },
+    { clientId: clients[4].id, providerId: providers[2].id, serviceId: services[6].id, scheduledDate: '2025-07-22', scheduledTime: '09:00', serviceAddress: '67, Malviya Nagar, Jaipur', basePrice: 1499, finalPrice: 1499, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Schedule conflict - provider unavailable', cancelledBy: providers[2].id, cancelledAt: new Date('2025-07-21T18:00:00') },
+    { clientId: clients[2].id, providerId: providers[1].id, serviceId: services[3].id, scheduledDate: '2025-07-28', scheduledTime: '07:00', serviceAddress: '89, T. Nagar, Chennai', basePrice: 549, finalPrice: 549, status: 'CANCELLED', paymentStatus: 'REFUNDED', cancellationReason: 'Changed my mind', cancelledBy: clients[2].id, cancelledAt: new Date('2025-07-27T20:00:00') },
+    { clientId: clients[0].id, providerId: providers[2].id, serviceId: services[16].id, scheduledDate: '2025-08-18', scheduledTime: '10:00', serviceAddress: '23, Banjara Hills, Hyderabad', basePrice: 14999, negotiatedPrice: 13500, finalPrice: 13500, status: 'PENDING', paymentStatus: 'PENDING' },
   ];
 
   let bookingCounter = 1000;
@@ -827,20 +791,19 @@ async function main() {
   }
 
   // ========================================
-  // 9. SAMPLE REVIEWS (9 reviews for completed bookings)
+  // 9. SAMPLE REVIEWS
   // ========================================
   console.log('⭐ Creating sample reviews...');
   const completedBookings = bookings.filter(b => b.status === 'COMPLETED');
   const reviewData = [
-    { rating: 5, comment: 'Excellent work! The plumber was very professional and fixed the leakage in no time. Highly recommended.' },
-    { rating: 4, comment: 'Good cleaning service. The team was punctual and thorough. Only giving 4 stars because they were slightly late arriving.' },
+    { rating: 5, comment: 'Excellent plumbing work! The plumber was very professional and fixed the pipe leakage in no time. Highly recommended.' },
+    { rating: 4, comment: 'Good drain cleaning service. The team was punctual and thorough. Only giving 4 stars because they were slightly late arriving.' },
     { rating: 5, comment: 'Perfect AC installation! Very neat work with proper copper piping and drainage. The technician was knowledgeable and friendly.' },
     { rating: 4, comment: 'Good electrical work. Switch installation was done properly. Would recommend for basic electrical needs.' },
-    { rating: 5, comment: 'The pest control service was extremely effective. No cockroach sightings since the treatment. 3-month warranty gives peace of mind.' },
-    { rating: 4, comment: 'Wonderful salon experience at home. The beautician was skilled and used quality products. Will book again!' },
-    { rating: 3, comment: 'AC gas refill was okay but took longer than expected. Cooling improved but not as much as I hoped.' },
-    { rating: 5, comment: 'Amazing massage therapy! The therapist was well-trained and the oils used were premium quality. Very relaxing experience.' },
-    { rating: 4, comment: 'Great modular kitchen work. The design was exactly as discussed. Minor delays in installation but overall satisfied.' },
+    { rating: 5, comment: 'AC gas refill was done expertly. Cooling is now much better. The technician found and fixed the leak too. Great service!' },
+    { rating: 4, comment: 'RO installation was quick and professional. The technician explained everything clearly and tested the water quality after setup.' },
+    { rating: 5, comment: 'Excellent house wiring work! The electricians were meticulous and ensured all safety standards. Very professional team.' },
+    { rating: 5, comment: 'Geyser installation was done perfectly. The technician ensured proper safety measures and tested everything before leaving.' },
   ];
 
   for (let i = 0; i < Math.min(completedBookings.length, reviewData.length); i++) {
@@ -860,16 +823,16 @@ async function main() {
   }
 
   // ========================================
-  // 10. FAQs (22 FAQs across categories)
+  // 10. FAQs
   // ========================================
   console.log('❓ Creating FAQs...');
   const faqData = [
     // General
-    { category: 'General', question: 'What is BookYourService?', answer: 'BookYourService is India\'s leading online marketplace connecting customers with verified service providers for home services, beauty, maintenance, and more. We ensure quality, reliability, and transparent pricing for every booking.', displayOrder: 1 },
+    { category: 'General', question: 'What is BookYourService?', answer: 'BookYourService is India\'s leading online marketplace connecting customers with verified service providers for home appliance repair, plumbing, electrical work, water tank cleaning, and relocation services. We ensure quality, reliability, and transparent pricing for every booking.', displayOrder: 1 },
     { category: 'General', question: 'Which cities does BookYourService operate in?', answer: 'We currently operate in major Indian cities including Delhi, Mumbai, Bengaluru, Hyderabad, Pune, Chennai, Jaipur, Kolkata, and expanding rapidly. Enter your pincode on the homepage to check availability in your area.', displayOrder: 2 },
     { category: 'General', question: 'How do I book a service?', answer: 'Simply browse categories or search for a service, select your preferred provider, choose a date and time, and confirm your booking. You can also call our helpline for assistance with booking.', displayOrder: 3 },
     { category: 'General', question: 'Are the service providers verified?', answer: 'Yes, all service providers on BookYourService undergo a rigorous KYC verification process including identity verification (Aadhaar/PAN), address verification, skill assessment, and background checks before being listed on our platform.', displayOrder: 4 },
-    { category: 'General', question: 'What services are available on BookYourService?', answer: 'We offer 25+ categories of services including home maintenance, plumbing, electrical, AC repair, cleaning, beauty, fitness, photography, pet care, car care, and many more. Each category has multiple sub-services to choose from.', displayOrder: 5 },
+    { category: 'General', question: 'What services are available on BookYourService?', answer: 'We offer 11 categories of services including AC repair, refrigerator repair, washing machine repair, kitchen appliance repair, TV repair, water purifier service, geyser repair, plumbing, electrical work, water tank cleaning, and movers & packers. Each category has multiple sub-services to choose from.', displayOrder: 5 },
     // Booking
     { category: 'Booking', question: 'Can I reschedule my booking?', answer: 'Yes, you can reschedule your booking up to 4 hours before the scheduled time at no extra charge. Go to My Bookings, select the booking, and click Reschedule. Subject to provider availability.', displayOrder: 6 },
     { category: 'Booking', question: 'What happens if the provider doesn\'t show up?', answer: 'If a provider fails to arrive within 30 minutes of the scheduled time without prior notice, you can raise a no-show complaint. We\'ll arrange an alternative provider or provide a full refund along with a 10% credit as compensation.', displayOrder: 7 },
@@ -920,7 +883,7 @@ By accessing or using the BookYourService platform (website and mobile applicati
 "Platform" refers to the BookYourService website and mobile application operated by BookYourService Technologies Pvt. Ltd.
 "Service Provider" refers to individuals or businesses registered on the platform to offer services.
 "Client" refers to users who book services through the platform.
-"Services" refers to the home and personal services listed on the platform.
+"Services" refers to the home appliance repair, plumbing, electrical, water tank cleaning, and relocation services listed on the platform.
 
 3. USER REGISTRATION
 3.1 Users must provide accurate and complete information during registration.
@@ -1249,14 +1212,14 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   });
 
   // ========================================
-  // 12. REVENUE STREAMS (55 revenue streams)
+  // 12. REVENUE STREAMS
   // ========================================
   console.log('💰 Creating revenue streams...');
   const revenueStreamData = [
     // Commission-based
     { streamType: 'Booking Commission', description: 'Percentage commission on each completed booking', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 500000 },
     { streamType: 'Premium Provider Commission', description: 'Reduced commission rate for premium plan providers', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 200000 },
-    { streamType: 'Category-specific Commission', description: 'Higher commission for premium service categories', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 150000 },
+    { streamType: 'Category-specific Commission', description: 'Higher commission for premium service categories like AC repair and intercity moving', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 150000 },
     { streamType: 'Urgent Booking Surcharge', description: 'Additional fee for same-day or urgent bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 75000 },
     { streamType: 'Weekend/Holiday Premium', description: 'Surcharge for weekend and holiday bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 60000 },
 
@@ -1287,10 +1250,10 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
     { streamType: 'Priority Booking', description: 'Clients pay for priority slot booking', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 50000 },
     { streamType: 'Express Service', description: 'Guaranteed faster service delivery', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 40000 },
     { streamType: 'Extended Warranty', description: 'Extended service warranty beyond standard period', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 30000 },
-    { streamType: 'Insurance Add-on', description: 'Service insurance for high-value bookings', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 25000 },
+    { streamType: 'Insurance Add-on', description: 'Service insurance for high-value bookings like intercity moving', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 25000 },
     { streamType: 'VIP Support', description: 'Dedicated customer support for premium users', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 20000 },
     { streamType: 'Detailed Service Report', description: 'Comprehensive post-service report with photos', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 15000 },
-    { streamType: 'Scheduled Maintenance Plan', description: 'Prepaid recurring maintenance service plans', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 75000 },
+    { streamType: 'Scheduled Maintenance Plan', description: 'Prepaid recurring maintenance service plans for ACs and water purifiers', revenueModel: 'PREMIUM', estimatedMonthlyRevenue: 75000 },
 
     // Referral
     { streamType: 'Client Referral Fee', description: 'Fee from referral program for new client acquisition', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 35000 },
@@ -1324,7 +1287,7 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
     { streamType: 'Lead Generation Fee', description: 'Fee from providers for qualified lead distribution', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 65000 },
     { streamType: 'Seasonal Campaign Revenue', description: 'Revenue from seasonal promotional campaigns', revenueModel: 'ADVERTISING', estimatedMonthlyRevenue: 55000 },
     { streamType: 'Corporate Bulk Booking', description: 'Revenue from corporate bulk service bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 120000 },
-    { streamType: 'Service Package Deals', description: 'Revenue from bundled service packages', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 90000 },
+    { streamType: 'Service Package Deals', description: 'Revenue from bundled service packages (e.g., AC + geyser service)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 90000 },
     { streamType: 'Geographic Expansion Fee', description: 'Revenue from new city launch partnerships', revenueModel: 'REFERRAL', estimatedMonthlyRevenue: 50000 },
   ];
 
@@ -1339,9 +1302,9 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   const seoData = [
     {
       pageType: 'HOME',
-      title: 'BookYourService - Book Home Services Online in India',
-      description: 'Book trusted home services online. Plumbing, electrical, cleaning, AC repair, beauty, and 25+ categories. Verified providers, transparent pricing, and guaranteed satisfaction.',
-      keywords: 'home services, book service online, plumbing, electrical, cleaning, AC repair, beauty services, India',
+      title: 'BookYourService - Book Home Appliance Repair & Services Online in India',
+      description: 'Book trusted home appliance repair and services online. AC repair, refrigerator, washing machine, plumbing, electrical, TV repair, water purifier, geyser, water tank cleaning, and movers & packers. Verified providers, transparent pricing.',
+      keywords: 'home services, AC repair, refrigerator repair, washing machine repair, plumbing, electrician, TV repair, water purifier, geyser repair, movers packers, India',
       canonicalUrl: 'https://www.bookyourservice.co.in',
       ogImage: '/images/og-home.jpg',
       schemaMarkup: JSON.stringify({
@@ -1359,8 +1322,8 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
     {
       pageType: 'SERVICES',
       title: 'All Services - BookYourService',
-      description: 'Browse 25+ service categories on BookYourService. Home maintenance, beauty, fitness, events, and more. Book trusted professionals near you.',
-      keywords: 'all services, service categories, home services India, book professional',
+      description: 'Browse 11 service categories on BookYourService. Home appliance repair, plumbing, electrical, water tank cleaning, and movers & packers. Book trusted professionals near you.',
+      keywords: 'all services, service categories, home appliance repair, plumbing, electrician, India',
       canonicalUrl: 'https://www.bookyourservice.co.in/services',
     },
     {
@@ -1388,7 +1351,7 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
     {
       pageType: 'ABOUT',
       title: 'About BookYourService - India\'s Trusted Service Marketplace',
-      description: 'Learn about BookYourService, India\'s leading online marketplace connecting customers with verified service providers for home and personal services.',
+      description: 'Learn about BookYourService, India\'s leading online marketplace connecting customers with verified service providers for home appliance repair, plumbing, electrical, and relocation services.',
       canonicalUrl: 'https://www.bookyourservice.co.in/about',
     },
     {
@@ -1431,37 +1394,36 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   // ========================================
   console.log('🔔 Creating sample notifications...');
 
-  // Notifications for client Anita Desai
   const notificationData = [
     { userId: clients[0].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your booking for Pipe Leakage Repair has been confirmed for July 10, 2025 at 10:00 AM.', actionUrl: '/bookings/1', isRead: true },
     { userId: clients[0].id, type: 'SERVICE_COMPLETED', title: 'Service Completed', message: 'Your Pipe Leakage Repair service has been completed. Please rate your experience!', actionUrl: '/bookings/1/review', isRead: true },
-    { userId: clients[0].id, type: 'BOOKING_PENDING', title: 'Booking Pending', message: 'Your booking for TV Wall Mounting is awaiting provider confirmation.', actionUrl: '/bookings/9', isRead: false },
-    { userId: clients[0].id, type: 'PROMO', title: 'Special Offer!', message: 'Get 20% off on all cleaning services this weekend. Use code CLEAN20 at checkout!', isRead: false },
+    { userId: clients[0].id, type: 'BOOKING_PENDING', title: 'Booking Pending', message: 'Your booking for Water Tank Cleaning is awaiting provider confirmation.', actionUrl: '/bookings/9', isRead: false },
+    { userId: clients[0].id, type: 'PROMO', title: 'Special Offer!', message: 'Get 20% off on all AC services this summer. Use code COOL20 at checkout!', isRead: false },
 
-    { userId: clients[1].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your Deep Home Cleaning service has been confirmed for July 12, 2025.', actionUrl: '/bookings/2', isRead: true },
-    { userId: clients[1].id, type: 'PAYMENT_SUCCESS', title: 'Payment Successful', message: 'Payment of ₹399 has been successfully processed for your Washing Machine Repair booking.', isRead: false },
-    { userId: clients[1].id, type: 'REVIEW_REMINDER', title: 'Rate Your Experience', message: 'You recently completed a Deep Home Cleaning. Share your feedback!', isRead: false },
+    { userId: clients[1].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your Drain Cleaning service has been confirmed for July 12, 2025.', actionUrl: '/bookings/2', isRead: true },
+    { userId: clients[1].id, type: 'PAYMENT_SUCCESS', title: 'Payment Successful', message: 'Payment of ₹499 has been successfully processed for your Refrigerator Repair booking.', isRead: false },
+    { userId: clients[1].id, type: 'REVIEW_REMINDER', title: 'Rate Your Experience', message: 'You recently completed a Drain Cleaning service. Share your feedback!', isRead: false },
 
-    { userId: clients[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled', message: 'Your Fitness Training booking has been cancelled. Refund will be processed in 5-7 days.', isRead: true },
+    { userId: clients[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled', message: 'Your Washing Machine Repair booking has been cancelled. Refund will be processed in 5-7 days.', isRead: true },
     { userId: clients[2].id, type: 'VERIFICATION', title: 'Email Verification', message: 'Please verify your email address to access all features of your account.', actionUrl: '/verify-email', isRead: false },
 
     { userId: clients[3].id, type: 'BOOKING_CONFIRMED', title: 'Booking Confirmed', message: 'Your Switch & Socket Installation service has been confirmed.', isRead: true },
-    { userId: clients[3].id, type: 'BOOKING_IN_PROGRESS', title: 'Service In Progress', message: 'Your Home Relocation service is currently in progress. Track your provider!', actionUrl: '/bookings/11', isRead: false },
+    { userId: clients[3].id, type: 'BOOKING_IN_PROGRESS', title: 'Service In Progress', message: 'Your Local Home Shifting service is currently in progress. Track your provider!', actionUrl: '/bookings/11', isRead: false },
 
-    { userId: providers[0].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'You have a new booking request for TV Wall Mounting on August 10, 2025.', actionUrl: '/provider/bookings', isRead: false },
+    { userId: providers[0].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'You have a new booking request for Refrigerator Cooling Repair on August 12, 2025.', actionUrl: '/provider/bookings', isRead: false },
     { userId: providers[0].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹474 has been credited to your account for the Pipe Leakage Repair service.', isRead: true },
     { userId: providers[0].id, type: 'NEW_REVIEW', title: 'New Review', message: 'Anita Desai left a 5-star review for your Pipe Leakage Repair service!', isRead: true },
 
-    { userId: providers[1].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Washing Machine Repair service on August 12, 2025.', isRead: false },
-    { userId: providers[1].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹2,374 has been credited for the Deep Home Cleaning service.', isRead: true },
+    { userId: providers[1].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Water Tank Cleaning service on August 10, 2025.', isRead: false },
+    { userId: providers[1].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹569 has been credited for the Drain Cleaning service.', isRead: true },
     { userId: providers[1].id, type: 'KYC_APPROVED', title: 'KYC Approved', message: 'Your KYC verification has been approved. You can now list services on the platform.', isRead: true },
 
-    { userId: providers[2].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Car Detailing service on August 18, 2025.', isRead: false },
+    { userId: providers[2].id, type: 'NEW_BOOKING', title: 'New Booking Request', message: 'New booking for Intercity Home Relocation on August 18, 2025.', isRead: false },
     { userId: providers[2].id, type: 'PAYMENT_RECEIVED', title: 'Payment Received', message: '₹1,234 has been credited for the AC Installation service.', isRead: true },
-    { userId: providers[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled by Client', message: 'Your Fitness Training booking was cancelled by the client. No action required.', isRead: true },
+    { userId: providers[2].id, type: 'BOOKING_CANCELLED', title: 'Booking Cancelled by Client', message: 'Your TV Panel Repair booking was cancelled by the client. No action required.', isRead: true },
 
     { userId: admin.id, type: 'NEW_PROVIDER_SIGNUP', title: 'New Provider Registration', message: 'A new provider has registered and is pending KYC verification.', isRead: false },
-    { userId: admin.id, type: 'DISPUTE_RAISED', title: 'New Dispute', message: 'A new dispute has been raised for booking BYS-1001. Review required.', isRead: false },
+    { userId: admin.id, type: 'DISPUTE_RAISED', title: 'New Dispute', message: 'A new dispute has been raised for a completed booking. Review required.', isRead: false },
   ];
 
   for (const notif of notificationData) {
@@ -1481,8 +1443,8 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
     { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[0].id, details: JSON.stringify({ providerName: 'Rajesh Kumar', documentType: 'AADHAAR' }) },
     { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[1].id, details: JSON.stringify({ providerName: 'Priya Sharma', documentType: 'PAN' }) },
     { adminId: admin.id, action: 'APPROVE_PROVIDER_KYC', targetType: 'USER', targetId: providers[2].id, details: JSON.stringify({ providerName: 'Arun Patel', documentType: 'DRIVING_LICENSE' }) },
+    { adminId: admin.id, action: 'APPROVE_SERVICE', targetType: 'SERVICE', details: JSON.stringify({ serviceName: 'Split AC Installation Service' }) },
     { adminId: admin.id, action: 'APPROVE_SERVICE', targetType: 'SERVICE', details: JSON.stringify({ serviceName: 'Professional Pipe Leakage Repair' }) },
-    { adminId: admin.id, action: 'APPROVE_SERVICE', targetType: 'SERVICE', details: JSON.stringify({ serviceName: 'Deep Home Cleaning' }) },
     { adminId: admin.id, action: 'BLOCK_USER', targetType: 'USER', targetId: clients[4].id, details: JSON.stringify({ reason: 'Fraudulent activity detected', userName: 'Kavita Joshi' }) },
     { adminId: admin.id, action: 'UPDATE_FAQ', targetType: 'FAQ', details: JSON.stringify({ action: 'Created 22 FAQs' }) },
     { adminId: admin.id, action: 'UPDATE_LEGAL_PAGE', targetType: 'LEGAL_PAGE', details: JSON.stringify({ pagesUpdated: ['TERMS', 'PRIVACY', 'REFUND', 'COOKIES'] }) },
@@ -1497,12 +1459,12 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   // ========================================
   console.log('❤️ Creating sample favorites...');
   const favoriteData = [
-    { userId: clients[0].id, serviceId: services[3].id },
-    { userId: clients[0].id, serviceId: services[6].id },
-    { userId: clients[1].id, serviceId: services[0].id },
-    { userId: clients[1].id, serviceId: services[10].id },
-    { userId: clients[3].id, serviceId: services[7].id },
-    { userId: clients[3].id, serviceId: services[17].id },
+    { userId: clients[0].id, serviceId: services[12].id },
+    { userId: clients[0].id, serviceId: services[0].id },
+    { userId: clients[1].id, serviceId: services[9].id },
+    { userId: clients[1].id, serviceId: services[7].id },
+    { userId: clients[3].id, serviceId: services[1].id },
+    { userId: clients[3].id, serviceId: services[15].id },
   ];
 
   for (const fav of favoriteData) {
@@ -1514,9 +1476,9 @@ Address: BookYourService Technologies Pvt. Ltd., Fort, Mumbai 400001, Maharashtr
   // ========================================
   console.log('📩 Creating sample contact messages...');
   const contactMessages = [
-    { name: 'Rahul Verma', email: 'rahul.verma@gmail.com', subject: 'Partnership Inquiry', message: 'I run a chain of salons in Delhi NCR and would like to explore listing our services on BookYourService. Please share the partnership details and onboarding process.', isRead: true },
-    { name: 'Sunita Devi', email: 'sunita.devi@gmail.com', subject: 'Service Not Satisfactory', message: 'I booked a deep cleaning service on July 12th but the cleaning was not up to the mark. The bathroom was not cleaned properly and there were areas that were completely missed. I would like to raise a complaint.', isRead: false },
-    { name: 'Amitabh Patel', email: 'amitabh.p@corporate.com', subject: 'Corporate Account Setup', message: 'We are a company with 500+ employees looking for corporate service packages for home maintenance. Can you provide bulk booking options and corporate pricing?', isRead: false },
+    { name: 'Rahul Verma', email: 'rahul.verma@gmail.com', subject: 'Partnership Inquiry', message: 'I run an appliance repair shop in Delhi NCR and would like to explore listing our services on BookYourService. Please share the partnership details and onboarding process.', isRead: true },
+    { name: 'Sunita Devi', email: 'sunita.devi@gmail.com', subject: 'AC Service Not Satisfactory', message: 'I booked an AC gas refill service on July 20th but the cooling is still not adequate. The technician said the gas was refilled but I am not satisfied. I would like to raise a complaint.', isRead: false },
+    { name: 'Amitabh Patel', email: 'amitabh.p@corporate.com', subject: 'Corporate Account Setup', message: 'We are a company with 500+ employees looking for corporate service packages for appliance maintenance and repair. Can you provide bulk booking options and corporate pricing?', isRead: false },
   ];
 
   for (const cm of contactMessages) {

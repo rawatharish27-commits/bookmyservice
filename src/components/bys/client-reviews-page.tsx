@@ -103,7 +103,7 @@ export function ClientReviewsPage() {
           <p className="text-sm text-muted-foreground">Complete a booking to leave your first review</p>
           <Button
             variant="outline"
-            className="mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-50"
             onClick={() => navigate('client-bookings')}
           >
             View My Bookings
@@ -218,7 +218,7 @@ export function ClientReviewsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialog(null)}>Cancel</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleEdit} disabled={updating}>
+            <Button className="bg-blue-800 hover:bg-[#1e3a5f]" onClick={handleEdit} disabled={updating}>
               {updating && <Loader2 className="mr-2 size-4 animate-spin" />}
               Save Changes
             </Button>

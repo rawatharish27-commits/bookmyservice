@@ -94,8 +94,8 @@ export function LegalPage() {
         <article>
           <div className="mb-8">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-50">
-                <FileText className="size-5 text-emerald-600" />
+              <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50">
+                <FileText className="size-5 text-blue-700" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">{data.title}</h1>
@@ -142,7 +142,7 @@ export function LegalPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => navigate(key as Page, { type: key })}
-                className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                className="border-blue-200 text-blue-700 hover:bg-blue-50"
               >
                 {info.title}
               </Button>

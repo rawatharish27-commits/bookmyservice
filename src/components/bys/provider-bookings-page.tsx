@@ -81,7 +81,7 @@ export function ProviderBookingsPage() {
           <>
             <Button
               size="sm"
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
               onClick={() => handleAction(booking.id, 'accept')}
             >
               <CheckCircle2 className="mr-1 size-3" /> Accept
@@ -105,7 +105,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
             onClick={() => handleAction(booking.id, 'complete')}
           >
             <CheckCircle2 className="mr-1 size-3" /> Mark Complete
@@ -167,7 +167,7 @@ export function ProviderBookingsPage() {
                               <StatusBadge status={booking.status} />
                             </div>
                             <div className="mt-2 flex items-center gap-2">
-                              <Briefcase className="size-4 text-emerald-600" />
+                              <Briefcase className="size-4 text-blue-700" />
                               <span className="font-medium">{booking.service?.title}</span>
                             </div>
                             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
@@ -182,7 +182,7 @@ export function ProviderBookingsPage() {
                             </div>
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <span className="text-lg font-bold text-emerald-600">
+                            <span className="text-lg font-bold text-blue-700">
                               ₹{booking.finalPrice?.toLocaleString()}
                             </span>
                             <div className="flex gap-2">

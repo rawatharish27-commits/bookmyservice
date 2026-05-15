@@ -260,7 +260,7 @@ export function AdminDisputesPage() {
                   />
                 </div>
                 <Button
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
                   onClick={handleResolve}
                   disabled={resolving || !resolution}
                 >

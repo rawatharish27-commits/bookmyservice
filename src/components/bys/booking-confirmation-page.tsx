@@ -58,16 +58,16 @@ export function BookingConfirmationPage() {
     <div className="mx-auto max-w-lg px-4 py-12 sm:px-6">
       {/* Success Icon */}
       <div className="mb-6 text-center">
-        <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-emerald-100">
-          <CheckCircle2 className="size-10 text-emerald-600" />
+        <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-blue-100">
+          <CheckCircle2 className="size-10 text-blue-700" />
         </div>
-        <h1 className="mt-4 text-2xl font-bold text-emerald-700">Booking Confirmed!</h1>
+        <h1 className="mt-4 text-2xl font-bold text-blue-800">Booking Confirmed!</h1>
         <p className="mt-2 text-muted-foreground">
           Your booking has been placed successfully
         </p>
         {booking?.bookingNumber && (
           <div className="mt-3">
-            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 text-base px-4 py-1">
+            <Badge className="bg-blue-50 text-blue-800 border-blue-200 text-base px-4 py-1">
               {booking.bookingNumber}
             </Badge>
           </div>
@@ -82,21 +82,21 @@ export function BookingConfirmationPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-start gap-3">
-              <Briefcase className="mt-0.5 size-4 text-emerald-600 shrink-0" />
+              <Briefcase className="mt-0.5 size-4 text-blue-700 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Service</p>
                 <p className="font-medium">{booking.service?.title || 'Service'}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <User className="mt-0.5 size-4 text-emerald-600 shrink-0" />
+              <User className="mt-0.5 size-4 text-blue-700 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Provider</p>
                 <p className="font-medium">{booking.service?.provider?.name || booking.provider?.name || 'Provider'}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <CalendarDays className="mt-0.5 size-4 text-emerald-600 shrink-0" />
+              <CalendarDays className="mt-0.5 size-4 text-blue-700 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Date</p>
                 <p className="font-medium">
@@ -110,14 +110,14 @@ export function BookingConfirmationPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <Clock className="mt-0.5 size-4 text-emerald-600 shrink-0" />
+              <Clock className="mt-0.5 size-4 text-blue-700 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Time</p>
                 <p className="font-medium">{booking.scheduledTime}</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <MapPin className="mt-0.5 size-4 text-emerald-600 shrink-0" />
+              <MapPin className="mt-0.5 size-4 text-blue-700 shrink-0" />
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Address</p>
                 <p className="font-medium">{booking.serviceAddress}</p>
@@ -137,7 +137,7 @@ export function BookingConfirmationPage() {
             <Separator />
             <div className="flex justify-between font-semibold text-lg">
               <span>Total</span>
-              <span className="text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+              <span className="text-blue-700">₹{booking.finalPrice?.toLocaleString()}</span>
             </div>
           </CardContent>
         </Card>
@@ -156,7 +156,7 @@ export function BookingConfirmationPage() {
       {/* Action Buttons */}
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button
-          className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+          className="flex-1 bg-blue-800 hover:bg-[#1e3a5f]"
           onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
         >
           View Booking <ArrowRight className="ml-2 size-4" />
@@ -174,7 +174,7 @@ export function BookingConfirmationPage() {
       <div className="mt-4 text-center">
         <Button
           variant="ghost"
-          className="text-emerald-600 hover:text-emerald-700"
+          className="text-blue-700 hover:text-blue-800"
           onClick={() => navigate('categories')}
         >
           Book Another Service

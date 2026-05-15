@@ -66,15 +66,15 @@ export function ProviderEarningsPage() {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Total Earnings</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-600">₹{totalEarnings.toLocaleString()}</p>
+                <p className="mt-1 text-2xl font-bold text-blue-700">₹{totalEarnings.toLocaleString()}</p>
               </div>
-              <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100">
-                <DollarSign className="size-5 text-emerald-600" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                <DollarSign className="size-5 text-blue-700" />
               </div>
             </div>
           </CardContent>
@@ -157,7 +157,7 @@ export function ProviderEarningsPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-emerald-600">+₹{booking.providerEarnings?.toLocaleString()}</p>
+                      <p className="font-semibold text-blue-700">+₹{booking.providerEarnings?.toLocaleString()}</p>
                       <p className="text-xs text-muted-foreground">of ₹{booking.finalPrice?.toLocaleString()}</p>
                     </div>
                   </div>

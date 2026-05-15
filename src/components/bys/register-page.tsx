@@ -21,8 +21,8 @@ function getPasswordStrength(password: string): { label: string; color: string; 
   if (score <= 1) return { label: 'Very Weak', color: 'bg-red-500', width: 'w-1/5' };
   if (score === 2) return { label: 'Weak', color: 'bg-orange-500', width: 'w-2/5' };
   if (score === 3) return { label: 'Fair', color: 'bg-yellow-500', width: 'w-3/5' };
-  if (score === 4) return { label: 'Strong', color: 'bg-emerald-500', width: 'w-4/5' };
-  return { label: 'Very Strong', color: 'bg-emerald-600', width: 'w-full' };
+  if (score === 4) return { label: 'Strong', color: 'bg-blue-700', width: 'w-4/5' };
+  return { label: 'Very Strong', color: 'bg-blue-800', width: 'w-full' };
 }
 
 export function RegisterPage() {
@@ -79,7 +79,7 @@ export function RegisterPage() {
     <div className="flex min-h-[80vh] items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
-          <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-emerald-600 text-white">
+          <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-xl bg-blue-800 text-white">
             <Wrench className="size-6" />
           </div>
           <CardTitle className="text-2xl">Create Account</CardTitle>
@@ -102,7 +102,7 @@ export function RegisterPage() {
                   onClick={() => setRole('client')}
                   className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
                     role === 'client'
-                      ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
+                      ? 'border-blue-600 bg-blue-50 text-blue-800'
                       : 'border-gray-200 bg-white text-muted-foreground hover:border-gray-300'
                   }`}
                 >
@@ -115,7 +115,7 @@ export function RegisterPage() {
                   onClick={() => setRole('provider')}
                   className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
                     role === 'provider'
-                      ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
+                      ? 'border-blue-600 bg-blue-50 text-blue-800'
                       : 'border-gray-200 bg-white text-muted-foreground hover:border-gray-300'
                   }`}
                 >
@@ -219,16 +219,16 @@ export function RegisterPage() {
               />
               <Label htmlFor="terms" className="text-sm font-normal leading-snug">
                 I agree to the{' '}
-                <button type="button" className="text-emerald-600 hover:underline">Terms of Service</button>
+                <button type="button" className="text-blue-700 hover:underline">Terms of Service</button>
                 {' '}and{' '}
-                <button type="button" className="text-emerald-600 hover:underline">Privacy Policy</button>
+                <button type="button" className="text-blue-700 hover:underline">Privacy Policy</button>
               </Label>
             </div>
           </CardContent>
           <CardFooter className="flex-col gap-4">
             <Button
               type="submit"
-              className="w-full bg-emerald-600 hover:bg-emerald-700"
+              className="w-full bg-blue-800 hover:bg-[#1e3a5f]"
               disabled={loading}
             >
               {loading ? (
@@ -245,7 +245,7 @@ export function RegisterPage() {
               <button
                 type="button"
                 onClick={() => navigate('login')}
-                className="font-medium text-emerald-600 hover:text-emerald-700"
+                className="font-medium text-blue-700 hover:text-blue-800"
               >
                 Sign in
               </button>

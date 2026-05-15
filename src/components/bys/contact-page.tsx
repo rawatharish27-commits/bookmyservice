@@ -93,7 +93,7 @@ export function ContactPage() {
             <CardContent className="p-6 sm:p-8">
               {submitted ? (
                 <div className="py-8 text-center">
-                  <CheckCircle2 className="mx-auto size-12 text-emerald-600" />
+                  <CheckCircle2 className="mx-auto size-12 text-blue-700" />
                   <h3 className="mt-4 text-xl font-semibold">Message Sent!</h3>
                   <p className="mt-2 text-muted-foreground">
                     Thank you for contacting us. We will get back to you within 24 hours.
@@ -159,7 +159,7 @@ export function ContactPage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="bg-emerald-600 text-white hover:bg-emerald-700"
+                    className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
                     size="lg"
                   >
                     {loading ? 'Sending...' : 'Send Message'}
@@ -179,7 +179,7 @@ export function ContactPage() {
               <h3 className="mb-4 font-semibold">Get in Touch</h3>
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                  <MapPin className="mt-0.5 size-5 shrink-0 text-blue-700" />
                   <div>
                     <p className="text-sm font-medium">Address</p>
                     <p className="text-sm text-muted-foreground">
@@ -190,31 +190,31 @@ export function ContactPage() {
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Phone className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                  <Phone className="mt-0.5 size-5 shrink-0 text-blue-700" />
                   <div>
                     <p className="text-sm font-medium">Phone</p>
                     <a
                       href="tel:+14155551234"
-                      className="text-sm text-muted-foreground hover:text-emerald-600"
+                      className="text-sm text-muted-foreground hover:text-blue-700"
                     >
                       +1 (415) 555-1234
                     </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Mail className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                  <Mail className="mt-0.5 size-5 shrink-0 text-blue-700" />
                   <div>
                     <p className="text-sm font-medium">Email</p>
                     <a
                       href="mailto:hello@bookyourservice.com"
-                      className="text-sm text-muted-foreground hover:text-emerald-600"
+                      className="text-sm text-muted-foreground hover:text-blue-700"
                     >
                       hello@bookyourservice.com
                     </a>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
-                  <Clock className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+                  <Clock className="mt-0.5 size-5 shrink-0 text-blue-700" />
                   <div>
                     <p className="text-sm font-medium">Business Hours</p>
                     <p className="text-sm text-muted-foreground">
@@ -242,7 +242,7 @@ export function ContactPage() {
                     key={social.label}
                     href="#"
                     onClick={(e) => e.preventDefault()}
-                    className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-muted-foreground transition-colors hover:bg-emerald-100 hover:text-emerald-600"
+                    className="flex size-10 items-center justify-center rounded-full bg-gray-100 text-muted-foreground transition-colors hover:bg-blue-100 hover:text-blue-700"
                     aria-label={social.label}
                   >
                     {social.icon}
@@ -254,10 +254,10 @@ export function ContactPage() {
 
           {/* Map Placeholder */}
           <Card className="overflow-hidden rounded-xl">
-            <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50">
+            <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-blue-50 to-sky-50">
               <div className="text-center">
-                <MapPin className="mx-auto size-8 text-emerald-400" />
-                <p className="mt-2 text-sm font-medium text-emerald-600">Map View</p>
+                <MapPin className="mx-auto size-8 text-blue-500" />
+                <p className="mt-2 text-sm font-medium text-blue-700">Map View</p>
                 <p className="text-xs text-muted-foreground">123 Service Street, SF</p>
               </div>
             </div>

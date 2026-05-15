@@ -159,7 +159,7 @@ export function ClientBookingsPage() {
                 <p className="mt-3 text-muted-foreground">No bookings found</p>
                 <Button
                   variant="outline"
-                  className="mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                  className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-50"
                   onClick={() => navigate('categories')}
                 >
                   Browse Services
@@ -174,8 +174,8 @@ export function ClientBookingsPage() {
                         onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
                         className="flex w-full flex-col gap-4 p-4 text-left transition-colors hover:bg-gray-50/50 sm:flex-row sm:items-center sm:gap-6"
                       >
-                        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
-                          <Briefcase className="size-6 text-emerald-600" />
+                        <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-blue-50">
+                          <Briefcase className="size-6 text-blue-700" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">

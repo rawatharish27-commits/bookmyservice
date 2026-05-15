@@ -157,7 +157,7 @@ export function BookingPage() {
             <p className="mt-2 text-sm text-muted-foreground">Please log in to book a service</p>
             <div className="mt-6 flex justify-center gap-3">
               <Button variant="outline" onClick={goBack}>Go Back</Button>
-              <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate('login')}>
+              <Button className="bg-blue-800 hover:bg-[#1e3a5f]" onClick={() => navigate('login')}>
                 Log In
               </Button>
             </div>
@@ -214,20 +214,20 @@ export function BookingPage() {
               <div
                 className={`flex size-8 items-center justify-center rounded-full border-2 text-sm font-medium transition-colors ${
                   step > s.number
-                    ? 'border-emerald-600 bg-emerald-600 text-white'
+                    ? 'border-blue-600 bg-blue-800 text-white'
                     : step === s.number
-                    ? 'border-emerald-600 bg-white text-emerald-600 ring-2 ring-emerald-200'
+                    ? 'border-blue-600 bg-white text-blue-700 ring-2 ring-blue-200'
                     : 'border-gray-300 bg-white text-gray-400'
                 }`}
               >
                 {step > s.number ? <Check className="size-4" /> : s.number}
               </div>
-              <span className={`mt-1 text-xs ${step >= s.number ? 'text-emerald-700 font-medium' : 'text-gray-400'}`}>
+              <span className={`mt-1 text-xs ${step >= s.number ? 'text-blue-800 font-medium' : 'text-gray-400'}`}>
                 {s.label}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`mx-1 h-0.5 flex-1 ${step > s.number ? 'bg-emerald-600' : 'bg-gray-300'}`} />
+              <div className={`mx-1 h-0.5 flex-1 ${step > s.number ? 'bg-blue-800' : 'bg-gray-300'}`} />
             )}
           </React.Fragment>
         ))}
@@ -238,7 +238,7 @@ export function BookingPage() {
         <Card className="gap-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <CalendarDays className="size-5 text-emerald-600" />
+              <CalendarDays className="size-5 text-blue-700" />
               Select Date
             </CardTitle>
           </CardHeader>
@@ -267,7 +267,7 @@ export function BookingPage() {
           </CardContent>
           <CardFooter className="justify-end">
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-800 hover:bg-[#1e3a5f]"
               disabled={!selectedDate}
               onClick={() => setStep(2)}
             >
@@ -282,7 +282,7 @@ export function BookingPage() {
         <Card className="gap-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Clock className="size-5 text-emerald-600" />
+              <Clock className="size-5 text-blue-700" />
               Select Time Slot
             </CardTitle>
           </CardHeader>
@@ -305,7 +305,7 @@ export function BookingPage() {
                     onClick={() => setSelectedTime(time)}
                     className={`rounded-lg border-2 p-3 text-center text-sm font-medium transition-colors ${
                       selectedTime === time
-                        ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
+                        ? 'border-blue-600 bg-blue-50 text-blue-800'
                         : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
                     }`}
                   >
@@ -320,7 +320,7 @@ export function BookingPage() {
               <ArrowLeft className="mr-2 size-4" /> Back
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-800 hover:bg-[#1e3a5f]"
               disabled={!selectedTime}
               onClick={() => setStep(3)}
             >
@@ -335,7 +335,7 @@ export function BookingPage() {
         <Card className="gap-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <MapPin className="size-5 text-emerald-600" />
+              <MapPin className="size-5 text-blue-700" />
               Service Address
             </CardTitle>
           </CardHeader>
@@ -366,7 +366,7 @@ export function BookingPage() {
               <ArrowLeft className="mr-2 size-4" /> Back
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-800 hover:bg-[#1e3a5f]"
               disabled={!address.trim()}
               onClick={() => setStep(4)}
             >
@@ -381,7 +381,7 @@ export function BookingPage() {
         <Card className="gap-4">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
-              <Briefcase className="size-5 text-emerald-600" />
+              <Briefcase className="size-5 text-blue-700" />
               Review & Confirm
             </CardTitle>
           </CardHeader>
@@ -442,7 +442,7 @@ export function BookingPage() {
               <Separator />
               <div className="flex justify-between font-semibold text-lg">
                 <span>Total</span>
-                <span className="text-emerald-600">₹{totalPrice.toFixed(2)}</span>
+                <span className="text-blue-700">₹{totalPrice.toFixed(2)}</span>
               </div>
             </div>
 
@@ -473,7 +473,7 @@ export function BookingPage() {
               <ArrowLeft className="mr-2 size-4" /> Back
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-800 hover:bg-[#1e3a5f]"
               onClick={handleBooking}
               disabled={creating}
             >

@@ -93,7 +93,7 @@ export function ProviderServicesPage() {
           </p>
         </div>
         <Button
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
+          className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
           onClick={() => navigate('provider-create-service')}
         >
           <Plus className="mr-2 size-4" />
@@ -111,7 +111,7 @@ export function ProviderServicesPage() {
               Create your first service to start receiving bookings
             </p>
             <Button
-              className="mt-4 bg-emerald-600 text-white hover:bg-emerald-700"
+              className="mt-4 bg-blue-800 text-white hover:bg-[#1e3a5f]"
               onClick={() => navigate('provider-create-service')}
             >
               <Plus className="mr-2 size-4" />
@@ -157,7 +157,7 @@ export function ProviderServicesPage() {
                 <Separator className="my-3" />
 
                 <div className="flex items-center justify-between">
-                  <span className="text-lg font-bold text-emerald-600">
+                  <span className="text-lg font-bold text-blue-700">
                     ₹{service.basePrice?.toLocaleString()}
                   </span>
                   <ApprovalBadge status={service.approvalStatus} />

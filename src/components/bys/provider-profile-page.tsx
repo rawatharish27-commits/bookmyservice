@@ -88,7 +88,7 @@ export function ProviderProfilePage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Building className="size-4 text-emerald-600" />
+              <Building className="size-4 text-blue-700" />
               Business Information
             </CardTitle>
           </CardHeader>
@@ -118,7 +118,7 @@ export function ProviderProfilePage() {
               </div>
             </div>
             <Button
-              className="bg-emerald-600 text-white hover:bg-emerald-700"
+              className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
               onClick={handleSaveProfile}
               disabled={saving}
             >
@@ -132,7 +132,7 @@ export function ProviderProfilePage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Shield className="size-4 text-emerald-600" />
+              <Shield className="size-4 text-blue-700" />
               KYC Verification
             </CardTitle>
           </CardHeader>
@@ -172,7 +172,7 @@ export function ProviderProfilePage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <MapPin className="size-4 text-emerald-600" />
+              <MapPin className="size-4 text-blue-700" />
               Service Areas
             </CardTitle>
           </CardHeader>
@@ -191,7 +191,7 @@ export function ProviderProfilePage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Building className="size-4 text-emerald-600" />
+              <Building className="size-4 text-blue-700" />
               Bank Details
             </CardTitle>
           </CardHeader>
@@ -207,7 +207,7 @@ export function ProviderProfilePage() {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Lock className="size-4 text-emerald-600" />
+              <Lock className="size-4 text-blue-700" />
               Change Password
             </CardTitle>
           </CardHeader>

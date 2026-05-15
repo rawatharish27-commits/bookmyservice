@@ -103,11 +103,11 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       {/* Profile Picture & Basic Info */}
       <Card className="mb-6 gap-4">
         <CardContent className="flex items-center gap-4 pt-6">
-          <div className="flex size-20 items-center justify-center rounded-full bg-emerald-100">
+          <div className="flex size-20 items-center justify-center rounded-full bg-blue-100">
             {user.profileImageUrl ? (
               <img src={user.profileImageUrl} alt={user.name} className="size-20 rounded-full object-cover" />
             ) : (
-              <User className="size-10 text-emerald-600" />
+              <User className="size-10 text-blue-700" />
             )}
           </div>
           <div>
@@ -136,7 +136,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       <Card className="mb-6 gap-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <User className="size-5 text-emerald-600" />
+            <User className="size-5 text-blue-700" />
             Edit Profile
           </CardTitle>
         </CardHeader>
@@ -181,7 +181,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         </CardContent>
         <div className="px-6 pb-6">
           <Button
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-blue-800 hover:bg-[#1e3a5f]"
             onClick={handleSaveProfile}
             disabled={saving}
           >
@@ -195,7 +195,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       <Card className="mb-6 gap-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Key className="size-5 text-emerald-600" />
+            <Key className="size-5 text-blue-700" />
             Security
           </CardTitle>
         </CardHeader>
@@ -216,7 +216,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       <Card className="mb-6 gap-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Shield className="size-5 text-emerald-600" />
+            <Shield className="size-5 text-blue-700" />
             Account Status
           </CardTitle>
         </CardHeader>
@@ -336,7 +336,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setPasswordDialog(false)}>Cancel</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleChangePassword} disabled={changingPassword}>
+            <Button className="bg-blue-800 hover:bg-[#1e3a5f]" onClick={handleChangePassword} disabled={changingPassword}>
               {changingPassword && <Loader2 className="mr-2 size-4 animate-spin" />}
               Change Password
             </Button>
@@ -355,7 +355,7 @@ export function ClientProfilePage() {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
         <p className="text-muted-foreground">Please log in to view your profile</p>
-        <Button className="mt-4 bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate('login')}>
+        <Button className="mt-4 bg-blue-800 hover:bg-[#1e3a5f]" onClick={() => navigate('login')}>
           Log In
         </Button>
       </div>

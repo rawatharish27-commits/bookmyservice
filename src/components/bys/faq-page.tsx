@@ -88,8 +88,8 @@ export function FaqPage() {
 
       {/* Header */}
       <div className="mb-8 text-center">
-        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100">
-          <HelpCircle className="size-7 text-emerald-600" />
+        <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-blue-100">
+          <HelpCircle className="size-7 text-blue-700" />
         </div>
         <h1 className="mt-4 text-3xl font-bold tracking-tight">Frequently Asked Questions</h1>
         <p className="mx-auto mt-2 max-w-xl text-muted-foreground">
@@ -124,7 +124,7 @@ export function FaqPage() {
           variant={activeCategory === 'all' ? 'default' : 'outline'}
           size="sm"
           onClick={() => setActiveCategory('all')}
-          className={activeCategory === 'all' ? 'bg-emerald-600 text-white hover:bg-emerald-700' : ''}
+          className={activeCategory === 'all' ? 'bg-blue-800 text-white hover:bg-[#1e3a5f]' : ''}
         >
           All
         </Button>
@@ -134,7 +134,7 @@ export function FaqPage() {
             variant={activeCategory === cat ? 'default' : 'outline'}
             size="sm"
             onClick={() => setActiveCategory(cat)}
-            className={activeCategory === cat ? 'bg-emerald-600 text-white hover:bg-emerald-700' : ''}
+            className={activeCategory === cat ? 'bg-blue-800 text-white hover:bg-[#1e3a5f]' : ''}
           >
             {CATEGORY_LABELS[cat] || cat}
           </Button>
@@ -168,7 +168,7 @@ export function FaqPage() {
         <div className="mx-auto max-w-2xl space-y-6">
           {Object.entries(filteredData).map(([category, items]) => (
             <div key={category}>
-              <h2 className="mb-3 text-lg font-semibold text-emerald-600">
+              <h2 className="mb-3 text-lg font-semibold text-blue-700">
                 {CATEGORY_LABELS[category] || category}
               </h2>
               <Card className="rounded-xl">
@@ -208,8 +208,8 @@ export function FaqPage() {
       )}
 
       {/* Contact Support CTA */}
-      <div className="mx-auto mt-12 max-w-xl rounded-2xl bg-gradient-to-r from-emerald-50 to-teal-50 p-8 text-center">
-        <MessageSquare className="mx-auto size-8 text-emerald-600" />
+      <div className="mx-auto mt-12 max-w-xl rounded-2xl bg-gradient-to-r from-blue-50 to-sky-50 p-8 text-center">
+        <MessageSquare className="mx-auto size-8 text-blue-700" />
         <h3 className="mt-3 text-lg font-semibold">Still have questions?</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Our support team is ready to help you with any questions
@@ -217,13 +217,13 @@ export function FaqPage() {
         <div className="mt-4 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
             onClick={() => navigate('contact')}
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
           >
             <Mail className="mr-1 size-4" /> Contact Us
           </Button>
           <a
             href="tel:+14155551234"
-            className="inline-flex items-center gap-1 text-sm text-emerald-600 hover:text-emerald-700"
+            className="inline-flex items-center gap-1 text-sm text-blue-700 hover:text-blue-800"
           >
             <Phone className="size-4" /> +1 (415) 555-1234
           </a>

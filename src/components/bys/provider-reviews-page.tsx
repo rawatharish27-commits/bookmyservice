@@ -70,7 +70,7 @@ export function ProviderReviewsPage() {
         <Card>
           <CardContent className="flex items-center gap-6 p-6">
             <div className="text-center">
-              <p className="text-4xl font-bold text-emerald-600">{avgRating}</p>
+              <p className="text-4xl font-bold text-blue-700">{avgRating}</p>
               <div className="mt-1 flex">{renderStars(Math.round(avgRating))}</div>
               <p className="mt-1 text-sm text-muted-foreground">{reviews.length} reviews</p>
             </div>
@@ -94,9 +94,9 @@ export function ProviderReviewsPage() {
 
         <Card>
           <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-            <MessageSquare className="mb-2 size-8 text-emerald-600" />
+            <MessageSquare className="mb-2 size-8 text-blue-700" />
             <p className="text-sm font-medium">Response Rate</p>
-            <p className="mt-1 text-2xl font-bold text-emerald-600">
+            <p className="mt-1 text-2xl font-bold text-blue-700">
               {reviews.length > 0 ? '85%' : 'N/A'}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">Respond to reviews to build trust</p>
@@ -126,7 +126,7 @@ export function ProviderReviewsPage() {
                       <div className="flex items-center gap-2">
                         <span className="font-medium">{review.reviewer?.name || 'Client'}</span>
                         {review.isVerified && (
-                          <span className="rounded bg-emerald-100 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700">
+                          <span className="rounded bg-blue-100 px-1.5 py-0.5 text-[10px] font-medium text-blue-800">
                             Verified
                           </span>
                         )}

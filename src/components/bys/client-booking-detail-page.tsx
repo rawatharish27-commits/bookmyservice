@@ -80,18 +80,18 @@ function StatusTimeline({ status }: { status: string }) {
               <div
                 className={`flex size-8 items-center justify-center rounded-full border-2 transition-colors ${
                   isCompleted
-                    ? 'border-emerald-600 bg-emerald-600 text-white'
+                    ? 'border-blue-600 bg-blue-800 text-white'
                     : 'border-gray-300 bg-white text-gray-400'
-                } ${isCurrent ? 'ring-2 ring-emerald-200' : ''}`}
+                } ${isCurrent ? 'ring-2 ring-blue-200' : ''}`}
               >
                 {isCompleted ? <Check className="size-4" /> : <span className="text-xs">{i + 1}</span>}
               </div>
-              <span className={`mt-1 text-[10px] font-medium ${isCompleted ? 'text-emerald-700' : 'text-gray-400'}`}>
+              <span className={`mt-1 text-[10px] font-medium ${isCompleted ? 'text-blue-800' : 'text-gray-400'}`}>
                 {step.replace('_', ' ')}
               </span>
             </div>
             {i < STATUS_STEPS.length - 1 && (
-              <div className={`mx-1 h-0.5 flex-1 ${i < currentIndex ? 'bg-emerald-600' : 'bg-gray-300'}`} />
+              <div className={`mx-1 h-0.5 flex-1 ${i < currentIndex ? 'bg-blue-800' : 'bg-gray-300'}`} />
             )}
           </React.Fragment>
         );
@@ -231,7 +231,7 @@ export function ClientBookingDetailPage() {
       <Card className="mb-6 gap-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <Briefcase className="size-5 text-emerald-600" />
+            <Briefcase className="size-5 text-blue-700" />
             Service Details
           </CardTitle>
         </CardHeader>
@@ -242,8 +242,8 @@ export function ClientBookingDetailPage() {
           </div>
           <Separator />
           <div className="flex items-center gap-4">
-            <div className="flex size-12 items-center justify-center rounded-full bg-emerald-100">
-              <User className="size-6 text-emerald-600" />
+            <div className="flex size-12 items-center justify-center rounded-full bg-blue-100">
+              <User className="size-6 text-blue-700" />
             </div>
             <div>
               <p className="font-medium">{provider?.name || 'Provider'}</p>
@@ -260,7 +260,7 @@ export function ClientBookingDetailPage() {
       <Card className="mb-6 gap-4">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">
-            <CalendarDays className="size-5 text-emerald-600" />
+            <CalendarDays className="size-5 text-blue-700" />
             Schedule & Location
           </CardTitle>
         </CardHeader>
@@ -333,7 +333,7 @@ export function ClientBookingDetailPage() {
           <Separator />
           <div className="flex justify-between font-semibold">
             <span>Total</span>
-            <span className="text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+            <span className="text-blue-700">₹{booking.finalPrice?.toLocaleString()}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Payment Status</span>
@@ -384,7 +384,7 @@ export function ClientBookingDetailPage() {
           )}
           {canReview && (
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700"
+              className="bg-blue-800 hover:bg-[#1e3a5f]"
               onClick={() => setReviewDialog(true)}
             >
               <Star className="mr-2 size-4" />
@@ -476,7 +476,7 @@ export function ClientBookingDetailPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setReviewDialog(false)}>Cancel</Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700" onClick={handleReview} disabled={submittingReview}>
+            <Button className="bg-blue-800 hover:bg-[#1e3a5f]" onClick={handleReview} disabled={submittingReview}>
               {submittingReview && <Loader2 className="mr-2 size-4 animate-spin" />}
               Submit Review
             </Button>

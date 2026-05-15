@@ -61,7 +61,7 @@ export function ClientFavoritesPage() {
           <p className="text-sm text-muted-foreground">Save services you like to find them easily later</p>
           <Button
             variant="outline"
-            className="mt-4 border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="mt-4 border-blue-200 text-blue-700 hover:bg-blue-50"
             onClick={() => navigate('categories')}
           >
             Browse Services
@@ -109,11 +109,11 @@ export function ClientFavoritesPage() {
                   </div>
 
                   <div className="mt-3 flex items-center justify-between">
-                    <span className="text-lg font-bold text-emerald-600">₹{service.basePrice?.toLocaleString()}</span>
+                    <span className="text-lg font-bold text-blue-700">₹{service.basePrice?.toLocaleString()}</span>
                     <Button
                       size="sm"
                       variant="outline"
-                      className="border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                      className="border-blue-200 text-blue-700 hover:bg-blue-50"
                       onClick={() => navigate('service-detail', { serviceId: service.id })}
                     >
                       View Details

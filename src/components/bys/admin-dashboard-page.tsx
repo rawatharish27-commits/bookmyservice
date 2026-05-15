@@ -98,14 +98,14 @@ export function AdminDashboardPage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-l-4 border-l-blue-500">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground">Total Users</p>
                 <p className="mt-1 text-2xl font-bold">{stats?.totalUsers || 0}</p>
               </div>
-              <Users className="size-5 text-emerald-600" />
+              <Users className="size-5 text-blue-700" />
             </div>
           </CardContent>
         </Card>

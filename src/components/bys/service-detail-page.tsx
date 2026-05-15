@@ -229,7 +229,7 @@ export function ServiceDetailPage() {
         {/* Left Column - Main Content */}
         <div className="lg:col-span-2">
           {/* Image Gallery */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-emerald-50 to-teal-50">
+          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-sky-50">
             {images.length > 0 ? (
               <>
                 <img
@@ -271,7 +271,7 @@ export function ServiceDetailPage() {
               </>
             ) : (
               <div className="flex aspect-video items-center justify-center">
-                <Wrench className="size-20 text-emerald-300" />
+                <Wrench className="size-20 text-blue-400" />
               </div>
             )}
           </div>
@@ -353,9 +353,9 @@ export function ServiceDetailPage() {
                     .map((slot) => (
                       <div
                         key={slot.id}
-                        className="flex items-center gap-2 rounded-lg border bg-emerald-50/50 p-3 text-sm"
+                        className="flex items-center gap-2 rounded-lg border bg-blue-50/50 p-3 text-sm"
                       >
-                        <Calendar className="size-4 text-emerald-600" />
+                        <Calendar className="size-4 text-blue-700" />
                         <span className="font-medium">{DAY_NAMES[slot.dayOfWeek]}</span>
                         <span className="text-muted-foreground">
                           {slot.startTime} - {slot.endTime}
@@ -384,7 +384,7 @@ export function ServiceDetailPage() {
                           {review.reviewer.profileImageUrl && (
                             <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer.name} />
                           )}
-                          <AvatarFallback className="bg-emerald-100 text-xs text-emerald-700">
+                          <AvatarFallback className="bg-blue-100 text-xs text-blue-800">
                             {getInitials(review.reviewer.name)}
                           </AvatarFallback>
                         </Avatar>
@@ -423,7 +423,7 @@ export function ServiceDetailPage() {
             <CardContent className="p-6">
               <div className="mb-4">
                 <div className="flex items-baseline gap-1">
-                  <span className="text-3xl font-bold text-emerald-600">₹{service.basePrice}</span>
+                  <span className="text-3xl font-bold text-blue-700">₹{service.basePrice}</span>
                   {service.priceNegotiable && (
                     <Badge className="ml-2 bg-amber-100 text-amber-700 hover:bg-amber-100">
                       Negotiable
@@ -438,7 +438,7 @@ export function ServiceDetailPage() {
               </div>
 
               <Button
-                className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+                className="w-full bg-blue-800 text-white hover:bg-[#1e3a5f]"
                 size="lg"
                 onClick={() => navigate('booking', { serviceId: service.id })}
               >
@@ -448,7 +448,7 @@ export function ServiceDetailPage() {
               {service.priceNegotiable && (
                 <Button
                   variant="outline"
-                  className="mt-2 w-full border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                  className="mt-2 w-full border-blue-200 text-blue-800 hover:bg-blue-50"
                   onClick={() => navigate('booking', { serviceId: service.id })}
                 >
                   Negotiate Price
@@ -468,14 +468,14 @@ export function ServiceDetailPage() {
                     {service.provider.profileImageUrl && (
                       <AvatarImage src={service.provider.profileImageUrl} alt={service.provider.name} />
                     )}
-                    <AvatarFallback className="bg-emerald-100 text-sm text-emerald-700">
+                    <AvatarFallback className="bg-blue-100 text-sm text-blue-800">
                       {getInitials(service.provider.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="text-sm font-medium">{service.provider.name}</p>
                     <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <ShieldCheck className="size-3 text-emerald-600" />
+                      <ShieldCheck className="size-3 text-blue-700" />
                       <span>Verified Provider</span>
                     </div>
                   </div>
@@ -499,13 +499,13 @@ export function ServiceDetailPage() {
               <div className="space-y-2 text-sm">
                 {service.address && (
                   <div className="flex items-start gap-2">
-                    <MapPin className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                    <MapPin className="mt-0.5 size-4 shrink-0 text-blue-700" />
                     <span className="text-muted-foreground">{service.address}</span>
                   </div>
                 )}
                 {service.serviceAreaRadiusKm && (
                   <div className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" />
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-blue-700" />
                     <span className="text-muted-foreground">
                       Serves within {service.serviceAreaRadiusKm} km radius
                     </span>
@@ -523,14 +523,14 @@ export function ServiceDetailPage() {
                 {similarServices.map((s) => (
                   <Card
                     key={s.id}
-                    className="cursor-pointer rounded-xl transition-all hover:border-emerald-200 hover:shadow-md"
+                    className="cursor-pointer rounded-xl transition-all hover:border-blue-200 hover:shadow-md"
                     onClick={() => {
                       navigate('service-detail', { serviceId: s.id });
                       window.scrollTo(0, 0);
                     }}
                   >
                     <CardContent className="flex gap-3 p-3">
-                      <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-emerald-50 to-teal-50">
+                      <div className="size-16 shrink-0 overflow-hidden rounded-lg bg-gradient-to-br from-blue-50 to-sky-50">
                         {s.images ? (
                           <img
                             src={JSON.parse(s.images)[0] || ''}
@@ -539,7 +539,7 @@ export function ServiceDetailPage() {
                           />
                         ) : (
                           <div className="flex size-full items-center justify-center">
-                            <Wrench className="size-6 text-emerald-300" />
+                            <Wrench className="size-6 text-blue-400" />
                           </div>
                         )}
                       </div>
@@ -551,7 +551,7 @@ export function ServiceDetailPage() {
                             <Star className="size-3 fill-amber-400 text-amber-400" />
                             <span className="text-xs">{s.averageRating.toFixed(1)}</span>
                           </div>
-                          <span className="text-sm font-bold text-emerald-600">₹{s.basePrice}</span>
+                          <span className="text-sm font-bold text-blue-700">₹{s.basePrice}</span>
                         </div>
                       </div>
                     </CardContent>

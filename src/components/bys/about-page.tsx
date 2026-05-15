@@ -89,7 +89,7 @@ export function AboutPage() {
       {/* Hero */}
       <div className="mb-16 text-center">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          About <span className="text-emerald-600">BookYourService</span>
+          About <span className="text-blue-700">BookYourService</span>
         </h1>
         <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
           We are on a mission to make professional home services accessible, reliable, and
@@ -99,10 +99,10 @@ export function AboutPage() {
 
       {/* Mission & Vision */}
       <div className="mb-16 grid gap-8 sm:grid-cols-2">
-        <Card className="rounded-xl border-l-4 border-l-emerald-500">
+        <Card className="rounded-xl border-l-4 border-l-blue-500">
           <CardContent className="p-6">
-            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-emerald-100">
-              <Target className="size-6 text-emerald-600" />
+            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-blue-100">
+              <Target className="size-6 text-blue-700" />
             </div>
             <h2 className="text-xl font-bold">Our Mission</h2>
             <p className="mt-3 text-muted-foreground">
@@ -112,10 +112,10 @@ export function AboutPage() {
             </p>
           </CardContent>
         </Card>
-        <Card className="rounded-xl border-l-4 border-l-teal-500">
+        <Card className="rounded-xl border-l-4 border-l-sky-500">
           <CardContent className="p-6">
-            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-teal-100">
-              <Eye className="size-6 text-teal-600" />
+            <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-sky-100">
+              <Eye className="size-6 text-sky-600" />
             </div>
             <h2 className="text-xl font-bold">Our Vision</h2>
             <p className="mt-3 text-muted-foreground">
@@ -128,7 +128,7 @@ export function AboutPage() {
       </div>
 
       {/* Stats */}
-      <div className="mb-16 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 p-8 sm:p-12">
+      <div className="mb-16 rounded-2xl bg-gradient-to-r from-blue-800 to-sky-600 p-8 sm:p-12">
         <h2 className="mb-8 text-center text-2xl font-bold text-white">Our Impact</h2>
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
           {[
@@ -142,7 +142,7 @@ export function AboutPage() {
                 {stat.icon}
               </div>
               <p className="text-2xl font-bold text-white sm:text-3xl">{stat.value}</p>
-              <p className="mt-1 text-sm text-emerald-100">{stat.label}</p>
+              <p className="mt-1 text-sm text-blue-100">{stat.label}</p>
             </div>
           ))}
         </div>
@@ -158,7 +158,7 @@ export function AboutPage() {
           {values.map((value) => (
             <Card key={value.title} className="rounded-xl transition-all hover:shadow-md">
               <CardContent className="p-6">
-                <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                <div className="mb-3 flex size-10 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                   {value.icon}
                 </div>
                 <h3 className="font-semibold">{value.title}</h3>
@@ -180,7 +180,7 @@ export function AboutPage() {
             <Card key={member.name} className="rounded-xl text-center">
               <CardContent className="p-6">
                 <Avatar className="mx-auto size-20">
-                  <AvatarFallback className="bg-emerald-100 text-lg font-semibold text-emerald-700">
+                  <AvatarFallback className="bg-blue-100 text-lg font-semibold text-blue-800">
                     {member.initials}
                   </AvatarFallback>
                 </Avatar>
@@ -202,7 +202,7 @@ export function AboutPage() {
           <Button
             size="lg"
             onClick={() => navigate('categories')}
-            className="bg-emerald-600 text-white hover:bg-emerald-700"
+            className="bg-blue-800 text-white hover:bg-[#1e3a5f]"
           >
             Find Services <ArrowRight className="ml-2 size-4" />
           </Button>

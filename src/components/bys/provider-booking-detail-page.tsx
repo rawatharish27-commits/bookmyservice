@@ -84,7 +84,7 @@ export function ProviderBookingDetailPage() {
       case 'PENDING':
         return (
           <div className="flex gap-3">
-            <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => handleAction('accept')}>
+            <Button className="bg-blue-800 text-white hover:bg-[#1e3a5f]" onClick={() => handleAction('accept')}>
               <CheckCircle2 className="mr-2 size-4" /> Accept Booking
             </Button>
             <Button variant="destructive" onClick={() => handleAction('reject')}>
@@ -100,7 +100,7 @@ export function ProviderBookingDetailPage() {
         );
       case 'IN_PROGRESS':
         return (
-          <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => handleAction('complete')}>
+          <Button className="bg-blue-800 text-white hover:bg-[#1e3a5f]" onClick={() => handleAction('complete')}>
             <CheckCircle2 className="mr-2 size-4" /> Mark Complete
           </Button>
         );
@@ -135,8 +135,8 @@ export function ProviderBookingDetailPage() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full bg-emerald-100">
-                <User className="size-5 text-emerald-600" />
+              <div className="flex size-10 items-center justify-center rounded-full bg-blue-100">
+                <User className="size-5 text-blue-700" />
               </div>
               <div>
                 <p className="font-medium">{booking.client?.name}</p>
@@ -157,7 +157,7 @@ export function ProviderBookingDetailPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
-              <Briefcase className="size-4 text-emerald-600" />
+              <Briefcase className="size-4 text-blue-700" />
               <span className="font-medium">{booking.service?.title}</span>
             </div>
             <Separator />
@@ -193,7 +193,7 @@ export function ProviderBookingDetailPage() {
               <Separator />
               <div className="flex justify-between font-semibold">
                 <span>Total</span>
-                <span className="text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+                <span className="text-blue-700">₹{booking.finalPrice?.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Your Earnings</span>
