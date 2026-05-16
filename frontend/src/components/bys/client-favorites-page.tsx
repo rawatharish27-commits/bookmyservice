@@ -133,7 +133,7 @@ export function ClientFavoritesPage() {
                     </div>
 
                     {service.provider && (
-                      <p className="mt-2 text-xs text-muted-foreground">by {service.provider.name}</p>
+                      <p className="mt-2 text-xs text-muted-foreground">by {service.provider?.name || 'Provider'}</p>
                     )}
                   </CardContent>
                 </Card>

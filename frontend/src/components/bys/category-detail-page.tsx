@@ -427,7 +427,7 @@ export function CategoryDetailPage() {
 
               <div className="flex-1">
                 <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-                  {category.name}
+                  {category?.name || 'Unknown Category'}
                 </h1>
                 {category.description && (
                   <p className="mt-2 max-w-2xl text-base leading-relaxed text-white/80 sm:text-lg">
@@ -677,7 +677,7 @@ export function CategoryDetailPage() {
                           {/* Category badge on image */}
                           <div className="absolute bottom-3 left-3 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                             <Badge className={`rounded-full border-0 ${style.accentBadge} px-2.5 py-0.5 text-xs font-medium backdrop-blur-sm`}>
-                              {service.category.name}
+                              {service.category?.name || 'Category'}
                             </Badge>
                           </div>
                         </div>
@@ -690,9 +690,9 @@ export function CategoryDetailPage() {
                           {/* Provider & location */}
                           <div className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                             <div className={`flex size-6 items-center justify-center rounded-full ${style.iconBg} text-xs font-bold ${style.lightText}`}>
-                              {service.provider.name.charAt(0)}
+                              {service.provider?.name?.charAt(0) || '?'}
                             </div>
-                            <span className="truncate font-medium">{service.provider.name}</span>
+                            <span className="truncate font-medium">{service.provider?.name || 'Provider'}</span>
                             {service.city && (
                               <>
                                 <span className="text-muted-foreground/40">·</span>
@@ -824,7 +824,7 @@ export function CategoryDetailPage() {
 
               <div className="relative">
                 <h3 className="text-2xl font-bold text-white sm:text-3xl">
-                  Ready to book a {category.name.toLowerCase()} service?
+                  Ready to book a {category?.name?.toLowerCase() || 'service'} service?
                 </h3>
                 <p className="mx-auto mt-3 max-w-lg text-white/80">
                   Choose from {services.length} verified professionals in your area. Quality guaranteed.

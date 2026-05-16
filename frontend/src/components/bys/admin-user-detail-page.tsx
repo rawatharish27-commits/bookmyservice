@@ -88,7 +88,7 @@ export function AdminUserDetailPage() {
           <ArrowLeft className="size-4" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-xl font-bold">{user.name}</h1>
+          <h1 className="text-xl font-bold">{user?.name || 'Guest'}</h1>
           <p className="text-sm text-muted-foreground">{user.email}</p>
         </div>
         <Badge

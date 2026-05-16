@@ -41,7 +41,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
   const { mutate: saveProfile, loading: saving } = useApiMutation();
   const { mutate: changePassword, loading: changingPassword } = useApiMutation();
 
-  const [name, setName] = useState(user.name || '');
+  const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user.phone || '');
   const [city, setCity] = useState(user.city || '');
   const [state, setState] = useState(user.state || '');
@@ -111,7 +111,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
               {user.profileImageUrl ? (
-                <img src={user.profileImageUrl} alt={user.name} className="size-24 rounded-full object-cover" />
+                <img src={user.profileImageUrl} alt={user?.name || 'User'} className="size-24 rounded-full object-cover" />
               ) : (
                 <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-teal-50">
                   <User className="size-10 text-emerald-400" />
@@ -123,7 +123,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
             <Camera className="size-3.5" />
           </button>
         </div>
-        <h2 className="mt-3 text-xl font-bold">{user.name}</h2>
+        <h2 className="mt-3 text-xl font-bold">{user?.name || 'Guest'}</h2>
         <p className="text-sm text-muted-foreground">{user.email}</p>
         <div className="mt-2 flex items-center gap-2">
           <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 capitalize font-semibold">

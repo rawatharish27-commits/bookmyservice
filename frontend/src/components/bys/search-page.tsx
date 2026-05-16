@@ -518,10 +518,10 @@ export function SearchPage() {
                         {/* Provider */}
                         <div className="flex items-center gap-2">
                           <div className={`flex size-8 items-center justify-center rounded-full bg-gradient-to-br ${gradientColor} text-xs font-bold text-white`}>
-                            {service.provider.name.charAt(0)}
+                            {service.provider?.name?.charAt(0) || '?'}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-sm font-medium text-gray-700">{service.provider.name}</p>
+                            <p className="truncate text-sm font-medium text-gray-700">{service.provider?.name || 'Provider'}</p>
                             {service.city && (
                               <p className="flex items-center gap-1 text-xs text-muted-foreground">
                                 <MapPin className="size-3" />

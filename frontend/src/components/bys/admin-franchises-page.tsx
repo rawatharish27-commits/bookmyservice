@@ -29,6 +29,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -445,6 +446,9 @@ export function AdminFranchisesPage() {
               </div>
               Create Franchise
             </DialogTitle>
+            <DialogDescription>
+              Add a new franchise partner to the platform
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">

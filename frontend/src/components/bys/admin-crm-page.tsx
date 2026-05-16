@@ -23,6 +23,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogFooter,
@@ -494,6 +495,9 @@ export function AdminCrmPage() {
               </div>
               Create Follow-up
             </DialogTitle>
+            <DialogDescription>
+              Schedule a new follow-up activity
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-2">
             <div className="space-y-2">

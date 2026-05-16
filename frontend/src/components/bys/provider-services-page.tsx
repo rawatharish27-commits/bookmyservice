@@ -144,7 +144,7 @@ export function ProviderServicesPage() {
                       <h3 className="truncate font-semibold">{service.title}</h3>
                       <p className="mt-1 text-sm text-muted-foreground">
                         {service.category?.name}
-                        {service.subcategory ? ` › ${service.subcategory.name}` : ''}
+                        {service.subcategory ? ` › ${service.subcategory?.name || ''}` : ''}
                       </p>
                     </div>
                     <DropdownMenu>

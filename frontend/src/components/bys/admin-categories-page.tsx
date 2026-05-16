@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -196,6 +197,9 @@ export function AdminCategoriesPage() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{editingCat ? 'Edit Category' : 'Add Category'}</DialogTitle>
+            <DialogDescription>
+              {editingCat ? 'Update category details' : 'Create a new service category'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">

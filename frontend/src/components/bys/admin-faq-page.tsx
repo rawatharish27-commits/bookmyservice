@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
@@ -220,6 +221,9 @@ export function AdminFaqPage() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>{editingFaq ? 'Edit FAQ' : 'Add FAQ'}</DialogTitle>
+            <DialogDescription>
+              {editingFaq ? 'Update FAQ details' : 'Create a new FAQ entry'}
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div className="space-y-2">

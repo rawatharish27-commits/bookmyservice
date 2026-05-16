@@ -290,26 +290,26 @@ export function ClientInvoiceDetailPage() {
                   <Building2 className="size-4 text-teal-600" />
                   <span className="text-sm font-semibold text-teal-700">From</span>
                 </div>
-                <p className="text-sm font-bold">{invoice.provider.name}</p>
-                {invoice.provider.email && (
+                <p className="text-sm font-bold">{invoice.provider?.name || 'Unknown Provider'}</p>
+                {invoice.provider?.email && (
                   <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Mail className="size-3" />
                     {invoice.provider.email}
                   </div>
                 )}
-                {invoice.provider.phone && (
+                {invoice.provider?.phone && (
                   <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
                     <Phone className="size-3" />
                     {invoice.provider.phone}
                   </div>
                 )}
-                {invoice.provider.address && (
+                {invoice.provider?.address && (
                   <div className="mt-1 flex items-start gap-1.5 text-xs text-muted-foreground">
                     <MapPin className="size-3 mt-0.5 shrink-0" />
                     {invoice.provider.address}
                   </div>
                 )}
-                {invoice.provider.gstNumber && (
+                {invoice.provider?.gstNumber && (
                   <div className="mt-2 inline-flex items-center gap-1 rounded-md bg-teal-100/60 px-2 py-0.5 text-xs font-medium text-teal-700">
                     GST: {invoice.provider.gstNumber}
                   </div>

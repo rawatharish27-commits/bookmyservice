@@ -456,7 +456,7 @@ export function ServiceDetailPage() {
                     </Badge>
                     {service.subcategory && (
                       <Badge variant="outline" className="border-teal-200 text-teal-700">
-                        {service.subcategory.name}
+                        {service.subcategory?.name || 'Subcategory'}
                       </Badge>
                     )}
                     {service.city && (
@@ -761,11 +761,11 @@ export function ServiceDetailPage() {
                       <div className="relative shrink-0">
                         <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2.5px] shadow-md shadow-emerald-500/20">
                           <Avatar className="size-12 ring-2 ring-white">
-                            {service.provider.profileImageUrl && (
-                              <AvatarImage src={service.provider.profileImageUrl} alt={service.provider.name} />
+                            {service.provider?.profileImageUrl && (
+                              <AvatarImage src={service.provider.profileImageUrl} alt={service.provider?.name || 'Provider'} />
                             )}
                             <AvatarFallback className="bg-emerald-50 text-sm font-bold text-emerald-700">
-                              {getInitials(service.provider.name)}
+                              {getInitials(service.provider?.name || 'P')}
                             </AvatarFallback>
                           </Avatar>
                         </div>
@@ -776,7 +776,7 @@ export function ServiceDetailPage() {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
-                          {service.provider.name}
+                          {service.provider?.name || 'Provider'}
                         </p>
                         <div className="flex items-center gap-1">
                           <Award className="size-3 text-emerald-500" />
@@ -893,7 +893,7 @@ export function ServiceDetailPage() {
                             <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
                               {s.title}
                             </p>
-                            <p className="mt-0.5 text-xs text-muted-foreground">{s.provider.name}</p>
+                            <p className="mt-0.5 text-xs text-muted-foreground">{s.provider?.name || 'Provider'}</p>
                             <div className="mt-2 flex items-center justify-between">
                               <div className="flex items-center gap-1">
                                 <Star className="size-3 fill-cyan-400 text-cyan-400" />

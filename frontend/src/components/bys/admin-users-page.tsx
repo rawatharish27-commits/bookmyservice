@@ -159,7 +159,7 @@ export function AdminUsersPage() {
                     <TableRow key={user.id}>
                       <TableCell>
                         <div>
-                          <p className="font-medium">{user.name}</p>
+                          <p className="font-medium">{user?.name || 'Guest'}</p>
                           <p className="text-xs text-muted-foreground sm:hidden">{user.email}</p>
                         </div>
                       </TableCell>

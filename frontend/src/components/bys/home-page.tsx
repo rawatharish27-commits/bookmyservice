@@ -1002,7 +1002,7 @@ export function HomePage() {
                               </div>
                             )}
                             <Badge className="absolute top-3 right-3 bg-[#0a1628]/80 text-sky-200 backdrop-blur-sm border-[#2d5a8e]/30">
-                              {service.category.name}
+                              {service.category?.name || 'Category'}
                             </Badge>
                           </div>
                           <CardContent className="p-4">

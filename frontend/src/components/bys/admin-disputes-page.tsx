@@ -25,6 +25,7 @@ import {
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -219,6 +220,9 @@ export function AdminDisputesPage() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle>Resolve Dispute</DialogTitle>
+            <DialogDescription>
+              Review the dispute details and provide a resolution
+            </DialogDescription>
           </DialogHeader>
           {selectedDispute && (
             <div className="space-y-4">
