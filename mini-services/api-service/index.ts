@@ -78,7 +78,10 @@ function transformReviewRow(row: Record<string, any>) {
 app.use('*', cors({
   origin: [
     'http://localhost:5173',
-    'https://bookmyservice.pages.dev'
+    'https://bookmyservice.pages.dev',
+    'https://bookyourservice.co.in',
+    'https://www.bookyourservice.co.in',
+    'https://bookmyservice-eta.vercel.app',
   ],
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
