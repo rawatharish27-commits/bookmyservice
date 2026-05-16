@@ -14,7 +14,5 @@ export function apiUrl(path: string): string {
     return `${API_BASE}${path}`;
   }
 
-  // Local dev via Caddy gateway: use XTransformPort
-  const separator = path.includes('?') ? '&' : '?';
-  return `${path}${separator}XTransformPort=3001`;
+  return path;
 }

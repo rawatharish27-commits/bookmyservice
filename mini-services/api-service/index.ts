@@ -4,8 +4,10 @@ import { cors } from 'hono/cors'
 import { Pool } from 'pg'
 
 const pool = new Pool({
-  connectionString: (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgresql')) ? process.env.DATABASE_URL : 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
-  ssl: { rejectUnauthorized: false },
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
   max: 3,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
@@ -74,13 +76,22 @@ function transformReviewRow(row: Record<string, any>) {
 }
 
 app.use('*', cors({
-  origin: '*',
+  origin: [
+    'http://localhost:5173',
+    'https://bookmyservice.pages.dev'
+  ],
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  credentials: true,
 }))
 
 // Health check
-app.get('/health', (c) => c.json({ status: 'ok' }))
+app.get('/api/health', (c) => {
+  return c.json({
+    status: 'ok',
+    service: 'bookmyservice-api'
+  })
+})
 
 // Legal pages
 const TYPE_MAP: Record<string, string> = {
@@ -2681,6 +2692,11 @@ app.all('/api/*', async (c) => {
   return c.json({ error: 'Not Found', message: 'The requested resource was not found' }, 404)
 })
 
-const port = 3001
+const port = Number(process.env.PORT || 3001)
+
 console.log(`🚀 API Server is running on http://localhost:${port}`)
-serve({ fetch: app.fetch, port })
+
+serve({
+  fetch: app.fetch,
+  port,
+})
