@@ -22,7 +22,7 @@ interface Booking {
   serviceAddress: string;
   specialInstructions?: string;
   service: { id: string; title: string; basePrice: number };
-  client: { id: string; name: string; profileImageUrl?: string };
+  client?: { id: string; name: string; profileImageUrl?: string };
   createdAt: string;
 }
 

@@ -13,7 +13,7 @@ interface Review {
   createdAt: string;
   bookingId: string;
   service: { id: string; title: string };
-  reviewer: { id: string; name: string; profileImageUrl?: string };
+  reviewer?: { id: string; name: string; profileImageUrl?: string };
 }
 
 interface ReviewsResponse {

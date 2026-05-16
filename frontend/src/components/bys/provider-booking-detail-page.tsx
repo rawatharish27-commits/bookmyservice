@@ -208,8 +208,8 @@ interface Booking {
   contactShared?: boolean;
   paymentStatus?: string;
   service: { id: string; title: string; basePrice: number; images?: string };
-  client: { id: string; name: string; profileImageUrl?: string; phone?: string; email?: string };
-  provider: { id: string; name: string; profileImageUrl?: string };
+  client?: { id: string; name: string; profileImageUrl?: string; phone?: string; email?: string };
+  provider?: { id: string; name: string; profileImageUrl?: string };
   statusHistory?: Record<string, string>;
   createdAt: string;
 }
@@ -503,7 +503,7 @@ export function ProviderBookingDetailPage() {
               <div className="min-w-0">
                 <p className="font-semibold">{booking.client?.name}</p>
                 {booking.client?.email && (
-                  <p className="text-sm text-muted-foreground">{booking.client.email}</p>
+                  <p className="text-sm text-muted-foreground">{booking.client?.email}</p>
                 )}
               </div>
             </div>
@@ -539,8 +539,8 @@ export function ProviderBookingDetailPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium text-emerald-600">Client Contact</p>
-                <a href={`tel:${booking.client.phone}`} className="text-lg font-bold text-emerald-900 hover:underline">
-                  {booking.client.phone}
+                <a href={`tel:${booking.client?.phone}`} className="text-lg font-bold text-emerald-900 hover:underline">
+                  {booking.client?.phone}
                 </a>
               </div>
               <Button
@@ -548,7 +548,7 @@ export function ProviderBookingDetailPage() {
                 className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
                 asChild
               >
-                <a href={`tel:${booking.client.phone}`}>
+                <a href={`tel:${booking.client?.phone}`}>
                   <Phone className="mr-1.5 size-3.5" /> Call
                 </a>
               </Button>

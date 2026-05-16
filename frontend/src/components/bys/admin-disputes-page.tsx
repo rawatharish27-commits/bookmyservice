@@ -46,7 +46,7 @@ interface Dispute {
     bookingNumber: string;
     service: { id: string; title: string };
   };
-  raiser: { id: string; name: string; profileImageUrl?: string };
+  raiser?: { id: string; name: string; profileImageUrl?: string };
   assignee: { id: string; name: string } | null;
 }
 

@@ -49,7 +49,7 @@ interface ServiceItem {
   totalReviews: number;
   city?: string;
   images?: string;
-  provider: { id: string; name: string; profileImageUrl?: string };
+  provider?: { id: string; name: string; profileImageUrl?: string };
   category: { id: number; name: string; slug: string };
 }
 

@@ -331,7 +331,7 @@ export function CategoriesPage() {
             const res = await fetch(apiUrl(`/api/subcategories?categoryId=${cat.id}`));
             if (res.ok) {
               const data = await res.json();
-              map[cat.id] = data;
+              map[cat.id] = data.subcategories || data || [];
             }
           } catch {
             // ignore
@@ -344,8 +344,8 @@ export function CategoriesPage() {
   }, [categories.length]);
 
   // Total stats
-  const totalServices = categories.reduce((acc, cat) => acc + cat.servicesCount, 0);
-  const totalSubcategories = categories.reduce((acc, cat) => acc + cat.subcategoriesCount, 0);
+  const totalServices = categories.reduce((acc, cat) => acc + (cat.servicesCount || 0), 0);
+  const totalSubcategories = categories.reduce((acc, cat) => acc + (cat.subcategoriesCount || 0), 0);
 
   return (
     <div className="flex flex-col">

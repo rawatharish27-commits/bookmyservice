@@ -110,7 +110,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <div className="relative">
           <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
-              {user.profileImageUrl ? (
+              {user?.profileImageUrl ? (
                 <img src={user.profileImageUrl} alt={user?.name || 'User'} className="size-24 rounded-full object-cover" />
               ) : (
                 <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-teal-50">

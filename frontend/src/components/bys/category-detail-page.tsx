@@ -80,7 +80,7 @@ interface ServiceItem {
   totalReviews: number;
   city?: string;
   images?: string;
-  provider: { id: string; name: string; profileImageUrl?: string };
+  provider?: { id: string; name: string; profileImageUrl?: string };
   category: { id: number; name: string; slug: string };
 }
 
@@ -279,7 +279,7 @@ const slideInLeft = {
 
 export function CategoryDetailPage() {
   const { navigate, nav } = useApp();
-  const categoryId = nav.params.categoryId;
+  const categoryId = nav.params.categoryId || nav.params.slug;
   const [sortBy, setSortBy] = useState('newest');
 
   const { data: category, loading: catLoading, error: catError, refetch: refetchCat } = useApi<CategoryDetail>(
@@ -288,8 +288,8 @@ export function CategoryDetailPage() {
 
   const { data: servicesData, loading: srvLoading, error: srvError, refetch: refetchSrv } = useApi<{
     services: ServiceItem[];
-    pagination: { total: number };
-  }>(categoryId ? `/api/services?category=${categoryId}&limit=12` : null);
+    total: number;
+  }>(categoryId ? `/api/categories/${categoryId}/services?limit=12` : null);
 
   const rawServices = servicesData?.services || [];
 
@@ -436,10 +436,10 @@ export function CategoryDetailPage() {
                 )}
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <Badge className="rounded-full border-0 bg-white/20 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
-                    <Layers className="mr-1.5 size-3.5" /> {category.subcategories.length} Subcategories
+                    <Layers className="mr-1.5 size-3.5" /> {category.subcategories?.length || 0} Subcategories
                   </Badge>
                   <Badge className="rounded-full border-0 bg-white/20 px-4 py-1.5 text-sm font-semibold text-white backdrop-blur-sm">
-                    <Wrench className="mr-1.5 size-3.5" /> {category.servicesCount} Services
+                    <Wrench className="mr-1.5 size-3.5" /> {category.servicesCount || 0} Services
                   </Badge>
                 </div>
               </div>
@@ -476,7 +476,7 @@ export function CategoryDetailPage() {
       </section>
 
       {/* ═══════════ Subcategories Grid ═══════════ */}
-      {category && category.subcategories.length > 0 && (
+      {category && (category.subcategories?.length || 0) > 0 && (
         <section className="relative z-10 bg-white py-12">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <motion.div
@@ -500,7 +500,7 @@ export function CategoryDetailPage() {
             </motion.div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {category.subcategories.map((sub, idx) => (
+              {(category.subcategories || []).map((sub, idx) => (
                 <motion.div
                   key={sub.id}
                   initial="hidden"
@@ -633,7 +633,7 @@ export function CategoryDetailPage() {
                         <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
                           {service.images ? (
                             <img
-                              src={JSON.parse(service.images)[0] || ''}
+                              src={(() => { try { const arr = JSON.parse(service.images); return Array.isArray(arr) ? arr[0] || '' : ''; } catch { return ''; } })()}
                               alt={service.title}
                               className="size-full object-cover transition-transform duration-700 group-hover:scale-110"
                             />

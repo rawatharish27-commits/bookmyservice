@@ -56,7 +56,7 @@ interface ServiceDetail {
   totalReviews: number;
   isActive: boolean;
   isApproved: boolean;
-  provider: {
+  provider?: {
     id: string;
     name: string;
     profileImageUrl?: string;
@@ -73,7 +73,7 @@ interface ReviewItem {
   rating: number;
   comment?: string;
   createdAt: string;
-  reviewer: { id: string; name: string; profileImageUrl?: string };
+  reviewer?: { id: string; name: string; profileImageUrl?: string };
 }
 
 interface AvailabilitySlot {
@@ -92,7 +92,7 @@ interface SimilarService {
   totalReviews: number;
   city?: string;
   images?: string;
-  provider: { id: string; name: string };
+  provider?: { id: string; name: string };
   category: { id: number; name: string };
 }
 
@@ -180,7 +180,7 @@ export function ServiceDetailPage() {
   );
 
   const similarServices = similarData?.services?.filter((s) => s.id !== serviceId) || [];
-  const images = service?.images ? JSON.parse(service.images) : [];
+  const images = service?.images ? (() => { try { const parsed = JSON.parse(service.images); return Array.isArray(parsed) ? parsed : []; } catch { return []; } })() : [];
   const reviews = reviewsData?.reviews || service?.reviews || [];
 
   const handleFavorite = async () => {
@@ -300,10 +300,10 @@ export function ServiceDetailPage() {
               <BreadcrumbSeparator className="text-muted-foreground/40" />
               <BreadcrumbItem>
                 <BreadcrumbLink
-                  onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+                  onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
                   className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
                 >
-                  {service.category.name}
+                  {service.category?.name || 'Category'}
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator className="text-muted-foreground/40" />
@@ -325,11 +325,11 @@ export function ServiceDetailPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+            onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
             className="group mb-5 gap-2 text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50"
           >
             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /> Back to{' '}
-            {service.category.name}
+            {service.category?.name || 'Category'}
           </Button>
         </motion.div>
 
@@ -452,7 +452,7 @@ export function ServiceDetailPage() {
                   </h1>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
-                      {service.category.name}
+                      {service.category?.name || 'Category'}
                     </Badge>
                     {service.subcategory && (
                       <Badge variant="outline" className="border-teal-200 text-teal-700">
@@ -652,18 +652,18 @@ export function ServiceDetailPage() {
                         <div className="relative shrink-0">
                           <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2px]">
                             <Avatar className="size-10 ring-2 ring-white">
-                              {review.reviewer.profileImageUrl && (
-                                <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer.name} />
+                              {review.reviewer?.profileImageUrl && (
+                                <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer?.name || 'Reviewer'} />
                               )}
                               <AvatarFallback className="bg-emerald-50 text-xs font-bold text-emerald-700">
-                                {getInitials(review.reviewer.name)}
+                                {getInitials(review.reviewer?.name || 'R')}
                               </AvatarFallback>
                             </Avatar>
                           </div>
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center justify-between gap-2">
-                            <p className="font-semibold text-foreground">{review.reviewer.name}</p>
+                            <p className="font-semibold text-foreground">{review.reviewer?.name || 'Anonymous'}</p>
                             <span className="shrink-0 text-xs text-muted-foreground">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </span>
@@ -755,14 +755,14 @@ export function ServiceDetailPage() {
                     </h3>
                     <div
                       className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-emerald-50/50"
-                      onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
+                      onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
                     >
                       {/* Avatar with Gradient Ring */}
                       <div className="relative shrink-0">
                         <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2.5px] shadow-md shadow-emerald-500/20">
                           <Avatar className="size-12 ring-2 ring-white">
                             {service.provider?.profileImageUrl && (
-                              <AvatarImage src={service.provider.profileImageUrl} alt={service.provider?.name || 'Provider'} />
+                              <AvatarImage src={service.provider?.profileImageUrl || ''} alt={service.provider?.name || 'Provider'} />
                             )}
                             <AvatarFallback className="bg-emerald-50 text-sm font-bold text-emerald-700">
                               {getInitials(service.provider?.name || 'P')}

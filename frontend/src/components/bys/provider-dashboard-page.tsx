@@ -31,7 +31,7 @@ interface Booking {
   finalPrice: number;
   providerEarnings: number;
   service: { id: string; title: string; basePrice: number };
-  client: { id: string; name: string; profileImageUrl?: string };
+  client?: { id: string; name: string; profileImageUrl?: string };
 }
 
 interface BookingResponse {

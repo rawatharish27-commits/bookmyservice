@@ -78,7 +78,7 @@ interface ServiceItem {
   totalReviews: number;
   city?: string;
   images?: string;
-  provider: { id: string; name: string; profileImageUrl?: string };
+  provider?: { id: string; name: string; profileImageUrl?: string };
   category: { id: number; name: string; slug: string };
 }
 
@@ -823,7 +823,7 @@ export function HomePage() {
                   >
                     <TiltCard>
                       <div
-                        onClick={() => isAvailable ? navigate('category-detail', { slug: service.slug }) : undefined}
+                        onClick={() => isAvailable ? navigate('category-detail', { categoryId: service.slug }) : undefined}
                         className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
                         style={{ height: '280px' }}
                       >
@@ -992,7 +992,7 @@ export function HomePage() {
                       transition={{ delay: idx * 0.1, duration: 0.5 }}
                     >
                       <TiltCard>
-                        <Card className="group cursor-pointer overflow-hidden rounded-2xl border-[#1e3a5f]/10 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('service-detail', { id: service.id })}>
+                        <Card className="group cursor-pointer overflow-hidden rounded-2xl border-[#1e3a5f]/10 shadow-sm transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('service-detail', { serviceId: service.id })}>
                           <div className="relative overflow-hidden">
                             {service.images ? (
                               <img src={service.images.split(',')[0]} alt={service.title} className="aspect-video w-full object-cover transition-transform duration-500 group-hover:scale-105" />

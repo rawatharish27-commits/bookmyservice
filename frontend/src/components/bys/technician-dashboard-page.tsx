@@ -78,7 +78,7 @@ interface Job {
   technicianEarnings: number;
   otp?: string;
   service: { id: string; title: string; basePrice: number };
-  client: { id: string; name: string; phone?: string; profileImageUrl?: string; address?: string };
+  client?: { id: string; name: string; phone?: string; profileImageUrl?: string; address?: string };
 }
 
 interface JobsResponse {
@@ -530,7 +530,7 @@ export function TechnicianDashboardPage() {
                               {job.client?.address && (
                                 <span className="flex items-center gap-1">
                                   <MapPin className="size-3" />
-                                  <span className="truncate max-w-[200px]">{job.client.address}</span>
+                                  <span className="truncate max-w-[200px]">{job.client?.address}</span>
                                 </span>
                               )}
                             </div>
