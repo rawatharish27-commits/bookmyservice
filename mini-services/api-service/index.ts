@@ -85,6 +85,16 @@ app.use('*', cors({
   credentials: true,
 }))
 
+// Root route
+app.get('/', (c) => {
+  return c.json({
+    status: 'ok',
+    service: 'bookmyservice-api',
+    version: '1.0.0',
+    endpoints: '/api/*'
+  })
+})
+
 // Health check
 app.get('/api/health', (c) => {
   return c.json({
