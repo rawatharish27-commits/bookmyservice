@@ -62,9 +62,9 @@ export function useGeolocation() {
         }));
       },
       {
-        enableHighAccuracy: false,
+        enableHighAccuracy: true,
         timeout: 10000,
-        maximumAge: 300000, // Cache for 5 minutes
+        maximumAge: 60000, // Cache for 1 minute
       }
     );
   }, []);
@@ -92,7 +92,7 @@ export function useGeolocation() {
       (err) => {
         setLocation(prev => ({ ...prev, error: err.message, loading: false }));
       },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   };
 

@@ -285,6 +285,90 @@ app.post('/api/auth/reset-password', async (c) => {
   } catch (e) { console.error('Reset password error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
+// ─── Google OAuth ────────────────────────────────────────────────────────
+app.post('/api/auth/google', async (c) => {
+  try {
+    const body = await c.req.json()
+    let email: string | undefined
+    let name: string | undefined
+    let profileImageUrl: string | undefined
+
+    // Mode 1: Frontend sends a Google ID token → verify it with Google
+    if (body.token) {
+      const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(body.token)}`)
+      if (!tokenInfoRes.ok) {
+        return c.json({ error: 'Invalid Google token' }, 401)
+      }
+      const tokenInfo = await tokenInfoRes.json() as { email?: string; name?: string; picture?: string; sub?: string; email_verified?: string }
+      if (!tokenInfo.email) {
+        return c.json({ error: 'Google account has no email' }, 400)
+      }
+      email = tokenInfo.email
+      name = tokenInfo.name || tokenInfo.email.split('@')[0]
+      profileImageUrl = tokenInfo.picture || undefined
+    }
+    // Mode 2: Frontend already verified and sends user data directly
+    else if (body.email) {
+      email = String(body.email).toLowerCase().trim()
+      name = body.name || email.split('@')[0]
+      profileImageUrl = body.profileImageUrl || undefined
+    } else {
+      return c.json({ error: 'Either token or email is required' }, 400)
+    }
+
+    const lengthError = validateInputLengths({ email, name })
+    if (lengthError) return c.json({ error: lengthError }, 400)
+
+    const sanitizedEmail = email.toLowerCase().trim()
+
+    // Check if user exists
+    const existingResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [sanitizedEmail])
+
+    let user: any
+
+    if (existingResult.rows.length > 0) {
+      // Existing user → log them in
+      user = existingResult.rows[0]
+      if (user.status !== 'ACTIVE') {
+        return c.json({ error: 'Account is ' + user.status.toLowerCase() }, 403)
+      }
+      // Update profile image if Google provided one and user doesn't have one
+      if (profileImageUrl && !user.profileImageUrl) {
+        await pool.query('UPDATE "User" SET "profileImageUrl" = $1, "lastLoginAt" = NOW() WHERE id = $2', [profileImageUrl, user.id])
+      } else {
+        await pool.query('UPDATE "User" SET "lastLoginAt" = NOW() WHERE id = $1', [user.id])
+      }
+      // Re-fetch to get updated fields
+      const refreshed = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.id])
+      user = refreshed.rows[0]
+    } else {
+      // New user → create account
+      const passwordHash = await bcrypt.hash(crypto.randomUUID(), 10)
+      const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      await pool.query(
+        'INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", "profileImageUrl") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', true, false, $7)',
+        [userId, sanitizedEmail, 'PENDING', passwordHash, String(name).trim(), 1, profileImageUrl || null]
+      )
+      const newUserResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
+      user = newUserResult.rows[0]
+      if (!user) {
+        return c.json({ error: 'Failed to create account' }, 500)
+      }
+    }
+
+    // Generate JWT (same as regular login)
+    const secret = new TextEncoder().encode(JWT_SECRET)
+    const token = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId })
+      .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
+      .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
+    const { passwordHash, roleName, ...safeUser } = user
+    return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
+  } catch (e) {
+    console.error('Google auth error:', e)
+    return c.json({ error: 'Google authentication failed' }, 500)
+  }
+})
+
 app.post('/api/auth/change-password', async (c) => {
   try {
     const authHeader = c.req.header('authorization')

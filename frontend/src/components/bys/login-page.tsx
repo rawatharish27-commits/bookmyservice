@@ -14,12 +14,31 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { useApiMutation } from '@/hooks/use-api';
+import { apiUrl } from '@/lib/api-url';
+import type { Page } from '@/contexts/app-context';
 import { toast } from 'sonner';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
   Droplets, Zap, Wind, Shield, Clock, BadgeCheck, Phone
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+const GOOGLE_CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_GOOGLE_CLIENT_ID) || '';
+
+const loadGoogleScript = (): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    if (typeof google !== 'undefined' && google.accounts) {
+      resolve();
+      return;
+    }
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Failed to load Google script'));
+    document.body.appendChild(script);
+  });
+};
 
 const floatingIcons = [
   { Icon: Droplets, color: 'from-blue-400 to-cyan-400', glow: 'shadow-blue-400/30', x: '15%', y: '20%', delay: 0, size: 48 },
@@ -49,6 +68,71 @@ export function LoginPage() {
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const forgotMutation = useApiMutation();
+
+  const handleGoogleLogin = async () => {
+    if (!GOOGLE_CLIENT_ID) {
+      toast.error('Google Sign-in requires VITE_GOOGLE_CLIENT_ID to be configured. Please add it to your environment variables.');
+      return;
+    }
+    try {
+      await loadGoogleScript();
+      const client = google.accounts.oauth2.initTokenClient({
+        client_id: GOOGLE_CLIENT_ID,
+        scope: 'email profile',
+        callback: async (response) => {
+          if (response.access_token) {
+            try {
+              // Fetch user info from Google
+              const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: { Authorization: `Bearer ${response.access_token}` },
+              });
+              const userInfo = await userInfoRes.json();
+
+              // Send to our backend
+              const backendRes = await fetch(apiUrl('/api/auth/google'), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: userInfo.email,
+                  name: userInfo.name,
+                  profileImageUrl: userInfo.picture,
+                  googleId: userInfo.sub,
+                }),
+              });
+
+              if (!backendRes.ok) {
+                const errData = await backendRes.json().catch(() => ({}));
+                throw new Error(errData.error || 'Google login failed');
+              }
+              const data = await backendRes.json();
+
+              // Store auth data same as regular login
+              localStorage.setItem('bys_token', data.accessToken);
+              localStorage.setItem('bys_user', JSON.stringify(data.user));
+
+              // Redirect based on role
+              const roleDashboardMap: Record<number, Page> = {
+                1: 'client-dashboard',
+                2: 'provider-dashboard',
+                3: 'admin-dashboard',
+                4: 'technician-dashboard',
+                5: 'vendor-dashboard',
+                6: 'franchise-dashboard',
+                7: 'admin-dashboard',
+                8: 'area-manager-dashboard',
+              };
+              navigate(roleDashboardMap[data.user.roleId] || 'client-dashboard');
+            } catch (err) {
+              toast.error(err instanceof Error ? err.message : 'Google login failed. Please try again.');
+            }
+          }
+        },
+      });
+      client.requestAccessToken();
+    } catch {
+      toast.error('Google sign-in failed. Please try again.');
+    }
+  };
 
   const isClient = activeTab === 'client';
   const focusColor = isClient ? 'emerald' : 'sky';
@@ -90,7 +174,23 @@ export function LoginPage() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate(activeTab === 'client' ? 'client-dashboard' : 'provider-dashboard');
+      // After login, the auth context stores the user with their role
+      // We should redirect based on the user's actual role, not the tab
+      // The login function in auth-context already stores the user
+      // Read the user from localStorage to get the role
+      const storedUser = JSON.parse(localStorage.getItem('bys_user') || '{}');
+      const roleId = storedUser.roleId;
+      const roleDashboardMap: Record<number, Page> = {
+        1: 'client-dashboard',
+        2: 'provider-dashboard',
+        3: 'admin-dashboard',
+        4: 'technician-dashboard',
+        5: 'vendor-dashboard',
+        6: 'franchise-dashboard',
+        7: 'admin-dashboard',
+        8: 'area-manager-dashboard',
+      };
+      navigate(roleDashboardMap[roleId] || 'client-dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
@@ -369,6 +469,9 @@ export function LoginPage() {
                           className={`pl-10 h-12 bg-white/60 ${inputBorder} ${focusBorderClass} focus:bg-white/80 transition-all rounded-xl`}
                         />
                       </div>
+                      <p className="text-xs text-muted-foreground/70 flex items-center gap-1">
+                        <User className="size-3" /> Role: Client
+                      </p>
                     </div>
 
                     {/* Password field */}
@@ -424,7 +527,7 @@ export function LoginPage() {
                       ) : (
                         <>
                           <User className="mr-2 size-5" />
-                          Sign in as Client
+                          Sign In
                         </>
                       )}
                     </Button>
@@ -439,7 +542,7 @@ export function LoginPage() {
                     {/* Google login button */}
                     <button
                       type="button"
-                      onClick={() => toast.info('Google sign-in is coming soon! Please use email/password to sign in.')}
+                      onClick={handleGoogleLogin}
                       className="w-full flex items-center justify-center gap-3 h-12 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm cursor-pointer"
                     >
                       {googleIcon}
@@ -538,6 +641,9 @@ export function LoginPage() {
                           className={`pl-10 h-12 bg-white/60 ${inputBorder} ${focusBorderClass} focus:bg-white/80 transition-all rounded-xl`}
                         />
                       </div>
+                      <p className="text-xs text-muted-foreground/70 flex items-center gap-1">
+                        <Briefcase className="size-3" /> Role: Service Provider
+                      </p>
                     </div>
 
                     {/* Password field */}
@@ -593,7 +699,7 @@ export function LoginPage() {
                       ) : (
                         <>
                           <Briefcase className="mr-2 size-5" />
-                          Sign in as Provider
+                          Sign In
                         </>
                       )}
                     </Button>
@@ -608,7 +714,7 @@ export function LoginPage() {
                     {/* Google login button */}
                     <button
                       type="button"
-                      onClick={() => toast.info('Google sign-in is coming soon! Please use email/password to sign in.')}
+                      onClick={handleGoogleLogin}
                       className="w-full flex items-center justify-center gap-3 h-12 rounded-xl border border-gray-200 bg-white hover:bg-gray-50 hover:border-gray-300 hover:shadow-md transition-all text-sm font-medium text-gray-700 shadow-sm cursor-pointer"
                     >
                       {googleIcon}

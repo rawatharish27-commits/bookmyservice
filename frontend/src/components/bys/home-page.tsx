@@ -53,6 +53,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
+import { useGeolocation } from '@/hooks/use-geolocation';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -373,12 +374,18 @@ export function HomePage() {
   const categories = categoriesData?.categories || [];
   const services = servicesData?.services || [];
 
+  // Location from useGeolocation hook
+  const geo = useGeolocation();
+
   // Location state
   const geoAvailable = typeof window !== 'undefined' && !!navigator.geolocation;
   const [location, setLocation] = useState<LocationData | null>(null);
   const [locationLoading, setLocationLoading] = useState(geoAvailable);
   const [locationError, setLocationError] = useState(!geoAvailable);
   const [pincodeInput, setPincodeInput] = useState('');
+
+  // City-based service availability
+  const [cityServiceSlugs, setCityServiceSlugs] = useState<Set<string>>(new Set());
 
   // Area activation state
   const [areaProviders, setAreaProviders] = useState(0);
@@ -398,43 +405,85 @@ export function HomePage() {
   const hasProvidersInArea = areaProviders > 0;
   const hasLimitedServices = areaProviders > 0 && areaProviders < 10;
 
-  // ─── Auto Location Detection ──────────────────────────────────────────────
+  // ─── Auto Location Detection (using useGeolocation hook) ──────────────────
 
   useEffect(() => {
-    if (!geoAvailable) return;
+    if (geo.loading) return;
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1&accept-language=en`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            const addr = data.address || {};
-            setLocation({
-              city: addr.city || addr.town || addr.village || addr.county || 'Unknown',
-              state: addr.state || '',
-              pincode: addr.postcode || '',
-              lat: latitude,
-              lng: longitude,
-            });
-          } else {
-            setLocation({ city: 'Your Area', state: '', pincode: '', lat: latitude, lng: longitude });
-          }
-        } catch {
-          setLocation({ city: 'Your Area', state: '', pincode: '', lat: latitude, lng: longitude });
+    if (geo.error || !geo.latitude || !geo.longitude) {
+      setLocationLoading(false);
+      setLocationError(true);
+      return;
+    }
+
+    const lat = geo.latitude;
+    const lng = geo.longitude;
+
+    // If the hook already resolved the city, use it directly
+    if (geo.city) {
+      setLocation({
+        city: geo.city,
+        state: '',
+        pincode: '',
+        lat,
+        lng,
+      });
+      setLocationLoading(false);
+      setLocationError(false);
+      return;
+    }
+
+    // Fallback: reverse geocode if hook didn't resolve city
+    (async () => {
+      try {
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
+        );
+        if (res.ok) {
+          const data = await res.json();
+          const addr = data.address || {};
+          setLocation({
+            city: addr.city || addr.town || addr.village || addr.county || 'Unknown',
+            state: addr.state || '',
+            pincode: addr.postcode || '',
+            lat,
+            lng,
+          });
+        } else {
+          setLocation({ city: 'Your Area', state: '', pincode: '', lat, lng });
         }
-        setLocationLoading(false);
-      },
-      () => {
-        setLocationLoading(false);
-        setLocationError(true);
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
-    );
-  }, [geoAvailable]);
+      } catch {
+        setLocation({ city: 'Your Area', state: '', pincode: '', lat, lng });
+      }
+      setLocationLoading(false);
+      setLocationError(false);
+    })();
+  }, [geo.loading, geo.error, geo.latitude, geo.longitude, geo.city]);
+
+  // ─── Fetch services available in detected city ──────────────────────────
+
+  useEffect(() => {
+    if (!location?.city) return;
+
+    async function fetchCityServices() {
+      try {
+        const res = await fetch(apiUrl(`/api/services?city=${encodeURIComponent(location!.city)}&limit=100`));
+        if (res.ok) {
+          const data = await res.json();
+          const slugs = new Set<string>();
+          if (data.services && Array.isArray(data.services)) {
+            data.services.forEach((s: ServiceItem) => {
+              if (s.category?.slug) slugs.add(s.category.slug);
+            });
+          }
+          setCityServiceSlugs(slugs);
+        }
+      } catch {
+        // Will fall back to global availability check
+      }
+    }
+    fetchCityServices();
+  }, [location?.city]);
 
   // ─── Fetch area activation data ────────────────────────────────────────────
 
@@ -559,6 +608,15 @@ export function HomePage() {
   // ─── Map API categories to our service definitions ────────────────────────
 
   const getServiceAvailability = (slug: string): boolean => {
+    // If location was not detected (or user declined), show all categories normally
+    if (locationError || locationLoading) return true;
+
+    // If we have city-specific data, use it
+    if (cityServiceSlugs.size > 0) {
+      return cityServiceSlugs.has(slug);
+    }
+
+    // Fallback: check global API categories
     const apiCategory = categories.find((c) => c.slug === slug);
     if (apiCategory) return (apiCategory.servicesCount || 0) > 0;
     return false;
@@ -781,6 +839,17 @@ export function HomePage() {
           <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
             <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Our Service Categories</h2>
             <p className="mt-3 text-lg text-muted-foreground">Professional home services at your doorstep</p>
+            {/* Location indicator */}
+            <div className="mt-3 flex items-center justify-center gap-1.5">
+              <MapPin className="size-4 text-[#1e3a5f]" />
+              {locationLoading ? (
+                <span className="text-sm text-muted-foreground">📍 Detecting your location...</span>
+              ) : location ? (
+                <span className="text-sm font-medium text-[#0a1628]">📍 Services in {location.city}{location.state ? `, ${location.state}` : ''}</span>
+              ) : (
+                <span className="text-sm text-muted-foreground">📍 Location unavailable — showing all services</span>
+              )}
+            </div>
           </motion.div>
 
           {/* Scroll Controls + Container */}
