@@ -13,6 +13,66 @@ const pool = new Pool({
 
 const app = new Hono()
 
+// ─── Data Transformer ─────────────────────────────────────────────────────
+// Backend SQL returns flat fields (providerName, categoryName, etc.)
+// Frontend expects nested objects (provider.name, category.name, etc.)
+// This function transforms flat → nested so frontend code works correctly.
+
+function transformServiceRow(row: Record<string, any>) {
+  const {
+    providerName, providerImage, providerPhone, providerCity,
+    providerVerified, providerCompletedJobs, providerVerifiedBadge,
+    categoryName, categorySlug, categoryIcon, categoryImage,
+    subcategoryName, subcategorySlug,
+    reviewerName, reviewerImage,
+    ...rest
+  } = row
+
+  const service: Record<string, any> = { ...rest }
+
+  // Build nested provider object
+  if (providerName !== undefined || providerImage !== undefined) {
+    service.provider = {
+      id: rest.providerId || null,
+      name: providerName || null,
+      profileImageUrl: providerImage || null,
+      phone: providerPhone || null,
+      city: providerCity || null,
+    }
+  }
+
+  // Build nested category object
+  if (categoryName !== undefined || categorySlug !== undefined) {
+    service.category = {
+      id: rest.categoryId || null,
+      name: categoryName || null,
+      slug: categorySlug || null,
+      icon: categoryIcon || null,
+    }
+  }
+
+  // Build nested subcategory object
+  if (subcategoryName !== undefined) {
+    service.subcategory = subcategoryName
+      ? { id: rest.subcategoryId || null, name: subcategoryName, slug: subcategorySlug || null }
+      : null
+  }
+
+  return service
+}
+
+function transformReviewRow(row: Record<string, any>) {
+  const { reviewerName, reviewerImage, ...rest } = row
+  return {
+    ...rest,
+    reviewer: {
+      id: rest.reviewerId || null,
+      name: reviewerName || null,
+      profileImageUrl: reviewerImage || null,
+    },
+  }
+}
+
 app.use('*', cors({
   origin: '*',
   allowHeaders: ['Content-Type', 'Authorization'],
@@ -247,7 +307,7 @@ app.get('/api/categories/:id/services', async (c) => {
       [categoryId, limit, offset]
     )
     const countResult = await pool.query('SELECT COUNT(*) as total FROM "Service" WHERE "categoryId" = $1 AND "isActive" = true AND "isApproved" = true', [categoryId])
-    return c.json({ services: result.rows, total: parseInt(countResult.rows[0].total), limit, offset })
+    return c.json({ services: result.rows.map(transformServiceRow), total: parseInt(countResult.rows[0].total), limit, offset })
   } catch (e) { console.error('Category services error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -284,7 +344,7 @@ app.get('/api/services', async (c) => {
     query += ' ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2)
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    return c.json({ services: result.rows, total: result.rows.length, limit, offset, pagination: { total: result.rows.length, limit, offset } })
+    return c.json({ services: result.rows.map(transformServiceRow), total: result.rows.length, limit, offset, pagination: { total: result.rows.length, limit, offset } })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -300,7 +360,7 @@ app.get('/api/services/:id', async (c) => {
     const availResult = await pool.query('SELECT * FROM "ServiceAvailability" WHERE "serviceId" = $1 AND "isAvailable" = true ORDER BY "dayOfWeek"', [id])
     // Get reviews
     const reviewResult = await pool.query('SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE r."serviceId" = $1 ORDER BY r."createdAt" DESC LIMIT 10', [id])
-    return c.json({ ...result.rows[0], availability: availResult.rows, reviews: reviewResult.rows })
+    return c.json({ ...transformServiceRow(result.rows[0]), availability: availResult.rows, reviews: reviewResult.rows.map(transformReviewRow) })
   } catch (e) { console.error('Service detail error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -1294,7 +1354,7 @@ app.get('/api/reviews', async (c) => {
     query += ` ORDER BY r."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
     params.push(limit, offset)
     const result = await pool.query(query, params).catch(() => ({ rows: [] }))
-    return c.json({ reviews: result.rows, total: result.rows.length, limit, offset })
+    return c.json({ reviews: result.rows.map(transformReviewRow), total: result.rows.length, limit, offset })
   } catch (e) { return c.json({ error: 'Failed to list reviews' }, 500) }
 })
 
@@ -1806,7 +1866,7 @@ app.get('/api/admin/services', async (c) => {
     query += ` ORDER BY s."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
+    return c.json({ services: result.rows.map(transformServiceRow), total: result.rows.length, limit, offset })
   } catch (e) { return c.json({ error: 'Failed to list services' }, 500) }
 })
 
@@ -2160,7 +2220,7 @@ app.get('/api/vendor/services', async (c) => {
       'SELECT s.*, sc.name as "categoryName" FROM "Service" s LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."providerId" = $1 ORDER BY s."createdAt" DESC',
       [user.id]
     ).catch(() => ({ rows: [] }))
-    return c.json({ services: result.rows, total: result.rows.length })
+    return c.json({ services: result.rows.map(transformServiceRow), total: result.rows.length })
   } catch (e) { return c.json({ error: 'Failed to list vendor services' }, 500) }
 })
 
@@ -2188,7 +2248,7 @@ app.get('/api/services/search', async (c) => {
     query += ` ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
+    return c.json({ services: result.rows.map(transformServiceRow), total: result.rows.length, limit, offset })
   } catch (e) { console.error('Search error:', e); return c.json({ error: 'Search failed' }, 500) }
 })
 
@@ -2198,7 +2258,7 @@ app.get('/api/services/:id/reviews', async (c) => {
     const id = c.req.param('id')
     const limit = parseInt(c.req.query('limit') || '10')
     const result = await pool.query('SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE r."serviceId" = $1 ORDER BY r."createdAt" DESC LIMIT $2', [id, limit])
-    return c.json({ reviews: result.rows, total: result.rows.length })
+    return c.json({ reviews: result.rows.map(transformReviewRow), total: result.rows.length })
   } catch (e) { return c.json({ reviews: [], total: 0 }) }
 })
 

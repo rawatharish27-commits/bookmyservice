@@ -411,7 +411,12 @@ export function ClientWalletPage() {
       <Dialog open={withdrawOpen} onOpenChange={(open) => { if (!open) setWithdrawOpen(false); }}>
         <DialogContent className="rounded-2xl sm:max-w-md">
           {withdrawSuccess ? (
-            <div className="flex flex-col items-center py-8 text-center">
+            <>
+              <DialogHeader className="sr-only">
+                <DialogTitle>Withdrawal Requested</DialogTitle>
+                <DialogDescription>Your withdrawal request has been submitted</DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center py-8 text-center">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -432,6 +437,7 @@ export function ClientWalletPage() {
                 Done
               </Button>
             </div>
+            </>
           ) : (
             <>
               <DialogHeader>

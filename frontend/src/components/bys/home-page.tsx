@@ -1290,6 +1290,10 @@ export function HomePage() {
       {/* ═══════════ 11. Pop-Up Funnel ═══════════ */}
       <Dialog open={showPopup} onOpenChange={(open) => { if (!open) closePopup(false); }}>
         <DialogContent className="max-w-md rounded-3xl border-[#1e3a5f]/20 p-0 overflow-hidden" showCloseButton={false}>
+          <DialogHeader className="sr-only">
+            <DialogTitle>BookYourService Launch</DialogTitle>
+            <DialogDescription>Area launch status and available actions</DialogDescription>
+          </DialogHeader>
           <div className="relative">
             {/* Navy Header */}
             <div className="px-6 pt-8 pb-6" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%)' }}>

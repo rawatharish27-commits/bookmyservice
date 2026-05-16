@@ -1,38 +1,26 @@
-# BookYourService - Work Log
-
 ---
 Task ID: 1
-Agent: Main Agent
-Task: Complete all pending implementation steps and run the project
+Agent: Main
+Task: Fix all runtime errors in BookYourService project for Vercel+Render deployment
 
 Work Log:
-- Read all key files to assess current project state (App.tsx, home-page.tsx, header.tsx, footer.tsx, area-manager-dashboard-page.tsx, client-referrals-page.tsx, api-service/index.ts, schema.prisma, app-context.tsx, auth-context.tsx)
-- Verified all 10 business flow features are fully implemented:
-  1. Auto Location Detection - Home page with geolocation + pincode lookup + reverse geocoding
-  2. Smart Service Visibility - getServiceAvailability() based on API category data
-  3. WhatsApp Referral System - openWhatsAppReferral() + openWhatsAppProviderReferral()
-  4. Career/Area Manager System - area-manager-dashboard-page.tsx with full dashboard UI
-  5. Target-Based Activation (Area Activation Meter) - Providers 12/20, Customers 54/100 progress bars
-  6. Referral Network - client-referrals-page.tsx with referral code, share links, history
-  7. Commission Engine - /api/commissions + /api/commission/info endpoints with mock data fallback
-  8. Pop-Up Funnel - Dialog popup on home page with timer + localStorage dismiss
-  9. Hyperlocal Expansion - Indian cities data, service areas, 20KM radius model
-  10. Referral Tracking - /api/referral/track + /api/referrals endpoints
-- Searched for orange color - ZERO instances found, navy blue theme (#0a1628, #1e3a5f, #2d5a8e) applied throughout
-- Confirmed 11 services displayed horizontally with images on home page
-- Confirmed App.tsx routing includes all pages including area-manager-dashboard and client-commissions
-- Confirmed footer has all 11 service category links with icons
-- Added AREA_MANAGER (roleId=8) navigation in header (both nav links and dropdown links)
-- Fixed TypeScript errors in client-commissions-page.tsx and vendor-payouts-page.tsx (useApp → useAuth)
-- Verified 0 TypeScript compilation errors after fixes
-- Started all services (Vite on 5173, Hono API on 3001, Next.js sandbox on 3000)
-- Installed tw-animate-css for Next.js sandbox CSS
+- Analyzed all console errors from the deployed Vercel frontend
+- Identified ROOT CAUSE: Backend returns flat fields (providerName, categoryName, reviewerName) but frontend expects nested objects (provider.name, category.name, reviewer.name)
+- Fixed API URL configuration: Created VITE_API_URL env var system so deployed frontend calls Render backend directly
+- Created .env.production with VITE_API_URL=https://servicebooking-u2wa.onrender.com
+- Updated api-url.ts to use VITE_API_URL when set, fallback to Caddy proxy for local dev
+- Updated use-api.ts to use shared apiUrl() instead of duplicated addTransformPort()
+- Created vite-env.d.ts for TypeScript support of import.meta.env
+- Removed unused zustand dependency from package.json (was causing deprecated warning)
+- Added DialogDescription to home-page.tsx popup dialog and client-wallet-page.tsx success state
+- Added transformServiceRow() and transformReviewRow() helpers to backend
+- Applied transformation to ALL service/review API responses (7 endpoints)
+- This fixes the critical "Cannot read properties of undefined (reading 'profileImageUrl')" crash
+- All frontend TypeScript compiles cleanly
 
 Stage Summary:
-- All 10 business flow steps are FULLY IMPLEMENTED in both frontend and backend
-- Navy blue theme applied throughout - no orange color anywhere
-- 11 services displayed horizontally with images on home page
-- Zero TypeScript compilation errors
-- Project runs successfully with `bun run dev` (all 3 services start)
-- API service has mock data fallback when DB is unavailable
-- Vite API plugin provides development-mode API proxy
+- Frontend: api-url.ts, use-api.ts, .env.production, .env, vite-env.d.ts, package.json, home-page.tsx, client-wallet-page.tsx
+- Backend: mini-services/api-service/index.ts (added transformServiceRow, transformReviewRow, applied to 7 endpoints)
+- Key decision: Transform data in backend rather than changing 20+ frontend files
+- User needs to set VITE_API_URL=https://servicebooking-u2wa.onrender.com on Vercel environment variables
+- User needs to redeploy both frontend (Vercel) and backend (Render) for changes to take effect
