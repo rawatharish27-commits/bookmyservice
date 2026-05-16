@@ -1,5 +1,5 @@
-import React from 'react';
-import { AuthProvider } from '@/contexts/auth-context';
+import React, { useEffect, useRef } from 'react';
+import { AuthProvider, useAuth } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
@@ -110,8 +110,73 @@ import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
 // Area Manager pages
 import { AreaManagerDashboardPage } from '@/components/bys/area-manager-dashboard-page';
 
+// Role-based route guard configuration
+const ROLE_DASHBOARD_MAP: Record<number, string> = {
+  1: 'client-dashboard',
+  2: 'provider-dashboard',
+  3: 'admin-dashboard',
+  4: 'technician-dashboard',
+  5: 'vendor-dashboard',
+  6: 'franchise-dashboard',
+  7: 'admin-dashboard', // sub-admin
+  8: 'area-manager-dashboard',
+};
+
+const ROLE_ROUTE_PREFIX: Record<string, number[]> = {
+  'admin-': [3, 7],        // ADMIN + SUB_ADMIN
+  'provider-': [2],
+  'technician-': [4],
+  'vendor-': [5],
+  'franchise-': [6],
+  'area-manager-': [8],
+  'client-': [1],
+};
+
+// Pages that require authentication (all dashboard pages)
+const DASHBOARD_PREFIXES = ['client-', 'provider-', 'technician-', 'admin-', 'vendor-', 'franchise-', 'area-manager-'];
+
 function AppRouter() {
-  const { nav } = useApp();
+  const { nav, navigate } = useApp();
+  const { user, token } = useAuth();
+  const lastRedirectRef = useRef<string>('');
+
+  // Route guard: check role-based access before rendering
+  useEffect(() => {
+    const page = nav.page;
+
+    // Check if the page requires authentication
+    const isDashboardPage = DASHBOARD_PREFIXES.some(prefix => page.startsWith(prefix));
+
+    // If not logged in and trying to access a dashboard page, redirect to login
+    if (isDashboardPage && !token) {
+      const redirectKey = `auth:${page}`;
+      if (lastRedirectRef.current !== redirectKey) {
+        lastRedirectRef.current = redirectKey;
+        navigate('login');
+      }
+      return;
+    }
+
+    // If logged in, check role-based access
+    if (user && isDashboardPage) {
+      const userRoleId = user.roleId ?? (user.role ? ({ CLIENT: 1, PROVIDER: 2, ADMIN: 3, TECHNICIAN: 4, VENDOR: 5, FRANCHISE: 6, SUB_ADMIN: 7, AREA_MANAGER: 8 }[user.role] ?? 0) : 0);
+
+      for (const [prefix, allowedRoles] of Object.entries(ROLE_ROUTE_PREFIX)) {
+        if (page.startsWith(prefix)) {
+          if (!allowedRoles.includes(userRoleId)) {
+            // User doesn't have the right role, redirect to their own dashboard
+            const dashboard = ROLE_DASHBOARD_MAP[userRoleId] || 'home';
+            const redirectKey = `role:${page}:${userRoleId}`;
+            if (lastRedirectRef.current !== redirectKey) {
+              lastRedirectRef.current = redirectKey;
+              navigate(dashboard as any);
+            }
+          }
+          break;
+        }
+      }
+    }
+  }, [nav.page, user, token, navigate]);
 
   const renderPage = () => {
     switch (nav.page) {

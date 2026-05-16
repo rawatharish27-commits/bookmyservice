@@ -2,6 +2,8 @@ import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { Pool } from 'pg'
+import bcrypt from 'bcryptjs'
+import { SignJWT, jwtVerify } from 'jose'
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
@@ -14,6 +16,8 @@ const pool = new Pool({
 })
 
 const app = new Hono()
+
+const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
 
 // ─── Data Transformer ─────────────────────────────────────────────────────
 // Backend SQL returns flat fields (providerName, categoryName, etc.)
@@ -88,6 +92,74 @@ app.use('*', cors({
   credentials: true,
 }))
 
+// ─── Security Headers Middleware ─────────────────────────────────────────
+app.use('*', async (c, next) => {
+  await next()
+  c.header('X-Content-Type-Options', 'nosniff')
+  c.header('X-Frame-Options', 'DENY')
+  c.header('X-XSS-Protection', '1; mode=block')
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
+  c.header('Content-Security-Policy', "default-src 'self'")
+})
+
+// ─── Request Size Limit (max 1MB) ───────────────────────────────────────
+app.use('*', async (c, next) => {
+  const contentLength = c.req.header('content-length')
+  if (contentLength && parseInt(contentLength) > 1024 * 1024) {
+    return c.json({ error: 'Request body too large. Maximum size is 1MB.' }, 413)
+  }
+  await next()
+})
+
+// ─── Rate Limiting for Auth Endpoints ────────────────────────────────────
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
+const RATE_LIMIT_WINDOW = 60_000 // 1 minute
+const RATE_LIMIT_MAX = 5 // 5 requests per window
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now()
+  const entry = rateLimitStore.get(ip)
+  if (!entry || now > entry.resetTime) {
+    rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
+    return true
+  }
+  entry.count++
+  return entry.count <= RATE_LIMIT_MAX
+}
+
+// Clean up expired rate limit entries every 5 minutes
+setInterval(() => {
+  const now = Date.now()
+  for (const [ip, entry] of rateLimitStore) {
+    if (now > entry.resetTime) rateLimitStore.delete(ip)
+  }
+}, 5 * 60_000)
+
+app.use('/api/auth/*', async (c, next) => {
+  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || c.req.header('x-real-ip') || 'unknown'
+  if (!checkRateLimit(ip)) {
+    return c.json({ error: 'Too many requests. Please try again later.' }, 429)
+  }
+  await next()
+})
+
+// ─── Input Length Validation Helper ──────────────────────────────────────
+const INPUT_LIMITS: Record<string, number> = {
+  email: 254,
+  phone: 15,
+  name: 100,
+  password: 128,
+}
+
+function validateInputLengths(body: Record<string, any>): string | null {
+  for (const [field, maxLength] of Object.entries(INPUT_LIMITS)) {
+    if (body[field] !== undefined && String(body[field]).length > maxLength) {
+      return `${field} exceeds maximum length of ${maxLength} characters`
+    }
+  }
+  return null
+}
+
 // Root route
 app.get('/', (c) => {
   return c.json({
@@ -138,17 +210,17 @@ app.post('/api/auth/login', async (c) => {
   try {
     const { email, password } = await c.req.json()
     if (!email || !password) return c.json({ error: 'Email and password are required' }, 400)
+    const lengthError = validateInputLengths({ email, password })
+    if (lengthError) return c.json({ error: lengthError }, 400)
     const sanitizedEmail = String(email).toLowerCase().trim()
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [sanitizedEmail])
     if (!result.rows[0]) return c.json({ error: 'Invalid email or password' }, 401)
     const user = result.rows[0]
-    const bcrypt = require('bcryptjs')
     const isValid = await bcrypt.compare(String(password), user.passwordHash)
     if (!isValid) return c.json({ error: 'Invalid email or password' }, 401)
     if (user.status !== 'ACTIVE') return c.json({ error: 'Account is ' + user.status.toLowerCase() }, 403)
     await pool.query('UPDATE "User" SET "lastLoginAt" = NOW() WHERE id = $1', [user.id])
-    const { SignJWT } = require('jose')
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+    const secret = new TextEncoder().encode(JWT_SECRET)
     const token = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId })
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
@@ -161,24 +233,26 @@ app.post('/api/auth/register', async (c) => {
   try {
     const { email, phone, name, password, roleId } = await c.req.json()
     if (!email || !phone || !name || !password || !roleId) return c.json({ error: 'All fields required' }, 400)
+    const lengthError = validateInputLengths({ email, phone, name, password })
+    if (lengthError) return c.json({ error: lengthError }, 400)
     const sanitizedEmail = String(email).toLowerCase().trim()
     const existing = await pool.query('SELECT id FROM "User" WHERE LOWER(email) = LOWER($1)', [sanitizedEmail])
     if (existing.rows.length > 0) return c.json({ error: 'Email already registered' }, 409)
     const existingPhone = await pool.query('SELECT id FROM "User" WHERE phone = $1', [String(phone).trim()])
     if (existingPhone.rows.length > 0) return c.json({ error: 'Phone already registered' }, 409)
-    const bcrypt = require('bcryptjs')
     const passwordHash = await bcrypt.hash(String(password), 10)
     const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     const validRoleId = Number(roleId)
+    if (isNaN(validRoleId) || validRoleId < 1) return c.json({ error: 'Invalid roleId' }, 400)
     await pool.query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false)', [userId, sanitizedEmail, String(phone).trim(), passwordHash, String(name).trim(), validRoleId])
     if (validRoleId === 2) {
       const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-      await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'PENDING\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId]).catch(() => {})
+      await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'PENDING\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId]).catch((kycErr) => { console.error('ProviderKyc insert warning:', kycErr) })
     }
     const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
     const user = userResult.rows[0]
-    const { SignJWT } = require('jose')
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+    if (!user) { console.error('Register error: user not found after insert, roleId may not exist in Role table'); return c.json({ error: 'Registration failed - invalid role' }, 400) }
+    const secret = new TextEncoder().encode(JWT_SECRET)
     const token = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId })
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
@@ -191,6 +265,8 @@ app.post('/api/auth/forgot-password', async (c) => {
   try {
     const { email } = await c.req.json()
     if (!email) return c.json({ error: 'Email is required' }, 400)
+    const lengthError = validateInputLengths({ email })
+    if (lengthError) return c.json({ error: lengthError }, 400)
     return c.json({ message: 'If an account with that email exists, a reset token has been generated.', resetToken: crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''), expiresAt: new Date(Date.now() + 3600000).toISOString() })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
@@ -199,56 +275,55 @@ app.post('/api/auth/reset-password', async (c) => {
   try {
     const { token, newPassword, email } = await c.req.json()
     if (!token || !newPassword || !email) return c.json({ error: 'Token, new password, and email are required' }, 400)
+    const lengthError = validateInputLengths({ email, password: newPassword })
+    if (lengthError) return c.json({ error: lengthError }, 400)
     if (newPassword.length < 8) return c.json({ error: 'Password must be at least 8 characters' }, 400)
     if (token.length < 32) return c.json({ error: 'Invalid token' }, 400)
-    const bcrypt = require('bcryptjs')
     const passwordHash = await bcrypt.hash(String(newPassword), 10)
     await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, String(email).toLowerCase().trim()])
     return c.json({ message: 'Password has been reset successfully' })
-  } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
+  } catch (e) { console.error('Reset password error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
 app.post('/api/auth/change-password', async (c) => {
   try {
     const authHeader = c.req.header('authorization')
     if (!authHeader?.startsWith('Bearer ')) return c.json({ error: 'Authentication required' }, 401)
-    const { jwtVerify } = require('jose')
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+    const secret = new TextEncoder().encode(JWT_SECRET)
     const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
     const { currentPassword, newPassword } = await c.req.json()
     if (!currentPassword || !newPassword) return c.json({ error: 'Current and new password required' }, 400)
+    const lengthError = validateInputLengths({ password: newPassword })
+    if (lengthError) return c.json({ error: lengthError }, 400)
     const result = await pool.query('SELECT "passwordHash" FROM "User" WHERE id = $1', [payload.sub])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
-    const bcrypt = require('bcryptjs')
     const isValid = await bcrypt.compare(String(currentPassword), result.rows[0].passwordHash)
     if (!isValid) return c.json({ error: 'Current password is incorrect' }, 401)
     if (newPassword.length < 8) return c.json({ error: 'New password must be at least 8 characters' }, 400)
     const newHash = await bcrypt.hash(String(newPassword), 10)
     await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE id = $2', [newHash, payload.sub])
     return c.json({ message: 'Password changed successfully' })
-  } catch (e) { return c.json({ error: 'Failed to change password' }, 500) }
+  } catch (e) { console.error('Change password error:', e); return c.json({ error: 'Failed to change password' }, 500) }
 })
 
 app.get('/api/auth/profile', async (c) => {
   try {
     const authHeader = c.req.header('authorization')
     if (!authHeader?.startsWith('Bearer ')) return c.json({ error: 'Authentication required' }, 401)
-    const { jwtVerify } = require('jose')
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+    const secret = new TextEncoder().encode(JWT_SECRET)
     const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
     const { passwordHash, roleName, ...profile } = result.rows[0]
     return c.json({ user: { ...profile, role: roleName } })
-  } catch (e) { return c.json({ error: 'Failed to fetch profile' }, 500) }
+  } catch (e) { console.error('Profile fetch error:', e); return c.json({ error: 'Failed to fetch profile' }, 500) }
 })
 
 app.patch('/api/auth/profile', async (c) => {
   try {
     const authHeader = c.req.header('authorization')
     if (!authHeader?.startsWith('Bearer ')) return c.json({ error: 'Authentication required' }, 401)
-    const { jwtVerify } = require('jose')
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+    const secret = new TextEncoder().encode(JWT_SECRET)
     const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
     const body = await c.req.json()
     const fields = ['name', 'phone', 'city', 'state', 'country', 'address', 'pincode', 'profileImageUrl']
@@ -265,7 +340,7 @@ app.patch('/api/auth/profile', async (c) => {
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     const { passwordHash, roleName, ...profile } = result.rows[0]
     return c.json({ message: 'Profile updated', user: { ...profile, role: roleName } })
-  } catch (e) { return c.json({ error: 'Failed to update profile' }, 500) }
+  } catch (e) { console.error('Profile update error:', e); return c.json({ error: 'Failed to update profile' }, 500) }
 })
 
 // FAQ
@@ -1088,8 +1163,7 @@ app.get('/api/referrals', async (c) => {
     // Try DB
     try {
       if (authHeader?.startsWith('Bearer ')) {
-        const { jwtVerify } = require('jose')
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+        const secret = new TextEncoder().encode(JWT_SECRET)
         const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
         const result = await pool.query('SELECT r.*, u.name as "referredName" FROM "Referral" r LEFT JOIN "User" u ON u.id = r."referredId" WHERE r."referrerId" = $1 ORDER BY r."createdAt" DESC', [payload.sub])
         if (result.rows.length > 0) return c.json(result.rows)
@@ -1129,8 +1203,7 @@ app.get('/api/commissions', async (c) => {
     try {
       const authHeader = c.req.header('authorization')
       if (authHeader?.startsWith('Bearer ')) {
-        const { jwtVerify } = require('jose')
-        const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024')
+        const secret = new TextEncoder().encode(JWT_SECRET)
         const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
         const result = await pool.query('SELECT * FROM "Commission" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3', [payload.sub, limit, (page - 1) * limit])
         if (result.rows.length > 0) {
@@ -1181,13 +1254,10 @@ app.get('/api/service-areas', async (c) => {
 // AUTH HELPERS
 // ============================================================
 
-const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
-
 async function getAuthUser(c: any): Promise<{ id: string; email: string; role: string; roleId: number } | null> {
   try {
     const authHeader = c.req.header('authorization')
     if (!authHeader?.startsWith('Bearer ')) return null
-    const { jwtVerify } = require('jose')
     const secret = new TextEncoder().encode(JWT_SECRET)
     const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
     return { id: payload.sub as string, email: payload.email as string, role: payload.role as string, roleId: payload.roleId as number }
@@ -1197,7 +1267,7 @@ async function getAuthUser(c: any): Promise<{ id: string; email: string; role: s
 async function requireAdmin(c: any): Promise<{ id: string; email: string; role: string; roleId: number } | null> {
   const user = await getAuthUser(c)
   if (!user) return null
-  if (user.roleId !== 5 && user.role !== 'ADMIN') return null
+  if (user.roleId !== 3 && user.role !== 'ADMIN') return null
   return user
 }
 
@@ -2471,27 +2541,131 @@ app.post('/api/wallet/withdraw', async (c) => {
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
-// Admin dashboard (alias for analytics)
+// Admin dashboard - Comprehensive metrics
 app.get('/api/admin/dashboard', async (c) => {
   try {
     const admin = await requireAdmin(c)
-    if (!admin) return c.json({ error: 'Unauthorized' }, 403)
-    const [users, providers, bookings, services, revenue] = await Promise.all([
-      pool.query('SELECT COUNT(*) as count FROM "User"').catch(() => ({ rows: [{ count: 0 }] })),
-      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] })),
-      pool.query('SELECT COUNT(*) as count, COALESCE(SUM("totalAmount"), 0) as revenue FROM "Booking"').catch(() => ({ rows: [{ count: 0, revenue: 0 }] })),
-      pool.query('SELECT COUNT(*) as count FROM "Service"').catch(() => ({ rows: [{ count: 0 }] })),
-      pool.query('SELECT COALESCE(SUM("totalAmount"), 0) as total, COALESCE(SUM(CASE WHEN "createdAt" >= NOW() - INTERVAL \'30 days\' THEN "totalAmount" ELSE 0 END), 0) as monthly FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0, monthly: 0 }] })),
-    ])
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+
+    // ─── Users Metrics ─────────────────────────────────────────────────
+    const usersTotal = await pool.query('SELECT COUNT(*) as count FROM "User"').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersClients = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 1').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersProviders = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersTechnicians = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 4').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersVendors = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 5').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersNewToday = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "createdAt" >= CURRENT_DATE').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersActiveThisWeek = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "lastLoginAt" >= NOW() - INTERVAL \'7 days\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const usersSuspended = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE status = \'SUSPENDED\'').catch(() => ({ rows: [{ count: 0 }] }))
+
+    // ─── Bookings Metrics ──────────────────────────────────────────────
+    const bookingsTotal = await pool.query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsToday = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= CURRENT_DATE').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsPending = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE status = \'PENDING\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsCompleted = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsCancelled = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE status = \'CANCELLED\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsEmergency = await pool.query('SELECT COUNT(b.id) as count FROM "Booking" b JOIN "Service" s ON b."serviceId" = s.id WHERE s."isEmergencyAvailable" = true').catch(() => ({ rows: [{ count: 0 }] }))
+    const bookingsSuccessRate = await pool.query('SELECT COALESCE(COUNT(CASE WHEN status = \'COMPLETED\' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 0) as rate FROM "Booking" WHERE status IN (\'COMPLETED\', \'CANCELLED\')').catch(() => ({ rows: [{ rate: 0 }] }))
+    const bookingsAvgValue = await pool.query('SELECT COALESCE(AVG("finalAmount"), 0) as avg FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ avg: 0 }] }))
+
+    // ─── Revenue Metrics ───────────────────────────────────────────────
+    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueToday = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= CURRENT_DATE').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueThisWeek = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= NOW() - INTERVAL \'7 days\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueThisMonth = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ total: 0 }] }))
+    const commissionEarned = await pool.query('SELECT COALESCE(SUM("commissionAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const pendingPayouts = await pool.query('SELECT COALESCE(SUM(amount), 0) as total FROM "PayoutRequest" WHERE status = \'PENDING\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const escrowHeld = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE "paymentStatus" = \'ESCROW\' AND status NOT IN (\'COMPLETED\', \'CANCELLED\')').catch(() => ({ rows: [{ total: 0 }] }))
+    const refunds = await pool.query('SELECT COALESCE(SUM("refundAmount"), 0) as total FROM "Dispute" WHERE "refundAmount" IS NOT NULL AND "refundAmount" > 0').catch(() => ({ rows: [{ total: 0 }] }))
+
+    // ─── Services Metrics ──────────────────────────────────────────────
+    const servicesTotal = await pool.query('SELECT COUNT(*) as count FROM "Service"').catch(() => ({ rows: [{ count: 0 }] }))
+    const servicesActive = await pool.query('SELECT COUNT(*) as count FROM "Service" WHERE "isActive" = true AND "isApproved" = true').catch(() => ({ rows: [{ count: 0 }] }))
+    const servicesPendingApproval = await pool.query('SELECT COUNT(*) as count FROM "Service" WHERE "isApproved" = false').catch(() => ({ rows: [{ count: 0 }] }))
+    const servicesAvgRating = await pool.query('SELECT COALESCE(AVG("averageRating"), 0) as avg FROM "Service" WHERE "isActive" = true AND "isApproved" = true').catch(() => ({ rows: [{ avg: 0 }] }))
+
+    // ─── Disputes Metrics ──────────────────────────────────────────────
+    const disputesActive = await pool.query('SELECT COUNT(*) as count FROM "Dispute" WHERE status IN (\'OPEN\', \'IN_PROGRESS\')').catch(() => ({ rows: [{ count: 0 }] }))
+    const disputesResolved = await pool.query('SELECT COUNT(*) as count FROM "Dispute" WHERE status = \'RESOLVED\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const disputesOpen = await pool.query('SELECT COUNT(*) as count FROM "Dispute" WHERE status = \'OPEN\'').catch(() => ({ rows: [{ count: 0 }] }))
+
+    // ─── KYC Metrics ───────────────────────────────────────────────────
+    const kycPending = await pool.query('SELECT COUNT(*) as count FROM "ProviderKyc" WHERE "verificationStatus" = \'PENDING\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const kycApproved = await pool.query('SELECT COUNT(*) as count FROM "ProviderKyc" WHERE "verificationStatus" = \'APPROVED\'').catch(() => ({ rows: [{ count: 0 }] }))
+    const kycRejected = await pool.query('SELECT COUNT(*) as count FROM "ProviderKyc" WHERE "verificationStatus" = \'REJECTED\'').catch(() => ({ rows: [{ count: 0 }] }))
+
+    // ─── Recent Bookings (last 5) ──────────────────────────────────────
+    const recentBookings = await pool.query(
+      'SELECT b.id, b."bookingNumber", b.status, b."finalAmount", b."scheduledDate", b."createdAt", u.name as "clientName", p.name as "providerName", s.name as "serviceName" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "Service" s ON b."serviceId" = s.id ORDER BY b."createdAt" DESC LIMIT 5'
+    ).catch(() => ({ rows: [] }))
+
+    // ─── Recent Users (last 5) ─────────────────────────────────────────
+    const recentUsers = await pool.query(
+      'SELECT u.id, u.name, u.email, u.phone, u.city, u.status, u."createdAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" ORDER BY u."createdAt" DESC LIMIT 5'
+    ).catch(() => ({ rows: [] }))
+
     return c.json({
-      totalUsers: parseInt(users.rows[0].count),
-      totalProviders: parseInt(providers.rows[0].count),
-      totalBookings: parseInt(bookings.rows[0].count),
-      totalServices: parseInt(services.rows[0].count),
-      totalRevenue: parseFloat(revenue.rows[0].total),
-      monthlyRevenue: parseFloat(revenue.rows[0].monthly),
+      users: {
+        total: parseInt(usersTotal.rows[0].count),
+        clients: parseInt(usersClients.rows[0].count),
+        providers: parseInt(usersProviders.rows[0].count),
+        technicians: parseInt(usersTechnicians.rows[0].count),
+        vendors: parseInt(usersVendors.rows[0].count),
+        newToday: parseInt(usersNewToday.rows[0].count),
+        activeThisWeek: parseInt(usersActiveThisWeek.rows[0].count),
+        suspended: parseInt(usersSuspended.rows[0].count),
+      },
+      bookings: {
+        total: parseInt(bookingsTotal.rows[0].count),
+        today: parseInt(bookingsToday.rows[0].count),
+        pending: parseInt(bookingsPending.rows[0].count),
+        completed: parseInt(bookingsCompleted.rows[0].count),
+        cancelled: parseInt(bookingsCancelled.rows[0].count),
+        emergency: parseInt(bookingsEmergency.rows[0].count),
+        successRate: parseFloat(Number(bookingsSuccessRate.rows[0].rate).toFixed(2)),
+        avgValue: parseFloat(Number(bookingsAvgValue.rows[0].avg).toFixed(2)),
+      },
+      revenue: {
+        total: parseFloat(Number(revenueTotal.rows[0].total).toFixed(2)),
+        today: parseFloat(Number(revenueToday.rows[0].total).toFixed(2)),
+        thisWeek: parseFloat(Number(revenueThisWeek.rows[0].total).toFixed(2)),
+        thisMonth: parseFloat(Number(revenueThisMonth.rows[0].total).toFixed(2)),
+        commissionEarned: parseFloat(Number(commissionEarned.rows[0].total).toFixed(2)),
+        pendingPayouts: parseFloat(Number(pendingPayouts.rows[0].total).toFixed(2)),
+        escrowHeld: parseFloat(Number(escrowHeld.rows[0].total).toFixed(2)),
+        refunds: parseFloat(Number(refunds.rows[0].total).toFixed(2)),
+      },
+      services: {
+        total: parseInt(servicesTotal.rows[0].count),
+        active: parseInt(servicesActive.rows[0].count),
+        pendingApproval: parseInt(servicesPendingApproval.rows[0].count),
+        avgRating: parseFloat(Number(servicesAvgRating.rows[0].avg).toFixed(2)),
+      },
+      disputes: {
+        active: parseInt(disputesActive.rows[0].count),
+        resolved: parseInt(disputesResolved.rows[0].count),
+        open: parseInt(disputesOpen.rows[0].count),
+      },
+      kyc: {
+        pending: parseInt(kycPending.rows[0].count),
+        approved: parseInt(kycApproved.rows[0].count),
+        rejected: parseInt(kycRejected.rows[0].count),
+      },
+      recentBookings: recentBookings.rows,
+      recentUsers: recentUsers.rows,
     })
-  } catch (e) { return c.json({ totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, totalRevenue: 0, monthlyRevenue: 0 }) }
+  } catch (e) {
+    console.error('Admin dashboard error:', e)
+    return c.json({
+      users: { total: 0, clients: 0, providers: 0, technicians: 0, vendors: 0, newToday: 0, activeThisWeek: 0, suspended: 0 },
+      bookings: { total: 0, today: 0, pending: 0, completed: 0, cancelled: 0, emergency: 0, successRate: 0, avgValue: 0 },
+      revenue: { total: 0, today: 0, thisWeek: 0, thisMonth: 0, commissionEarned: 0, pendingPayouts: 0, escrowHeld: 0, refunds: 0 },
+      services: { total: 0, active: 0, pendingApproval: 0, avgRating: 0 },
+      disputes: { active: 0, resolved: 0, open: 0 },
+      kyc: { pending: 0, approved: 0, rejected: 0 },
+      recentBookings: [],
+      recentUsers: [],
+    })
+  }
 })
 
 // Admin FAQ management
