@@ -7,7 +7,6 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     react(),
-    
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',

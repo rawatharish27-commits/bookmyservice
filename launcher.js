@@ -52,7 +52,7 @@ function startService(svc) {
   const proc = spawn(svc.cmd, svc.args, {
     cwd: svc.cwd,
     stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, FORCE_COLOR: '1' },
+    env: { ...process.env, FORCE_COLOR: '1', DATABASE_URL: svc.name === 'Hono API' ? '' : process.env.DATABASE_URL },
   });
 
   proc.stdout.on('data', (data) => {

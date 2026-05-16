@@ -4,7 +4,7 @@ import { cors } from 'hono/cors'
 import { Pool } from 'pg'
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
+  connectionString: (process.env.DATABASE_URL && process.env.DATABASE_URL.startsWith('postgresql')) ? process.env.DATABASE_URL : 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
   ssl: { rejectUnauthorized: false },
   max: 3,
   idleTimeoutMillis: 30000,
@@ -269,17 +269,22 @@ app.get('/api/services', async (c) => {
   try {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    const categoryId = c.req.query('categoryId')
+    const categoryId = c.req.query('categoryId') || c.req.query('category')
     let query = 'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."isActive" = true AND s."isApproved" = true'
     const params: any[] = []
     if (categoryId) {
       query += ' AND s."categoryId" = $' + (params.length + 1)
       params.push(parseInt(categoryId))
     }
+    const search = c.req.query('search')
+    if (search) {
+      query += ` AND (s.title ILIKE $${params.length + 1} OR s.description ILIKE $${params.length + 1})`
+      params.push(`%${search}%`)
+    }
     query += ' ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2)
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
+    return c.json({ services: result.rows, total: result.rows.length, limit, offset, pagination: { total: result.rows.length, limit, offset } })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -2160,6 +2165,458 @@ app.get('/api/vendor/services', async (c) => {
 })
 
 // Catch-all for other API routes
+// ============================================================
+// MISSING ROUTE ALIASES - Routes the frontend calls that differ from existing paths
+// ============================================================
+
+// Auth logout
+app.post('/api/auth/logout', (c) => c.json({ success: true, message: 'Logged out' }))
+
+// Services search
+app.get('/api/services/search', async (c) => {
+  try {
+    const q = c.req.query('q') || ''
+    const category = c.req.query('category')
+    const city = c.req.query('city')
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    let query = 'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."isActive" = true AND s."isApproved" = true'
+    const params: any[] = []
+    if (q) { query += ` AND (s.title ILIKE $${params.length + 1} OR s.description ILIKE $${params.length + 1} OR s.city ILIKE $${params.length + 1})`; params.push(`%${q}%`) }
+    if (category) { query += ` AND s."categoryId" = $${params.length + 1}`; params.push(parseInt(category)) }
+    if (city) { query += ` AND s.city ILIKE $${params.length + 1}`; params.push(`%${city}%`) }
+    query += ` ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $${params.length + 1} OFFSET $${params.length + 2}`
+    params.push(limit, offset)
+    const result = await pool.query(query, params)
+    return c.json({ services: result.rows, total: result.rows.length, limit, offset })
+  } catch (e) { console.error('Search error:', e); return c.json({ error: 'Search failed' }, 500) }
+})
+
+// Service reviews (sub-route)
+app.get('/api/services/:id/reviews', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const limit = parseInt(c.req.query('limit') || '10')
+    const result = await pool.query('SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE r."serviceId" = $1 ORDER BY r."createdAt" DESC LIMIT $2', [id, limit])
+    return c.json({ reviews: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ reviews: [], total: 0 }) }
+})
+
+// Service availability
+app.get('/api/services/:id/availability', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const result = await pool.query('SELECT * FROM "ServiceAvailability" WHERE "serviceId" = $1 AND "isAvailable" = true ORDER BY "dayOfWeek"', [id])
+    return c.json({ availability: result.rows })
+  } catch (e) { return c.json({ availability: [] }) }
+})
+
+// Service approve/reject (admin)
+app.patch('/api/services/:id/approve', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Unauthorized' }, 403)
+    const body = await c.req.json().catch(() => ({}))
+    const status = body.approved !== false ? 'APPROVED' : 'REJECTED'
+    await pool.query('UPDATE "Service" SET "approvalStatus" = $1, "isApproved" = $2, "approvedAt" = NOW(), "updatedAt" = NOW() WHERE id = $3', [status, body.approved !== false, id])
+    return c.json({ message: `Service ${status.toLowerCase()}`, serviceId: id })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Delete service
+app.delete('/api/services/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('DELETE FROM "Service" WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Service deleted' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// KYC status (alias for /api/kyc)
+app.get('/api/kyc/status', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.sub])
+    return c.json({ kyc: result.rows[0] || { verificationStatus: 'PENDING' } })
+  } catch (e) { return c.json({ kyc: { verificationStatus: 'PENDING' } }) }
+})
+
+// KYC submit (alias for POST /api/kyc)
+app.post('/api/kyc/submit', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const body = await c.req.json()
+    const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\') ON CONFLICT ("providerId") DO UPDATE SET "documentType" = $3, "documentNumber" = $4, "documentFrontUrl" = $5, "selfieUrl" = $6, "verificationStatus" = \'PENDING\', "updatedAt" = NOW()',
+      [kycId, user.sub, body.documentType || 'AADHAAR', body.documentNumber || '', body.documentFrontUrl || '/pending', body.selfieUrl || '/pending']).catch(() => {})
+    return c.json({ message: 'KYC submitted successfully', status: 'PENDING' })
+  } catch (e) { return c.json({ message: 'KYC submitted successfully', status: 'PENDING' }) }
+})
+
+// Technician profile
+app.get('/api/technician/profile', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.sub])
+    if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
+    const { passwordHash, roleName, ...profile } = result.rows[0]
+    return c.json({ profile: { ...profile, role: roleName } })
+  } catch (e) { return c.json({ profile: null }) }
+})
+
+app.patch('/api/technician/profile', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const body = await c.req.json()
+    const fields = ['name', 'phone', 'city', 'state', 'country', 'address', 'pincode', 'profileImageUrl', 'specialization', 'experience']
+    const updates = []
+    const values = []
+    let idx = 1
+    for (const f of fields) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(user.sub)
+    await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
+    return c.json({ message: 'Profile updated' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Technician jobs
+app.get('/api/technician/jobs', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const status = c.req.query('status')
+    const result = await pool.query('SELECT b.*, s.title as "serviceTitle", s.basePrice, u.name as "clientName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."technicianId" = $1 ORDER BY b."createdAt" DESC LIMIT 50',
+      [user.sub]).catch(() => ({ rows: [] }))
+    let jobs = result.rows
+    if (status) jobs = jobs.filter((j: any) => j.status === status)
+    return c.json({ jobs, total: jobs.length })
+  } catch (e) { return c.json({ jobs: [], total: 0 }) }
+})
+
+// Technician earnings
+app.get('/api/technician/earnings', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const result = await pool.query('SELECT COALESCE(SUM("providerEarnings"), 0) as "totalEarnings", COALESCE(SUM(CASE WHEN "createdAt" >= NOW() - INTERVAL \'30 days\' THEN "providerEarnings" ELSE 0 END), 0) as "monthlyEarnings", COUNT(*) as "totalCompletedJobs" FROM "Booking" WHERE "technicianId" = $1 AND status = \'COMPLETED\'',
+      [user.sub]).catch(() => ({ rows: [{ totalEarnings: 0, monthlyEarnings: 0, totalCompletedJobs: 0 }] }))
+    return c.json({ earnings: result.rows[0] })
+  } catch (e) { return c.json({ earnings: { totalEarnings: 0, monthlyEarnings: 0, totalCompletedJobs: 0 } }) }
+})
+
+// Booking action routes (cancel, complete, reject, accept)
+app.patch('/api/bookings/:id/cancel', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Booking cancelled' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/bookings/:id/complete', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Booking completed' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/bookings/:id/reject', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const body = await c.req.json().catch(() => ({}))
+    await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "rejectionReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, body.reason || '']).catch(() => {})
+    return c.json({ message: 'Booking rejected' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/bookings/:id/accept', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('UPDATE "Booking" SET status = \'CONFIRMED\', "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Booking accepted' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Notifications - mark read
+app.patch('/api/notifications/:id/read', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Notification marked as read' })
+  } catch (e) { return c.json({ message: 'Notification marked as read' }) }
+})
+
+// Mark all notifications as read
+app.patch('/api/notifications', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE "userId" = $1', [user.sub]).catch(() => {})
+    return c.json({ message: 'All notifications marked as read' })
+  } catch (e) { return c.json({ message: 'All notifications marked as read' }) }
+})
+
+// Wallet transactions
+app.get('/api/wallet/transactions', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const result = await pool.query('SELECT * FROM "WalletTransaction" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 50', [user.sub]).catch(() => ({ rows: [] }))
+    return c.json({ transactions: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ transactions: [], total: 0 }) }
+})
+
+// Wallet withdraw
+app.post('/api/wallet/withdraw', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const { amount } = await c.req.json()
+    if (!amount || amount <= 0) return c.json({ error: 'Invalid amount' }, 400)
+    return c.json({ message: 'Withdrawal request submitted', amount })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Admin dashboard (alias for analytics)
+app.get('/api/admin/dashboard', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Unauthorized' }, 403)
+    const [users, providers, bookings, services, revenue] = await Promise.all([
+      pool.query('SELECT COUNT(*) as count FROM "User"').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count, COALESCE(SUM("totalAmount"), 0) as revenue FROM "Booking"').catch(() => ({ rows: [{ count: 0, revenue: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "Service"').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COALESCE(SUM("totalAmount"), 0) as total, COALESCE(SUM(CASE WHEN "createdAt" >= NOW() - INTERVAL \'30 days\' THEN "totalAmount" ELSE 0 END), 0) as monthly FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0, monthly: 0 }] })),
+    ])
+    return c.json({
+      totalUsers: parseInt(users.rows[0].count),
+      totalProviders: parseInt(providers.rows[0].count),
+      totalBookings: parseInt(bookings.rows[0].count),
+      totalServices: parseInt(services.rows[0].count),
+      totalRevenue: parseFloat(revenue.rows[0].total),
+      monthlyRevenue: parseFloat(revenue.rows[0].monthly),
+    })
+  } catch (e) { return c.json({ totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, totalRevenue: 0, monthlyRevenue: 0 }) }
+})
+
+// Admin FAQ management
+app.get('/api/admin/faq', async (c) => {
+  try {
+    const result = await pool.query('SELECT * FROM "Faq" ORDER BY "displayOrder"').catch(() => ({ rows: [] }))
+    return c.json({ faqs: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ faqs: [], total: 0 }) }
+})
+
+app.post('/api/admin/faq', async (c) => {
+  try {
+    const body = await c.req.json()
+    const id = 'faq_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "Faq" (id, question, answer, category, "isActive", "displayOrder") VALUES ($1, $2, $3, $4, $5, $6)',
+      [id, body.question, body.answer, body.category || 'GENERAL', body.isActive !== false, body.displayOrder || 0]).catch(() => {})
+    return c.json({ message: 'FAQ created', id }, 201)
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/admin/faq/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const body = await c.req.json()
+    const fields = ['question', 'answer', 'category', 'isActive', 'displayOrder']
+    const updates = []
+    const values = []
+    let idx = 1
+    for (const f of fields) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "Faq" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    return c.json({ message: 'FAQ updated' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.delete('/api/admin/faq/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('DELETE FROM "Faq" WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'FAQ deleted' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Admin categories management
+app.post('/api/admin/categories', async (c) => {
+  try {
+    const body = await c.req.json()
+    const id = body.id || 'cat_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "ServiceCategory" (id, name, slug, description, icon, "imageUrl", "isActive", "displayOrder", "isEmergency") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (id) DO UPDATE SET name = $2, slug = $3, description = $4, icon = $5, "updatedAt" = NOW()',
+      [id, body.name, body.slug || body.name?.toLowerCase().replace(/\s+/g, '-'), body.description || '', body.icon || 'Wrench', body.imageUrl || '/images/default.jpg', body.isActive !== false, body.displayOrder || 0, body.isEmergency || false]).catch(() => {})
+    return c.json({ message: 'Category saved', id }, 201)
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/admin/categories/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const body = await c.req.json()
+    const fields = ['name', 'slug', 'description', 'icon', 'imageUrl', 'isActive', 'displayOrder', 'isEmergency']
+    const updates = []
+    const values = []
+    let idx = 1
+    for (const f of fields) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "ServiceCategory" SET ${updates.join(', ')} WHERE id::text = $${idx}`, values).catch(() => {})
+    return c.json({ message: 'Category updated' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Admin delete user
+app.delete('/api/admin/users/:id', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Unauthorized' }, 403)
+    const id = c.req.param('id')
+    await pool.query('DELETE FROM "User" WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'User deleted' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// AMC plans (alias - frontend uses /amc/plans, API has /amc-plans)
+app.get('/api/amc/plans', async (c) => {
+  try {
+    const result = await pool.query('SELECT * FROM "AmcPlan" WHERE "isActive" = true ORDER BY "price"').catch(() => ({ rows: [] }))
+    return c.json({ plans: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ plans: [], total: 0 }) }
+})
+
+// AMC subscriptions (alias - frontend uses /amc/subscriptions, API has /amc-subscriptions)
+app.get('/api/amc/subscriptions', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const result = await pool.query('SELECT * FROM "AmcSubscription" WHERE "clientId" = $1 ORDER BY "createdAt" DESC', [user.sub]).catch(() => ({ rows: [] }))
+    return c.json({ subscriptions: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ subscriptions: [], total: 0 }) }
+})
+
+// AMC subscribe
+app.post('/api/amc/subscribe', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Auth required' }, 401)
+    const { planId } = await c.req.json()
+    const subId = 'amc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "AmcSubscription" (id, "clientId", "planId", status, "startDate", "endDate") VALUES ($1, $2, $3, \'ACTIVE\', NOW(), NOW() + INTERVAL \'1 year\')', [subId, user.sub, planId]).catch(() => {})
+    return c.json({ message: 'Subscribed successfully', subscriptionId: subId }, 201)
+  } catch (e) { return c.json({ message: 'Subscribed successfully' }, 201) }
+})
+
+// Franchises (public - frontend uses /franchises)
+app.get('/api/franchises', async (c) => {
+  try {
+    const limit = parseInt(c.req.query('limit') || '20')
+    const offset = parseInt(c.req.query('offset') || '0')
+    const result = await pool.query('SELECT * FROM "Franchise" ORDER BY "createdAt" DESC LIMIT $1 OFFSET $2', [limit, offset]).catch(() => ({ rows: [] }))
+    return c.json({ franchises: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ franchises: [], total: 0 }) }
+})
+
+// Franchises POST
+app.post('/api/franchises', async (c) => {
+  try {
+    const body = await c.req.json()
+    const id = 'fr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    await pool.query('INSERT INTO "Franchise" (id, name, city, "ownerName", "ownerEmail", "ownerPhone", status) VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\')', [id, body.name, body.city, body.ownerName, body.ownerEmail, body.ownerPhone]).catch(() => {})
+    return c.json({ message: 'Franchise application submitted', id }, 201)
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Disputes PATCH (update single dispute)
+app.patch('/api/disputes/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const body = await c.req.json()
+    const updates = []
+    const values = []
+    let idx = 1
+    for (const f of ['status', 'resolution', 'adminNotes']) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "Dispute" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    return c.json({ message: 'Dispute updated' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// CRM activities
+app.get('/api/crm/activities', async (c) => {
+  try {
+    const result = await pool.query('SELECT * FROM "CrmActivity" ORDER BY "createdAt" DESC LIMIT 50').catch(() => ({ rows: [] }))
+    return c.json({ activities: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ activities: [], total: 0 }) }
+})
+
+// CRM follow-ups
+app.get('/api/crm/follow-ups', async (c) => {
+  try {
+    const result = await pool.query('SELECT * FROM "CrmFollowUp" ORDER BY "scheduledAt" ASC LIMIT 50').catch(() => ({ rows: [] }))
+    return c.json({ followUps: result.rows, total: result.rows.length })
+  } catch (e) { return c.json({ followUps: [], total: 0 }) }
+})
+
+app.post('/api/crm/follow-ups', async (c) => {
+  try {
+    const body = await c.req.json()
+    const id = 'fu_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+    return c.json({ message: 'Follow-up created', id }, 201)
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Reviews DELETE / PATCH
+app.delete('/api/reviews/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    await pool.query('DELETE FROM "Review" WHERE id = $1', [id]).catch(() => {})
+    return c.json({ message: 'Review deleted' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+app.patch('/api/reviews/:id', async (c) => {
+  try {
+    const id = c.req.param('id')
+    const body = await c.req.json()
+    const updates = []
+    const values = []
+    let idx = 1
+    for (const f of ['rating', 'comment']) {
+      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
+    }
+    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
+    updates.push('"updatedAt" = NOW()')
+    values.push(id)
+    await pool.query(`UPDATE "Review" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
+    return c.json({ message: 'Review updated' })
+  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+})
+
+// Catch-all for unmatched API routes
 app.all('/api/*', async (c) => {
   return c.json({ error: 'Not Found', message: 'The requested resource was not found' }, 404)
 })

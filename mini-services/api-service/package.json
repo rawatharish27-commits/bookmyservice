@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npx tsx index.ts"
+    "dev": "DATABASE_URL='' tsx index.ts"
   },
   "dependencies": {
     "@hono/node-server": "^2.0.2",
