@@ -169,6 +169,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Include specialization if provided (N45 fix)
       const payload = {
         ...data,
+        roleId: data.roleId || 1,
         role: data.role || ROLE_MAP[data.roleId] || 'CLIENT',
       };
       const res = await fetch(apiUrl('/api/auth/register'), {
