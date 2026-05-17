@@ -5,6 +5,14 @@ import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
 
+// ─── Process crash protection ───────────────────────────────────────────
+process.on('uncaughtException', (err) => {
+  console.error('⚠️  Uncaught Exception (non-fatal):', err.message || err)
+})
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️  Unhandled Rejection (non-fatal):', reason)
+})
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: {
@@ -13,6 +21,11 @@ const pool = new Pool({
   max: 3,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+})
+
+// Prevent idle client errors from crashing the process
+pool.on('error', (err) => {
+  console.error('⚠️  Idle pool client error:', err.message)
 })
 
 // Verify database connection on startup
@@ -122,7 +135,7 @@ app.use('*', async (c, next) => {
 // ─── Rate Limiting for Auth Endpoints ────────────────────────────────────
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
 const RATE_LIMIT_WINDOW = 60_000 // 1 minute
-const RATE_LIMIT_MAX = 5 // 5 requests per window
+const RATE_LIMIT_MAX = 20 // 20 requests per window (was 5, too restrictive for dev)
 
 function checkRateLimit(ip: string): boolean {
   const now = Date.now()
