@@ -54,6 +54,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
 import { useGeolocation } from '@/hooks/use-geolocation';
+import { COMPANY_INFO } from '@/config/company';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -401,9 +402,28 @@ export function HomePage() {
   // Horizontal scroll ref
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Service availability - check if providers exist in user's area
+  // Service availability - check if providers exist in user's area (20KM radius)
+  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+    const R = 6371; // Earth's radius in km
+    const dLat = ((lat2 - lat1) * Math.PI) / 180;
+    const dLng = ((lng2 - lng1) * Math.PI) / 180;
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
   const hasProvidersInArea = areaProviders > 0;
   const hasLimitedServices = areaProviders > 0 && areaProviders < 10;
+
+  // Check if a provider is within 20KM radius
+  const isProviderInRadius = (providerLat?: number, providerLng?: number): boolean => {
+    if (!location?.lat || !location?.lng || !providerLat || !providerLng) return true; // Show if no location data
+    const distance = calculateDistance(location.lat, location.lng, providerLat, providerLng);
+    return distance <= 20;
+  };
 
   // ─── Auto Location Detection (using useGeolocation hook) ──────────────────
 
@@ -518,7 +538,10 @@ export function HomePage() {
 
   useEffect(() => {
     const dismissed = localStorage.getItem('bys_popup_dismissed');
-    if (!dismissed) {
+    const referred = localStorage.getItem('bys_referred');
+    const dontShow = localStorage.getItem('bys_dont_show_again');
+
+    if (!dismissed && !referred && !dontShow) {
       const timer = setTimeout(() => setShowPopup(true), 2000);
       return () => clearTimeout(timer);
     }
@@ -526,9 +549,9 @@ export function HomePage() {
 
   const closePopup = (permanent: boolean) => {
     setShowPopup(false);
-    if (permanent) {
+    if (permanent || dontShowAgain) {
       localStorage.setItem('bys_popup_dismissed', 'true');
-      setDontShowAgain(true);
+      localStorage.setItem('bys_dont_show_again', 'true');
     }
   };
 
@@ -549,17 +572,23 @@ export function HomePage() {
   // ─── WhatsApp Referral ─────────────────────────────────────────────────────
 
   const openWhatsAppReferral = () => {
+    const referralCode = user?.referralCode || 'BMS001';
+    const referralUrl = `${window.location.origin}/ref/${referralCode}`;
     const message = encodeURIComponent(
-      'Hamare area me Book My Service start ho raha hai. Agar aap AC repair / electrician / plumber service provide karte ho to join karo aur customers pao. 🛠️🏠'
+      `Join Book My Service and earn with trusted home services.\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nHamare area me Book My Service start ho raha hai. Agar aap AC repair / electrician / plumber service provide karte ho to join karo aur customers pao. 🛠️🏠`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
+    localStorage.setItem('bys_referred', 'true');
   };
 
   const openWhatsAppProviderReferral = () => {
+    const referralCode = user?.referralCode || 'BMS001';
+    const referralUrl = `${window.location.origin}/ref/${referralCode}`;
     const message = encodeURIComponent(
-      'BookYourService me ek bahut achha opportunity hai! Agar aap koi service provider jaante ho (AC repair, plumber, electrician), unhe refer karein aur 5% referral commission paayein har booking pe. 🤝'
+      `BookYourService me ek bahut achha opportunity hai!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nAgar aap koi service provider jaante ho (AC repair, plumber, electrician), unhe refer karein aur 5% referral commission paayein har booking pe. 🤝`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
+    localStorage.setItem('bys_referred', 'true');
   };
 
   // ─── Pincode Lookup ────────────────────────────────────────────────────────
@@ -892,7 +921,16 @@ export function HomePage() {
                   >
                     <TiltCard>
                       <div
-                        onClick={() => isAvailable ? navigate('category-detail', { categoryId: service.slug }) : undefined}
+                        onClick={() => {
+                          if (!isAvailable) return;
+                          // Step 5: Auth check before booking flow
+                          const currentUser = localStorage.getItem('bys_user') || localStorage.getItem('bys_token');
+                          if (!currentUser && !user) {
+                            navigate('login');
+                            return;
+                          }
+                          navigate('category-detail', { categoryId: service.slug });
+                        }}
                         className={`relative overflow-hidden rounded-2xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 ${isAvailable ? 'cursor-pointer' : 'cursor-default'}`}
                         style={{ height: '280px' }}
                       >
@@ -1138,7 +1176,7 @@ export function HomePage() {
                   </CardContent>
                 </Card>
 
-                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('register', { role: 'AREA_MANAGER' })}>
+                <Card className="group cursor-pointer border-[#1e3a5f]/10 rounded-2xl transition-all hover:shadow-xl hover:border-[#2d5a8e]/20" onClick={() => navigate('join-manager')}>
                   <CardContent className="flex flex-col items-center p-6 text-center">
                     <div className="mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f] to-sky-500 text-white shadow-lg shadow-[#1e3a5f]/20">
                       <Briefcase className="size-7" />

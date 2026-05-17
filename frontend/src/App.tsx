@@ -110,16 +110,27 @@ import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
 // Area Manager pages
 import { AreaManagerDashboardPage } from '@/components/bys/area-manager-dashboard-page';
 
+// Join pages
+import { JoinManagerPage } from '@/components/bys/join-manager-page';
+import { JoinLocalAdminPage } from '@/components/bys/join-local-admin-page';
+
+// Missing dashboards
+import { SuperAdminDashboardPage } from '@/components/bys/super-admin-dashboard-page';
+import { ManagerDashboardPage } from '@/components/bys/manager-dashboard-page';
+import { LocalAdminDashboardPage } from '@/components/bys/local-admin-dashboard-page';
+
 // Role-based route guard configuration
 const ROLE_DASHBOARD_MAP: Record<number, string> = {
   1: 'client-dashboard',
   2: 'provider-dashboard',
-  3: 'admin-dashboard',
+  3: 'super-admin-dashboard', // Admin now goes to super-admin
   4: 'technician-dashboard',
   5: 'vendor-dashboard',
   6: 'franchise-dashboard',
   7: 'admin-dashboard', // sub-admin
   8: 'area-manager-dashboard',
+  9: 'manager-dashboard',
+  10: 'local-admin-dashboard',
 };
 
 const ROLE_ROUTE_PREFIX: Record<string, number[]> = {
@@ -133,7 +144,20 @@ const ROLE_ROUTE_PREFIX: Record<string, number[]> = {
 };
 
 // Pages that require authentication (all dashboard pages)
-const DASHBOARD_PREFIXES = ['client-', 'provider-', 'technician-', 'admin-', 'vendor-', 'franchise-', 'area-manager-'];
+const DASHBOARD_PREFIXES = ['client-', 'provider-', 'technician-', 'admin-', 'vendor-', 'franchise-', 'area-manager-', 'super-admin-', 'manager-', 'local-admin-'];
+
+// Protected routes that require authentication
+const PROTECTED_ROUTES = [
+  'booking',
+  'booking-confirmation',
+  'client-dashboard',
+  'provider-dashboard',
+  'technician-dashboard',
+  'manager-dashboard',
+  'local-admin-dashboard',
+  'super-admin-dashboard',
+  'admin-dashboard',
+];
 
 function AppRouter() {
   const { nav, navigate } = useApp();
@@ -146,9 +170,10 @@ function AppRouter() {
 
     // Check if the page requires authentication
     const isDashboardPage = DASHBOARD_PREFIXES.some(prefix => page.startsWith(prefix));
+    const isProtectedRoute = PROTECTED_ROUTES.includes(page);
 
-    // If not logged in and trying to access a dashboard page, redirect to login
-    if (isDashboardPage && !token) {
+    // If not logged in and trying to access a protected page, redirect to login
+    if ((isDashboardPage || isProtectedRoute) && !token) {
       const redirectKey = `auth:${page}`;
       if (lastRedirectRef.current !== redirectKey) {
         lastRedirectRef.current = redirectKey;
@@ -373,6 +398,20 @@ function AppRouter() {
         return <AreaManagerDashboardPage />;
       case 'client-commissions':
         return <ClientReferralsPage />;
+
+      // Join pages
+      case 'join-manager':
+        return <JoinManagerPage />;
+      case 'join-local-admin':
+        return <JoinLocalAdminPage />;
+
+      // New Dashboard pages
+      case 'super-admin-dashboard':
+        return <SuperAdminDashboardPage />;
+      case 'manager-dashboard':
+        return <ManagerDashboardPage />;
+      case 'local-admin-dashboard':
+        return <LocalAdminDashboardPage />;
 
       default:
         return <HomePage />;

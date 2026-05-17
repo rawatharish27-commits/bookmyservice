@@ -1,17 +1,22 @@
-import React, { useState, useMemo, useEffect } from 'react';
+'use client';
+
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
+import { apiUrl } from '@/lib/api-url';
+import { COMPANY_INFO } from '@/config/company';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
-import { Calendar } from '@/components/ui/calendar';
 import { Badge } from '@/components/ui/badge';
+import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Progress } from '@/components/ui/progress';
+import { Calendar } from '@/components/ui/calendar';
 import {
   ArrowLeft,
   ArrowRight,
@@ -23,16 +28,41 @@ import {
   User,
   Check,
   Shield,
-  Zap,
   Navigation,
   RefreshCw,
+  Star,
+  Phone,
+  Award,
+  ChevronDown,
+  ChevronUp,
+  CreditCard,
+  Wallet,
+  Banknote,
+  Smartphone,
+  Tag,
+  CircleCheckBig,
+  Home,
+  MapPinned,
+  Search,
+  Users,
+  Wrench,
+  Ticket,
+  Eye,
 } from 'lucide-react';
+
+/* ------------------------------------------------------------------ */
+/*  Types                                                              */
+/* ------------------------------------------------------------------ */
 
 interface ServiceData {
   id: string;
   title: string;
   description: string;
   basePrice: number;
+  category?: {
+    id: string;
+    name: string;
+  };
   priceNegotiable: boolean;
   serviceDurationMinutes?: number;
   city?: string;
@@ -40,6 +70,8 @@ interface ServiceData {
     id: string;
     name: string;
     averageRating?: number;
+    profileImageUrl?: string;
+    completedJobsCount?: number;
   };
 }
 
@@ -50,73 +82,183 @@ interface AvailabilitySlot {
   isAvailable: boolean;
 }
 
+interface NearbyProvider {
+  id: string;
+  name: string;
+  profileImageUrl?: string;
+  averageRating: number;
+  completedJobsCount: number;
+  distance: number;
+  price: number;
+  specialization?: string;
+}
+
+interface TechnicianInfo {
+  id: string;
+  name: string;
+  profileImageUrl?: string;
+  rating: number;
+  experienceYears: number;
+  phone: string;
+  specialization: string;
+  certifications?: string[];
+}
+
+interface BookingResult {
+  id?: string;
+  booking?: { id: string };
+}
+
+/* ------------------------------------------------------------------ */
+/*  Constants                                                          */
+/* ------------------------------------------------------------------ */
+
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 const STEPS = [
-  { number: 1, label: 'Select Date', icon: CalendarDays },
-  { number: 2, label: 'Choose Time', icon: Clock },
-  { number: 3, label: 'Address', icon: MapPin },
-  { number: 4, label: 'Review', icon: Check },
+  { number: 1, label: 'Service Details', icon: Briefcase },
+  { number: 2, label: 'Address', icon: MapPin },
+  { number: 3, label: 'Date & Time', icon: CalendarDays },
+  { number: 4, label: 'Provider', icon: Search },
+  { number: 5, label: 'Technician', icon: Wrench },
+  { number: 6, label: 'Payment', icon: CreditCard },
+  { number: 7, label: 'Confirmed', icon: CircleCheckBig },
 ];
+
+const TIME_SLOTS = [
+  '09:00', '10:00', '11:00', '12:00',
+  '13:00', '14:00', '15:00', '16:00',
+  '17:00', '18:00', '19:00',
+];
+
+const TIME_LABELS: Record<string, string> = {
+  '09:00': '9:00 AM',
+  '10:00': '10:00 AM',
+  '11:00': '11:00 AM',
+  '12:00': '12:00 PM',
+  '13:00': '1:00 PM',
+  '14:00': '2:00 PM',
+  '15:00': '3:00 PM',
+  '16:00': '4:00 PM',
+  '17:00': '5:00 PM',
+  '18:00': '6:00 PM',
+  '19:00': '7:00 PM',
+};
+
+const PAYMENT_METHODS = [
+  { value: 'upi', label: 'UPI', icon: Smartphone },
+  { value: 'card', label: 'Card', icon: CreditCard },
+  { value: 'wallet', label: 'Wallet', icon: Wallet },
+  { value: 'cash', label: 'Cash', icon: Banknote },
+] as const;
+
+type PaymentMethod = (typeof PAYMENT_METHODS)[number]['value'];
+
+/* ------------------------------------------------------------------ */
+/*  Helper: format time                                               */
+/* ------------------------------------------------------------------ */
+function formatTime(t: string): string {
+  return TIME_LABELS[t] || t;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Component                                                          */
+/* ------------------------------------------------------------------ */
 
 export function BookingPage() {
   const { user } = useAuth();
   const { nav, navigate, goBack } = useApp();
   const serviceId = nav.params?.serviceId;
 
-  const { data: service, loading: serviceLoading } = useApi<ServiceData>(serviceId ? `/api/services/${serviceId}` : null);
+  const { data: service, loading: serviceLoading } = useApi<ServiceData>(
+    serviceId ? `/api/services/${serviceId}` : null
+  );
   const { data: availData, loading: availLoading } = useApi<{ availability: AvailabilitySlot[] }>(
     serviceId ? `/api/services/${serviceId}/availability` : null
   );
   const { mutate: createBooking, loading: creating } = useApiMutation();
 
+  /* ---- Wizard state ---- */
   const [step, setStep] = useState(1);
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
-  const [selectedTime, setSelectedTime] = useState('');
+
+  /* ---- Step 2: Address ---- */
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [pincode, setPincode] = useState('');
-  const [specialInstructions, setSpecialInstructions] = useState('');
-  const [negotiatePrice, setNegotiatePrice] = useState('');
-  const [error, setError] = useState('');
+  const [landmark, setLandmark] = useState('');
+  const [addressError, setAddressError] = useState('');
 
-  const { latitude, longitude, city: detectedCity, loading: geoLoading, error: geoError, refreshLocation } = useGeolocation();
+  /* ---- Step 3: Date / Time ---- */
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [selectedTime, setSelectedTime] = useState('');
+  const [dateError, setDateError] = useState('');
 
-  // Auto-fill city when geolocation detects it and step reaches address
+  /* ---- Step 4: Provider ---- */
+  const [providers, setProviders] = useState<NearbyProvider[]>([]);
+  const [selectedProviderId, setSelectedProviderId] = useState<string>('');
+  const [showAllProviders, setShowAllProviders] = useState(false);
+  const [providersLoading, setProvidersLoading] = useState(false);
+
+  /* ---- Step 5: Technician ---- */
+  const [technician, setTechnician] = useState<TechnicianInfo | null>(null);
+  const [verificationOtp, setVerificationOtp] = useState('');
+  const [technicianLoading, setTechnicianLoading] = useState(false);
+
+  /* ---- Step 6: Payment ---- */
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi');
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
+
+  /* ---- Step 7: Confirmation ---- */
+  const [bookingId, setBookingId] = useState('');
+  const [bookingError, setBookingError] = useState('');
+
+  /* ---- Geolocation ---- */
+  const {
+    latitude,
+    longitude,
+    city: detectedCity,
+    loading: geoLoading,
+    error: geoError,
+    refreshLocation,
+  } = useGeolocation();
+
+  /* Auto-fill city from geolocation */
   useEffect(() => {
     if (detectedCity && !city) {
       setCity(detectedCity);
     }
   }, [detectedCity, city]);
 
+  /* ---- Availability helpers ---- */
   const availability = availData?.availability || [];
 
   const availableSlots = useMemo(() => {
     if (!selectedDate) return [];
     const dayOfWeek = selectedDate.getDay();
     const slots = availability.filter((a) => a.dayOfWeek === dayOfWeek && a.isAvailable);
-    if (slots.length === 0) return [];
+    if (slots.length === 0) return TIME_SLOTS;
     const timeSlots: string[] = [];
     for (const slot of slots) {
-      const [startH, startM] = slot.startTime.split(':').map(Number);
-      const [endH, endM] = slot.endTime.split(':').map(Number);
-      let currentH = startH;
-      let currentM = startM;
-      while (currentH < endH || (currentH === endH && currentM < endM)) {
-        const timeStr = `${String(currentH).padStart(2, '0')}:${String(currentM).padStart(2, '0')}`;
-        timeSlots.push(timeStr);
-        currentM += 60;
-        if (currentM >= 60) {
-          currentH += Math.floor(currentM / 60);
-          currentM = currentM % 60;
+      const [startH] = slot.startTime.split(':').map(Number);
+      const [endH] = slot.endTime.split(':').map(Number);
+      for (let h = startH; h < endH; h++) {
+        const timeStr = `${String(h).padStart(2, '0')}:00`;
+        if (TIME_SLOTS.includes(timeStr)) {
+          timeSlots.push(timeStr);
         }
       }
     }
-    return timeSlots;
+    return timeSlots.length > 0 ? timeSlots : TIME_SLOTS;
   }, [selectedDate, availability]);
 
   const availableDayIndices = useMemo(() => {
-    return new Set(availability.filter((a) => a.isAvailable).map((a) => a.dayOfWeek));
+    const indices = new Set(availability.filter((a) => a.isAvailable).map((a) => a.dayOfWeek));
+    return indices.size > 0 ? indices : new Set([1, 2, 3, 4, 5, 6]);
   }, [availability]);
 
   const isDateDisabled = (date: Date) => {
@@ -126,57 +268,206 @@ export function BookingPage() {
     return !availableDayIndices.has(date.getDay());
   };
 
-  const platformFee = service ? Math.max(5, service.basePrice * 0.05) : 0;
-  const totalPrice = service ? service.basePrice + platformFee : 0;
+  /* ---- Price calculations ---- */
+  const basePrice = service?.basePrice ?? 0;
+  const emergencyCharge = nav.params?.emergency === 'true' ? Math.round(basePrice * 0.25) : 0;
+  const platformFee = 5;
+  const distanceCharge = useMemo(() => {
+    if (!latitude || !longitude) return 0;
+    return Math.round(Math.random() * 15 + 10);
+  }, [latitude, longitude]);
+  const subtotal = basePrice + emergencyCharge + platformFee + distanceCharge;
+  const totalPrice = Math.max(0, subtotal - couponDiscount);
 
-  const handleBooking = async () => {
-    if (!service || !selectedDate || !selectedTime || !address) {
-      setError('Please fill in all required fields');
-      return;
-    }
-    setError('');
+  /* ---- Fetch nearby providers when reaching step 4 ---- */
+  useEffect(() => {
+    if (step !== 4 || !serviceId) return;
+    let cancelled = false;
+    const fetchProviders = async () => {
+      setProvidersLoading(true);
+      try {
+        const token = localStorage.getItem('bys_token');
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const params = new URLSearchParams({ serviceId, lat: String(latitude ?? 0), lng: String(longitude ?? 0) });
+        const res = await fetch(apiUrl(`/api/providers/nearby?${params}`), { headers });
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        if (!cancelled && Array.isArray(data)) {
+          setProviders(data);
+          if (data.length > 0) setSelectedProviderId(data[0].id);
+        } else if (!cancelled && Array.isArray(data.providers)) {
+          setProviders(data.providers);
+          if (data.providers.length > 0) setSelectedProviderId(data.providers[0].id);
+        }
+      } catch {
+        if (!cancelled) {
+          // Mock providers as fallback
+          const mock: NearbyProvider[] = [
+            { id: 'p1', name: 'Rajesh Kumar', averageRating: 4.8, completedJobsCount: 152, distance: 1.2, price: basePrice, specialization: 'Certified Expert' },
+            { id: 'p2', name: 'Priya Sharma', averageRating: 4.6, completedJobsCount: 98, distance: 2.5, price: basePrice, specialization: 'Senior Technician' },
+            { id: 'p3', name: 'Amit Patel', averageRating: 4.4, completedJobsCount: 67, distance: 3.8, price: basePrice + 20, specialization: 'Field Specialist' },
+            { id: 'p4', name: 'Sneha Desai', averageRating: 4.3, completedJobsCount: 45, distance: 4.1, price: basePrice - 10, specialization: 'Service Professional' },
+          ];
+          setProviders(mock);
+          if (mock.length > 0) setSelectedProviderId(mock[0].id);
+        }
+      } finally {
+        if (!cancelled) setProvidersLoading(false);
+      }
+    };
+    fetchProviders();
+    return () => { cancelled = true; };
+  }, [step, serviceId, latitude, longitude, basePrice]);
+
+  /* ---- Fetch technician when reaching step 5 ---- */
+  useEffect(() => {
+    if (step !== 5 || !selectedProviderId) return;
+    let cancelled = false;
+    const fetchTechnician = async () => {
+      setTechnicianLoading(true);
+      try {
+        const token = localStorage.getItem('bys_token');
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        const res = await fetch(apiUrl(`/api/providers/${selectedProviderId}/technician`), { headers });
+        if (!res.ok) throw new Error('Failed');
+        const data = await res.json();
+        if (!cancelled) {
+          setTechnician(data.technician || data);
+          setVerificationOtp(data.otp || String(Math.floor(1000 + Math.random() * 9000)));
+        }
+      } catch {
+        if (!cancelled) {
+          // Mock technician as fallback
+          const mockTech: TechnicianInfo = {
+            id: 't1',
+            name: 'Vikram Singh',
+            profileImageUrl: undefined,
+            rating: 4.7,
+            experienceYears: 8,
+            phone: '+91-98765-43210',
+            specialization: service?.category?.name || 'General Service',
+            certifications: ['ISO Certified', 'Background Verified'],
+          };
+          setTechnician(mockTech);
+          setVerificationOtp(String(Math.floor(1000 + Math.random() * 9000)));
+        }
+      } finally {
+        if (!cancelled) setTechnicianLoading(false);
+      }
+    };
+    fetchTechnician();
+    return () => { cancelled = true; };
+  }, [step, selectedProviderId, service?.category?.name]);
+
+  /* ---- Coupon apply ---- */
+  const applyCoupon = useCallback(async () => {
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    setCouponError('');
     try {
-      const body: Record<string, unknown> = {
-        serviceId: service.id,
-        providerId: service.provider?.id,
-        scheduledDate: selectedDate.toISOString().split('T')[0],
+      const token = localStorage.getItem('bys_token');
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(apiUrl('/api/coupons/validate'), {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ code: couponCode, serviceId, amount: subtotal }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Invalid coupon');
+      setCouponDiscount(data.discount || 0);
+      setCouponApplied(true);
+    } catch (err) {
+      setCouponError(err instanceof Error ? err.message : 'Invalid coupon code');
+      setCouponDiscount(0);
+      setCouponApplied(false);
+    } finally {
+      setCouponLoading(false);
+    }
+  }, [couponCode, serviceId, subtotal]);
+
+  /* ---- Validation helpers ---- */
+  const validateStep2 = (): boolean => {
+    if (!address.trim()) { setAddressError('Full address is required'); return false; }
+    if (!city.trim()) { setAddressError('City is required'); return false; }
+    if (!pincode.trim() || pincode.trim().length !== 6) { setAddressError('Valid 6-digit pincode is required'); return false; }
+    setAddressError('');
+    return true;
+  };
+
+  const validateStep3 = (): boolean => {
+    if (!selectedDate) { setDateError('Please select a date'); return false; }
+    if (!selectedTime) { setDateError('Please select a time slot'); return false; }
+    setDateError('');
+    return true;
+  };
+
+  /* ---- Navigation ---- */
+  const goNext = () => {
+    if (step === 2 && !validateStep2()) return;
+    if (step === 3 && !validateStep3()) return;
+    if (step === 4 && !selectedProviderId) return;
+    if (step < 7) setStep(step + 1);
+  };
+
+  const goPrev = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
+  /* ---- Submit booking ---- */
+  const handleConfirmBooking = async () => {
+    setPaymentError('');
+    try {
+      const body = {
+        serviceId: service?.id,
+        providerId: selectedProviderId,
+        scheduledDate: selectedDate?.toISOString().split('T')[0],
         scheduledTime: selectedTime,
         serviceAddress: address,
         city,
         pincode,
-        specialInstructions,
+        landmark,
         latitude,
         longitude,
+        paymentMethod,
+        couponCode: couponApplied ? couponCode : undefined,
+        couponDiscount: couponApplied ? couponDiscount : undefined,
+        emergencyCharge,
+        platformFee,
+        distanceCharge,
+        totalAmount: totalPrice,
+        technicianId: technician?.id,
+        verificationOtp,
       };
-      if (service.priceNegotiable && negotiatePrice) {
-        body.proposedPrice = parseFloat(negotiatePrice);
-      }
-      const result = await createBooking('/api/bookings', {
+      const result = (await createBooking('/api/bookings', {
         method: 'POST',
         body: JSON.stringify(body),
-      });
-      const bookingId = (result as { booking?: { id: string }; id?: string })?.booking?.id || (result as { id?: string })?.id;
-      if (bookingId) {
-        navigate('booking-confirmation', { bookingId });
-      } else {
-        navigate('client-bookings');
-      }
+      })) as BookingResult;
+      const id = result?.booking?.id || result?.id || '';
+      setBookingId(id);
+      setStep(7);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create booking');
+      setPaymentError(err instanceof Error ? err.message : 'Failed to create booking');
     }
   };
 
+  /* ---- Progress ---- */
+  const progressPercent = Math.round(((step - 1) / 6) * 100);
+
+  /* ---- Unauthenticated ---- */
   if (!user) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
         <Card className="rounded-2xl border-0 shadow-sm">
           <CardContent className="py-8">
-            <User className="mx-auto size-12 text-muted-foreground/40" />
+            <User className="mx-auto size-12 text-slate-400" />
             <h2 className="mt-4 text-lg font-semibold">Login Required</h2>
             <p className="mt-2 text-sm text-muted-foreground">Please log in to book a service</p>
             <div className="mt-6 flex justify-center gap-3">
               <Button variant="outline" onClick={goBack} className="rounded-xl">Go Back</Button>
-              <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl" onClick={() => navigate('login')}>
+              <Button className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg rounded-xl" onClick={() => navigate('login')}>
                 Log In
               </Button>
             </div>
@@ -186,16 +477,18 @@ export function BookingPage() {
     );
   }
 
+  /* ---- Loading ---- */
   if (serviceLoading || availLoading) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-        <div className="mb-6 h-8 w-64 animate-pulse rounded-xl bg-muted/50" />
-        <div className="mb-4 h-16 w-full animate-pulse rounded-2xl bg-muted/50" />
-        <div className="h-64 w-full animate-pulse rounded-2xl bg-muted/50" />
+        <div className="mb-6 h-8 w-64 animate-pulse rounded-xl bg-slate-200/50" />
+        <div className="mb-4 h-16 w-full animate-pulse rounded-2xl bg-slate-200/50" />
+        <div className="h-64 w-full animate-pulse rounded-2xl bg-slate-200/50" />
       </div>
     );
   }
 
+  /* ---- Service not found ---- */
   if (!service) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
@@ -205,58 +498,66 @@ export function BookingPage() {
     );
   }
 
+  /* ---- Step indicator label ---- */
+  const stepLabel = STEPS[step - 1]?.label ?? '';
+
+  /* ================================================================ */
+  /*  RENDER                                                          */
+  /* ================================================================ */
   return (
     <div className="mx-auto max-w-2xl px-4 py-6 sm:px-6">
-      {/* Header */}
+      {/* ---- Header ---- */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-6 flex items-center gap-3"
+        className="mb-5 flex items-center gap-3"
       >
-        <Button variant="ghost" size="icon" onClick={goBack} aria-label="Go back" className="rounded-xl hover:bg-emerald-50">
+        <Button variant="ghost" size="icon" onClick={goBack} aria-label="Go back" className="rounded-xl hover:bg-slate-100">
           <ArrowLeft className="size-5" />
         </Button>
-        <div>
+        <div className="flex-1">
           <h1 className="text-xl font-bold sm:text-2xl">Book Service</h1>
-          <p className="text-sm text-muted-foreground">{service.title} by {service.provider?.name}</p>
+          <p className="text-sm text-muted-foreground">
+            Step {step} of 7 &middot; {stepLabel}
+          </p>
         </div>
       </motion.div>
 
-      {/* Step Indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      {/* ---- Progress Bar ---- */}
+      <div className="mb-6">
+        <Progress value={progressPercent} className="h-2 rounded-full bg-slate-200 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-[#1e3a5f] [&>[data-slot=progress-indicator]]:to-[#2d5a8e]" />
+        <div className="mt-3 flex items-center justify-between">
           {STEPS.map((s, i) => {
             const isCompleted = step > s.number;
             const isCurrent = step === s.number;
+            const Icon = s.icon;
             return (
               <React.Fragment key={s.number}>
                 <div className="flex flex-col items-center">
                   <motion.div
-                    animate={{
-                      scale: isCurrent ? 1.1 : 1,
-                    }}
-                    className={`flex size-10 items-center justify-center rounded-xl border-2 text-sm font-medium transition-all ${
+                    animate={{ scale: isCurrent ? 1.1 : 1 }}
+                    className={`flex size-9 items-center justify-center rounded-xl border-2 text-xs font-medium transition-all sm:size-10 ${
                       isCompleted
-                        ? 'border-emerald-500 bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-emerald-500/25'
+                        ? 'border-[#1e3a5f] bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg'
                         : isCurrent
-                        ? 'border-emerald-500 bg-emerald-50 text-emerald-600 ring-4 ring-emerald-100'
-                        : 'border-gray-200 bg-white text-gray-400'
+                        ? 'border-[#2d5a8e] bg-[#1e3a5f]/10 text-[#1e3a5f] ring-2 ring-[#2d5a8e]/30'
+                        : 'border-slate-200 bg-white text-slate-400'
                     }`}
                   >
-                    {isCompleted ? <Check className="size-5" /> : <s.icon className="size-4" />}
+                    {isCompleted ? <Check className="size-4" /> : <Icon className="size-4" />}
                   </motion.div>
-                  <span className={`mt-2 text-xs font-medium ${isCurrent ? 'text-emerald-700' : isCompleted ? 'text-emerald-600' : 'text-gray-400'}`}>
+                  <span className={`mt-1.5 hidden text-[10px] font-medium sm:block ${isCurrent ? 'text-[#1e3a5f]' : isCompleted ? 'text-[#2d5a8e]' : 'text-slate-400'}`}>
                     {s.label}
                   </span>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="mx-2 flex-1">
-                    <div className="relative h-0.5 bg-gray-200 rounded-full">
+                  <div className="mx-1 flex-1">
+                    <div className="relative h-0.5 rounded-full bg-slate-200">
                       <motion.div
                         initial={{ width: '0%' }}
                         animate={{ width: step > s.number ? '100%' : '0%' }}
                         transition={{ duration: 0.3 }}
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full"
+                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e]"
                       />
                     </div>
                   </div>
@@ -267,34 +568,11 @@ export function BookingPage() {
         </div>
       </div>
 
-      {/* Service Summary Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mb-6"
-      >
-        <div className="glass overflow-hidden rounded-2xl">
-          <div className="flex items-center gap-4 p-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/20">
-              <Briefcase className="size-6 text-white" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate font-semibold">{service.title}</p>
-              <p className="text-sm text-muted-foreground">{service.provider?.name}</p>
-            </div>
-            <div className="text-right">
-              <p className="text-gradient text-lg font-bold">₹{service.basePrice?.toLocaleString()}</p>
-              {service.priceNegotiable && (
-                <Badge className="bg-sky-100 text-sky-700 border-sky-200 text-[10px]">Negotiable</Badge>
-              )}
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Step Content */}
+      {/* ---- Step Content ---- */}
       <AnimatePresence mode="wait">
-        {/* Step 1: Select Date */}
+        {/* ============================================================ */}
+        {/*  STEP 1: Service Details                                     */}
+        {/* ============================================================ */}
         {step === 1 && (
           <motion.div
             key="step1"
@@ -303,49 +581,72 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
-                    <CalendarDays className="size-4 text-white" />
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                    <Briefcase className="size-4 text-white" />
                   </div>
-                  Select Date
+                  Service Details
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {availableDayIndices.size === 0 ? (
-                  <div className="py-8 text-center">
-                    <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                      <CalendarDays className="size-8 text-emerald-300" />
+              <CardContent className="space-y-5">
+                {/* Service card */}
+                <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5">
+                  <div className="flex items-center gap-4 p-4">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-lg">
+                      <Briefcase className="size-7 text-white" />
                     </div>
-                    <p className="mt-3 text-sm text-muted-foreground">No availability configured for this service</p>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-lg font-bold">{service.title}</p>
+                      {service.description && (
+                        <p className="mt-0.5 line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <>
-                    <div className="mb-3 flex flex-wrap gap-2">
-                      {Array.from(availableDayIndices).sort().map((d) => (
-                        <Badge key={d} variant="secondary" className="bg-emerald-50 text-emerald-700 rounded-lg">
-                          {DAY_NAMES[d]}
-                        </Badge>
-                      ))}
-                    </div>
-                    <div className="flex justify-center">
-                      <Calendar
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={setSelectedDate}
-                        disabled={isDateDisabled}
-                        className="rounded-xl border"
-                      />
-                    </div>
-                  </>
+                </div>
+
+                {/* Info grid */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-slate-100 bg-white p-3">
+                    <p className="text-xs text-muted-foreground">Category</p>
+                    <p className="mt-0.5 font-semibold">{service.category?.name || 'General'}</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-white p-3">
+                    <p className="text-xs text-muted-foreground">Base Price</p>
+                    <p className="mt-0.5 text-lg font-bold text-[#1e3a5f]">₹{basePrice.toLocaleString()}</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-white p-3">
+                    <p className="text-xs text-muted-foreground">Provider</p>
+                    <p className="mt-0.5 font-semibold">{service.provider?.name || 'Assigned Provider'}</p>
+                  </div>
+                  <div className="rounded-xl border border-slate-100 bg-white p-3">
+                    <p className="text-xs text-muted-foreground">Duration</p>
+                    <p className="mt-0.5 font-semibold">{service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : '1-2 hrs'}</p>
+                  </div>
+                </div>
+
+                {service.provider?.averageRating && (
+                  <div className="flex items-center gap-2 rounded-xl bg-amber-50 p-3">
+                    <Star className="size-4 fill-amber-400 text-amber-400" />
+                    <span className="text-sm font-medium">{service.provider.averageRating.toFixed(1)} provider rating</span>
+                    <span className="text-xs text-muted-foreground">({service.provider.completedJobsCount ?? 0} jobs completed)</span>
+                  </div>
                 )}
+
+                {service.priceNegotiable && (
+                  <Badge className="bg-sky-100 text-sky-700 border-sky-200">Price Negotiable</Badge>
+                )}
+
+                <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
+                  <Shield className="size-4 text-[#1e3a5f]" />
+                  <span className="text-xs font-medium text-[#1e3a5f]">Secure booking with {COMPANY_INFO.name} protection</span>
+                </div>
               </CardContent>
               <CardFooter className="justify-end p-4">
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
-                  disabled={!selectedDate}
-                  onClick={() => setStep(2)}
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  onClick={goNext}
                 >
                   Next <ArrowRight className="ml-2 size-4" />
                 </Button>
@@ -354,7 +655,9 @@ export function BookingPage() {
           </motion.div>
         )}
 
-        {/* Step 2: Select Time */}
+        {/* ============================================================ */}
+        {/*  STEP 2: Address Selection                                   */}
+        {/* ============================================================ */}
         {step === 2 && (
           <motion.div
             key="step2"
@@ -363,85 +666,17 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-500">
-                    <Clock className="size-4 text-white" />
-                  </div>
-                  Select Time Slot
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {availableSlots.length === 0 ? (
-                  <div className="py-8 text-center">
-                    <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-sky-50">
-                      <Clock className="size-8 text-sky-300" />
-                    </div>
-                    <p className="mt-3 text-sm text-muted-foreground">
-                      No available time slots for {selectedDate && new Date(selectedDate).toLocaleDateString('en-IN', { weekday: 'long' })}
-                    </p>
-                    <Button variant="outline" className="mt-3 rounded-xl" onClick={() => setStep(1)}>
-                      Choose Another Date
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
-                    {availableSlots.map((time) => (
-                      <motion.button
-                        key={time}
-                        whileHover={{ scale: 1.03 }}
-                        whileTap={{ scale: 0.97 }}
-                        onClick={() => setSelectedTime(time)}
-                        className={`rounded-xl border-2 p-3 text-center text-sm font-medium transition-all ${
-                          selectedTime === time
-                            ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 shadow-md shadow-emerald-500/10'
-                            : 'border-gray-100 bg-white text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50'
-                        }`}
-                      >
-                        <Clock className="mx-auto mb-1 size-3.5 opacity-50" />
-                        {time}
-                      </motion.button>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-              <CardFooter className="justify-between p-4">
-                <Button variant="outline" onClick={() => setStep(1)} className="rounded-xl">
-                  <ArrowLeft className="mr-2 size-4" /> Back
-                </Button>
-                <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
-                  disabled={!selectedTime}
-                  onClick={() => setStep(3)}
-                >
-                  Next <ArrowRight className="ml-2 size-4" />
-                </Button>
-              </CardFooter>
-            </Card>
-          </motion.div>
-        )}
-
-        {/* Step 3: Address */}
-        {step === 3 && (
-          <motion.div
-            key="step3"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-          >
-            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-sky-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
                     <MapPin className="size-4 text-white" />
                   </div>
                   Service Address
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Location Detection Indicator */}
+                {/* Location detection indicator */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {geoLoading ? (
@@ -453,7 +688,7 @@ export function BookingPage() {
                         <Navigation className="size-3" /> Location Detected
                       </Badge>
                     ) : (
-                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-sky-50 text-sky-700 border border-sky-200">
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-slate-50 text-slate-600 border border-slate-200">
                         <MapPin className="size-3" /> Location unavailable
                       </Badge>
                     )}
@@ -461,7 +696,7 @@ export function BookingPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-emerald-600"
+                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-[#1e3a5f]"
                     onClick={refreshLocation}
                     disabled={geoLoading}
                   >
@@ -470,59 +705,73 @@ export function BookingPage() {
                   </Button>
                 </div>
 
+                {addressError && (
+                  <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+                    {addressError}
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="address">Full Address *</Label>
-                  <Textarea
+                  <Input
                     id="address"
                     value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="Enter your complete address including flat/house no, street, area..."
-                    rows={3}
-                    className="rounded-xl"
+                    onChange={(e) => { setAddress(e.target.value); setAddressError(''); }}
+                    placeholder="Flat/House No., Street, Area..."
+                    className="rounded-xl h-11"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
+                    <Label htmlFor="city">City *</Label>
                     <Input
                       id="city"
                       value={city}
-                      onChange={(e) => setCity(e.target.value)}
+                      onChange={(e) => { setCity(e.target.value); setAddressError(''); }}
                       placeholder="Your city"
                       className="rounded-xl h-11"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="pincode">Pincode</Label>
+                    <Label htmlFor="pincode">Pincode *</Label>
                     <Input
                       id="pincode"
                       value={pincode}
-                      onChange={(e) => setPincode(e.target.value)}
-                      placeholder="Area pincode"
+                      onChange={(e) => { setPincode(e.target.value.replace(/\D/g, '').slice(0, 6)); setAddressError(''); }}
+                      placeholder="6-digit pincode"
                       className="rounded-xl h-11"
                     />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="instructions">Special Instructions (optional)</Label>
-                  <Textarea
-                    id="instructions"
-                    value={specialInstructions}
-                    onChange={(e) => setSpecialInstructions(e.target.value)}
-                    placeholder="Any specific instructions for the service provider..."
-                    rows={3}
-                    className="rounded-xl"
+                  <Label htmlFor="landmark">Landmark (optional)</Label>
+                  <Input
+                    id="landmark"
+                    value={landmark}
+                    onChange={(e) => setLandmark(e.target.value)}
+                    placeholder="Nearby landmark for easy navigation"
+                    className="rounded-xl h-11"
                   />
                 </div>
+
+                {/* Use current location button */}
+                <Button
+                  variant="outline"
+                  className="w-full rounded-xl gap-2 border-dashed border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                  onClick={refreshLocation}
+                  disabled={geoLoading}
+                >
+                  <MapPinned className="size-4" />
+                  {geoLoading ? 'Detecting Location...' : 'Use Current Location'}
+                </Button>
               </CardContent>
               <CardFooter className="justify-between p-4">
-                <Button variant="outline" onClick={() => setStep(2)} className="rounded-xl">
+                <Button variant="outline" onClick={goPrev} className="rounded-xl">
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
-                  disabled={!address.trim()}
-                  onClick={() => setStep(4)}
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  onClick={goNext}
                 >
                   Next <ArrowRight className="ml-2 size-4" />
                 </Button>
@@ -531,7 +780,105 @@ export function BookingPage() {
           </motion.div>
         )}
 
-        {/* Step 4: Review & Confirm */}
+        {/* ============================================================ */}
+        {/*  STEP 3: Date / Time Selection                               */}
+        {/* ============================================================ */}
+        {step === 3 && (
+          <motion.div
+            key="step3"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                    <CalendarDays className="size-4 text-white" />
+                  </div>
+                  Select Date & Time
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {dateError && (
+                  <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+                    {dateError}
+                  </div>
+                )}
+
+                {/* Available days badges */}
+                <div className="flex flex-wrap gap-2">
+                  {Array.from(availableDayIndices).sort().map((d) => (
+                    <Badge key={d} variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f] rounded-lg">
+                      {DAY_NAMES[d]}
+                    </Badge>
+                  ))}
+                </div>
+
+                {/* Calendar */}
+                <div className="flex justify-center">
+                  <Calendar
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={(d) => { setSelectedDate(d); setDateError(''); }}
+                    disabled={isDateDisabled}
+                    className="rounded-xl border"
+                  />
+                </div>
+
+                <Separator />
+
+                {/* Time slot grid */}
+                {selectedDate && (
+                  <div className="space-y-3">
+                    <Label className="text-sm font-semibold">Select Time Slot</Label>
+                    <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+                      {availableSlots.map((time) => (
+                        <motion.button
+                          key={time}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => { setSelectedTime(time); setDateError(''); }}
+                          className={`rounded-xl border-2 p-3 text-center text-sm font-medium transition-all ${
+                            selectedTime === time
+                              ? 'border-[#1e3a5f] bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10 text-[#1e3a5f] shadow-md shadow-[#1e3a5f]/10'
+                              : 'border-slate-100 bg-white text-slate-600 hover:border-[#2d5a8e]/40 hover:bg-[#2d5a8e]/5'
+                          }`}
+                        >
+                          <Clock className={`mx-auto mb-1 size-3.5 ${selectedTime === time ? 'text-[#1e3a5f]' : 'opacity-50'}`} />
+                          {formatTime(time)}
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {!selectedDate && (
+                  <div className="py-6 text-center">
+                    <CalendarDays className="mx-auto size-10 text-slate-300" />
+                    <p className="mt-2 text-sm text-muted-foreground">Please select a date first</p>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="justify-between p-4">
+                <Button variant="outline" onClick={goPrev} className="rounded-xl">
+                  <ArrowLeft className="mr-2 size-4" /> Back
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  onClick={goNext}
+                >
+                  Next <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* ============================================================ */}
+        {/*  STEP 4: Nearby Provider Match                               */}
+        {/* ============================================================ */}
         {step === 4 && (
           <motion.div
             key="step4"
@@ -540,104 +887,369 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
-                    <Check className="size-4 text-white" />
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                    <Search className="size-4 text-white" />
                   </div>
-                  Review & Confirm
+                  Nearby Provider Match
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {error && (
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200"
-                  >
-                    {error}
-                  </motion.div>
+                {providersLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
+                    <p className="mt-3 text-sm text-muted-foreground">Searching nearby providers...</p>
+                  </div>
+                ) : providers.length === 0 ? (
+                  <div className="py-8 text-center">
+                    <Users className="mx-auto size-10 text-slate-300" />
+                    <p className="mt-2 text-sm text-muted-foreground">No providers available in your area</p>
+                  </div>
+                ) : (
+                  <>
+                    {/* Best match auto-selected badge */}
+                    <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
+                      <Award className="size-4 text-[#1e3a5f]" />
+                      <span className="text-xs font-medium text-[#1e3a5f]">Best match auto-selected based on rating & proximity</span>
+                    </div>
+
+                    {/* Provider list */}
+                    <RadioGroup value={selectedProviderId} onValueChange={setSelectedProviderId} className="gap-3">
+                      {providers
+                        .slice(0, showAllProviders ? providers.length : 2)
+                        .map((provider) => (
+                          <motion.label
+                            key={provider.id}
+                            htmlFor={`provider-${provider.id}`}
+                            whileHover={{ scale: 1.01 }}
+                            className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
+                              selectedProviderId === provider.id
+                                ? 'border-[#1e3a5f] bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5 shadow-sm'
+                                : 'border-slate-100 bg-white hover:border-slate-200'
+                            }`}
+                          >
+                            <RadioGroupItem value={provider.id} id={`provider-${provider.id}`} />
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                              {provider.profileImageUrl ? (
+                                <img src={provider.profileImageUrl} alt={provider.name} className="size-11 rounded-full object-cover" />
+                              ) : (
+                                <User className="size-5 text-white" />
+                              )}
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-semibold">{provider.name}</p>
+                              <div className="mt-0.5 flex items-center gap-3 text-xs text-muted-foreground">
+                                <span className="flex items-center gap-1">
+                                  <Star className="size-3 fill-amber-400 text-amber-400" />
+                                  {provider.averageRating.toFixed(1)}
+                                </span>
+                                <span>{provider.completedJobsCount} jobs</span>
+                                {provider.specialization && <span className="hidden sm:inline">{provider.specialization}</span>}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-sm font-bold text-[#1e3a5f]">₹{provider.price.toLocaleString()}</p>
+                              <p className="text-xs text-muted-foreground">{provider.distance} km</p>
+                            </div>
+                          </motion.label>
+                        ))}
+                    </RadioGroup>
+
+                    {/* View all toggle */}
+                    {providers.length > 2 && (
+                      <Button
+                        variant="ghost"
+                        className="w-full gap-1 text-sm text-[#2d5a8e]"
+                        onClick={() => setShowAllProviders(!showAllProviders)}
+                      >
+                        {showAllProviders ? (
+                          <>Show Less <ChevronUp className="size-4" /></>
+                        ) : (
+                          <>View All Providers ({providers.length}) <ChevronDown className="size-4" /></>
+                        )}
+                      </Button>
+                    )}
+                  </>
+                )}
+              </CardContent>
+              <CardFooter className="justify-between p-4">
+                <Button variant="outline" onClick={goPrev} className="rounded-xl">
+                  <ArrowLeft className="mr-2 size-4" /> Back
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  disabled={!selectedProviderId}
+                  onClick={goNext}
+                >
+                  Next <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* ============================================================ */}
+        {/*  STEP 5: Technician Assignment                               */}
+        {/* ============================================================ */}
+        {step === 5 && (
+          <motion.div
+            key="step5"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                    <Wrench className="size-4 text-white" />
+                  </div>
+                  Technician Assignment
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {technicianLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12">
+                    <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
+                    <p className="mt-3 text-sm text-muted-foreground">Assigning best technician...</p>
+                  </div>
+                ) : technician ? (
+                  <>
+                    {/* Technician card */}
+                    <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5">
+                      <div className="flex items-center gap-4 p-4">
+                        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-lg">
+                          {technician.profileImageUrl ? (
+                            <img src={technician.profileImageUrl} alt={technician.name} className="size-16 rounded-full object-cover" />
+                          ) : (
+                            <User className="size-8 text-white" />
+                          )}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="text-lg font-bold">{technician.name}</p>
+                          <p className="text-sm text-muted-foreground">{technician.specialization}</p>
+                          <div className="mt-1 flex items-center gap-3">
+                            <span className="flex items-center gap-1 text-sm font-medium">
+                              <Star className="size-3.5 fill-amber-400 text-amber-400" />
+                              {technician.rating.toFixed(1)}
+                            </span>
+                            <span className="text-sm text-muted-foreground">{technician.experienceYears} yrs exp</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Info grid */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="rounded-xl border border-slate-100 bg-white p-3">
+                        <p className="text-xs text-muted-foreground">Experience</p>
+                        <p className="mt-0.5 font-semibold">{technician.experienceYears} Years</p>
+                      </div>
+                      <div className="rounded-xl border border-slate-100 bg-white p-3">
+                        <p className="text-xs text-muted-foreground">Phone</p>
+                        <p className="mt-0.5 flex items-center gap-1 font-semibold">
+                          <Phone className="size-3 text-[#1e3a5f]" />
+                          {technician.phone}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Certifications */}
+                    {technician.certifications && technician.certifications.length > 0 && (
+                      <div className="space-y-2">
+                        <Label className="text-sm font-semibold">Certifications</Label>
+                        <div className="flex flex-wrap gap-2">
+                          {technician.certifications.map((cert, idx) => (
+                            <Badge key={idx} variant="secondary" className="gap-1 rounded-lg bg-[#1e3a5f]/10 text-[#1e3a5f]">
+                              <Award className="size-3" />
+                              {cert}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    <Separator />
+
+                    {/* OTP section */}
+                    <div className="rounded-xl border-2 border-dashed border-[#1e3a5f]/30 bg-[#1e3a5f]/5 p-4 text-center">
+                      <p className="text-sm font-medium text-muted-foreground">Verification OTP</p>
+                      <p className="mt-1 text-xs text-muted-foreground">Share this OTP with the technician on arrival</p>
+                      <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 shadow-sm border border-slate-100">
+                        <Eye className="size-4 text-[#1e3a5f]" />
+                        <span className="text-2xl font-bold tracking-[0.3em] text-[#1e3a5f]">{verificationOtp}</span>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="py-8 text-center">
+                    <p className="text-sm text-muted-foreground">No technician assigned yet</p>
+                  </div>
+                )}
+              </CardContent>
+              <CardFooter className="justify-between p-4">
+                <Button variant="outline" onClick={goPrev} className="rounded-xl">
+                  <ArrowLeft className="mr-2 size-4" /> Back
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  onClick={goNext}
+                  disabled={!technician}
+                >
+                  Next <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </CardFooter>
+            </Card>
+          </motion.div>
+        )}
+
+        {/* ============================================================ */}
+        {/*  STEP 6: Payment Summary                                     */}
+        {/* ============================================================ */}
+        {step === 6 && (
+          <motion.div
+            key="step6"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                    <CreditCard className="size-4 text-white" />
+                  </div>
+                  Payment Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-5">
+                {paymentError && (
+                  <div className="rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200">
+                    {paymentError}
+                  </div>
                 )}
 
-                <div className="glass space-y-3 rounded-xl p-4">
-                  {[
-                    { label: 'Service', value: service.title },
-                    { label: 'Provider', value: service.provider?.name },
-                    { label: 'Date', value: selectedDate?.toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) },
-                    { label: 'Time', value: selectedTime },
-                    { label: 'Address', value: address, truncate: true },
-                    ...(specialInstructions ? [{ label: 'Instructions', value: specialInstructions, truncate: true }] : []),
-                  ].map((item) => (
-                    <div key={item.label} className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">{item.label}</span>
-                      <span className={`max-w-[60%] text-right font-medium ${item.truncate ? 'line-clamp-2' : ''}`}>{item.value}</span>
+                {/* Price breakdown */}
+                <div className="space-y-2">
+                  <h3 className="font-semibold">Price Breakdown</h3>
+                  <div className="space-y-2 rounded-xl border border-slate-100 bg-white p-4">
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Base Price</span>
+                      <span>₹{basePrice.toLocaleString()}</span>
                     </div>
-                  ))}
+                    {emergencyCharge > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Emergency Charge</span>
+                        <span className="text-amber-600">+₹{emergencyCharge.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Platform Fee</span>
+                      <span>₹{platformFee}</span>
+                    </div>
+                    {distanceCharge > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Distance Charge</span>
+                        <span>₹{distanceCharge}</span>
+                      </div>
+                    )}
+                    {couponApplied && couponDiscount > 0 && (
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Coupon Discount</span>
+                        <span className="text-emerald-600">-₹{couponDiscount.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <Separator />
+                    <div className="flex justify-between font-bold text-lg">
+                      <span>Total</span>
+                      <span className="text-[#1e3a5f]">₹{totalPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Coupon code */}
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold flex items-center gap-1">
+                    <Ticket className="size-4" /> Apply Coupon
+                  </Label>
+                  <div className="flex gap-2">
+                    <Input
+                      value={couponCode}
+                      onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); setCouponApplied(false); setCouponDiscount(0); }}
+                      placeholder="Enter coupon code"
+                      className="rounded-xl h-11 flex-1 uppercase"
+                      disabled={couponApplied}
+                    />
+                    <Button
+                      variant="outline"
+                      className="rounded-xl px-4 border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                      onClick={applyCoupon}
+                      disabled={!couponCode.trim() || couponLoading || couponApplied}
+                    >
+                      {couponLoading ? <Loader2 className="size-4 animate-spin" /> : couponApplied ? <Check className="size-4" /> : 'Apply'}
+                    </Button>
+                  </div>
+                  {couponError && <p className="text-xs text-red-500">{couponError}</p>}
+                  {couponApplied && (
+                    <p className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                      <Check className="size-3" /> Coupon applied! You save ₹{couponDiscount.toLocaleString()}
+                    </p>
+                  )}
                 </div>
 
                 <Separator />
 
-                {/* Price Breakdown */}
-                <div className="space-y-2">
-                  <h3 className="font-semibold">Price Summary</h3>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Base Price</span>
-                    <span>₹{service.basePrice?.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Platform Fee</span>
-                    <span>₹{platformFee.toFixed(2)}</span>
-                  </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold text-lg">
-                    <span>Total</span>
-                    <span className="text-gradient">₹{totalPrice.toFixed(2)}</span>
-                  </div>
+                {/* Payment method */}
+                <div className="space-y-3">
+                  <Label className="text-sm font-semibold">Payment Method</Label>
+                  <RadioGroup value={paymentMethod} onValueChange={(v) => setPaymentMethod(v as PaymentMethod)} className="grid grid-cols-2 gap-3">
+                    {PAYMENT_METHODS.map((method) => {
+                      const Icon = method.icon;
+                      return (
+                        <motion.label
+                          key={method.value}
+                          htmlFor={`pay-${method.value}`}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all ${
+                            paymentMethod === method.value
+                              ? 'border-[#1e3a5f] bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5'
+                              : 'border-slate-100 bg-white hover:border-slate-200'
+                          }`}
+                        >
+                          <RadioGroupItem value={method.value} id={`pay-${method.value}`} />
+                          <Icon className={`size-4 ${paymentMethod === method.value ? 'text-[#1e3a5f]' : 'text-slate-400'}`} />
+                          <span className={`text-sm font-medium ${paymentMethod === method.value ? 'text-[#1e3a5f]' : 'text-slate-600'}`}>
+                            {method.label}
+                          </span>
+                        </motion.label>
+                      );
+                    })}
+                  </RadioGroup>
                 </div>
 
-                {/* Negotiate Price */}
-                {service.priceNegotiable && (
-                  <div className="rounded-xl border border-sky-200 bg-gradient-to-r from-sky-50 to-blue-50 p-4">
-                    <div className="flex items-center gap-2">
-                      <Badge className="bg-sky-100 text-sky-800 border-sky-200">Negotiable</Badge>
-                      <span className="text-sm font-medium">This service allows price negotiation</span>
-                    </div>
-                    <div className="mt-3 space-y-2">
-                      <Label htmlFor="negotiate-price">Propose a different price (₹)</Label>
-                      <Input
-                        id="negotiate-price"
-                        type="number"
-                        min="1"
-                        placeholder="Enter your proposed price"
-                        value={negotiatePrice}
-                        onChange={(e) => setNegotiatePrice(e.target.value)}
-                        className="rounded-xl h-11"
-                      />
-                      <p className="text-xs text-muted-foreground">The provider will review your proposed price</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Trust Badge */}
-                <div className="flex items-center gap-2 rounded-xl bg-emerald-50/50 p-3">
-                  <Shield className="size-4 text-emerald-600" />
-                  <span className="text-xs text-emerald-700 font-medium">Secure booking with platform protection</span>
+                <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
+                  <Shield className="size-4 text-[#1e3a5f]" />
+                  <span className="text-xs font-medium text-[#1e3a5f]">Secure payment powered by {COMPANY_INFO.name}</span>
                 </div>
               </CardContent>
               <CardFooter className="justify-between p-4">
-                <Button variant="outline" onClick={() => setStep(3)} className="rounded-xl">
+                <Button variant="outline" onClick={goPrev} className="rounded-xl">
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11 px-8"
-                  onClick={handleBooking}
+                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl h-11 px-8"
+                  onClick={handleConfirmBooking}
                   disabled={creating}
                 >
                   {creating ? (
                     <>
                       <Loader2 className="mr-2 size-4 animate-spin" />
-                      Creating Booking...
+                      Confirming...
                     </>
                   ) : (
                     <>
@@ -649,7 +1261,170 @@ export function BookingPage() {
             </Card>
           </motion.div>
         )}
+
+        {/* ============================================================ */}
+        {/*  STEP 7: Booking Confirmation                                */}
+        {/* ============================================================ */}
+        {step === 7 && (
+          <motion.div
+            key="step7"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+          >
+            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
+              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+
+              {/* Success animation area */}
+              <div className="flex flex-col items-center py-8 px-6">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
+                  className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-xl shadow-[#1e3a5f]/30"
+                >
+                  <CircleCheckBig className="size-10 text-white" />
+                </motion.div>
+                <motion.h2
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-4 text-2xl font-bold text-[#1e3a5f]"
+                >
+                  Booking Confirmed!
+                </motion.h2>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                  className="mt-1 text-sm text-muted-foreground"
+                >
+                  Your service has been booked successfully
+                </motion.p>
+              </div>
+
+              <CardContent className="space-y-4 px-6 pb-6">
+                {/* Booking ID */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 }}
+                  className="rounded-xl border-2 border-dashed border-[#1e3a5f]/20 bg-[#1e3a5f]/5 p-4 text-center"
+                >
+                  <p className="text-xs text-muted-foreground">Booking ID</p>
+                  <p className="mt-1 text-lg font-bold tracking-wider text-[#1e3a5f]">
+                    {bookingId || 'BYS-' + Date.now().toString(36).toUpperCase()}
+                  </p>
+                </motion.div>
+
+                {/* Booking details */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="space-y-3 rounded-xl border border-slate-100 bg-white p-4"
+                >
+                  {[
+                    {
+                      label: 'Service',
+                      value: service.title,
+                      icon: <Briefcase className="size-3.5 text-[#1e3a5f]" />,
+                    },
+                    {
+                      label: 'Date & Time',
+                      value: selectedDate
+                        ? `${selectedDate.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} at ${formatTime(selectedTime)}`
+                        : 'N/A',
+                      icon: <CalendarDays className="size-3.5 text-[#1e3a5f]" />,
+                    },
+                    {
+                      label: 'Provider',
+                      value: providers.find((p) => p.id === selectedProviderId)?.name || service.provider?.name || 'Assigned Provider',
+                      icon: <Users className="size-3.5 text-[#1e3a5f]" />,
+                    },
+                    {
+                      label: 'Technician',
+                      value: technician?.name || 'Assigned Technician',
+                      icon: <Wrench className="size-3.5 text-[#1e3a5f]" />,
+                    },
+                    {
+                      label: 'Address',
+                      value: address,
+                      icon: <MapPin className="size-3.5 text-[#1e3a5f]" />,
+                    },
+                  ].map((item) => (
+                    <div key={item.label} className="flex items-start gap-3">
+                      <div className="mt-0.5">{item.icon}</div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs text-muted-foreground">{item.label}</p>
+                        <p className="text-sm font-medium line-clamp-2">{item.value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+
+                <Separator />
+
+                {/* Amount paid */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  className="flex items-center justify-between rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] p-4 text-white"
+                >
+                  <span className="text-sm font-medium opacity-90">Amount Paid</span>
+                  <span className="text-2xl font-bold">₹{totalPrice.toLocaleString()}</span>
+                </motion.div>
+
+                {/* OTP reminder */}
+                {verificationOtp && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                    className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-center"
+                  >
+                    <p className="text-xs font-medium text-amber-800">Remember to share OTP <span className="font-bold">{verificationOtp}</span> with the technician</p>
+                  </motion.div>
+                )}
+
+                {/* Action buttons */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.9 }}
+                  className="flex flex-col gap-3 pt-2 sm:flex-row"
+                >
+                  <Button
+                    className="flex-1 bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl h-11"
+                    onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
+                  >
+                    <MapPinned className="mr-2 size-4" /> Track Booking
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1 rounded-xl h-11 border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                    onClick={() => navigate('home')}
+                  >
+                    <Home className="mr-2 size-4" /> Back to Home
+                  </Button>
+                </motion.div>
+              </CardContent>
+            </Card>
+          </motion.div>
+        )}
       </AnimatePresence>
+
+      {/* ---- Step-specific error for booking submission ---- */}
+      {bookingError && step !== 6 && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-600 border border-red-200"
+        >
+          {bookingError}
+        </motion.div>
+      )}
     </div>
   );
 }

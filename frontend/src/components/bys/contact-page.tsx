@@ -30,6 +30,7 @@ import {
   ArrowRight,
   Headphones,
 } from 'lucide-react';
+import { COMPANY_INFO } from '@/config/company';
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -131,28 +132,28 @@ export function ContactPage() {
           {
             icon: <MapPin className="size-6" />,
             title: 'Visit Us',
-            detail: '123 Service Street, Suite 100\nSan Francisco, CA 94102',
+            detail: COMPANY_INFO.address,
             gradient: 'from-emerald-600 to-teal-600',
             action: null,
           },
           {
             icon: <Phone className="size-6" />,
             title: 'Call Us',
-            detail: '+1 (415) 555-1234',
+            detail: COMPANY_INFO.phone,
             gradient: 'from-teal-600 to-cyan-600',
-            action: 'tel:+14155551234',
+            action: `tel:${COMPANY_INFO.phone}`,
           },
           {
             icon: <Mail className="size-6" />,
             title: 'Email Us',
-            detail: 'hello@bookyourservice.com',
+            detail: COMPANY_INFO.email,
             gradient: 'from-cyan-600 to-blue-600',
-            action: 'mailto:hello@bookyourservice.com',
+            action: `mailto:${COMPANY_INFO.email}`,
           },
           {
             icon: <Headphones className="size-6" />,
             title: 'Support Hours',
-            detail: 'Mon-Fri: 9AM - 6PM\nSat: 10AM - 4PM',
+            detail: COMPANY_INFO.supportHours,
             gradient: 'from-emerald-700 to-emerald-500',
             action: null,
           },
@@ -327,27 +328,27 @@ export function ContactPage() {
                   {
                     icon: <MapPin className="size-5" />,
                     label: 'Address',
-                    value: '123 Service Street, Suite 100, San Francisco, CA 94102',
+                    value: COMPANY_INFO.address,
                     gradient: 'from-emerald-600 to-teal-600',
                   },
                   {
                     icon: <Phone className="size-5" />,
                     label: 'Phone',
-                    value: '+1 (415) 555-1234',
-                    href: 'tel:+14155551234',
+                    value: COMPANY_INFO.phone,
+                    href: `tel:${COMPANY_INFO.phone}`,
                     gradient: 'from-teal-600 to-cyan-600',
                   },
                   {
                     icon: <Mail className="size-5" />,
                     label: 'Email',
-                    value: 'hello@bookyourservice.com',
-                    href: 'mailto:hello@bookyourservice.com',
+                    value: COMPANY_INFO.email,
+                    href: `mailto:${COMPANY_INFO.email}`,
                     gradient: 'from-cyan-600 to-blue-600',
                   },
                   {
                     icon: <Clock className="size-5" />,
                     label: 'Business Hours',
-                    value: 'Mon-Fri: 9:00 AM - 6:00 PM, Sat: 10:00 AM - 4:00 PM',
+                    value: COMPANY_INFO.supportHours,
                     gradient: 'from-emerald-700 to-emerald-500',
                   },
                 ].map((item) => (
@@ -417,7 +418,7 @@ export function ContactPage() {
                   <MapPin className="size-7" />
                 </div>
                 <p className="font-semibold text-emerald-800">Our Location</p>
-                <p className="mt-1 text-xs text-emerald-700/70">123 Service Street, SF</p>
+                <p className="mt-1 text-xs text-emerald-700/70">{COMPANY_INFO.address}</p>
               </div>
             </div>
           </div>

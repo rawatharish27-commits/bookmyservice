@@ -80,6 +80,20 @@ async function requireAdmin(req: any) {
   return user;
 }
 
+// RBAC: Check if user has required role
+function checkRole(userPayload: any, allowedRoles: string[]): boolean {
+  if (!userPayload || !userPayload.role) return false;
+  return allowedRoles.includes(userPayload.role);
+}
+
+// RBAC: Require specific roles for protected endpoints
+async function requireRole(req: any, allowedRoles: string[]) {
+  const user = await getAuthUser(req);
+  if (!user) return null;
+  if (!checkRole(user, allowedRoles)) return null;
+  return user;
+}
+
 export default function apiPlugin(): Plugin {
   return {
     name: 'vite-api-plugin',
@@ -253,6 +267,21 @@ export default function apiPlugin(): Plugin {
             if (path === '/auth/logout' && req.method === 'POST') {
               return jsonResponse(res, { success: true, message: 'Logged out' });
             }
+          }
+
+          // ===================== REFERRAL TRACKING =====================
+          const refMatch = path.match(/^\/ref\/(.+)$/);
+          if (refMatch && req.method === 'GET') {
+            const referralCode = refMatch[1];
+            const result = await query(
+              'SELECT * FROM "User" WHERE "referralCode" = $1 LIMIT 1',
+              [referralCode]
+            ).catch(() => ({ rows: [] }));
+            return jsonResponse(res, {
+              success: true,
+              referralCode,
+              user: result.rows?.[0] || null,
+            });
           }
 
           // ===================== CONTACT =====================
@@ -651,7 +680,7 @@ export default function apiPlugin(): Plugin {
             const authUser = await getAuthUser(req);
             if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
             const notifId = notifMatch[1];
-            await query('UPDATE "Notification" SET "isRead" = true WHERE id = $1 AND "userId" = $2', [notifId, authUser.sub]).catch(() => {});
+            await query('UPDATE "Notification" SET "isRead" = true, "readAt" = NOW() WHERE id = $1 AND "userId" = $2', [notifId, authUser.sub]).catch(() => {});
             return jsonResponse(res, { message: 'Notification marked as read' });
           }
 
@@ -1031,7 +1060,40 @@ export default function apiPlugin(): Plugin {
             return jsonResponse(res, { followUp: { id, status: 'PENDING' } }, 201);
           }
 
+          // ===================== NOTIFICATION SYSTEM =====================
+          if (path === '/notifications' && req.method === 'GET') {
+            const authUser = await getAuthUser(req);
+            if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
+            const result = await query(
+              'SELECT * FROM "Notification" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 50',
+              [authUser.sub]
+            ).catch(() => ({ rows: [] }));
+            const unreadResult = await query(
+              'SELECT COUNT(*) as count FROM "Notification" WHERE "userId" = $1 AND "isRead" = false',
+              [authUser.sub]
+            ).catch(() => ({ rows: [{ count: 0 }] }));
+            return jsonResponse(res, {
+              notifications: result.rows,
+              unreadCount: parseInt(unreadResult.rows[0]?.count || '0'),
+              total: result.rows.length,
+            });
+          }
+
+          // ===================== NOTIFICATION TEMPLATES =====================
+          if (path === '/notifications/templates' && req.method === 'GET') {
+            const result = await query(
+              'SELECT * FROM "NotificationTemplate" WHERE "isActive" = true ORDER BY id'
+            ).catch(() => ({ rows: [] }));
+            return jsonResponse(res, { templates: result.rows, total: result.rows.length });
+          }
+
           // ===================== ADMIN ROUTES =====================
+          // All admin routes require ADMIN or SUPER_ADMIN role
+          if (path.startsWith('/admin/')) {
+            const adminUser = await requireRole(req, ['ADMIN', 'SUPER_ADMIN']);
+            if (!adminUser) return jsonResponse(res, { error: 'Admin access required' }, 403);
+          }
+
           if (path === '/admin/dashboard' && req.method === 'GET') {
             const admin = await requireAdmin(req);
             if (!admin) return jsonResponse(res, { error: 'Admin access required' }, 403);

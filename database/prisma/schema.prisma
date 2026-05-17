@@ -341,6 +341,7 @@ model Booking {
   negotiations      Negotiation[]
   disputes          Dispute[]
   timeline          BookingTimeline[]
+  tracking          BookingTracking[]
   invoice           Invoice?
   workPhotos        WorkPhoto[]
   coupon            Coupon?           @relation(fields: [couponId], references: [id])
@@ -973,6 +974,119 @@ model City {
   displayOrder Int      @default(0)
   latitude     Float?
   longitude    Float?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ============================================================================
+// MISSING MODELS — Step 16 Implementation
+// ============================================================================
+
+model BookingTracking {
+  id              String   @id @default(cuid())
+  bookingId       String
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  status          String   // PENDING, ASSIGNED, ACCEPTED, ON_THE_WAY, ARRIVED, IN_PROGRESS, COMPLETED
+  latitude        Float?
+  longitude       Float?
+  address         String?
+  notes           String?
+  performedBy     String?
+  createdAt       DateTime @default(now())
+}
+
+model ReferralReward {
+  id             String    @id @default(cuid())
+  referralId     String    @unique
+  referrerId     String
+  refereeId      String
+  rewardType     String    // CASH, CREDIT, DISCOUNT
+  rewardAmount   Float     @default(0)
+  status         String    @default("PENDING") // PENDING, CREDITED, EXPIRED
+  creditedAt     DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model LiveTechnicianLocation {
+  id              String   @id @default(cuid())
+  technicianId    String   @unique
+  latitude        Float
+  longitude       Float
+  accuracy        Float?
+  heading         Float?
+  speed           Float?
+  batteryLevel    Int?
+  isOnline        Boolean  @default(true)
+  lastPingAt      DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ComplaintEscalation {
+  id              String    @id @default(cuid())
+  disputeId       String
+  fromLevel       String    // L1, L2, L3
+  toLevel         String    // L2, L3, SUPER_ADMIN
+  reason          String
+  escalatedBy     String?
+  status          String    @default("PENDING") // PENDING, ACCEPTED, RESOLVED
+  resolvedBy      String?
+  resolution      String?
+  resolvedAt      DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String
+  action       String
+  entityType   String?
+  entityId     String?
+  details      String? // JSON
+  ipAddress    String?
+  userAgent    String?
+  createdAt    DateTime @default(now())
+}
+
+model AdminAction {
+  id           String   @id @default(cuid())
+  adminId      String
+  action       String
+  targetType   String?
+  targetId     String?
+  reason       String?
+  metadata     String? // JSON
+  createdAt    DateTime @default(now())
+}
+
+model AnalyticsSnapshot {
+  id               Int      @id @default(autoincrement())
+  date             String   @unique // YYYY-MM-DD
+  totalBookings    Int      @default(0)
+  completedBookings Int     @default(0)
+  cancelledBookings Int     @default(0)
+  totalRevenue     Float    @default(0)
+  platformFee      Float    @default(0)
+  newUsers         Int      @default(0)
+  newProviders     Int      @default(0)
+  activeProviders  Int      @default(0)
+  avgCompletionTime Float   @default(0) // in hours
+  topCity          String?
+  metadata         String? // JSON
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model NotificationTemplate {
+  id           Int      @id @default(autoincrement())
+  type         String   @unique // BOOKING_CREATED, PROVIDER_ASSIGNED, TECHNICIAN_ARRIVING, WORK_COMPLETED, PAYMENT_SUCCESSFUL
+  channel      String   @default("ALL") // ALL, IN_APP, SMS, WHATSAPP, EMAIL, PUSH
+  title        String
+  body         String   // Supports {{variable}} placeholders
+  isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 }

@@ -81,6 +81,13 @@ export type Page =
   // Area Manager pages
   | 'area-manager-dashboard'
   | 'client-commissions'
+  // Join pages
+  | 'join-manager'
+  | 'join-local-admin'
+  // New Dashboard pages
+  | 'super-admin-dashboard'
+  | 'manager-dashboard'
+  | 'local-admin-dashboard'
   // Legal / static pages
   | 'about'
   | 'how-it-works'
