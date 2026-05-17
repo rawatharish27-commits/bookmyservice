@@ -101,7 +101,7 @@ export interface RegisterData {
 }
 
 // Sensitive fields that should never be stored in localStorage (Old #46 fix)
-const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token', 'walletBalance', 'bankAccountNumber', 'ifscCode', 'upiId'] as const;
+const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token', 'bankAccountNumber', 'ifscCode', 'upiId'] as const;
 
 function sanitizeUser(user: User | null): User | null {
   if (!user) return null;
@@ -233,6 +233,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         setUser(data.user);
         localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
+        // Refresh the JWT token so it doesn't expire mid-session
+        if (data.accessToken) {
+          setToken(data.accessToken);
+          localStorage.setItem('bys_token', data.accessToken);
+        }
       } else {
         // Auto-logout on 401/invalid token (N4, N7 fix)
         setToken(null);

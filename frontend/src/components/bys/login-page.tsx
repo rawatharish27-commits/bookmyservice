@@ -84,21 +84,12 @@ export function LoginPage() {
         callback: async (response) => {
           if (response.access_token) {
             try {
-              // Fetch user info from Google
-              const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-                headers: { Authorization: `Bearer ${response.access_token}` },
-              });
-              const userInfo = await userInfoRes.json();
-
-              // Send to our backend
+              // Send access_token to our backend for verification
               const backendRes = await fetch(apiUrl('/api/auth/google'), {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                  email: userInfo.email,
-                  name: userInfo.name,
-                  profileImageUrl: userInfo.picture,
-                  googleId: userInfo.sub,
+                  token: response.access_token,
                 }),
               });
 

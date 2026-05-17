@@ -232,7 +232,7 @@ app.post('/api/auth/login', async (c) => {
 
 app.post('/api/auth/register', async (c) => {
   try {
-    const { email, phone, name, password, roleId } = await c.req.json()
+    const { email, phone, name, password, roleId, specialization } = await c.req.json()
     if (!email || !phone || !name || !password || !roleId) return c.json({ error: 'All fields required' }, 400)
     if (!password || password.length < 8) return c.json({ error: 'Password must be at least 8 characters' }, 400)
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return c.json({ error: 'Invalid email format' }, 400)
@@ -256,6 +256,11 @@ app.post('/api/auth/register', async (c) => {
     if (validRoleId === 2 || validRoleId === 4 || validRoleId === 5) {
       const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
       await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'AADHAAR\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId])
+    }
+    // Create TechnicianProfile for technician role with specialization
+    if (validRoleId === 4 && specialization) {
+      const techId = 'tech_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      await pool.query('INSERT INTO "TechnicianProfile" (id, "userId", skills, "isAvailable", "serviceAreaRadiusKm", "dailyEarnings", "weeklyEarnings", "monthlyEarnings", "totalEarnings", "totalJobsCompleted", "totalJobsRejected", "averageRating") VALUES ($1, $2, $3, true, 15, 0, 0, 0, 0, 0, 0, 0)', [techId, userId, JSON.stringify([specialization])])
     }
     const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
     const user = userResult.rows[0]
@@ -312,20 +317,21 @@ app.post('/api/auth/google', async (c) => {
     let name: string | undefined
     let profileImageUrl: string | undefined
 
-    // Mode 1: Frontend sends a Google ID token → verify it with Google
+    // Mode 1: Frontend sends a Google access token → verify it with Google userinfo
     if (body.token) {
-      const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(body.token)}`)
-      if (!tokenInfoRes.ok) {
+      const userInfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${body.token}` },
+      })
+      if (!userInfoRes.ok) {
         return c.json({ error: 'Invalid Google token' }, 401)
       }
-      const tokenInfo = await tokenInfoRes.json() as { email?: string; name?: string; picture?: string; sub?: string; email_verified?: string }
+      const tokenInfo = await userInfoRes.json() as { email?: string; name?: string; picture?: string; sub?: string; email_verified?: boolean }
       if (!tokenInfo.email) {
         return c.json({ error: 'Google account has no email' }, 400)
       }
       email = tokenInfo.email
       name = tokenInfo.name || tokenInfo.email.split('@')[0]
       profileImageUrl = tokenInfo.picture || undefined
-      if (tokenInfo.aud !== process.env.GOOGLE_CLIENT_ID) return c.json({ error: 'Invalid token audience' }, 401)
     }
     else {
       return c.json({ error: 'Google token is required for verification' }, 400)
@@ -360,9 +366,10 @@ app.post('/api/auth/google', async (c) => {
       // New user → create account
       const passwordHash = await bcrypt.hash(crypto.randomUUID(), 10)
       const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      const uniquePhone = 'g_' + crypto.randomUUID().replace(/-/g, '').slice(0, 15)
       await pool.query(
         'INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", "profileImageUrl") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', true, false, $7)',
-        [userId, sanitizedEmail, 'PENDING', passwordHash, String(name).trim(), 1, profileImageUrl || null]
+        [userId, sanitizedEmail, uniquePhone, passwordHash, String(name).trim(), 1, profileImageUrl || null]
       )
       const newUserResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
       user = newUserResult.rows[0]
@@ -414,7 +421,11 @@ app.get('/api/auth/profile', async (c) => {
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
     const { passwordHash, roleName, ...profile } = result.rows[0]
-    return c.json({ user: { ...profile, role: roleName } })
+    // Issue a fresh token so the JWT doesn't expire mid-session
+    const newToken = await new SignJWT({ sub: profile.id, email: profile.email, role: roleName, roleId: profile.roleId })
+      .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
+      .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
+    return c.json({ user: { ...profile, role: roleName }, accessToken: newToken })
   } catch (e) { console.error('Profile fetch error:', e); return c.json({ error: 'Failed to fetch profile' }, 500) }
 })
 
