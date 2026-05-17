@@ -379,3 +379,43 @@ Stage Summary:
   7. ✅ Redis caching (verified working with in-memory fallback)
   8. ✅ Queue workers (BullMQ with sync fallback)
   9. ✅ AI recommendation system (LLM + rule-based fallback)
+
+- The 500 errors on Render are likely due to incorrect DATABASE_URL env var on Render
+- Local testing confirms all auth code works correctly with the Supabase database
+- Pushed fixes to GitHub at commit 1f2a1e3
+- Key finding: Render deployment needs DATABASE_URL environment variable set correctly
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix all remaining auth errors and API crashes
+
+Work Log:
+- Investigated API process crash issue - process was dying silently after handling requests
+- Root cause: unhandled promise rejections and pg Pool idle client errors crashing Node.js
+- Added process.on('uncaughtException') and process.on('unhandledRejection') handlers
+- Added pool.on('error') handler to catch idle pg client errors
+- Increased auth rate limit from 5 to 20 requests per minute (was too restrictive)
+- Verified all endpoints work correctly through direct API and Vite proxy:
+  - POST /api/auth/login ✅ (Admin User, ADMIN role)
+  - POST /api/auth/register ✅ (all roles: CLIENT, PROVIDER, TECHNICIAN)
+  - GET /api/stats ✅, /api/stats/platform ✅
+  - GET /api/categories ✅ (11 categories)
+  - GET /api/services ✅ (15 total)
+- Verified all previous fixes are still in place:
+  - roleId included in register payload ✅
+  - specialization accepted for technician registration ✅
+  - Google auth uses g_+UUID for unique phone ✅
+  - JWT refresh via /api/auth/profile endpoint ✅
+  - 14-min auto-refresh in frontend ✅
+  - walletBalance NOT in SENSITIVE_FIELDS ✅
+  - All Dialog components have DialogDescription ✅
+  - Google login sends token (not raw data) ✅
+- Pushed changes to GitHub (commit b1c6129)
+
+Stage Summary:
+- API crash protection added to prevent silent process deaths
+- All auth endpoints working correctly
+- All public endpoints returning data successfully
+- Changes pushed to main for Render deployment
+- Key remaining concern: Render deployment must have DATABASE_URL env var set correctly
