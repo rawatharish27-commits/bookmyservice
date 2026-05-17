@@ -135,11 +135,14 @@ const ROLE_DASHBOARD_MAP: Record<number, string> = {
 
 const ROLE_ROUTE_PREFIX: Record<string, number[]> = {
   'admin-': [3, 7],        // ADMIN + SUB_ADMIN
+  'super-admin-': [3],     // SUPER_ADMIN only
   'provider-': [2],
   'technician-': [4],
   'vendor-': [5],
   'franchise-': [6],
   'area-manager-': [8],
+  'manager-': [9],
+  'local-admin-': [10],
   'client-': [1],
 };
 

@@ -43,6 +43,8 @@ export const ROLE_IDS = {
   FRANCHISE: 6,
   SUB_ADMIN: 7,
   AREA_MANAGER: 8,
+  MANAGER: 9,
+  LOCAL_ADMIN: 10,
 } as const;
 
 export type RoleName = keyof typeof ROLE_IDS;
@@ -57,6 +59,8 @@ export const ROLE_MAP: Record<number, string> = {
   [ROLE_IDS.FRANCHISE]: 'FRANCHISE',
   [ROLE_IDS.SUB_ADMIN]: 'SUB_ADMIN',
   [ROLE_IDS.AREA_MANAGER]: 'AREA_MANAGER',
+  [ROLE_IDS.MANAGER]: 'MANAGER',
+  [ROLE_IDS.LOCAL_ADMIN]: 'LOCAL_ADMIN',
 };
 
 // Map role string to roleId (reverse lookup)
@@ -69,6 +73,8 @@ export const ROLE_ID_MAP: Record<string, number> = {
   FRANCHISE: ROLE_IDS.FRANCHISE,
   SUB_ADMIN: ROLE_IDS.SUB_ADMIN,
   AREA_MANAGER: ROLE_IDS.AREA_MANAGER,
+  MANAGER: ROLE_IDS.MANAGER,
+  LOCAL_ADMIN: ROLE_IDS.LOCAL_ADMIN,
 };
 
 interface AuthContextType {

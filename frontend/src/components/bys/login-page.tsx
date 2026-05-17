@@ -114,12 +114,14 @@ export function LoginPage() {
               const roleDashboardMap: Record<number, Page> = {
                 1: 'client-dashboard',
                 2: 'provider-dashboard',
-                3: 'admin-dashboard',
+                3: 'super-admin-dashboard',
                 4: 'technician-dashboard',
                 5: 'vendor-dashboard',
                 6: 'franchise-dashboard',
                 7: 'admin-dashboard',
                 8: 'area-manager-dashboard',
+                9: 'manager-dashboard',
+                10: 'local-admin-dashboard',
               };
               navigate(roleDashboardMap[data.user.roleId] || 'client-dashboard');
             } catch (err) {
@@ -183,12 +185,14 @@ export function LoginPage() {
       const roleDashboardMap: Record<number, Page> = {
         1: 'client-dashboard',
         2: 'provider-dashboard',
-        3: 'admin-dashboard',
+        3: 'super-admin-dashboard',
         4: 'technician-dashboard',
         5: 'vendor-dashboard',
         6: 'franchise-dashboard',
         7: 'admin-dashboard',
         8: 'area-manager-dashboard',
+        9: 'manager-dashboard',
+        10: 'local-admin-dashboard',
       };
       navigate(roleDashboardMap[roleId] || 'client-dashboard');
     } catch (err) {
@@ -558,6 +562,27 @@ export function LoginPage() {
                       <Phone className="size-4" />
                       Continue with Phone
                     </button>
+
+                    {/* Super Admin Quick Login */}
+                    <div className="rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 p-3">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="size-4 text-amber-600" />
+                        <span className="text-xs font-semibold text-amber-800">Super Admin Access</span>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full h-9 border-amber-300/50 bg-white/80 text-amber-800 hover:bg-amber-50 hover:border-amber-400 text-xs font-medium"
+                        onClick={async () => {
+                          setEmail('admin@bookyourservice.co.in');
+                          setPassword('admin@123');
+                          setActiveTab('client');
+                        }}
+                      >
+                        <Shield className="mr-1.5 size-3.5" /> Use Default Super Admin Credentials
+                      </Button>
+                      <p className="mt-1.5 text-[10px] text-amber-600/70 text-center">admin@bookyourservice.co.in / admin@123</p>
+                    </div>
 
                     <p className="text-center text-sm text-muted-foreground">
                       Don&apos;t have an account?{' '}

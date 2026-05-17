@@ -537,11 +537,13 @@ export function HomePage() {
   // ─── Popup Funnel Logic ────────────────────────────────────────────────────
 
   useEffect(() => {
-    const dismissed = localStorage.getItem('bys_popup_dismissed');
+    // Check session-level dismiss (clears when browser tab closes)
+    const sessionDismissed = sessionStorage.getItem('bys_popup_dismissed_session');
+    // Check permanent dismiss (persists across sessions only if user explicitly chose "Don't show again")
+    const permanentDismiss = localStorage.getItem('bys_popup_dismissed_permanent');
     const referred = localStorage.getItem('bys_referred');
-    const dontShow = localStorage.getItem('bys_dont_show_again');
 
-    if (!dismissed && !referred && !dontShow) {
+    if (!sessionDismissed && !permanentDismiss && !referred) {
       const timer = setTimeout(() => setShowPopup(true), 2000);
       return () => clearTimeout(timer);
     }
@@ -549,9 +551,11 @@ export function HomePage() {
 
   const closePopup = (permanent: boolean) => {
     setShowPopup(false);
+    // Always mark as dismissed for this session (tab)
+    sessionStorage.setItem('bys_popup_dismissed_session', 'true');
+    // If user checked "Don't show again" or permanent dismiss, store permanently
     if (permanent || dontShowAgain) {
-      localStorage.setItem('bys_popup_dismissed', 'true');
-      localStorage.setItem('bys_dont_show_again', 'true');
+      localStorage.setItem('bys_popup_dismissed_permanent', 'true');
     }
   };
 
@@ -575,7 +579,7 @@ export function HomePage() {
     const referralCode = user?.referralCode || 'BMS001';
     const referralUrl = `${window.location.origin}/ref/${referralCode}`;
     const message = encodeURIComponent(
-      `Join Book My Service and earn with trusted home services.\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nHamare area me Book My Service start ho raha hai. Agar aap AC repair / electrician / plumber service provide karte ho to join karo aur customers pao. 🛠️🏠`
+      `Join BookYourService — India's trusted home service platform!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nBook My Service is now launching in your area! If you provide AC repair, electrical, or plumbing services, join now and start getting customers. 🛠️🏠`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
     localStorage.setItem('bys_referred', 'true');
@@ -585,7 +589,7 @@ export function HomePage() {
     const referralCode = user?.referralCode || 'BMS001';
     const referralUrl = `${window.location.origin}/ref/${referralCode}`;
     const message = encodeURIComponent(
-      `BookYourService me ek bahut achha opportunity hai!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nAgar aap koi service provider jaante ho (AC repair, plumber, electrician), unhe refer karein aur 5% referral commission paayein har booking pe. 🤝`
+      `Great opportunity on BookYourService!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nIf you know any service providers (AC repair, plumber, electrician), refer them and earn a 5% referral commission on every booking. 🤝`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
     localStorage.setItem('bys_referred', 'true');
@@ -1145,7 +1149,7 @@ export function HomePage() {
                 </div>
                 <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">Service Coming Soon In Your Area</h2>
                 <p className="mt-3 text-lg text-muted-foreground">
-                  Hamare area me abhi providers nahi hain. Aap help kar sakte ho services jaldi start karne me!
+                  We don't have providers in your area yet. You can help us launch services faster by referring providers!
                 </p>
               </motion.div>
 
@@ -1414,9 +1418,9 @@ export function HomePage() {
 
               <h3 className="mt-4 text-center text-xl font-bold text-white">
                 {!hasProvidersInArea
-                  ? 'Book My Service abhi aapke area me launch nahi hua'
+                  ? 'BookYourService has not launched in your area yet'
                   : hasLimitedServices
-                  ? 'Sirf kuch services available hain. Apne area me aur services start karne me help kare.'
+                  ? 'Only a few services are available in your area. Help us bring more providers on board.'
                   : 'Welcome to BookYourService!'
                 }
               </h3>

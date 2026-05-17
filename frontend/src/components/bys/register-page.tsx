@@ -8,7 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
   Droplets, Zap, Wind, CheckCircle2, TrendingUp, Users, Shield, ShieldCheck, BadgeCheck, Clock,
-  Building2, Package,
+  Building2, MapPin,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -34,20 +34,6 @@ const roleOptions = [
     dashboard: 'client-dashboard' as Page,
   },
   {
-    key: 'technician',
-    roleId: ROLE_IDS.TECHNICIAN,
-    roleName: 'TECHNICIAN',
-    label: 'Technician',
-    Icon: Wrench,
-    gradient: 'from-blue-500 via-indigo-500 to-violet-500',
-    bgColor: 'bg-blue-50 border-blue-200',
-    activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300',
-    textColor: 'text-blue-700',
-    desc: 'Accept jobs & earn',
-    banner: 'Join as a skilled technician and grow your career',
-    dashboard: 'technician-dashboard' as Page,
-  },
-  {
     key: 'provider',
     roleId: ROLE_IDS.PROVIDER,
     roleName: 'PROVIDER',
@@ -62,32 +48,32 @@ const roleOptions = [
     dashboard: 'provider-dashboard' as Page,
   },
   {
-    key: 'vendor',
-    roleId: ROLE_IDS.VENDOR,
-    roleName: 'VENDOR',
-    label: 'Vendor',
-    Icon: Package,
-    gradient: 'from-rose-500 via-pink-500 to-fuchsia-500',
-    bgColor: 'bg-rose-50 border-rose-200',
-    activeBg: 'bg-rose-100 border-rose-400 ring-2 ring-rose-300',
-    textColor: 'text-rose-700',
-    desc: 'Supply materials & parts',
-    banner: 'Supply materials and parts to service providers',
-    dashboard: 'vendor-dashboard' as Page,
+    key: 'area-manager',
+    roleId: ROLE_IDS.AREA_MANAGER,
+    roleName: 'AREA_MANAGER',
+    label: 'Area Manager',
+    Icon: MapPin,
+    gradient: 'from-amber-500 via-orange-500 to-yellow-500',
+    bgColor: 'bg-amber-50 border-amber-200',
+    activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300',
+    textColor: 'text-amber-700',
+    desc: 'Manage local operations',
+    banner: 'Oversee operations and providers in your area',
+    dashboard: 'area-manager-dashboard' as Page,
   },
   {
-    key: 'franchise',
-    roleId: ROLE_IDS.FRANCHISE,
-    roleName: 'FRANCHISE',
-    label: 'Franchise Owner',
-    Icon: Building2,
-    gradient: 'from-slate-600 via-zinc-600 to-gray-700',
-    bgColor: 'bg-slate-50 border-slate-200',
-    activeBg: 'bg-slate-100 border-slate-400 ring-2 ring-slate-300',
-    textColor: 'text-slate-700',
-    desc: 'Manage a franchise area',
-    banner: 'Manage and grow your franchise territory',
-    dashboard: 'franchise-dashboard' as Page,
+    key: 'local-admin',
+    roleId: ROLE_IDS.LOCAL_ADMIN,
+    roleName: 'LOCAL_ADMIN',
+    label: 'Local Admin',
+    Icon: ShieldCheck,
+    gradient: 'from-purple-500 via-violet-500 to-indigo-500',
+    bgColor: 'bg-purple-50 border-purple-200',
+    activeBg: 'bg-purple-100 border-purple-400 ring-2 ring-purple-300',
+    textColor: 'text-purple-700',
+    desc: 'Administer local area',
+    banner: 'Manage providers, verify technicians & monitor bookings in your area',
+    dashboard: 'local-admin-dashboard' as Page,
   },
 ];
 
@@ -123,7 +109,7 @@ export function RegisterPage() {
 
   const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
 
-  const needsSpecialization = selectedRole === 'provider' || selectedRole === 'technician';
+  const needsSpecialization = selectedRole === 'provider';
 
   const totalSteps = needsSpecialization ? 6 : 5;
   const filledSteps = useMemo(() => {
@@ -353,7 +339,7 @@ export function RegisterPage() {
               {/* Role Selection Grid */}
               <div className="px-6 pt-4">
                 <Label className="text-sm font-medium text-foreground/80 mb-2 block">I want to join as</Label>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   {roleOptions.map((role) => {
                     const isSelected = selectedRole === role.key;
                     return (
