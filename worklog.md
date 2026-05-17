@@ -30,3 +30,31 @@ Stage Summary:
 - Google OAuth flow code is correct (sends token to backend)
 - JWT refresh mechanism works (profile endpoint returns new token)
 - Code pushed to main branch for deployment to Render
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix all auth-related errors (DialogContent warning, register 500, backend error logging)
+
+Work Log:
+- Investigated POST /api/auth/register 500 error on Render deployment
+- Connected directly to Supabase PostgreSQL database to verify schema and data
+- Confirmed all 10 roles exist in Role table (CLIENT through LOCAL_ADMIN)
+- Confirmed User, ProviderKyc, TechnicianProfile tables have correct columns
+- Tested all INSERT queries directly against Supabase DB — ALL PASS
+- Tested local api-service with DATABASE_URL — registration works perfectly
+- Found ROOT CAUSE of 500 on Render: the launcher.js was setting DATABASE_URL='' for Hono API
+- Fixed launcher.js to properly pass DATABASE_URL from environment
+- Added .env loading from mini-services/api-service/.env in launcher
+- Created .env file with correct Supabase DATABASE_URL
+- Fixed DialogContent accessibility warning in client-amc-page.tsx (missing DialogDescription)
+- Added error detail to 500 responses (login, register, google auth) for easier debugging
+- Added DB health check on API startup
+- All endpoints tested locally: register, login, categories, stats — ALL WORKING
+- Committed and pushed to GitHub
+
+Stage Summary:
+- The 500 errors on Render are likely due to incorrect DATABASE_URL env var on Render
+- Local testing confirms all auth code works correctly with the Supabase database
+- Pushed fixes to GitHub at commit 1f2a1e3
+- Key finding: Render deployment needs DATABASE_URL environment variable set correctly

@@ -21,7 +21,8 @@ if (fs.existsSync(envPath)) {
     if (eqIdx > 0) {
       const key = trimmed.slice(0, eqIdx).trim();
       const val = trimmed.slice(eqIdx + 1).trim();
-      if (!process.env[key]) process.env[key] = val;
+      // Always override with .env values (parent env may have SQLite DATABASE_URL)
+      process.env[key] = val;
     }
   }
   console.log('📦 Loaded .env from api-service directory');
