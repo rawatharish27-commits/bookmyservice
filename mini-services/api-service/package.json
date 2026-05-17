@@ -12,11 +12,12 @@
   "dependencies": {
     "@hono/node-server": "^2.0.2",
     "bcryptjs": "^2.4.3",
+    "better-sqlite3": "12.10.0",
     "hono": "^4.12.18",
-    "jose": "^5.10.0",
-    "pg": "^8.20.0"
+    "jose": "^5.10.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "7.6.13",
     "prisma": "6.6.0",
     "tsx": "^4.22.0"
   }
