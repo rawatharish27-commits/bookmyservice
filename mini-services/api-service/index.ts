@@ -1,124 +1,19 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
 
-// ─── Database Auto-Detect ──────────────────────────────────────────────────
-// Production: PostgreSQL (DATABASE_URL starts with postgresql://)
-// Sandbox/Dev: SQLite (DATABASE_URL starts with file:) — fallback when PG unavailable
-// This does NOT change the production architecture — PostgreSQL remains the primary DB.
-
-const DATABASE_URL = process.env.DATABASE_URL || ''
-const isPostgres = DATABASE_URL.startsWith('postgresql://') || DATABASE_URL.startsWith('postgres://')
-
-let pool: any
-
-if (isPostgres) {
-  // ─── PostgreSQL (Production) ────────────────────────────────────────────────
-  const { Pool } = require('pg')
-  pool = new Pool({
-    connectionString: DATABASE_URL,
-    ssl: { rejectUnauthorized: false },
-    max: 3,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-  })
-  console.log('🐘 Using PostgreSQL database')
-} else {
-  // ─── SQLite (Sandbox/Dev Fallback) ──────────────────────────────────────────
-  const Database = require('better-sqlite3')
-  const dbPath = DATABASE_URL.replace(/^file:/, '') || '/home/z/my-project/db/custom.db'
-  const sqliteDb = new Database(dbPath)
-  sqliteDb.pragma('journal_mode = WAL')
-  sqliteDb.pragma('foreign_keys = ON')
-
-  // Adapter: Wraps better-sqlite3 to mimic pg Pool's query() interface
-  // So all existing pool.query(sql, params) calls work unchanged
-  class SQLitePoolAdapter {
-    private db: any
-
-    constructor(db: any) {
-      this.db = db
-    }
-
-    async query(sql: string, params?: any[]) {
-      // Convert PostgreSQL-style $1, $2, ... params to SQLite ? params
-      let sqliteSql = sql
-      const sqliteParams: any[] = []
-
-      if (params && params.length > 0) {
-        // Replace $N placeholders with ? in order
-        const paramRegex = /\$(\d+)/g
-        let match: RegExpExecArray | null
-        const paramMap = new Map<number, number>() // $N -> index in sqliteParams
-
-        // First pass: collect all $N references in order
-        const orderedRefs: number[] = []
-        while ((match = paramRegex.exec(sql)) !== null) {
-          const n = parseInt(match[1])
-          if (!paramMap.has(n)) {
-            paramMap.set(n, sqliteParams.length)
-            // Params array is 0-indexed but $N is 1-indexed
-            if (n <= params.length) {
-              sqliteParams.push(params[n - 1])
-            }
-          }
-          orderedRefs.push(n)
-        }
-
-        // Second pass: replace $N with appropriate ? (reuse same ? for same $N)
-        const refToIdx = new Map<number, string>()
-        let paramIdx = 0
-        sqliteSql = sql.replace(/\$(\d+)/g, (_, nStr) => {
-          const n = parseInt(nStr)
-          if (!refToIdx.has(n)) {
-            refToIdx.set(n, `$__PARAM_${paramIdx}__$`)
-            paramIdx++
-          }
-          return refToIdx.get(n)!
-        })
-        // Now replace our temp placeholders with ?
-        sqliteSql = sqliteSql.replace(/\$__PARAM_\d+__\$/g, '?')
-      }
-
-      // Translate PostgreSQL-specific syntax to SQLite
-      // ILIKE → LIKE (case-insensitive via COLLATE NOCASE)
-      sqliteSql = sqliteSql.replace(/ILIKE\s+\?/gi, 'LIKE ? COLLATE NOCASE')
-
-      // id::text → CAST(id AS TEXT)
-      sqliteSql = sqliteSql.replace(/(\w+)::text/g, 'CAST($1 AS TEXT)')
-
-      // NOW() → datetime('now')
-      sqliteSql = sqliteSql.replace(/\bNOW\(\)/gi, "datetime('now')")
-
-      // LIMIT $N OFFSET $M — already handled by ? replacement above
-
-      try {
-        // Check if this is a SELECT statement
-        const isSelect = /^\s*(SELECT|WITH)\s/i.test(sqliteSql)
-
-        if (isSelect) {
-          const stmt = this.db.prepare(sqliteSql)
-          const rows = params && params.length > 0 ? stmt.all(...sqliteParams) : stmt.all()
-          return { rows, rowCount: rows.length }
-        } else {
-          // INSERT, UPDATE, DELETE
-          const stmt = this.db.prepare(sqliteSql)
-          const info = params && params.length > 0 ? stmt.run(...sqliteParams) : stmt.run()
-          return { rows: [], rowCount: info.changes, insertId: info.lastInsertRowid }
-        }
-      } catch (err: any) {
-        // Log the error for debugging but re-throw so catch blocks in route handlers work
-        console.error('SQLite query error:', err.message, '\nSQL:', sqliteSql, '\nParams:', sqliteParams)
-        throw err
-      }
-    }
-  }
-
-  pool = new SQLitePoolAdapter(sqliteDb)
-  console.log('🗄️ Using SQLite database (sandbox/dev fallback)')
-}
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+  max: 3,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+})
 
 const app = new Hono()
 
