@@ -76,10 +76,10 @@ const legalLinks: { label: string; page: Page }[] = [
 // ─── Social Icons Config ─────────────────────────────────────────────────────
 
 const socialLinks = [
-  { icon: <Globe className="size-4" />, label: 'Facebook', href: '#' },
-  { icon: <Rss className="size-4" />, label: 'Twitter', href: '#' },
-  { icon: <Camera className="size-4" />, label: 'Instagram', href: '#' },
-  { icon: <Link2 className="size-4" />, label: 'LinkedIn', href: '#' },
+  { icon: <Globe className="size-4" />, label: 'Facebook', href: 'https://facebook.com/bookyourservice' },
+  { icon: <Rss className="size-4" />, label: 'Twitter', href: 'https://twitter.com/bookyourservice' },
+  { icon: <Camera className="size-4" />, label: 'Instagram', href: 'https://instagram.com/bookyourservice' },
+  { icon: <Link2 className="size-4" />, label: 'LinkedIn', href: 'https://linkedin.com/company/bookyourservice' },
 ];
 
 // ─── Section Header with Gradient Dot ────────────────────────────────────────
@@ -240,7 +240,6 @@ export function Footer() {
                     href={social.href}
                     className="group flex size-10 items-center justify-center rounded-xl bg-gray-50 text-muted-foreground ring-1 ring-gray-200/60 transition-all duration-300 hover:bg-gradient-to-br hover:from-blue-900 hover:via-blue-700 hover:to-sky-500 hover:text-white hover:ring-transparent hover:shadow-lg hover:shadow-blue-500/25"
                     aria-label={social.label}
-                    onClick={(e) => e.preventDefault()}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -385,7 +384,7 @@ export function Footer() {
           {/* ── Bottom Bar ────────────────────────────────────────────── */}
           <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-gray-50 via-blue-50/20 to-gray-50 px-6 py-4 sm:flex-row">
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
-              &copy; 2025{' '}
+              &copy; {new Date().getFullYear()}{' '}
               <span className="font-bold text-foreground">BookYourService</span>
               . Made with{' '}
               <Heart className="inline size-3.5 fill-blue-600 text-blue-600 drop-shadow-sm" />{' '}

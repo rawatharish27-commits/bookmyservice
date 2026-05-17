@@ -730,7 +730,13 @@ export function ServiceDetailPage() {
                   <Button
                     className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 py-6 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-500/30"
                     size="lg"
-                    onClick={() => navigate('booking', { serviceId: service.id })}
+                    onClick={() => {
+                      if (!user) {
+                        navigate('login');
+                        return;
+                      }
+                      navigate('booking', { serviceId: service.id });
+                    }}
                   >
                     Book Now
                     <ArrowRight className="ml-2 size-5 transition-transform group-hover:translate-x-1" />
@@ -740,7 +746,13 @@ export function ServiceDetailPage() {
                     <Button
                       variant="outline"
                       className="mt-3 w-full border-emerald-200 py-5 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
-                      onClick={() => navigate('booking', { serviceId: service.id })}
+                      onClick={() => {
+                        if (!user) {
+                          navigate('login');
+                          return;
+                        }
+                        navigate('booking', { serviceId: service.id });
+                      }}
                     >
                       Negotiate Price
                     </Button>

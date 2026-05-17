@@ -185,6 +185,26 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
     ];
   }
 
+  // MANAGER (roleId=9)
+  if (roleId === ROLE_IDS.MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Providers', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
+      { label: 'Revenue', page: 'admin-revenue', icon: <DollarSign className="size-4" /> },
+    ];
+  }
+
+  // LOCAL_ADMIN (roleId=10)
+  if (roleId === ROLE_IDS.LOCAL_ADMIN) {
+    return [
+      { label: 'Dashboard', page: 'local-admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Providers', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
+      { label: 'KYC', page: 'admin-services', icon: <Shield className="size-4" /> },
+    ];
+  }
+
   // Fallback for unknown roles
   return [
     { label: 'Home', page: 'home', icon: <Home className="size-4" /> },
@@ -276,7 +296,25 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     return [
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
-      { label: 'Dashboard', page: 'admin-dashboard', icon: <Settings className="size-4" /> },
+      { label: 'Settings', page: 'admin-categories', icon: <Settings className="size-4" /> },
+    ];
+  }
+
+  // MANAGER
+  if (roleId === ROLE_IDS.MANAGER) {
+    return [
+      { label: 'Dashboard', page: 'manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Providers', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
+    ];
+  }
+
+  // LOCAL_ADMIN
+  if (roleId === ROLE_IDS.LOCAL_ADMIN) {
+    return [
+      { label: 'Dashboard', page: 'local-admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Providers', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
     ];
   }
 
@@ -488,6 +526,7 @@ export function Header() {
     if (roleId === ROLE_IDS.CLIENT) return 'client-wallet';
     if (roleId === ROLE_IDS.PROVIDER) return 'provider-wallet';
     if (roleId === ROLE_IDS.VENDOR) return 'vendor-wallet';
+    if (roleId === ROLE_IDS.TECHNICIAN) return 'technician-earnings';
     return null;
   };
 
@@ -678,7 +717,7 @@ export function Header() {
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-xs font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-xs font-bold text-white" role="img" aria-label={user.name}>
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -701,7 +740,7 @@ export function Header() {
                           {user.profileImageUrl && (
                             <AvatarImage src={user.profileImageUrl} alt={user.name} />
                           )}
-                          <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white">
+                          <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white" role="img" aria-label={user.name}>
                             {getInitials(user.name)}
                           </AvatarFallback>
                         </Avatar>
@@ -818,7 +857,7 @@ export function Header() {
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white">
+                        <AvatarFallback className="bg-gradient-to-br from-blue-900 via-blue-700 to-sky-500 text-sm font-bold text-white" role="img" aria-label={user.name}>
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>

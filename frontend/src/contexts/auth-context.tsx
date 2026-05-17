@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { apiUrl } from '@/lib/api-url';
 
 export interface TechnicianProfile {
@@ -97,6 +97,18 @@ export interface RegisterData {
   role?: string;
 }
 
+// Sensitive fields that should never be stored in localStorage
+const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token'] as const;
+
+function sanitizeUser(user: User | null): User | null {
+  if (!user) return null;
+  const sanitized = { ...user };
+  for (const field of SENSITIVE_FIELDS) {
+    delete (sanitized as Record<string, unknown>)[field];
+  }
+  return sanitized;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -111,9 +123,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   });
   const [token, setToken] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
-    return localStorage.getItem('bys_token');
+    const stored = localStorage.getItem('bys_token');
+    // Guard against the literal string "undefined" being stored
+    if (!stored || stored === 'undefined') return null;
+    return stored;
   });
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(() => {
+    // If there's a stored token, we need to verify it on mount
+    if (typeof window === 'undefined') return false;
+    const stored = localStorage.getItem('bys_token');
+    return !!stored && stored !== 'undefined';
+  });
 
   const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
@@ -126,10 +146,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       const authToken = data.accessToken || data.token;
-      setToken(authToken);
-      setUser(data.user);
-      localStorage.setItem('bys_token', authToken);
-      localStorage.setItem('bys_user', JSON.stringify(data.user));
+      if (authToken) {
+        setToken(authToken);
+        setUser(data.user);
+        localStorage.setItem('bys_token', authToken);
+        localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
+      } else {
+        throw new Error('No token received');
+      }
     } finally {
       setLoading(false);
     }
@@ -151,21 +175,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Registration failed');
       const authToken = result.accessToken || result.token;
-      setToken(authToken);
-      setUser(result.user);
-      localStorage.setItem('bys_token', authToken);
-      localStorage.setItem('bys_user', JSON.stringify(result.user));
+      if (authToken) {
+        setToken(authToken);
+        setUser(result.user);
+        localStorage.setItem('bys_token', authToken);
+        localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(result.user)));
+      } else {
+        throw new Error('No token received');
+      }
     } finally {
       setLoading(false);
     }
   }, []);
 
   const logout = useCallback(() => {
+    // Fire-and-forget call to invalidate the JWT on the server
+    if (token) {
+      fetch(apiUrl('/api/auth/logout'), {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+      }).catch(() => { /* ignore */ });
+    }
     setToken(null);
     setUser(null);
     localStorage.removeItem('bys_token');
     localStorage.removeItem('bys_user');
-  }, []);
+  }, [token]);
 
   const updateProfile = useCallback(async (profileData: Partial<User>) => {
     const res = await fetch(apiUrl('/api/auth/profile'), {
@@ -179,7 +214,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Update failed');
     setUser(data.user);
-    localStorage.setItem('bys_user', JSON.stringify(data.user));
+    localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
   }, [token]);
 
   const refreshProfile = useCallback(async () => {
@@ -192,7 +227,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
-        localStorage.setItem('bys_user', JSON.stringify(data.user));
+        localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
       }
     } catch {
       // ignore
@@ -200,6 +235,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   }, [token]);
+
+  // Bug #26: Refresh profile on mount if there's a stored token
+  useEffect(() => {
+    if (token) {
+      refreshProfile();
+    }
+  // Only run on mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Bug #27: Token refresh mechanism - refresh every 14 minutes (token expires at 15 min)
+  useEffect(() => {
+    if (!token) return;
+    const interval = setInterval(() => {
+      refreshProfile();
+    }, 14 * 60 * 1000); // 14 minutes
+    return () => clearInterval(interval);
+  }, [token, refreshProfile]);
 
   return (
     <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, refreshProfile }}>

@@ -1,12 +1,16 @@
 import type { Plugin } from 'vite';
 
+const { jwtVerify, SignJWT } = require('jose');
+const bcrypt = require('bcryptjs');
+
 let pool: any = null;
 
 async function getPool() {
   if (!pool) {
     const { Pool } = await import('pg');
     pool = new Pool({
-      connectionString: 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
+      // WARNING: Set DATABASE_URL via environment variable in production
+      connectionString: process.env.DATABASE_URL || 'postgresql://postgres.oblhyxdjwrqtdycvnoky:x6fpra3VPHUwsoqn@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
       ssl: { rejectUnauthorized: false },
       max: 1,
       idleTimeoutMillis: 10000,
@@ -58,13 +62,16 @@ function readBody(req: any): Promise<string> {
   });
 }
 
-const JWT_SECRET = 'bys-dev-secret-key-change-in-production-2024';
+// WARNING: Set JWT_SECRET via environment variable in production
+const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024';
+
+// In-memory token store for password reset (Bug #6)
+const resetTokens = new Map<string, { email: string; expiresAt: number }>();
 
 async function getAuthUser(req: any) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader?.startsWith('Bearer ')) return null;
-    const { jwtVerify } = require('jose');
     const secret = new TextEncoder().encode(JWT_SECRET);
     const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' });
     return payload;
@@ -76,7 +83,7 @@ async function getAuthUser(req: any) {
 async function requireAdmin(req: any) {
   const user = await getAuthUser(req);
   if (!user) return null;
-  if (user.roleId !== 1 && user.role !== 'ADMIN') return null;
+  if (user.roleId !== 3 && user.role !== 'ADMIN') return null;
   return user;
 }
 
@@ -168,12 +175,10 @@ export default function apiPlugin(): Plugin {
               const result = await query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [String(email).toLowerCase().trim()]).catch(() => ({ rows: [] }));
               if (!result.rows[0]) return jsonResponse(res, { error: 'Invalid email or password' }, 401);
               const user = result.rows[0];
-              const bcrypt = require('bcryptjs');
               const isValid = await bcrypt.compare(String(password), user.passwordHash);
               if (!isValid) return jsonResponse(res, { error: 'Invalid email or password' }, 401);
               if (user.status !== 'ACTIVE') return jsonResponse(res, { error: 'Account is ' + user.status.toLowerCase() }, 403);
-              await query('UPDATE "User" SET "lastLoginAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [user.id]).catch(() => {});
-              const { SignJWT } = require('jose');
+              await query('UPDATE "User" SET "lastLoginAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [user.id]).catch(() => {}); // Non-critical: lastLoginAt update failure
               const secret = new TextEncoder().encode(JWT_SECRET);
               const token = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m').setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret);
               const { passwordHash, roleName, ...safeUser } = user;
@@ -188,18 +193,21 @@ export default function apiPlugin(): Plugin {
               if (existing.rows.length > 0) return jsonResponse(res, { error: 'Email already registered' }, 409);
               const existingPhone = await query('SELECT id FROM "User" WHERE phone = $1', [String(phone).trim()]).catch(() => ({ rows: [] }));
               if (existingPhone.rows.length > 0) return jsonResponse(res, { error: 'Phone already registered' }, 409);
-              const bcrypt = require('bcryptjs');
               const passwordHash = await bcrypt.hash(String(password), 10);
               const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
               const validRoleId = Number(roleId);
-              await query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false)', [userId, sanitizedEmail, String(phone).trim(), passwordHash, String(name).trim(), validRoleId]);
+              try {
+                await query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false)', [userId, sanitizedEmail, String(phone).trim(), passwordHash, String(name).trim(), validRoleId]);
+              } catch (e: any) {
+                console.error('Failed to create user:', e.message);
+                throw e;
+              }
               if (validRoleId === 2) {
                 const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
-                await query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'PENDING\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId]).catch(() => {});
+                await query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'PENDING\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId]).catch(() => {}); // Non-critical: KYC can be resubmitted later
               }
               const userResult = await query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId]).catch(() => ({ rows: [] }));
               const user = userResult.rows[0];
-              const { SignJWT } = require('jose');
               const secret = new TextEncoder().encode(JWT_SECRET);
               const roleName = user?.roleName || (validRoleId === 2 ? 'PROVIDER' : 'CLIENT');
               const token = await new SignJWT({ sub: userId, email: sanitizedEmail, role: roleName, roleId: validRoleId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m').setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret);
@@ -208,17 +216,30 @@ export default function apiPlugin(): Plugin {
             }
 
             if (path === '/auth/forgot-password' && req.method === 'POST') {
-              return jsonResponse(res, { message: 'If an account with that email exists, a reset token has been generated.', resetToken: crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''), expiresAt: new Date(Date.now() + 3600000).toISOString() });
+              const { email } = b;
+              const resetToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+              const expiresAt = Date.now() + 3600000; // 1 hour
+              if (email) {
+                resetTokens.set(resetToken, { email: String(email).toLowerCase().trim(), expiresAt });
+                // In production, send via email. For dev, log the token.
+                console.log('[DEV] Password reset token for', email, ':', resetToken);
+              }
+              return jsonResponse(res, { message: 'If an account with that email exists, a reset link has been sent to the associated email.' });
             }
 
             if (path === '/auth/reset-password' && req.method === 'POST') {
-              const { token, newPassword, email } = b;
-              if (!token || !newPassword || !email) return jsonResponse(res, { error: 'Token, new password, and email required' }, 400);
+              const { token, newPassword } = b;
+              if (!token || !newPassword) return jsonResponse(res, { error: 'Token and new password required' }, 400);
               if (newPassword.length < 8) return jsonResponse(res, { error: 'Password must be at least 8 characters' }, 400);
-              if (token.length < 32) return jsonResponse(res, { error: 'Invalid token' }, 400);
-              const bcrypt = require('bcryptjs');
+              const stored = resetTokens.get(token);
+              if (!stored || stored.expiresAt < Date.now()) {
+                if (stored) resetTokens.delete(token);
+                return jsonResponse(res, { error: 'Invalid or expired reset token' }, 400);
+              }
+              const email = stored.email;
+              resetTokens.delete(token);
               const passwordHash = await bcrypt.hash(String(newPassword), 10);
-              await query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, String(email).toLowerCase().trim()]).catch(() => {});
+              await query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, email]).catch((e: any) => { console.error('Failed to reset password:', e.message); });
               return jsonResponse(res, { message: 'Password has been reset successfully' });
             }
 
@@ -229,12 +250,11 @@ export default function apiPlugin(): Plugin {
               if (!currentPassword || !newPassword) return jsonResponse(res, { error: 'Current and new password required' }, 400);
               const result = await query('SELECT "passwordHash" FROM "User" WHERE id = $1', [authUser.sub]).catch(() => ({ rows: [] }));
               if (!result.rows[0]) return jsonResponse(res, { error: 'User not found' }, 404);
-              const bcrypt = require('bcryptjs');
               const isValid = await bcrypt.compare(String(currentPassword), result.rows[0].passwordHash);
               if (!isValid) return jsonResponse(res, { error: 'Current password is incorrect' }, 401);
               if (newPassword.length < 8) return jsonResponse(res, { error: 'New password must be at least 8 characters' }, 400);
               const newHash = await bcrypt.hash(String(newPassword), 10);
-              await query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE id = $2', [newHash, authUser.sub]).catch(() => {});
+              await query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE id = $2', [newHash, authUser.sub]).catch((e: any) => { console.error('Failed to update password:', e.message); });
               return jsonResponse(res, { message: 'Password changed successfully' });
             }
 
@@ -266,6 +286,27 @@ export default function apiPlugin(): Plugin {
 
             if (path === '/auth/logout' && req.method === 'POST') {
               return jsonResponse(res, { success: true, message: 'Logged out' });
+            }
+
+            if (path === '/auth/google' && req.method === 'POST') {
+              const { email, name, profileImageUrl, googleId } = b;
+              if (!email) return jsonResponse(res, { error: 'Email is required' }, 400);
+              // Check if user exists
+              let userResult = await query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [String(email).toLowerCase().trim()]).catch(() => ({ rows: [] }));
+              let user = userResult.rows[0];
+              if (!user) {
+                // Auto-register as CLIENT
+                const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
+                await query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified") VALUES ($1, $2, \'\', \'\', $3, 1, \'ACTIVE\', true, false)', [userId, String(email).toLowerCase().trim(), name || 'Google User']).catch(() => {});
+                userResult = await query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId]).catch(() => ({ rows: [] }));
+                user = userResult.rows[0];
+              }
+              if (!user) return jsonResponse(res, { error: 'Google login failed' }, 500);
+              await query('UPDATE "User" SET "lastLoginAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [user.id]).catch(() => {}); // Non-critical: lastLoginAt update failure
+              const secret = new TextEncoder().encode(JWT_SECRET);
+              const token = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId }).setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m').setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret);
+              const { passwordHash, roleName, ...safeUser } = user;
+              return jsonResponse(res, { message: 'Google login successful', user: { ...safeUser, role: roleName }, accessToken: token });
             }
           }
 
@@ -451,25 +492,7 @@ export default function apiPlugin(): Plugin {
             return jsonResponse(res, { message: 'KYC submitted', kycId }, 201);
           }
 
-          if (path === '/kyc' && req.method === 'GET') {
-            const authUser = await getAuthUser(req);
-            if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
-            const result = await query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1 ORDER BY "createdAt" DESC LIMIT 1', [authUser.sub]).catch(() => ({ rows: [] }));
-            return jsonResponse(res, result.rows[0] || { verificationStatus: 'NOT_SUBMITTED' });
-          }
 
-          if (path === '/kyc' && req.method === 'POST') {
-            const authUser = await getAuthUser(req);
-            if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
-            const body = await readBody(req);
-            const b = body ? JSON.parse(body) : {};
-            const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20);
-            await query(
-              'INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, $3, $4, $5, $6, $7)',
-              [kycId, authUser.sub, b.documentType || 'AADHAR', b.documentNumber || '', b.documentFrontUrl || '', b.selfieUrl || '', 'PENDING']
-            ).catch(() => {});
-            return jsonResponse(res, { message: 'KYC submitted', kycId }, 201);
-          }
 
           // ===================== TECHNICIAN =====================
           if (path === '/technician/profile' && req.method === 'GET') {
@@ -551,7 +574,7 @@ export default function apiPlugin(): Plugin {
             await query(
               'INSERT INTO "Booking" (id, "serviceId", "userId", "providerId", "scheduledDate", "scheduledTime", address, notes, status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())',
               [id, serviceId, authUser.sub, providerId || null, scheduledDate || null, scheduledTime || null, address || null, notes || null, 'PENDING']
-            ).catch(() => {});
+            ).catch((e: any) => { console.error('Failed to create booking:', e.message); });
             const result = await query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }));
             return jsonResponse(res, { booking: result.rows[0] || { id, serviceId, status: 'PENDING' } }, 201);
           }
@@ -566,7 +589,7 @@ export default function apiPlugin(): Plugin {
             if (req.method !== 'PATCH') return jsonResponse(res, { error: 'Method not allowed' }, 405);
             const statusMap: Record<string, string> = { cancel: 'CANCELLED', complete: 'COMPLETED', reject: 'REJECTED', accept: 'CONFIRMED' };
             const newStatus = statusMap[action] || 'PENDING';
-            await query('UPDATE "Booking" SET status = $1, "updatedAt" = NOW() WHERE id = $2', [newStatus, bookingId]).catch(() => {});
+            await query('UPDATE "Booking" SET status = $1, "updatedAt" = NOW() WHERE id = $2', [newStatus, bookingId]).catch((e: any) => { console.error('Failed to update booking status:', e.message); });
             const result = await query('SELECT * FROM "Booking" WHERE id = $1', [bookingId]).catch(() => ({ rows: [] }));
             return jsonResponse(res, { booking: result.rows[0] || { id: bookingId, status: newStatus } });
           }
@@ -596,7 +619,7 @@ export default function apiPlugin(): Plugin {
               const sets: string[] = []; const values: any[] = []; let idx = 1;
               for (const [k, v] of Object.entries(updateData)) { sets.push(`"${k}" = $${idx}`); values.push(v); idx++; }
               sets.push('"updatedAt" = NOW()'); values.push(bookingId);
-              await query(`UPDATE "Booking" SET ${sets.join(', ')} WHERE id = $${idx}`, values).catch(() => {});
+              await query(`UPDATE "Booking" SET ${sets.join(', ')} WHERE id = $${idx}`, values).catch((e: any) => { console.error('Failed to update booking:', e.message); });
               const result = await query('SELECT * FROM "Booking" WHERE id = $1', [bookingId]).catch(() => ({ rows: [] }));
               return jsonResponse(res, { booking: result.rows[0] || { id: bookingId } });
             }
@@ -1200,8 +1223,10 @@ export default function apiPlugin(): Plugin {
           if (path === '/admin/revenue' && req.method === 'GET') {
             const admin = await requireAdmin(req);
             if (!admin) return jsonResponse(res, { error: 'Admin access required' }, 403);
-            const result = await query('SELECT COALESCE(SUM("totalAmount"), 0) as "totalRevenue", COALESCE(SUM("platformFee"), 0) as "totalPlatformFee", COUNT(*) as "totalCompletedBookings" FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ totalRevenue: 0, totalPlatformFee: 0, totalCompletedBookings: 0 }] }));
-            return jsonResponse(res, result.rows[0]);
+            const totalRevenue = await query('SELECT COALESCE(SUM("totalAmount"), 0) as total FROM "Booking" WHERE "status" = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }));
+            const monthlyRevenue = await query('SELECT DATE_TRUNC(\'month\', "createdAt") as month, SUM("totalAmount") as total FROM "Booking" WHERE "status" = \'COMPLETED\' GROUP BY month ORDER BY month DESC LIMIT 12').catch(() => ({ rows: [] }));
+            const pendingPayouts = await query('SELECT COALESCE(SUM("providerAmount"), 0) as total FROM "Booking" WHERE "status" = \'COMPLETED\' AND "providerAmount" IS NOT NULL').catch(() => ({ rows: [{ total: 0 }] }));
+            return jsonResponse(res, { totalRevenue: totalRevenue.rows[0]?.total || 0, monthlyRevenue: monthlyRevenue.rows, pendingPayouts: pendingPayouts.rows[0]?.total || 0 });
           }
 
           if (path === '/admin/logs' && req.method === 'GET') {
@@ -1469,6 +1494,38 @@ export default function apiPlugin(): Plugin {
             if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
             const result = await query('SELECT * FROM "Service" WHERE "providerId" = $1 ORDER BY "createdAt" DESC', [authUser.sub]).catch(() => ({ rows: [] }));
             return jsonResponse(res, { services: result.rows, total: result.rows.length });
+          }
+
+          // ===================== MANAGER DASHBOARD =====================
+          if (path === '/manager/dashboard' && req.method === 'GET') {
+            const authUser = await getAuthUser(req);
+            if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
+            const userCount = await query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] }));
+            const bookingCount = await query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] }));
+            const completedBookings = await query('SELECT COUNT(*) as count FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ count: 0 }] }));
+            const revenue = await query('SELECT COALESCE(SUM("totalAmount"), 0) as total FROM "Booking" WHERE "status" = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }));
+            return jsonResponse(res, {
+              totalProviders: parseInt(userCount.rows[0]?.count || '0'),
+              totalBookings: parseInt(bookingCount.rows[0]?.count || '0'),
+              completedBookings: parseInt(completedBookings.rows[0]?.count || '0'),
+              totalRevenue: parseFloat(revenue.rows[0]?.total || '0'),
+            });
+          }
+
+          // ===================== LOCAL ADMIN DASHBOARD =====================
+          if (path === '/local-admin/dashboard' && req.method === 'GET') {
+            const authUser = await getAuthUser(req);
+            if (!authUser) return jsonResponse(res, { error: 'Auth required' }, 401);
+            const providerCount = await query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] }));
+            const bookingCount = await query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] }));
+            const pendingKyc = await query('SELECT COUNT(*) as count FROM "ProviderKyc" WHERE "verificationStatus" = \'PENDING\'').catch(() => ({ rows: [{ count: 0 }] }));
+            const revenue = await query('SELECT COALESCE(SUM("totalAmount"), 0) as total FROM "Booking" WHERE "status" = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }));
+            return jsonResponse(res, {
+              totalProviders: parseInt(providerCount.rows[0]?.count || '0'),
+              totalBookings: parseInt(bookingCount.rows[0]?.count || '0'),
+              pendingKyc: parseInt(pendingKyc.rows[0]?.count || '0'),
+              totalRevenue: parseFloat(revenue.rows[0]?.total || '0'),
+            });
           }
 
           // ===================== 404 CATCH-ALL =====================

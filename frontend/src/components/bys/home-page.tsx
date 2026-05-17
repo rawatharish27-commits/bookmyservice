@@ -458,7 +458,10 @@ export function HomePage() {
       (async () => {
         try {
           const res = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`,
+            {
+              headers: { 'User-Agent': 'BookYourService/1.0 (https://bookyourservice.co.in)' }
+            }
           );
           if (res.ok) {
             const data = await res.json();
@@ -545,7 +548,7 @@ export function HomePage() {
     const sessionDismissed = sessionStorage.getItem('bys_popup_dismissed_session');
     // Check permanent dismiss (persists across sessions only if user explicitly chose "Don't show again")
     const permanentDismiss = localStorage.getItem('bys_popup_dismissed_permanent');
-    const referred = localStorage.getItem('bys_referred');
+    const referred = sessionStorage.getItem('bys_referred');
 
     if (!sessionDismissed && !permanentDismiss && !referred) {
       const timer = setTimeout(() => setShowPopup(true), 2000);
@@ -587,10 +590,10 @@ export function HomePage() {
     }
     const referralUrl = `${window.location.origin}/?ref=${referralCode}`;
     const message = encodeURIComponent(
-      `Join BookYourService — India's trusted home service platform!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nBook My Service is now launching in your area! If you provide AC repair, electrical, or plumbing services, join now and start getting customers. 🛠️🏠`
+      `Join BookYourService — India's trusted home service platform!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nBookYourService is now launching in your area! If you provide AC repair, electrical, or plumbing services, join now and start getting customers. 🛠️🏠`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
-    localStorage.setItem('bys_referred', 'true');
+    sessionStorage.setItem('bys_referred', 'true');
   };
 
   const openWhatsAppProviderReferral = () => {
@@ -604,7 +607,7 @@ export function HomePage() {
       `Great opportunity on BookYourService!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nIf you know any service providers (AC repair, plumber, electrician), refer them and earn a 5% referral commission on every booking. 🤝`
     );
     window.open(`https://wa.me/?text=${message}`, '_blank');
-    localStorage.setItem('bys_referred', 'true');
+    sessionStorage.setItem('bys_referred', 'true');
   };
 
   // ─── Pincode Lookup ────────────────────────────────────────────────────────
@@ -613,7 +616,10 @@ export function HomePage() {
     if (!pincodeInput || pincodeInput.length < 5) return;
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${pincodeInput}+India&addressdetails=1&limit=1`
+        `https://nominatim.openstreetmap.org/search?format=json&q=${pincodeInput}+India&addressdetails=1&limit=1`,
+        {
+          headers: { 'User-Agent': 'BookYourService/1.0 (https://bookyourservice.co.in)' }
+        }
       );
       if (res.ok) {
         const data = await res.json();

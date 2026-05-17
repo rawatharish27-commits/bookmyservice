@@ -154,7 +154,7 @@ function PriorityBadge({ priority }: { priority: string }) {
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export function ManagerDashboardPage() {
-  const { navigate } = useApp();
+  const { navigate, goBack } = useApp();
   const { data: apiData, loading } = useApi<ManagerDashboardData>('/api/manager/dashboard');
   const { mutate } = useApiMutation();
 
@@ -177,7 +177,7 @@ export function ManagerDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate('home')} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
         <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Manager Dashboard</h1>

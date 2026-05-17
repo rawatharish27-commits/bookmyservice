@@ -78,6 +78,7 @@ export type Page =
   | 'vendor-profile'
   | 'vendor-kyc'
   | 'vendor-wallet'
+  | 'vendor-payouts'
   // Area Manager pages
   | 'area-manager-dashboard'
   // Join pages
@@ -128,6 +129,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setHistory(prev => {
       const newHistory = [...prev];
       const last = newHistory.pop();
+      if (newHistory.length === 0) {
+        setNav({ page: 'home', params: {} });
+        return [{ page: 'home', params: {} }];
+      }
       if (last) {
         setNav(last);
       }

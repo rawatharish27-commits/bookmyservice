@@ -106,10 +106,10 @@ export function TechnicianEarningsPage() {
         </div>
         <Button
           className="self-start rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
-          onClick={() => navigate('provider-wallet')}
+          onClick={() => navigate('technician-earnings')}
         >
           <Banknote className="mr-2 size-4" />
-          Withdraw Funds
+          View Earnings
         </Button>
       </motion.div>
 
@@ -340,10 +340,10 @@ export function TechnicianEarningsPage() {
             </div>
             <Button
               className="shrink-0 rounded-xl bg-white text-emerald-700 font-semibold shadow-lg hover:bg-emerald-50"
-              onClick={() => navigate('provider-wallet')}
+              onClick={() => navigate('technician-jobs')}
             >
-              <Banknote className="mr-2 size-4" />
-              Go to Wallet
+              <Briefcase className="mr-2 size-4" />
+              View Jobs
               <ArrowRight className="ml-2 size-4" />
             </Button>
           </CardContent>

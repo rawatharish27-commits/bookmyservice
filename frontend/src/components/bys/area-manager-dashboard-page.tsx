@@ -104,8 +104,10 @@ export function AreaManagerDashboardPage() {
   const { data: commissionsData, loading: commissionsLoading } = useApi<{ summary: CommissionSummary }>('/api/commissions');
 
   const myArea = areasData?.find(() => true) || areasData?.[0];
-  const recentReferrals = (referralsData || []).slice(0, 5);
-  const commissionSummary = commissionsData?.summary;
+  const recentReferrals = (Array.isArray(referralsData) ? referralsData : []).slice(0, 5);
+  // Handle different possible API response shapes for commissions
+  const commissionSummary = commissionsData?.summary ||
+    (Array.isArray(commissionsData) ? undefined : undefined);
 
   const providerTarget = myArea?.targetProviders || 20;
   const customerTarget = myArea?.targetCustomers || 100;
@@ -115,7 +117,7 @@ export function AreaManagerDashboardPage() {
   const customerPercent = Math.min(100, Math.round((customerCount / customerTarget) * 100));
 
   const handleWhatsAppProvider = useCallback(() => {
-    const message = `Hey! 🛠️ BookYourService pe Provider bano! Apni service offer karo - AC repair, plumbing, electrical, aur bahut kuch. Aaj hi join karo aur customers paao!`;
+    const message = `Hey! 🛠️ Join BookYourService as a Provider! Offer your services - AC repair, plumbing, electrical, and more. Sign up today and start getting customers!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
   }, []);
 

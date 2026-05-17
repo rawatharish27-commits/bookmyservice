@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { AuthProvider, useAuth } from '@/contexts/auth-context';
+import { AuthProvider, useAuth, ROLE_IDS } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
@@ -106,6 +106,7 @@ import { VendorServicesPage } from '@/components/bys/vendor-services-page';
 import { VendorProfilePage } from '@/components/bys/vendor-profile-page';
 import { VendorKycPage } from '@/components/bys/vendor-kyc-page';
 import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
+import { VendorPayoutsPage } from '@/components/bys/vendor-payouts-page';
 
 // Area Manager pages
 import { AreaManagerDashboardPage } from '@/components/bys/area-manager-dashboard-page';
@@ -187,7 +188,7 @@ function AppRouter() {
 
     // If logged in, check role-based access
     if (user && isDashboardPage) {
-      const userRoleId = user.roleId ?? (user.role ? ({ CLIENT: 1, PROVIDER: 2, ADMIN: 3, TECHNICIAN: 4, VENDOR: 5, FRANCHISE: 6, SUB_ADMIN: 7, AREA_MANAGER: 8 }[user.role] ?? 0) : 0);
+      const userRoleId = user.roleId ?? (user.role ? ({ CLIENT: ROLE_IDS.CLIENT, PROVIDER: ROLE_IDS.PROVIDER, ADMIN: ROLE_IDS.ADMIN, TECHNICIAN: ROLE_IDS.TECHNICIAN, VENDOR: ROLE_IDS.VENDOR, FRANCHISE: ROLE_IDS.FRANCHISE, SUB_ADMIN: ROLE_IDS.SUB_ADMIN, AREA_MANAGER: ROLE_IDS.AREA_MANAGER, MANAGER: ROLE_IDS.MANAGER, LOCAL_ADMIN: ROLE_IDS.LOCAL_ADMIN }[user.role as keyof typeof ROLE_IDS] ?? 0) : 0);
 
       for (const [prefix, allowedRoles] of Object.entries(ROLE_ROUTE_PREFIX)) {
         if (page.startsWith(prefix)) {
@@ -199,10 +200,18 @@ function AppRouter() {
               lastRedirectRef.current = redirectKey;
               navigate(dashboard as any);
             }
+          } else {
+            // Valid access, reset redirect ref
+            lastRedirectRef.current = '';
           }
           break;
         }
       }
+    }
+
+    // Reset redirect ref for public pages (no redirect triggered)
+    if (!isDashboardPage && !isProtectedRoute) {
+      lastRedirectRef.current = '';
     }
   }, [nav.page, user, token, navigate]);
 
@@ -395,6 +404,8 @@ function AppRouter() {
         return <VendorKycPage />;
       case 'vendor-wallet':
         return <VendorWalletPage />;
+      case 'vendor-payouts':
+        return <VendorPayoutsPage />;
 
       // Area Manager pages
       case 'area-manager-dashboard':
@@ -414,8 +425,36 @@ function AppRouter() {
       case 'local-admin-dashboard':
         return <LocalAdminDashboardPage />;
 
-      default:
+      default: {
+        // Check if the page looks like a valid page name
+        const isValidPage = [
+          'home', 'login', 'register', 'categories', 'category-detail', 'service-detail',
+          'search', 'booking', 'booking-confirmation', 'about', 'how-it-works', 'faq',
+          'contact', 'terms', 'privacy', 'refund-policy', 'cookie-policy', 'aup',
+          'provider-agreement', 'community-guidelines', 'emergency-booking',
+        ].some(p => nav.page === p || nav.page.startsWith('client-') || nav.page.startsWith('provider-') ||
+          nav.page.startsWith('technician-') || nav.page.startsWith('admin-') || nav.page.startsWith('vendor-') ||
+          nav.page.startsWith('franchise-') || nav.page.startsWith('area-manager-') ||
+          nav.page.startsWith('super-admin-') || nav.page.startsWith('manager-') ||
+          nav.page.startsWith('local-admin-') || nav.page.startsWith('join-'));
+
+        if (!isValidPage) {
+          return (
+            <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10">
+                <span className="text-4xl font-black text-[#1e3a5f]">404</span>
+              </div>
+              <h1 className="mt-6 text-2xl font-bold text-foreground">Page Not Found</h1>
+              <p className="mt-2 text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+              <button onClick={() => navigate('home')} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                Go Home
+              </button>
+            </div>
+          );
+        }
         return <HomePage />;
+      }
     }
   };
 

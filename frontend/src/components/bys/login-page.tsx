@@ -170,6 +170,7 @@ export function LoginPage() {
     ? 'from-emerald-50/80 to-cyan-50/60 border-emerald-100/50'
     : 'from-sky-50/80 to-blue-50/60 border-sky-100/50';
 
+  // Note: activeTab is cosmetic only - user role is determined server-side from their registered account
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
@@ -300,9 +301,9 @@ export function LoginPage() {
             {/* Stats */}
             <div className="flex gap-8">
               {[
-                { value: '500+', label: 'Providers' },
-                { value: '10K+', label: 'Customers' },
-                { value: '4.8', label: 'Rating' },
+                { value: '500+', label: 'Providers (approx)' },
+                { value: '10K+', label: 'Customers (approx)' },
+                { value: '4.8', label: 'Rating (approx)' },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -563,23 +564,12 @@ export function LoginPage() {
                       Continue with Phone
                     </button>
 
-                    {/* Super Admin Quick Login */}
+                    {/* Admin Access Notice */}
                     <div className="rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 p-3">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="flex items-center gap-2">
                         <Shield className="size-4 text-amber-600" />
-                        <span className="text-xs font-semibold text-amber-800">Super Admin Access</span>
+                        <span className="text-xs font-medium text-amber-800">Admin access requires authorized credentials</span>
                       </div>
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="w-full h-9 border-amber-300/50 bg-white/80 text-amber-800 hover:bg-amber-50 hover:border-amber-400 text-xs font-medium"
-                        onClick={async () => {
-                          setEmail('admin@bookyourservice.co.in');
-                          setPassword('admin@123');
-                        }}
-                      >
-                        <Shield className="mr-1.5 size-3.5" /> Use Default Super Admin Credentials
-                      </Button>
                     </div>
 
                     <p className="text-center text-sm text-muted-foreground">

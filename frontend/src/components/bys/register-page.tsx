@@ -48,6 +48,20 @@ const roleOptions = [
     dashboard: 'provider-dashboard' as Page,
   },
   {
+    key: 'technician',
+    roleId: ROLE_IDS.TECHNICIAN,
+    roleName: 'TECHNICIAN',
+    label: 'Technician',
+    Icon: Wrench,
+    gradient: 'from-orange-500 via-amber-500 to-yellow-500',
+    bgColor: 'bg-orange-50 border-orange-200',
+    activeBg: 'bg-orange-100 border-orange-400 ring-2 ring-orange-300',
+    textColor: 'text-orange-700',
+    desc: 'Provide hands-on services',
+    banner: 'Work as a field technician providing hands-on repair services',
+    dashboard: 'technician-dashboard' as Page,
+  },
+  {
     key: 'area-manager',
     roleId: ROLE_IDS.AREA_MANAGER,
     roleName: 'AREA_MANAGER',
@@ -109,7 +123,7 @@ export function RegisterPage() {
 
   const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
 
-  const needsSpecialization = selectedRole === 'provider';
+  const needsSpecialization = selectedRole === 'provider' || selectedRole === 'technician';
 
   const totalSteps = needsSpecialization ? 6 : 5;
   const filledSteps = useMemo(() => {
