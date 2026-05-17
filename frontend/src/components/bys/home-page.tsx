@@ -430,54 +430,58 @@ export function HomePage() {
   useEffect(() => {
     if (geo.loading) return;
 
-    if (geo.error || !geo.latitude || !geo.longitude) {
-      setLocationLoading(false);
-      setLocationError(true);
-      return;
-    }
+    const applyLocation = () => {
+      if (geo.error || !geo.latitude || !geo.longitude) {
+        setLocationLoading(false);
+        setLocationError(true);
+        return;
+      }
 
-    const lat = geo.latitude;
-    const lng = geo.longitude;
+      const lat = geo.latitude;
+      const lng = geo.longitude;
 
-    // If the hook already resolved the city, use it directly
-    if (geo.city) {
-      setLocation({
-        city: geo.city,
-        state: '',
-        pincode: '',
-        lat,
-        lng,
-      });
-      setLocationLoading(false);
-      setLocationError(false);
-      return;
-    }
+      // If the hook already resolved the city, use it directly
+      if (geo.city) {
+        setLocation({
+          city: geo.city,
+          state: '',
+          pincode: '',
+          lat,
+          lng,
+        });
+        setLocationLoading(false);
+        setLocationError(false);
+        return;
+      }
 
-    // Fallback: reverse geocode if hook didn't resolve city
-    (async () => {
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
-        );
-        if (res.ok) {
-          const data = await res.json();
-          const addr = data.address || {};
-          setLocation({
-            city: addr.city || addr.town || addr.village || addr.county || 'Unknown',
-            state: addr.state || '',
-            pincode: addr.postcode || '',
-            lat,
-            lng,
-          });
-        } else {
+      // Fallback: reverse geocode if hook didn't resolve city
+      (async () => {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1&accept-language=en`
+          );
+          if (res.ok) {
+            const data = await res.json();
+            const addr = data.address || {};
+            setLocation({
+              city: addr.city || addr.town || addr.village || addr.county || 'Unknown',
+              state: addr.state || '',
+              pincode: addr.postcode || '',
+              lat,
+              lng,
+            });
+          } else {
+            setLocation({ city: 'Your Area', state: '', pincode: '', lat, lng });
+          }
+        } catch {
           setLocation({ city: 'Your Area', state: '', pincode: '', lat, lng });
         }
-      } catch {
-        setLocation({ city: 'Your Area', state: '', pincode: '', lat, lng });
-      }
-      setLocationLoading(false);
-      setLocationError(false);
-    })();
+        setLocationLoading(false);
+        setLocationError(false);
+      })();
+    };
+
+    queueMicrotask(applyLocation);
   }, [geo.loading, geo.error, geo.latitude, geo.longitude, geo.city]);
 
   // ─── Fetch services available in detected city ──────────────────────────
@@ -576,8 +580,12 @@ export function HomePage() {
   // ─── WhatsApp Referral ─────────────────────────────────────────────────────
 
   const openWhatsAppReferral = () => {
-    const referralCode = user?.referralCode || 'BMS001';
-    const referralUrl = `${window.location.origin}/ref/${referralCode}`;
+    const referralCode = user?.referralCode;
+    if (!referralCode) {
+      navigate('login');
+      return;
+    }
+    const referralUrl = `${window.location.origin}/?ref=${referralCode}`;
     const message = encodeURIComponent(
       `Join BookYourService — India's trusted home service platform!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nBook My Service is now launching in your area! If you provide AC repair, electrical, or plumbing services, join now and start getting customers. 🛠️🏠`
     );
@@ -586,8 +594,12 @@ export function HomePage() {
   };
 
   const openWhatsAppProviderReferral = () => {
-    const referralCode = user?.referralCode || 'BMS001';
-    const referralUrl = `${window.location.origin}/ref/${referralCode}`;
+    const referralCode = user?.referralCode;
+    if (!referralCode) {
+      navigate('login');
+      return;
+    }
+    const referralUrl = `${window.location.origin}/?ref=${referralCode}`;
     const message = encodeURIComponent(
       `Great opportunity on BookYourService!\n\nReferral Code: ${referralCode}\n${referralUrl}\n\nIf you know any service providers (AC repair, plumber, electrician), refer them and earn a 5% referral commission on every booking. 🤝`
     );

@@ -198,11 +198,13 @@ export function BookingPage() {
   const [selectedProviderId, setSelectedProviderId] = useState<string>('');
   const [showAllProviders, setShowAllProviders] = useState(false);
   const [providersLoading, setProvidersLoading] = useState(false);
+  const [providersError, setProvidersError] = useState('');
 
   /* ---- Step 5: Technician ---- */
   const [technician, setTechnician] = useState<TechnicianInfo | null>(null);
   const [verificationOtp, setVerificationOtp] = useState('');
   const [technicianLoading, setTechnicianLoading] = useState(false);
+  const [technicianError, setTechnicianError] = useState('');
 
   /* ---- Step 6: Payment ---- */
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('upi');
@@ -230,7 +232,7 @@ export function BookingPage() {
   /* Auto-fill city from geolocation */
   useEffect(() => {
     if (detectedCity && !city) {
-      setCity(detectedCity);
+      queueMicrotask(() => setCity(detectedCity));
     }
   }, [detectedCity, city]);
 
@@ -274,7 +276,7 @@ export function BookingPage() {
   const platformFee = 5;
   const distanceCharge = useMemo(() => {
     if (!latitude || !longitude) return 0;
-    return Math.round(Math.random() * 15 + 10);
+    return 25;
   }, [latitude, longitude]);
   const subtotal = basePrice + emergencyCharge + platformFee + distanceCharge;
   const totalPrice = Math.max(0, subtotal - couponDiscount);
@@ -302,15 +304,8 @@ export function BookingPage() {
         }
       } catch {
         if (!cancelled) {
-          // Mock providers as fallback
-          const mock: NearbyProvider[] = [
-            { id: 'p1', name: 'Rajesh Kumar', averageRating: 4.8, completedJobsCount: 152, distance: 1.2, price: basePrice, specialization: 'Certified Expert' },
-            { id: 'p2', name: 'Priya Sharma', averageRating: 4.6, completedJobsCount: 98, distance: 2.5, price: basePrice, specialization: 'Senior Technician' },
-            { id: 'p3', name: 'Amit Patel', averageRating: 4.4, completedJobsCount: 67, distance: 3.8, price: basePrice + 20, specialization: 'Field Specialist' },
-            { id: 'p4', name: 'Sneha Desai', averageRating: 4.3, completedJobsCount: 45, distance: 4.1, price: basePrice - 10, specialization: 'Service Professional' },
-          ];
-          setProviders(mock);
-          if (mock.length > 0) setSelectedProviderId(mock[0].id);
+          setProvidersError('Failed to load nearby providers. Please try again.');
+          setProviders([]);
         }
       } finally {
         if (!cancelled) setProvidersLoading(false);
@@ -335,23 +330,13 @@ export function BookingPage() {
         const data = await res.json();
         if (!cancelled) {
           setTechnician(data.technician || data);
-          setVerificationOtp(data.otp || String(Math.floor(1000 + Math.random() * 9000)));
+          setVerificationOtp(data.otp || '');
         }
       } catch {
         if (!cancelled) {
-          // Mock technician as fallback
-          const mockTech: TechnicianInfo = {
-            id: 't1',
-            name: 'Vikram Singh',
-            profileImageUrl: undefined,
-            rating: 4.7,
-            experienceYears: 8,
-            phone: '+91-98765-43210',
-            specialization: service?.category?.name || 'General Service',
-            certifications: ['ISO Certified', 'Background Verified'],
-          };
-          setTechnician(mockTech);
-          setVerificationOtp(String(Math.floor(1000 + Math.random() * 9000)));
+          setTechnicianError('Failed to assign technician. Please try again.');
+          setTechnician(null);
+          setVerificationOtp('');
         }
       } finally {
         if (!cancelled) setTechnicianLoading(false);
@@ -902,6 +887,12 @@ export function BookingPage() {
                     <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
                     <p className="mt-3 text-sm text-muted-foreground">Searching nearby providers...</p>
                   </div>
+                ) : providersError ? (
+                  <div className="py-8 text-center">
+                    <Users className="mx-auto size-10 text-red-300" />
+                    <p className="mt-2 text-sm text-red-600">{providersError}</p>
+                    <Button variant="outline" className="mt-3 rounded-xl" onClick={() => { setProvidersError(''); setStep(3); }}>Go Back & Retry</Button>
+                  </div>
                 ) : providers.length === 0 ? (
                   <div className="py-8 text-center">
                     <Users className="mx-auto size-10 text-slate-300" />
@@ -1015,6 +1006,12 @@ export function BookingPage() {
                   <div className="flex flex-col items-center justify-center py-12">
                     <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
                     <p className="mt-3 text-sm text-muted-foreground">Assigning best technician...</p>
+                  </div>
+                ) : technicianError ? (
+                  <div className="py-8 text-center">
+                    <Wrench className="mx-auto size-10 text-red-300" />
+                    <p className="mt-2 text-sm text-red-600">{technicianError}</p>
+                    <Button variant="outline" className="mt-3 rounded-xl" onClick={() => { setTechnicianError(''); setStep(4); }}>Go Back & Retry</Button>
                   </div>
                 ) : technician ? (
                   <>
@@ -1313,7 +1310,7 @@ export function BookingPage() {
                 >
                   <p className="text-xs text-muted-foreground">Booking ID</p>
                   <p className="mt-1 text-lg font-bold tracking-wider text-[#1e3a5f]">
-                    {bookingId || 'BYS-' + Date.now().toString(36).toUpperCase()}
+                    {bookingId || 'BYS-PENDING'}
                   </p>
                 </motion.div>
 

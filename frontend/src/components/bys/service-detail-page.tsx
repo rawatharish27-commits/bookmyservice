@@ -856,7 +856,7 @@ export function ServiceDetailPage() {
                 </h3>
                 <div className="flex gap-4 overflow-x-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                   {similarServices.map((s, idx) => {
-                    const sImages = s.images ? JSON.parse(s.images) : [];
+                    const sImages = s.images ? (() => { try { const parsed = JSON.parse(s.images); return Array.isArray(parsed) ? parsed : []; } catch { return []; } })() : [];
                     return (
                       <motion.div
                         key={s.id}

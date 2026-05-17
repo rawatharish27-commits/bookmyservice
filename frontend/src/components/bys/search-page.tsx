@@ -485,7 +485,7 @@ export function SearchPage() {
                       <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
                         {service.images ? (
                           <img
-                            src={JSON.parse(service.images)[0] || ''}
+                            src={(() => { try { const parsed = JSON.parse(service.images); return Array.isArray(parsed) ? parsed[0] || '' : ''; } catch { return ''; } })()}
                             alt={service.title}
                             className="size-full object-cover transition-transform duration-500 group-hover:scale-110"
                           />

@@ -277,11 +277,12 @@ export function ProviderDashboardPage() {
   const memberSince = user?.email ? 'Jan 2024' : 'Jan 2024';
   const daysOnPlatform = useMemo(() => {
     if (!bookings.length) return 0;
+    const nowMs = new Date().getTime();
     const earliest = bookings.reduce((min, b) => {
       const d = new Date(b.createdAt).getTime();
       return d < min ? d : min;
-    }, Date.now());
-    return Math.max(1, Math.floor((Date.now() - earliest) / (1000 * 60 * 60 * 24)));
+    }, nowMs);
+    return Math.max(1, Math.floor((nowMs - earliest) / (1000 * 60 * 60 * 24)));
   }, [bookings]);
 
   const firstBookingDate = useMemo(() => {

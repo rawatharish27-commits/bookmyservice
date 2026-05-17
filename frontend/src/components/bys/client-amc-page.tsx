@@ -212,8 +212,9 @@ export function ClientAmcPage() {
             {activeSubscriptions.map((sub) => {
               const catConfig = getCategoryIcon(sub.category);
               const visitPercent = sub.totalVisits > 0 ? (sub.usedVisits / sub.totalVisits) * 100 : 0;
-              const isExpiringSoon = new Date(sub.endDate).getTime() - Date.now() < 30 * 24 * 60 * 60 * 1000;
-              const daysRemaining = Math.max(0, Math.ceil((new Date(sub.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
+              const nowMs = new Date().getTime();
+              const isExpiringSoon = new Date(sub.endDate).getTime() - nowMs < 30 * 24 * 60 * 60 * 1000;
+              const daysRemaining = Math.max(0, Math.ceil((new Date(sub.endDate).getTime() - nowMs) / (1000 * 60 * 60 * 24)));
 
               return (
                 <motion.div key={sub.id} variants={fadeUp}>

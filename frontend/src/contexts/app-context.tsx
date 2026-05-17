@@ -80,7 +80,6 @@ export type Page =
   | 'vendor-wallet'
   // Area Manager pages
   | 'area-manager-dashboard'
-  | 'client-commissions'
   // Join pages
   | 'join-manager'
   | 'join-local-admin'

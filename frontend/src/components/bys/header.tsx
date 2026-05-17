@@ -147,8 +147,19 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
   if (roleId === ROLE_IDS.AREA_MANAGER) {
     return [
       { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
-      { label: 'Commissions', page: 'client-commissions', icon: <DollarSign className="size-4" /> },
+      { label: 'Commissions', page: 'area-manager-dashboard', icon: <DollarSign className="size-4" /> },
       { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+    ];
+  }
+
+  // SUB_ADMIN (roleId=7)
+  if (roleId === ROLE_IDS.SUB_ADMIN) {
+    return [
+      { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Services', page: 'admin-services', icon: <Briefcase className="size-4" /> },
+      { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
+      { label: 'Categories', page: 'admin-categories', icon: <Grid3X3 className="size-4" /> },
     ];
   }
 
@@ -246,8 +257,17 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
   if (roleId === ROLE_IDS.AREA_MANAGER) {
     return [
       { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
-      { label: 'Commissions', page: 'client-commissions', icon: <DollarSign className="size-4" /> },
+      { label: 'Commissions', page: 'area-manager-dashboard', icon: <DollarSign className="size-4" /> },
       { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+    ];
+  }
+
+  // SUB_ADMIN
+  if (roleId === ROLE_IDS.SUB_ADMIN) {
+    return [
+      { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
+      { label: 'Services', page: 'admin-services', icon: <Briefcase className="size-4" /> },
     ];
   }
 
@@ -256,7 +276,7 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     return [
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
-      { label: 'Settings', page: 'admin-dashboard', icon: <Settings className="size-4" /> },
+      { label: 'Dashboard', page: 'admin-dashboard', icon: <Settings className="size-4" /> },
     ];
   }
 
@@ -277,6 +297,8 @@ function getRoleBadgeStyle(roleId: number | undefined): string {
   switch (roleId) {
     case ROLE_IDS.ADMIN:
       return 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-sm shadow-violet-500/30';
+    case ROLE_IDS.SUB_ADMIN:
+      return 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-sm shadow-indigo-500/30';
     case ROLE_IDS.PROVIDER:
       return 'bg-gradient-to-r from-blue-800 to-blue-500 text-white shadow-sm shadow-blue-500/30';
     case ROLE_IDS.TECHNICIAN:
@@ -285,6 +307,12 @@ function getRoleBadgeStyle(roleId: number | undefined): string {
       return 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm shadow-rose-500/30';
     case ROLE_IDS.FRANCHISE:
       return 'bg-gradient-to-r from-slate-600 to-zinc-700 text-white shadow-sm shadow-slate-500/30';
+    case ROLE_IDS.AREA_MANAGER:
+      return 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-sm shadow-teal-500/30';
+    case ROLE_IDS.MANAGER:
+      return 'bg-gradient-to-r from-emerald-600 to-teal-500 text-white shadow-sm shadow-emerald-500/30';
+    case ROLE_IDS.LOCAL_ADMIN:
+      return 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-500/30';
     case ROLE_IDS.CLIENT:
     default:
       return 'bg-gradient-to-r from-blue-800 to-sky-500 text-white shadow-sm shadow-blue-500/30';
@@ -295,10 +323,14 @@ function getRoleLabel(roleId: number | undefined): string {
   if (!roleId) return 'User';
   switch (roleId) {
     case ROLE_IDS.ADMIN: return 'Admin';
+    case ROLE_IDS.SUB_ADMIN: return 'Sub Admin';
     case ROLE_IDS.PROVIDER: return 'Provider';
     case ROLE_IDS.TECHNICIAN: return 'Technician';
     case ROLE_IDS.VENDOR: return 'Vendor';
     case ROLE_IDS.FRANCHISE: return 'Franchise';
+    case ROLE_IDS.AREA_MANAGER: return 'Area Manager';
+    case ROLE_IDS.MANAGER: return 'Manager';
+    case ROLE_IDS.LOCAL_ADMIN: return 'Local Admin';
     case ROLE_IDS.CLIENT: return 'Client';
     default: return 'User';
   }
@@ -469,8 +501,8 @@ export function Header() {
     return 'client-notifications';
   };
 
-  // Check if user should see notification bell (all roles except admin)
-  const showNotifications = user && roleId !== ROLE_IDS.ADMIN;
+  // Check if user should see notification bell (all roles except admin and sub-admin)
+  const showNotifications = user && roleId !== ROLE_IDS.ADMIN && roleId !== ROLE_IDS.SUB_ADMIN;
 
   // Check if user should see emergency booking (only clients)
   const showEmergencyBooking = user && roleId === ROLE_IDS.CLIENT;

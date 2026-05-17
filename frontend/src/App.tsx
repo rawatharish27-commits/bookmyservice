@@ -228,19 +228,19 @@ function AppRouter() {
       case 'contact':
         return <ContactPage />;
       case 'terms':
-        return <LegalPage />;
+        return <LegalPage type="terms" />;
       case 'privacy':
-        return <LegalPage />;
+        return <LegalPage type="privacy" />;
       case 'refund-policy':
-        return <LegalPage />;
+        return <LegalPage type="refund-policy" />;
       case 'cookie-policy':
-        return <LegalPage />;
+        return <LegalPage type="cookie-policy" />;
       case 'aup':
-        return <LegalPage />;
+        return <LegalPage type="aup" />;
       case 'provider-agreement':
-        return <LegalPage />;
+        return <LegalPage type="provider-agreement" />;
       case 'community-guidelines':
-        return <LegalPage />;
+        return <LegalPage type="community-guidelines" />;
 
       // Auth pages
       case 'login':
@@ -399,8 +399,6 @@ function AppRouter() {
       // Area Manager pages
       case 'area-manager-dashboard':
         return <AreaManagerDashboardPage />;
-      case 'client-commissions':
-        return <ClientReferralsPage />;
 
       // Join pages
       case 'join-manager':

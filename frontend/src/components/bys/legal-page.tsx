@@ -334,9 +334,9 @@ const fadeUp = {
   animate: { opacity: 1, y: 0 },
 };
 
-export function LegalPage() {
+export function LegalPage({ type }: { type?: string }) {
   const { navigate, nav } = useApp();
-  const pageType = nav.params.type || nav.page;
+  const pageType = type || nav.params.type || nav.page;
   const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600', fallbackContent: '' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(

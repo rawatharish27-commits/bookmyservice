@@ -244,8 +244,11 @@ app.post('/api/auth/register', async (c) => {
     const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     const validRoleId = Number(roleId)
     if (isNaN(validRoleId) || validRoleId < 1) return c.json({ error: 'Invalid roleId' }, 400)
+    // Validate roleId exists in Role table
+    const roleCheck = await pool.query('SELECT id FROM "Role" WHERE id = $1', [validRoleId])
+    if (roleCheck.rows.length === 0) return c.json({ error: 'Invalid roleId - role does not exist' }, 400)
     await pool.query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false)', [userId, sanitizedEmail, String(phone).trim(), passwordHash, String(name).trim(), validRoleId])
-    if (validRoleId === 2) {
+    if (validRoleId === 2 || validRoleId === 4 || validRoleId === 5) {
       const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
       await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, \'PENDING\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\')', [kycId, userId]).catch((kycErr) => { console.error('ProviderKyc insert warning:', kycErr) })
     }
@@ -267,7 +270,11 @@ app.post('/api/auth/forgot-password', async (c) => {
     if (!email) return c.json({ error: 'Email is required' }, 400)
     const lengthError = validateInputLengths({ email })
     if (lengthError) return c.json({ error: lengthError }, 400)
-    return c.json({ message: 'If an account with that email exists, a reset token has been generated.', resetToken: crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, ''), expiresAt: new Date(Date.now() + 3600000).toISOString() })
+    // Generate and store reset token (in-memory for demo)
+    const resetToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+    const resetTokenStore = (globalThis as any).__resetTokens || ((globalThis as any).__resetTokens = new Map<string, { token: string; expiresAt: number }>())
+    resetTokenStore.set(String(email).toLowerCase().trim(), { token: resetToken, expiresAt: Date.now() + 3600000 })
+    return c.json({ message: 'If an account with that email exists, a reset token has been sent.' })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -278,9 +285,16 @@ app.post('/api/auth/reset-password', async (c) => {
     const lengthError = validateInputLengths({ email, password: newPassword })
     if (lengthError) return c.json({ error: lengthError }, 400)
     if (newPassword.length < 8) return c.json({ error: 'Password must be at least 8 characters' }, 400)
-    if (token.length < 32) return c.json({ error: 'Invalid token' }, 400)
+    // Validate token from in-memory store
+    const resetTokenStore = (globalThis as any).__resetTokens as Map<string, { token: string; expiresAt: number }> | undefined
+    const stored = resetTokenStore?.get(String(email).toLowerCase().trim())
+    if (!stored || stored.token !== token || Date.now() > stored.expiresAt) {
+      return c.json({ error: 'Invalid or expired reset token' }, 400)
+    }
     const passwordHash = await bcrypt.hash(String(newPassword), 10)
     await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, String(email).toLowerCase().trim()])
+    // Consume the token
+    resetTokenStore!.delete(String(email).toLowerCase().trim())
     return c.json({ message: 'Password has been reset successfully' })
   } catch (e) { console.error('Reset password error:', e); return c.json({ error: 'Failed' }, 500) }
 })
@@ -307,13 +321,8 @@ app.post('/api/auth/google', async (c) => {
       name = tokenInfo.name || tokenInfo.email.split('@')[0]
       profileImageUrl = tokenInfo.picture || undefined
     }
-    // Mode 2: Frontend already verified and sends user data directly
-    else if (body.email) {
-      email = String(body.email).toLowerCase().trim()
-      name = body.name || email.split('@')[0]
-      profileImageUrl = body.profileImageUrl || undefined
-    } else {
-      return c.json({ error: 'Either token or email is required' }, 400)
+    else {
+      return c.json({ error: 'Google token is required for verification' }, 400)
     }
 
     const lengthError = validateInputLengths({ email, name })
@@ -527,7 +536,19 @@ app.get('/api/services', async (c) => {
     query += ' ORDER BY s."isFeatured" DESC, s."averageRating" DESC LIMIT $' + (params.length + 1) + ' OFFSET $' + (params.length + 2)
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    return c.json({ services: result.rows.map(transformServiceRow), total: result.rows.length, limit, offset, pagination: { total: result.rows.length, limit, offset } })
+    // Get total count with separate query
+    let countQuery = 'SELECT COUNT(*) as total FROM "Service" s WHERE s."isActive" = true AND s."isApproved" = true'
+    const countParams: any[] = []
+    if (categoryId) {
+      countQuery += ' AND s."categoryId" = $1'
+      countParams.push(parseInt(categoryId))
+    }
+    if (search) {
+      countQuery += ` AND (s.title ILIKE $${countParams.length + 1} OR s.description ILIKE $${countParams.length + 1})`
+      countParams.push(`%${search}%`)
+    }
+    const countResult = await pool.query(countQuery, countParams).catch(() => ({ rows: [{ total: 0 }] }))
+    return c.json({ services: result.rows.map(transformServiceRow), total: parseInt(countResult.rows[0]?.total || '0'), limit, offset, pagination: { total: parseInt(countResult.rows[0]?.total || '0'), limit, offset } })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -563,15 +584,15 @@ const areaManagerApplicationsStore: Array<{
 }> = []
 
 const referralStore: Array<{
-  id: string; referrerId: string; referredId: string;
-  type: string; source: string; status: string; createdAt: string;
+  id: string; referrerId: string; refereeId: string;
+  referrerReward: number; refereeReward: number; status: string; createdAt: string;
 }> = []
 
 // Indian cities data for reverse geocoding
 const INDIAN_CITIES = [
   { city: 'Mumbai', state: 'Maharashtra', lat: 19.076, lng: 72.8777, pincodes: ['400001', '400002', '400010', '400020', '400030', '400050', '400051', '400053', '400058', '400060', '400064', '400070', '400076', '400078', '400080', '400083', '400089', '400093', '400095', '400098', '400100', '400101', '400102', '400104', '400612', '400614', '400708'] },
   { city: 'Delhi', state: 'Delhi', lat: 28.7041, lng: 77.1025, pincodes: ['110001', '110002', '110003', '110004', '110005', '110006', '110007', '110008', '110009', '110010', '110011', '110012', '110015', '110016', '110017', '110018', '110019', '110020', '110021', '110022', '110023', '110024', '110025', '110026', '110027', '110028', '110029', '110030', '110031', '110032', '110033', '110034', '110035', '110036', '110037', '110040', '110041', '110042', '110043', '110044', '110045', '110046', '110047', '110048', '110049', '110050', '110051', '110052', '110053', '110054', '110055', '110056', '110057', '110058', '110059', '110060', '110061', '110062', '110063', '110064', '110065', '110066', '110067', '110068', '110069', '110070', '110071', '110072', '110073', '110074', '110075', '110076', '110077', '110078', '110080', '110081', '110082', '110083', '110084', '110085', '110086', '110087', '110088', '110089', '110090', '110091', '110092', '110093', '110094', '110095', '110096', '110097'] },
-  { city: 'Bangalore', state: 'Karnataka', lat: 12.9716, lng: 77.5946, pincodes: ['560001', '560002', '560003', '560004', '560005', '560006', '560007', '560008', '560009', '560010', '560011', '560012', '560013', '560014', '560015', '560016', '560017', '560018', '560019', '560020', '560021', '560022', '560023', '560024', '560025', '560026', '560027', '560028', '560029', '560030', '560031', '560032', '560033', '560034', '560035', '560036', '560037', '560038', '560039', '560040', '560041', '560042', '560043', '560044', '560045', '560046', '560047', '560048', '560049', '560050', '560051', '560052', '560053', '560054', '560055', '560056', '560057', '560058', '560059', '560060', '560061', '560062', '560063', '560064', '560065', '560066', '560067', '560068', '560069', '560070', '560071', '560072', '560073', '560074', '560075', '560076', '560078', '560079', '560080', '560081', '560082', '560083', '560084', '560085', '560086', '560087', '560088', '560089', '560090', '560091', '560092', '560093', '560094', '560095', '560096', '560097', '560098', '560099', '560100', '560103', '560104', '560105'] },
+  { city: 'Bengaluru', state: 'Karnataka', lat: 12.9716, lng: 77.5946, pincodes: ['560001', '560002', '560003', '560004', '560005', '560006', '560007', '560008', '560009', '560010', '560011', '560012', '560013', '560014', '560015', '560016', '560017', '560018', '560019', '560020', '560021', '560022', '560023', '560024', '560025', '560026', '560027', '560028', '560029', '560030', '560031', '560032', '560033', '560034', '560035', '560036', '560037', '560038', '560039', '560040', '560041', '560042', '560043', '560044', '560045', '560046', '560047', '560048', '560049', '560050', '560051', '560052', '560053', '560054', '560055', '560056', '560057', '560058', '560059', '560060', '560061', '560062', '560063', '560064', '560065', '560066', '560067', '560068', '560069', '560070', '560071', '560072', '560073', '560074', '560075', '560076', '560078', '560079', '560080', '560081', '560082', '560083', '560084', '560085', '560086', '560087', '560088', '560089', '560090', '560091', '560092', '560093', '560094', '560095', '560096', '560097', '560098', '560099', '560100', '560103', '560104', '560105'] },
   { city: 'Hyderabad', state: 'Telangana', lat: 17.385, lng: 78.4867, pincodes: ['500001', '500002', '500003', '500004', '500005', '500006', '500007', '500008', '500009', '500010', '500011', '500012', '500013', '500014', '500015', '500016', '500017', '500018', '500020', '500022', '500023', '500024', '500025', '500026', '500027', '500028', '500029', '500030', '500031', '500032', '500033', '500034', '500035', '500036', '500037', '500038', '500039', '500040', '500042', '500044', '500045', '500046', '500047', '500048', '500049', '500050', '500051', '500052', '500053', '500054', '500055', '500056', '500057', '500058', '500059', '500060', '500061', '500062', '500063', '500064', '500065', '500066', '500067', '500068', '500069', '500070', '500072', '500073', '500074', '500075', '500076', '500077', '500078', '500079', '500080', '500081', '500082', '500083', '500084', '500085', '500086', '500087', '500088', '500089', '500090', '500091', '500092', '500093', '500094', '500095', '500096', '500097', '500098', '500099', '500100', '500101', '500102', '500103', '500104'] },
   { city: 'Chennai', state: 'Tamil Nadu', lat: 13.0827, lng: 80.2707, pincodes: ['600001', '600002', '600003', '600004', '600005', '600006', '600007', '600008', '600009', '600010', '600011', '600012', '600013', '600014', '600015', '600016', '600017', '600018', '600019', '600020', '600021', '600022', '600023', '600024', '600025', '600026', '600027', '600028', '600029', '600030', '600031', '600032', '600033', '600034', '600035', '600036', '600037', '600038', '600039', '600040', '600041', '600042', '600043', '600044', '600045', '600046', '600047', '600048', '600049', '600050', '600051', '600052', '600053', '600054', '600055', '600056', '600057', '600058', '600059', '600060', '600061', '600062', '600063', '600064', '600065', '600066', '600067', '600068', '600069', '600070', '600071', '600072', '600073', '600074', '600075', '600076', '600077', '600078', '600079', '600080', '600081', '600082', '600083', '600084', '600085', '600086', '600087', '600088', '600089', '600090', '600091', '600092', '600093', '600094', '600095', '600096', '600097', '600098', '600099', '600100', '600101', '600102', '600103', '600104', '600105', '600106', '600107', '600108', '600109', '600110', '600111', '600112', '600113', '600114', '600115', '600116', '600117', '600118', '600119', '600120', '600121', '600122', '600123', '600124', '600125', '600126', '600128'] },
   { city: 'Kolkata', state: 'West Bengal', lat: 22.5726, lng: 88.3639, pincodes: ['700001', '700002', '700003', '700004', '700005', '700006', '700007', '700008', '700009', '700010', '700011', '700012', '700013', '700014', '700015', '700016', '700017', '700018', '700019', '700020', '700021', '700022', '700023', '700024', '700025', '700026', '700027', '700028', '700029', '700030', '700031', '700032', '700033', '700034', '700035', '700036', '700037', '700038', '700039', '700040', '700041', '700042', '700043', '700044', '700045', '700046', '700047', '700048', '700049', '700050', '700051', '700052', '700053', '700054', '700055', '700056', '700057', '700058', '700059', '700060', '700061', '700062', '700063', '700064', '700065', '700066', '700067', '700068', '700069', '700070', '700071', '700072', '700073', '700074', '700075', '700076', '700077', '700078', '700079', '700080', '700081', '700082', '700083', '700084', '700085', '700086', '700087', '700088', '700089', '700090', '700091', '700092', '700093', '700094', '700095', '700096', '700097', '700098', '700099', '700100', '700101', '700102', '700103', '700104', '700105', '700106', '700107', '700108', '700109', '700110', '700114', '700118', '700120', '700121', '700123', '700124', '700125', '700126', '700127', '700128', '700129', '700130', '700131', '700132', '700133', '700134', '700135', '700136', '700137', '700138', '700139', '700140', '700141', '700142', '700143', '700144', '700145', '700146', '700147', '700148', '700149', '700150', '700151', '700152', '700153', '700154', '700155', '700156', '700157', '700158'] },
@@ -677,7 +698,7 @@ app.get('/api/providers/nearby', async (c) => {
         SELECT u.id, u.name, u."profileImageUrl", u.city, u.state, u.pincode, u."isVerified", 
                u."averageRating", u."completedJobsCount", u."verifiedBadge",
                u.latitude, u.longitude,
-               s.id as "serviceId", s.title as "serviceTitle", s."categoryId"
+               s.id as "serviceId", s.title as "serviceName", s."categoryId"
         FROM "User" u
         LEFT JOIN "Service" s ON s."providerId" = u.id AND s."isActive" = true AND s."isApproved" = true
         WHERE u."roleId" = 2 AND u.status = 'ACTIVE'
@@ -727,7 +748,7 @@ app.get('/api/providers/nearby', async (c) => {
           if (row.serviceId) {
             providerMap.get(row.id).services.push({
               id: row.serviceId,
-              title: row.serviceTitle,
+              title: row.serviceName,
               categoryId: row.categoryId,
             })
           }
@@ -952,25 +973,19 @@ app.get('/api/area/activation', async (c) => {
 // 4. POST /api/referral/track - Create referral record
 app.post('/api/referral/track', async (c) => {
   try {
-    const { referrerId, referredId, type, source } = await c.req.json()
+    const { referrerId, referredId } = await c.req.json()
 
     if (!referrerId || !referredId) {
       return c.json({ error: 'referrerId and referredId are required' }, 400)
-    }
-    if (!type || !['PROVIDER', 'CUSTOMER'].includes(type)) {
-      return c.json({ error: 'type must be PROVIDER or CUSTOMER' }, 400)
-    }
-    if (!source || !['WHATSAPP', 'LINK', 'MANUAL'].includes(source)) {
-      return c.json({ error: 'source must be WHATSAPP, LINK, or MANUAL' }, 400)
     }
 
     const id = 'ref_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     const record = {
       id,
       referrerId,
-      referredId,
-      type,
-      source,
+      refereeId: referredId,
+      referrerReward: 0,
+      refereeReward: 0,
       status: 'PENDING',
       createdAt: new Date().toISOString(),
     }
@@ -978,8 +993,8 @@ app.post('/api/referral/track', async (c) => {
     // Try to insert into DB
     try {
       await pool.query(
-        'INSERT INTO "Referral" (id, "referrerId", "referredId", type, source, status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [id, referrerId, referredId, type, source, 'PENDING', new Date().toISOString()]
+        'INSERT INTO "Referral" (id, "referrerId", "refereeId", "referrerReward", "refereeReward", status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7)',
+        [id, referrerId, referredId, 0, 0, 'PENDING', new Date().toISOString()]
       )
     } catch (dbError) {
       // Table doesn't exist, use in-memory store
@@ -1249,7 +1264,7 @@ app.get('/api/referrals', async (c) => {
       if (authHeader?.startsWith('Bearer ')) {
         const secret = new TextEncoder().encode(JWT_SECRET)
         const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
-        const result = await pool.query('SELECT r.*, u.name as "referredName" FROM "Referral" r LEFT JOIN "User" u ON u.id = r."referredId" WHERE r."referrerId" = $1 ORDER BY r."createdAt" DESC', [payload.sub])
+        const result = await pool.query('SELECT r.*, u.name as "referredName" FROM "Referral" r LEFT JOIN "User" u ON u.id = r."refereeId" WHERE r."referrerId" = $1 ORDER BY r."createdAt" DESC', [payload.sub])
         if (result.rows.length > 0) return c.json(result.rows)
       }
     } catch (dbError) { /* use mock */ }
@@ -1324,7 +1339,7 @@ app.get('/api/service-areas', async (c) => {
     const mockAreas = [
       { id: 'sa_001', city: 'Mumbai', pincode: '400001', isActive: true, providerCount: 18, customerCount: 65, targetProviders: 20, targetCustomers: 100, radiusKm: 20, overallProgress: 72 },
       { id: 'sa_002', city: 'Delhi', pincode: '110001', isActive: true, providerCount: 22, customerCount: 80, targetProviders: 25, targetCustomers: 120, radiusKm: 20, overallProgress: 81 },
-      { id: 'sa_003', city: 'Bangalore', pincode: '560001', isActive: false, providerCount: 8, customerCount: 25, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 28 },
+      { id: 'sa_003', city: 'Bengaluru', pincode: '560001', isActive: false, providerCount: 8, customerCount: 25, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 28 },
       { id: 'sa_004', city: 'Hyderabad', pincode: '500001', isActive: false, providerCount: 5, customerCount: 15, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 16 },
       { id: 'sa_005', city: 'Pune', pincode: '411001', isActive: true, providerCount: 14, customerCount: 48, targetProviders: 20, targetCustomers: 100, radiusKm: 18, overallProgress: 52 },
     ]
@@ -1351,7 +1366,7 @@ async function getAuthUser(c: any): Promise<{ id: string; email: string; role: s
 async function requireAdmin(c: any): Promise<{ id: string; email: string; role: string; roleId: number } | null> {
   const user = await getAuthUser(c)
   if (!user) return null
-  if (user.roleId !== 3 && user.role !== 'ADMIN') return null
+  if (user.roleId !== 3 && user.roleId !== 7 && user.role !== 'ADMIN' && user.role !== 'SUB_ADMIN') return null
   return user
 }
 
@@ -1365,39 +1380,39 @@ app.post('/api/bookings', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const body = await c.req.json()
-    const { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address, lat, lng, notes, couponCode } = body
-    if (!serviceId || !scheduledDate || !address) return c.json({ error: 'serviceId, scheduledDate, and address are required' }, 400)
+    const { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address: serviceAddress, lat: serviceLatitude, lng: serviceLongitude, notes: specialInstructions, couponId } = body
+    if (!serviceId || !scheduledDate || !serviceAddress) return c.json({ error: 'serviceId, scheduledDate, and address are required' }, 400)
     // Get service for pricing
-    const svcResult = await pool.query('SELECT id, "providerId", "basePrice", "finalPrice" FROM "Service" WHERE id = $1 AND "isActive" = true', [serviceId])
+    const svcResult = await pool.query('SELECT id, "providerId", "basePrice" FROM "Service" WHERE id = $1 AND "isActive" = true', [serviceId])
     if (!svcResult.rows[0]) return c.json({ error: 'Service not found' }, 404)
     const service = svcResult.rows[0]
-    const amount = service.finalPrice || service.basePrice || 0
+    const basePrice = service.basePrice || 0
     const bookingId = 'bkg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     const bookingNumber = 'BK' + Date.now().toString().slice(-8) + Math.random().toString(36).slice(2, 5).toUpperCase()
-    const otp = Math.floor(1000 + Math.random() * 9000).toString()
-    let discountAmount = 0
-    if (couponCode) {
+    const otpCode = Math.floor(1000 + Math.random() * 9000).toString()
+    let couponDiscount = 0
+    if (couponId) {
       try {
-        const couponResult = await pool.query('SELECT * FROM "Coupon" WHERE code = $1 AND "isActive" = true AND "validTill" > NOW()', [couponCode])
+        const couponResult = await pool.query('SELECT * FROM "Coupon" WHERE id = $1 AND "isActive" = true AND "validTo" > NOW()', [couponId])
         if (couponResult.rows[0]) {
           const coupon = couponResult.rows[0]
           if (coupon.discountType === 'PERCENTAGE') {
-            discountAmount = (amount * coupon.discountValue) / 100
-            if (coupon.maxDiscount && discountAmount > coupon.maxDiscount) discountAmount = coupon.maxDiscount
+            couponDiscount = (basePrice * coupon.discountValue) / 100
+            if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount
           } else {
-            discountAmount = coupon.discountValue
+            couponDiscount = coupon.discountValue
           }
-          await pool.query('UPDATE "Coupon" SET "usedCount" = "usedCount" + 1 WHERE id = $1', [coupon.id])
+          await pool.query('UPDATE "Coupon" SET "usageCount" = "usageCount" + 1 WHERE id = $1', [coupon.id])
         }
       } catch (e) { /* coupon table may not exist */ }
     }
-    const finalAmount = Math.max(0, amount - discountAmount)
+    const finalPrice = Math.max(0, basePrice - couponDiscount)
     await pool.query(
-      'INSERT INTO "Booking" (id, "bookingNumber", "clientId", "providerId", "technicianId", "serviceId", "scheduledDate", "scheduledTime", address, lat, lng, notes, amount, "discountAmount", "finalAmount", "couponCode", otp, status, "paymentStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, \'PENDING\', \'PENDING\', NOW(), NOW())',
-      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, address, lat || null, lng || null, notes || null, amount, discountAmount, finalAmount, couponCode || null, otp]
+      'INSERT INTO "Booking" (id, "bookingNumber", "clientId", "providerId", "technicianId", "serviceId", "scheduledDate", "scheduledTime", "serviceAddress", "serviceLatitude", "serviceLongitude", "specialInstructions", "basePrice", "couponDiscount", "finalPrice", "couponId", "otpCode", status, "paymentStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, \'PENDING\', \'PENDING\', NOW(), NOW())',
+      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, serviceAddress, serviceLatitude || null, serviceLongitude || null, specialInstructions || null, basePrice, couponDiscount, finalPrice, couponId || null, otpCode]
     ).catch(() => {})
     const result = await pool.query('SELECT b.*, u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [bookingId]).catch(async () => {
-      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', amount, discountAmount, finalAmount, otp, scheduledDate, address }] }
+      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', basePrice, couponDiscount, finalPrice, otpCode, scheduledDate, serviceAddress }] }
     })
     return c.json({ message: 'Booking created successfully', booking: result.rows[0] }, 201)
   } catch (e) { console.error('Create booking error:', e); return c.json({ error: 'Failed to create booking' }, 500) }
@@ -1411,7 +1426,7 @@ app.get('/api/bookings', async (c) => {
     const status = c.req.query('status')
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", u.phone as "clientPhone", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE '
+    let query = 'SELECT b.*, s.title as "serviceName", u.name as "clientName", u.phone as "clientPhone", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE '
     const params: any[] = []
     let idx = 1
     if (user.roleId === 2 || user.role === 'PROVIDER') {
@@ -1435,7 +1450,7 @@ app.get('/api/bookings/:id', async (c) => {
   try {
     const id = c.req.param('id')
     const result = await pool.query(
-      'SELECT b.*, s.name as "serviceName", s."imageUrl" as "serviceImage", u.name as "clientName", u.phone as "clientPhone", u."profileImageUrl" as "clientImage", p.name as "providerName", p.phone as "providerPhone", p."profileImageUrl" as "providerImage", t.name as "technicianName", sc.name as "categoryName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" t ON b."technicianId" = t.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.id = $1',
+      'SELECT b.*, s.title as "serviceName", s."images" as "serviceImage", u.name as "clientName", u.phone as "clientPhone", u."profileImageUrl" as "clientImage", p.name as "providerName", p.phone as "providerPhone", p."profileImageUrl" as "providerImage", t.name as "technicianName", sc.name as "categoryName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" t ON b."technicianId" = t.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.id = $1',
       [id]
     ).catch(() => ({ rows: [] }))
     if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
@@ -1482,7 +1497,7 @@ app.post('/api/bookings/:id/otp-verify', async (c) => {
     const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
     if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
     const booking = result.rows[0]
-    if (booking.otp !== otp) return c.json({ error: 'Invalid OTP' }, 400)
+    if (booking.otpCode !== otp) return c.json({ error: 'Invalid OTP' }, 400)
     await pool.query('UPDATE "Booking" SET status = \'IN_PROGRESS\', "startedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'OTP verified, service started', bookingId: id })
   } catch (e) { return c.json({ error: 'OTP verification failed' }, 500) }
@@ -1585,7 +1600,7 @@ app.post('/api/wallet/deposit', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const { amount, paymentMethod, transactionRef } = await c.req.json()
+    const { amount, category, referenceId, referenceType } = await c.req.json()
     if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
     // Ensure wallet exists
     let walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
@@ -1598,8 +1613,8 @@ app.post('/api/wallet/deposit', async (c) => {
     await pool.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id]).catch(() => {})
     const txnId = 'txn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
-      'INSERT INTO "WalletTransaction" (id, "walletId", type, amount, "paymentMethod", "transactionRef", description, "createdAt") VALUES ($1, $2, \'CREDIT\', $3, $4, $5, \'Wallet deposit\', NOW())',
-      [txnId, wallet.id, amount, paymentMethod || 'RAZORPAY', transactionRef || null]
+      'INSERT INTO "WalletTransaction" (id, "walletId", "userId", type, category, amount, description, "referenceId", "referenceType", status, "createdAt") VALUES ($1, $2, $3, \'CREDIT\', $4, $5, \'Wallet deposit\', $6, $7, \'COMPLETED\', NOW())',
+      [txnId, wallet.id, user.id, category || 'CASHBACK', amount, referenceId || null, referenceType || null]
     ).catch(() => {})
     const updated = await pool.query('SELECT * FROM "Wallet" WHERE id = $1', [wallet.id]).catch(() => ({ rows: [{ ...wallet, balance: (wallet.balance || 0) + amount }] }))
     return c.json({ message: 'Deposit successful', wallet: updated.rows[0], transactionId: txnId })
@@ -1621,15 +1636,15 @@ app.get('/api/earnings', async (c) => {
     else if (period === 'month') dateFilter = 'AND b."completedAt" >= NOW() - INTERVAL \'30 days\''
     else if (period === 'year') dateFilter = 'AND b."completedAt" >= NOW() - INTERVAL \'365 days\''
     const earningsResult = await pool.query(
-      `SELECT COALESCE(SUM(b."finalAmount"), 0) as "totalEarnings", COUNT(*) as "totalJobs", COALESCE(AVG(b."finalAmount"), 0) as "avgEarning" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = 'COMPLETED' ${dateFilter}`,
+      `SELECT COALESCE(SUM(b."finalPrice"), 0) as "totalEarnings", COUNT(*) as "totalJobs", COALESCE(AVG(b."finalPrice"), 0) as "avgEarning" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = 'COMPLETED' ${dateFilter}`,
       [user.id]
     ).catch(() => ({ rows: [{ totalEarnings: 0, totalJobs: 0, avgEarning: 0 }] }))
     const pendingResult = await pool.query(
-      'SELECT COALESCE(SUM(b."finalAmount"), 0) as "pendingAmount" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b."paymentStatus" = \'PENDING\'',
+      'SELECT COALESCE(SUM(b."finalPrice"), 0) as "pendingAmount" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b."paymentStatus" = \'PENDING\'',
       [user.id]
     ).catch(() => ({ rows: [{ pendingAmount: 0 }] }))
     const recentResult = await pool.query(
-      'SELECT b.id, b."bookingNumber", b."finalAmount", b."completedAt", s.name as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = \'COMPLETED\' ORDER BY b."completedAt" DESC LIMIT 10',
+      'SELECT b.id, b."bookingNumber", b."finalPrice", b."completedAt", s.title as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = \'COMPLETED\' ORDER BY b."completedAt" DESC LIMIT 10',
       [user.id]
     ).catch(() => ({ rows: [] }))
     return c.json({
@@ -1664,15 +1679,16 @@ app.post('/api/payouts/request', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const { amount, bankAccount, ifscCode, accountHolderName } = await c.req.json()
+    const { amount, method, metadata } = await c.req.json()
     if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
+    if (!method || !['BANK_TRANSFER', 'UPI'].includes(method)) return c.json({ error: 'method must be BANK_TRANSFER or UPI' }, 400)
     const walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
     const wallet = walletResult.rows[0]
     if (wallet && wallet.balance < amount) return c.json({ error: 'Insufficient wallet balance' }, 400)
     const id = 'pay_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
-      'INSERT INTO "PayoutRequest" (id, "userId", amount, "bankAccount", "ifscCode", "accountHolderName", status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\', NOW(), NOW())',
-      [id, user.id, amount, bankAccount || null, ifscCode || null, accountHolderName || null]
+      'INSERT INTO "PayoutRequest" (id, "userId", amount, method, metadata, status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, \'PENDING\', NOW(), NOW())',
+      [id, user.id, amount, method, metadata || null]
     ).catch(() => {})
     if (wallet) {
       await pool.query('UPDATE "Wallet" SET balance = balance - $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id]).catch(() => {})
@@ -1691,7 +1707,7 @@ app.get('/api/favorites', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const result = await pool.query(
-      'SELECT f.*, s.name as "serviceName", s."imageUrl" as "serviceImage", s."basePrice", s."finalPrice", s."averageRating", sc.name as "categoryName" FROM "Favorite" f LEFT JOIN "Service" s ON f."serviceId" = s.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE f."userId" = $1 ORDER BY f."createdAt" DESC',
+      'SELECT f.*, s.title as "serviceName", s."images" as "serviceImage", s."basePrice", s."finalPrice", s."averageRating", sc.name as "categoryName" FROM "Favorite" f LEFT JOIN "Service" s ON f."serviceId" = s.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE f."userId" = $1 ORDER BY f."createdAt" DESC',
       [user.id]
     ).catch(() => ({ rows: [] }))
     return c.json({ favorites: result.rows, total: result.rows.length })
@@ -1735,14 +1751,14 @@ app.post('/api/services', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     if (user.roleId !== 2 && user.role !== 'PROVIDER') return c.json({ error: 'Only providers can create services' }, 403)
     const body = await c.req.json()
-    const { name, description, categoryId, subcategoryId, basePrice, finalPrice, duration, imageUrl, galleryImages, isEmergencyAvailable } = body
-    if (!name || !categoryId || !basePrice) return c.json({ error: 'name, categoryId, and basePrice are required' }, 400)
+    const { title, description, categoryId, subcategoryId, basePrice, images, serviceDurationMinutes, isEmergencyAvailable } = body
+    if (!title || !categoryId || !basePrice) return c.json({ error: 'title, categoryId, and basePrice are required' }, 400)
     const id = 'svc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
-      'INSERT INTO "Service" (id, name, description, "categoryId", "subcategoryId", "providerId", "basePrice", "finalPrice", duration, "imageUrl", "galleryImages", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, true, false, false, 0, 0, NOW(), NOW())',
-      [id, name, description || null, categoryId, subcategoryId || null, user.id, basePrice, finalPrice || basePrice, duration || null, imageUrl || null, galleryImages || null, isEmergencyAvailable || false]
+      'INSERT INTO "Service" (id, title, description, "categoryId", "subcategoryId", "providerId", "basePrice", images, "serviceDurationMinutes", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, false, false, 0, 0, NOW(), NOW())',
+      [id, title, description || null, categoryId, subcategoryId || null, user.id, basePrice, images || null, serviceDurationMinutes || null, isEmergencyAvailable || false]
     ).catch(() => {})
-    return c.json({ message: 'Service created, pending approval', service: { id, name, status: 'PENDING_APPROVAL' } }, 201)
+    return c.json({ message: 'Service created, pending approval', service: { id, title, status: 'PENDING_APPROVAL' } }, 201)
   } catch (e) { console.error('Create service error:', e); return c.json({ error: 'Failed to create service' }, 500) }
 })
 
@@ -1756,7 +1772,7 @@ app.patch('/api/services/:id', async (c) => {
     if (!existing.rows[0]) return c.json({ error: 'Service not found' }, 404)
     if (existing.rows[0].providerId !== user.id && user.roleId !== 5) return c.json({ error: 'Not authorized to update this service' }, 403)
     const body = await c.req.json()
-    const fields = ['name', 'description', 'basePrice', 'finalPrice', 'duration', 'imageUrl', 'galleryImages', 'isEmergencyAvailable', 'isActive']
+    const fields = ['title', 'description', 'basePrice', 'images', 'serviceDurationMinutes', 'isEmergencyAvailable', 'isActive']
     const updates = []
     const values: any[] = []
     let idx = 1
@@ -1823,7 +1839,7 @@ app.get('/api/disputes', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const result = await pool.query(
-      'SELECT d.*, b."bookingNumber" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id WHERE d."raisedById" = $1 OR d."raisedAgainstId" = $1 ORDER BY d."createdAt" DESC LIMIT $2 OFFSET $3',
+      'SELECT d.*, b."bookingNumber" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id WHERE d."raisedBy" = $1 OR d."assignedTo" = $1 ORDER BY d."createdAt" DESC LIMIT $2 OFFSET $3',
       [user.id, limit, offset]
     ).catch(() => ({ rows: [] }))
     return c.json({ disputes: result.rows, total: result.rows.length, limit, offset })
@@ -1835,14 +1851,14 @@ app.post('/api/disputes', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const { bookingId, raisedAgainstId, type, subject, description, evidenceUrls } = await c.req.json()
-    if (!bookingId || !subject || !description) return c.json({ error: 'bookingId, subject, and description are required' }, 400)
+    const { bookingId, assignedTo, disputeType, description, evidence } = await c.req.json()
+    if (!bookingId || !disputeType || !description) return c.json({ error: 'bookingId, disputeType, and description are required' }, 400)
     const id = 'dsp_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
-      'INSERT INTO "Dispute" (id, "bookingId", "raisedById", "raisedAgainstId", type, subject, description, "evidenceUrls", status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, \'OPEN\', NOW(), NOW())',
-      [id, bookingId, user.id, raisedAgainstId || null, type || 'SERVICE_ISSUE', subject, description, evidenceUrls || null]
+      'INSERT INTO "Dispute" (id, "bookingId", "raisedBy", "assignedTo", "disputeType", description, evidence, status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, \'OPEN\', NOW(), NOW())',
+      [id, bookingId, user.id, assignedTo || null, disputeType || 'OTHER', description, evidence || null]
     ).catch(() => {})
-    return c.json({ message: 'Dispute created', dispute: { id, status: 'OPEN', subject } }, 201)
+    return c.json({ message: 'Dispute created', dispute: { id, status: 'OPEN', disputeType } }, 201)
   } catch (e) { console.error('Create dispute error:', e); return c.json({ error: 'Failed to create dispute' }, 500) }
 })
 
@@ -1853,7 +1869,7 @@ app.post('/api/disputes', async (c) => {
 // GET /api/coupons - List active coupons
 app.get('/api/coupons', async (c) => {
   try {
-    const result = await pool.query('SELECT * FROM "Coupon" WHERE "isActive" = true AND "validTill" > NOW() ORDER BY "createdAt" DESC').catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT * FROM "Coupon" WHERE "isActive" = true AND "validTo" > NOW() ORDER BY "createdAt" DESC').catch(() => ({ rows: [] }))
     return c.json({ coupons: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ error: 'Failed to list coupons' }, 500) }
 })
@@ -1863,10 +1879,10 @@ app.post('/api/coupons/validate', async (c) => {
   try {
     const { code, amount } = await c.req.json()
     if (!code) return c.json({ error: 'Coupon code is required' }, 400)
-    const result = await pool.query('SELECT * FROM "Coupon" WHERE code = $1 AND "isActive" = true AND "validTill" > NOW()', [code]).catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT * FROM "Coupon" WHERE code = $1 AND "isActive" = true AND "validTo" > NOW()', [code]).catch(() => ({ rows: [] }))
     if (!result.rows[0]) return c.json({ valid: false, error: 'Invalid or expired coupon code' }, 404)
     const coupon = result.rows[0]
-    if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) return c.json({ valid: false, error: 'Coupon usage limit reached' })
+    if (coupon.usageLimit && coupon.usageCount >= coupon.usageLimit) return c.json({ valid: false, error: 'Coupon usage limit reached' })
     if (coupon.minOrderAmount && amount && amount < coupon.minOrderAmount) return c.json({ valid: false, error: `Minimum order amount is ₹${coupon.minOrderAmount}` })
     let discountAmount = 0
     if (amount) {
@@ -1904,7 +1920,7 @@ app.get('/api/amc-subscriptions', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const result = await pool.query(
-      'SELECT s.*, p.name as "planName", p."visitCount", p."coverageType" FROM "AmcSubscription" s LEFT JOIN "AmcPlan" p ON s."planId" = p.id WHERE s."userId" = $1 ORDER BY s."createdAt" DESC',
+      'SELECT s.*, p.name as "planName", p."visitsIncluded" FROM "AmcSubscription" s LEFT JOIN "AmcPlan" p ON s."planId" = p.id WHERE s."clientId" = $1 ORDER BY s."createdAt" DESC',
       [user.id]
     ).catch(() => ({ rows: [] }))
     return c.json({ subscriptions: result.rows, total: result.rows.length })
@@ -1923,7 +1939,7 @@ app.get('/api/invoices', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const result = await pool.query(
-      'SELECT i.*, b."bookingNumber", s.name as "serviceName" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE i."userId" = $1 ORDER BY i."createdAt" DESC LIMIT $2 OFFSET $3',
+      'SELECT i.*, b."bookingNumber", s.title as "serviceName" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE i."clientId" = $1 OR i."providerId" = $1 ORDER BY i."createdAt" DESC LIMIT $2 OFFSET $3',
       [user.id, limit, offset]
     ).catch(() => ({ rows: [] }))
     return c.json({ invoices: result.rows, total: result.rows.length, limit, offset })
@@ -1937,7 +1953,7 @@ app.get('/api/invoices/:id', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const result = await pool.query(
-      'SELECT i.*, b."bookingNumber", b.address as "serviceAddress", b."scheduledDate", s.name as "serviceName", u.name as "clientName", u.email as "clientEmail", u.phone as "clientPhone" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE i.id = $1',
+      'SELECT i.*, b."bookingNumber", b."serviceAddress", b."scheduledDate", s.title as "serviceName", u.name as "clientName", u.email as "clientEmail", u.phone as "clientPhone" FROM "Invoice" i LEFT JOIN "Booking" b ON i."bookingId" = b.id LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE i.id = $1',
       [id]
     ).catch(() => ({ rows: [] }))
     if (!result.rows[0]) return c.json({ error: 'Invoice not found' }, 404)
@@ -1983,7 +1999,7 @@ app.get('/api/admin/users', async (c) => {
     query += ` ORDER BY u."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
     params.push(limit, offset)
     const result = await pool.query(query, params)
-    const countResult = await pool.query('SELECT COUNT(*) as total FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE 1=1' + (role ? ` AND r.name = '${role}'` : ''))
+    const countResult = await pool.query('SELECT COUNT(*) as total FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE 1=1' + (role ? ` AND r.name = $1` : ''), role ? [role] : [])
     return c.json({ users: result.rows, total: parseInt(countResult.rows[0]?.total || '0'), limit, offset })
   } catch (e) { console.error('Admin list users error:', e); return c.json({ error: 'Failed to list users' }, 500) }
 })
@@ -2079,7 +2095,7 @@ app.get('/api/admin/bookings', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const status = c.req.query('status')
-    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE 1=1'
+    let query = 'SELECT b.*, s.title as "serviceName", u.name as "clientName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE 1=1'
     const params: any[] = []
     let idx = 1
     if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
@@ -2100,9 +2116,9 @@ app.get('/api/admin/revenue', async (c) => {
     if (period === 'week') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '7 days'"
     else if (period === 'month') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '30 days'"
     else if (period === 'year') dateFilter = "AND \"completedAt\" >= NOW() - INTERVAL '365 days'"
-    const revenueResult = await pool.query(`SELECT COALESCE(SUM("finalAmount"), 0) as "totalRevenue", COUNT(*) as "totalBookings", COALESCE(SUM("discountAmount"), 0) as "totalDiscounts" FROM "Booking" WHERE status = 'COMPLETED' ${dateFilter}`).catch(() => ({ rows: [{ totalRevenue: 0, totalBookings: 0, totalDiscounts: 0 }] }))
+    const revenueResult = await pool.query(`SELECT COALESCE(SUM("finalPrice"), 0) as "totalRevenue", COUNT(*) as "totalBookings", COALESCE(SUM("couponDiscount"), 0) as "totalDiscounts" FROM "Booking" WHERE status = 'COMPLETED' ${dateFilter}`).catch(() => ({ rows: [{ totalRevenue: 0, totalBookings: 0, totalDiscounts: 0 }] }))
     const byStatus = await pool.query('SELECT status, COUNT(*) as count FROM "Booking" GROUP BY status').catch(() => ({ rows: [] }))
-    const byCategory = await pool.query('SELECT sc.name as category, COALESCE(SUM(b."finalAmount"), 0) as revenue FROM "Booking" b JOIN "Service" s ON b."serviceId" = s.id JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY revenue DESC').catch(() => ({ rows: [] }))
+    const byCategory = await pool.query('SELECT sc.name as category, COALESCE(SUM(b."finalPrice"), 0) as revenue FROM "Booking" b JOIN "Service" s ON b."serviceId" = s.id JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY revenue DESC').catch(() => ({ rows: [] }))
     return c.json({ revenue: revenueResult.rows[0], byStatus: byStatus.rows, byCategory: byCategory.rows, period })
   } catch (e) { return c.json({ error: 'Failed to get revenue stats' }, 500) }
 })
@@ -2128,11 +2144,11 @@ app.get('/api/admin/analytics', async (c) => {
     const providerCount = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2').catch(() => ({ rows: [{ count: 0 }] }))
     const bookingCount = await pool.query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] }))
     const serviceCount = await pool.query('SELECT COUNT(*) as count FROM "Service" WHERE "isActive" = true').catch(() => ({ rows: [{ count: 0 }] }))
-    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
     const recentSignups = await pool.query('SELECT COUNT(*) as count FROM "User" WHERE "createdAt" >= NOW() - INTERVAL \'30 days\'').catch(() => ({ rows: [{ count: 0 }] }))
     const recentBookings = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= NOW() - INTERVAL \'30 days\'').catch(() => ({ rows: [{ count: 0 }] }))
     const disputeCount = await pool.query('SELECT COUNT(*) as count FROM "Dispute" WHERE status = \'OPEN\'').catch(() => ({ rows: [{ count: 0 }] }))
-    const topCategories = await pool.query('SELECT sc.name, COUNT(b.id) as bookings, COALESCE(SUM(b."finalAmount"), 0) as revenue FROM "ServiceCategory" sc LEFT JOIN "Service" s ON s."categoryId" = sc.id LEFT JOIN "Booking" b ON b."serviceId" = s.id AND b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY bookings DESC LIMIT 5').catch(() => ({ rows: [] }))
+    const topCategories = await pool.query('SELECT sc.name, COUNT(b.id) as bookings, COALESCE(SUM(b."finalPrice"), 0) as revenue FROM "ServiceCategory" sc LEFT JOIN "Service" s ON s."categoryId" = sc.id LEFT JOIN "Booking" b ON b."serviceId" = s.id AND b.status = \'COMPLETED\' GROUP BY sc.name ORDER BY bookings DESC LIMIT 5').catch(() => ({ rows: [] }))
     const topCities = await pool.query('SELECT u.city, COUNT(b.id) as bookings FROM "Booking" b JOIN "User" u ON b."clientId" = u.id WHERE u.city IS NOT NULL GROUP BY u.city ORDER BY bookings DESC LIMIT 5').catch(() => ({ rows: [] }))
     return c.json({
       analytics: {
@@ -2159,7 +2175,7 @@ app.get('/api/admin/disputes', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const status = c.req.query('status')
-    let query = 'SELECT d.*, b."bookingNumber", u.name as "raisedByName", ua.name as "raisedAgainstName" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id LEFT JOIN "User" u ON d."raisedById" = u.id LEFT JOIN "User" ua ON d."raisedAgainstId" = ua.id WHERE 1=1'
+    let query = 'SELECT d.*, b."bookingNumber", u.name as "raisedByName", ua.name as "assignedToName" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id LEFT JOIN "User" u ON d."raisedBy" = u.id LEFT JOIN "User" ua ON d."assignedTo" = ua.id WHERE 1=1'
     const params: any[] = []
     let idx = 1
     if (status) { query += ` AND d.status = $${idx}`; params.push(status); idx++ }
@@ -2178,7 +2194,7 @@ app.patch('/api/admin/disputes/:id', async (c) => {
     const id = c.req.param('id')
     const { status, resolution, refundAmount } = await c.req.json()
     if (!status) return c.json({ error: 'status is required' }, 400)
-    const updates = ['status = $1', '"resolvedById" = $2', '"resolvedAt" = NOW()', '"updatedAt" = NOW()']
+    const updates = ['status = $1', '"assignedTo" = $2', '"resolvedAt" = NOW()', '"updatedAt" = NOW()']
     const values: any[] = [status, admin.id]
     let idx = 3
     if (resolution) { updates.push(`resolution = $${idx}`); values.push(resolution); idx++ }
@@ -2218,10 +2234,10 @@ app.patch('/api/admin/payouts/:id', async (c) => {
     const id = c.req.param('id')
     const { status, transactionRef, remarks } = await c.req.json()
     if (!status) return c.json({ error: 'status is required' }, 400)
-    const updates = ['status = $1', '"processedById" = $2', '"processedAt" = NOW()', '"updatedAt" = NOW()']
+    const updates = ['status = $1', '"processedBy" = $2', '"processedAt" = NOW()', '"updatedAt" = NOW()']
     const values: any[] = [status, admin.id]
     let idx = 3
-    if (transactionRef) { updates.push(`"transactionRef" = $${idx}`); values.push(transactionRef); idx++ }
+    if (transactionRef) { updates.push(`"bankRef" = $${idx}`); values.push(transactionRef); idx++ }
     if (remarks) { updates.push(`remarks = $${idx}`); values.push(remarks); idx++ }
     values.push(id)
     await pool.query(`UPDATE "PayoutRequest" SET ${updates.join(', ')} WHERE id = $${idx}`, values).catch(() => {})
@@ -2252,12 +2268,12 @@ app.post('/api/admin/coupons', async (c) => {
   try {
     const admin = await requireAdmin(c)
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
-    const { code, discountType, discountValue, maxDiscount, minOrderAmount, maxUses, validTill, isActive } = await c.req.json()
-    if (!code || !discountType || !discountValue || !validTill) return c.json({ error: 'code, discountType, discountValue, and validTill are required' }, 400)
+    const { code, discountType, discountValue, maxDiscount, minOrderAmount, usageLimit, validTo, isActive } = await c.req.json()
+    if (!code || !discountType || !discountValue || !validTo) return c.json({ error: 'code, discountType, discountValue, and validTo are required' }, 400)
     const id = 'cpn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
-      'INSERT INTO "Coupon" (id, code, "discountType", "discountValue", "maxDiscount", "minOrderAmount", "maxUses", "validTill", "isActive", "usedCount", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0, NOW(), NOW())',
-      [id, code, discountType, discountValue, maxDiscount || null, minOrderAmount || null, maxUses || null, validTill, isActive !== false]
+      'INSERT INTO "Coupon" (id, code, "discountType", "discountValue", "maxDiscount", "minOrderAmount", "usageLimit", "validTo", "isActive", "usageCount", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 0, NOW(), NOW())',
+      [id, code, discountType, discountValue, maxDiscount || null, minOrderAmount || null, usageLimit || null, validTo, isActive !== false]
     ).catch(() => {})
     return c.json({ message: 'Coupon created', coupon: { id, code, discountType, discountValue } }, 201)
   } catch (e) { console.error('Create coupon error:', e); return c.json({ error: 'Failed to create coupon' }, 500) }
@@ -2289,7 +2305,7 @@ app.get('/api/admin/amc', async (c) => {
     const admin = await requireAdmin(c)
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
     const plans = await pool.query('SELECT * FROM "AmcPlan" ORDER BY price').catch(() => ({ rows: [] }))
-    const subscriptions = await pool.query('SELECT s.*, u.name as "userName", p.name as "planName" FROM "AmcSubscription" s LEFT JOIN "User" u ON s."userId" = u.id LEFT JOIN "AmcPlan" p ON s."planId" = p.id ORDER BY s."createdAt" DESC').catch(() => ({ rows: [] }))
+    const subscriptions = await pool.query('SELECT s.*, u.name as "userName", p.name as "planName" FROM "AmcSubscription" s LEFT JOIN "User" u ON s."clientId" = u.id LEFT JOIN "AmcPlan" p ON s."planId" = p.id ORDER BY s."createdAt" DESC').catch(() => ({ rows: [] }))
     return c.json({ plans: plans.rows, subscriptions: subscriptions.rows })
   } catch (e) { return c.json({ error: 'Failed to list AMC data' }, 500) }
 })
@@ -2299,7 +2315,7 @@ app.get('/api/admin/b2b', async (c) => {
   try {
     const admin = await requireAdmin(c)
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
-    const result = await pool.query('SELECT b.*, u.name as "contactName", u.email as "contactEmail" FROM "B2bContract" b LEFT JOIN "User" u ON b."contactPersonId" = u.id ORDER BY b."createdAt" DESC').catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT b.*, u.name as "contactName", u.email as "contactEmail" FROM "B2bContract" b LEFT JOIN "User" u ON b."clientId" = u.id ORDER BY b."createdAt" DESC').catch(() => ({ rows: [] }))
     return c.json({ contracts: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ error: 'Failed to list B2B contracts' }, 500) }
 })
@@ -2311,7 +2327,7 @@ app.get('/api/admin/crm', async (c) => {
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    const result = await pool.query('SELECT c.*, u.name as "assignedToName" FROM "CrmActivity" c LEFT JOIN "User" u ON c."assignedToId" = u.id ORDER BY c."createdAt" DESC LIMIT $1 OFFSET $2', [limit, offset]).catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT c.*, u.name as "userName" FROM "CrmActivity" c LEFT JOIN "User" u ON c."userId" = u.id ORDER BY c."createdAt" DESC LIMIT $1 OFFSET $2', [limit, offset]).catch(() => ({ rows: [] }))
     return c.json({ activities: result.rows, total: result.rows.length, limit, offset })
   } catch (e) { return c.json({ error: 'Failed to list CRM activities' }, 500) }
 })
@@ -2328,7 +2344,7 @@ app.get('/api/franchise/dashboard', async (c) => {
     const franchiseResult = await pool.query('SELECT * FROM "Franchise" WHERE "ownerId" = $1', [user.id]).catch(() => ({ rows: [] }))
     if (!franchiseResult.rows[0]) return c.json({ error: 'No franchise found for this user' }, 404)
     const franchise = franchiseResult.rows[0]
-    const bookingsResult = await pool.query('SELECT COUNT(*) as total, COALESCE(SUM("finalAmount"), 0) as revenue FROM "Booking" WHERE "providerId" IN (SELECT id FROM "User" WHERE city = $1) AND status = \'COMPLETED\'', [franchise.city]).catch(() => ({ rows: [{ total: 0, revenue: 0 }] }))
+    const bookingsResult = await pool.query('SELECT COUNT(*) as total, COALESCE(SUM("finalPrice"), 0) as revenue FROM "Booking" WHERE "providerId" IN (SELECT id FROM "User" WHERE city = $1) AND status = \'COMPLETED\'', [franchise.city]).catch(() => ({ rows: [{ total: 0, revenue: 0 }] }))
     const vendorsResult = await pool.query('SELECT COUNT(*) as total FROM "User" WHERE "roleId" = 2 AND city = $1', [franchise.city]).catch(() => ({ rows: [{ total: 0 }] }))
     return c.json({
       franchise,
@@ -2358,8 +2374,8 @@ app.get('/api/franchise/analytics', async (c) => {
     const franchiseResult = await pool.query('SELECT * FROM "Franchise" WHERE "ownerId" = $1', [user.id]).catch(() => ({ rows: [] }))
     if (!franchiseResult.rows[0]) return c.json({ error: 'No franchise found' }, 404)
     const franchise = franchiseResult.rows[0]
-    const revenueByMonth = await pool.query("SELECT TO_CHAR(\"completedAt\", 'YYYY-MM') as month, COUNT(*) as bookings, COALESCE(SUM(\"finalAmount\"), 0) as revenue FROM \"Booking\" WHERE \"providerId\" IN (SELECT id FROM \"User\" WHERE city = $1) AND status = 'COMPLETED' AND \"completedAt\" >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month", [franchise.city]).catch(() => ({ rows: [] }))
-    const topServices = await pool.query('SELECT s.name, COUNT(b.id) as bookings FROM "Service" s JOIN "Booking" b ON b."serviceId" = s.id JOIN "User" u ON s."providerId" = u.id WHERE u.city = $1 AND b.status = \'COMPLETED\' GROUP BY s.name ORDER BY bookings DESC LIMIT 5', [franchise.city]).catch(() => ({ rows: [] }))
+    const revenueByMonth = await pool.query("SELECT TO_CHAR(\"completedAt\", 'YYYY-MM') as month, COUNT(*) as bookings, COALESCE(SUM(\"finalPrice\"), 0) as revenue FROM \"Booking\" WHERE \"providerId\" IN (SELECT id FROM \"User\" WHERE city = $1) AND status = 'COMPLETED' AND \"completedAt\" >= NOW() - INTERVAL '12 months' GROUP BY month ORDER BY month", [franchise.city]).catch(() => ({ rows: [] }))
+    const topServices = await pool.query('SELECT s.title as name, COUNT(b.id) as bookings FROM "Service" s JOIN "Booking" b ON b."serviceId" = s.id JOIN "User" u ON s."providerId" = u.id WHERE u.city = $1 AND b.status = \'COMPLETED\' GROUP BY s.title ORDER BY bookings DESC LIMIT 5', [franchise.city]).catch(() => ({ rows: [] }))
     return c.json({ franchiseId: franchise.id, city: franchise.city, revenueByMonth: revenueByMonth.rows, topServices: topServices.rows })
   } catch (e) { return c.json({ error: 'Failed to get franchise analytics' }, 500) }
 })
@@ -2377,7 +2393,7 @@ app.get('/api/vendor/bookings', async (c) => {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const status = c.req.query('status')
-    let query = 'SELECT b.*, s.name as "serviceName", u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."providerId" = $1'
+    let query = 'SELECT b.*, s.title as "serviceName", u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."providerId" = $1'
     const params: any[] = [user.id]
     let idx = 2
     if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
@@ -2465,6 +2481,8 @@ app.patch('/api/services/:id/approve', async (c) => {
 // Delete service
 app.delete('/api/services/:id', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('DELETE FROM "Service" WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Service deleted' })
@@ -2476,7 +2494,7 @@ app.get('/api/kyc/status', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.sub])
+    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id])
     return c.json({ kyc: result.rows[0] || { verificationStatus: 'PENDING' } })
   } catch (e) { return c.json({ kyc: { verificationStatus: 'PENDING' } }) }
 })
@@ -2489,7 +2507,7 @@ app.post('/api/kyc/submit', async (c) => {
     const body = await c.req.json()
     const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\') ON CONFLICT ("providerId") DO UPDATE SET "documentType" = $3, "documentNumber" = $4, "documentFrontUrl" = $5, "selfieUrl" = $6, "verificationStatus" = \'PENDING\', "updatedAt" = NOW()',
-      [kycId, user.sub, body.documentType || 'AADHAAR', body.documentNumber || '', body.documentFrontUrl || '/pending', body.selfieUrl || '/pending']).catch(() => {})
+      [kycId, user.id, body.documentType || 'AADHAAR', body.documentNumber || '', body.documentFrontUrl || '/pending', body.selfieUrl || '/pending']).catch(() => {})
     return c.json({ message: 'KYC submitted successfully', status: 'PENDING' })
   } catch (e) { return c.json({ message: 'KYC submitted successfully', status: 'PENDING' }) }
 })
@@ -2499,7 +2517,7 @@ app.get('/api/technician/profile', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.sub])
+    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.id])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
     const { passwordHash, roleName, ...profile } = result.rows[0]
     return c.json({ profile: { ...profile, role: roleName } })
@@ -2520,7 +2538,7 @@ app.patch('/api/technician/profile', async (c) => {
     }
     if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
     updates.push('"updatedAt" = NOW()')
-    values.push(user.sub)
+    values.push(user.id)
     await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
     return c.json({ message: 'Profile updated' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
@@ -2532,8 +2550,8 @@ app.get('/api/technician/jobs', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
     const status = c.req.query('status')
-    const result = await pool.query('SELECT b.*, s.title as "serviceTitle", s.basePrice, u.name as "clientName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."technicianId" = $1 ORDER BY b."createdAt" DESC LIMIT 50',
-      [user.sub]).catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT b.*, s.title as "serviceName", s.basePrice, u.name as "clientName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b."technicianId" = $1 ORDER BY b."createdAt" DESC LIMIT 50',
+      [user.id]).catch(() => ({ rows: [] }))
     let jobs = result.rows
     if (status) jobs = jobs.filter((j: any) => j.status === status)
     return c.json({ jobs, total: jobs.length })
@@ -2545,8 +2563,8 @@ app.get('/api/technician/earnings', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT COALESCE(SUM("providerEarnings"), 0) as "totalEarnings", COALESCE(SUM(CASE WHEN "createdAt" >= NOW() - INTERVAL \'30 days\' THEN "providerEarnings" ELSE 0 END), 0) as "monthlyEarnings", COUNT(*) as "totalCompletedJobs" FROM "Booking" WHERE "technicianId" = $1 AND status = \'COMPLETED\'',
-      [user.sub]).catch(() => ({ rows: [{ totalEarnings: 0, monthlyEarnings: 0, totalCompletedJobs: 0 }] }))
+    const result = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as "totalEarnings", COALESCE(SUM(CASE WHEN "createdAt" >= NOW() - INTERVAL \'30 days\' THEN "finalPrice" ELSE 0 END), 0) as "monthlyEarnings", COUNT(*) as "totalCompletedJobs" FROM "Booking" WHERE "technicianId" = $1 AND status = \'COMPLETED\'',
+      [user.id]).catch(() => ({ rows: [{ totalEarnings: 0, monthlyEarnings: 0, totalCompletedJobs: 0 }] }))
     return c.json({ earnings: result.rows[0] })
   } catch (e) { return c.json({ earnings: { totalEarnings: 0, monthlyEarnings: 0, totalCompletedJobs: 0 } }) }
 })
@@ -2554,6 +2572,8 @@ app.get('/api/technician/earnings', async (c) => {
 // Booking action routes (cancel, complete, reject, accept)
 app.patch('/api/bookings/:id/cancel', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Booking cancelled' })
@@ -2562,6 +2582,8 @@ app.patch('/api/bookings/:id/cancel', async (c) => {
 
 app.patch('/api/bookings/:id/complete', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Booking completed' })
@@ -2570,6 +2592,8 @@ app.patch('/api/bookings/:id/complete', async (c) => {
 
 app.patch('/api/bookings/:id/reject', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const body = await c.req.json().catch(() => ({}))
     await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "rejectionReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, body.reason || '']).catch(() => {})
@@ -2579,6 +2603,8 @@ app.patch('/api/bookings/:id/reject', async (c) => {
 
 app.patch('/api/bookings/:id/accept', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('UPDATE "Booking" SET status = \'CONFIRMED\', "updatedAt" = NOW() WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Booking accepted' })
@@ -2588,6 +2614,8 @@ app.patch('/api/bookings/:id/accept', async (c) => {
 // Notifications - mark read
 app.patch('/api/notifications/:id/read', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('UPDATE "Notification" SET "isRead" = true WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Notification marked as read' })
@@ -2599,7 +2627,7 @@ app.patch('/api/notifications', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE "userId" = $1', [user.sub]).catch(() => {})
+    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE "userId" = $1', [user.id]).catch(() => {})
     return c.json({ message: 'All notifications marked as read' })
   } catch (e) { return c.json({ message: 'All notifications marked as read' }) }
 })
@@ -2609,7 +2637,7 @@ app.get('/api/wallet/transactions', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT * FROM "WalletTransaction" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 50', [user.sub]).catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT * FROM "WalletTransaction" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 50', [user.id]).catch(() => ({ rows: [] }))
     return c.json({ transactions: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ transactions: [], total: 0 }) }
 })
@@ -2649,16 +2677,16 @@ app.get('/api/admin/dashboard', async (c) => {
     const bookingsCancelled = await pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE status = \'CANCELLED\'').catch(() => ({ rows: [{ count: 0 }] }))
     const bookingsEmergency = await pool.query('SELECT COUNT(b.id) as count FROM "Booking" b JOIN "Service" s ON b."serviceId" = s.id WHERE s."isEmergencyAvailable" = true').catch(() => ({ rows: [{ count: 0 }] }))
     const bookingsSuccessRate = await pool.query('SELECT COALESCE(COUNT(CASE WHEN status = \'COMPLETED\' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 0) as rate FROM "Booking" WHERE status IN (\'COMPLETED\', \'CANCELLED\')').catch(() => ({ rows: [{ rate: 0 }] }))
-    const bookingsAvgValue = await pool.query('SELECT COALESCE(AVG("finalAmount"), 0) as avg FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ avg: 0 }] }))
+    const bookingsAvgValue = await pool.query('SELECT COALESCE(AVG("finalPrice"), 0) as avg FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ avg: 0 }] }))
 
     // ─── Revenue Metrics ───────────────────────────────────────────────
-    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
-    const revenueToday = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= CURRENT_DATE').catch(() => ({ rows: [{ total: 0 }] }))
-    const revenueThisWeek = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= NOW() - INTERVAL \'7 days\'').catch(() => ({ rows: [{ total: 0 }] }))
-    const revenueThisMonth = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ total: 0 }] }))
-    const commissionEarned = await pool.query('SELECT COALESCE(SUM("commissionAmount"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueTotal = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueToday = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= CURRENT_DATE').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueThisWeek = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= NOW() - INTERVAL \'7 days\'').catch(() => ({ rows: [{ total: 0 }] }))
+    const revenueThisMonth = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ total: 0 }] }))
+    const commissionEarned = await pool.query('SELECT COALESCE(SUM("platformFee"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] }))
     const pendingPayouts = await pool.query('SELECT COALESCE(SUM(amount), 0) as total FROM "PayoutRequest" WHERE status = \'PENDING\'').catch(() => ({ rows: [{ total: 0 }] }))
-    const escrowHeld = await pool.query('SELECT COALESCE(SUM("finalAmount"), 0) as total FROM "Booking" WHERE "paymentStatus" = \'ESCROW\' AND status NOT IN (\'COMPLETED\', \'CANCELLED\')').catch(() => ({ rows: [{ total: 0 }] }))
+    const escrowHeld = await pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE "paymentStatus" = \'ESCROW\' AND status NOT IN (\'COMPLETED\', \'CANCELLED\')').catch(() => ({ rows: [{ total: 0 }] }))
     const refunds = await pool.query('SELECT COALESCE(SUM("refundAmount"), 0) as total FROM "Dispute" WHERE "refundAmount" IS NOT NULL AND "refundAmount" > 0').catch(() => ({ rows: [{ total: 0 }] }))
 
     // ─── Services Metrics ──────────────────────────────────────────────
@@ -2679,7 +2707,7 @@ app.get('/api/admin/dashboard', async (c) => {
 
     // ─── Recent Bookings (last 5) ──────────────────────────────────────
     const recentBookings = await pool.query(
-      'SELECT b.id, b."bookingNumber", b.status, b."finalAmount", b."scheduledDate", b."createdAt", u.name as "clientName", p.name as "providerName", s.name as "serviceName" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "Service" s ON b."serviceId" = s.id ORDER BY b."createdAt" DESC LIMIT 5'
+      'SELECT b.id, b."bookingNumber", b.status, b."finalPrice", b."scheduledDate", b."createdAt", u.name as "clientName", p.name as "providerName", s.title as "serviceName" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "Service" s ON b."serviceId" = s.id ORDER BY b."createdAt" DESC LIMIT 5'
     ).catch(() => ({ rows: [] }))
 
     // ─── Recent Users (last 5) ─────────────────────────────────────────
@@ -2763,10 +2791,9 @@ app.get('/api/admin/faq', async (c) => {
 app.post('/api/admin/faq', async (c) => {
   try {
     const body = await c.req.json()
-    const id = 'faq_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "Faq" (id, question, answer, category, "isActive", "displayOrder") VALUES ($1, $2, $3, $4, $5, $6)',
-      [id, body.question, body.answer, body.category || 'GENERAL', body.isActive !== false, body.displayOrder || 0]).catch(() => {})
-    return c.json({ message: 'FAQ created', id }, 201)
+    await pool.query('INSERT INTO "Faq" (question, answer, category, "isActive", "displayOrder") VALUES ($1, $2, $3, $4, $5)',
+      [body.question, body.answer, body.category || 'GENERAL', body.isActive !== false, body.displayOrder || 0]).catch(() => {})
+    return c.json({ message: 'FAQ created' }, 201)
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -2851,7 +2878,7 @@ app.get('/api/amc/subscriptions', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT * FROM "AmcSubscription" WHERE "clientId" = $1 ORDER BY "createdAt" DESC', [user.sub]).catch(() => ({ rows: [] }))
+    const result = await pool.query('SELECT * FROM "AmcSubscription" WHERE "clientId" = $1 ORDER BY "createdAt" DESC', [user.id]).catch(() => ({ rows: [] }))
     return c.json({ subscriptions: result.rows, total: result.rows.length })
   } catch (e) { return c.json({ subscriptions: [], total: 0 }) }
 })
@@ -2863,7 +2890,7 @@ app.post('/api/amc/subscribe', async (c) => {
     if (!user) return c.json({ error: 'Auth required' }, 401)
     const { planId } = await c.req.json()
     const subId = 'amc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "AmcSubscription" (id, "clientId", "planId", status, "startDate", "endDate") VALUES ($1, $2, $3, \'ACTIVE\', NOW(), NOW() + INTERVAL \'1 year\')', [subId, user.sub, planId]).catch(() => {})
+    await pool.query('INSERT INTO "AmcSubscription" (id, "clientId", "planId", status, "startDate", "endDate") VALUES ($1, $2, $3, \'ACTIVE\', NOW(), NOW() + INTERVAL \'1 year\')', [subId, user.id, planId]).catch(() => {})
     return c.json({ message: 'Subscribed successfully', subscriptionId: subId }, 201)
   } catch (e) { return c.json({ message: 'Subscribed successfully' }, 201) }
 })
@@ -2883,7 +2910,7 @@ app.post('/api/franchises', async (c) => {
   try {
     const body = await c.req.json()
     const id = 'fr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "Franchise" (id, name, city, "ownerName", "ownerEmail", "ownerPhone", status) VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\')', [id, body.name, body.city, body.ownerName, body.ownerEmail, body.ownerPhone]).catch(() => {})
+    await pool.query('INSERT INTO "Franchise" (id, name, city, state, country, "contactPhone", "contactEmail", "ownerId", slug, status) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, \'PENDING\')', [id, body.name, body.city, body.state || '', body.country || 'India', body.contactPhone || '', body.contactEmail || '', body.ownerId || null, body.slug || body.name?.toLowerCase().replace(/\s+/g, '-')]).catch(() => {})
     return c.json({ message: 'Franchise application submitted', id }, 201)
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -2934,6 +2961,8 @@ app.post('/api/crm/follow-ups', async (c) => {
 // Reviews DELETE / PATCH
 app.delete('/api/reviews/:id', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     await pool.query('DELETE FROM "Review" WHERE id = $1', [id]).catch(() => {})
     return c.json({ message: 'Review deleted' })

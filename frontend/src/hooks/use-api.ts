@@ -8,6 +8,7 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
   const optionsRef = useRef(options);
+  const cancelledRef = useRef(false);
 
   const fetchData = useCallback(async () => {
     if (!url) {
@@ -17,64 +18,47 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
     setLoading(true);
     setError(null);
     try {
+      const isFormData = optionsRef.current?.body instanceof FormData;
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
         ...(optionsRef.current?.headers as Record<string, string>),
       };
+      // Only set Content-Type for non-FormData bodies (browser sets boundary automatically for FormData)
+      if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+      }
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
       const res = await fetch(apiUrl(url), { ...optionsRef.current, headers });
+      // Handle 204 No Content responses
+      if (res.status === 204) {
+        if (!cancelledRef.current) setData(null as unknown as T);
+        return;
+      }
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');
       }
-      setData(result);
+      if (!cancelledRef.current) {
+        setData(result);
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An error occurred');
+      if (!cancelledRef.current) {
+        setError(err instanceof Error ? err.message : 'An error occurred');
+      }
     } finally {
-      setLoading(false);
+      if (!cancelledRef.current) {
+        setLoading(false);
+      }
     }
   }, [url, token]);
 
   useEffect(() => {
-    let cancelled = false;
-    const load = async () => {
-      if (!url) {
-        setLoading(false);
-        return;
-      }
-      setLoading(true);
-      setError(null);
-      try {
-        const headers: Record<string, string> = {
-          'Content-Type': 'application/json',
-          ...(optionsRef.current?.headers as Record<string, string>),
-        };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-        const res = await fetch(apiUrl(url), { ...optionsRef.current, headers });
-        const result = await res.json();
-        if (!res.ok) {
-          throw new Error(result.error || 'Request failed');
-        }
-        if (!cancelled) {
-          setData(result);
-        }
-      } catch (err) {
-        if (!cancelled) {
-          setError(err instanceof Error ? err.message : 'An error occurred');
-        }
-      } finally {
-        if (!cancelled) {
-          setLoading(false);
-        }
-      }
-    };
-    load();
-    return () => { cancelled = true; };
-  }, [url, token]);
+    cancelledRef.current = false;
+    // Use queueMicrotask to avoid calling setState synchronously in effect
+    queueMicrotask(() => { fetchData(); });
+    return () => { cancelledRef.current = true; };
+  }, [fetchData]);
 
   return { data, loading, error, refetch: fetchData };
 }
@@ -88,14 +72,22 @@ export function useApiMutation() {
     setLoading(true);
     setError(null);
     try {
+      const isFormData = options.body instanceof FormData;
       const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
         ...(options.headers as Record<string, string>),
       };
+      // Only set Content-Type for non-FormData bodies
+      if (!isFormData) {
+        headers['Content-Type'] = 'application/json';
+      }
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
       const res = await fetch(apiUrl(url), { ...options, headers });
+      // Handle 204 No Content responses
+      if (res.status === 204) {
+        return null;
+      }
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');

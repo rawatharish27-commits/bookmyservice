@@ -51,6 +51,29 @@ async function main() {
   const adminRole = await db.role.create({
     data: { name: 'ADMIN', description: 'Platform administrator with full access' },
   });
+  const technicianRole = await db.role.create({
+    data: { name: 'TECHNICIAN', description: 'Field technician who performs service tasks' },
+  });
+  const vendorRole = await db.role.create({
+    data: { name: 'VENDOR', description: 'Parts and equipment vendor supplying the platform' },
+  });
+  const franchiseRole = await db.role.create({
+    data: { name: 'FRANCHISE', description: 'Franchise owner operating in a specific territory' },
+  });
+  const subAdminRole = await db.role.create({
+    data: { name: 'SUB_ADMIN', description: 'Sub-administrator with limited admin privileges' },
+  });
+  const areaManagerRole = await db.role.create({
+    data: { name: 'AREA_MANAGER', description: 'Manages providers and operations in a geographic area' },
+  });
+  const managerRole = await db.role.create({
+    data: { name: 'MANAGER', description: 'City-level manager overseeing multiple area managers' },
+  });
+  const localAdminRole = await db.role.create({
+    data: { name: 'LOCAL_ADMIN', description: 'Local administrator for a specific zone or branch' },
+  });
+
+  console.log('📋 Roles created: CLIENT(1), PROVIDER(2), ADMIN(3), TECHNICIAN(4), VENDOR(5), FRANCHISE(6), SUB_ADMIN(7), AREA_MANAGER(8), MANAGER(9), LOCAL_ADMIN(10)');
 
   // ========================================
   // 2. SERVICE CATEGORIES (11 categories)
@@ -173,7 +196,7 @@ async function main() {
   // 4. ADMIN USER
   // ========================================
   console.log('👤 Creating admin user...');
-  const adminPasswordHash = await hashPassword('admin123');
+  const adminPasswordHash = await hashPassword('admin@123');
   const admin = await db.user.create({
     data: {
       email: 'admin@bookyourservice.co.in',
@@ -350,6 +373,181 @@ async function main() {
     });
     clients.push(client);
   }
+
+  // ========================================
+  // 6b. USERS FOR NEW ROLES
+  // ========================================
+  console.log('👔 Creating users for new roles...');
+  const newRolePasswordHash = await hashPassword('roleuser123');
+
+  // TECHNICIAN
+  const technician1 = await db.user.create({
+    data: {
+      email: 'technician.suresh@gmail.com',
+      phone: '+919912345680',
+      passwordHash: newRolePasswordHash,
+      name: 'Suresh Tech',
+      roleId: technicianRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      pincode: '560034',
+      address: '45, Electronic City, Bengaluru',
+      latitude: 12.8440,
+      longitude: 77.6730,
+    },
+  });
+
+  const technician2 = await db.user.create({
+    data: {
+      email: 'technician.mohan@gmail.com',
+      phone: '+919912345681',
+      passwordHash: newRolePasswordHash,
+      name: 'Mohan Das',
+      roleId: technicianRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Delhi',
+      state: 'Delhi',
+      country: 'India',
+      pincode: '110002',
+      address: '12, Lajpat Nagar, New Delhi',
+      latitude: 28.5685,
+      longitude: 77.2385,
+    },
+  });
+
+  // VENDOR
+  const vendor1 = await db.user.create({
+    data: {
+      email: 'vendor.spareparts@gmail.com',
+      phone: '+919912345682',
+      passwordHash: newRolePasswordHash,
+      name: 'Ravi Spare Parts',
+      roleId: vendorRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      pincode: '400003',
+      address: '56, Crawford Market, Mumbai',
+      latitude: 18.9407,
+      longitude: 72.8344,
+    },
+  });
+
+  // FRANCHISE
+  const franchise1 = await db.user.create({
+    data: {
+      email: 'franchise.bengaluru@gmail.com',
+      phone: '+919912345683',
+      passwordHash: newRolePasswordHash,
+      name: 'Nandish Franchise',
+      roleId: franchiseRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      pincode: '560001',
+      address: '22, MG Road, Bengaluru',
+      latitude: 12.9756,
+      longitude: 77.6070,
+    },
+  });
+
+  // SUB_ADMIN
+  const subAdmin1 = await db.user.create({
+    data: {
+      email: 'subadmin.operations@gmail.com',
+      phone: '+919912345684',
+      passwordHash: newRolePasswordHash,
+      name: 'Amit Sub Admin',
+      roleId: subAdminRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Mumbai',
+      state: 'Maharashtra',
+      country: 'India',
+      pincode: '400001',
+      address: 'BookYourService Office, Fort, Mumbai',
+      latitude: 18.9322,
+      longitude: 72.8264,
+    },
+  });
+
+  // AREA_MANAGER
+  const areaManager1 = await db.user.create({
+    data: {
+      email: 'areamanager.south@gmail.com',
+      phone: '+919912345685',
+      passwordHash: newRolePasswordHash,
+      name: 'Lakshmi Area Manager',
+      roleId: areaManagerRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      pincode: '560078',
+      address: '15, Jayanagar, Bengaluru',
+      latitude: 12.9250,
+      longitude: 77.5938,
+    },
+  });
+
+  // MANAGER
+  const manager1 = await db.user.create({
+    data: {
+      email: 'manager.bengaluru@gmail.com',
+      phone: '+919912345686',
+      passwordHash: newRolePasswordHash,
+      name: 'Venkat Manager',
+      roleId: managerRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      pincode: '560001',
+      address: '8, Indiranagar, Bengaluru',
+      latitude: 12.9784,
+      longitude: 77.6408,
+    },
+  });
+
+  // LOCAL_ADMIN
+  const localAdmin1 = await db.user.create({
+    data: {
+      email: 'localadmin.koramangala@gmail.com',
+      phone: '+919912345687',
+      passwordHash: newRolePasswordHash,
+      name: 'Prakash Local Admin',
+      roleId: localAdminRole.id,
+      status: 'ACTIVE',
+      emailVerified: true,
+      phoneVerified: true,
+      city: 'Bengaluru',
+      state: 'Karnataka',
+      country: 'India',
+      pincode: '560034',
+      address: '33, HSR Layout, Bengaluru',
+      latitude: 12.9116,
+      longitude: 77.6389,
+    },
+  });
+
+  console.log('👔 New role users created: 2 technicians, 1 vendor, 1 franchise, 1 sub_admin, 1 area_manager, 1 manager, 1 local_admin');
 
   // ========================================
   // 7. SERVICES (15 services across 11 categories)
@@ -1981,10 +2179,10 @@ For questions about these Community Guidelines:
   console.log('========================================');
   console.log('📊 SEED DATA SUMMARY');
   console.log('========================================');
-  console.log(`Roles: 3 (CLIENT, PROVIDER, ADMIN)`);
+  console.log(`Roles: 10 (CLIENT, PROVIDER, ADMIN, TECHNICIAN, VENDOR, FRANCHISE, SUB_ADMIN, AREA_MANAGER, MANAGER, LOCAL_ADMIN)`);
   console.log(`Categories: 11 (Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, Movers and Packers)`);
   console.log(`Subcategories: 30 (10 per category)`);
-  console.log(`Admin User: 1 (admin@bookyourservice.co.in / admin123)`);
+  console.log(`Admin User: 1 (admin@bookyourservice.co.in / admin@123)`);
   console.log(`Providers: ${providers.length} (Delhi, Mumbai, Bengaluru, Hyderabad, Chennai) — All KYC APPROVED`);
   console.log(`Clients: ${clients.length} (various statuses: ACTIVE, PENDING, BLOCKED, SUSPENDED)`);
   console.log(`Services: ${services.length} (across 11 categories, all active & approved)`);

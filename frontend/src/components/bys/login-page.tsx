@@ -576,12 +576,10 @@ export function LoginPage() {
                         onClick={async () => {
                           setEmail('admin@bookyourservice.co.in');
                           setPassword('admin@123');
-                          setActiveTab('client');
                         }}
                       >
                         <Shield className="mr-1.5 size-3.5" /> Use Default Super Admin Credentials
                       </Button>
-                      <p className="mt-1.5 text-[10px] text-amber-600/70 text-center">admin@bookyourservice.co.in / admin@123</p>
                     </div>
 
                     <p className="text-center text-sm text-muted-foreground">

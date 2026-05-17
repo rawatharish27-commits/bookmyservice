@@ -113,41 +113,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (typeof window === 'undefined') return null;
     return localStorage.getItem('bys_token');
   });
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const login = useCallback(async (email: string, password: string) => {
-    const res = await fetch(apiUrl('/api/auth/login'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || 'Login failed');
-    const authToken = data.accessToken || data.token;
-    setToken(authToken);
-    setUser(data.user);
-    localStorage.setItem('bys_token', authToken);
-    localStorage.setItem('bys_user', JSON.stringify(data.user));
+    setLoading(true);
+    try {
+      const res = await fetch(apiUrl('/api/auth/login'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Login failed');
+      const authToken = data.accessToken || data.token;
+      setToken(authToken);
+      setUser(data.user);
+      localStorage.setItem('bys_token', authToken);
+      localStorage.setItem('bys_user', JSON.stringify(data.user));
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const register = useCallback(async (data: RegisterData) => {
-    // Map roleId to role string for the API, supporting all new roles
-    const payload = {
-      ...data,
-      role: data.role || ROLE_MAP[data.roleId] || 'CLIENT',
-    };
-    const res = await fetch(apiUrl('/api/auth/register'), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.error || 'Registration failed');
-    const authToken = result.accessToken || result.token;
-    setToken(authToken);
-    setUser(result.user);
-    localStorage.setItem('bys_token', authToken);
-    localStorage.setItem('bys_user', JSON.stringify(result.user));
+    setLoading(true);
+    try {
+      // Map roleId to role string for the API, supporting all new roles
+      const payload = {
+        ...data,
+        role: data.role || ROLE_MAP[data.roleId] || 'CLIENT',
+      };
+      const res = await fetch(apiUrl('/api/auth/register'), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.error || 'Registration failed');
+      const authToken = result.accessToken || result.token;
+      setToken(authToken);
+      setUser(result.user);
+      localStorage.setItem('bys_token', authToken);
+      localStorage.setItem('bys_user', JSON.stringify(result.user));
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   const logout = useCallback(() => {
@@ -174,6 +184,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshProfile = useCallback(async () => {
     if (!token) return;
+    setLoading(true);
     try {
       const res = await fetch(apiUrl('/api/auth/profile'), {
         headers: { 'Authorization': `Bearer ${token}` },
@@ -185,6 +196,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {
       // ignore
+    } finally {
+      setLoading(false);
     }
   }, [token]);
 

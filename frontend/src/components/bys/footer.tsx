@@ -178,9 +178,18 @@ export function Footer() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
+      try {
+        await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: 'Newsletter Subscriber', email, subject: 'Newsletter Subscription', message: `Please subscribe ${email} to the newsletter.` }),
+        });
+      } catch {
+        // Newsletter subscription will be available soon
+      }
       setSubscribed(true);
       setEmail('');
       setTimeout(() => setSubscribed(false), 3000);
@@ -340,9 +349,9 @@ export function Footer() {
                   >
                     BookYourService Technologies Pvt. Ltd.
                     <br />
-                    123 Service Street, Fort
+                    12, Andheri West
                     <br />
-                    Mumbai 400001, India
+                    Mumbai 400058, India
                   </ContactPill>
                 </li>
                 <li>
