@@ -209,6 +209,7 @@ export function LocalAdminDashboardPage() {
   const [selectedTechnician, setSelectedTechnician] = useState<string>('');
 
   const data = apiData || getMockLocalAdminData();
+  const isUsingMockData = !apiData;
 
   const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -227,12 +228,21 @@ export function LocalAdminDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={() => navigate('local-admin-dashboard')} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
         <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Local Admin Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage local area, verify providers & monitor bookings</p>
       </motion.div>
+
+      {/* Demo Data Banner */}
+      {isUsingMockData && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5">
+          <AlertCircle className="size-4 shrink-0 text-amber-600" />
+          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
+          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
+        </div>
+      )}
 
       {/* Welcome Banner */}
       <motion.div

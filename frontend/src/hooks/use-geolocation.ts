@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface GeoLocation {
   latitude: number | null;
@@ -17,14 +17,20 @@ export function useGeolocation() {
     city: null,
   });
 
+  // N18 fix — track mounted state for cleanup
+  const mountedRef = useRef(true);
+
   useEffect(() => {
+    mountedRef.current = true;
     const initGeo = () => {
       if (!navigator.geolocation) {
-        setLocation(prev => ({
-          ...prev,
-          error: 'Geolocation is not supported by your browser',
-          loading: false,
-        }));
+        if (mountedRef.current) {
+          setLocation(prev => ({
+            ...prev,
+            error: 'Geolocation is not supported by your browser',
+            loading: false,
+          }));
+        }
         return;
       }
 
@@ -37,7 +43,7 @@ export function useGeolocation() {
           try {
             const res = await fetch(
               `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
-              { headers: { 'Accept-Language': 'en' } }
+              { headers: { 'Accept-Language': 'en', 'User-Agent': 'BookYourService/1.0 (https://bookyourservice.co.in)' } }
             );
             if (res.ok) {
               const data = await res.json();
@@ -47,33 +53,47 @@ export function useGeolocation() {
             // Reverse geocoding failed, that's OK
           }
 
-          setLocation({
-            latitude,
-            longitude,
-            error: null,
-            loading: false,
-            city,
-          });
+          if (mountedRef.current) {
+            setLocation({
+              latitude,
+              longitude,
+              error: null,
+              loading: false,
+              city,
+            });
+          }
         },
         (err) => {
-          setLocation(prev => ({
-            ...prev,
-            error: err.message,
-            loading: false,
-          }));
+          if (mountedRef.current) {
+            setLocation(prev => ({
+              ...prev,
+              error: err.message,
+              loading: false,
+            }));
+          }
         },
         {
           enableHighAccuracy: true,
           timeout: 10000,
-          maximumAge: 60000, // Cache for 1 minute
+          maximumAge: 60000,
         }
       );
     };
 
-    queueMicrotask(initGeo);
+    initGeo();
+    return () => { mountedRef.current = false; };
   }, []);
 
-  const refreshLocation = () => {
+  // N19 fix — wrap refreshLocation in useCallback, N20 fix — add geolocation check
+  const refreshLocation = useCallback(() => {
+    if (!navigator.geolocation) {
+      setLocation(prev => ({
+        ...prev,
+        error: 'Geolocation is not supported by your browser',
+        loading: false,
+      }));
+      return;
+    }
     setLocation(prev => ({ ...prev, loading: true, error: null }));
     navigator.geolocation.getCurrentPosition(
       async (position) => {
@@ -82,7 +102,7 @@ export function useGeolocation() {
         try {
           const res = await fetch(
             `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
-            { headers: { 'Accept-Language': 'en' } }
+            { headers: { 'Accept-Language': 'en', 'User-Agent': 'BookYourService/1.0 (https://bookyourservice.co.in)' } }
           );
           if (res.ok) {
             const data = await res.json();
@@ -91,14 +111,18 @@ export function useGeolocation() {
         } catch {
           // Reverse geocoding failed, that's OK
         }
-        setLocation({ latitude, longitude, error: null, loading: false, city });
+        if (mountedRef.current) {
+          setLocation({ latitude, longitude, error: null, loading: false, city });
+        }
       },
       (err) => {
-        setLocation(prev => ({ ...prev, error: err.message, loading: false }));
+        if (mountedRef.current) {
+          setLocation(prev => ({ ...prev, error: err.message, loading: false }));
+        }
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
-  };
+  }, []);
 
   return { ...location, refreshLocation };
 }

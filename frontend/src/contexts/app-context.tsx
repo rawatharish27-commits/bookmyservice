@@ -81,6 +81,7 @@ export type Page =
   | 'vendor-payouts'
   // Area Manager pages
   | 'area-manager-dashboard'
+  | 'client-commissions'
   // Join pages
   | 'join-manager'
   | 'join-local-admin'
@@ -120,7 +121,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [nav, setNav] = useState<NavigationState>({ page: 'home', params: {} });
 
   const navigate = useCallback((page: Page, params: Record<string, string> = {}) => {
-    setHistory(prev => [...prev, nav]);
+    setHistory(prev => {
+      const newHistory = [...prev, nav];
+      // Cap history to prevent memory leak (N42 fix)
+      return newHistory.length > 50 ? newHistory.slice(-50) : newHistory;
+    });
     setNav({ page, params });
     window.scrollTo(0, 0);
   }, [nav]);
@@ -129,14 +134,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setHistory(prev => {
       const newHistory = [...prev];
       const last = newHistory.pop();
-      if (newHistory.length === 0) {
-        setNav({ page: 'home', params: {} });
-        return [{ page: 'home', params: {} }];
-      }
-      if (last) {
-        setNav(last);
+      if (newHistory.length === 0 || !last) {
+        // Will set nav to home below (N12 fix — no side effects in updater)
+        return [];
       }
       return newHistory;
+    });
+    // Set nav independently (N12 fix — don't call setNav inside setHistory updater)
+    setHistory(prev => {
+      if (prev.length === 0) {
+        setNav({ page: 'home', params: {} });
+      } else {
+        setNav(prev[prev.length - 1]);
+      }
+      return prev;
     });
   }, []);
 

@@ -6,9 +6,9 @@ export const COMPANY_INFO = {
   website: 'https://bookyourservice.co.in',
   supportHours: 'Mon-Sat: 9:00 AM - 7:00 PM',
   social: {
-    facebook: '#',
-    twitter: '#',
-    instagram: '#',
-    linkedin: '#',
+    facebook: '#',   // Placeholder — replace with actual Facebook URL
+    twitter: '#',    // Placeholder — replace with actual Twitter/X URL
+    instagram: '#',  // Placeholder — replace with actual Instagram URL
+    linkedin: '#',   // Placeholder — replace with actual LinkedIn URL
   },
 };

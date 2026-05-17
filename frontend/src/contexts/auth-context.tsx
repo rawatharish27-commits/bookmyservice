@@ -31,6 +31,7 @@ export interface User {
   kycStatus?: 'pending' | 'submitted' | 'verified' | 'rejected' | 'not_started';
   technicianProfile?: TechnicianProfile | null;
   walletBalance?: number;
+  createdAt?: string;
 }
 
 // Role ID constants for the multi-role system
@@ -86,6 +87,7 @@ interface AuthContextType {
   logout: () => void;
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
+  socialLogin: (authToken: string, userData: User) => void;
 }
 
 export interface RegisterData {
@@ -95,10 +97,11 @@ export interface RegisterData {
   name: string;
   roleId: number;
   role?: string;
+  specialization?: string;
 }
 
-// Sensitive fields that should never be stored in localStorage
-const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token'] as const;
+// Sensitive fields that should never be stored in localStorage (Old #46 fix)
+const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token', 'walletBalance', 'bankAccountNumber', 'ifscCode', 'upiId'] as const;
 
 function sanitizeUser(user: User | null): User | null {
   if (!user) return null;
@@ -124,8 +127,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null;
     const stored = localStorage.getItem('bys_token');
-    // Guard against the literal string "undefined" being stored
-    if (!stored || stored === 'undefined') return null;
+    // Guard against the literal string "undefined" or "null" being stored (Old #42 fix)
+    if (!stored || stored === 'undefined' || stored === 'null') return null;
     return stored;
   });
   const [loading, setLoading] = useState(() => {
@@ -163,6 +166,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     try {
       // Map roleId to role string for the API, supporting all new roles
+      // Include specialization if provided (N45 fix)
       const payload = {
         ...data,
         role: data.role || ROLE_MAP[data.roleId] || 'CLIENT',
@@ -228,9 +232,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const data = await res.json();
         setUser(data.user);
         localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
+      } else {
+        // Auto-logout on 401/invalid token (N4, N7 fix)
+        setToken(null);
+        setUser(null);
+        localStorage.removeItem('bys_token');
+        localStorage.removeItem('bys_user');
       }
     } catch {
-      // ignore
+      // Network error — don't auto-logout, just stop loading
     } finally {
       setLoading(false);
     }
@@ -254,8 +264,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(interval);
   }, [token, refreshProfile]);
 
+  // Social login function — properly updates React state + localStorage (N23 fix)
+  const socialLogin = useCallback((authToken: string, userData: User) => {
+    setToken(authToken);
+    setUser(userData);
+    localStorage.setItem('bys_token', authToken);
+    localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(userData)));
+  }, []);
+
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, refreshProfile }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, refreshProfile, socialLogin }}>
       {children}
     </AuthContext.Provider>
   );

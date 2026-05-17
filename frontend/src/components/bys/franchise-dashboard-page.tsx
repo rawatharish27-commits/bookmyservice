@@ -48,6 +48,8 @@ interface FranchiseStats {
   totalRevenue: number;
   pendingBookings: number;
   completedBookings: number;
+  commissionRate?: number;
+  status?: string;
 }
 
 const fadeUp = {
@@ -88,10 +90,38 @@ export function FranchiseDashboardPage() {
     totalRevenue: 0,
     pendingBookings: 0,
     completedBookings: 0,
+    commissionRate: undefined as number | undefined,
+    status: undefined as string | undefined,
   };
 
   const recentVendors = (Array.isArray(vendorsData) ? vendorsData : []).slice(0, 5);
   const recentBookings = (Array.isArray(bookingsData) ? bookingsData : []).slice(0, 5);
+
+  const isLoading = statsLoading && vendorsLoading && bookingsLoading;
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="mb-6">
+          <Skeleton className="mb-3 h-8 w-32" />
+          <Skeleton className="h-6 w-64" />
+        </div>
+        <div className="mb-6 h-32 animate-pulse rounded-2xl bg-muted/50" />
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <Skeleton key={i} className="h-24 rounded-xl" />
+          ))}
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <Skeleton className="h-64 rounded-xl" />
+          <Skeleton className="h-64 rounded-xl" />
+        </div>
+        <div className="mt-6">
+          <Skeleton className="h-40 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -344,11 +374,11 @@ export function FranchiseDashboardPage() {
                 </div>
                 <div className="rounded-xl bg-emerald-50 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Active Status</p>
-                  <Badge variant="outline" className="mt-1 bg-green-50 text-green-700 border-green-200">Active</Badge>
+                  <Badge variant="outline" className="mt-1 bg-green-50 text-green-700 border-green-200">{stats.status || 'Active'}</Badge>
                 </div>
                 <div className="rounded-xl bg-amber-50 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Commission Rate</p>
-                  <p className="mt-1 text-lg font-bold text-amber-700">5%</p>
+                  <p className="mt-1 text-lg font-bold text-amber-700">{stats.commissionRate || '5'}%</p>
                 </div>
               </div>
             </CardContent>

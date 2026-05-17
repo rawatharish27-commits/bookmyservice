@@ -87,10 +87,15 @@ interface JobsResponse {
 }
 
 interface EarningsResponse {
-  todayEarnings: number;
-  totalEarnings: number;
-  thisWeekEarnings: number;
-  thisMonthEarnings: number;
+  // API may return either camelCase or short form
+  todayEarnings?: number;
+  totalEarnings?: number;
+  thisWeekEarnings?: number;
+  thisMonthEarnings?: number;
+  today?: number;
+  week?: number;
+  month?: number;
+  allTime?: number;
 }
 
 interface ProfileResponse {
@@ -206,8 +211,10 @@ export function TechnicianDashboardPage() {
   const isOnline = profile?.availabilityStatus === 'available';
   const activeJobs = activeJobsData?.jobs || [];
   const completedJobs = (completedJobsData?.jobs || []).slice(0, 5);
-  const todayEarnings = earningsData?.todayEarnings || 0;
-  const totalEarnings = earningsData?.totalEarnings || 0;
+  const todayEarnings = earningsData?.todayEarnings ?? earningsData?.today ?? 0;
+  const weekEarnings = earningsData?.thisWeekEarnings ?? earningsData?.week ?? 0;
+  const monthEarnings = earningsData?.thisMonthEarnings ?? earningsData?.month ?? 0;
+  const totalEarnings = earningsData?.totalEarnings ?? earningsData?.allTime ?? 0;
   const completedCount = completedJobsData?.pagination?.total || completedJobsData?.jobs?.length || 0;
   const avgRating = profile?.rating || 0;
 
@@ -748,8 +755,8 @@ export function TechnicianDashboardPage() {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
                   { label: 'Today', value: `₹${todayEarnings.toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
-                  { label: 'This Week', value: `₹${(earningsData?.thisWeekEarnings || 0).toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
-                  { label: 'This Month', value: `₹${(earningsData?.thisMonthEarnings || 0).toLocaleString()}`, gradient: 'from-cyan-400 to-blue-500' },
+                  { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
+                  { label: 'This Month', value: `₹${monthEarnings.toLocaleString()}`, gradient: 'from-cyan-400 to-blue-500' },
                   { label: 'All Time', value: `₹${totalEarnings.toLocaleString()}`, gradient: 'from-rose-400 to-pink-500' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center transition-colors hover:bg-muted/50">

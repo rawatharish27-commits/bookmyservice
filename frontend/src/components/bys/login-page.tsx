@@ -13,9 +13,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { useApiMutation } from '@/hooks/use-api';
+import { useApiMutation, useApi } from '@/hooks/use-api';
 import { apiUrl } from '@/lib/api-url';
 import type { Page } from '@/contexts/app-context';
+import { ROLE_DASHBOARD_MAP } from '@/App';
 import { toast } from 'sonner';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
@@ -55,7 +56,7 @@ const trustBadges = [
 ];
 
 export function LoginPage() {
-  const { login } = useAuth();
+  const { login, socialLogin } = useAuth();
   const { navigate } = useApp();
   const [activeTab, setActiveTab] = useState<string>('client');
   const [email, setEmail] = useState('');
@@ -68,6 +69,7 @@ export function LoginPage() {
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const forgotMutation = useApiMutation();
+  const { data: statsData } = useApi<{ totalProviders?: string; totalCustomers?: string; avgRating?: string }>('/api/stats');
 
   const handleGoogleLogin = async () => {
     if (!GOOGLE_CLIENT_ID) {
@@ -100,30 +102,16 @@ export function LoginPage() {
                 }),
               });
 
-              if (!backendRes.ok) {
-                const errData = await backendRes.json().catch(() => ({}));
-                throw new Error(errData.error || 'Google login failed');
-              }
               const data = await backendRes.json();
+              if (!backendRes.ok) {
+                throw new Error(data.error || 'Google login failed');
+              }
 
-              // Store auth data same as regular login
-              localStorage.setItem('bys_token', data.accessToken);
-              localStorage.setItem('bys_user', JSON.stringify(data.user));
+              // Use socialLogin from auth-context to properly update React state + localStorage (N23 fix)
+              socialLogin(data.accessToken, data.user);
 
-              // Redirect based on role
-              const roleDashboardMap: Record<number, Page> = {
-                1: 'client-dashboard',
-                2: 'provider-dashboard',
-                3: 'super-admin-dashboard',
-                4: 'technician-dashboard',
-                5: 'vendor-dashboard',
-                6: 'franchise-dashboard',
-                7: 'admin-dashboard',
-                8: 'area-manager-dashboard',
-                9: 'manager-dashboard',
-                10: 'local-admin-dashboard',
-              };
-              navigate(roleDashboardMap[data.user.roleId] || 'client-dashboard');
+              // Redirect based on role (N63 fix — use shared ROLE_DASHBOARD_MAP)
+              navigate((ROLE_DASHBOARD_MAP[data.user.roleId] as Page) || 'client-dashboard');
             } catch (err) {
               toast.error(err instanceof Error ? err.message : 'Google login failed. Please try again.');
             }
@@ -137,7 +125,6 @@ export function LoginPage() {
   };
 
   const isClient = activeTab === 'client';
-  const focusColor = isClient ? 'emerald' : 'sky';
   const tabGradient = isClient
     ? 'from-emerald-600 via-teal-500 to-cyan-500'
     : 'from-sky-500 via-blue-500 to-rose-500';
@@ -183,19 +170,7 @@ export function LoginPage() {
       // Read the user from localStorage to get the role
       const storedUser = JSON.parse(localStorage.getItem('bys_user') || '{}');
       const roleId = storedUser.roleId;
-      const roleDashboardMap: Record<number, Page> = {
-        1: 'client-dashboard',
-        2: 'provider-dashboard',
-        3: 'super-admin-dashboard',
-        4: 'technician-dashboard',
-        5: 'vendor-dashboard',
-        6: 'franchise-dashboard',
-        7: 'admin-dashboard',
-        8: 'area-manager-dashboard',
-        9: 'manager-dashboard',
-        10: 'local-admin-dashboard',
-      };
-      navigate(roleDashboardMap[roleId] || 'client-dashboard');
+      navigate((ROLE_DASHBOARD_MAP[roleId] as Page) || 'client-dashboard');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed. Please try again.');
     } finally {
@@ -301,9 +276,9 @@ export function LoginPage() {
             {/* Stats */}
             <div className="flex gap-8">
               {[
-                { value: '500+', label: 'Providers (approx)' },
-                { value: '10K+', label: 'Customers (approx)' },
-                { value: '4.8', label: 'Rating (approx)' },
+                { value: statsData?.totalProviders || '500+', label: 'Providers' },
+                { value: statsData?.totalCustomers || '10K+', label: 'Customers' },
+                { value: statsData?.avgRating || '4.8', label: 'Rating' },
               ].map((stat, i) => (
                 <motion.div
                   key={i}
@@ -475,7 +450,7 @@ export function LoginPage() {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground/70 flex items-center gap-1">
-                        <User className="size-3" /> Role: Client
+                        <User className="size-3" /> Role: Client (determined by your account)
                       </p>
                     </div>
 
@@ -508,6 +483,7 @@ export function LoginPage() {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -655,7 +631,7 @@ export function LoginPage() {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground/70 flex items-center gap-1">
-                        <Briefcase className="size-3" /> Role: Service Provider
+                        <Briefcase className="size-3" /> Role: Service Provider (determined by your account)
                       </p>
                     </div>
 
@@ -688,6 +664,7 @@ export function LoginPage() {
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
                           className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                         >
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

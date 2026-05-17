@@ -3,6 +3,7 @@ import { useApp, type Page } from '@/contexts/app-context';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { apiUrl } from '@/lib/api-url';
 import {
   Wrench,
   Globe,
@@ -32,6 +33,7 @@ import {
 interface FooterLink {
   label: string;
   page: Page;
+  params?: Record<string, string>;
 }
 
 const aboutLinks: FooterLink[] = [
@@ -45,7 +47,7 @@ const quickLinks: FooterLink[] = [
   { label: 'Home', page: 'home' },
   { label: 'Categories', page: 'categories' },
   { label: 'Find Services', page: 'search' },
-  { label: 'Become a Provider', page: 'register' },
+  { label: 'Become a Provider', page: 'register', params: { role: 'provider' } },
 ];
 
 // All 11 service categories with their icons
@@ -95,10 +97,10 @@ function SectionHeader({ children, dotFrom, dotTo }: { children: React.ReactNode
 
 // ─── Footer Link with Animated Underline ─────────────────────────────────────
 
-function FooterLinkButton({ link, onNavigate }: { link: FooterLink; onNavigate: (page: Page) => void }) {
+function FooterLinkButton({ link, onNavigate }: { link: FooterLink; onNavigate: (page: Page, params?: Record<string, string>) => void }) {
   return (
     <motion.button
-      onClick={() => onNavigate(link.page)}
+      onClick={() => onNavigate(link.page, link.params)}
       className="group relative inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-blue-600"
       whileHover={{ x: 4 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -173,8 +175,8 @@ export function Footer() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
-  const handleNavigate = (page: Page) => {
-    navigate(page);
+  const handleNavigate = (page: Page, params?: Record<string, string>) => {
+    navigate(page, params);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -182,10 +184,10 @@ export function Footer() {
     e.preventDefault();
     if (email.trim()) {
       try {
-        await fetch('/api/contact', {
+        await fetch(apiUrl('/api/newsletter/subscribe'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: 'Newsletter Subscriber', email, subject: 'Newsletter Subscription', message: `Please subscribe ${email} to the newsletter.` }),
+          body: JSON.stringify({ email }),
         });
       } catch {
         // Newsletter subscription will be available soon

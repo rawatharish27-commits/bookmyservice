@@ -70,6 +70,7 @@ interface ServiceArea {
   city: string;
   pincode: string;
   isActive: boolean;
+  managerId?: string;
   providerCount: number;
   customerCount: number;
   targetProviders: number;
@@ -94,6 +95,7 @@ interface CommissionSummary {
   approvedAmount: number;
   paidAmount: number;
   totalCount: number;
+  rate?: number;
 }
 
 export function AreaManagerDashboardPage() {
@@ -103,11 +105,11 @@ export function AreaManagerDashboardPage() {
   const { data: referralsData, loading: referralsLoading } = useApi<Referral[]>('/api/referrals');
   const { data: commissionsData, loading: commissionsLoading } = useApi<{ summary: CommissionSummary }>('/api/commissions');
 
-  const myArea = areasData?.find(() => true) || areasData?.[0];
+  const myArea = areasData?.find((a: any) => a.managerId === user?.id) || areasData?.[0];
   const recentReferrals = (Array.isArray(referralsData) ? referralsData : []).slice(0, 5);
   // Handle different possible API response shapes for commissions
   const commissionSummary = commissionsData?.summary ||
-    (Array.isArray(commissionsData) ? undefined : undefined);
+    (Array.isArray(commissionsData) ? { totalCommission: commissionsData.reduce((sum: number, c: any) => sum + (c.totalCommission || 0), 0), totalEarnings: commissionsData.reduce((sum: number, c: any) => sum + (c.totalEarnings || c.totalCommission || 0), 0), pendingAmount: commissionsData.reduce((sum: number, c: any) => sum + (c.pendingAmount || 0), 0), approvedAmount: commissionsData.reduce((sum: number, c: any) => sum + (c.approvedAmount || 0), 0), paidAmount: commissionsData.reduce((sum: number, c: any) => sum + (c.paidAmount || 0), 0), totalCount: commissionsData.length, rate: undefined as number | undefined } : undefined);
 
   const providerTarget = myArea?.targetProviders || 20;
   const customerTarget = myArea?.targetCustomers || 100;
@@ -117,9 +119,11 @@ export function AreaManagerDashboardPage() {
   const customerPercent = Math.min(100, Math.round((customerCount / customerTarget) * 100));
 
   const handleWhatsAppProvider = useCallback(() => {
-    const message = `Hey! 🛠️ Join BookYourService as a Provider! Offer your services - AC repair, plumbing, electrical, and more. Sign up today and start getting customers!`;
+    const message = user?.referralCode
+      ? `Hi! I'm inviting you to join BookYourService as a service provider. Use my referral code: ${user.referralCode}\nVisit: https://bookyourservice.co.in/?ref=${user.referralCode}`
+      : 'Hi! Join BookYourService as a service provider. Visit: https://bookyourservice.co.in';
     window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
-  }, []);
+  }, [user?.referralCode]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -311,7 +315,7 @@ export function AreaManagerDashboardPage() {
                   </div>
                   <div className="rounded-xl bg-sky-50 p-4 text-center">
                     <p className="text-xs text-muted-foreground">Commission Rate</p>
-                    <p className="mt-1 text-2xl font-bold text-[#1e3a5f]">3%</p>
+                    <p className="mt-1 text-2xl font-bold text-[#1e3a5f]">{commissionSummary?.rate || '3'}%</p>
                   </div>
                 </div>
               )}

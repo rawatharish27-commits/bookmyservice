@@ -285,8 +285,28 @@ export function SuperAdminDashboardPage() {
   const { data: apiData, loading, error } = useApi<DashboardData>('/api/admin/dashboard');
   const [activeTab, setActiveTab] = useState('overview');
 
-  const data = apiData || getMockDashboardData();
+  // Use API data when available; fallback to mock only when API is unreachable
   const isUsingMockData = !apiData;
+  const data: DashboardData = apiData
+    ? {
+        stats: {
+          totalBookings: apiData.stats?.totalBookings || 0,
+          totalRevenue: apiData.stats?.totalRevenue || 0,
+          activeProviders: apiData.stats?.activeProviders || 0,
+          complaints: apiData.stats?.complaints || 0,
+          cancellations: apiData.stats?.cancellations || 0,
+          avgCompletionTime: apiData.stats?.avgCompletionTime || '-',
+        },
+        topProviders: apiData.topProviders || [],
+        escalatedComplaints: apiData.escalatedComplaints || [],
+        areaPerformance: apiData.areaPerformance || [],
+        liveMonitoring: apiData.liveMonitoring || { liveJobs: 0, liveProviders: 0, liveTechnicians: 0, fraudAlerts: 0 },
+        aiAnalysis: apiData.aiAnalysis || { demandPrediction: [], cityExpansion: [], pricingOptimization: [] },
+        dailyBookings: apiData.dailyBookings || [],
+        weeklyRevenue: apiData.weeklyRevenue || [],
+        monthlyGrowth: apiData.monthlyGrowth || [],
+      }
+    : getMockDashboardData();
 
   const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -346,8 +366,8 @@ export function SuperAdminDashboardPage() {
           <MetricCard title="Total Bookings" value={data.stats.totalBookings.toLocaleString()} icon={CalendarCheck} iconColor="text-[#2d5a8e]" borderClass="border-l-[#2d5a8e]" trend="up" trendValue="+12.4%" />
           <MetricCard title="Total Revenue" value={`₹${(data.stats.totalRevenue / 100000).toFixed(1)}L`} icon={IndianRupee} iconColor="text-emerald-600" borderClass="border-l-emerald-500" trend="up" trendValue="+8.7%" />
           <MetricCard title="Active Providers" value={data.stats.activeProviders.toLocaleString()} icon={Users} iconColor="text-[#1e3a5f]" borderClass="border-l-[#1e3a5f]" trend="up" trendValue="+5.2%" />
-          <MetricCard title="Complaints" value={data.stats.complaints} icon={AlertTriangle} iconColor="text-orange-600" borderClass="border-l-orange-500" trend="down" trendValue="-3.1% (demo)" />
-          <MetricCard title="Cancellations" value={data.stats.cancellations} icon={Ban} iconColor="text-red-600" borderClass="border-l-red-500" trend="down" trendValue="-1.8% (demo)" />
+          <MetricCard title="Complaints" value={data.stats.complaints} icon={AlertTriangle} iconColor="text-orange-600" borderClass="border-l-orange-500" />
+          <MetricCard title="Cancellations" value={data.stats.cancellations} icon={Ban} iconColor="text-red-600" borderClass="border-l-red-500" />
           <MetricCard title="Avg Completion" value={data.stats.avgCompletionTime} icon={Clock} iconColor="text-violet-600" borderClass="border-l-violet-500" />
         </div>
       </motion.div>

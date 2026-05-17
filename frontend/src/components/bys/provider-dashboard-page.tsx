@@ -73,7 +73,7 @@ interface Booking {
   scheduledTime: string;
   finalPrice: number;
   basePrice: number;
-  providerEarnings: number;
+  providerEarnings?: number;
   platformFee: number;
   service: { id: string; title: string; basePrice: number; category?: { name: string } };
   client?: { id: string; name: string; profileImageUrl?: string };
@@ -263,10 +263,10 @@ export function ProviderDashboardPage() {
     const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     return completedBookings
       .filter((b) => new Date(b.scheduledDate) >= weekAgo)
-      .reduce((sum, b) => sum + (b.providerEarnings || 0), 0);
+      .reduce((sum, b) => sum + (b.providerEarnings ?? 0), 0);
   }, [completedBookings]);
 
-  const totalEarnings = useMemo(() => completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0), [completedBookings]);
+  const totalEarnings = useMemo(() => completedBookings.reduce((s, b) => s + (b.providerEarnings ?? 0), 0), [completedBookings]);
 
   const avgRating = useMemo(() => {
     if (!reviews.length) return 0;
@@ -274,7 +274,7 @@ export function ProviderDashboardPage() {
   }, [reviews]);
 
   /* ---- Journey calculations ---- */
-  const memberSince = user?.email ? 'Jan 2024' : 'Jan 2024';
+  const memberSince = user?.createdAt ? new Date(user.createdAt).toLocaleDateString('en-IN', { month: 'short', year: 'numeric' }) : 'N/A';
   const daysOnPlatform = useMemo(() => {
     if (!bookings.length) return 0;
     const nowMs = new Date().getTime();
@@ -298,7 +298,7 @@ export function ProviderDashboardPage() {
       const d = new Date(b.scheduledDate);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       if (!monthMap[key]) monthMap[key] = { earnings: 0, bookings: 0 };
-      monthMap[key].earnings += b.providerEarnings || 0;
+      monthMap[key].earnings += b.providerEarnings ?? 0;
       monthMap[key].bookings += 1;
     });
     // Also count non-completed for booking volume
@@ -334,7 +334,7 @@ export function ProviderDashboardPage() {
       const sid = b.service?.id || 'unknown';
       if (!svcMap[sid]) svcMap[sid] = { title: b.service?.title || 'Unknown', bookings: 0, earnings: 0, rating: 0 };
       svcMap[sid].bookings += 1;
-      svcMap[sid].earnings += b.providerEarnings || 0;
+      svcMap[sid].earnings += b.providerEarnings ?? 0;
     });
     // attach ratings from service data
     services.forEach((s) => {
@@ -355,7 +355,7 @@ export function ProviderDashboardPage() {
     });
     completedBookings.forEach((b) => {
       const cat = b.service?.category?.name || 'Other';
-      if (catMap[cat]) catMap[cat].earnings += b.providerEarnings || 0;
+      if (catMap[cat]) catMap[cat].earnings += b.providerEarnings ?? 0;
     });
     services.forEach((s) => {
       const cat = s.category?.name || 'Other';
@@ -377,11 +377,10 @@ export function ProviderDashboardPage() {
     return Math.round((completedBookings.length / total) * 100);
   }, [bookings, completedBookings]);
 
-  const onTimeRate = useMemo(() => {
-    // Simulated: providers with good ratings are assumed punctual
-    if (!completedBookings.length) return 0;
-    return Math.min(98, Math.round(70 + avgRating * 5));
-  }, [completedBookings, avgRating]);
+  const onTimeRate: number | null = useMemo(() => {
+    // Use actual API data if available; otherwise null (shown as N/A)
+    return null;
+  }, []);
 
   const repeatCustomerRate = useMemo(() => {
     if (!completedBookings.length) return 0;
@@ -396,12 +395,10 @@ export function ProviderDashboardPage() {
     return Math.round((repeatClients / totalClients) * 100);
   }, [completedBookings]);
 
-  const avgResponseTime = useMemo(() => {
-    // Estimate from accepted bookings: time between createdAt and first action
-    // Simplified: use a heuristic based on booking volume
-    if (!pendingBookings.length && !acceptedOrInProgress.length) return '< 30 min';
-    return '< 1 hour';
-  }, [pendingBookings, acceptedOrInProgress]);
+  const avgResponseTime: string | null = useMemo(() => {
+    // Use actual API data if available; otherwise null (shown as N/A)
+    return null;
+  }, []);
 
   /* ---- Handlers ---- */
   const handleBookingAction = async (bookingId: string, action: string) => {
@@ -1024,7 +1021,7 @@ export function ProviderDashboardPage() {
                 </div>
                 <div className="glass-dark rounded-xl px-4 py-2 text-center">
                   <p className="text-xs text-sky-200">On-Time</p>
-                  <p className="text-lg font-bold text-white">{onTimeRate}%</p>
+                  <p className="text-lg font-bold text-white">{onTimeRate !== null ? `${onTimeRate}%` : 'N/A'}</p>
                 </div>
               </div>
             </div>
@@ -1044,7 +1041,7 @@ export function ProviderDashboardPage() {
             <motion.div variants={fadeUp}>
               <StatCard
                 title="On-Time Arrival"
-                value={`${onTimeRate}%`}
+                value={onTimeRate !== null ? `${onTimeRate}%` : 'N/A'}
                 icon={Clock}
                 gradient="from-sky-400 to-blue-500"
                 bgGlow="bg-sky-500/10"
@@ -1062,7 +1059,7 @@ export function ProviderDashboardPage() {
             <motion.div variants={fadeUp}>
               <StatCard
                 title="Avg Response Time"
-                value={avgResponseTime}
+                value={avgResponseTime ?? 'N/A'}
                 icon={Timer}
                 gradient="from-cyan-400 to-sky-500"
                 bgGlow="bg-sky-500/10"
@@ -1126,7 +1123,7 @@ export function ProviderDashboardPage() {
                 <CardContent className="space-y-5 p-5">
                   {[
                     { label: 'Completion Rate', value: completionRate, color: 'bg-emerald-500', icon: Target },
-                    { label: 'On-Time Arrival', value: onTimeRate, color: 'bg-sky-500', icon: Clock },
+                    { label: 'On-Time Arrival', value: onTimeRate ?? 0, color: 'bg-sky-500', icon: Clock },
                     { label: 'Repeat Customer Rate', value: repeatCustomerRate, color: 'bg-violet-500', icon: Users },
                     { label: 'Profile Strength', value: Math.min(100, Math.round((services.length * 15) + (reviews.length * 5) + (user?.isVerified ? 20 : 0))), color: 'bg-cyan-500', icon: Zap },
                   ].map((metric) => (
@@ -1147,7 +1144,7 @@ export function ProviderDashboardPage() {
                   <div className="grid grid-cols-2 gap-3">
                     <div className="rounded-xl bg-muted/30 p-3 text-center">
                       <p className="text-xs text-muted-foreground">Avg. Response</p>
-                      <p className="mt-1 text-lg font-bold">{avgResponseTime}</p>
+                      <p className="mt-1 text-lg font-bold">{avgResponseTime ?? 'N/A'}</p>
                     </div>
                     <div className="rounded-xl bg-muted/30 p-3 text-center">
                       <p className="text-xs text-muted-foreground">Active Services</p>

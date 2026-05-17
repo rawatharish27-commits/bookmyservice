@@ -3,9 +3,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
+import { useApi } from '@/hooks/use-api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { StatusBadge } from '@/components/bys/shared/status-badge';
 import {
   Building2,
   Users,
@@ -21,13 +23,9 @@ import {
   BarChart3,
   ShieldCheck,
   Clock,
+  AlertTriangle,
+  Loader2,
 } from 'lucide-react';
-
-const fadeUp = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.4 },
-};
 
 interface B2BPartner {
   id: string;
@@ -103,6 +101,16 @@ const b2bPlans = [
 
 export function AdminB2bPage() {
   const { goBack } = useApp();
+  const { data: apiPartners, loading: apiLoading, error: apiError } = useApi<B2BPartner[]>('/api/admin/b2b');
+
+  // Fall back to sample data when API hasn't returned real data yet
+  const partners = apiPartners && apiPartners.length > 0 ? apiPartners : samplePartners;
+  const isDemoData = !apiPartners || apiPartners.length === 0;
+
+  // Compute stats from data source
+  const activePartners = partners.filter(p => p.status === 'ACTIVE').length;
+  const totalBookings = partners.reduce((sum, p) => sum + p.totalBookings, 0);
+  const totalRevenue = partners.reduce((sum, p) => sum + p.totalSpent, 0);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
@@ -114,6 +122,29 @@ export function AdminB2bPage() {
         <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">B2B Partnerships</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage corporate accounts & business partnerships</p>
       </motion.div>
+
+      {/* Demo Data Banner (Old #49 fix) */}
+      {isDemoData && !apiLoading && (
+        <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
+          <AlertTriangle className="size-4 shrink-0" />
+          <span><strong>Demo Data:</strong> Showing sample data. Connect the B2B API endpoint (<code className="bg-amber-100 px-1 rounded text-xs">/api/admin/b2b</code>) to display live partner information.</span>
+        </motion.div>
+      )}
+
+      {/* Loading state */}
+      {apiLoading && (
+        <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="size-4 animate-spin" />
+          Loading partner data…
+        </div>
+      )}
+
+      {/* API Error */}
+      {apiError && !apiLoading && (
+        <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+          Failed to load live data: {apiError}. Showing demo data below.
+        </div>
+      )}
 
       {/* Overview Banner */}
       <motion.div
@@ -135,15 +166,15 @@ export function AdminB2bPage() {
         </div>
       </motion.div>
 
-      {/* Stats Row */}
-      <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
+      {/* Stats Row — values computed from data source */}
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           <Card className="border-l-4 border-l-[#2d5a8e] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Active Partners</p>
-                  <p className="mt-1 text-2xl font-bold">2</p>
+                  <p className="mt-1 text-2xl font-bold">{activePartners}</p>
                 </div>
                 <div className="rounded-lg bg-[#0a1628]/10 p-2.5 text-[#2d5a8e]">
                   <Building2 className="size-5" />
@@ -156,7 +187,7 @@ export function AdminB2bPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Corporate Bookings</p>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">245</p>
+                  <p className="mt-1 text-2xl font-bold text-emerald-700">{totalBookings}</p>
                 </div>
                 <div className="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
                   <Briefcase className="size-5" />
@@ -169,7 +200,7 @@ export function AdminB2bPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">B2B Revenue</p>
-                  <p className="mt-1 text-2xl font-bold text-amber-700">₹3.8L</p>
+                  <p className="mt-1 text-2xl font-bold text-amber-700">₹{(totalRevenue / 100000).toFixed(1)}L</p>
                 </div>
                 <div className="rounded-lg bg-amber-50 p-2.5 text-amber-600">
                   <IndianRupee className="size-5" />
@@ -181,8 +212,8 @@ export function AdminB2bPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">Growth Rate</p>
-                  <p className="mt-1 text-2xl font-bold text-teal-700">+18%</p>
+                  <p className="text-xs font-medium text-muted-foreground">Total Partners</p>
+                  <p className="mt-1 text-2xl font-bold text-teal-700">{partners.length}</p>
                 </div>
                 <div className="rounded-lg bg-teal-50 p-2.5 text-teal-600">
                   <TrendingUp className="size-5" />
@@ -194,7 +225,7 @@ export function AdminB2bPage() {
       </motion.div>
 
       {/* B2B Plans */}
-      <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="mt-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-6">
         <h3 className="mb-4 text-lg font-semibold text-[#0a1628]">Corporate Plans</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {b2bPlans.map((plan) => (
@@ -226,7 +257,7 @@ export function AdminB2bPage() {
       </motion.div>
 
       {/* Corporate Partners List */}
-      <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] pb-3">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
@@ -236,7 +267,7 @@ export function AdminB2bPage() {
           </CardHeader>
           <CardContent className="p-4">
             <div className="space-y-3">
-              {samplePartners.map((partner) => (
+              {partners.map((partner) => (
                 <div
                   key={partner.id}
                   className="flex flex-col gap-3 rounded-xl border border-slate-100 p-4 transition-all hover:bg-sky-50/20 sm:flex-row sm:items-center sm:gap-4"
@@ -247,16 +278,7 @@ export function AdminB2bPage() {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <p className="truncate text-sm font-semibold">{partner.companyName}</p>
-                      <Badge
-                        variant="outline"
-                        className={
-                          partner.status === 'ACTIVE'
-                            ? 'bg-green-50 text-green-700 border-green-200 text-xs'
-                            : 'bg-yellow-50 text-yellow-700 border-yellow-200 text-xs'
-                        }
-                      >
-                        {partner.status}
-                      </Badge>
+                      <StatusBadge status={partner.status} />
                       <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-200 text-xs">
                         {partner.plan}
                       </Badge>
@@ -291,7 +313,7 @@ export function AdminB2bPage() {
       </motion.div>
 
       {/* Bulk Booking Info */}
-      <motion.div {...fadeUp} transition={{ delay: 0.25 }} className="mt-6">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="bg-gradient-to-r from-[#0a1628]/5 to-sky-50/50 pb-3">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0a1628]">

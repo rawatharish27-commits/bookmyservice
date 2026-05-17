@@ -11,25 +11,61 @@ async function main() {
   console.log('🌱 Starting database seeding...');
 
   // Clean up existing data (order matters due to relations)
+  // Child tables first, then parent tables to respect foreign key constraints
   console.log('🧹 Cleaning existing data...');
-  await db.favorite.deleteMany();
+  // Leaf/child tables (no dependent records)
+  await db.inventoryUsage.deleteMany();
+  await db.couponUsage.deleteMany();
+  await db.aMCSReminder.deleteMany();
+  await db.franchiseAnalytics.deleteMany();
+  await db.franchiseVendor.deleteMany();
+  await db.workPhoto.deleteMany();
+  await db.bookingTimeline.deleteMany();
+  await db.bookingTracking.deleteMany();
   await db.disputeMessage.deleteMany();
+  await db.followUp.deleteMany();
+  await db.cRMActivity.deleteMany();
+  await db.referralReward.deleteMany();
+  await db.notification.deleteMany();
+  await db.favorite.deleteMany();
+  await db.complaintEscalation.deleteMany();
+  await db.adminAction.deleteMany();
+  await db.auditLog.deleteMany();
+  await db.analyticsSnapshot.deleteMany();
+  await db.notificationTemplate.deleteMany();
+  await db.liveTechnicianLocation.deleteMany();
+  await db.serviceArea.deleteMany();
+  await db.payoutRequest.deleteMany();
+  await db.invoice.deleteMany();
+  await db.walletTransaction.deleteMany();
+  await db.wallet.deleteMany();
+  // Booking-dependent tables
   await db.dispute.deleteMany();
   await db.negotiation.deleteMany();
   await db.review.deleteMany();
   await db.payment.deleteMany();
+  await db.referral.deleteMany();
+  await db.coupon.deleteMany();
+  await db.aMCSubscription.deleteMany();
+  await db.b2BContract.deleteMany();
+  await db.inventoryItem.deleteMany();
+  // Booking itself
   await db.booking.deleteMany();
+  // Service-dependent tables
   await db.serviceAvailability.deleteMany();
   await db.service.deleteMany();
   await db.serviceSubcategory.deleteMany();
   await db.pricingRule.deleteMany();
   await db.aMCPlan.deleteMany();
   await db.serviceCategory.deleteMany();
-  await db.notification.deleteMany();
+  // User-dependent tables
   await db.adminLog.deleteMany();
   await db.providerKyc.deleteMany();
+  await db.technicianProfile.deleteMany();
+  await db.franchise.deleteMany();
   await db.user.deleteMany();
   await db.role.deleteMany();
+  // Independent/static tables
   await db.faq.deleteMany();
   await db.legalPage.deleteMany();
   await db.seoMetadata.deleteMany();
@@ -37,6 +73,7 @@ async function main() {
   await db.contactMessage.deleteMany();
   await db.visitorSession.deleteMany();
   await db.platformStats.deleteMany();
+  await db.city.deleteMany();
 
   // ========================================
   // 1. ROLES
@@ -73,7 +110,7 @@ async function main() {
     data: { name: 'LOCAL_ADMIN', description: 'Local administrator for a specific zone or branch' },
   });
 
-  console.log('📋 Roles created: CLIENT(1), PROVIDER(2), ADMIN(3), TECHNICIAN(4), VENDOR(5), FRANCHISE(6), SUB_ADMIN(7), AREA_MANAGER(8), MANAGER(9), LOCAL_ADMIN(10)');
+  console.log(`📋 Roles created: CLIENT(${clientRole.id}), PROVIDER(${providerRole.id}), ADMIN(${adminRole.id}), TECHNICIAN(${technicianRole.id}), VENDOR(${vendorRole.id}), FRANCHISE(${franchiseRole.id}), SUB_ADMIN(${subAdminRole.id}), AREA_MANAGER(${areaManagerRole.id}), MANAGER(${managerRole.id}), LOCAL_ADMIN(${localAdminRole.id})`);
 
   // ========================================
   // 2. SERVICE CATEGORIES (11 categories)
@@ -548,6 +585,62 @@ async function main() {
   });
 
   console.log('👔 New role users created: 2 technicians, 1 vendor, 1 franchise, 1 sub_admin, 1 area_manager, 1 manager, 1 local_admin');
+
+  // ========================================
+  // 6c. TECHNICIAN PROFILES
+  // ========================================
+  console.log('🛠️ Creating technician profiles...');
+  await db.technicianProfile.create({
+    data: {
+      userId: technician1.id,
+      skills: JSON.stringify(['air-conditioner', 'refrigerator', 'washing-machine']),
+      isAvailable: true,
+      serviceAreaRadiusKm: 20,
+      serviceAreaPincodes: JSON.stringify(['560034', '560100', '560001']),
+      dailyEarnings: 1200,
+      weeklyEarnings: 7200,
+      monthlyEarnings: 28000,
+      totalEarnings: 145000,
+      totalJobsCompleted: 87,
+      totalJobsRejected: 3,
+      averageRating: 4.5,
+      currentLocationLat: 12.8440,
+      currentLocationLng: 77.6730,
+      locationUpdatedAt: new Date(),
+      bankAccountName: 'Suresh Tech',
+      bankAccountNumber: 'XXXXXX1234',
+      bankIfsc: 'SBIN0012345',
+      bankName: 'State Bank of India',
+      upiId: 'sureshtech@upi',
+    },
+  });
+
+  await db.technicianProfile.create({
+    data: {
+      userId: technician2.id,
+      skills: JSON.stringify(['electrician', 'plumber', 'geyser']),
+      isAvailable: true,
+      serviceAreaRadiusKm: 15,
+      serviceAreaPincodes: JSON.stringify(['110002', '110001', '110019']),
+      dailyEarnings: 950,
+      weeklyEarnings: 5700,
+      monthlyEarnings: 22000,
+      totalEarnings: 98000,
+      totalJobsCompleted: 62,
+      totalJobsRejected: 5,
+      averageRating: 4.2,
+      currentLocationLat: 28.5685,
+      currentLocationLng: 77.2385,
+      locationUpdatedAt: new Date(),
+      bankAccountName: 'Mohan Das',
+      bankAccountNumber: 'XXXXXX5678',
+      bankIfsc: 'HDFC0001234',
+      bankName: 'HDFC Bank',
+      upiId: 'mohandas@upi',
+    },
+  });
+
+  console.log('🛠️ Technician profiles created for 2 technicians');
 
   // ========================================
   // 7. SERVICES (15 services across 11 categories)

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -108,6 +109,9 @@ export function ClientWalletPage() {
   const [withdrawUpiId, setWithdrawUpiId] = useState('');
   const [withdrawSuccess, setWithdrawSuccess] = useState(false);
   const [showAllTx, setShowAllTx] = useState(false);
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+  const [bankIfscCode, setBankIfscCode] = useState('');
+  const [bankAccountHolder, setBankAccountHolder] = useState('');
 
   const wallet = walletData || { balance: 0, cashbackBalance: 0, promoBalance: 0, totalCredited: 0, totalDebited: 0 };
   const transactions = transactionsData?.transactions || [];
@@ -125,13 +129,21 @@ export function ClientWalletPage() {
   const handleWithdraw = async () => {
     const amount = parseFloat(withdrawAmount);
     if (!amount || amount <= 0) return;
+    if (amount < 100) {
+      toast.error('Minimum withdrawal amount is ₹100');
+      return;
+    }
     try {
       await mutate('/api/wallet/withdraw', {
         method: 'POST',
         body: JSON.stringify({
           amount,
           method: withdrawMethod,
-          ...(withdrawMethod === 'UPI' ? { upiId: withdrawUpiId } : {}),
+          ...(withdrawMethod === 'UPI' ? { upiId: withdrawUpiId } : {
+            bankAccountNumber,
+            bankIfscCode,
+            bankAccountHolder,
+          }),
         }),
       });
       setWithdrawSuccess(true);
@@ -147,6 +159,9 @@ export function ClientWalletPage() {
     setWithdrawMethod('BANK');
     setWithdrawUpiId('');
     setWithdrawSuccess(false);
+    setBankAccountNumber('');
+    setBankIfscCode('');
+    setBankAccountHolder('');
   };
 
   return (
@@ -228,7 +243,7 @@ export function ClientWalletPage() {
       >
         <motion.div variants={fadeUp}>
           <button
-            onClick={() => navigate('categories')}
+            onClick={() => toast.info('Wallet top-up coming soon!')}
             className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-5 text-white shadow-lg shadow-emerald-500/25 transition-shadow hover:shadow-xl"
           >
             <Plus className="size-6" />
@@ -408,7 +423,7 @@ export function ClientWalletPage() {
       </motion.div>
 
       {/* Withdrawal Dialog */}
-      <Dialog open={withdrawOpen} onOpenChange={(open) => { if (!open) setWithdrawOpen(false); }}>
+      <Dialog open={withdrawOpen} onOpenChange={(open) => { if (!open) { setWithdrawOpen(false); resetWithdrawForm(); } }}>
         <DialogContent className="rounded-2xl sm:max-w-md">
           {withdrawSuccess ? (
             <>
@@ -537,6 +552,44 @@ export function ClientWalletPage() {
                   </motion.div>
                 )}
 
+                {/* Bank Transfer fields (conditional) */}
+                {withdrawMethod === 'BANK' && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="space-y-3"
+                  >
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Account Number</label>
+                      <Input
+                        placeholder="Enter account number"
+                        value={bankAccountNumber}
+                        onChange={(e) => setBankAccountNumber(e.target.value)}
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">IFSC Code</label>
+                      <Input
+                        placeholder="Enter IFSC code"
+                        value={bankIfscCode}
+                        onChange={(e) => setBankIfscCode(e.target.value)}
+                        className="rounded-xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Account Holder Name</label>
+                      <Input
+                        placeholder="Enter account holder name"
+                        value={bankAccountHolder}
+                        onChange={(e) => setBankAccountHolder(e.target.value)}
+                        className="rounded-xl"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
                 {/* Summary */}
                 {withdrawAmount && parseFloat(withdrawAmount) > 0 && (
                   <motion.div
@@ -577,7 +630,8 @@ export function ClientWalletPage() {
                     !withdrawAmount ||
                     parseFloat(withdrawAmount) <= 0 ||
                     parseFloat(withdrawAmount) > (wallet.balance || 0) ||
-                    (withdrawMethod === 'UPI' && !withdrawUpiId)
+                    (withdrawMethod === 'UPI' && !withdrawUpiId) ||
+                    (withdrawMethod === 'BANK' && (!bankAccountNumber || !bankIfscCode || !bankAccountHolder))
                   }
                   className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
                 >

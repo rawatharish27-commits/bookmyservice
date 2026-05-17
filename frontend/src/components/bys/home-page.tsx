@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useApp } from '@/contexts/app-context';
+import { useApp, type Page } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useApi } from '@/hooks/use-api';
 import { Button } from '@/components/ui/button';
@@ -55,6 +55,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { COMPANY_INFO } from '@/config/company';
+import { ROLE_DASHBOARD_MAP } from '@/App';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -200,6 +201,7 @@ function AnimatedCounter({ value, loading, className = '' }: { value: number; lo
     const end = value;
     const duration = 1200;
     const startTime = performance.now();
+    let rafId: number;
 
     function animate(currentTime: number) {
       const elapsed = currentTime - startTime;
@@ -207,12 +209,13 @@ function AnimatedCounter({ value, loading, className = '' }: { value: number; lo
       const eased = 1 - Math.pow(1 - progress, 3);
       setDisplay(Math.round(start + (end - start) * eased));
       if (progress < 1) {
-        requestAnimationFrame(animate);
+        rafId = requestAnimationFrame(animate);
       } else {
         ref.current = end;
       }
     }
-    requestAnimationFrame(animate);
+    rafId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafId);
   }, [value, loading]);
 
   if (loading) return <span className={`inline-block h-7 w-16 animate-pulse rounded-md bg-[#1e3a5f]/20 ${className}`} />;
@@ -384,6 +387,7 @@ export function HomePage() {
   const [locationLoading, setLocationLoading] = useState(geoAvailable);
   const [locationError, setLocationError] = useState(!geoAvailable);
   const [pincodeInput, setPincodeInput] = useState('');
+  const [pincodeLoading, setPincodeLoading] = useState(false);
 
   // City-based service availability
   const [cityServiceSlugs, setCityServiceSlugs] = useState<Set<string>>(new Set());
@@ -403,7 +407,7 @@ export function HomePage() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Service availability - check if providers exist in user's area (20KM radius)
-  const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+  const calculateDistance = useCallback((lat1: number, lng1: number, lat2: number, lng2: number): number => {
     const R = 6371; // Earth's radius in km
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLng = ((lng2 - lng1) * Math.PI) / 180;
@@ -413,17 +417,17 @@ export function HomePage() {
       Math.sin(dLng / 2) * Math.sin(dLng / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
-  };
+  }, []);
 
   const hasProvidersInArea = areaProviders > 0;
   const hasLimitedServices = areaProviders > 0 && areaProviders < 10;
 
   // Check if a provider is within 20KM radius
-  const isProviderInRadius = (providerLat?: number, providerLng?: number): boolean => {
+  const isProviderInRadius = useCallback((providerLat?: number, providerLng?: number): boolean => {
     if (!location?.lat || !location?.lng || !providerLat || !providerLng) return true; // Show if no location data
     const distance = calculateDistance(location.lat, location.lng, providerLat, providerLng);
     return distance <= 20;
-  };
+  }, [location?.lat, location?.lng, calculateDistance]);
 
   // ─── Auto Location Detection (using useGeolocation hook) ──────────────────
 
@@ -491,11 +495,12 @@ export function HomePage() {
 
   useEffect(() => {
     if (!location?.city) return;
+    let cancelled = false;
 
     async function fetchCityServices() {
       try {
         const res = await fetch(apiUrl(`/api/services?city=${encodeURIComponent(location!.city)}&limit=100`));
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
           const slugs = new Set<string>();
           if (data.services && Array.isArray(data.services)) {
@@ -510,15 +515,18 @@ export function HomePage() {
       }
     }
     fetchCityServices();
+    return () => { cancelled = true; };
   }, [location?.city]);
 
   // ─── Fetch area activation data ────────────────────────────────────────────
 
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchAreaData() {
       try {
         const res = await fetch(apiUrl('/api/stats/platform'));
-        if (res.ok) {
+        if (res.ok && !cancelled) {
           const data = await res.json();
           setLiveStats({
             activeVisitors: data.activeVisitors || 0,
@@ -538,12 +546,15 @@ export function HomePage() {
     }
     fetchAreaData();
     const interval = setInterval(fetchAreaData, 30000);
-    return () => clearInterval(interval);
+    return () => { cancelled = true; clearInterval(interval); };
   }, []);
 
   // ─── Popup Funnel Logic ────────────────────────────────────────────────────
 
   useEffect(() => {
+    // Don't show popup for logged-in users (N64)
+    if (user) return;
+
     // Check session-level dismiss (clears when browser tab closes)
     const sessionDismissed = sessionStorage.getItem('bys_popup_dismissed_session');
     // Check permanent dismiss (persists across sessions only if user explicitly chose "Don't show again")
@@ -554,7 +565,7 @@ export function HomePage() {
       const timer = setTimeout(() => setShowPopup(true), 2000);
       return () => clearTimeout(timer);
     }
-  }, []);
+  }, [user]);
 
   const closePopup = (permanent: boolean) => {
     setShowPopup(false);
@@ -614,6 +625,7 @@ export function HomePage() {
 
   const handlePincodeLookup = async () => {
     if (!pincodeInput || pincodeInput.length < 5) return;
+    setPincodeLoading(true);
     try {
       const res = await fetch(
         `https://nominatim.openstreetmap.org/search?format=json&q=${pincodeInput}+India&addressdetails=1&limit=1`,
@@ -637,6 +649,8 @@ export function HomePage() {
       }
     } catch {
       // Keep existing state
+    } finally {
+      setPincodeLoading(false);
     }
   };
 
@@ -778,16 +792,14 @@ export function HomePage() {
                     </Button>
                   </>
                 )}
-                {user && user.role === 'CLIENT' && (
-                  <Button size="lg" onClick={() => navigate('client-dashboard')} className="h-13 border-2 border-sky-300/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-sky-300/60">
-                    My Dashboard
-                  </Button>
-                )}
-                {user && user.role === 'PROVIDER' && (
-                  <Button size="lg" onClick={() => navigate('provider-dashboard')} className="h-13 border-2 border-[#2d5a8e]/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-[#2d5a8e]/60">
-                    Provider Dashboard
-                  </Button>
-                )}
+                {user && (() => {
+                  const dashboard = ROLE_DASHBOARD_MAP[user.roleId ?? 0];
+                  return dashboard ? (
+                    <Button size="lg" onClick={() => navigate(dashboard as Page)} className="h-13 border-2 border-sky-300/40 bg-[#1e3a5f]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-sky-300/60">
+                      Go to Dashboard
+                    </Button>
+                  ) : null;
+                })()}
               </motion.div>
             </motion.div>
 
@@ -876,8 +888,8 @@ export function HomePage() {
                 onKeyDown={(e) => e.key === 'Enter' && handlePincodeLookup()}
                 className="h-9 w-36 border-[#1e3a5f]/20 text-sm focus-visible:border-[#2d5a8e] focus-visible:ring-[#2d5a8e]/20"
               />
-              <Button onClick={handlePincodeLookup} size="sm" className="bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
-                Check
+              <Button onClick={handlePincodeLookup} size="sm" disabled={pincodeLoading} className="bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white hover:from-[#1e3a5f] hover:to-[#2d5a8e]">
+                {pincodeLoading ? 'Checking...' : 'Check'}
               </Button>
             </div>
           </motion.div>

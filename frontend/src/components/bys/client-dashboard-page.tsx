@@ -277,7 +277,7 @@ export function ClientDashboardPage() {
   );
 
   /* ---------- Journey computations ---------- */
-  const memberSince = user?.id ? new Date().toISOString() : '';
+  const memberSince = user?.createdAt || '';
   const daysOnPlatform = memberSince ? daysBetween(memberSince) : 0;
 
   const firstBookingDate = useMemo(() => {

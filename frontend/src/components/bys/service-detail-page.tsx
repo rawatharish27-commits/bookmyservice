@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
@@ -161,7 +161,6 @@ export function ServiceDetailPage() {
   const { user, token } = useAuth();
   const serviceId = nav.params.serviceId;
   const [currentImage, setCurrentImage] = useState(0);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
   const [favoriteAnimating, setFavoriteAnimating] = useState(false);
   const { mutate } = useApiMutation();
@@ -179,23 +178,45 @@ export function ServiceDetailPage() {
     service?.category ? `/api/services?category=${service.category.id}&limit=4` : null
   );
 
+  const { data: favoritesData } = useApi<{ favorites: { serviceId: string }[] }>(
+    user ? '/api/favorites' : null
+  );
+
   const similarServices = similarData?.services?.filter((s) => s.id !== serviceId) || [];
   const images = service?.images ? (() => { try { const parsed = JSON.parse(service.images); return Array.isArray(parsed) ? parsed : []; } catch { return []; } })() : [];
   const reviews = reviewsData?.reviews || service?.reviews || [];
 
+  // Initialize isFavorited from API data
+  const isServiceFavorited = favoritesData?.favorites?.some((f) => f.serviceId === serviceId) ?? false;
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  // Sync isFavorited with API data when it loads
+  useEffect(() => {
+    if (favoritesData) {
+      setIsFavorited(isServiceFavorited);
+    }
+  }, [favoritesData, isServiceFavorited]);
+
   const handleFavorite = async () => {
     if (!user) {
-      navigate('login');
+      navigate('login', { redirectTo: 'booking', serviceId: serviceId || '' });
       return;
     }
     setFavoriteLoading(true);
     setFavoriteAnimating(true);
     try {
-      await mutate('/api/favorites', {
-        method: 'POST',
-        body: JSON.stringify({ serviceId }),
-      });
-      setIsFavorited(true);
+      if (isFavorited) {
+        await mutate(`/api/favorites/${serviceId}`, {
+          method: 'DELETE',
+        });
+        setIsFavorited(false);
+      } else {
+        await mutate('/api/favorites', {
+          method: 'POST',
+          body: JSON.stringify({ serviceId }),
+        });
+        setIsFavorited(true);
+      }
     } catch {
       // already favorited or error
     } finally {
@@ -732,7 +753,7 @@ export function ServiceDetailPage() {
                     size="lg"
                     onClick={() => {
                       if (!user) {
-                        navigate('login');
+                        navigate('login', { redirectTo: 'booking', serviceId: service.id });
                         return;
                       }
                       navigate('booking', { serviceId: service.id });
@@ -748,7 +769,7 @@ export function ServiceDetailPage() {
                       className="mt-3 w-full border-emerald-200 py-5 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
                       onClick={() => {
                         if (!user) {
-                          navigate('login');
+                          navigate('login', { redirectTo: 'booking', serviceId: service.id });
                           return;
                         }
                         navigate('booking', { serviceId: service.id });

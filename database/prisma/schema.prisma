@@ -75,6 +75,17 @@ model User {
   payoutRequests     PayoutRequest[]
   AMCSubscription    AMCSubscription[]
   FranchiseVendor    FranchiseVendor[]
+  bookingTrackings   BookingTracking[]       @relation("BookingTrackingPerformedBy")
+  escalatedComplaints ComplaintEscalation[]  @relation("ComplaintEscalatedBy")
+  resolvedComplaints  ComplaintEscalation[]  @relation("ComplaintResolvedBy")
+  auditLogs2         AuditLog[]              @relation("AuditLogUser")
+  adminActions       AdminAction[]           @relation("AdminActionAdmin")
+  referralRewardsGiven   ReferralReward[]    @relation("ReferralRewardReferrer")
+  referralRewardsReceived ReferralReward[]   @relation("ReferralRewardReferee")
+
+  @@index([roleId])
+  @@index([status])
+  @@index([city])
 }
 
 // ============================================================================
@@ -191,7 +202,7 @@ model ServiceSubcategory {
 model Service {
   id                     String              @id @default(cuid())
   providerId             String
-  provider               User                @relation(fields: [providerId], references: [id], onDelete: Cascade)
+  provider               User                @relation(fields: [providerId], references: [id], onDelete: Restrict)
   categoryId             Int
   category               ServiceCategory     @relation(fields: [categoryId], references: [id])
   subcategoryId          Int?
@@ -233,6 +244,11 @@ model Service {
   favorites    Favorite[]
   serviceAreas ServiceArea[]
   workPhotos   WorkPhoto[]
+
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isApproved])
+  @@index([city])
 }
 
 model ServiceAvailability {
@@ -347,6 +363,11 @@ model Booking {
   coupon            Coupon?           @relation(fields: [couponId], references: [id])
   AMCSubscription   AMCSubscription?  @relation(fields: [aMCSubscriptionId], references: [id])
   aMCSubscriptionId String?
+
+  @@index([clientId])
+  @@index([providerId])
+  @@index([status])
+  @@index([createdAt])
 }
 
 model BookingTimeline {
@@ -358,6 +379,8 @@ model BookingTimeline {
   performedBy String?
   metadata    String? // JSON
   createdAt   DateTime @default(now())
+
+  @@index([bookingId])
 }
 
 // ============================================================================
@@ -416,6 +439,9 @@ model WalletTransaction {
   status        String   @default("COMPLETED") // PENDING, COMPLETED, FAILED, CANCELLED
   metadata      String? // JSON
   createdAt     DateTime @default(now())
+
+  @@index([userId])
+  @@index([createdAt])
 }
 
 // ============================================================================
@@ -779,6 +805,9 @@ model Review {
   adminResponse String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([serviceId])
+  @@index([reviewerId])
 }
 
 model Negotiation {
@@ -847,6 +876,9 @@ model Notification {
   sentAt         DateTime?
   metadata       String? // JSON
   createdAt      DateTime  @default(now())
+
+  @@index([userId])
+  @@index([isRead])
 }
 
 // ============================================================================
@@ -992,6 +1024,7 @@ model BookingTracking {
   address         String?
   notes           String?
   performedBy     String?
+  performedByUser  User?     @relation("BookingTrackingPerformedBy", fields: [performedBy], references: [id])
   createdAt       DateTime @default(now())
 }
 
@@ -999,7 +1032,9 @@ model ReferralReward {
   id             String    @id @default(cuid())
   referralId     String    @unique
   referrerId     String
+  referrer       User      @relation("ReferralRewardReferrer", fields: [referrerId], references: [id])
   refereeId      String
+  referee        User      @relation("ReferralRewardReferee", fields: [refereeId], references: [id])
   rewardType     String    // CASH, CREDIT, DISCOUNT
   rewardAmount   Float     @default(0)
   status         String    @default("PENDING") // PENDING, CREDITED, EXPIRED
@@ -1031,8 +1066,10 @@ model ComplaintEscalation {
   toLevel         String    // L2, L3, SUPER_ADMIN
   reason          String
   escalatedBy     String?
+  escalatedByUser  User?     @relation("ComplaintEscalatedBy", fields: [escalatedBy], references: [id])
   status          String    @default("PENDING") // PENDING, ACCEPTED, RESOLVED
   resolvedBy      String?
+  resolvedByUser   User?     @relation("ComplaintResolvedBy", fields: [resolvedBy], references: [id])
   resolution      String?
   resolvedAt      DateTime?
   createdAt       DateTime  @default(now())
@@ -1042,6 +1079,7 @@ model ComplaintEscalation {
 model AuditLog {
   id           String   @id @default(cuid())
   userId       String
+  user         User      @relation("AuditLogUser", fields: [userId], references: [id])
   action       String
   entityType   String?
   entityId     String?
@@ -1054,6 +1092,7 @@ model AuditLog {
 model AdminAction {
   id           String   @id @default(cuid())
   adminId      String
+  admin        User     @relation("AdminActionAdmin", fields: [adminId], references: [id])
   action       String
   targetType   String?
   targetId     String?

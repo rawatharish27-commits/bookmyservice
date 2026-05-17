@@ -1,10 +1,10 @@
+// TODO: Split into sub-components
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useApp } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useApi } from '@/hooks/use-api';
-import { apiUrl } from '@/lib/api-url';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -205,19 +205,17 @@ interface TabData {
 // ─── Mock Data Generators ────────────────────────────────────────────────────
 // TODO: Replace all mock data with real API calls when backend endpoints are ready
 
-function generateRevenueTrend() {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return days.map((d) => ({ date: d, revenue: Math.floor(Math.random() * 50000) + 10000 }));
+// Stable empty trend data (no Math.random to avoid flicker)
+function getEmptyRevenueTrend(): { date: string; revenue: number }[] {
+  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, revenue: 0 }));
 }
 
-function generateUserTrend() {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return days.map((d) => ({ date: d, users: Math.floor(Math.random() * 30) + 5 }));
+function getEmptyUserTrend(): { date: string; users: number }[] {
+  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, users: 0 }));
 }
 
-function generateBookingTrend() {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  return days.map((d) => ({ date: d, bookings: Math.floor(Math.random() * 40) + 10 }));
+function getEmptyBookingTrend(): { date: string; bookings: number }[] {
+  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, bookings: 0 }));
 }
 
 function getMockFinancialData(): MockFinancialData {
@@ -231,128 +229,62 @@ function getMockFinancialData(): MockFinancialData {
     walletBalances: 234500,
     escrowHeld: 87600,
     refundAmount: 12400,
-    revenueTrend: generateRevenueTrend(),
-    topCategories: [
-      { name: 'AC Repair', revenue: 345000 },
-      { name: 'Plumbing', revenue: 287000 },
-      { name: 'Electrical', revenue: 234000 },
-      { name: 'Cleaning', revenue: 198000 },
-      { name: 'Painting', revenue: 156000 },
-    ],
-    revenueByCity: [
-      { city: 'Mumbai', revenue: 420000 },
-      { city: 'Delhi', revenue: 380000 },
-      { city: 'Bangalore', revenue: 295000 },
-      { city: 'Hyderabad', revenue: 180000 },
-      { city: 'Chennai', revenue: 145000 },
-    ],
+    revenueTrend: getEmptyRevenueTrend(),
+    topCategories: [],
+    revenueByCity: [],
   };
 }
 
 function getMockUsersData(): MockUsersData {
   return {
-    registrationTrend: generateUserTrend(),
-    newUsersToday: 23,
-    activeUsers7d: 1847,
-    verifiedProviders: 342,
-    pendingProviders: 28,
-    suspendedUsers: 15,
-    ratingDistribution: [
-      { rating: '5★', count: 186 },
-      { rating: '4★', count: 124 },
-      { rating: '3★', count: 52 },
-      { rating: '2★', count: 18 },
-      { rating: '1★', count: 7 },
-    ],
-    topRatedProviders: [
-      { name: 'Rajesh Kumar', rating: 4.9, jobs: 234 },
-      { name: 'Priya Sharma', rating: 4.8, jobs: 189 },
-      { name: 'Amit Patel', rating: 4.8, jobs: 167 },
-      { name: 'Sneha Reddy', rating: 4.7, jobs: 156 },
-      { name: 'Vikram Singh', rating: 4.7, jobs: 143 },
-    ],
-    cityWiseUsers: [
-      { city: 'Mumbai', users: 4520 },
-      { city: 'Delhi', users: 3890 },
-      { city: 'Bangalore', users: 2940 },
-      { city: 'Hyderabad', users: 2100 },
-      { city: 'Chennai', users: 1780 },
-    ],
+    registrationTrend: getEmptyUserTrend(),
+    newUsersToday: 0,
+    activeUsers7d: 0,
+    verifiedProviders: 0,
+    pendingProviders: 0,
+    suspendedUsers: 0,
+    ratingDistribution: [],
+    topRatedProviders: [],
+    cityWiseUsers: [],
   };
 }
 
 function getMockBookingsData(): MockBookingsData {
   return {
-    bookingsToday: 87,
-    successRate: 94.2,
-    avgBookingValue: 1450,
-    emergencyBookings: 12,
-    cancelledBookings: 23,
-    avgCompletionTime: '2.4 hrs',
-    mostBookedCategories: [
-      { name: 'AC Repair', bookings: 345 },
-      { name: 'Plumbing', bookings: 287 },
-      { name: 'Electrical', bookings: 234 },
-      { name: 'Cleaning', bookings: 198 },
-      { name: 'Painting', bookings: 156 },
-    ],
-    mostBookedServices: [
-      { name: 'AC Gas Refill', bookings: 124 },
-      { name: 'Pipe Leakage Fix', bookings: 98 },
-      { name: 'Switch Board Repair', bookings: 87 },
-      { name: 'Deep Home Cleaning', bookings: 76 },
-      { name: 'Interior Painting', bookings: 65 },
-    ],
-    peakHours: [
-      { hour: '6AM', bookings: 12 },
-      { hour: '8AM', bookings: 28 },
-      { hour: '10AM', bookings: 45 },
-      { hour: '12PM', bookings: 38 },
-      { hour: '2PM', bookings: 34 },
-      { hour: '4PM', bookings: 42 },
-      { hour: '6PM', bookings: 52 },
-      { hour: '8PM', bookings: 31 },
-      { hour: '10PM', bookings: 14 },
-    ],
-    bookingTrend: generateBookingTrend(),
+    bookingsToday: 0,
+    successRate: 0,
+    avgBookingValue: 0,
+    emergencyBookings: 0,
+    cancelledBookings: 0,
+    avgCompletionTime: '-',
+    mostBookedCategories: [],
+    mostBookedServices: [],
+    peakHours: [],
+    bookingTrend: getEmptyBookingTrend(),
   };
 }
 
 function getMockOperationsData(): MockOperationsData {
   return {
-    activeDisputes: 8,
-    unresolvedTickets: 14,
-    pendingRefunds: 5,
-    lowStockAlerts: 3,
-    expiredCoupons: 12,
-    systemErrorRate: 0.3,
-    failedPayments: 7,
-    securityAlerts: 2,
-    recentAdminActions: [
-      { action: 'Approved KYC for Provider #4521', user: 'Admin Raj', time: '2 min ago', type: 'approve' },
-      { action: 'Resolved Dispute #DIS-892', user: 'Admin Priya', time: '15 min ago', type: 'resolve' },
-      { action: 'Suspended User #USR-7823', user: 'Admin Raj', time: '1 hr ago', type: 'suspend' },
-      { action: 'Updated Commission Rate for AC Repair', user: 'Admin Amit', time: '2 hrs ago', type: 'update' },
-      { action: 'Processed Refund #REF-234', user: 'Admin Priya', time: '3 hrs ago', type: 'refund' },
-      { action: 'Added new coupon SUMMER2024', user: 'Admin Amit', time: '4 hrs ago', type: 'create' },
-      { action: 'Approved Service "Deep Cleaning Pro"', user: 'Admin Raj', time: '5 hrs ago', type: 'approve' },
-      { action: 'Reset password for Provider #P-456', user: 'Admin Priya', time: '6 hrs ago', type: 'update' },
-    ],
+    activeDisputes: 0,
+    unresolvedTickets: 0,
+    pendingRefunds: 0,
+    lowStockAlerts: 0,
+    expiredCoupons: 0,
+    systemErrorRate: 0,
+    failedPayments: 0,
+    securityAlerts: 0,
+    recentAdminActions: [],
   };
 }
 
 function getMockSecurityData(): MockSecurityData {
   return {
-    failedLogins: 23,
-    suspiciousActivities: 3,
-    activeSessions: 847,
-    adminActionsToday: 34,
-    dataExportStatus: [
-      { name: 'Monthly Revenue Report', status: 'completed', time: '10 min ago' },
-      { name: 'User Data Export', status: 'processing', time: 'In progress' },
-      { name: 'Booking History CSV', status: 'completed', time: '1 hr ago' },
-      { name: 'Provider Analytics', status: 'failed', time: '3 hrs ago' },
-    ],
+    failedLogins: 0,
+    suspiciousActivities: 0,
+    activeSessions: 0,
+    adminActionsToday: 0,
+    dataExportStatus: [],
   };
 }
 
@@ -553,14 +485,14 @@ function OverviewTab({ d }: { d: TabData }) {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-muted-foreground">Server Uptime</p>
-                <p className="mt-1 text-2xl font-bold text-green-600">99.9%</p>
+                <p className="text-xs font-medium text-muted-foreground">Server Status</p>
+                <p className="mt-1 text-2xl font-bold text-green-600">Online</p>
               </div>
               <div className="rounded-lg bg-green-100 p-2.5">
                 <Server className="size-5 text-green-600" />
               </div>
             </div>
-            <p className="mt-1 text-xs text-green-600">● All systems operational</p>
+            <p className="mt-1 text-xs text-green-600">● API connected</p>
           </CardContent>
         </Card>
       </div>
@@ -1202,12 +1134,89 @@ export function AdminDashboardPage() {
   const { data: dashboardData, loading: dashboardLoading, refetch: refetchDashboard } = useApi<DashboardData>('/api/admin/dashboard');
   const { data: platformStats, loading: platformLoading } = useApi<PlatformStats>('/api/stats/platform');
 
-  // Mock data - TODO: Replace with real API calls
-  const [mockFinancial] = useState(getMockFinancialData);
-  const [mockUsers] = useState(getMockUsersData);
-  const [mockBookings] = useState(getMockBookingsData);
-  const [mockOperations] = useState(getMockOperationsData);
-  const [mockSecurity] = useState(getMockSecurityData);
+  // Derived stats (compute early so mock data can reference them)
+  const stats = dashboardData?.stats;
+  const isUsingMockData = !dashboardData;
+  const totalUsers = stats?.totalUsers || platformStats?.totalUsers || 0;
+  const totalProviders = stats?.totalProviders || platformStats?.totalProviders || 0;
+  const totalBookings = stats?.totalBookings || platformStats?.totalBookings || 0;
+  const totalClients = stats?.totalClients || 0;
+  const totalRevenue = stats?.totalRevenue || 0;
+  const pendingKyc = stats?.pendingKyc || 0;
+  const pendingServiceApprovals = stats?.pendingServiceApprovals || 0;
+  const activeDisputes = stats?.activeDisputes || 0;
+  const pendingBookings = stats?.pendingBookings || 0;
+
+  // TODO: Replace with real technician count from backend
+  const totalTechnicians = 87;
+  const platformHealth = 92;
+
+  // Use API data when available, fallback to empty/zero defaults (no random mock data)
+  const mockFinancial: MockFinancialData = dashboardData
+    ? {
+        revenueToday: totalRevenue ? Math.round(totalRevenue / 30) : 0,
+        revenueWeek: totalRevenue ? Math.round(totalRevenue / 4) : 0,
+        revenueMonth: totalRevenue || 0,
+        commissionEarned: 0,
+        pendingPayouts: 0,
+        completedPayouts: 0,
+        walletBalances: 0,
+        escrowHeld: 0,
+        refundAmount: 0,
+        revenueTrend: getEmptyRevenueTrend(),
+        topCategories: [],
+        revenueByCity: [],
+      }
+    : getMockFinancialData();
+  const mockUsers: MockUsersData = dashboardData
+    ? {
+        registrationTrend: getEmptyUserTrend(),
+        newUsersToday: 0,
+        activeUsers7d: 0,
+        verifiedProviders: 0,
+        pendingProviders: pendingKyc || 0,
+        suspendedUsers: 0,
+        ratingDistribution: [],
+        topRatedProviders: [],
+        cityWiseUsers: [],
+      }
+    : getMockUsersData();
+  const mockBookings: MockBookingsData = dashboardData
+    ? {
+        bookingsToday: 0,
+        successRate: 0,
+        avgBookingValue: 0,
+        emergencyBookings: 0,
+        cancelledBookings: 0,
+        avgCompletionTime: '-',
+        mostBookedCategories: [],
+        mostBookedServices: [],
+        peakHours: [],
+        bookingTrend: getEmptyBookingTrend(),
+      }
+    : getMockBookingsData();
+  const mockOperations: MockOperationsData = dashboardData
+    ? {
+        activeDisputes: activeDisputes || 0,
+        unresolvedTickets: 0,
+        pendingRefunds: 0,
+        lowStockAlerts: 0,
+        expiredCoupons: 0,
+        systemErrorRate: 0,
+        failedPayments: 0,
+        securityAlerts: 0,
+        recentAdminActions: [],
+      }
+    : getMockOperationsData();
+  const mockSecurity: MockSecurityData = dashboardData
+    ? {
+        failedLogins: 0,
+        suspiciousActivities: 0,
+        activeSessions: 0,
+        adminActionsToday: 0,
+        dataExportStatus: [],
+      }
+    : getMockSecurityData();
 
   const loading = dashboardLoading || platformLoading;
 
@@ -1223,22 +1232,6 @@ export function AdminDashboardPage() {
     }, 60000);
     return () => clearInterval(interval);
   }, [handleRefresh]);
-
-  // Derived stats
-  const stats = dashboardData?.stats;
-  const totalUsers = stats?.totalUsers || platformStats?.totalUsers || 0;
-  const totalProviders = stats?.totalProviders || platformStats?.totalProviders || 0;
-  const totalBookings = stats?.totalBookings || platformStats?.totalBookings || 0;
-  const totalClients = stats?.totalClients || 0;
-  const totalRevenue = stats?.totalRevenue || 0;
-  const pendingKyc = stats?.pendingKyc || 0;
-  const pendingServiceApprovals = stats?.pendingServiceApprovals || 0;
-  const activeDisputes = stats?.activeDisputes || 0;
-  const pendingBookings = stats?.pendingBookings || 0;
-
-  // TODO: Replace with real technician count from backend
-  const totalTechnicians = 87;
-  const platformHealth = 92;
 
   // Assemble tab data
   const tabData: TabData = {
@@ -1308,6 +1301,15 @@ export function AdminDashboardPage() {
           </Badge>
         </div>
       </div>
+
+      {/* Demo Data Banner */}
+      {isUsingMockData && (
+        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5">
+          <AlertTriangle className="size-4 shrink-0 text-amber-600" />
+          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
+          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
+        </div>
+      )}
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

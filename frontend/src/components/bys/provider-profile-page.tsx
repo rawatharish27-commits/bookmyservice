@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApiMutation } from '@/hooks/use-api';
+import { apiUrl } from '@/lib/api-url';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -12,9 +14,10 @@ import { Separator } from '@/components/ui/separator';
 import { Shield, User, MapPin, Building, Save, Lock, CheckCircle2, Clock, AlertCircle, Camera } from 'lucide-react';
 
 export function ProviderProfilePage() {
-  const { user, updateProfile, token } = useAuth();
+  const { user, updateProfile, token, refreshProfile } = useAuth();
   const { navigate } = useApp();
   const { mutate } = useApiMutation();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [name, setName] = useState(user?.name || '');
   const [phone, setPhone] = useState(user?.phone || '');
@@ -30,8 +33,13 @@ export function ProviderProfilePage() {
   const handleSaveProfile = async () => {
     setSaving(true);
     setMessage('');
+    const profileData = { name, phone, city, state };
     try {
-      await updateProfile({ name, phone, city, state });
+      await mutate('/api/auth/profile', {
+        method: 'PATCH',
+        body: JSON.stringify(profileData),
+      });
+      await updateProfile(profileData);
       setMessage('Profile updated successfully');
     } catch {
       setMessage('Failed to update profile');
@@ -45,8 +53,8 @@ export function ProviderProfilePage() {
       setMessage('Passwords do not match');
       return;
     }
-    if (newPassword.length < 6) {
-      setMessage('Password must be at least 6 characters');
+    if (newPassword.length < 8) {
+      setMessage('Password must be at least 8 characters');
       return;
     }
     setChangingPassword(true);
@@ -67,7 +75,21 @@ export function ProviderProfilePage() {
     }
   };
 
-  const kycStatus: string = 'NOT_SUBMITTED';
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('profileImage', file);
+    try {
+      await mutate('/api/auth/profile/image', { method: 'POST', body: formData });
+      await refreshProfile();
+      toast.success('Profile image updated');
+    } catch {
+      toast.error('Failed to upload image');
+    }
+  };
+
+  const kycStatus = user?.kycStatus || 'not_started';
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6 sm:px-6 lg:px-8">
@@ -89,9 +111,10 @@ export function ProviderProfilePage() {
               )}
             </div>
           </div>
-          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
             <Camera className="size-3.5" />
           </button>
+          <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
         </div>
         <h2 className="mt-3 text-xl font-bold">{user?.name}</h2>
         <p className="text-sm text-muted-foreground">{user?.email}</p>
@@ -196,11 +219,11 @@ export function ProviderProfilePage() {
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  {kycStatus === 'APPROVED' ? (
+                  {kycStatus === 'verified' ? (
                     <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-100">
                       <CheckCircle2 className="size-6 text-emerald-500" />
                     </div>
-                  ) : kycStatus === 'PENDING' ? (
+                  ) : kycStatus === 'pending' || kycStatus === 'submitted' ? (
                     <div className="flex size-12 items-center justify-center rounded-xl bg-sky-100">
                       <Clock className="size-6 text-sky-500" />
                     </div>
@@ -211,20 +234,22 @@ export function ProviderProfilePage() {
                   )}
                   <div>
                     <p className="font-medium">
-                      {kycStatus === 'APPROVED' ? 'Verified' : kycStatus === 'PENDING' ? 'Under Review' : 'Not Submitted'}
+                      {kycStatus === 'verified' ? 'Verified' : kycStatus === 'pending' || kycStatus === 'submitted' ? 'Under Review' : kycStatus === 'rejected' ? 'Rejected' : 'Not Submitted'}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      {kycStatus === 'APPROVED'
+                      {kycStatus === 'verified'
                         ? 'Your identity has been verified'
-                        : kycStatus === 'PENDING'
+                        : kycStatus === 'pending' || kycStatus === 'submitted'
                           ? 'We are reviewing your documents'
-                          : 'Complete KYC to unlock full features'}
+                          : kycStatus === 'rejected'
+                            ? 'Your KYC was rejected, please resubmit'
+                            : 'Complete KYC to unlock full features'}
                     </p>
                   </div>
                 </div>
-                {kycStatus !== 'APPROVED' && (
+                {kycStatus !== 'verified' && (
                   <Button variant="outline" onClick={() => navigate('provider-kyc')} className="rounded-xl">
-                    {kycStatus === 'NOT_SUBMITTED' ? 'Start KYC' : 'View Status'}
+                    {kycStatus === 'not_started' || kycStatus === 'rejected' ? 'Start KYC' : 'View Status'}
                   </Button>
                 )}
               </div>

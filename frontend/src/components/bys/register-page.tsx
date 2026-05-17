@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useAuth, ROLE_IDS } from '@/contexts/auth-context';
 import { useApp, type Page } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
@@ -7,8 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
-  Droplets, Zap, Wind, CheckCircle2, TrendingUp, Users, Shield, ShieldCheck, BadgeCheck, Clock,
-  Building2, MapPin,
+  Droplets, Zap, Wind, CheckCircle2, Shield, ShieldCheck, BadgeCheck, Clock,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -61,34 +60,7 @@ const roleOptions = [
     banner: 'Work as a field technician providing hands-on repair services',
     dashboard: 'technician-dashboard' as Page,
   },
-  {
-    key: 'area-manager',
-    roleId: ROLE_IDS.AREA_MANAGER,
-    roleName: 'AREA_MANAGER',
-    label: 'Area Manager',
-    Icon: MapPin,
-    gradient: 'from-amber-500 via-orange-500 to-yellow-500',
-    bgColor: 'bg-amber-50 border-amber-200',
-    activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300',
-    textColor: 'text-amber-700',
-    desc: 'Manage local operations',
-    banner: 'Oversee operations and providers in your area',
-    dashboard: 'area-manager-dashboard' as Page,
-  },
-  {
-    key: 'local-admin',
-    roleId: ROLE_IDS.LOCAL_ADMIN,
-    roleName: 'LOCAL_ADMIN',
-    label: 'Local Admin',
-    Icon: ShieldCheck,
-    gradient: 'from-purple-500 via-violet-500 to-indigo-500',
-    bgColor: 'bg-purple-50 border-purple-200',
-    activeBg: 'bg-purple-100 border-purple-400 ring-2 ring-purple-300',
-    textColor: 'text-purple-700',
-    desc: 'Administer local area',
-    banner: 'Manage providers, verify technicians & monitor bookings in your area',
-    dashboard: 'local-admin-dashboard' as Page,
-  },
+  // N44 fix: Area Manager and Local Admin removed from self-registration — these are privileged roles
 ];
 
 function getPasswordStrength(password: string): { label: string; color: string; width: string; emoji: string; score: number } {
@@ -108,7 +80,7 @@ function getPasswordStrength(password: string): { label: string; color: string; 
 
 export function RegisterPage() {
   const { register } = useAuth();
-  const { navigate } = useApp();
+  const { navigate, nav } = useApp();
   const [selectedRole, setSelectedRole] = useState<string>('client');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -120,6 +92,17 @@ export function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Old #58 fix: pre-select role from navigation params (e.g. navigate('register', { role: 'provider' }))
+  useEffect(() => {
+    const paramRole = nav.params?.role;
+    if (paramRole) {
+      const validKeys = roleOptions.map(r => r.key);
+      if (validKeys.includes(paramRole)) {
+        setSelectedRole(paramRole);
+      }
+    }
+  }, [nav.params?.role]);
 
   const passwordStrength = useMemo(() => getPasswordStrength(password), [password]);
 
@@ -147,16 +130,23 @@ export function RegisterPage() {
       setError('Passwords do not match');
       return;
     }
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters');
-      return;
-    }
     if (!termsAccepted) {
       setError('You must accept the terms and conditions');
       return;
     }
     if (needsSpecialization && !specialization) {
       setError('Please select your specialization');
+      return;
+    }
+
+    // Email format validation (Old #51 fix)
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError('Please enter a valid email address');
+      return;
+    }
+    // Password strength validation
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters');
       return;
     }
 
@@ -169,6 +159,7 @@ export function RegisterPage() {
         password,
         roleId: currentRole.roleId,
         role: currentRole.roleName,
+        specialization: specialization || undefined,
       });
       navigate(currentRole.dashboard);
     } catch (err) {
@@ -544,6 +535,7 @@ export function RegisterPage() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
                       className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     >
                       {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

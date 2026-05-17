@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, type User as UserType } from '@/contexts/auth-context';
 import { useApp } from '@/contexts/app-context';
 import { useApiMutation } from '@/hooks/use-api';
+import { apiUrl } from '@/lib/api-url';
+import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,7 +38,7 @@ const fadeUp = {
 };
 
 function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void }) {
-  const { updateProfile } = useAuth();
+  const { updateProfile, token, refreshProfile } = useAuth();
   const { navigate } = useApp();
   const { mutate: saveProfile, loading: saving } = useApiMutation();
   const { mutate: changePassword, loading: changingPassword } = useApiMutation();
@@ -53,6 +55,21 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append('profileImage', file);
+    try {
+      await saveProfile('/api/auth/profile/image', { method: 'POST', body: formData });
+      await refreshProfile();
+      toast.success('Profile image updated');
+    } catch {
+      toast.error('Failed to upload image');
+    }
+  };
 
   const handleSaveProfile = async () => {
     setSaveError('');
@@ -94,7 +111,11 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
     }
   };
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
+    await fetch(apiUrl('/api/auth/account'), {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` },
+    }).catch(() => {});
     onLogout();
     navigate('home');
   };
@@ -119,9 +140,10 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
               )}
             </div>
           </div>
-          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
             <Camera className="size-3.5" />
           </button>
+          <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
         </div>
         <h2 className="mt-3 text-xl font-bold">{user?.name || 'Guest'}</h2>
         <p className="text-sm text-muted-foreground">{user.email}</p>

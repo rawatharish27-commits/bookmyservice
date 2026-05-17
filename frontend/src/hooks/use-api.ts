@@ -4,11 +4,16 @@ import { apiUrl } from '@/lib/api-url';
 
 export function useApi<T>(url: string | null, options?: RequestInit) {
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(url !== null); // N9 fix — initial loading based on url
   const [error, setError] = useState<string | null>(null);
   const { token } = useAuth();
   const optionsRef = useRef(options);
   const cancelledRef = useRef(false);
+
+  // N15 fix — keep optionsRef in sync with options prop
+  useEffect(() => {
+    optionsRef.current = options;
+  }, [options]);
 
   const fetchData = useCallback(async () => {
     if (!url) {
@@ -55,8 +60,7 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
 
   useEffect(() => {
     cancelledRef.current = false;
-    // Use queueMicrotask to avoid calling setState synchronously in effect
-    queueMicrotask(() => { fetchData(); });
+    fetchData();
     return () => { cancelledRef.current = true; };
   }, [fetchData]);
 

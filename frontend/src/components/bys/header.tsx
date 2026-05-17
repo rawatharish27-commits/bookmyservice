@@ -45,7 +45,6 @@ import {
   Settings,
   ChevronRight,
   LogIn,
-  Sparkles,
   UserPlus,
   Wallet,
   Ticket,
@@ -148,7 +147,7 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
     return [
       { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Commissions', page: 'area-manager-dashboard', icon: <DollarSign className="size-4" /> },
-      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+      { label: 'Referrals', page: 'area-manager-dashboard', icon: <Gift className="size-4" /> },
     ];
   }
 
@@ -201,7 +200,7 @@ function getNavLinks(roleId: number | undefined, unreadCount: number): NavLink[]
       { label: 'Dashboard', page: 'local-admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Providers', page: 'admin-users', icon: <Users className="size-4" /> },
       { label: 'Bookings', page: 'admin-bookings', icon: <CalendarCheck className="size-4" /> },
-      { label: 'KYC', page: 'admin-services', icon: <Shield className="size-4" /> },
+      { label: 'Services', page: 'admin-services', icon: <Shield className="size-4" /> },
     ];
   }
 
@@ -278,7 +277,7 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     return [
       { label: 'Dashboard', page: 'area-manager-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Commissions', page: 'area-manager-dashboard', icon: <DollarSign className="size-4" /> },
-      { label: 'Referrals', page: 'client-referrals', icon: <Gift className="size-4" /> },
+      { label: 'Referrals', page: 'area-manager-dashboard', icon: <Gift className="size-4" /> },
     ];
   }
 
@@ -296,7 +295,7 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     return [
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
-      { label: 'Settings', page: 'admin-categories', icon: <Settings className="size-4" /> },
+      { label: 'Categories', page: 'admin-categories', icon: <Settings className="size-4" /> },
     ];
   }
 
@@ -322,12 +321,9 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
 }
 
 function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2);
+  const parts = name.split(' ');
+  const initials = parts.map((n) => n[0]).join('').slice(0, 2).toUpperCase();
+  return initials || '?';
 }
 
 function getRoleBadgeStyle(roleId: number | undefined): string {
@@ -419,24 +415,6 @@ function VerifiedBadge() {
   );
 }
 
-// ─── Wallet Balance Indicator (Refined) ──────────────────────────────────────
-
-function WalletIndicator({ balance }: { balance: number }) {
-  return (
-    <motion.button
-      onClick={() => {
-        // Will be overridden by parent context; this is a visual indicator
-      }}
-      className="hidden items-center gap-1.5 rounded-xl border border-blue-200/50 bg-gradient-to-r from-blue-50/80 to-sky-50/60 px-3 py-1.5 text-xs font-semibold text-blue-700 transition-all hover:from-blue-100 hover:to-sky-100 hover:shadow-md hover:shadow-blue-500/10 lg:inline-flex"
-      whileHover={{ scale: 1.03 }}
-      whileTap={{ scale: 0.97 }}
-    >
-      <Wallet className="size-3.5" />
-      <span>₹{balance.toLocaleString('en-IN')}</span>
-    </motion.button>
-  );
-}
-
 // ─── Emergency Booking Button (Deep Red) ─────────────────────────────────────
 
 function EmergencyBookingButton({ onClick }: { onClick: () => void }) {
@@ -460,7 +438,7 @@ function EmergencyBookingButton({ onClick }: { onClick: () => void }) {
 // ─── Main Header Component ───────────────────────────────────────────────────
 
 export function Header() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const { navigate, nav } = useApp();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -484,9 +462,10 @@ export function Header() {
       return;
     }
 
+    setUnreadCount(0);
+
     const fetchUnread = async () => {
       try {
-        const token = localStorage.getItem('bys_token');
         const res = await fetch(apiUrl('/api/notifications'), {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -526,7 +505,7 @@ export function Header() {
     if (roleId === ROLE_IDS.CLIENT) return 'client-wallet';
     if (roleId === ROLE_IDS.PROVIDER) return 'provider-wallet';
     if (roleId === ROLE_IDS.VENDOR) return 'vendor-wallet';
-    if (roleId === ROLE_IDS.TECHNICIAN) return 'technician-earnings';
+    if (roleId === ROLE_IDS.TECHNICIAN) return 'technician-dashboard';
     return null;
   };
 
@@ -731,7 +710,6 @@ export function Header() {
                 <DropdownMenuContent
                   className="w-64 overflow-hidden rounded-2xl p-1.5 shadow-xl shadow-black/10 border-blue-100/50"
                   align="end"
-                  forceMount
                 >
                   <DropdownMenuLabel className="font-normal px-2 py-3.5">
                     <div className="flex items-center gap-3">

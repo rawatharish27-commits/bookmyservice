@@ -273,11 +273,16 @@ export function BookingPage() {
   /* ---- Price calculations ---- */
   const basePrice = service?.basePrice ?? 0;
   const emergencyCharge = nav.params?.emergency === 'true' ? Math.round(basePrice * 0.25) : 0;
-  const platformFee = 5;
+  const platformFee = 5; // TODO: Fetch from API/config
   const distanceCharge = useMemo(() => {
     if (!latitude || !longitude) return 0;
-    return 25;
-  }, [latitude, longitude]);
+    const selectedProvider = providers.find(p => p.id === selectedProviderId);
+    const dist = selectedProvider?.distance ?? 0;
+    if (dist <= 5) return 0;
+    if (dist <= 10) return 15;
+    if (dist <= 20) return 25;
+    return 35;
+  }, [latitude, longitude, providers, selectedProviderId]);
   const subtotal = basePrice + emergencyCharge + platformFee + distanceCharge;
   const totalPrice = Math.max(0, subtotal - couponDiscount);
 
@@ -330,13 +335,12 @@ export function BookingPage() {
         const data = await res.json();
         if (!cancelled) {
           setTechnician(data.technician || data);
-          setVerificationOtp(data.otp || '');
+          // OTP should only be revealed at service completion time, not during booking
         }
       } catch {
         if (!cancelled) {
           setTechnicianError('Failed to assign technician. Please try again.');
           setTechnician(null);
-          setVerificationOtp('');
         }
       } finally {
         if (!cancelled) setTechnicianLoading(false);
@@ -424,7 +428,6 @@ export function BookingPage() {
         distanceCharge,
         totalAmount: totalPrice,
         technicianId: technician?.id,
-        verificationOtp,
       };
       const result = (await createBooking('/api/bookings', {
         method: 'POST',

@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { AuthProvider, useAuth, ROLE_IDS } from '@/contexts/auth-context';
+import React, { Component, useEffect, useRef } from 'react';
+import { AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
@@ -120,15 +120,15 @@ import { SuperAdminDashboardPage } from '@/components/bys/super-admin-dashboard-
 import { ManagerDashboardPage } from '@/components/bys/manager-dashboard-page';
 import { LocalAdminDashboardPage } from '@/components/bys/local-admin-dashboard-page';
 
-// Role-based route guard configuration
-const ROLE_DASHBOARD_MAP: Record<number, string> = {
+// Single source of truth for role → dashboard mapping (Old #28 fix)
+export const ROLE_DASHBOARD_MAP: Record<number, string> = {
   1: 'client-dashboard',
   2: 'provider-dashboard',
-  3: 'super-admin-dashboard', // Admin now goes to super-admin
+  3: 'super-admin-dashboard',
   4: 'technician-dashboard',
   5: 'vendor-dashboard',
   6: 'franchise-dashboard',
-  7: 'admin-dashboard', // sub-admin
+  7: 'admin-dashboard', // SUB_ADMIN shares admin dashboard (Old #31)
   8: 'area-manager-dashboard',
   9: 'manager-dashboard',
   10: 'local-admin-dashboard',
@@ -188,7 +188,8 @@ function AppRouter() {
 
     // If logged in, check role-based access
     if (user && isDashboardPage) {
-      const userRoleId = user.roleId ?? (user.role ? ({ CLIENT: ROLE_IDS.CLIENT, PROVIDER: ROLE_IDS.PROVIDER, ADMIN: ROLE_IDS.ADMIN, TECHNICIAN: ROLE_IDS.TECHNICIAN, VENDOR: ROLE_IDS.VENDOR, FRANCHISE: ROLE_IDS.FRANCHISE, SUB_ADMIN: ROLE_IDS.SUB_ADMIN, AREA_MANAGER: ROLE_IDS.AREA_MANAGER, MANAGER: ROLE_IDS.MANAGER, LOCAL_ADMIN: ROLE_IDS.LOCAL_ADMIN }[user.role as keyof typeof ROLE_IDS] ?? 0) : 0);
+      // Use shared ROLE_ID_MAP instead of duplicating (Old #28 fix)
+      const userRoleId = user.roleId ?? ROLE_ID_MAP[user.role ?? ''] ?? 0;
 
       for (const [prefix, allowedRoles] of Object.entries(ROLE_ROUTE_PREFIX)) {
         if (page.startsWith(prefix)) {
@@ -216,6 +217,51 @@ function AppRouter() {
   }, [nav.page, user, token, navigate]);
 
   const renderPage = () => {
+    // All valid page names for 404 detection
+    const validPages = new Set([
+      'home', 'login', 'register', 'categories', 'category-detail', 'service-detail',
+      'search', 'booking', 'booking-confirmation', 'about', 'how-it-works', 'faq',
+      'contact', 'terms', 'privacy', 'refund-policy', 'cookie-policy', 'aup',
+      'provider-agreement', 'community-guidelines', 'emergency-booking',
+      'client-dashboard', 'client-bookings', 'client-booking-detail', 'client-profile',
+      'client-reviews', 'client-favorites', 'client-notifications', 'client-wallet',
+      'client-amc', 'client-amc-detail', 'client-coupons', 'client-referrals',
+      'client-invoices', 'client-invoice-detail',
+      'provider-dashboard', 'provider-services', 'provider-create-service',
+      'provider-bookings', 'provider-booking-detail', 'provider-earnings',
+      'provider-reviews', 'provider-profile', 'provider-kyc', 'provider-wallet',
+      'provider-payouts', 'provider-invoices',
+      'technician-dashboard', 'technician-jobs', 'technician-job-detail',
+      'technician-earnings', 'technician-profile', 'technician-availability',
+      'admin-dashboard', 'admin-users', 'admin-user-detail', 'admin-services',
+      'admin-bookings', 'admin-disputes', 'admin-categories', 'admin-faq',
+      'admin-revenue', 'admin-logs', 'admin-analytics', 'admin-franchises',
+      'admin-franchise-detail', 'admin-crm', 'admin-payouts', 'admin-inventory',
+      'admin-coupons', 'admin-amc', 'admin-b2b',
+      'franchise-dashboard', 'franchise-vendors', 'franchise-analytics',
+      'vendor-dashboard', 'vendor-bookings', 'vendor-services', 'vendor-profile',
+      'vendor-kyc', 'vendor-wallet', 'vendor-payouts',
+      'area-manager-dashboard', 'join-manager', 'join-local-admin',
+      'super-admin-dashboard', 'manager-dashboard', 'local-admin-dashboard',
+      'client-commissions',
+    ]);
+
+    if (!validPages.has(nav.page)) {
+      return (
+        <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10">
+            <span className="text-4xl font-black text-[#1e3a5f]">404</span>
+          </div>
+          <h1 className="mt-6 text-2xl font-bold text-foreground">Page Not Found</h1>
+          <p className="mt-2 text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+          <button onClick={() => navigate('home')} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+            Go Home
+          </button>
+        </div>
+      );
+    }
+
     switch (nav.page) {
       // Public pages
       case 'home':
@@ -411,6 +457,10 @@ function AppRouter() {
       case 'area-manager-dashboard':
         return <AreaManagerDashboardPage />;
 
+      // Client commissions page (Old #7, #30, #57 fix)
+      case 'client-commissions':
+        return <ClientReferralsPage />;
+
       // Join pages
       case 'join-manager':
         return <JoinManagerPage />;
@@ -425,36 +475,8 @@ function AppRouter() {
       case 'local-admin-dashboard':
         return <LocalAdminDashboardPage />;
 
-      default: {
-        // Check if the page looks like a valid page name
-        const isValidPage = [
-          'home', 'login', 'register', 'categories', 'category-detail', 'service-detail',
-          'search', 'booking', 'booking-confirmation', 'about', 'how-it-works', 'faq',
-          'contact', 'terms', 'privacy', 'refund-policy', 'cookie-policy', 'aup',
-          'provider-agreement', 'community-guidelines', 'emergency-booking',
-        ].some(p => nav.page === p || nav.page.startsWith('client-') || nav.page.startsWith('provider-') ||
-          nav.page.startsWith('technician-') || nav.page.startsWith('admin-') || nav.page.startsWith('vendor-') ||
-          nav.page.startsWith('franchise-') || nav.page.startsWith('area-manager-') ||
-          nav.page.startsWith('super-admin-') || nav.page.startsWith('manager-') ||
-          nav.page.startsWith('local-admin-') || nav.page.startsWith('join-'));
-
-        if (!isValidPage) {
-          return (
-            <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10">
-                <span className="text-4xl font-black text-[#1e3a5f]">404</span>
-              </div>
-              <h1 className="mt-6 text-2xl font-bold text-foreground">Page Not Found</h1>
-              <p className="mt-2 text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
-              <button onClick={() => navigate('home')} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                Go Home
-              </button>
-            </div>
-          );
-        }
+      default:
         return <HomePage />;
-      }
     }
   };
 
@@ -469,11 +491,43 @@ function AppRouter() {
   );
 }
 
+// Error Boundary component (N5 fix — prevents white screen on render errors)
+class ErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-red-50">
+            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <h1 className="mt-6 text-2xl font-bold text-foreground">Something went wrong</h1>
+          <p className="mt-2 max-w-md text-muted-foreground">An unexpected error occurred. Please try refreshing the page.</p>
+          <button onClick={() => window.location.reload()} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <AppProvider>
-        <AppRouter />
+        <ErrorBoundary>
+          <AppRouter />
+        </ErrorBoundary>
         <Toaster />
         <SonnerToaster />
       </AppProvider>
