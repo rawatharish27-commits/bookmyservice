@@ -6,8 +6,26 @@
  */
 const { spawn, execSync } = require('child_process');
 const path = require('path');
+const fs = require('fs');
 
 const ROOT = '/home/z/my-project';
+
+// Load .env file from api-service directory if it exists
+const envPath = path.join(ROOT, 'mini-services/api-service/.env');
+if (fs.existsSync(envPath)) {
+  const envContent = fs.readFileSync(envPath, 'utf8');
+  for (const line of envContent.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const eqIdx = trimmed.indexOf('=');
+    if (eqIdx > 0) {
+      const key = trimmed.slice(0, eqIdx).trim();
+      const val = trimmed.slice(eqIdx + 1).trim();
+      if (!process.env[key]) process.env[key] = val;
+    }
+  }
+  console.log('📦 Loaded .env from api-service directory');
+}
 
 // Kill any existing processes on our ports
 try {
@@ -52,7 +70,7 @@ function startService(svc) {
   const proc = spawn(svc.cmd, svc.args, {
     cwd: svc.cwd,
     stdio: ['ignore', 'pipe', 'pipe'],
-    env: { ...process.env, FORCE_COLOR: '1', DATABASE_URL: svc.name === 'Hono API' ? '' : process.env.DATABASE_URL },
+    env: { ...process.env, FORCE_COLOR: '1' },
   });
 
   proc.stdout.on('data', (data) => {

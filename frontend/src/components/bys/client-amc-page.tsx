@@ -473,7 +473,12 @@ export function ClientAmcPage() {
       <Dialog open={!!subscribeDialog} onOpenChange={(open) => { if (!open) { setSubscribeDialog(null); setSubscribeSuccess(false); } }}>
         <DialogContent className="rounded-2xl sm:max-w-md">
           {subscribeSuccess ? (
-            <div className="flex flex-col items-center py-8 text-center">
+            <>
+              <DialogHeader className="sr-only">
+                <DialogTitle>Subscribed Successfully</DialogTitle>
+                <DialogDescription>You have been enrolled in the plan</DialogDescription>
+              </DialogHeader>
+              <div className="flex flex-col items-center py-8 text-center">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -493,6 +498,7 @@ export function ClientAmcPage() {
                 View My Plans
               </Button>
             </div>
+            </>
           ) : (
             <>
               <DialogHeader>

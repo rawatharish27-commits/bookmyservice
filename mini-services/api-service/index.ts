@@ -15,6 +15,13 @@ const pool = new Pool({
   connectionTimeoutMillis: 10000,
 })
 
+// Verify database connection on startup
+pool.query('SELECT 1 as ok').then(() => {
+  console.log('✅ Database connected successfully');
+}).catch((e) => {
+  console.error('❌ Database connection failed:', e.message);
+});
+
 const app = new Hono()
 
 if (!process.env.JWT_SECRET) { console.warn('⚠️  JWT_SECRET not set — using development fallback. DO NOT use in production!'); }
@@ -227,7 +234,7 @@ app.post('/api/auth/login', async (c) => {
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
     const { passwordHash, roleName, ...safeUser } = user
     return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
-  } catch (e) { console.error('Login error:', e); return c.json({ error: 'Login failed' }, 500) }
+  } catch (e) { console.error('Login error:', e); return c.json({ error: 'Login failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
 
 app.post('/api/auth/register', async (c) => {
@@ -271,7 +278,7 @@ app.post('/api/auth/register', async (c) => {
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
     const { passwordHash: _ph, roleName: _rn, ...safeUser } = user
     return c.json({ message: 'Registration successful', user: { ...safeUser, role: user.roleName }, accessToken: token }, 201)
-  } catch (e) { console.error('Register error:', e); return c.json({ error: 'Registration failed' }, 500) }
+  } catch (e) { console.error('Register error:', e); return c.json({ error: 'Registration failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
 
 app.post('/api/auth/forgot-password', async (c) => {
@@ -387,7 +394,7 @@ app.post('/api/auth/google', async (c) => {
     return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
   } catch (e) {
     console.error('Google auth error:', e)
-    return c.json({ error: 'Google authentication failed' }, 500)
+    return c.json({ error: 'Google authentication failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500)
   }
 })
 
