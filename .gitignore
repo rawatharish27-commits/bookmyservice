@@ -62,6 +62,12 @@ dist/
 
 # Uploads
 uploads/
+upload/
+
+# Certificates
+*.crt
+*.key
+*.pem
 
 # SQL dumps
 *.sql
