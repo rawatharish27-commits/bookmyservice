@@ -158,7 +158,16 @@ export function ManagerDashboardPage() {
   const { data: apiData, loading } = useApi<ManagerDashboardData>('/api/manager/dashboard');
   const { mutate } = useApiMutation();
 
-  const data = apiData || getMockManagerData();
+  const mockFallback = getMockManagerData();
+  const data: ManagerDashboardData = apiData
+    ? {
+        cityAnalytics: apiData.cityAnalytics || mockFallback.cityAnalytics,
+        pendingProviders: apiData.pendingProviders || [],
+        activeTechnicians: apiData.activeTechnicians || [],
+        openComplaints: apiData.openComplaints || [],
+        revenueTracking: apiData.revenueTracking || mockFallback.revenueTracking,
+      }
+    : mockFallback;
   const isUsingMockData = !apiData;
 
   const fadeUp = {

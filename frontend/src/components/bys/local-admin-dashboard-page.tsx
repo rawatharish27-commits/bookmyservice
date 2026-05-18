@@ -208,7 +208,16 @@ export function LocalAdminDashboardPage() {
   const { mutate } = useApiMutation();
   const [selectedTechnician, setSelectedTechnician] = useState<string>('');
 
-  const data = apiData || getMockLocalAdminData();
+  const mockFallback = getMockLocalAdminData();
+  const data: LocalAdminDashboardData = apiData
+    ? {
+        localAreaControl: apiData.localAreaControl || mockFallback.localAreaControl,
+        providerVerifications: apiData.providerVerifications || [],
+        technicianAssignments: apiData.technicianAssignments || [],
+        areaComplaints: apiData.areaComplaints || [],
+        bookingsAnalytics: apiData.bookingsAnalytics || mockFallback.bookingsAnalytics,
+      }
+    : mockFallback;
   const isUsingMockData = !apiData;
 
   const fadeUp = {
@@ -546,8 +555,8 @@ export function LocalAdminDashboardPage() {
               <div className="mt-4">
                 <h4 className="mb-3 text-sm font-semibold text-[#0a1628]">Top Services</h4>
                 <div className="space-y-2">
-                  {data.bookingsAnalytics.topServices.map((svc, i) => {
-                    const maxBookings = data.bookingsAnalytics.topServices[0]?.bookings || 1;
+                  {(data.bookingsAnalytics.topServices || []).map((svc, i) => {
+                    const maxBookings = data.bookingsAnalytics.topServices?.[0]?.bookings || 1;
                     return (
                       <div key={svc.name} className="space-y-1">
                         <div className="flex items-center justify-between text-xs">

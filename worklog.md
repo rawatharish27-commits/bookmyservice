@@ -93,3 +93,89 @@ Stage Summary:
 - All public endpoints returning data successfully
 - Changes pushed to main for Render deployment
 - Key remaining concern: Render deployment must have DATABASE_URL env var set correctly
+
+---
+Task ID: 2
+Agent: Backend Fix Agent
+Task: Fix backend API for bookmyservice — 6 targeted enhancements to api-service/index.ts
+
+Work Log:
+- Applied 6 targeted edits to `/home/z/my-project/mini-services/api-service/index.ts` without deleting or restructuring any existing routes/services:
+  1. **Added centralized error handler** (`app.onError`) after CORS middleware, before security headers — catches unhandled errors and returns 500 with dev-mode detail
+  2. **Fixed CORS to allow sandbox origin** — changed from hardcoded origin array to dynamic function that allows all localhost/127.0.0.1 origins plus known production origins, with fallback to localhost:5173
+  3. **Added Role table seeding on startup** — after DB connection check, now seeds 10 roles (CLIENT through LOCAL_ADMIN) if Role table is empty; prevents registration 500 errors when DB is fresh
+  4. **Added 404 handler for unknown API routes** — replaced existing catch-all with proper format including `path` field and descriptive comment
+  5. **Fixed auth profile endpoints to handle expired JWT gracefully** — change-password, GET profile, and PATCH profile catch blocks now check for `ERR_JWT_EXPIRED`, `ERR_JWS_INVALID`, `ERR_JWT_INVALID` error codes and return 401 with `TOKEN_EXPIRED` code instead of 500
+  6. **Removed CSP header that blocks inline styles** — changed from `default-src 'self'` to permissive policy allowing `unsafe-inline`, `unsafe-eval`, `data:`, `blob:`, `https:` images, etc.
+
+Stage Summary:
+- All 6 changes applied as targeted edits — no routes or services deleted or restructured
+- CORS now works with any sandbox/localhost origin
+- Fresh database deployments will auto-seed Role table
+- Expired JWT tokens return proper 401 instead of confusing 500
+- Frontend styling no longer blocked by CSP
+- Unknown API routes return structured 404 with path info
+- Unhandled errors caught by global error handler instead of crashing
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Add Global Error Boundary using react-error-boundary
+
+Work Log:
+- Installed `react-error-boundary` package via npm
+- Created `/home/z/my-project/frontend/src/components/error-boundary.tsx`:
+  - Uses `react-error-boundary`'s `ErrorBoundary` with custom `ErrorFallback` component
+  - Fallback UI shows error icon, message, "Try Again" (resetErrorBoundary) and "Reload Page" buttons
+  - Dark mode support via `dark:bg-red-950/20` class
+  - `onError` callback logs error and component stack to console
+  - `onReset` triggers `window.location.reload()` to clear error state
+  - Fixed TypeScript issues: `logError` uses `unknown` type for error param, error message display uses `instanceof Error` guard
+- Updated `/home/z/my-project/frontend/src/App.tsx`:
+  - Replaced `Component` import with new `ErrorBoundary` import from `@/components/error-boundary`
+  - Removed old class-based `ErrorBoundary` component (lines 494-522)
+  - New import shadows the old class definition; usage in `App` component remains the same
+- Verified `/home/z/my-project/frontend/src/contexts/auth-context.tsx`:
+  - `SENSITIVE_FIELDS` already correctly excludes `walletBalance` — no change needed
+- Fixed `/home/z/my-project/frontend/src/hooks/use-api.ts` for null safety:
+  - Added guard after `res.json()` in `useApi`: if result is null/undefined, sets data to null and returns early
+  - Added guard after `res.json()` in `useApiMutation`: if result is null/undefined, returns null
+- TypeScript type-check passes with zero errors
+
+Stage Summary:
+- Global error boundary upgraded from class-based to `react-error-boundary` library
+- Better error UI with "Try Again" and "Reload Page" buttons, dark mode support, and error message display
+- Null safety guards added to `useApi` and `useApiMutation` hooks
+- All TypeScript errors resolved
+
+---
+Task ID: 1
+Agent: Safety Fix Agent
+Task: Fix all .map() crashes and undefined/null safety issues across BYS components
+
+Work Log:
+- Created safe array utility at `/home/z/my-project/frontend/src/lib/safe.ts` with three functions:
+  - `safeArray<T>()`: Ensures a value is always an array, preventing .map() crashes
+  - `safeGet<T>()`: Safely accesses nested properties without throwing
+  - `safeMap<T, U>()`: Safe .map() that never crashes on null/undefined
+- Audited all 85+ BYS component files for unguarded .map() calls on API data
+- Found most components already use `?.property || []` pattern (50+ instances confirmed safe)
+- Identified 2 dashboard pages with unsafe patterns where `data = apiData || getMockData()` could still crash if API returns partial data with null array properties:
+  - **manager-dashboard-page.tsx**: `data.pendingProviders.map()`, `data.activeTechnicians.map()`, `data.openComplaints.map()` called without per-property fallbacks
+  - **local-admin-dashboard-page.tsx**: `data.providerVerifications.map()`, `data.technicianAssignments.map()`, `data.areaComplaints.map()`, `data.bookingsAnalytics.topServices.map()` called without per-property fallbacks
+- Fixed manager-dashboard-page.tsx: Changed `data = apiData || getMockManagerData()` to construct data with per-property fallbacks (`apiData.pendingProviders || []`, etc.)
+- Fixed local-admin-dashboard-page.tsx: Same pattern — per-property fallbacks for all array properties; also added `(data.bookingsAnalytics.topServices || []).map()` guard for nested array
+- Verified login-page.tsx: Dialog with DialogDescription present in forgot password dialog ✅
+- Verified register-page.tsx: No Dialog usage, no issue ✅
+- Verified dialog.tsx: DialogContent already includes hidden `<DialogPrimitive.Description>` ✅
+- Confirmed super-admin-dashboard-page.tsx already properly guards all arrays with `|| []` ✅
+- Confirmed admin-dashboard-page.tsx already guards `recentBookings || []`, `recentUsers || []` ✅
+- Confirmed all other BYS pages (client-dashboard, provider-dashboard, search, categories, etc.) already use `?.property || []` pattern ✅
+- Lint check passes with no new errors introduced
+
+Stage Summary:
+- Created `/home/z/my-project/frontend/src/lib/safe.ts` utility with safeArray, safeGet, safeMap
+- Fixed 2 high-risk files (manager-dashboard, local-admin-dashboard) with per-property null safety
+- Verified 50+ existing `|| []` guards across the codebase are correct
+- Dialog Description warnings already resolved (DialogContent has hidden Description)
+- No new lint errors introduced

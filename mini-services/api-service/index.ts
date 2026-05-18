@@ -29,8 +29,34 @@ pool.on('error', (err) => {
 })
 
 // Verify database connection on startup
-pool.query('SELECT 1 as ok').then(() => {
+pool.query('SELECT 1 as ok').then(async () => {
   console.log('✅ Database connected successfully');
+  // Seed Role table if empty — critical for registration to work
+  try {
+    const roleCount = await pool.query('SELECT COUNT(*) as count FROM "Role"')
+    if (parseInt(roleCount.rows[0].count) === 0) {
+      console.log('🔧 Seeding Role table...');
+      await pool.query(`
+        INSERT INTO "Role" (id, name, description, "createdAt") VALUES
+        (1, 'CLIENT', 'Customer who books services', NOW()),
+        (2, 'PROVIDER', 'Service provider', NOW()),
+        (3, 'ADMIN', 'Platform administrator', NOW()),
+        (4, 'TECHNICIAN', 'Field technician', NOW()),
+        (5, 'VENDOR', 'Vendor/supplier', NOW()),
+        (6, 'FRANCHISE', 'Franchise owner', NOW()),
+        (7, 'SUB_ADMIN', 'Sub administrator', NOW()),
+        (8, 'AREA_MANAGER', 'Area manager', NOW()),
+        (9, 'MANAGER', 'Manager', NOW()),
+        (10, 'LOCAL_ADMIN', 'Local administrator', NOW())
+        ON CONFLICT (id) DO NOTHING
+      `)
+      // Reset the ID sequence if needed
+      await pool.query(`SELECT setval('"Role_id_seq"', (SELECT MAX(id) FROM "Role"))`).catch(() => {})
+      console.log('✅ Role table seeded successfully');
+    }
+  } catch (seedError: any) {
+    console.error('⚠️  Role seeding error (non-fatal):', seedError.message);
+  }
 }).catch((e) => {
   console.error('❌ Database connection failed:', e.message);
 });
@@ -101,17 +127,35 @@ function transformReviewRow(row: Record<string, any>) {
 }
 
 app.use('*', cors({
-  origin: [
-    'http://localhost:5173',
-    'https://bookmyservice.pages.dev',
-    'https://bookyourservice.co.in',
-    'https://www.bookyourservice.co.in',
-    'https://bookmyservice-eta.vercel.app',
-  ],
+  origin: (origin, c) => {
+    // Allow known production origins
+    const allowedOrigins = [
+      'https://bookmyservice.pages.dev',
+      'https://bookyourservice.co.in',
+      'https://www.bookyourservice.co.in',
+      'https://bookmyservice-eta.vercel.app',
+    ]
+    if (allowedOrigins.includes(origin)) return origin
+    // Allow localhost and sandbox origins
+    if (origin && (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'))) return origin
+    // Default fallback
+    return 'http://localhost:5173'
+  },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
   credentials: true,
 }))
+
+// ─── Global Error Handler ────────────────────────────────────────────────
+app.onError((err, c) => {
+  console.error('🔥 Unhandled API Error:', err.message || err)
+  // Don't expose internal errors in production
+  const isDev = process.env.NODE_ENV !== 'production'
+  return c.json({
+    error: 'Internal server error',
+    detail: isDev ? (err.message || String(err)) : undefined,
+  }, 500)
+})
 
 // ─── Security Headers Middleware ─────────────────────────────────────────
 app.use('*', async (c, next) => {
@@ -120,7 +164,7 @@ app.use('*', async (c, next) => {
   c.header('X-Frame-Options', 'DENY')
   c.header('X-XSS-Protection', '1; mode=block')
   c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
-  c.header('Content-Security-Policy', "default-src 'self'")
+  c.header('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; img-src 'self' data: blob: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'")
 })
 
 // ─── Request Size Limit (max 1MB) ───────────────────────────────────────
@@ -429,7 +473,13 @@ app.post('/api/auth/change-password', async (c) => {
     const newHash = await bcrypt.hash(String(newPassword), 10)
     await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE id = $2', [newHash, payload.sub])
     return c.json({ message: 'Password changed successfully' })
-  } catch (e) { console.error('Change password error:', e); return c.json({ error: 'Failed to change password' }, 500) }
+  } catch (e: any) { 
+    console.error('Change password error:', e); 
+    if (e?.code === 'ERR_JWT_EXPIRED' || e?.code === 'ERR_JWS_INVALID' || e?.code === 'ERR_JWT_INVALID') {
+      return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
+    }
+    return c.json({ error: 'Failed to change password' }, 500) 
+  }
 })
 
 app.get('/api/auth/profile', async (c) => {
@@ -446,7 +496,14 @@ app.get('/api/auth/profile', async (c) => {
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
     return c.json({ user: { ...profile, role: roleName }, accessToken: newToken })
-  } catch (e) { console.error('Profile fetch error:', e); return c.json({ error: 'Failed to fetch profile' }, 500) }
+  } catch (e: any) { 
+    console.error('Profile fetch error:', e); 
+    // If JWT expired or invalid, return 401 instead of 500
+    if (e?.code === 'ERR_JWT_EXPIRED' || e?.code === 'ERR_JWS_INVALID' || e?.code === 'ERR_JWT_INVALID') {
+      return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
+    }
+    return c.json({ error: 'Failed to fetch profile' }, 500) 
+  }
 })
 
 app.patch('/api/auth/profile', async (c) => {
@@ -471,7 +528,13 @@ app.patch('/api/auth/profile', async (c) => {
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     const { passwordHash, roleName, ...profile } = result.rows[0]
     return c.json({ message: 'Profile updated', user: { ...profile, role: roleName } })
-  } catch (e) { console.error('Profile update error:', e); return c.json({ error: 'Failed to update profile' }, 500) }
+  } catch (e: any) { 
+    console.error('Profile update error:', e); 
+    if (e?.code === 'ERR_JWT_EXPIRED' || e?.code === 'ERR_JWS_INVALID' || e?.code === 'ERR_JWT_INVALID') {
+      return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
+    }
+    return c.json({ error: 'Failed to update profile' }, 500) 
+  }
 })
 
 // FAQ
@@ -3068,9 +3131,9 @@ app.patch('/api/reviews/:id', async (c) => {
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
-// Catch-all for unmatched API routes
-app.all('/api/*', async (c) => {
-  return c.json({ error: 'Not Found', message: 'The requested resource was not found' }, 404)
+// ─── 404 Handler for unknown API routes ────────────────────────────────
+app.all('/api/*', (c) => {
+  return c.json({ error: 'Endpoint not found', path: c.req.path }, 404)
 })
 
 const port = Number(process.env.PORT || 3001)

@@ -44,6 +44,11 @@ export function useApi<T>(url: string | null, options?: RequestInit) {
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');
       }
+      // Guard: ensure result is an object (not null/undefined)
+      if (result === null || result === undefined) {
+        if (!cancelledRef.current) setData(null as unknown as T)
+        return
+      }
       if (!cancelledRef.current) {
         setData(result);
       }
@@ -95,6 +100,10 @@ export function useApiMutation() {
       const result = await res.json();
       if (!res.ok) {
         throw new Error(result.error || 'Request failed');
+      }
+      // Guard: ensure result is an object (not null/undefined)
+      if (result === null || result === undefined) {
+        return null
       }
       return result;
     } catch (err) {

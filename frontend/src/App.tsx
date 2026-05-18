@@ -1,4 +1,5 @@
-import React, { Component, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { ErrorBoundary } from '@/components/error-boundary';
 import { AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
@@ -491,35 +492,6 @@ function AppRouter() {
   );
 }
 
-// Error Boundary component (N5 fix — prevents white screen on render errors)
-class ErrorBoundary extends Component<{ children: React.ReactNode }, { hasError: boolean; error: Error | null }> {
-  constructor(props: { children: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    return { hasError: true, error };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-red-50">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-500"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <h1 className="mt-6 text-2xl font-bold text-foreground">Something went wrong</h1>
-          <p className="mt-2 max-w-md text-muted-foreground">An unexpected error occurred. Please try refreshing the page.</p>
-          <button onClick={() => window.location.reload()} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
-            Reload Page
-          </button>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
 
 export default function App() {
   return (
