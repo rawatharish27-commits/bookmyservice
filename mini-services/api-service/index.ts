@@ -30,6 +30,14 @@ import { generatePersonalizedRecommendations, generateSimilarServices, generateS
 import { createOrder, verifyPaymentSignature, verifyWebhookSignature, capturePayment, refundPayment, getPaymentDetails, mapRazorpayStatus, getRazorpayStatus, getRazorpayKeyId } from './lib/razorpay'
 import type { PaymentStatus, PaymentMethod } from './lib/razorpay'
 
+// ─── Fix SSL for hosted PostgreSQL (Supabase, Render, etc.) ─────────────
+// Newer pg (v8.20+) / pg-connection-string treat sslmode=require as verify-full,
+// which fails with self-signed certs. Append sslmode=no-verify if not set.
+if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('sslmode=')) {
+  const separator = process.env.DATABASE_URL.includes('?') ? '&' : '?'
+  process.env.DATABASE_URL += `${separator}sslmode=no-verify`
+}
+
 // ─── Initialize Sentry (before crash handlers) ─────────────────────────
 initSentry()
 startMemoryMonitoring()
@@ -47,11 +55,20 @@ process.on('unhandledRejection', (reason) => {
   captureApiError(reason instanceof Error ? reason : new Error(String(reason)), { method: 'process', path: 'unhandledRejection' })
 })
 
+// ─── Database Connection Pool ───────────────────────────────────────────
+// Supabase / Render PostgreSQL requires SSL. Use sslmode=no-verify for
+// hosted databases with self-signed certs (Supabase pooler, etc.).
+function getPoolSSLConfig() {
+  const dbUrl = process.env.DATABASE_URL || ''
+  // If sslmode is explicitly set in the URL, respect it
+  if (dbUrl.includes('sslmode=')) return false // let the URL param handle it
+  // Default: enable SSL with relaxed verification for hosted databases
+  return { rejectUnauthorized: false }
+}
+
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
+  ssl: getPoolSSLConfig(),
   max: 3,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
