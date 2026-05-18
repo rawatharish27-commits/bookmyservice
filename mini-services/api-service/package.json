@@ -13,8 +13,10 @@
     "@hono/node-server": "^2.0.2",
     "bcryptjs": "^2.4.3",
     "hono": "^4.12.18",
+    "hono-rate-limiter": "0.5.3",
     "jose": "^5.10.0",
-    "pg": "^8.20.0"
+    "pg": "^8.20.0",
+    "zod": "4.4.3"
   },
   "devDependencies": {
     "prisma": "6.6.0",

@@ -4,6 +4,13 @@ import { cors } from 'hono/cors'
 import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
+import { z } from 'zod'
+import { rateLimiter } from 'hono-rate-limiter'
+import { loginSchema } from './validators/login.schema'
+import { signupSchema } from './validators/signup.schema'
+import { createBookingSchema } from './validators/create-booking.schema'
+import { createServiceSchema, updateServiceSchema } from './validators/provider.schema'
+import { validateBody } from './validators/validate'
 
 // ─── Process crash protection ───────────────────────────────────────────
 process.on('uncaughtException', (err) => {
@@ -176,37 +183,59 @@ app.use('*', async (c, next) => {
   await next()
 })
 
-// ─── Rate Limiting for Auth Endpoints ────────────────────────────────────
-const rateLimitStore = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT_WINDOW = 60_000 // 1 minute
-const RATE_LIMIT_MAX = 20 // 20 requests per window (was 5, too restrictive for dev)
+// ─── Rate Limiting (hono-rate-limiter) ────────────────────────────────────
+const rlKeyGenerator = (c: any) =>
+  c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || c.req.header('x-real-ip') || 'unknown'
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now()
-  const entry = rateLimitStore.get(ip)
-  if (!entry || now > entry.resetTime) {
-    rateLimitStore.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW })
-    return true
-  }
-  entry.count++
-  return entry.count <= RATE_LIMIT_MAX
-}
+// Granular per-endpoint rate limits
+app.use('/api/auth/login', rateLimiter({
+  windowMs: 60_000,
+  limit: 5,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many login attempts. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
 
-// Clean up expired rate limit entries every 5 minutes
-setInterval(() => {
-  const now = Date.now()
-  for (const [ip, entry] of rateLimitStore) {
-    if (now > entry.resetTime) rateLimitStore.delete(ip)
-  }
-}, 5 * 60_000)
+app.use('/api/auth/register', rateLimiter({
+  windowMs: 60_000,
+  limit: 5,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many registration attempts. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
 
-app.use('/api/auth/*', async (c, next) => {
-  const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || c.req.header('x-real-ip') || 'unknown'
-  if (!checkRateLimit(ip)) {
-    return c.json({ error: 'Too many requests. Please try again later.' }, 429)
-  }
-  await next()
-})
+app.use('/api/auth/google', rateLimiter({
+  windowMs: 60_000,
+  limit: 5,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many Google auth attempts. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
+
+app.use('/api/auth/forgot-password', rateLimiter({
+  windowMs: 60_000,
+  limit: 3,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many password reset attempts. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
+
+app.use('/api/bookings', rateLimiter({
+  windowMs: 60_000,
+  limit: 10,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many booking requests. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
+
+// General fallback for other auth routes
+app.use('/api/auth/*', rateLimiter({
+  windowMs: 60_000,
+  limit: 20,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many requests. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
 
 // ─── Input Length Validation Helper ──────────────────────────────────────
 const INPUT_LIMITS: Record<string, number> = {
@@ -273,11 +302,10 @@ app.get('/api/legal/:type', async (c) => {
 // Auth
 app.post('/api/auth/login', async (c) => {
   try {
-    const { email, password } = await c.req.json()
-    if (!email || !password) return c.json({ error: 'Email and password are required' }, 400)
-    const lengthError = validateInputLengths({ email, password })
-    if (lengthError) return c.json({ error: lengthError }, 400)
-    const sanitizedEmail = String(email).toLowerCase().trim()
+    const vResult = await validateBody(c, loginSchema)
+    if (!vResult.success) return vResult.response
+    const { email, password } = vResult.data
+    const sanitizedEmail = email
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [sanitizedEmail])
     if (!result.rows[0]) return c.json({ error: 'Invalid email or password' }, 401)
     const user = result.rows[0]
@@ -296,33 +324,26 @@ app.post('/api/auth/login', async (c) => {
 
 app.post('/api/auth/register', async (c) => {
   try {
-    const { email, phone, name, password, roleId, specialization } = await c.req.json()
-    if (!email || !phone || !name || !password || !roleId) return c.json({ error: 'All fields required' }, 400)
-    if (!password || password.length < 8) return c.json({ error: 'Password must be at least 8 characters' }, 400)
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return c.json({ error: 'Invalid email format' }, 400)
-    const lengthError = validateInputLengths({ email, phone, name, password })
-    if (lengthError) return c.json({ error: lengthError }, 400)
-    const ALLOWED_REGISTER_ROLES = [1, 2, 4, 5]
-    if (!ALLOWED_REGISTER_ROLES.includes(Number(roleId))) return c.json({ error: 'Registration not allowed for this role' }, 403)
-    const sanitizedEmail = String(email).toLowerCase().trim()
-    const existing = await pool.query('SELECT id FROM "User" WHERE LOWER(email) = LOWER($1)', [sanitizedEmail])
+    const vResult = await validateBody(c, signupSchema)
+    if (!vResult.success) return vResult.response
+    const { email, phone, name, password, roleId, specialization } = vResult.data
+    // DB-level checks (Zod handles input format validation)
+    const existing = await pool.query('SELECT id FROM "User" WHERE LOWER(email) = LOWER($1)', [email])
     if (existing.rows.length > 0) return c.json({ error: 'Email already registered' }, 409)
-    const existingPhone = await pool.query('SELECT id FROM "User" WHERE phone = $1', [String(phone).trim()])
+    const existingPhone = await pool.query('SELECT id FROM "User" WHERE phone = $1', [phone])
     if (existingPhone.rows.length > 0) return c.json({ error: 'Phone already registered' }, 409)
-    const passwordHash = await bcrypt.hash(String(password), 10)
+    const passwordHash = await bcrypt.hash(password, 10)
     const userId = 'usr_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    const validRoleId = Number(roleId)
-    if (isNaN(validRoleId) || validRoleId < 1) return c.json({ error: 'Invalid roleId' }, 400)
     // Validate roleId exists in Role table
-    const roleCheck = await pool.query('SELECT id FROM "Role" WHERE id = $1', [validRoleId])
+    const roleCheck = await pool.query('SELECT id FROM "Role" WHERE id = $1', [roleId])
     if (roleCheck.rows.length === 0) return c.json({ error: 'Invalid roleId - role does not exist' }, 400)
-    await pool.query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false, NOW())', [userId, sanitizedEmail, String(phone).trim(), passwordHash, String(name).trim(), validRoleId])
-    if (validRoleId === 2 || validRoleId === 4 || validRoleId === 5) {
+    await pool.query('INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, \'ACTIVE\', false, false, NOW())', [userId, email, phone, passwordHash, name, roleId])
+    if (roleId === 2 || roleId === 4 || roleId === 5) {
       const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
       await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus", "createdAt", "updatedAt") VALUES ($1, $2, \'AADHAAR\', \'PENDING\', \'/pending\', \'/pending\', \'PENDING\', NOW(), NOW())', [kycId, userId])
     }
     // Create TechnicianProfile for technician role with specialization
-    if (validRoleId === 4 && specialization) {
+    if (roleId === 4 && specialization) {
       const techId = 'tech_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
       await pool.query('INSERT INTO "TechnicianProfile" (id, "userId", skills, "isAvailable", "serviceAreaRadiusKm", "dailyEarnings", "weeklyEarnings", "monthlyEarnings", "totalEarnings", "totalJobsCompleted", "totalJobsRejected", "averageRating", "createdAt", "updatedAt") VALUES ($1, $2, $3, true, 15, 0, 0, 0, 0, 0, 0, 0, NOW(), NOW())', [techId, userId, JSON.stringify([specialization])])
     }
@@ -1465,9 +1486,9 @@ app.post('/api/bookings', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const body = await c.req.json()
-    const { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address: serviceAddress, lat: serviceLatitude, lng: serviceLongitude, notes: specialInstructions, couponId } = body
-    if (!serviceId || !scheduledDate || !serviceAddress) return c.json({ error: 'serviceId, scheduledDate, and address are required' }, 400)
+    const vResult = await validateBody(c, createBookingSchema)
+    if (!vResult.success) return vResult.response
+    const { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address: serviceAddress, lat: serviceLatitude, lng: serviceLongitude, notes: specialInstructions, couponId } = vResult.data
     // Get service for pricing
     const svcResult = await pool.query('SELECT id, "providerId", "basePrice" FROM "Service" WHERE id = $1 AND "isActive" = true', [serviceId])
     if (!svcResult.rows[0]) return c.json({ error: 'Service not found' }, 404)
@@ -1849,9 +1870,9 @@ app.post('/api/services', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     if (user.roleId !== 2 && user.role !== 'PROVIDER') return c.json({ error: 'Only providers can create services' }, 403)
-    const body = await c.req.json()
-    const { title, description, categoryId, subcategoryId, basePrice, images, serviceDurationMinutes, isEmergencyAvailable } = body
-    if (!title || !categoryId || !basePrice) return c.json({ error: 'title, categoryId, and basePrice are required' }, 400)
+    const vResult = await validateBody(c, createServiceSchema)
+    if (!vResult.success) return vResult.response
+    const { title, description, categoryId, subcategoryId, basePrice, images, serviceDurationMinutes, isEmergencyAvailable } = vResult.data
     const id = 'svc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query(
       'INSERT INTO "Service" (id, title, description, "categoryId", "subcategoryId", "providerId", "basePrice", images, "serviceDurationMinutes", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, false, false, 0, 0, NOW(), NOW())',

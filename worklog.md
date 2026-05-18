@@ -179,3 +179,43 @@ Stage Summary:
 - Verified 50+ existing `|| []` guards across the codebase are correct
 - Dialog Description warnings already resolved (DialogContent has hidden Description)
 - No new lint errors introduced
+
+---
+Task ID: 2-d + 3-a + 3-b
+Agent: Backend Validation Agent
+Task: Integrate Zod Validation into routes + Replace basic rate limiter with hono-rate-limiter
+
+Work Log:
+- Added imports at top of index.ts: z (zod), rateLimiter (hono-rate-limiter), loginSchema, signupSchema, createBookingSchema, createServiceSchema, updateServiceSchema, validateBody
+- Replaced old in-memory rate limiter (rateLimitStore, checkRateLimit, setInterval cleanup, app.use('/api/auth/*')) with hono-rate-limiter per-endpoint granular limits:
+  - /api/auth/login — 5 req/min
+  - /api/auth/register — 5 req/min
+  - /api/auth/google — 5 req/min
+  - /api/auth/forgot-password — 3 req/min
+  - /api/bookings — 10 req/min
+  - General /api/auth/* fallback — 20 req/min
+- Updated POST /api/auth/login to use validateBody(c, loginSchema):
+  - Replaced manual `if (!email || !password)` and `validateInputLengths` with Zod validation
+  - Zod handles email format + length + trim, password presence + length
+  - Removed redundant String() wrappers since Zod guarantees string types
+- Updated POST /api/auth/register to use validateBody(c, signupSchema):
+  - Removed manual empty checks, email regex, password length, validateInputLengths, ALLOWED_REGISTER_ROLES check, isNaN roleId check
+  - Zod handles: email format + trim, phone format + trim, name + trim, password length, roleId integer + allowed roles, specialization optional + required for technician
+  - Kept all DB-level checks: email existence, phone existence, role existence in Role table
+  - Replaced `validRoleId` with `roleId` directly (Zod ensures it's a valid number)
+  - Removed String() wrappers since Zod already transforms/trims
+- Updated POST /api/bookings to use validateBody(c, createBookingSchema):
+  - Removed `const body = await c.req.json()` and manual `if (!serviceId || !scheduledDate || !serviceAddress)` check
+  - Zod handles: serviceId required, scheduledDate format + not-in-past, address required + max 500, lat/lng ranges, notes max 1000, etc.
+- Updated POST /api/services to use validateBody(c, createServiceSchema):
+  - Removed `const body = await c.req.json()` and manual `if (!title || !categoryId || !basePrice)` check
+  - Zod handles: title required + max 200, categoryId required + positive integer, basePrice required + min 0 + max 1000000, etc.
+- Kept: INPUT_LIMITS, validateInputLengths function (used by other routes), getAuthUser, requireAdmin, all DB queries, global error handler
+- Tested: Zod validation returns proper 400 with VALIDATION_ERROR code and field details; rate limiter returns 429 with RATE_LIMITED code after limit exceeded
+- TypeScript compilation passes with no api-service errors
+
+Stage Summary:
+- 4 route handlers now use Zod validation (login, register, bookings, services)
+- Rate limiting is granular per-endpoint with hono-rate-limiter
+- Old in-memory rate limiter code completely removed
+- All existing functionality preserved
