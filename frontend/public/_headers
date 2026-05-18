@@ -1,0 +1,25 @@
+# Security headers for all routes
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self)
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+# Cache static assets aggressively
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# HTML files - short cache, must revalidate
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Service worker - no cache
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# API routes - no cache (proxied to Render)
+/api/*
+  Cache-Control: no-store
+  X-Content-Type-Options: nosniff

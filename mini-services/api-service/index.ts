@@ -23,6 +23,9 @@ import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './wor
 import { setNotificationWorkerPool } from './workers/notification-worker'
 import { getFCMStatus, BookingPushTemplates } from './lib/firebase'
 import { sendPushToDevice, sendPushToDevices } from './lib/firebase'
+import { initBackupSystem, createBackup, restoreBackup, listBackups, deleteBackup, cleanupOldBackups, getBackupStatus, getBackupDetails, stopBackupScheduler } from './lib/backup'
+import { getCloudflareRealIP, cloudflareCacheHeaders, botProtectionMiddleware, getCloudflareConfig, ddosThrottleMiddleware } from './lib/cloudflare'
+import { requestValidationMiddleware } from './lib/security'
 
 // ─── Initialize Sentry (before crash handlers) ─────────────────────────
 initSentry()
@@ -122,6 +125,45 @@ pool.query('SELECT 1 as ok').then(async () => {
   } catch (dtErr: any) {
     console.error('⚠️  DeviceToken table creation error (non-fatal):', dtErr.message)
   }
+  // Create BackupRecord table for database backup system (non-fatal)
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "BackupRecord" (
+        id TEXT PRIMARY KEY,
+        timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
+        status TEXT NOT NULL DEFAULT 'IN_PROGRESS',
+        "totalTables" INT DEFAULT 0,
+        "totalRows" INT DEFAULT 0,
+        "sizeBytes" INT DEFAULT 0,
+        duration INT DEFAULT 0,
+        "storageLocation" TEXT DEFAULT 'database',
+        data TEXT,
+        error TEXT,
+        "createdAt" TIMESTAMP DEFAULT NOW(),
+        "updatedAt" TIMESTAMP DEFAULT NOW()
+      );
+    `)
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_backup_record_timestamp ON "BackupRecord" (timestamp DESC);')
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_backup_record_status ON "BackupRecord" (status);')
+    console.log('✅ BackupRecord table ensured')
+  } catch (brErr: any) {
+    console.error('⚠️  BackupRecord table creation error (non-fatal):', brErr.message)
+  }
+  // Initialize backup system (daily at 2 AM IST)
+  try {
+    initBackupSystem(pool, {
+      enabled: true,
+      schedule: '0 2 * * *',
+      retentionDays: 30,
+      compression: true,
+    })
+    console.log('✅ Backup system initialized — daily at 2:00 AM')
+    // Run cleanup for old backups on startup
+    const cleaned = await cleanupOldBackups(pool)
+    if (cleaned > 0) console.log(`🧹 Cleaned up ${cleaned} old backup(s) on startup`)
+  } catch (backupErr: any) {
+    console.error('⚠️  Backup system initialization error (non-fatal):', backupErr.message)
+  }
 }).catch((e) => {
   logger.error('Database connection failed', { error: e.message });
   captureDbError(e, { operation: 'startup_connection' })
@@ -136,12 +178,14 @@ initializeQueues().then(() => startWorkers()).catch((err) => {
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received — shutting down gracefully')
   stopMemoryMonitoring()
+  stopBackupScheduler()
   await shutdownQueues()
   process.exit(0)
 })
 process.on('SIGINT', async () => {
   logger.info('SIGINT received — shutting down gracefully')
   stopMemoryMonitoring()
+  stopBackupScheduler()
   await shutdownQueues()
   process.exit(0)
 })
@@ -268,9 +312,23 @@ app.use('*', async (c, next) => {
   await next()
 })
 
+// ─── Bot Protection & DDoS Throttle (Cloudflare-aware) ──────────────────
+app.use('/api/*', botProtectionMiddleware())
+app.use('/api/*', ddosThrottleMiddleware())
+
+// ─── Request Validation (path traversal, SQL injection, XSS detection) ───
+app.use('/api/*', requestValidationMiddleware())
+
+// ─── Cache Headers for Public GET Endpoints (CDN-friendly) ──────────────
+app.use('/api/categories', cloudflareCacheHeaders(300))      // 5 min
+app.use('/api/categories/*', cloudflareCacheHeaders(300))    // 5 min
+app.use('/api/services', cloudflareCacheHeaders(180))        // 3 min
+app.use('/api/services/*', cloudflareCacheHeaders(180))      // 3 min (only matches single segment)
+app.use('/api/stats', cloudflareCacheHeaders(300))            // 5 min
+app.use('/api/stats/*', cloudflareCacheHeaders(300))         // 5 min
+
 // ─── Rate Limiting (hono-rate-limiter) ────────────────────────────────────
-const rlKeyGenerator = (c: any) =>
-  c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || c.req.header('x-real-ip') || 'unknown'
+const rlKeyGenerator = (c: any) => getCloudflareRealIP(c)
 
 // Granular per-endpoint rate limits
 app.use('/api/auth/login', rateLimiter({
@@ -361,6 +419,8 @@ app.get('/api/health', async (c) => {
     sentry: getSentryStatus(),
     worker: getWorkerStatus(),
     fcm: getFCMStatus(),
+    cloudflare: getCloudflareConfig(),
+    backup: await getBackupStatus(pool),
     memory: {
       heapUsedMB: Math.round(mem.heapUsed / 1024 / 1024),
       heapTotalMB: Math.round(mem.heapTotal / 1024 / 1024),
@@ -1815,6 +1875,7 @@ app.post('/api/bookings', async (c) => {
     })
     // Invalidate caches
     await redis.delByPattern('cache:stats:*').catch(() => {})
+    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
     BookingEvents.created(bookingId, user.id, serviceId)
     // Push async processing jobs (non-blocking)
     pushBookingJob({
@@ -3067,6 +3128,9 @@ app.patch('/api/bookings/:id/cancel', async (c) => {
 
     await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
 
+    // Invalidate analytics dashboard cache
+    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
+
     // Send push notifications (non-blocking)
     if (booking) {
       // Notify the client
@@ -3109,6 +3173,9 @@ app.patch('/api/bookings/:id/complete', async (c) => {
     const booking = bookingResult.rows[0]
 
     await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
+
+    // Invalidate analytics dashboard cache
+    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
 
     // Send push: Booking completed → client gets rating prompt
     if (booking?.clientId) {
@@ -3171,6 +3238,9 @@ app.patch('/api/bookings/:id/accept', async (c) => {
     const booking = bookingResult.rows[0]
 
     await pool.query('UPDATE "Booking" SET status = \'ACCEPTED\', "updatedAt" = NOW() WHERE id = $1', [id])
+
+    // Invalidate analytics dashboard cache
+    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
 
     // Send push: Provider accepted → client gets notified
     if (booking?.clientId) {
@@ -3809,6 +3879,286 @@ app.delete('/api/devices/token', async (c) => {
 // Get FCM status for monitoring
 app.get('/api/fcm/status', (c) => {
   return c.json(getFCMStatus())
+})
+
+// GET /api/admin/analytics/dashboard - Analytics dashboard with format matching frontend expectations
+app.get('/api/admin/analytics/dashboard', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+
+    // Check cache first
+    const cacheKey = 'cache:admin:analytics:dashboard'
+    const cached = await redis.getJson(cacheKey)
+    if (cached) return c.json(cached)
+
+    // ─── Stats Queries ─────────────────────────────────────────────────
+    const [
+      totalRevenueResult,
+      totalBookingsResult,
+      activeUsersResult,
+      activeProvidersResult,
+      totalFranchisesResult,
+      cancellationRateResult,
+      // Current month stats for growth calculations
+      currentMonthRevenueResult,
+      previousMonthRevenueResult,
+      currentMonthBookingsResult,
+      previousMonthBookingsResult,
+      currentMonthUsersResult,
+      previousMonthUsersResult,
+      currentMonthProvidersResult,
+      previousMonthProvidersResult,
+      currentMonthFranchisesResult,
+      previousMonthFranchisesResult,
+      currentMonthCancellationsResult,
+      previousMonthCancellationsResult,
+      currentMonthTotalBookingsResult,
+      previousMonthTotalBookingsResult,
+    ] = await Promise.all([
+      pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\'').catch(() => ({ rows: [{ total: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "Booking"').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "lastLoginAt" >= NOW() - INTERVAL \'30 days\'').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2 AND status = \'ACTIVE\'').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "Franchise" WHERE status = \'ACTIVE\'').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COALESCE(COUNT(CASE WHEN status = \'CANCELLED\' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 0) as rate FROM "Booking"').catch(() => ({ rows: [{ rate: 0 }] })),
+      // Current month revenue
+      pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ total: 0 }] })),
+      // Previous month revenue
+      pool.query('SELECT COALESCE(SUM("finalPrice"), 0) as total FROM "Booking" WHERE status = \'COMPLETED\' AND "completedAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "completedAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ total: 0 }] })),
+      // Current month bookings
+      pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Previous month bookings
+      pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Current month new users
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Previous month new users
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Current month new providers
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2 AND "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Previous month new providers
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2 AND "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Current month franchises
+      pool.query('SELECT COUNT(*) as count FROM "Franchise" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Previous month franchises
+      pool.query('SELECT COUNT(*) as count FROM "Franchise" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Current month cancellations rate
+      pool.query('SELECT COALESCE(COUNT(CASE WHEN status = \'CANCELLED\' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 0) as rate FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ rate: 0 }] })),
+      // Previous month cancellations rate
+      pool.query('SELECT COALESCE(COUNT(CASE WHEN status = \'CANCELLED\' THEN 1 END) * 100.0 / NULLIF(COUNT(*), 0), 0) as rate FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ rate: 0 }] })),
+      // Current month total bookings for cancellation calc
+      pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+      // Previous month total bookings for cancellation calc
+      pool.query('SELECT COUNT(*) as count FROM "Booking" WHERE "createdAt" >= DATE_TRUNC(\'month\', CURRENT_DATE - INTERVAL \'1 month\') AND "createdAt" < DATE_TRUNC(\'month\', CURRENT_DATE)').catch(() => ({ rows: [{ count: 0 }] })),
+    ])
+
+    // Helper: calculate growth percentage
+    const calcGrowth = (current: number, previous: number): number => {
+      if (previous === 0) return current > 0 ? 100 : 0
+      return parseFloat((((current - previous) / previous) * 100).toFixed(1))
+    }
+
+    const stats = {
+      totalRevenue: parseFloat(Number(totalRevenueResult.rows[0].total).toFixed(2)),
+      totalBookings: parseInt(String(totalBookingsResult.rows[0].count || 0)),
+      activeUsers: parseInt(String(activeUsersResult.rows[0].count || 0)),
+      activeProviders: parseInt(String(activeProvidersResult.rows[0].count || 0)),
+      totalFranchises: parseInt(String(totalFranchisesResult.rows[0].count || 0)),
+      cancellationRate: parseFloat(Number(cancellationRateResult.rows[0].rate || 0).toFixed(1)),
+      revenueGrowth: calcGrowth(
+        parseFloat(Number(currentMonthRevenueResult.rows[0].total).toFixed(2)),
+        parseFloat(Number(previousMonthRevenueResult.rows[0].total).toFixed(2))
+      ),
+      bookingGrowth: calcGrowth(
+        parseInt(String(currentMonthBookingsResult.rows[0].count || 0)),
+        parseInt(String(previousMonthBookingsResult.rows[0].count || 0))
+      ),
+      userGrowth: calcGrowth(
+        parseInt(String(currentMonthUsersResult.rows[0].count || 0)),
+        parseInt(String(previousMonthUsersResult.rows[0].count || 0))
+      ),
+      providerGrowth: calcGrowth(
+        parseInt(String(currentMonthProvidersResult.rows[0].count || 0)),
+        parseInt(String(previousMonthProvidersResult.rows[0].count || 0))
+      ),
+      franchiseGrowth: calcGrowth(
+        parseInt(String(currentMonthFranchisesResult.rows[0].count || 0)),
+        parseInt(String(previousMonthFranchisesResult.rows[0].count || 0))
+      ),
+      cancellationRateChange: parseFloat(
+        (parseFloat(Number(currentMonthCancellationsResult.rows[0].rate || 0).toFixed(1))
+        - parseFloat(Number(previousMonthCancellationsResult.rows[0].rate || 0).toFixed(1))
+        ).toFixed(1)
+      ),
+    }
+
+    // ─── Monthly Revenue (last 12 months) ──────────────────────────────
+    const monthlyRevenueResult = await pool.query(
+      `SELECT TO_CHAR("completedAt", 'YYYY-MM') as month, COALESCE(SUM("finalPrice"), 0) as revenue
+       FROM "Booking" WHERE status = 'COMPLETED' AND "completedAt" >= NOW() - INTERVAL '12 months'
+       GROUP BY month ORDER BY month ASC`
+    ).catch(() => ({ rows: [] }))
+
+    const monthlyRevenue = monthlyRevenueResult.rows.map((r: any) => ({
+      month: r.month,
+      revenue: parseFloat(Number(r.revenue).toFixed(2)),
+    }))
+
+    // ─── Top Categories ────────────────────────────────────────────────
+    const topCategoriesResult = await pool.query(
+      `SELECT sc.id::text, sc.name, COUNT(b.id) as bookings, COALESCE(SUM(b."finalPrice"), 0) as revenue
+       FROM "ServiceCategory" sc
+       LEFT JOIN "Service" s ON s."categoryId" = sc.id
+       LEFT JOIN "Booking" b ON b."serviceId" = s.id AND b.status = 'COMPLETED'
+       GROUP BY sc.id, sc.name
+       ORDER BY bookings DESC LIMIT 5`
+    ).catch(() => ({ rows: [] }))
+
+    const topCategories = topCategoriesResult.rows.map((r: any) => ({
+      id: r.id,
+      name: r.name,
+      bookings: parseInt(String(r.bookings || 0)),
+      revenue: parseFloat(Number(r.revenue || 0).toFixed(2)),
+    }))
+
+    // ─── Top Cities ────────────────────────────────────────────────────
+    const topCitiesResult = await pool.query(
+      `SELECT COALESCE(b."serviceCity", u.city) as city, COUNT(b.id) as bookings, COALESCE(SUM(b."finalPrice"), 0) as revenue
+       FROM "Booking" b
+       LEFT JOIN "User" u ON b."clientId" = u.id
+       WHERE b.status = 'COMPLETED' AND (b."serviceCity" IS NOT NULL OR u.city IS NOT NULL)
+       GROUP BY city ORDER BY bookings DESC LIMIT 5`
+    ).catch(() => ({ rows: [] }))
+
+    const topCities = topCitiesResult.rows.map((r: any) => ({
+      city: r.city,
+      bookings: parseInt(String(r.bookings || 0)),
+      revenue: parseFloat(Number(r.revenue || 0).toFixed(2)),
+    }))
+
+    // ─── Top Services ──────────────────────────────────────────────────
+    const topServicesResult = await pool.query(
+      `SELECT s.id, s.title, COUNT(b.id) as bookings, COALESCE(SUM(b."finalPrice"), 0) as revenue, sc.name as category
+       FROM "Service" s
+       LEFT JOIN "Booking" b ON b."serviceId" = s.id AND b.status = 'COMPLETED'
+       LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id
+       GROUP BY s.id, s.title, sc.name
+       ORDER BY bookings DESC LIMIT 5`
+    ).catch(() => ({ rows: [] }))
+
+    const topServices = topServicesResult.rows.map((r: any) => ({
+      id: r.id,
+      title: r.title,
+      bookings: parseInt(String(r.bookings || 0)),
+      revenue: parseFloat(Number(r.revenue || 0).toFixed(2)),
+      category: r.category || 'Uncategorized',
+    }))
+
+    // ─── Recent Bookings ───────────────────────────────────────────────
+    const recentBookingsResult = await pool.query(
+      `SELECT b.id, b."bookingNumber", b.status, b."finalPrice", b."createdAt",
+        u.id as "clientId", u.name as "clientName",
+        s.id as "serviceId", s.title as "serviceTitle"
+       FROM "Booking" b
+       LEFT JOIN "User" u ON b."clientId" = u.id
+       LEFT JOIN "Service" s ON b."serviceId" = s.id
+       ORDER BY b."createdAt" DESC LIMIT 5`
+    ).catch(() => ({ rows: [] }))
+
+    const recentBookings = recentBookingsResult.rows.map((r: any) => ({
+      id: r.id,
+      bookingNumber: r.bookingNumber,
+      client: { id: r.clientId, name: r.clientName },
+      service: { id: r.serviceId, title: r.serviceTitle },
+      status: r.status,
+      finalPrice: parseFloat(Number(r.finalPrice || 0).toFixed(2)),
+      createdAt: r.createdAt,
+    }))
+
+    const data = { stats, monthlyRevenue, topCategories, topCities, topServices, recentBookings }
+
+    // Cache the result for 5 minutes
+    redis.setJson(cacheKey, data, CacheTTL.LONG).catch(() => {})
+
+    return c.json(data)
+  } catch (e) {
+    console.error('Analytics dashboard error:', e)
+    return c.json({ error: 'Failed to get analytics dashboard data' }, 500)
+  }
+})
+
+// ─── Backup Management Endpoints (Admin Only) ───────────────────────────
+
+// GET /api/admin/backups — List recent backups
+app.get('/api/admin/backups', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const limit = parseInt(c.req.query('limit') || '30')
+    const backups = await listBackups(pool, limit)
+    return c.json({ backups, total: backups.length })
+  } catch (e) { console.error('List backups error:', e); return c.json({ error: 'Failed to list backups' }, 500) }
+})
+
+// POST /api/admin/backups — Trigger manual backup
+app.post('/api/admin/backups', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const record = await createBackup(pool)
+    return c.json({ message: 'Backup created', backup: record }, 201)
+  } catch (e) { console.error('Create backup error:', e); return c.json({ error: 'Failed to create backup', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
+})
+
+// GET /api/admin/backups/status — Get backup system status
+app.get('/api/admin/backups/status', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const status = await getBackupStatus(pool)
+    return c.json(status)
+  } catch (e) { console.error('Backup status error:', e); return c.json({ error: 'Failed to get backup status' }, 500) }
+})
+
+// GET /api/admin/backups/:id — Get specific backup details
+app.get('/api/admin/backups/:id', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const backupId = c.req.param('id')
+    const includeData = c.req.query('includeData') === 'true'
+    const details = await getBackupDetails(pool, backupId, includeData)
+    if (!details) return c.json({ error: 'Backup not found' }, 404)
+    return c.json(details)
+  } catch (e) { console.error('Backup details error:', e); return c.json({ error: 'Failed to get backup details' }, 500) }
+})
+
+// DELETE /api/admin/backups/:id — Delete a backup
+app.delete('/api/admin/backups/:id', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const backupId = c.req.param('id')
+    const deleted = await deleteBackup(pool, backupId)
+    if (!deleted) return c.json({ error: 'Backup not found' }, 404)
+    return c.json({ message: 'Backup deleted', id: backupId })
+  } catch (e) { console.error('Delete backup error:', e); return c.json({ error: 'Failed to delete backup' }, 500) }
+})
+
+// POST /api/admin/backups/:id/restore — Restore from backup (DANGEROUS)
+app.post('/api/admin/backups/:id/restore', async (c) => {
+  const admin = await requireAdmin(c)
+  if (!admin) return c.json({ error: 'Admin access required' }, 403)
+  try {
+    const backupId = c.req.param('id')
+    // Require explicit confirmation in the request body
+    const body = await c.req.json().catch(() => ({}))
+    if (!body.confirm || body.confirm !== 'RESTORE') {
+      return c.json({ error: 'Restoring a backup is DANGEROUS and will overwrite current data. Send { confirm: "RESTORE" } in the request body to proceed.' }, 400)
+    }
+    const result = await restoreBackup(pool, backupId)
+    return c.json({ message: 'Backup restored', ...result })
+  } catch (e) { console.error('Restore backup error:', e); return c.json({ error: 'Failed to restore backup', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
 
 // ─── 404 Handler for unknown API routes ────────────────────────────────

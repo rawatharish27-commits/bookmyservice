@@ -28,6 +28,9 @@ import {
   ArrowDownRight,
   Activity,
   Tag,
+  MapPin,
+  Wrench,
+  Map,
 } from 'lucide-react';
 
 interface MonthlyRevenue {
@@ -40,6 +43,20 @@ interface TopCategory {
   name: string;
   bookings: number;
   revenue: number;
+}
+
+interface TopCity {
+  city: string;
+  bookings: number;
+  revenue: number;
+}
+
+interface TopService {
+  id: string;
+  title: string;
+  bookings: number;
+  revenue: number;
+  category: string;
 }
 
 interface RecentBooking {
@@ -69,6 +86,8 @@ interface AnalyticsData {
   };
   monthlyRevenue: MonthlyRevenue[];
   topCategories: TopCategory[];
+  topCities: TopCity[];
+  topServices: TopService[];
   recentBookings: RecentBooking[];
 }
 
@@ -105,7 +124,7 @@ function formatCurrency(amount: number) {
 }
 
 export function AdminAnalyticsPage() {
-  const { data, loading } = useApi<AnalyticsData>('/api/admin/dashboard');
+  const { data, loading } = useApi<AnalyticsData>('/api/admin/analytics/dashboard');
   const [hoveredBar, setHoveredBar] = useState<number | null>(null);
 
   if (loading) {
@@ -116,6 +135,10 @@ export function AdminAnalyticsPage() {
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <Skeleton key={i} className="h-28" />
           ))}
+        </div>
+        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
+          <Skeleton className="h-72 lg:col-span-3" />
+          <Skeleton className="h-72 lg:col-span-2" />
         </div>
         <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <Skeleton className="h-72" />
@@ -128,6 +151,8 @@ export function AdminAnalyticsPage() {
   const stats = data?.stats;
   const monthlyRevenue = data?.monthlyRevenue || [];
   const topCategories = data?.topCategories || [];
+  const topCities = data?.topCities || [];
+  const topServices = data?.topServices || [];
   const recentBookings = data?.recentBookings || [];
 
   const maxRevenue = Math.max(...monthlyRevenue.map((m) => m.revenue), 1);
@@ -139,7 +164,6 @@ export function AdminAnalyticsPage() {
       icon: DollarSign,
       growth: stats?.revenueGrowth,
       color: 'emerald',
-      gradient: 'from-emerald-500 to-teal-600',
       bgLight: 'bg-emerald-50',
       textColor: 'text-emerald-700',
       borderColor: 'border-l-emerald-500',
@@ -150,7 +174,6 @@ export function AdminAnalyticsPage() {
       icon: CalendarCheck,
       growth: stats?.bookingGrowth,
       color: 'teal',
-      gradient: 'from-teal-500 to-cyan-600',
       bgLight: 'bg-teal-50',
       textColor: 'text-teal-700',
       borderColor: 'border-l-teal-500',
@@ -161,7 +184,6 @@ export function AdminAnalyticsPage() {
       icon: Users,
       growth: stats?.userGrowth,
       color: 'cyan',
-      gradient: 'from-cyan-500 to-sky-600',
       bgLight: 'bg-cyan-50',
       textColor: 'text-cyan-700',
       borderColor: 'border-l-cyan-500',
@@ -172,21 +194,9 @@ export function AdminAnalyticsPage() {
       icon: Briefcase,
       growth: stats?.providerGrowth,
       color: 'sky',
-      gradient: 'from-sky-500 to-blue-500',
       bgLight: 'bg-sky-50',
       textColor: 'text-sky-700',
       borderColor: 'border-l-sky-500',
-    },
-    {
-      label: 'Total Franchises',
-      value: (stats?.totalFranchises || 0).toLocaleString(),
-      icon: Building2,
-      growth: stats?.franchiseGrowth,
-      color: 'violet',
-      gradient: 'from-violet-500 to-purple-600',
-      bgLight: 'bg-violet-50',
-      textColor: 'text-violet-700',
-      borderColor: 'border-l-violet-500',
     },
     {
       label: 'Cancellation Rate',
@@ -194,11 +204,21 @@ export function AdminAnalyticsPage() {
       icon: TrendingDown,
       growth: stats?.cancellationRateChange,
       color: 'rose',
-      gradient: 'from-rose-500 to-pink-600',
       bgLight: 'bg-rose-50',
       textColor: 'text-rose-700',
       borderColor: 'border-l-rose-500',
       invertGrowth: true,
+    },
+    {
+      label: 'Top City',
+      value: topCities.length > 0 ? topCities[0].city : 'N/A',
+      subtitle: topCities.length > 0 ? `${topCities[0].bookings} bookings` : undefined,
+      icon: MapPin,
+      growth: undefined,
+      color: 'amber',
+      bgLight: 'bg-amber-50',
+      textColor: 'text-amber-700',
+      borderColor: 'border-l-amber-500',
     },
   ];
 
@@ -224,7 +244,7 @@ export function AdminAnalyticsPage() {
         </div>
       </motion.div>
 
-      {/* Overview Stats */}
+      {/* Row 1: Stat Cards */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -246,6 +266,9 @@ export function AdminAnalyticsPage() {
                         {card.label}
                       </p>
                       <p className={`mt-1 text-xl font-bold ${card.textColor}`}>{card.value}</p>
+                      {card.subtitle && (
+                        <p className="mt-0.5 text-xs text-muted-foreground">{card.subtitle}</p>
+                      )}
                       {card.growth !== undefined && card.growth !== null && (
                         <div className="mt-1 flex items-center gap-0.5">
                           {isPositiveGrowth ? (
@@ -274,7 +297,7 @@ export function AdminAnalyticsPage() {
         })}
       </motion.div>
 
-      {/* Revenue Chart + Top Categories */}
+      {/* Row 2: Revenue Chart + Top Categories */}
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Revenue Chart */}
         <motion.div
@@ -361,7 +384,7 @@ export function AdminAnalyticsPage() {
                               />
                               {/* Month label */}
                               <span className="mt-2 text-xs text-muted-foreground truncate w-full text-center">
-                                {month.month.slice(0, 3)}
+                                {month.month.slice(5)}
                               </span>
                             </div>
                           );
@@ -408,7 +431,7 @@ export function AdminAnalyticsPage() {
                     </TableHeader>
                     <TableBody>
                       {topCategories.map((cat, index) => (
-                        <TableRow key={cat.id}>
+                        <TableRow key={cat.id || index}>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 text-xs font-bold text-emerald-700">
@@ -436,11 +459,144 @@ export function AdminAnalyticsPage() {
         </motion.div>
       </div>
 
-      {/* Recent Bookings */}
+      {/* Row 3: Top Cities + Top Services */}
+      <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Top Cities */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.35 }}
+        >
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Map className="size-4 text-amber-600" />
+                Top Cities
+              </CardTitle>
+            </CardHeader>
+            <Separator />
+            <CardContent className="p-0">
+              {topCities.length === 0 ? (
+                <div className="flex h-52 flex-col items-center justify-center text-muted-foreground">
+                  <MapPin className="mb-2 size-10 opacity-40" />
+                  <p className="text-sm">No city data available</p>
+                </div>
+              ) : (
+                <div className="p-4 space-y-3">
+                  {topCities.map((city, index) => {
+                    const maxBookings = topCities[0]?.bookings || 1;
+                    const barWidth = Math.max((city.bookings / maxBookings) * 100, 4);
+                    return (
+                      <div key={city.city || index} className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-amber-100 to-orange-100 text-xs font-bold text-amber-700">
+                              {index + 1}
+                            </span>
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              <MapPin className="size-3.5 shrink-0 text-amber-600" />
+                              <span className="truncate text-sm font-medium">{city.city}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-3 shrink-0 ml-2">
+                            <Badge variant="secondary" className="bg-amber-50 text-amber-700">
+                              {city.bookings} bookings
+                            </Badge>
+                            <span className="text-sm font-medium text-muted-foreground">
+                              {formatCurrency(city.revenue)}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-2 w-full overflow-hidden rounded-full bg-amber-100">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${barWidth}%` }}
+                            transition={{ duration: 0.6, delay: index * 0.08, ease: 'easeOut' }}
+                            className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500"
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Top Services */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <Card className="h-full">
+            <CardHeader className="pb-2">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Wrench className="size-4 text-indigo-600" />
+                Top Services
+              </CardTitle>
+            </CardHeader>
+            <Separator />
+            <CardContent className="p-0">
+              {topServices.length === 0 ? (
+                <div className="flex h-52 flex-col items-center justify-center text-muted-foreground">
+                  <Wrench className="mb-2 size-10 opacity-40" />
+                  <p className="text-sm">No service data available</p>
+                </div>
+              ) : (
+                <ScrollArea className="max-h-80">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Service</TableHead>
+                        <TableHead className="hidden sm:table-cell">Category</TableHead>
+                        <TableHead className="text-center">Bookings</TableHead>
+                        <TableHead className="text-right">Revenue</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {topServices.map((svc, index) => (
+                        <TableRow key={svc.id || index}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 text-xs font-bold text-indigo-700">
+                                {index + 1}
+                              </span>
+                              <span className="truncate text-sm font-medium max-w-[120px]">
+                                {svc.title}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden sm:table-cell">
+                            <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200 text-xs">
+                              {svc.category}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-center">
+                            <Badge variant="secondary" className="bg-violet-50 text-violet-700">
+                              {svc.bookings}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-right text-sm font-medium">
+                            {formatCurrency(svc.revenue)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </motion.div>
+      </div>
+
+      {/* Row 4: Recent Bookings */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.45 }}
         className="mt-6"
       >
         <Card>
