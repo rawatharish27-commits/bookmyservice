@@ -11,6 +11,8 @@ import { signupSchema } from './validators/signup.schema'
 import { createBookingSchema } from './validators/create-booking.schema'
 import { createServiceSchema, updateServiceSchema } from './validators/provider.schema'
 import { validateBody } from './validators/validate'
+import { redis, CacheKeys, CacheTTL } from './lib/redis'
+import { applyDatabaseIndexes } from './lib/db-indexes'
 
 // ─── Process crash protection ───────────────────────────────────────────
 process.on('uncaughtException', (err) => {
@@ -63,6 +65,12 @@ pool.query('SELECT 1 as ok').then(async () => {
     }
   } catch (seedError: any) {
     console.error('⚠️  Role seeding error (non-fatal):', seedError.message);
+  }
+  // Apply performance indexes (non-fatal, safe to re-run)
+  try {
+    await applyDatabaseIndexes(pool)
+  } catch (idxError: any) {
+    console.error('⚠️  Index creation error (non-fatal):', idxError.message);
   }
 }).catch((e) => {
   console.error('❌ Database connection failed:', e.message);
@@ -265,10 +273,12 @@ app.get('/', (c) => {
 })
 
 // Health check
-app.get('/api/health', (c) => {
+app.get('/api/health', async (c) => {
+  const cacheStatus = await redis.ping()
   return c.json({
     status: 'ok',
-    service: 'bookmyservice-api'
+    service: 'bookmyservice-api',
+    cache: cacheStatus,
   })
 })
 
@@ -365,10 +375,10 @@ app.post('/api/auth/forgot-password', async (c) => {
     if (!email) return c.json({ error: 'Email is required' }, 400)
     const lengthError = validateInputLengths({ email })
     if (lengthError) return c.json({ error: lengthError }, 400)
-    // Generate and store reset token (in-memory for demo)
+    const sanitizedEmail = String(email).toLowerCase().trim()
+    // Generate and store reset token in Redis
     const resetToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
-    const resetTokenStore = (globalThis as any).__resetTokens || ((globalThis as any).__resetTokens = new Map<string, { token: string; expiresAt: number }>())
-    resetTokenStore.set(String(email).toLowerCase().trim(), { token: resetToken, expiresAt: Date.now() + 3600000 })
+    await redis.set(`resetToken:${sanitizedEmail}`, JSON.stringify({ token: resetToken, expiresAt: Date.now() + 3600000 }), 3600000)
     return c.json({ message: 'If an account with that email exists, a reset token has been sent.' })
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
@@ -380,16 +390,17 @@ app.post('/api/auth/reset-password', async (c) => {
     const lengthError = validateInputLengths({ email, password: newPassword })
     if (lengthError) return c.json({ error: lengthError }, 400)
     if (newPassword.length < 8) return c.json({ error: 'Password must be at least 8 characters' }, 400)
-    // Validate token from in-memory store
-    const resetTokenStore = (globalThis as any).__resetTokens as Map<string, { token: string; expiresAt: number }> | undefined
-    const stored = resetTokenStore?.get(String(email).toLowerCase().trim())
+    const sanitizedEmail = String(email).toLowerCase().trim()
+    // Validate token from Redis
+    const storedRaw = await redis.get(`resetToken:${sanitizedEmail}`)
+    const stored = storedRaw ? JSON.parse(storedRaw) : null
     if (!stored || stored.token !== token || Date.now() > stored.expiresAt) {
       return c.json({ error: 'Invalid or expired reset token' }, 400)
     }
     const passwordHash = await bcrypt.hash(String(newPassword), 10)
-    await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, String(email).toLowerCase().trim()])
+    await pool.query('UPDATE "User" SET "passwordHash" = $1, "updatedAt" = NOW() WHERE LOWER(email) = LOWER($2)', [passwordHash, sanitizedEmail])
     // Consume the token
-    resetTokenStore!.delete(String(email).toLowerCase().trim())
+    await redis.del(`resetToken:${sanitizedEmail}`)
     return c.json({ message: 'Password has been reset successfully' })
   } catch (e) { console.error('Reset password error:', e); return c.json({ error: 'Failed' }, 500) }
 })
@@ -596,27 +607,58 @@ app.get('/api/stats', async (c) => {
 
 app.get('/api/stats/platform', async (c) => {
   try {
+    // Try cache first
+    const cacheKey = CacheKeys.platformStats()
+    const cached = await redis.getJson<Record<string, any>>(cacheKey)
+    if (cached) return c.json(cached)
+
     const result = await pool.query('SELECT * FROM "PlatformStats" ORDER BY id DESC LIMIT 1')
-    return c.json(result.rows[0] || { totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 })
+    const data = result.rows[0] || { totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 }
+
+    // Write to cache (non-blocking)
+    redis.setJson(cacheKey, data, CacheTTL.LONG).catch(() => {})
+
+    return c.json(data)
   } catch (e) { console.error('Stats error:', e); return c.json({ totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 }) }
 })
 
 // Categories
 app.get('/api/categories', async (c) => {
   try {
+    // Try cache first
+    const cacheKey = CacheKeys.categoriesAll()
+    const cached = await redis.getJson<{ categories: any[]; total: number }>(cacheKey)
+    if (cached) return c.json(cached)
+
     const result = await pool.query('SELECT id, name, slug, description, "iconUrl", icon, "imageUrl", "parentId", "isActive", "displayOrder", "isEmergency", "seoTitle", "seoDescription", "createdAt", "updatedAt" FROM "ServiceCategory" WHERE "isActive" = true ORDER BY "displayOrder"')
-    return c.json({ categories: result.rows, total: result.rows.length })
+    const data = { categories: result.rows, total: result.rows.length }
+
+    // Write to cache (non-blocking)
+    redis.setJson(cacheKey, data, CacheTTL.LONG).catch(() => {})
+
+    return c.json(data)
   } catch (e) { console.error('Categories error:', e); return c.json({ categories: [], total: 0 }) }
 })
 
 app.get('/api/categories/:id', async (c) => {
   try {
     const id = c.req.param('id')
+
+    // Try cache first
+    const cacheKey = CacheKeys.categoryDetail(id)
+    const cached = await redis.getJson<Record<string, any>>(cacheKey)
+    if (cached) return c.json(cached)
+
     const result = await pool.query('SELECT * FROM "ServiceCategory" WHERE id::text = $1 OR slug = $1', [id])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
     // Also get subcategories
     const subResult = await pool.query('SELECT * FROM "ServiceSubcategory" WHERE "categoryId" = $1 AND "isActive" = true ORDER BY "displayOrder"', [result.rows[0].id])
-    return c.json({ ...result.rows[0], subcategories: subResult.rows })
+    const data = { ...result.rows[0], subcategories: subResult.rows }
+
+    // Write to cache (non-blocking)
+    redis.setJson(cacheKey, data, CacheTTL.LONG).catch(() => {})
+
+    return c.json(data)
   } catch (e) { console.error("DB Error:", e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -651,19 +693,41 @@ app.get('/api/subcategories', async (c) => {
   } catch (e) { console.error('Subcategories error:', e); return c.json({ subcategories: [], total: 0 }) }
 })
 
+// Popular Searches
+app.get('/api/popular-searches', async (c) => {
+  try {
+    const count = parseInt(c.req.query('count') || '10')
+    const searches = await redis.getPopularSearches(Math.min(count, 50))
+    return c.json({ searches, total: searches.length })
+  } catch (e) {
+    return c.json({ searches: [], total: 0 })
+  }
+})
+
 // Services
 app.get('/api/services', async (c) => {
   try {
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
     const categoryId = c.req.query('categoryId') || c.req.query('category')
+    const search = c.req.query('search')
+
+    // Track popular searches (non-blocking)
+    if (search) {
+      redis.trackSearch(search).catch(() => {})
+    }
+
+    // Try cache first
+    const cacheKey = CacheKeys.servicesList(limit, offset, categoryId || undefined, search || undefined)
+    const cached = await redis.getJson<{ services: any[]; total: number; limit: number; offset: number; pagination: { total: number; limit: number; offset: number } }>(cacheKey)
+    if (cached) return c.json(cached)
+
     let query = 'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE s."isActive" = true AND s."isApproved" = true'
     const params: any[] = []
     if (categoryId) {
       query += ' AND s."categoryId" = $' + (params.length + 1)
       params.push(parseInt(categoryId))
     }
-    const search = c.req.query('search')
     if (search) {
       query += ` AND (s.title ILIKE $${params.length + 1} OR s.description ILIKE $${params.length + 1})`
       params.push(`%${search}%`)
@@ -683,13 +747,24 @@ app.get('/api/services', async (c) => {
       countParams.push(`%${search}%`)
     }
     const countResult = await pool.query(countQuery, countParams).catch(() => ({ rows: [{ total: 0 }] }))
-    return c.json({ services: result.rows.map(transformServiceRow), total: parseInt(countResult.rows[0]?.total || '0'), limit, offset, pagination: { total: parseInt(countResult.rows[0]?.total || '0'), limit, offset } })
+    const data = { services: result.rows.map(transformServiceRow), total: parseInt(countResult.rows[0]?.total || '0'), limit, offset, pagination: { total: parseInt(countResult.rows[0]?.total || '0'), limit, offset } }
+
+    // Write to cache (non-blocking)
+    redis.setJson(cacheKey, data, CacheTTL.MEDIUM).catch(() => {})
+
+    return c.json(data)
   } catch (e) { console.error('Services error:', e); return c.json({ services: [], total: 0, limit: 20, offset: 0, pagination: { total: 0, limit: 20, offset: 0 } }) }
 })
 
 app.get('/api/services/:id', async (c) => {
   try {
     const id = c.req.param('id')
+
+    // Try cache first
+    const cacheKey = CacheKeys.serviceDetail(id)
+    const cached = await redis.getJson<Record<string, any>>(cacheKey)
+    if (cached) return c.json(cached)
+
     const result = await pool.query(
       'SELECT s.*, u.name as "providerName", u."profileImageUrl" as "providerImage", u.phone as "providerPhone", u.city as "providerCity", u."isVerified" as "providerVerified", u."completedJobsCount" as "providerCompletedJobs", u."verifiedBadge" as "providerVerifiedBadge", sc.name as "categoryName", sc.slug as "categorySlug", sc.icon as "categoryIcon", sc."imageUrl" as "categoryImage", ss.name as "subcategoryName" FROM "Service" s LEFT JOIN "User" u ON s."providerId" = u.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id LEFT JOIN "ServiceSubcategory" ss ON s."subcategoryId" = ss.id WHERE s.id = $1',
       [id]
@@ -699,7 +774,12 @@ app.get('/api/services/:id', async (c) => {
     const availResult = await pool.query('SELECT * FROM "ServiceAvailability" WHERE "serviceId" = $1 AND "isAvailable" = true ORDER BY "dayOfWeek"', [id])
     // Get reviews
     const reviewResult = await pool.query('SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE r."serviceId" = $1 ORDER BY r."createdAt" DESC LIMIT 10', [id])
-    return c.json({ ...transformServiceRow(result.rows[0]), availability: availResult.rows, reviews: reviewResult.rows.map(transformReviewRow) })
+    const data = { ...transformServiceRow(result.rows[0]), availability: availResult.rows, reviews: reviewResult.rows.map(transformReviewRow) }
+
+    // Write to cache (non-blocking)
+    redis.setJson(cacheKey, data, CacheTTL.MEDIUM).catch(() => {})
+
+    return c.json(data)
   } catch (e) { console.error('Service detail error:', e); return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -827,6 +907,11 @@ app.get('/api/providers/nearby', async (c) => {
       return c.json({ error: 'Invalid latitude or longitude values' }, 400)
     }
 
+    // Try cache first
+    const cacheKey = CacheKeys.nearbyProviders(lat, lng, radius, categoryId || undefined)
+    const cached = await redis.getJson<{ providers: any[]; total: number; radius: number }>(cacheKey)
+    if (cached) return c.json(cached)
+
     // Try to query providers with location from DB
     try {
       let query = `
@@ -893,12 +978,12 @@ app.get('/api/providers/nearby', async (c) => {
       }
 
       const providers = Array.from(providerMap.values()).sort((a, b) => a.distance - b.distance)
+      const data = { providers, total: providers.length, radius }
 
-      return c.json({
-        providers,
-        total: providers.length,
-        radius,
-      })
+      // Write to cache (non-blocking)
+      redis.setJson(cacheKey, data, CacheTTL.MEDIUM).catch(() => {})
+
+      return c.json(data)
     } catch (dbError) {
       // DB tables might not have lat/lng columns - return mock data
       const cityInfo = findCityByCoords(lat, lng)
@@ -1522,6 +1607,8 @@ app.post('/api/bookings', async (c) => {
     const result = await pool.query('SELECT b.*, u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [bookingId]).catch(async () => {
       return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', basePrice, couponDiscount, finalPrice, otpCode, scheduledDate, serviceAddress }] }
     })
+    // Invalidate caches
+    await redis.delByPattern('cache:stats:*').catch(() => {})
     return c.json({ message: 'Booking created successfully', booking: result.rows[0] }, 201)
   } catch (e) { console.error('Create booking error:', e); return c.json({ error: 'Failed to create booking' }, 500) }
 })
@@ -1878,6 +1965,9 @@ app.post('/api/services', async (c) => {
       'INSERT INTO "Service" (id, title, description, "categoryId", "subcategoryId", "providerId", "basePrice", images, "serviceDurationMinutes", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, false, false, 0, 0, NOW(), NOW())',
       [id, title, description || null, categoryId, subcategoryId || null, user.id, basePrice, images || null, serviceDurationMinutes || null, isEmergencyAvailable || false]
     )
+    // Invalidate caches
+    await redis.delByPattern('cache:services:*').catch(() => {})
+    await redis.delByPattern('cache:categories:*').catch(() => {})
     return c.json({ message: 'Service created, pending approval', service: { id, title, status: 'PENDING_APPROVAL' } }, 201)
   } catch (e) { console.error('Create service error:', e); return c.json({ error: 'Failed to create service' }, 500) }
 })
@@ -1904,6 +1994,9 @@ app.patch('/api/services/:id', async (c) => {
     values.push(id)
     await pool.query(`UPDATE "Service" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
     const result = await pool.query('SELECT * FROM "Service" WHERE id = $1', [id]).catch(() => existing)
+    // Invalidate caches
+    await redis.del(CacheKeys.serviceDetail(id)).catch(() => {})
+    await redis.delByPattern('cache:services:*').catch(() => {})
     return c.json({ message: 'Service updated', service: result.rows[0] })
   } catch (e) { return c.json({ error: 'Failed to update service' }, 500) }
 })
@@ -2982,6 +3075,8 @@ app.post('/api/admin/categories', async (c) => {
     const id = body.id || 'cat_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query('INSERT INTO "ServiceCategory" (id, name, slug, description, icon, "imageUrl", "isActive", "displayOrder", "isEmergency") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) ON CONFLICT (id) DO UPDATE SET name = $2, slug = $3, description = $4, icon = $5, "updatedAt" = NOW()',
       [id, body.name, body.slug || body.name?.toLowerCase().replace(/\s+/g, '-'), body.description || '', body.icon || 'Wrench', body.imageUrl || '/images/default.jpg', body.isActive !== false, body.displayOrder || 0, body.isEmergency || false])
+    // Invalidate caches
+    await redis.delByPattern('cache:categories:*').catch(() => {})
     return c.json({ message: 'Category saved', id }, 201)
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })

@@ -219,3 +219,101 @@ Stage Summary:
 - Rate limiting is granular per-endpoint with hono-rate-limiter
 - Old in-memory rate limiter code completely removed
 - All existing functionality preserved
+
+---
+Task ID: 4 + 5
+Agent: Main Agent
+Task: STEP 4 — Redis Cache + STEP 5 — Database Optimization
+
+Work Log:
+- Installed `redis` v5.12.1 in api-service
+- Created `/home/z/my-project/mini-services/api-service/lib/redis.ts`:
+  - RedisCache class with automatic in-memory fallback when REDIS_URL not set
+  - Core operations: get, set, del, delByPattern, incr, expire, exists
+  - JSON helpers: getJson<T>, setJson<T>
+  - OTP operations: setOtp, getOtp, deleteOtp (5-min TTL)
+  - Session operations: setSession, getSession, deleteSession (15-min TTL)
+  - Popular search tracking: trackSearch, getPopularSearches (sorted sets)
+  - Health check: ping() returns { ok, backend, latencyMs }
+  - CacheKeys builder for consistent key naming (cache:services:*, cache:categories:*, etc.)
+  - CacheTTL presets: SHORT (60s), MEDIUM (3min), LONG (5min), OTP (5min), SESSION (15min)
+  - MemoryCacheStore fallback with LRU-like expiry, sorted sets, and cleanup interval
+- Integrated Redis caching into 6 read endpoints (cache-first pattern):
+  1. GET /api/stats/platform — 5-min cache
+  2. GET /api/categories — 5-min cache
+  3. GET /api/categories/:id — 5-min cache
+  4. GET /api/services — 3-min cache (with popular search tracking)
+  5. GET /api/services/:id — 3-min cache
+  6. GET /api/providers/nearby — 3-min cache
+- Added cache invalidation on 4 write endpoints:
+  1. POST /api/services → invalidates cache:services:* + cache:categories:*
+  2. PATCH /api/services/:id → invalidates cache:services:* + detail cache
+  3. POST /api/admin/categories → invalidates cache:categories:*
+  4. POST /api/bookings → invalidates cache:stats:*
+- Replaced in-memory globalThis.__resetTokens with Redis OTP storage:
+  - forgot-password: stores reset token in Redis with 1-hour TTL
+  - reset-password: reads from Redis, validates, deletes token
+- Added GET /api/popular-searches endpoint (returns tracked searches from sorted set)
+- Updated /api/health to include cache status { ok, backend, latencyMs }
+- Created `/home/z/my-project/mini-services/api-service/lib/db-indexes.ts`:
+  - 15 performance indexes for frequently queried columns
+  - Users: email, roleId, status
+  - Bookings: clientId, providerId, technicianId, createdAt DESC, status, scheduledDate
+  - Services: categoryId, providerId, isActive+isApproved composite
+  - Reviews: serviceId
+  - ProviderKyc: providerId
+  - ServiceCategory: isActive+displayOrder composite
+  - All use IF NOT EXISTS — safe to re-run
+- Added applyDatabaseIndexes() call on startup after DB connection + Role seeding
+- Tested: 15 indexes applied successfully against Supabase PostgreSQL
+- Tested: Cache hit ~2x faster than cache miss (38ms vs 82ms from sandbox to Supabase)
+- Tested: Health endpoint shows cache backend status
+
+Stage Summary:
+- Redis caching layer with graceful in-memory fallback (works without Redis server)
+- 6 read endpoints cached with 3-5 min TTL
+- 4 write endpoints invalidate related caches
+- OTP storage migrated from globalThis to Redis/memory cache
+- Popular search tracking + endpoint
+- 15 database indexes applied for faster queries
+- All changes are additive — no existing services deleted or restructured
+- Production-ready: set REDIS_URL env var to enable Redis, leave empty for memory fallback
+
+---
+Task ID: 4-c + 4-d + 4-e
+Agent: Redis Cache Agent
+Task: Add Redis caching layer, cache invalidation, Redis OTP, and popular searches to api-service
+
+Work Log:
+- Added `import { redis, CacheKeys, CacheTTL } from './lib/redis'` at top of index.ts (line 14)
+- Added cache-first pattern (try Redis → return cached, else query DB → write to Redis async) to 6 read endpoints:
+  1. GET /api/stats/platform — CacheKeys.platformStats(), TTL LONG (5 min)
+  2. GET /api/categories — CacheKeys.categoriesAll(), TTL LONG (5 min)
+  3. GET /api/categories/:id — CacheKeys.categoryDetail(id), TTL LONG (5 min)
+  4. GET /api/services — CacheKeys.servicesList(limit, offset, categoryId, search), TTL MEDIUM (3 min)
+  5. GET /api/services/:id — CacheKeys.serviceDetail(id), TTL MEDIUM (3 min)
+  6. GET /api/providers/nearby — CacheKeys.nearbyProviders(lat, lng, radius, categoryId), TTL MEDIUM (3 min)
+- All cache writes are NON-BLOCKING (fire-and-forget with .catch(() => {}))
+- Cache reads wrapped in try/catch with fallback to DB query on failure
+- Added cache invalidation on 4 write endpoints:
+  1. POST /api/services (create) — invalidates cache:services:* + cache:categories:*
+  2. PATCH /api/services/:id (update) — invalidates CacheKeys.serviceDetail(id) + cache:services:*
+  3. POST /api/admin/categories — invalidates cache:categories:*
+  4. POST /api/bookings — invalidates cache:stats:*
+- Replaced in-memory OTP (__resetTokens Map) with Redis in forgot-password/reset-password:
+  - POST /api/auth/forgot-password: uses redis.set(`resetToken:${email}`, JSON, 3600000)
+  - POST /api/auth/reset-password: uses redis.get(`resetToken:${email}`) + redis.del after use
+- Added popular search tracking: when /api/services is called with `search` param, calls redis.trackSearch(search) (non-blocking)
+- Added GET /api/popular-searches endpoint (after /api/subcategories) returning { searches, total }
+- Updated GET /api/health to include Redis cache status via redis.ping()
+- Verified all changes present in file with automated check (15/15 OK)
+- Tested endpoints locally: /api/health returns cache status, /api/popular-searches returns empty array, /api/stats/platform returns fallback data with caching
+- No existing routes or services deleted or restructured
+
+Stage Summary:
+- 6 read endpoints now use Redis caching with in-memory fallback (works without REDIS_URL)
+- 4 write endpoints invalidate related caches on data changes
+- OTP storage moved from in-memory globalThis to Redis with TTL
+- Popular search tracking and new /api/popular-searches endpoint added
+- Health endpoint reports cache backend status (redis or memory)
+- All cache operations are non-blocking — Redis failures degrade gracefully to in-memory or DB-only
