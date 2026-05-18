@@ -412,3 +412,44 @@ Stage Summary:
 - Upload endpoints gracefully return mock URLs when Cloudinary not configured
 - Queue system falls back to synchronous processing when Redis is unavailable
 - All queue pushes are non-blocking — failures do not affect the HTTP response
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Integrate logging, sentry, and worker status into api-service + frontend Sentry
+
+Work Log:
+- Applied 12 targeted changes to `/home/z/my-project/mini-services/api-service/index.ts` without deleting any existing routes or services:
+  1. **CHANGE 1**: Replaced crash protection block with Sentry-init-first version — `initSentry()` + `startMemoryMonitoring()` before crash handlers, handlers now use `logger.error()` + `captureApiError()`
+  2. **CHANGE 2**: Upgraded `pool.on('error')` — replaced `console.error` with `logger.error()` + `captureDbError()`
+  3. **CHANGE 3**: Upgraded DB connection failed catch — replaced `console.error` with `logger.error()` + `captureDbError()`
+  4. **CHANGE 4**: Upgraded graceful shutdown — replaced `console.log` with `logger.info()`, added `stopMemoryMonitoring()` calls
+  5. **CHANGE 5**: Added HTTP logging middleware (`httpLoggingMiddleware()`) BEFORE cors middleware — Morgan-style request logging
+  6. **CHANGE 6**: Upgraded global error handler — added `logger.error()`, `apiLogger.error()`, and `captureApiError()` with method/path context
+  7. **CHANGE 7**: Upgraded health endpoint — added `sentry: getSentryStatus()`, `worker: getWorkerStatus()`, and `memory` stats (heapUsedMB, heapTotalMB, rssMB)
+  8. **CHANGE 8**: Added auth logging to login route — `AuthEvents.failedLogin()` on 401 failures, `AuthEvents.successfulLogin()` + `setSentryUser()` on success
+  9. **CHANGE 9**: Added auth logging to register route — `AuthEvents.registration()` after successful registration
+  10. **CHANGE 10**: Added booking logging — `BookingEvents.created()` after booking insert, `BookingEvents.failed()` in catch block
+  11. **CHANGE 11**: Added 4 worker monitoring endpoints before 404 handler — `/api/worker/status`, `/api/worker/jobs`, `/api/worker/dead-letter`, `/api/worker/recover/:jobId`
+  12. **CHANGE 12**: Added Sentry user context on auth profile fetch — `setSentryUser()` after profile data retrieved, `AuthEvents.tokenExpired()` in TOKEN_EXPIRED catch path (with `payload` hoisted to outer scope for accessibility)
+- Fixed syntax error in `/home/z/my-project/mini-services/api-service/lib/logger.ts` — trailing comma instead of semicolon in `passwordReset()` method (line 197)
+- Integrated frontend Sentry in `/home/z/my-project/frontend/src/main.tsx`:
+  - Added `import { initSentry } from './lib/sentry'`
+  - Added `initSentry()` call BEFORE `ReactDOM.createRoot()`
+- Integrated Sentry crash tracking in `/home/z/my-project/frontend/src/components/error-boundary.tsx`:
+  - Added `import { captureReactError } from '../lib/sentry'`
+  - Added `captureReactError(error, info)` call in `logError()` function when error is an Error instance
+- Verified api-service startup — all imports resolve, Sentry initializes (no-op fallback), logger works, SIGTERM handler with logger + stopMemoryMonitoring works
+- Verified Next.js dev server still running and serving pages correctly
+
+Stage Summary:
+- All 12 backend changes applied to index.ts — no routes or services deleted
+- Winston structured logging replaces console.error/console.log in error handlers, shutdown, pool errors, global error handler
+- Sentry integration: init on startup, capture API/DB errors, set user context on login/profile, token expiry tracking
+- HTTP request logging middleware added (Morgan-style) with status-based log levels
+- Health endpoint now includes sentry status, worker status, and memory metrics
+- 4 new worker monitoring endpoints for job tracking, dead-letter queue, and job recovery
+- Auth event logging: successful/failed logins, registrations, token expiry
+- Booking event logging: booking created/failed events
+- Frontend: Sentry init in main.tsx, crash tracking in error boundary
+- Logger.ts syntax bug fixed (trailing comma → semicolon)

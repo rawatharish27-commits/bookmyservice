@@ -194,7 +194,7 @@ export const AuthEvents = {
   },
 
   passwordReset(email: string, ip: string) {
-    authLogger.info('Password reset requested', { email, ip, event: 'PASSWORD_RESET' }),
+    authLogger.info('Password reset requested', { email, ip, event: 'PASSWORD_RESET' });
   },
 }
 

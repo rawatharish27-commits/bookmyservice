@@ -19,16 +19,19 @@ import type { NotificationJobData, BookingProcessingJobData } from './queues'
 import { logger, authLogger, bookingLogger, apiLogger, httpLoggingMiddleware, AuthEvents, BookingEvents, ApiEvents } from './lib/logger'
 import { initSentry, captureApiError, captureDbError, setSentryUser, clearSentryUser, getSentryStatus, startMemoryMonitoring, stopMemoryMonitoring } from './lib/sentry'
 import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './workers/notification.worker'
-import { logger, authLogger, bookingLogger, apiLogger, httpLoggingMiddleware, AuthEvents, BookingEvents, ApiEvents } from './lib/logger'
-import { initSentry, captureApiError, captureDbError, setSentryUser, clearSentryUser, getSentryStatus, startMemoryMonitoring, stopMemoryMonitoring } from './lib/sentry'
-import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './workers/notification.worker'
+
+// ─── Initialize Sentry (before crash handlers) ─────────────────────────
+initSentry()
+startMemoryMonitoring()
 
 // ─── Process crash protection ───────────────────────────────────────────
 process.on('uncaughtException', (err) => {
-  console.error('⚠️  Uncaught Exception (non-fatal):', err.message || err)
+  logger.error('Uncaught Exception (non-fatal)', { error: err.message, stack: err.stack })
+  captureApiError(err, { method: 'process', path: 'uncaughtException' })
 })
 process.on('unhandledRejection', (reason) => {
-  console.error('⚠️  Unhandled Rejection (non-fatal):', reason)
+  logger.error('Unhandled Rejection (non-fatal)', { reason: String(reason) })
+  captureApiError(reason instanceof Error ? reason : new Error(String(reason)), { method: 'process', path: 'unhandledRejection' })
 })
 
 const pool = new Pool({
@@ -43,7 +46,8 @@ const pool = new Pool({
 
 // Prevent idle client errors from crashing the process
 pool.on('error', (err) => {
-  console.error('⚠️  Idle pool client error:', err.message)
+  logger.error('Idle pool client error', { error: err.message })
+  captureDbError(err, { operation: 'idle_pool' })
 })
 
 // Verify database connection on startup
@@ -82,7 +86,8 @@ pool.query('SELECT 1 as ok').then(async () => {
     console.error('⚠️  Index creation error (non-fatal):', idxError.message);
   }
 }).catch((e) => {
-  console.error('❌ Database connection failed:', e.message);
+  logger.error('Database connection failed', { error: e.message });
+  captureDbError(e, { operation: 'startup_connection' })
 });
 
 // ─── Initialize Queue System ────────────────────────────────────────────
@@ -92,12 +97,14 @@ initializeQueues().then(() => startWorkers()).catch((err) => {
 
 // ─── Graceful Shutdown ──────────────────────────────────────────────────
 process.on('SIGTERM', async () => {
-  console.log('👋 SIGTERM received — shutting down gracefully...')
+  logger.info('SIGTERM received — shutting down gracefully')
+  stopMemoryMonitoring()
   await shutdownQueues()
   process.exit(0)
 })
 process.on('SIGINT', async () => {
-  console.log('👋 SIGINT received — shutting down gracefully...')
+  logger.info('SIGINT received — shutting down gracefully')
+  stopMemoryMonitoring()
   await shutdownQueues()
   process.exit(0)
 })
@@ -167,6 +174,9 @@ function transformReviewRow(row: Record<string, any>) {
   }
 }
 
+// ─── HTTP Request Logging (Morgan-style) ────────────────────────────────
+app.use('*', httpLoggingMiddleware())
+
 app.use('*', cors({
   origin: (origin, c) => {
     // Allow known production origins
@@ -189,7 +199,11 @@ app.use('*', cors({
 
 // ─── Global Error Handler ────────────────────────────────────────────────
 app.onError((err, c) => {
-  console.error('🔥 Unhandled API Error:', err.message || err)
+  const method = c.req.method
+  const path = c.req.path
+  logger.error('Unhandled API Error', { error: err.message, method, path })
+  apiLogger.error('API server error', { error: err.message, method, path, event: 'API_500' })
+  captureApiError(err, { method, path, statusCode: 500 })
   // Don't expose internal errors in production
   const isDev = process.env.NODE_ENV !== 'production'
   return c.json({
@@ -301,11 +315,19 @@ app.get('/', (c) => {
 // Health check
 app.get('/api/health', async (c) => {
   const cacheStatus = await redis.ping()
+  const mem = process.memoryUsage()
   return c.json({
     status: 'ok',
     service: 'bookmyservice-api',
     cache: cacheStatus,
     queue: getQueueStatus(),
+    sentry: getSentryStatus(),
+    worker: getWorkerStatus(),
+    memory: {
+      heapUsedMB: Math.round(mem.heapUsed / 1024 / 1024),
+      heapTotalMB: Math.round(mem.heapTotal / 1024 / 1024),
+      rssMB: Math.round(mem.rss / 1024 / 1024),
+    },
   })
 })
 
@@ -344,10 +366,10 @@ app.post('/api/auth/login', async (c) => {
     const { email, password } = vResult.data
     const sanitizedEmail = email
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE LOWER(u.email) = LOWER($1)', [sanitizedEmail])
-    if (!result.rows[0]) return c.json({ error: 'Invalid email or password' }, 401)
+    if (!result.rows[0]) { AuthEvents.failedLogin(sanitizedEmail, c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', 'User not found'); return c.json({ error: 'Invalid email or password' }, 401) }
     const user = result.rows[0]
     const isValid = await bcrypt.compare(String(password), user.passwordHash)
-    if (!isValid) return c.json({ error: 'Invalid email or password' }, 401)
+    if (!isValid) { AuthEvents.failedLogin(sanitizedEmail, c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', 'Wrong password'); return c.json({ error: 'Invalid email or password' }, 401) }
     if (user.status !== 'ACTIVE') return c.json({ error: 'Account is ' + user.status.toLowerCase() }, 403)
     await pool.query('UPDATE "User" SET "lastLoginAt" = NOW() WHERE id = $1', [user.id])
     const secret = new TextEncoder().encode(JWT_SECRET)
@@ -355,6 +377,8 @@ app.post('/api/auth/login', async (c) => {
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
     const { passwordHash, roleName, ...safeUser } = user
+    AuthEvents.successfulLogin(sanitizedEmail, c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', user.roleName)
+    setSentryUser({ id: user.id, email: user.email, role: user.roleName })
     return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
   } catch (e) { console.error('Login error:', e); return c.json({ error: 'Login failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
@@ -400,6 +424,7 @@ app.post('/api/auth/register', async (c) => {
       data: { name: String(name).trim() },
       priority: 4,
     }).catch(() => {})
+    AuthEvents.registration(email, roleId === 2 ? 'PROVIDER' : roleId === 4 ? 'TECHNICIAN' : roleId === 5 ? 'VENDOR' : 'CLIENT', c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown')
     return c.json({ message: 'Registration successful', user: { ...safeUser, role: user.roleName }, accessToken: token }, 201)
   } catch (e) { console.error('Register error:', e); return c.json({ error: 'Registration failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
@@ -558,14 +583,17 @@ app.post('/api/auth/change-password', async (c) => {
 })
 
 app.get('/api/auth/profile', async (c) => {
+  let payload: any = null
   try {
     const authHeader = c.req.header('authorization')
     if (!authHeader?.startsWith('Bearer ')) return c.json({ error: 'Authentication required' }, 401)
     const secret = new TextEncoder().encode(JWT_SECRET)
-    const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
+    const jwtResult = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
+    payload = jwtResult.payload
     const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
     const { passwordHash, roleName, ...profile } = result.rows[0]
+    setSentryUser({ id: profile.id, email: profile.email, role: roleName })
     // Issue a fresh token so the JWT doesn't expire mid-session
     const newToken = await new SignJWT({ sub: profile.id, email: profile.email, role: roleName, roleId: profile.roleId })
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
@@ -575,6 +603,7 @@ app.get('/api/auth/profile', async (c) => {
     console.error('Profile fetch error:', e); 
     // If JWT expired or invalid, return 401 instead of 500
     if (e?.code === 'ERR_JWT_EXPIRED' || e?.code === 'ERR_JWS_INVALID' || e?.code === 'ERR_JWT_INVALID') {
+      AuthEvents.tokenExpired(payload?.sub as string || 'unknown', c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown')
       return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
     }
     return c.json({ error: 'Failed to fetch profile' }, 500) 
@@ -1652,6 +1681,7 @@ app.post('/api/bookings', async (c) => {
     })
     // Invalidate caches
     await redis.delByPattern('cache:stats:*').catch(() => {})
+    BookingEvents.created(bookingId, user.id, serviceId)
     // Push async processing jobs (non-blocking)
     pushBookingJob({
       type: 'BOOKING_CONFIRMATION',
@@ -1691,7 +1721,7 @@ app.post('/api/bookings', async (c) => {
     }).catch(() => {})
 
     return c.json({ message: 'Booking created successfully', booking: result.rows[0] }, 201)
-  } catch (e) { console.error('Create booking error:', e); return c.json({ error: 'Failed to create booking' }, 500) }
+  } catch (e) { console.error('Create booking error:', e); BookingEvents.failed(user?.id || 'unknown', serviceId || 'unknown', e instanceof Error ? e.message : String(e)); return c.json({ error: 'Failed to create booking' }, 500) }
 })
 
 // GET /api/bookings - List bookings (requires auth)
@@ -3442,6 +3472,26 @@ app.delete('/api/upload/:publicId', async (c) => {
 // GET /api/upload/status - Check Cloudinary configuration status
 app.get('/api/upload/status', (c) => {
   return c.json({ upload: getCloudinaryStatus(), queue: getQueueStatus() })
+})
+
+// ─── Worker & Monitoring Endpoints ─────────────────────────────────────
+app.get('/api/worker/status', (c) => {
+  return c.json(getWorkerStatus())
+})
+
+app.get('/api/worker/jobs', (c) => {
+  const limit = parseInt(c.req.query('limit') || '50')
+  return c.json({ jobs: jobTracker.getRecentJobs(limit) })
+})
+
+app.get('/api/worker/dead-letter', (c) => {
+  return c.json({ jobs: jobTracker.getDeadLetterJobs(), total: jobTracker.getDeadLetterJobs().length })
+})
+
+app.post('/api/worker/recover/:jobId', (c) => {
+  const jobId = c.req.param('jobId')
+  const result = jobTracker.recoverJob(jobId)
+  return c.json(result, result.success ? 200 : 404)
 })
 
 // ─── 404 Handler for unknown API routes ────────────────────────────────

@@ -2,6 +2,7 @@
 
 import React from 'react'
 import { ErrorBoundary as ReactErrorBoundary, FallbackProps } from 'react-error-boundary'
+import { captureReactError } from '../lib/sentry'
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
@@ -57,6 +58,9 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
 function logError(error: unknown, info: React.ErrorInfo) {
   console.error('🔴 ErrorBoundary caught:', error)
   console.error('Component stack:', info.componentStack)
+  if (error instanceof Error) {
+    captureReactError(error, info)
+  }
 }
 
 export function ErrorBoundary({ children }: { children: React.ReactNode }) {
