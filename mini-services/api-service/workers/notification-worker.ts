@@ -139,15 +139,194 @@ export async function sendEmailNotification(
   }
 }
 
-// ─── Push Notification ─────────────────────────────────────────────────
+// ─── Push Notification (Firebase Cloud Messaging) ──────────────────────
+import { sendPushToDevice, sendPushToDevices, BookingPushTemplates, getFCMStatus } from '../lib/firebase'
+import type { PushMessage } from '../lib/firebase'
+
+// Pool is passed from index.ts context — we need it to look up device tokens
+// For the notification worker, we accept pool as a module-level reference
+let _pool: any = null
+
+export function setNotificationWorkerPool(pool: any): void {
+  _pool = pool
+}
+
+// Get FCM device tokens for a user from the DeviceToken table
+async function getUserDeviceTokens(userId: string): Promise<string[]> {
+  if (!_pool) return []
+  try {
+    const result = await _pool.query(
+      'SELECT "token" FROM "DeviceToken" WHERE "userId" = $1 AND "isActive" = true',
+      [userId]
+    )
+    return result.rows.map((r: any) => r.token)
+  } catch {
+    // DeviceToken table may not exist yet
+    return []
+  }
+}
+
+// Remove invalid FCM tokens from the database
+async function removeInvalidTokens(tokens: string[]): Promise<void> {
+  if (!_pool || tokens.length === 0) return
+  try {
+    await _pool.query(
+      'UPDATE "DeviceToken" SET "isActive" = false, "updatedAt" = NOW() WHERE token = ANY($1)',
+      [tokens]
+    )
+  } catch {
+    // Non-fatal
+  }
+}
+
 export async function sendPushNotification(
   recipient: NotificationJobData['recipient'],
   template: string,
   data: Record<string, any>
-): Promise<{ success: boolean }> {
-  // TODO: Integrate with FCM / OneSignal
-  console.log(`🔔 [PUSH STUB] To: ${recipient.userId} | Template: ${template}`, data)
-  return { success: true }
+): Promise<{ success: boolean; messageId?: string }> {
+  const fcmStatus = getFCMStatus()
+
+  // If no userId, we can't look up device tokens
+  if (!recipient.userId) {
+    console.log(`🔔 [PUSH] No userId provided — cannot look up device tokens. Template: ${template}`)
+    return { success: false }
+  }
+
+  // Build the push message using pre-built templates
+  const pushMessage = buildPushMessage(template, data)
+
+  if (!pushMessage) {
+    // No template match — send a generic push
+    const genericMessage: Omit<PushMessage, 'token'> = {
+      title: 'BookMyService',
+      body: data.message || data.body || `You have a new notification`,
+      data: {
+        type: template.toUpperCase(),
+        ...Object.fromEntries(
+          Object.entries(data).filter(([k, v]) => typeof v === 'string').slice(0, 8)
+        ),
+      },
+    }
+
+    // Get device tokens for this user
+    const tokens = await getUserDeviceTokens(recipient.userId)
+
+    if (tokens.length === 0) {
+      console.log(`🔔 [PUSH] No device tokens found for user ${recipient.userId}`)
+      if (!fcmStatus.initialized) {
+        console.log(`🔔 [PUSH STUB] To: ${recipient.userId} | Template: ${template}`, data)
+        return { success: true, messageId: `stub-push-${Date.now()}` }
+      }
+      return { success: false }
+    }
+
+    if (tokens.length === 1) {
+      const result = await sendPushToDevice({ ...genericMessage, token: tokens[0] })
+      if (result.invalidToken) {
+        await removeInvalidTokens([tokens[0]])
+      }
+      return { success: result.success, messageId: result.messageId }
+    }
+
+    // Multiple tokens — use multicast
+    const result = await sendPushToDevices(tokens, genericMessage)
+    if (result.invalidTokens.length > 0) {
+      await removeInvalidTokens(result.invalidTokens)
+    }
+    return { success: result.successCount > 0 }
+  }
+
+  // Template-based push
+  const tokens = await getUserDeviceTokens(recipient.userId)
+
+  if (tokens.length === 0) {
+    console.log(`🔔 [PUSH] No device tokens found for user ${recipient.userId}`)
+    if (!fcmStatus.initialized) {
+      console.log(`🔔 [PUSH STUB] To: ${recipient.userId} | Template: ${template}`, data)
+      return { success: true, messageId: `stub-push-${Date.now()}` }
+    }
+    return { success: false }
+  }
+
+  if (tokens.length === 1) {
+    const result = await sendPushToDevice({ ...pushMessage, token: tokens[0] })
+    if (result.invalidToken) {
+      await removeInvalidTokens([tokens[0]])
+    }
+    return { success: result.success, messageId: result.messageId }
+  }
+
+  // Multiple tokens — use multicast
+  const result = await sendPushToDevices(tokens, pushMessage)
+  if (result.invalidTokens.length > 0) {
+    await removeInvalidTokens(result.invalidTokens)
+  }
+  return { success: result.successCount > 0 }
+}
+
+// ─── Build Push Message from Template ──────────────────────────────────
+function buildPushMessage(
+  template: string,
+  data: Record<string, any>
+): Omit<PushMessage, 'token'> | null {
+  switch (template) {
+    case 'booking_confirmation':
+    case 'booking_confirmed':
+      return BookingPushTemplates.bookingConfirmed({
+        serviceName: data.serviceName || 'Service',
+        providerName: data.providerName || 'Provider',
+        scheduledDate: data.scheduledDate || 'TBD',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'provider_accepted':
+      return BookingPushTemplates.providerAccepted({
+        providerName: data.providerName || 'Provider',
+        serviceName: data.serviceName || 'Service',
+        scheduledDate: data.scheduledDate || 'TBD',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'provider_arriving':
+      return BookingPushTemplates.providerArriving({
+        providerName: data.providerName || 'Provider',
+        serviceName: data.serviceName || 'Service',
+        eta: data.eta || '15 min',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'booking_completed':
+      return BookingPushTemplates.bookingCompleted({
+        serviceName: data.serviceName || 'Service',
+        providerName: data.providerName || 'Provider',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'booking_cancelled':
+      return BookingPushTemplates.bookingCancelled({
+        serviceName: data.serviceName || 'Service',
+        reason: data.reason || '',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'new_booking':
+      return BookingPushTemplates.newBookingForProvider({
+        clientName: data.clientName || 'Customer',
+        serviceName: data.serviceName || 'Service',
+        scheduledDate: data.scheduledDate || 'TBD',
+        bookingId: data.bookingId || '',
+      })
+
+    case 'booking_otp':
+      return BookingPushTemplates.bookingOTP({
+        otp: data.otp || '',
+        serviceName: data.serviceName || 'Service',
+        bookingId: data.bookingId || '',
+      })
+
+    default:
+      return null
+  }
 }
 
 // ─── Message Formatters ────────────────────────────────────────────────

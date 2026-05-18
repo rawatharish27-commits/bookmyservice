@@ -13,16 +13,23 @@ import { createServiceSchema, updateServiceSchema } from './validators/provider.
 import { validateBody } from './validators/validate'
 import { redis, CacheKeys, CacheTTL } from './lib/redis'
 import { applyDatabaseIndexes } from './lib/db-indexes'
+import { setupPostGIS, isPostGISAvailable, findNearbyProvidersPostGIS } from './lib/postgis'
 import { uploadBuffer, uploadBase64, uploadFromUrl, deleteImage, getCloudinaryStatus, UploadPresets, UploadResult } from './lib/cloudinary'
 import { initializeQueues, startWorkers, shutdownQueues, pushNotificationJob, pushBookingJob, getQueueStatus } from './queues'
 import type { NotificationJobData, BookingProcessingJobData } from './queues'
 import { logger, authLogger, bookingLogger, apiLogger, httpLoggingMiddleware, AuthEvents, BookingEvents, ApiEvents } from './lib/logger'
 import { initSentry, captureApiError, captureDbError, setSentryUser, clearSentryUser, getSentryStatus, startMemoryMonitoring, stopMemoryMonitoring } from './lib/sentry'
 import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './workers/notification.worker'
+import { setNotificationWorkerPool } from './workers/notification-worker'
+import { getFCMStatus, BookingPushTemplates } from './lib/firebase'
+import { sendPushToDevice, sendPushToDevices } from './lib/firebase'
 
 // ─── Initialize Sentry (before crash handlers) ─────────────────────────
 initSentry()
 startMemoryMonitoring()
+
+// ─── Pass pool reference to notification worker (for FCM token lookup) ──
+// We set this after pool is created below, but register the function first
 
 // ─── Process crash protection ───────────────────────────────────────────
 process.on('uncaughtException', (err) => {
@@ -49,6 +56,9 @@ pool.on('error', (err) => {
   logger.error('Idle pool client error', { error: err.message })
   captureDbError(err, { operation: 'idle_pool' })
 })
+
+// ─── Pass pool to notification worker for FCM token lookup ─────────────
+setNotificationWorkerPool(pool)
 
 // Verify database connection on startup
 pool.query('SELECT 1 as ok').then(async () => {
@@ -84,6 +94,33 @@ pool.query('SELECT 1 as ok').then(async () => {
     await applyDatabaseIndexes(pool)
   } catch (idxError: any) {
     console.error('⚠️  Index creation error (non-fatal):', idxError.message);
+  }
+  // Enable PostGIS for geospatial queries (non-fatal)
+  try {
+    const { setupPostGIS } = await import('./lib/postgis')
+    await setupPostGIS(pool)
+  } catch (pgErr: any) {
+    console.error('⚠️  PostGIS setup error (non-fatal):', pgErr.message)
+  }
+  // Create DeviceToken table for FCM push notifications (non-fatal)
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "DeviceToken" (
+        id TEXT PRIMARY KEY,
+        "userId" TEXT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+        token TEXT NOT NULL,
+        platform TEXT DEFAULT 'unknown',
+        "appVersion" TEXT,
+        "isActive" BOOLEAN DEFAULT true,
+        "createdAt" TIMESTAMP DEFAULT NOW(),
+        "updatedAt" TIMESTAMP DEFAULT NOW()
+      );
+    `)
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_device_token_userId ON "DeviceToken" ("userId");')
+    await pool.query('CREATE INDEX IF NOT EXISTS idx_device_token_token ON "DeviceToken" (token);')
+    console.log('✅ DeviceToken table ensured')
+  } catch (dtErr: any) {
+    console.error('⚠️  DeviceToken table creation error (non-fatal):', dtErr.message)
   }
 }).catch((e) => {
   logger.error('Database connection failed', { error: e.message });
@@ -323,6 +360,7 @@ app.get('/api/health', async (c) => {
     queue: getQueueStatus(),
     sentry: getSentryStatus(),
     worker: getWorkerStatus(),
+    fcm: getFCMStatus(),
     memory: {
       heapUsedMB: Math.round(mem.heapUsed / 1024 / 1024),
       heapTotalMB: Math.round(mem.heapTotal / 1024 / 1024),
@@ -607,6 +645,46 @@ app.get('/api/auth/profile', async (c) => {
       return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
     }
     return c.json({ error: 'Failed to fetch profile' }, 500) 
+  }
+})
+
+app.patch('/api/auth/location', async (c) => {
+  try {
+    const authHeader = c.req.header('authorization')
+    if (!authHeader?.startsWith('Bearer ')) return c.json({ error: 'Authentication required' }, 401)
+    const secret = new TextEncoder().encode(JWT_SECRET)
+    const { payload } = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
+    const { latitude, longitude } = await c.req.json()
+    if (latitude === undefined || longitude === undefined) return c.json({ error: 'latitude and longitude are required' }, 400)
+    const lat = parseFloat(latitude)
+    const lng = parseFloat(longitude)
+    if (isNaN(lat) || isNaN(lng) || lat < -90 || lat > 90 || lng < -180 || lng > 180) return c.json({ error: 'Invalid latitude or longitude values' }, 400)
+
+    // Update both flat columns and PostGIS geometry
+    await pool.query(
+      'UPDATE "User" SET latitude = $1, longitude = $2, location = ST_MakePoint($2, $1)::geography, "updatedAt" = NOW() WHERE id = $3',
+      [lat, lng, payload.sub]
+    ).catch(async (err) => {
+      // If PostGIS column doesn't exist, just update flat columns
+      if (err.message?.includes('location') || err.message?.includes('geography')) {
+        await pool.query(
+          'UPDATE "User" SET latitude = $1, longitude = $2, "updatedAt" = NOW() WHERE id = $3',
+          [lat, lng, payload.sub]
+        )
+      } else {
+        throw err
+      }
+    })
+
+    // Invalidate nearby cache
+    await redis.delByPattern('cache:providers:nearby:*').catch(() => {})
+
+    return c.json({ message: 'Location updated successfully', latitude: lat, longitude: lng })
+  } catch (e: any) {
+    if (e?.code === 'ERR_JWT_EXPIRED' || e?.code === 'ERR_JWS_INVALID' || e?.code === 'ERR_JWT_INVALID') {
+      return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
+    }
+    return c.json({ error: 'Failed to update location' }, 500)
   }
 })
 
@@ -963,7 +1041,7 @@ function getAreaStatus(cityInfo: typeof INDIAN_CITIES[number]) {
   }
 }
 
-// 1. GET /api/providers/nearby - Find providers within radius using Haversine
+// 1. GET /api/providers/nearby - Find providers within radius (PostGIS first, Haversine fallback)
 app.get('/api/providers/nearby', async (c) => {
   try {
     const lat = parseFloat(c.req.query('lat') || '')
@@ -984,7 +1062,63 @@ app.get('/api/providers/nearby', async (c) => {
     const cached = await redis.getJson<{ providers: any[]; total: number; radius: number }>(cacheKey)
     if (cached) return c.json(cached)
 
-    // Try to query providers with location from DB
+    // ─── Try PostGIS first (fast, accurate ST_DWithin) ───────────────
+    try {
+      const postgisAvailable = await isPostGISAvailable(pool)
+      if (postgisAvailable) {
+        const radiusMeters = radius * 1000 // km → meters
+        const pgRows = await findNearbyProvidersPostGIS(pool, {
+          lat,
+          lng,
+          radiusMeters,
+          categoryId: categoryId ? parseInt(categoryId) : undefined,
+        })
+
+        // Group by provider (same shape as Haversine path)
+        const providerMap = new Map<string, any>()
+        for (const row of pgRows) {
+          if (!providerMap.has(row.id)) {
+            const distanceKm = parseFloat(row.distance) / 1000 // meters → km
+            providerMap.set(row.id, {
+              id: row.id,
+              name: row.name,
+              profileImageUrl: row.profileImageUrl,
+              city: row.city,
+              state: row.state,
+              pincode: row.pincode,
+              isVerified: row.isVerified,
+              averageRating: row.averageRating,
+              completedJobsCount: row.completedJobsCount,
+              verifiedBadge: row.verifiedBadge,
+              latitude: row.latitude ? parseFloat(row.latitude) : null,
+              longitude: row.longitude ? parseFloat(row.longitude) : null,
+              distance: Math.round(distanceKm * 10) / 10,
+              services: [],
+            })
+          }
+          if (row.serviceId) {
+            providerMap.get(row.id).services.push({
+              id: row.serviceId,
+              title: row.serviceName,
+              categoryId: row.categoryId,
+            })
+          }
+        }
+
+        const providers = Array.from(providerMap.values()).sort((a, b) => a.distance - b.distance)
+        const data = { providers, total: providers.length, radius }
+
+        // Write to cache (non-blocking)
+        redis.setJson(cacheKey, data, CacheTTL.MEDIUM).catch(() => {})
+
+        return c.json(data)
+      }
+    } catch (postgisError: any) {
+      // PostGIS query failed — fall through to Haversine
+      console.warn('⚠️  PostGIS nearby query failed, falling back to Haversine:', postgisError.message)
+    }
+
+    // ─── Haversine fallback (bounding-box + JS distance calc) ────────
     try {
       let query = `
         SELECT u.id, u.name, u."profileImageUrl", u.city, u.state, u.pincode, u."isVerified", 
@@ -2897,12 +3031,66 @@ app.get('/api/technician/earnings', async (c) => {
 })
 
 // Booking action routes (cancel, complete, reject, accept)
+// Each route now sends FCM push notifications to the relevant parties
+
+// Helper: Send push notification to a user's devices
+async function sendBookingPush(userId: string, template: string, data: Record<string, string>): Promise<void> {
+  try {
+    const tokens = await pool.query('SELECT token FROM "DeviceToken" WHERE "userId" = $1 AND "isActive" = true', [userId])
+    if (tokens.rows.length === 0) return
+
+    const fcmTokens = tokens.rows.map((r: any) => r.token)
+    if (fcmTokens.length === 1) {
+      await sendPushToDevice({ token: fcmTokens[0], ...BookingPushTemplates[template as keyof typeof BookingPushTemplates](data as any) })
+    } else {
+      await sendPushToDevices(fcmTokens, BookingPushTemplates[template as keyof typeof BookingPushTemplates](data as any))
+    }
+  } catch {
+    // Non-fatal — push failures should never break booking flow
+  }
+}
+
 app.patch('/api/bookings/:id/cancel', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "updatedAt" = NOW() WHERE id = $1', [id])
+    const body = await c.req.json().catch(() => ({}))
+    const reason = body.reason || ''
+
+    // Get booking details before updating (for push notification)
+    const bookingResult = await pool.query(
+      'SELECT b.*, s.title as "serviceName", u.name as "clientName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE b.id = $1',
+      [id]
+    )
+    const booking = bookingResult.rows[0]
+
+    await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
+
+    // Send push notifications (non-blocking)
+    if (booking) {
+      // Notify the client
+      if (booking.clientId) {
+        pushNotificationJob({
+          type: 'PUSH',
+          recipient: { userId: booking.clientId },
+          template: 'booking_cancelled',
+          data: { serviceName: booking.serviceName || 'Service', reason, bookingId: id },
+          priority: 2,
+        }).catch(() => {})
+      }
+      // Notify the provider
+      if (booking.providerId && booking.providerId !== user.id) {
+        pushNotificationJob({
+          type: 'PUSH',
+          recipient: { userId: booking.providerId },
+          template: 'booking_cancelled',
+          data: { serviceName: booking.serviceName || 'Service', reason: reason || 'Client cancelled', bookingId: id },
+          priority: 2,
+        }).catch(() => {})
+      }
+    }
+
     return c.json({ message: 'Booking cancelled' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -2912,7 +3100,27 @@ app.patch('/api/bookings/:id/complete', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
+
+    // Get booking details before updating
+    const bookingResult = await pool.query(
+      'SELECT b.*, s.title as "serviceName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE b.id = $1',
+      [id]
+    )
+    const booking = bookingResult.rows[0]
+
     await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
+
+    // Send push: Booking completed → client gets rating prompt
+    if (booking?.clientId) {
+      pushNotificationJob({
+        type: 'PUSH',
+        recipient: { userId: booking.clientId },
+        template: 'booking_completed',
+        data: { serviceName: booking.serviceName || 'Service', providerName: booking.providerName || 'Provider', bookingId: id },
+        priority: 2,
+      }).catch(() => {})
+    }
+
     return c.json({ message: 'Booking completed' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -2923,7 +3131,28 @@ app.patch('/api/bookings/:id/reject', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const body = await c.req.json().catch(() => ({}))
-    await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, body.reason || ''])
+    const reason = body.reason || ''
+
+    // Get booking details
+    const bookingResult = await pool.query(
+      'SELECT b.*, s.title as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE b.id = $1',
+      [id]
+    )
+    const booking = bookingResult.rows[0]
+
+    await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
+
+    // Notify client that provider rejected
+    if (booking?.clientId) {
+      pushNotificationJob({
+        type: 'PUSH',
+        recipient: { userId: booking.clientId },
+        template: 'booking_cancelled',
+        data: { serviceName: booking.serviceName || 'Service', reason: reason || 'Provider declined', bookingId: id },
+        priority: 2,
+      }).catch(() => {})
+    }
+
     return c.json({ message: 'Booking rejected' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -2933,7 +3162,32 @@ app.patch('/api/bookings/:id/accept', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
+
+    // Get booking details
+    const bookingResult = await pool.query(
+      'SELECT b.*, s.title as "serviceName", p.name as "providerName", u.name as "clientName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1',
+      [id]
+    )
+    const booking = bookingResult.rows[0]
+
     await pool.query('UPDATE "Booking" SET status = \'ACCEPTED\', "updatedAt" = NOW() WHERE id = $1', [id])
+
+    // Send push: Provider accepted → client gets notified
+    if (booking?.clientId) {
+      pushNotificationJob({
+        type: 'PUSH',
+        recipient: { userId: booking.clientId },
+        template: 'provider_accepted',
+        data: {
+          providerName: booking.providerName || user.name || 'Provider',
+          serviceName: booking.serviceName || 'Service',
+          scheduledDate: booking.scheduledDate ? new Date(booking.scheduledDate).toLocaleDateString() : 'TBD',
+          bookingId: id,
+        },
+        priority: 1, // High priority — user is waiting for acceptance
+      }).catch(() => {})
+    }
+
     return c.json({ message: 'Booking accepted' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -3492,6 +3746,69 @@ app.post('/api/worker/recover/:jobId', (c) => {
   const jobId = c.req.param('jobId')
   const result = jobTracker.recoverJob(jobId)
   return c.json(result, result.success ? 200 : 404)
+})
+
+// ─── FCM Device Token Endpoints ────────────────────────────────────────
+// Frontend registers FCM tokens so the backend can send push notifications
+
+app.post('/api/devices/token', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { token, platform, appVersion } = await c.req.json()
+    if (!token) return c.json({ error: 'FCM device token is required' }, 400)
+    if (typeof token !== 'string' || token.length > 500) return c.json({ error: 'Invalid device token' }, 400)
+
+    const tokenId = 'dtk_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+
+    // Upsert: deactivate old tokens for this device, insert new one
+    // Check if this token already exists for any user
+    const existing = await pool.query('SELECT id, "userId" FROM "DeviceToken" WHERE token = $1', [token])
+    if (existing.rows.length > 0) {
+      // Token already registered — update it to this user (handles re-login)
+      await pool.query(
+        'UPDATE "DeviceToken" SET "userId" = $1, platform = $2, "appVersion" = $3, "isActive" = true, "updatedAt" = NOW() WHERE token = $4',
+        [user.id, platform || 'unknown', appVersion || null, token]
+      )
+      return c.json({ message: 'Device token updated', id: existing.rows[0].id })
+    }
+
+    // New token — insert
+    await pool.query(
+      'INSERT INTO "DeviceToken" (id, "userId", token, platform, "appVersion", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())',
+      [tokenId, user.id, token, platform || 'unknown', appVersion || null]
+    )
+
+    return c.json({ message: 'Device token registered', id: tokenId }, 201)
+  } catch (e) {
+    console.error('Device token registration error:', e)
+    return c.json({ error: 'Failed to register device token' }, 500)
+  }
+})
+
+app.delete('/api/devices/token', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    const { token } = await c.req.json()
+    if (!token) return c.json({ error: 'FCM device token is required' }, 400)
+
+    // Deactivate the token instead of deleting (for analytics)
+    await pool.query(
+      'UPDATE "DeviceToken" SET "isActive" = false, "updatedAt" = NOW() WHERE token = $1 AND "userId" = $2',
+      [token, user.id]
+    )
+
+    return c.json({ message: 'Device token removed' })
+  } catch (e) {
+    console.error('Device token removal error:', e)
+    return c.json({ error: 'Failed to remove device token' }, 500)
+  }
+})
+
+// Get FCM status for monitoring
+app.get('/api/fcm/status', (c) => {
+  return c.json(getFCMStatus())
 })
 
 // ─── 404 Handler for unknown API routes ────────────────────────────────

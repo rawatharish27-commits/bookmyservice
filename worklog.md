@@ -453,3 +453,86 @@ Stage Summary:
 - Booking event logging: booking created/failed events
 - Frontend: Sentry init in main.tsx, crash tracking in error boundary
 - Logger.ts syntax bug fixed (trailing comma → semicolon)
+
+---
+Task ID: 2
+Agent: PostGIS Integration Agent
+Task: STEP 11 — PostGIS 20KM Radius Provider Search Integration
+
+Work Log:
+- Created `/home/z/my-project/mini-services/api-service/lib/postgis.ts` with 6 functions:
+  - `enablePostGIS(pool)` — Runs `CREATE EXTENSION IF NOT EXISTS postgis;` (non-fatal)
+  - `addLocationColumn(pool)` — Adds `location GEOGRAPHY(POINT, 4326)`, `latitude`, and `longitude` columns to "User" table if they don't exist (non-fatal)
+  - `migrateLatLngToPostGIS(pool)` — Migrates existing flat lat/lng data to PostGIS geography using `ST_MakePoint(longitude, latitude)::geography` (non-fatal)
+  - `addSpatialIndex(pool)` — Creates GiST index `idx_users_location` on location column (non-fatal)
+  - `setupPostGIS(pool)` — Master function calling all 4 above in sequence
+  - `isPostGISAvailable(pool)` — Checks PostGIS availability via `SELECT PostGIS_Version();`
+  - `findNearbyProvidersPostGIS(pool, params)` — Core spatial query using ST_DWithin with parametrized categoryId, limit, offset support
+- Updated `/home/z/my-project/mini-services/api-service/lib/db-indexes.ts`:
+  - Added PostGIS spatial index entry: `CREATE INDEX IF NOT EXISTS idx_users_location ON "User" USING GIST (location);`
+- Updated `/home/z/my-project/mini-services/api-service/index.ts` with 4 changes:
+  1. Added top-level import: `import { setupPostGIS, isPostGISAvailable, findNearbyProvidersPostGIS } from './lib/postgis'`
+  2. Added PostGIS setup to startup sequence (after applyDatabaseIndexes): dynamic import of setupPostGIS with non-fatal error catch
+  3. Enhanced `GET /api/providers/nearby` route: tries PostGIS ST_DWithin first (if available), falls back to existing Haversine bounding-box approach, then to mock data
+  4. Added `PATCH /api/auth/location` endpoint BEFORE existing `PATCH /api/auth/profile`: updates both flat lat/lng columns and PostGIS geometry with graceful fallback, invalidates nearby cache via `redis.delByPattern('cache:providers:nearby:*')`
+- Key gotcha handled: ST_MakePoint takes (longitude, latitude) — not (lat, lng)
+- ST_DWithin on geography type uses meters for distance (20km = 20000 meters)
+- All changes are additive — no existing code deleted or restructured
+
+Stage Summary:
+- PostGIS geospatial search integrated into nearby providers endpoint
+- 3-tier fallback: PostGIS → Haversine bounding-box → Mock data
+- Provider location update endpoint with PostGIS geometry + flat column dual-write
+- Cache invalidation on location updates
+- Non-fatal PostGIS setup on startup (graceful degradation when extension unavailable)
+- All existing code preserved
+
+---
+Task ID: 11 + 12
+Agent: Main Agent
+Task: STEP 11 — PostGIS 20KM Radius Provider Search + STEP 12 — FCM Push Notifications
+
+Work Log:
+- **STEP 11 — PostGIS**: Verified subagent's implementation of lib/postgis.ts, db-indexes.ts updates, nearby route enhancement, and PATCH /api/auth/location endpoint. All working correctly.
+- **STEP 12 — FCM Push Notifications**:
+  1. Installed `firebase-admin` v13.10.0 in api-service
+  2. Created `/home/z/my-project/mini-services/api-service/lib/firebase.ts`:
+     - Firebase Admin SDK initialization with env var configuration (FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY)
+     - Graceful fallback: if env vars not set, push notifications logged as stubs
+     - `sendPushToDevice()` — Single device push with Android/APNS/Webpush platform config
+     - `sendPushToDevices()` — Multicast push with invalid token cleanup
+     - `sendPushToTopic()` — Topic-based push (e.g., providers in a city)
+     - `subscribeToTopic()` / `unsubscribeFromTopic()` — Topic subscription management
+     - `BookingPushTemplates` — Pre-built templates for: booking_confirmed, provider_accepted, provider_arriving, booking_completed, booking_cancelled, new_booking (provider), booking_otp
+     - `getFCMStatus()` — Health check for FCM initialization
+  3. Updated `/home/z/my-project/mini-services/api-service/workers/notification-worker.ts`:
+     - Replaced PUSH stub with real FCM integration
+     - Added `setNotificationWorkerPool()` — passes pg Pool for device token lookups
+     - `getUserDeviceTokens()` — Looks up FCM tokens from DeviceToken table
+     - `removeInvalidTokens()` — Deactivates expired FCM tokens
+     - `buildPushMessage()` — Maps notification templates to FCM message format
+     - Fallback: if Firebase not configured, logs as stub (existing behavior preserved)
+  4. Added to `/home/z/my-project/mini-services/api-service/index.ts`:
+     - Import: `setNotificationWorkerPool` from notification-worker, `getFCMStatus`, `BookingPushTemplates`, `sendPushToDevice`, `sendPushToDevices` from firebase
+     - Startup: `setNotificationWorkerPool(pool)` after pool creation
+     - Startup: DeviceToken table creation with indexes on startup (non-fatal)
+     - Health endpoint: Added `fcm: getFCMStatus()` to /api/health response
+     - **PATCH /api/bookings/:id/accept** — Sends `provider_accepted` push to client
+     - **PATCH /api/bookings/:id/complete** — Sends `booking_completed` push to client (rating prompt)
+     - **PATCH /api/bookings/:id/cancel** — Sends `booking_cancelled` push to both client AND provider
+     - **PATCH /api/bookings/:id/reject** — Sends `booking_cancelled` push to client
+     - **POST /api/devices/token** — Register FCM device token (upsert logic for re-login)
+     - **DELETE /api/devices/token** — Deactivate device token (soft delete)
+     - **GET /api/fcm/status** — FCM initialization status for monitoring
+
+Stage Summary:
+- STEP 11: PostGIS 20km radius provider search with ST_DWithin, 3-tier fallback, location update endpoint
+- STEP 12: Firebase Cloud Messaging push notifications fully integrated
+  - Device token registration/deactivation endpoints
+  - Push on booking events: confirmed, accepted, cancelled, completed, rejected
+  - Pre-built notification templates with platform-specific config (Android, iOS, Web)
+  - Graceful fallback when Firebase not configured (stubs)
+  - Invalid token auto-cleanup
+  - FCM health check monitoring
+- All changes are additive — no existing services deleted or restructured
+- Production env vars needed: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY

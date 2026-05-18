@@ -59,6 +59,10 @@ CREATE INDEX IF NOT EXISTS idx_kyc_providerId ON "ProviderKyc" ("providerId");
 -- ─── ServiceCategory Table ──────────────────────────────────────────
 -- Active categories ordered by display
 CREATE INDEX IF NOT EXISTS idx_categories_active_order ON "ServiceCategory" ("isActive", "displayOrder");
+
+-- ─── PostGIS Spatial Index ──────────────────────────────────────────
+-- Nearby provider search (20km radius geospatial queries)
+CREATE INDEX IF NOT EXISTS idx_users_location ON "User" USING GIST (location);
 `
 
 /**
