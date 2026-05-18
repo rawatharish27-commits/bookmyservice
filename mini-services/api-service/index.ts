@@ -16,6 +16,12 @@ import { applyDatabaseIndexes } from './lib/db-indexes'
 import { uploadBuffer, uploadBase64, uploadFromUrl, deleteImage, getCloudinaryStatus, UploadPresets, UploadResult } from './lib/cloudinary'
 import { initializeQueues, startWorkers, shutdownQueues, pushNotificationJob, pushBookingJob, getQueueStatus } from './queues'
 import type { NotificationJobData, BookingProcessingJobData } from './queues'
+import { logger, authLogger, bookingLogger, apiLogger, httpLoggingMiddleware, AuthEvents, BookingEvents, ApiEvents } from './lib/logger'
+import { initSentry, captureApiError, captureDbError, setSentryUser, clearSentryUser, getSentryStatus, startMemoryMonitoring, stopMemoryMonitoring } from './lib/sentry'
+import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './workers/notification.worker'
+import { logger, authLogger, bookingLogger, apiLogger, httpLoggingMiddleware, AuthEvents, BookingEvents, ApiEvents } from './lib/logger'
+import { initSentry, captureApiError, captureDbError, setSentryUser, clearSentryUser, getSentryStatus, startMemoryMonitoring, stopMemoryMonitoring } from './lib/sentry'
+import { getWorkerStatus, jobTracker, processNotificationWithRetry } from './workers/notification.worker'
 
 // ─── Process crash protection ───────────────────────────────────────────
 process.on('uncaughtException', (err) => {
