@@ -2,10 +2,6 @@ name = "bookmyservice"
 compatibility_date = "2024-01-01"
 pages_build_output_dir = "./dist"
 
-# Cloudflare Pages configuration
-[site]
-bucket = "./dist"
-
 # Environment variables
 [vars]
 VITE_API_URL = "https://bookmyservice-api.onrender.com"
@@ -15,7 +11,7 @@ VITE_API_URL = "https://bookmyservice-api.onrender.com"
 [env.production.vars]
 VITE_API_URL = "https://bookmyservice-api.onrender.com"
 
-# Staging environment
-[env.staging]
-[env.staging.vars]
+# Preview environment (deploy previews / PRs)
+[env.preview]
+[env.preview.vars]
 VITE_API_URL = "https://bookmyservice-api-staging.onrender.com"
