@@ -21,6 +21,7 @@ import { LegalPage } from '@/components/bys/legal-page';
 
 // Auth pages
 import { LoginPage } from '@/components/bys/login-page';
+import { AdminLoginPage } from '@/components/bys/admin-login-page';
 import { RegisterPage } from '@/components/bys/register-page';
 
 // Client pages
@@ -310,6 +311,8 @@ function AppRouter() {
       // Auth pages
       case 'login':
         return <LoginPage />;
+      case 'admin-login':
+        return <AdminLoginPage />;
       case 'register':
         return <RegisterPage />;
 

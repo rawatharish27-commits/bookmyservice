@@ -775,6 +775,17 @@ export function Header() {
                 <Button
                   variant="ghost"
                   size="sm"
+                  onClick={() => handleNavigate('admin-login')}
+                  className="gap-1.5 rounded-xl px-3 py-2 text-sm font-medium text-amber-600 transition-all duration-300 hover:bg-amber-50 hover:text-amber-700"
+                >
+                  <Shield className="size-4" />
+                  Admin
+                </Button>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={() => handleNavigate('login')}
                   className="gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-blue-600 transition-all duration-300 hover:bg-blue-50 hover:text-blue-700"
                 >
@@ -934,6 +945,14 @@ export function Header() {
                     >
                       <LogIn className="size-4" />
                       Login
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      className="w-full gap-2 text-amber-600 hover:bg-amber-50 hover:text-amber-700"
+                      onClick={() => { handleNavigate('admin-login'); setMobileOpen(false); }}
+                    >
+                      <Shield className="size-4" />
+                      Admin Login
                     </Button>
                   </div>
                 )}

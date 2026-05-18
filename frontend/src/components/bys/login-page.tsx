@@ -532,12 +532,16 @@ export function LoginPage() {
                     </button>
 
                     {/* Admin Access Notice */}
-                    <div className="rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 p-3">
+                    <button
+                      type="button"
+                      onClick={() => navigate('admin-login')}
+                      className="w-full rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 p-3 hover:from-amber-100/60 hover:to-yellow-50/50 transition-all cursor-pointer text-left"
+                    >
                       <div className="flex items-center gap-2">
                         <Shield className="size-4 text-amber-600" />
-                        <span className="text-xs font-medium text-amber-800">Admin access requires authorized credentials</span>
+                        <span className="text-xs font-medium text-amber-800">Admin? Sign in to Admin Portal →</span>
                       </div>
-                    </div>
+                    </button>
 
                     <p className="text-center text-sm text-muted-foreground">
                       Don&apos;t have an account?{' '}
