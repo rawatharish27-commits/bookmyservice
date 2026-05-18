@@ -1,0 +1,15 @@
+{
+  "name": "tracking-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "bun --hot index.ts",
+    "dev:simple": "bun index.ts",
+    "start": "bun index.ts"
+  },
+  "dependencies": {
+    "socket.io": "^4.8.1",
+    "pg": "^8.20.0",
+    "jose": "^5.10.0"
+  }
+}

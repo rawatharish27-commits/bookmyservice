@@ -18,6 +18,7 @@ import {
   Shield,
   Sparkles,
   PartyPopper,
+  CreditCard,
 } from 'lucide-react';
 
 interface BookingData {
@@ -246,6 +247,12 @@ export function BookingConfirmationPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25 rounded-xl h-11"
+                onClick={() => navigate('client-payment', { bookingId: bookingId || '' })}
+              >
+                <CreditCard className="mr-2 size-4" /> Pay Now
+              </Button>
               <Button
                 className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11"
                 onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}

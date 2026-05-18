@@ -44,6 +44,8 @@ import { ClientInvoiceDetailPage } from '@/components/bys/client-invoice-detail-
 // Booking pages
 import { BookingPage } from '@/components/bys/booking-page';
 import { BookingConfirmationPage } from '@/components/bys/booking-confirmation-page';
+import { PaymentPage } from '@/components/bys/payment-page';
+import { BookingTrackingPage } from '@/components/bys/booking-tracking-page';
 
 // Emergency booking page
 import { EmergencyBookingPage } from '@/components/bys/emergency-booking-page';
@@ -86,6 +88,7 @@ import { AdminLogsPage } from '@/components/bys/admin-logs-page';
 
 // Admin enhanced pages
 import { AdminAnalyticsPage } from '@/components/bys/admin-analytics-page';
+import { AdminAnalyticsDashboardPage } from '@/components/bys/admin-analytics-dashboard-page';
 import { AdminFranchisesPage } from '@/components/bys/admin-franchises-page';
 import { AdminFranchiseDetailPage } from '@/components/bys/admin-franchise-detail-page';
 import { AdminCrmPage } from '@/components/bys/admin-crm-page';
@@ -94,6 +97,9 @@ import { AdminInventoryPage } from '@/components/bys/admin-inventory-page';
 import { AdminCouponsPage } from '@/components/bys/admin-coupons-page';
 import { AdminAmcPage } from '@/components/bys/admin-amc-page';
 import { AdminB2bPage } from '@/components/bys/admin-b2b-page';
+
+// AI Recommendations
+import { RecommendationsPage } from '@/components/bys/recommendations-page';
 
 // Franchise pages
 import { FranchiseDashboardPage } from '@/components/bys/franchise-dashboard-page';
@@ -155,6 +161,8 @@ const DASHBOARD_PREFIXES = ['client-', 'provider-', 'technician-', 'admin-', 've
 const PROTECTED_ROUTES = [
   'booking',
   'booking-confirmation',
+  'client-payment',
+  'booking-tracking',
   'client-dashboard',
   'provider-dashboard',
   'technician-dashboard',
@@ -227,7 +235,7 @@ function AppRouter() {
       'client-dashboard', 'client-bookings', 'client-booking-detail', 'client-profile',
       'client-reviews', 'client-favorites', 'client-notifications', 'client-wallet',
       'client-amc', 'client-amc-detail', 'client-coupons', 'client-referrals',
-      'client-invoices', 'client-invoice-detail',
+      'client-invoices', 'client-invoice-detail', 'client-payment', 'booking-tracking',
       'provider-dashboard', 'provider-services', 'provider-create-service',
       'provider-bookings', 'provider-booking-detail', 'provider-earnings',
       'provider-reviews', 'provider-profile', 'provider-kyc', 'provider-wallet',
@@ -238,7 +246,8 @@ function AppRouter() {
       'admin-bookings', 'admin-disputes', 'admin-categories', 'admin-faq',
       'admin-revenue', 'admin-logs', 'admin-analytics', 'admin-franchises',
       'admin-franchise-detail', 'admin-crm', 'admin-payouts', 'admin-inventory',
-      'admin-coupons', 'admin-amc', 'admin-b2b',
+      'admin-coupons', 'admin-amc', 'admin-b2b', 'admin-analytics-dashboard',
+      'recommendations',
       'franchise-dashboard', 'franchise-vendors', 'franchise-analytics',
       'vendor-dashboard', 'vendor-bookings', 'vendor-services', 'vendor-profile',
       'vendor-kyc', 'vendor-wallet', 'vendor-payouts',
@@ -342,6 +351,12 @@ function AppRouter() {
       case 'booking-confirmation':
         return <BookingConfirmationPage />;
 
+      // Payment & Tracking pages
+      case 'client-payment':
+        return <PaymentPage />;
+      case 'booking-tracking':
+        return <BookingTrackingPage />;
+
       // Emergency booking
       case 'emergency-booking':
         return <EmergencyBookingPage />;
@@ -413,6 +428,8 @@ function AppRouter() {
       // Admin enhanced pages
       case 'admin-analytics':
         return <AdminAnalyticsPage />;
+      case 'admin-analytics-dashboard':
+        return <AdminAnalyticsDashboardPage />;
       case 'admin-franchises':
         return <AdminFranchisesPage />;
       case 'admin-franchise-detail':
@@ -429,6 +446,10 @@ function AppRouter() {
         return <AdminAmcPage />;
       case 'admin-b2b':
         return <AdminB2bPage />;
+
+      // AI Recommendations
+      case 'recommendations':
+        return <RecommendationsPage />;
 
       // Franchise pages
       case 'franchise-dashboard':

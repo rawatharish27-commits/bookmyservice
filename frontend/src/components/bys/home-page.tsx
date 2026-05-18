@@ -56,6 +56,7 @@ import { apiUrl } from '@/lib/api-url';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { COMPANY_INFO } from '@/config/company';
 import { ROLE_DASHBOARD_MAP } from '@/App';
+import { AiRecommendationsSection } from '@/components/bys/ai-recommendations-section';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1019,6 +1020,9 @@ export function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════ 4b. AI Recommendations Section ═══════════ */}
+      <AiRecommendationsSection />
 
       {/* ═══════════ 5. Area Activation Meter ═══════════ */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0a1628 0%, #1e3a5f 100%)' }}>

@@ -2,7 +2,7 @@
 
 **India's Trusted Hyperlocal Home Services Marketplace**
 
-A full-stack service marketplace platform connecting homeowners with verified service professionals across **11 service categories**. Built with **React + Vite** (frontend), **Hono.js** (backend), and **PostgreSQL via Supabase** (database), with a hyperlocal 20KM radius service model, referral-driven growth, and area-activation business engine.
+A full-stack service marketplace platform connecting homeowners with verified service professionals across **11 service categories**. Built with **React + Vite** (frontend), **Hono.js** (backend), and **PostgreSQL via Supabase** (database), with a hyperlocal 20KM radius service model, referral-driven growth, and area-activation business engine. Now powered with **Razorpay payments**, **real-time WebSocket tracking**, **WhatsApp Business API**, **AI recommendations**, and an **enhanced analytics dashboard**.
 
 ---
 
@@ -51,10 +51,11 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 ## Features
 
 ### Public Pages
-- **Landing Page** — Hero section with rotating service text, live visitor/user/provider counters, animated stats, 11 service category showcase with 3D tilt cards
+- **Landing Page** — Hero section with rotating service text, live visitor/user/provider counters, animated stats, 11 service category showcase with 3D tilt cards, AI recommendations
 - **Categories** — Browse all 11 service categories with subcategories
-- **Service Detail** — Full service info with provider profile, pricing, reviews, availability, work photos
-- **Search** — Full-text search across services, categories, and providers
+- **Service Detail** — Full service info with provider profile, pricing, reviews, availability, work photos, similar services
+- **Search** — Full-text search across services, categories, and providers with AI-powered suggestions
+- **Recommendations** — AI-powered personalized service suggestions, trending services, booking insights
 - **About** — Company info, mission, values
 - **How It Works** — Step-by-step guide for clients and providers
 - **FAQ** — Frequently asked questions with expandable answers
@@ -67,10 +68,12 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 - **Token Management** — Access token (15 min) + persistent sessions via localStorage
 - **Auto KYC Creation** — Providers get a pending KYC record on registration
 
-### Client Dashboard (14 pages)
+### Client Dashboard (16 pages)
 - **Dashboard** — Booking overview, recent activity, quick actions, wallet balance
 - **My Bookings** — List all bookings with status filters
 - **Booking Detail** — Full booking info with timeline, OTP verification
+- **Payment** — Razorpay checkout for booking payments
+- **Booking Tracking** — Real-time GPS tracking of provider with live status updates
 - **Favorites** — Save services for later
 - **Notifications** — Real-time notification feed (IN_APP, SMS, WhatsApp, Email, Push)
 - **Reviews** — View and manage submitted reviews
@@ -104,7 +107,7 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 - **Profile** — Skills, service radius, bank details
 - **Availability** — Toggle availability, set working hours
 
-### Admin Dashboard (19 pages)
+### Admin Dashboard (21 pages)
 - **Dashboard** — Platform-wide analytics, user/service/booking counts, revenue overview
 - **User Management** — View, block, suspend users; view detailed user profiles
 - **Service Management** — Approve/reject service listings, manage service quality
@@ -115,6 +118,7 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 - **Revenue Analytics** — Revenue streams, commission tracking, charts
 - **Audit Logs** — Complete admin action audit trail
 - **Analytics** — Platform-wide charts and insights
+- **Enhanced Analytics Dashboard** — 6 key metrics, 6 interactive charts (revenue trend, bookings by category, status pie, user growth, top cities, daily bookings), 3 data tables, AI business insights
 - **Franchise Management** — List and manage franchise operations
 - **CRM** — Customer relationship management with activities and follow-ups
 - **Payouts** — Process provider/vendor payout requests
@@ -156,6 +160,61 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 - **Role-Specific Terms** — Clients accept Terms + AUP + Privacy; Providers accept Terms + Provider Agreement + Privacy
 - **GST Invoicing** — 18% GST, HSN codes, GSTIN on all invoices
 
+### Razorpay Payments
+- **Order Creation** — Create Razorpay orders for bookings with auto-amount calculation
+- **Payment Verification** — HMAC-SHA256 signature verification with timing-safe comparison
+- **Capture & Refund** — Admin can capture authorized payments and initiate full/partial refunds
+- **Webhook Handler** — Real-time payment status updates via Razorpay webhooks (payment.captured, payment.failed, refund.processed)
+- **Escrow Support** — Payments held in escrow until booking completion
+- **Multi-method** — Card, UPI, Net Banking, Wallet support via Razorpay checkout
+- **Graceful Fallback** — Payment stubs when Razorpay keys not configured (dev mode)
+
+### Real-time Booking Tracking
+- **Socket.IO WebSocket** — Standalone tracking service on port 3003 with JWT authentication
+- **Live GPS Tracking** — Provider/technician location updates in real-time (lat, lng, accuracy, heading, speed)
+- **Booking Status Updates** — Real-time status change notifications (ON_THE_WAY, ARRIVED, IN_PROGRESS)
+- **Room-based Architecture** — Per-booking rooms (`booking:{id}`), per-user rooms (`user:{id}`), admin room
+- **Location History** — Full GPS trail stored in BookingTracking table for replay
+- **Timeline Events** — All status changes persisted in BookingTimeline table
+- **Connection Status** — Frontend shows connected/reconnecting indicator
+- **REST Fallback** — `GET /api/tracking/:bookingId` for polling when WebSocket unavailable
+
+### WhatsApp Business API
+- **Twilio Integration** — WhatsApp Business API via Twilio for all booking notifications
+- **Booking Confirmations** — Rich WhatsApp messages with service, provider, date, and OTP
+- **OTP Delivery** — Verification codes delivered via WhatsApp
+- **Booking Reminders** — Scheduled reminders for upcoming bookings
+- **Welcome Messages** — New user onboarding via WhatsApp
+- **Cancellation Notices** — Booking cancellation with reason
+- **Completion Messages** — Service completion with rating prompt
+- **Referral Messages** — WhatsApp share for referral program
+- **Graceful Fallback** — All WhatsApp operations logged as stubs when Twilio env vars not set
+
+### Push Notifications (FCM)
+- **Firebase Cloud Messaging** — Real-time push to Android, iOS, and Web
+- **7 Booking Templates** — Confirmed, Accepted, Arriving, Completed, Cancelled, New Booking, OTP
+- **Device Token Management** — Register/deactivate tokens, auto-cleanup of invalid tokens
+- **Multicast Support** — Send to multiple devices per user
+- **Topic Messaging** — Broadcast to city-based or role-based groups
+- **Android/iOS/Web** — Platform-specific notification config (channel, priority, badge)
+
+### AI-Powered Recommendations
+- **Personalized Recommendations** — LLM analyzes booking history, location, and preferences to suggest services
+- **Similar Services** — AI-ranked similar service discovery based on category, pricing, and features
+- **Smart Search Suggestions** — Natural language autocomplete powered by LLM
+- **Booking Insights** — AI-generated spending patterns, service frequency, cost optimization tips
+- **Trending Services** — City-wise trending with growth rate calculations
+- **Rule-based Fallback** — Category matching + popularity + ratings when LLM unavailable
+- **Redis Caching** — 15-minute TTL per user/query to reduce LLM calls
+
+### Enhanced Admin Analytics Dashboard
+- **6 Key Metrics** — Bookings, Revenue, Users, Rating, Cancellation Rate, Active Providers (with growth indicators)
+- **6 Interactive Charts** — Revenue Trend, Bookings by Category, Booking Status Pie, User Growth, Top Cities, Daily Bookings
+- **3 Data Tables** — Top Providers, Top Services, Recent Bookings
+- **AI Business Insights** — LLM-generated analysis and improvement recommendations
+- **Date Range Selector** — 7 days, 30 days, 90 days, 12 months
+- **Auto-refresh** — Data refreshes every 5 minutes
+
 ---
 
 ## Tech Stack
@@ -190,7 +249,11 @@ All service pricing is constrained to **₹199 – ₹499**, making home mainten
 | **Backup** | node-cron + Supabase Storage | 4.x | Daily automated database backups |
 | **CDN/Security** | Cloudflare | — | SSL, CDN, DDoS protection, Bot Management, caching |
 | **Reverse Proxy** | Caddy | — | Gateway routing (port 81) |
-| **Runtime** | Node.js 20+ | — | Server execution |
+| **Payments** | Razorpay | — | Order creation, verification, capture, refund, webhooks |
+| **Real-time** | Socket.IO | 4.x | WebSocket booking tracking, live GPS, status updates |
+| **WhatsApp** | Twilio Business API | — | Booking confirmations, OTP, reminders via WhatsApp |
+| **AI/ML** | z-ai-web-dev-sdk (LLM) | — | Personalized recommendations, search suggestions, booking insights |
+| **Runtime** | Node.js 20+ / Bun | — | Server execution |
 
 ---
 
@@ -227,6 +290,9 @@ bookmyservice/
 │       ├── hooks/
 │       │   ├── use-api.ts            # API fetch wrapper with auth headers
 │       │   ├── use-geolocation.ts     # Browser geolocation hook
+│       │   ├── use-razorpay.ts       # Razorpay checkout integration hook
+│       │   ├── use-tracking.ts       # Socket.IO real-time tracking hook
+│       │   ├── use-recommendations.ts # AI recommendations hook
 │       │   ├── use-toast.ts          # Toast notification hook
 │       │   └── use-mobile.ts         # Mobile detection hook
 │       ├── lib/
@@ -247,9 +313,9 @@ bookmyservice/
 │           └── company.ts            # Company info constants
 │
 ├── mini-services/
-│   └── api-service/                  # Hono.js REST API
-│       ├── package.json              # API dependencies
-│       ├── index.ts                  # Full API server (~3900 lines, ~85 endpoints)
+│   ├── api-service/                  # Hono.js REST API
+│   │   ├── package.json              # API dependencies
+│   │   ├── index.ts                  # Full API server (~4500 lines, ~110 endpoints)
 │       ├── lib/
 │       │   ├── redis.ts              # Redis cache layer with in-memory fallback
 │       │   ├── logger.ts             # Winston structured logging (4 loggers)
@@ -260,6 +326,8 @@ bookmyservice/
 │       │   ├── cloudinary.ts         # Cloudinary image upload integration
 │       │   ├── backup.ts             # Daily backup system (node-cron)
 │       │   ├── security.ts           # XSS/SQLi detection, CSP, security headers
+│       │   ├── razorpay.ts           # Razorpay payment gateway (order, verify, capture, refund)
+│       │   ├── recommendations.ts    # AI recommendation engine (LLM + rule-based fallback)
 │       │   └── db-indexes.ts         # Database index migration script
 │       ├── validators/
 │       │   ├── login.schema.ts       # Login Zod schema
@@ -273,6 +341,10 @@ bookmyservice/
 │           ├── notification-worker.ts # Notification senders (WhatsApp, SMS, Email, Push)
 │           ├── notification.worker.ts # Notification worker with retry + DLQ
 │           └── booking-worker.ts      # Booking processor (invoice, referral, analytics)
+│
+│   └── tracking-service/             # Socket.IO Real-time Tracking
+│       ├── package.json              # Tracking service dependencies
+│       └── index.ts                  # WebSocket server (port 3003, JWT auth, GPS tracking)
 │
 ├── database/                         # Database layer
 │   ├── prisma/
@@ -338,6 +410,16 @@ This project has been enhanced across 5 phases with 15 steps. Each step is non-d
 | 13 | Cloudflare | ✅ Done | SSL, CDN caching headers, DDoS throttle, bot protection, real IP extraction |
 | 14 | Backup System | ✅ Done | Daily cron backups, Supabase Storage upload, compression, restore, retention cleanup |
 | 15 | Analytics Dashboard | ✅ Done | Total bookings, active providers, cancellation rate, top cities, top services, revenue |
+
+### Phase 6 — Payments, Real-time & AI
+
+| Step | Feature | Status | Description |
+|---|---|---|---|
+| 16 | Razorpay Payments | ✅ Done | Order creation, payment verification (HMAC-SHA256), capture, refund, webhook, escrow support |
+| 17 | Real-time Tracking | ✅ Done | Socket.IO WebSocket service (port 3003), live GPS tracking, booking status updates, ETA |
+| 18 | WhatsApp Business API | ✅ Done | Twilio WhatsApp integration, booking confirmations, OTP, reminders, welcome messages |
+| 19 | AI Recommendations | ✅ Done | LLM-powered personalized recommendations, similar services, search suggestions, booking insights |
+| 20 | Enhanced Analytics | ✅ Done | Full admin dashboard with recharts (revenue, bookings, users, categories, cities), AI business insights |
 
 ---
 
@@ -872,6 +954,37 @@ CREATE TABLE "BackupRecord" (
 | — | Internal cron | System | Daily backup at 2 AM IST |
 | — | `lib/backup.ts` | Admin | Create, restore, list, delete, cleanup |
 
+### Razorpay Payments
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| POST | `/api/payments/create-order` | JWT | Create Razorpay order for a booking |
+| POST | `/api/payments/verify` | JWT | Verify payment signature after checkout |
+| POST | `/api/payments/capture/:paymentId` | Admin | Capture an authorized payment |
+| POST | `/api/payments/refund/:paymentId` | Admin/Provider | Initiate full or partial refund |
+| GET | `/api/payments/:paymentId` | JWT | Get payment details |
+| GET | `/api/payments/booking/:bookingId` | JWT | Get payment for a booking |
+| GET | `/api/payments/config` | Public | Get Razorpay public key |
+| POST | `/api/payments/webhook` | Signature | Razorpay webhook handler |
+
+### Real-time Tracking
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| WebSocket | `/?XTransformPort=3003` | JWT | Socket.IO connection for real-time tracking |
+| — | `join-booking` event | JWT | Join a booking room for live updates |
+| — | `update-location` event | Provider/Technician | Send GPS coordinates |
+| — | `booking-status-change` event | Provider/Technician | Update booking status |
+| GET | `/api/tracking/:bookingId` | JWT | Current tracking data (REST fallback) |
+| GET | `/api/tracking/:bookingId/history` | JWT | Location history (REST fallback) |
+
+### AI Recommendations
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| GET | `/api/recommendations` | JWT | Personalized service recommendations |
+| GET | `/api/recommendations/similar/:serviceId` | JWT | Similar services |
+| GET | `/api/recommendations/search-suggestions?q=` | JWT | Smart search suggestions |
+| GET | `/api/recommendations/insights` | JWT | AI-generated booking insights |
+| GET | `/api/recommendations/trending` | Public | Trending services (city param optional) |
+
 ---
 
 ## Getting Started
@@ -978,6 +1091,44 @@ All accessible through the Caddy gateway on port 81.
 |---|---|---|
 | `SUPABASE_URL` | Supabase project URL | `https://xxx.supabase.co` |
 | `SUPABASE_SERVICE_KEY` | Supabase service role key | `eyJhbGci...` |
+
+### Backend — Razorpay Payments
+
+| Variable | Description | Example |
+|---|---|---|
+| `RAZORPAY_KEY_ID` | Razorpay API key ID | `rzp_test_xxxxxxxx` |
+| `RAZORPAY_KEY_SECRET` | Razorpay API secret | `xxxxxxxxxxxxxxxx` |
+| `RAZORPAY_WEBHOOK_SECRET` | Webhook verification secret | `xxxxxxxxxxxxxxxx` |
+
+> If Razorpay variables are not set, payment operations are logged as stubs (dev mode).
+
+### Backend — WhatsApp / SMS (Twilio)
+
+| Variable | Description | Example |
+|---|---|---|
+| `TWILIO_ACCOUNT_SID` | Twilio Account SID | `ACxxxxxxxxxxxxxxxx` |
+| `TWILIO_AUTH_TOKEN` | Twilio Auth Token | `xxxxxxxxxxxxxxxx` |
+| `TWILIO_WHATSAPP_NUMBER` | Twilio WhatsApp sender number | `+14155238886` |
+| `TWILIO_PHONE_NUMBER` | Twilio SMS sender number | `+1234567890` |
+
+> If Twilio variables are not set, WhatsApp/SMS are logged as stubs.
+
+### Backend — Email (SendGrid)
+
+| Variable | Description | Example |
+|---|---|---|
+| `SENDGRID_API_KEY` | SendGrid API key | `SG.xxxxxxxx` |
+| `EMAIL_FROM` | Sender email address | `noreply@bookyourservice.co.in` |
+
+> If SendGrid variables are not set, emails are logged as stubs.
+
+### Backend — AI Recommendations
+
+| Variable | Description | Example |
+|---|---|---|
+| `ZAI_API_KEY` | z-ai-web-dev-sdk API key | `xxxxxxxxxxxxxxxx` |
+
+> If AI API key is not set, recommendations use rule-based fallback (category matching + popularity + ratings).
 
 ---
 

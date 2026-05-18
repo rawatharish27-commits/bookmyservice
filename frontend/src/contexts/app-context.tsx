@@ -10,6 +10,8 @@ export type Page =
   | 'search'
   | 'booking'
   | 'booking-confirmation'
+  | 'client-payment'
+  | 'booking-tracking'
   // Client pages
   | 'client-dashboard'
   | 'client-bookings'
@@ -65,6 +67,7 @@ export type Page =
   | 'admin-coupons'
   | 'admin-amc'
   | 'admin-b2b'
+  | 'admin-analytics-dashboard'
   // Emergency booking
   | 'emergency-booking'
   // Franchise pages
@@ -89,6 +92,8 @@ export type Page =
   | 'super-admin-dashboard'
   | 'manager-dashboard'
   | 'local-admin-dashboard'
+  // AI Recommendations
+  | 'recommendations'
   // Legal / static pages
   | 'about'
   | 'how-it-works'

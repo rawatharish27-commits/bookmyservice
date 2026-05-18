@@ -50,6 +50,8 @@ import {
   Tag,
   Route,
   Receipt,
+  MapPin as TrackMapPin,
+  Navigation2,
 } from 'lucide-react';
 
 /* ─── Status Configuration ──────────────────────────────────────────────── */
@@ -806,6 +808,24 @@ export function ClientBookingDetailPage() {
               >
                 <XCircle className="mr-2 size-4" />
                 Cancel Booking
+              </Button>
+            )}
+            {isActive && (
+              <Button
+                className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-600 text-white shadow-lg shadow-purple-500/25"
+                onClick={() => navigate('booking-tracking', { bookingId: booking.id })}
+              >
+                <Navigation2 className="mr-2 size-4" />
+                Track Provider
+              </Button>
+            )}
+            {booking.paymentStatus !== 'PAID' && ['ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS'].includes(booking.status) && (
+              <Button
+                className="rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25"
+                onClick={() => navigate('client-payment', { bookingId: booking.id })}
+              >
+                <CreditCard className="mr-2 size-4" />
+                Pay Now
               </Button>
             )}
             <Button
