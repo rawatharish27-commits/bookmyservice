@@ -32,10 +32,12 @@ import type { PaymentStatus, PaymentMethod } from './lib/razorpay'
 
 // ─── Fix SSL for hosted PostgreSQL (Supabase, Render, etc.) ─────────────
 // Newer pg (v8.20+) / pg-connection-string treat sslmode=require as verify-full,
-// which fails with self-signed certs. Append sslmode=no-verify if not set.
-if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('sslmode=')) {
-  const separator = process.env.DATABASE_URL.includes('?') ? '&' : '?'
-  process.env.DATABASE_URL += `${separator}sslmode=no-verify`
+// which fails with self-signed certs. Force sslmode=no-verify for compatibility.
+if (process.env.DATABASE_URL) {
+  // Remove any existing sslmode param (require, verify-full, etc.) and replace with no-verify
+  let url = process.env.DATABASE_URL.replace(/[?&]sslmode=[^&]*/gi, '')
+  const separator = url.includes('?') ? '&' : '?'
+  process.env.DATABASE_URL = url + `${separator}sslmode=no-verify`
 }
 
 // ─── Initialize Sentry (before crash handlers) ─────────────────────────
