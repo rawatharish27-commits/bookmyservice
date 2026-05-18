@@ -12,6 +12,8 @@
   "dependencies": {
     "@hono/node-server": "^2.0.2",
     "bcryptjs": "^2.4.3",
+    "bullmq": "5.76.10",
+    "cloudinary": "2.10.0",
     "hono": "^4.12.18",
     "hono-rate-limiter": "0.5.3",
     "jose": "^5.10.0",

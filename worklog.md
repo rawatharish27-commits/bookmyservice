@@ -280,6 +280,64 @@ Stage Summary:
 - Production-ready: set REDIS_URL env var to enable Redis, leave empty for memory fallback
 
 ---
+Task ID: 6 + 7
+Agent: Main Agent
+Task: STEP 6 — Cloudinary CDN + STEP 7 — Queue System (BullMQ)
+
+Work Log:
+- Installed `cloudinary` v2.10.0 and `bullmq` v5.76.10 in api-service
+- Created `/home/z/my-project/mini-services/api-service/lib/cloudinary.ts`:
+  - Cloudinary CDN configuration with auto-fallback (mock URLs when not configured)
+  - Upload presets: profileImage (400x400 face crop), serviceImage (1200x800), kycDocument (1600x1200), categoryIcon (128x128), categoryImage (800x600)
+  - CloudinaryFolders convention: bys/providers/profiles, bys/services/images, bys/providers/kyc, etc.
+  - Upload functions: uploadBuffer (stream), uploadBase64 (data URI), uploadFromUrl (remote fetch), deleteImage, getOptimizedUrl
+  - All uploads use quality: 'auto' + fetch_format: 'auto' for automatic optimization + WebP conversion
+  - Health check: getCloudinaryStatus() returns { configured, cloudName }
+- Created 5 new upload API endpoints:
+  1. POST /api/upload/profile — multipart or base64, updates User.profileImageUrl, invalidates service cache
+  2. POST /api/upload/service — base64, providers only, invalidates service cache
+  3. POST /api/upload/kyc — document front + selfie, upserts ProviderKyc record
+  4. DELETE /api/upload/:publicId — deletes image by Cloudinary public ID
+  5. GET /api/upload/status — returns Cloudinary config + queue status
+- Created `/home/z/my-project/mini-services/api-service/queues/index.ts`:
+  - BullMQ queue system with Redis-backed async job processing
+  - Graceful fallback to synchronous processing when REDIS_URL not set
+  - Two queues: NOTIFICATION (WhatsApp/SMS/Email/Push) and BOOKING_PROCESSING (Invoice/Referral/Analytics/Confirmation)
+  - Job retry: 3 attempts with exponential backoff (5s base)
+  - Workers: notification (concurrency: 5), booking (concurrency: 3)
+  - Queue health check: getQueueStatus() returns { ready, backend }
+  - Graceful shutdown on SIGTERM/SIGINT
+- Created `/home/z/my-project/mini-services/api-service/workers/notification-worker.ts`:
+  - WhatsApp: Twilio Business API integration (stub when TWILIO vars not set)
+  - SMS: Twilio API integration (stub when not configured)
+  - Email: SendGrid API integration (stub when SENDGRID_API_KEY not set)
+  - Push: FCM/OneSignal (stub)
+  - Message formatters: booking_confirmation, otp_verification, welcome, password_reset, booking_reminder, booking_cancelled, booking_completed
+  - WhatsApp templates use rich formatting (✅ ❌ ⏰ 🎉 🔐)
+- Created `/home/z/my-project/mini-services/api-service/workers/booking-worker.ts`:
+  - Invoice generation (stub — TODO: PDF generation with pdfkit)
+  - Referral reward processing (5% of booking, max ₹100) + referrer notification
+  - Analytics update (stub — TODO: PlatformStats, provider metrics, category counts)
+  - Booking confirmation (multi-channel: EMAIL + SMS + WhatsApp to client, SMS to provider)
+- Integrated queue pushes into 3 existing flows (all non-blocking):
+  1. Booking creation → 4 jobs: BOOKING_CONFIRMATION, INVOICE, ANALYTICS, REFERRAL_REWARD
+  2. Registration → 1 notification: WhatsApp welcome message
+  3. Forgot-password → 1 notification: SMS password reset
+- Updated /api/health to include queue status
+- Added graceful shutdown handlers (SIGTERM, SIGINT)
+- Tested: API starts with all 3 subsystems (cache: memory, queue: synchronous-fallback, cloudinary: mock)
+- Tested: /api/upload/status returns { upload: { configured: false }, queue: { ready: false, backend: "synchronous-fallback" } }
+
+Stage Summary:
+- Cloudinary CDN for image uploads with automatic optimization + WebP conversion
+- 5 upload endpoints (profile, service, KYC, delete, status)
+- BullMQ queue system for async processing of heavy tasks
+- Notification worker with WhatsApp/SMS/Email/Push (stub integrations for Twilio/SendGrid)
+- Booking worker for invoices, referral rewards, analytics, confirmations
+- All changes additive — no existing services deleted or restructured
+- Production env vars needed: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET, REDIS_URL, TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, SENDGRID_API_KEY
+
+---
 Task ID: 4-c + 4-d + 4-e
 Agent: Redis Cache Agent
 Task: Add Redis caching layer, cache invalidation, Redis OTP, and popular searches to api-service
@@ -317,3 +375,40 @@ Stage Summary:
 - Popular search tracking and new /api/popular-searches endpoint added
 - Health endpoint reports cache backend status (redis or memory)
 - All cache operations are non-blocking — Redis failures degrade gracefully to in-memory or DB-only
+
+---
+Task ID: 6-c + 7-e
+Agent: Backend Integration Agent
+Task: Integrate Cloudinary CDN upload endpoints + BullMQ queue system into api-service
+
+Work Log:
+- Added 3 new imports at top of index.ts (after existing imports, line 16-18):
+  - `uploadBuffer, uploadBase64, uploadFromUrl, deleteImage, getCloudinaryStatus, UploadPresets, UploadResult` from `./lib/cloudinary`
+  - `initializeQueues, startWorkers, shutdownQueues, pushNotificationJob, pushBookingJob, getQueueStatus` from `./queues`
+  - `NotificationJobData, BookingProcessingJobData` type imports from `./queues`
+- Added queue system initialization after DB startup block (line 82-97):
+  - `initializeQueues().then(() => startWorkers())` with non-fatal error catch
+  - SIGTERM handler: graceful shutdown via `shutdownQueues()` then exit
+  - SIGINT handler: graceful shutdown via `shutdownQueues()` then exit
+- Updated `/api/health` endpoint to include `queue: getQueueStatus()` in response
+- Added 5 Cloudinary CDN upload endpoints before the 404 handler (lines 3325-3439):
+  1. `POST /api/upload/profile` — Upload provider profile image (multipart or base64), updates User.profileImageUrl
+  2. `POST /api/upload/service` — Upload service images (base64), providers only, invalidates service caches
+  3. `POST /api/upload/kyc` — Upload KYC documents (document front + selfie), upserts ProviderKyc record
+  4. `DELETE /api/upload/:publicId` — Delete an uploaded image by public ID
+  5. `GET /api/upload/status` — Check Cloudinary config status + queue status
+- Integrated queue pushes into existing flows (all NON-BLOCKING with `.catch(() => {})`):
+  1. After booking creation (`POST /api/bookings`): 4 booking jobs pushed — BOOKING_CONFIRMATION, INVOICE, ANALYTICS, REFERRAL_REWARD
+  2. After registration (`POST /api/auth/register`): 1 notification job — WHATSAPP welcome message
+  3. After forgot-password (`POST /api/auth/forgot-password`): 1 notification job — SMS password reset
+- Verified cloudinary and bullmq packages already installed in api-service node_modules
+- No existing routes or services deleted or restructured — all changes are additive
+
+Stage Summary:
+- Cloudinary CDN upload system integrated: 5 endpoints for profile, service, KYC uploads + delete + status
+- BullMQ queue system initialized on startup with graceful shutdown on SIGTERM/SIGINT
+- 3 existing flows now push async queue jobs (booking: 4 jobs, register: 1 job, forgot-password: 1 job)
+- Health endpoint includes queue status alongside cache status
+- Upload endpoints gracefully return mock URLs when Cloudinary not configured
+- Queue system falls back to synchronous processing when Redis is unavailable
+- All queue pushes are non-blocking — failures do not affect the HTTP response
