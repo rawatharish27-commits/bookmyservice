@@ -899,15 +899,34 @@ app.post('/api/contact', async (c) => {
 // Stats
 app.get('/api/stats', async (c) => {
   try {
-    const result = await pool.query('SELECT * FROM "PlatformStats" ORDER BY id DESC LIMIT 1')
-    const stats = result.rows[0] || { totalVisitors: 0, totalUsers: 0, totalProviders: 0, totalBookings: 0, totalServices: 0, activeVisitors: 0 }
-    // Return in the format the frontend expects
+    // Try PlatformStats table first
+    try {
+      const result = await pool.query('SELECT * FROM "PlatformStats" ORDER BY id DESC LIMIT 1')
+      if (result.rows[0]) {
+        const stats = result.rows[0]
+        return c.json({
+          totalProviders: String(stats.totalProviders || 0),
+          totalCustomers: String(stats.totalUsers || 0),
+          avgRating: String(stats.avgRating || 0),
+        })
+      }
+    } catch (e) { /* PlatformStats table may not exist */ }
+
+    // Fallback: compute real counts from actual DB tables
+    const [providerResult, userResult, ratingResult] = await Promise.all([
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2 AND status = \'ACTIVE\'').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 1 AND status = \'ACTIVE\'').catch(() => ({ rows: [{ count: 0 }] })),
+      pool.query('SELECT AVG("averageRating") as avg FROM "Service" WHERE "isActive" = true AND "isApproved" = true AND "averageRating" > 0').catch(() => ({ rows: [{ avg: null }] })),
+    ])
+    const providerCount = parseInt(providerResult.rows[0]?.count || '0')
+    const customerCount = parseInt(userResult.rows[0]?.count || '0')
+    const avgRating = ratingResult.rows[0]?.avg ? (Math.round(parseFloat(ratingResult.rows[0].avg) * 10) / 10) : 0
     return c.json({
-      totalProviders: String(stats.totalProviders || 500),
-      totalCustomers: String(stats.totalUsers || 10000),
-      avgRating: '4.8',
+      totalProviders: String(providerCount),
+      totalCustomers: String(customerCount),
+      avgRating: String(avgRating),
     })
-  } catch (e) { console.error('Stats error:', e); return c.json({ totalProviders: '500+', totalCustomers: '10K+', avgRating: '4.8' }) }
+  } catch (e) { console.error('Stats error:', e); return c.json({ totalProviders: '0', totalCustomers: '0', avgRating: '0' }) }
 })
 
 app.get('/api/stats/platform', async (c) => {
@@ -1092,21 +1111,8 @@ app.get('/api/services/:id', async (c) => {
 // HYPERLOCAL ENDPOINTS - New endpoints for hyperlocal model
 // ============================================================
 
-// In-memory stores for demo/fallback when DB tables don't exist
-const waitingListStore: Array<{
-  id: string; name: string; phone: string; email: string;
-  city: string; pincode: string; serviceInterest: string; createdAt: string;
-}> = []
-
-const areaManagerApplicationsStore: Array<{
-  id: string; name: string; email: string; phone: string;
-  city: string; experience: string; message: string; status: string; createdAt: string;
-}> = []
-
-const referralStore: Array<{
-  id: string; referrerId: string; refereeId: string;
-  referrerReward: number; refereeReward: number; status: string; createdAt: string;
-}> = []
+// In-memory stores removed — all data goes to DB only
+// If DB tables don't exist, the insert will fail and an error is logged
 
 // Indian cities data for reverse geocoding
 const INDIAN_CITIES = [
@@ -1172,27 +1178,62 @@ function findCityByPincode(pincode: string): typeof INDIAN_CITIES[number] | null
   return INDIAN_CITIES.find(c => c.pincodes.includes(pincode.trim())) || null
 }
 
-// Helper to get area status with mock/demo data
-function getAreaStatus(cityInfo: typeof INDIAN_CITIES[number]) {
-  // Deterministic "random" based on city name hash for demo
-  const hash = cityInfo.city.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
-  const providerCount = (hash % 30) + 5
-  const customerCount = (hash % 80) + 20
-  const providerTarget = providerCount + (hash % 15) + 5
-  const customerTarget = customerCount + (hash % 60) + 30
-  const launchProgress = Math.round(((providerCount / providerTarget) * 0.5 + (customerCount / customerTarget) * 0.5) * 1000) / 10
+// Helper to get area status — queries DB for real counts, returns honest data when unavailable
+async function getAreaStatusFromDB(cityName: string, stateName?: string) {
+  // Try AreaActivation table first
+  try {
+    const areaResult = await pool.query('SELECT * FROM "AreaActivation" WHERE city = $1 LIMIT 1', [cityName])
+    if (areaResult.rows[0]) {
+      const area = areaResult.rows[0]
+      return {
+        city: area.city,
+        state: area.state || stateName || '',
+        isActive: area.isActive,
+        providerCount: area.providerCount || 0,
+        customerCount: area.customerCount || 0,
+        providerTarget: area.providerTarget || 20,
+        customerTarget: area.customerTarget || 100,
+        availableCategories: area.availableCategories || [],
+        comingSoonCategories: area.comingSoonCategories || [],
+        launchProgress: area.launchProgress || 0,
+      }
+    }
+  } catch (e) { /* AreaActivation table may not exist */ }
 
+  // Compute real counts from User table
+  try {
+    const [providerResult, customerResult] = await Promise.all([
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 2 AND status = \'ACTIVE\' AND city ILIKE $1', [cityName]),
+      pool.query('SELECT COUNT(*) as count FROM "User" WHERE "roleId" = 1 AND status = \'ACTIVE\' AND city ILIKE $1', [cityName]),
+    ])
+    const providerCount = parseInt(providerResult.rows[0]?.count || '0')
+    const customerCount = parseInt(customerResult.rows[0]?.count || '0')
+    return {
+      city: cityName,
+      state: stateName || '',
+      isActive: providerCount >= 5, // active if at least 5 providers
+      providerCount,
+      customerCount,
+      providerTarget: 20,
+      customerTarget: 100,
+      availableCategories: providerCount >= 5 ? [1, 2, 3] : [],
+      comingSoonCategories: providerCount >= 5 ? [] : [1, 2, 3, 4, 5],
+      launchProgress: Math.round((Math.min(providerCount / 20, 1) * 0.5 + Math.min(customerCount / 100, 1) * 0.5) * 100),
+    }
+  } catch (e) { /* User table query failed */ }
+
+  // No data available
   return {
-    city: cityInfo.city,
-    state: cityInfo.state,
-    isActive: launchProgress >= 70,
-    providerCount,
-    customerCount,
-    providerTarget,
-    customerTarget,
-    availableCategories: [1, 2, 3],
-    comingSoonCategories: [4, 5],
-    launchProgress,
+    city: cityName,
+    state: stateName || '',
+    isActive: false,
+    providerCount: 0,
+    customerCount: 0,
+    providerTarget: 20,
+    customerTarget: 100,
+    availableCategories: [],
+    comingSoonCategories: [],
+    launchProgress: 0,
   }
 }
 
@@ -1346,40 +1387,11 @@ app.get('/api/providers/nearby', async (c) => {
 
       return c.json(data)
     } catch (dbError) {
-      // DB tables might not have lat/lng columns - return mock data
-      const cityInfo = findCityByCoords(lat, lng)
-      const mockProviders = []
-      if (cityInfo) {
-        const hash = cityInfo.city.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
-        const count = (hash % 5) + 2
-        for (let i = 0; i < count; i++) {
-          const dist = Math.round((Math.random() * radius * 0.8 + 0.5) * 10) / 10
-          mockProviders.push({
-            id: `prov_mock_${i}`,
-            name: `${cityInfo.city} Provider ${i + 1}`,
-            profileImageUrl: null,
-            city: cityInfo.city,
-            state: cityInfo.state,
-            isVerified: i % 2 === 0,
-            averageRating: 3.5 + Math.random() * 1.5,
-            completedJobsCount: Math.floor(Math.random() * 50) + 5,
-            verifiedBadge: i % 2 === 0,
-            latitude: lat + (Math.random() - 0.5) * 0.05,
-            longitude: lng + (Math.random() - 0.5) * 0.05,
-            distance: dist,
-            services: [
-              { id: `svc_mock_${i}`, title: categoryId ? 'Category Service' : 'Home Service', categoryId: categoryId ? parseInt(categoryId) : 1 }
-            ],
-          })
-        }
-        mockProviders.sort((a, b) => a.distance - b.distance)
-      }
-
+      // DB tables might not have lat/lng columns - return empty result
       return c.json({
-        providers: mockProviders,
-        total: mockProviders.length,
+        providers: [],
+        total: 0,
         radius,
-        note: 'Mock data - provider location fields not yet available in database',
       })
     }
   } catch (e) {
@@ -1412,52 +1424,25 @@ app.get('/api/area/status', async (c) => {
       return c.json({ error: 'Provide city, pincode, or lat+lng query parameters' }, 400)
     }
 
-    // Try DB first for area data
-    try {
-      const cityName = cityInfo?.city || city || ''
-      if (cityName) {
-        const areaResult = await pool.query(
-          'SELECT * FROM "AreaActivation" WHERE city = $1 LIMIT 1',
-          [cityName]
-        )
-        if (areaResult.rows[0]) {
-          const area = areaResult.rows[0]
-          return c.json({
-            city: area.city,
-            state: area.state || cityInfo?.state || '',
-            isActive: area.isActive,
-            providerCount: area.providerCount || 0,
-            customerCount: area.customerCount || 0,
-            providerTarget: area.providerTarget || 20,
-            customerTarget: area.customerTarget || 100,
-            availableCategories: area.availableCategories || [1, 2, 3],
-            comingSoonCategories: area.comingSoonCategories || [4, 5],
-            launchProgress: area.launchProgress || 0,
-          })
-        }
-      }
-    } catch (dbError) {
-      // AreaActivation table doesn't exist yet, use mock data
+    // Try DB first for area data using shared helper
+    const cityName = cityInfo?.city || city || ''
+    const stateName = cityInfo?.state || ''
+    if (cityName) {
+      const areaStatus = await getAreaStatusFromDB(cityName, stateName)
+      return c.json(areaStatus)
     }
 
-    // Return demo data based on known cities or default
-    if (cityInfo) {
-      return c.json(getAreaStatus(cityInfo))
-    }
-
-    // Default demo data for unknown locations
-    const defaultCity = city || 'Unknown'
-    const defaultState = cityInfo?.state || 'Unknown'
+    // No city identified
     return c.json({
-      city: defaultCity,
-      state: defaultState,
+      city: city || 'Unknown',
+      state: stateName || 'Unknown',
       isActive: false,
       providerCount: 0,
       customerCount: 0,
       providerTarget: 20,
       customerTarget: 100,
       availableCategories: [],
-      comingSoonCategories: [1, 2, 3, 4, 5],
+      comingSoonCategories: [],
       launchProgress: 0,
     })
   } catch (e) {
@@ -1475,76 +1460,27 @@ app.get('/api/area/activation', async (c) => {
       return c.json({ error: 'city query parameter is required' }, 400)
     }
 
-    let cityInfo = findCityByName(city)
+    const cityInfo = findCityByName(city)
+    const stateName = cityInfo?.state || ''
 
-    // Try DB first
-    try {
-      const areaResult = await pool.query(
-        'SELECT * FROM "AreaActivation" WHERE city = $1 LIMIT 1',
-        [city]
-      )
-      if (areaResult.rows[0]) {
-        const area = areaResult.rows[0]
-        return c.json({
-          city: area.city,
-          state: area.state || cityInfo?.state || '',
-          isActive: area.isActive,
-          providerCount: area.providerCount || 0,
-          customerCount: area.customerCount || 0,
-          providerTarget: area.providerTarget || 20,
-          customerTarget: area.customerTarget || 100,
-          launchProgress: area.launchProgress || 0,
-          activationMeter: {
-            current: area.launchProgress || 0,
-            target: 100,
-            providersNeeded: Math.max(0, (area.providerTarget || 20) - (area.providerCount || 0)),
-            customersNeeded: Math.max(0, (area.customerTarget || 100) - (area.customerCount || 0)),
-            status: (area.launchProgress || 0) >= 70 ? 'LAUNCHING' : (area.launchProgress || 0) >= 30 ? 'GROWING' : 'STARTING',
-          },
-        })
-      }
-    } catch (dbError) {
-      // Table doesn't exist yet
-    }
+    // Use shared helper to get real data from DB
+    const status = await getAreaStatusFromDB(city, stateName)
 
-    // Use demo data
-    if (cityInfo) {
-      const status = getAreaStatus(cityInfo)
-      return c.json({
-        city: status.city,
-        state: status.state,
-        isActive: status.isActive,
-        providerCount: status.providerCount,
-        customerCount: status.customerCount,
-        providerTarget: status.providerTarget,
-        customerTarget: status.customerTarget,
-        launchProgress: status.launchProgress,
-        activationMeter: {
-          current: status.launchProgress,
-          target: 100,
-          providersNeeded: Math.max(0, status.providerTarget - status.providerCount),
-          customersNeeded: Math.max(0, status.customerTarget - status.customerCount),
-          status: status.launchProgress >= 70 ? 'LAUNCHING' : status.launchProgress >= 30 ? 'GROWING' : 'STARTING',
-        },
-      })
-    }
-
-    // Unknown city
     return c.json({
-      city,
-      state: 'Unknown',
-      isActive: false,
-      providerCount: 0,
-      customerCount: 0,
-      providerTarget: 20,
-      customerTarget: 100,
-      launchProgress: 0,
+      city: status.city,
+      state: status.state,
+      isActive: status.isActive,
+      providerCount: status.providerCount,
+      customerCount: status.customerCount,
+      providerTarget: status.providerTarget,
+      customerTarget: status.customerTarget,
+      launchProgress: status.launchProgress,
       activationMeter: {
-        current: 0,
+        current: status.launchProgress,
         target: 100,
-        providersNeeded: 20,
-        customersNeeded: 100,
-        status: 'STARTING',
+        providersNeeded: Math.max(0, status.providerTarget - status.providerCount),
+        customersNeeded: Math.max(0, status.customerTarget - status.customerCount),
+        status: status.launchProgress >= 70 ? 'LAUNCHING' : status.launchProgress >= 30 ? 'GROWING' : 'STARTING',
       },
     })
   } catch (e) {
@@ -1573,16 +1509,11 @@ app.post('/api/referral/track', async (c) => {
       createdAt: new Date().toISOString(),
     }
 
-    // Try to insert into DB
-    try {
-      await pool.query(
-        'INSERT INTO "Referral" (id, "referrerId", "refereeId", "referrerReward", "refereeReward", status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7)',
-        [id, referrerId, referredId, 0, 0, 'PENDING', new Date().toISOString()]
-      )
-    } catch (dbError) {
-      // Table doesn't exist, use in-memory store
-      referralStore.push(record)
-    }
+    // Insert into DB (no in-memory fallback)
+    await pool.query(
+      'INSERT INTO "Referral" (id, "referrerId", "refereeId", "referrerReward", "refereeReward", status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7)',
+      [id, referrerId, referredId, 0, 0, 'PENDING', new Date().toISOString()]
+    )
 
     return c.json({
       success: true,
@@ -1644,16 +1575,11 @@ app.post('/api/waiting-list/join', async (c) => {
       createdAt: new Date().toISOString(),
     }
 
-    // Try to insert into DB
-    try {
-      await pool.query(
-        'INSERT INTO "WaitingList" (id, name, phone, email, city, pincode, "serviceInterest", "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
-        [entry.id, entry.name, entry.phone, entry.email, entry.city, entry.pincode, entry.serviceInterest, entry.createdAt]
-      )
-    } catch (dbError) {
-      // Table doesn't exist, use in-memory store
-      waitingListStore.push(entry)
-    }
+    // Insert into DB (no in-memory fallback)
+    await pool.query(
+      'INSERT INTO "WaitingList" (id, name, phone, email, city, pincode, "serviceInterest", "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8)',
+      [entry.id, entry.name, entry.phone, entry.email, entry.city, entry.pincode, entry.serviceInterest, entry.createdAt]
+    )
 
     return c.json({
       success: true,
@@ -1688,16 +1614,11 @@ app.post('/api/area-manager/apply', async (c) => {
       createdAt: new Date().toISOString(),
     }
 
-    // Try to insert into DB
-    try {
-      await pool.query(
-        'INSERT INTO "AreaManagerApplication" (id, name, email, phone, city, experience, message, status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-        [application.id, application.name, application.email, application.phone, application.city, application.experience, application.message, application.status, application.createdAt]
-      )
-    } catch (dbError) {
-      // Table doesn't exist, use in-memory store
-      areaManagerApplicationsStore.push(application)
-    }
+    // Insert into DB (no in-memory fallback)
+    await pool.query(
+      'INSERT INTO "AreaManagerApplication" (id, name, email, phone, city, experience, message, status, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
+      [application.id, application.name, application.email, application.phone, application.city, application.experience, application.message, application.status, application.createdAt]
+    )
 
     return c.json({
       success: true,
@@ -1886,17 +1807,16 @@ app.get('/api/service-areas', async (c) => {
     try {
       const result = await pool.query('SELECT * FROM "ServiceArea" WHERE "isActive" = true ORDER BY city')
       if (result.rows.length > 0) return c.json(result.rows)
-    } catch (dbError) { /* use mock */ }
+    } catch (dbError) { /* table may not exist */ }
 
-    // Return demo data based on Indian cities
-    const mockAreas = [
-      { id: 'sa_001', city: 'Mumbai', pincode: '400001', isActive: true, providerCount: 18, customerCount: 65, targetProviders: 20, targetCustomers: 100, radiusKm: 20, overallProgress: 72 },
-      { id: 'sa_002', city: 'Delhi', pincode: '110001', isActive: true, providerCount: 22, customerCount: 80, targetProviders: 25, targetCustomers: 120, radiusKm: 20, overallProgress: 81 },
-      { id: 'sa_003', city: 'Bengaluru', pincode: '560001', isActive: false, providerCount: 8, customerCount: 25, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 28 },
-      { id: 'sa_004', city: 'Hyderabad', pincode: '500001', isActive: false, providerCount: 5, customerCount: 15, targetProviders: 20, targetCustomers: 100, radiusKm: 15, overallProgress: 16 },
-      { id: 'sa_005', city: 'Pune', pincode: '411001', isActive: true, providerCount: 14, customerCount: 48, targetProviders: 20, targetCustomers: 100, radiusKm: 18, overallProgress: 52 },
-    ]
-    return c.json(mockAreas)
+    // Try AreaActivation table as alternative
+    try {
+      const result = await pool.query('SELECT * FROM "AreaActivation" ORDER BY city')
+      if (result.rows.length > 0) return c.json(result.rows)
+    } catch (dbError) { /* table may not exist */ }
+
+    // No data available
+    return c.json([])
   } catch (e) {
     return c.json({ error: 'Failed to get service areas' }, 500)
   }

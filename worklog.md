@@ -478,3 +478,280 @@ Stage Summary:
 - No breaking changes - all existing interfaces preserved
 - Both servers running and compiling successfully
 - Refresh token flow: login → HttpOnly cookie set → frontend uses in-memory access token → 14-min auto-refresh → 401 auto-retry → logout revokes both tokens
+
+---
+Task ID: 2-g
+Agent: Subagent (App.tsx enhancement)
+Task: Fix frontend/src/App.tsx - Lazy route chunking, Suspense fallback, enhanced route guards
+
+Work Log:
+- Converted all 40+ static page component imports to React.lazy() with named export wrapping
+- Grouped lazy imports into logical webpack chunks: public, auth, client, provider, technician, admin, franchise, vendor, booking, other
+- Added PageLoader component as Suspense fallback (spinner + "Loading..." text)
+- Wrapped renderPage() output in <Suspense fallback={<PageLoader />}>
+- Enhanced route guards with synchronous isAuthorized computed state using useMemo
+  - Prevents flash of unauthorized content by checking auth before render
+  - Shows "Redirecting to login..." for no-token case
+  - Shows "Redirecting to your dashboard..." for wrong-role case
+  - Shows PageLoader during initial auth loading state
+- Added guardRedirecting state with safety timeout to prevent stuck redirect state
+- Added 'admin-login' to validPages set
+- Preserved all existing functionality: ROLE_DASHBOARD_MAP, ROLE_ROUTE_PREFIX, DASHBOARD_PREFIXES, PROTECTED_ROUTES, route guard useEffect, ErrorBoundary class, all renderPage() switch cases
+- Kept static imports for: React, Component, useEffect, useRef, useState, useMemo, Suspense, AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP, AppProvider, useApp, Header, Footer, Toaster, SonnerToaster
+- TypeScript compilation: 0 errors in App.tsx
+- Vite build: successful (1.28s, all chunks generated properly)
+
+Stage Summary:
+- All page components now lazy-loaded → initial bundle significantly smaller
+- No flash of unauthorized content on protected routes
+- admin-login page recognized as valid route
+- File grew from ~537 to ~625 lines (well-organized with section headers)
+
+---
+Task ID: 2-d
+Agent: Subagent (Hooks Enhancement)
+Task: Fix use-geolocation.ts — Add fallback, caching, drift protection, permission UX, spoof detection
+
+Work Log:
+- Added IP-based geolocation fallback via ipapi.co when GPS fails or is denied
+- Added sessionStorage caching (key: `bys_geo_cache`) with 5-minute TTL; returns cached position immediately while fetching fresh one in background
+- Implemented GPS drift protection: buffer of last 5 positions; if new position >500m from last AND position <2s old, uses median of last 3 positions
+- Added spoof detection: if position jumps >100km in <60 seconds, flags `isSpoofed: true`
+- Added permission state tracking (`granted`/`denied`/`prompt`/`unknown`) via `navigator.permissions.query`
+- Added `requestPermission()` function that returns `PermissionRequestResult` with `needsManualEnable` and `instruction` fields
+- Enhanced return interface to include `permissionState`, `isSpoofed`, `accuracy` fields
+- Used Haversine formula for distance calculations and median function for drift smoothing
+- Vite build: successful
+
+Stage Summary:
+- GeoLocation interface now includes permissionState, isSpoofed, accuracy
+- Hook exports refreshLocation() and requestPermission()
+- Five features fully implemented: fallback, caching, drift protection, permission UX, spoof detection
+- No breaking changes — existing consumers continue to work
+
+---
+Task ID: 2-e
+Agent: Subagent (Hooks Enhancement)
+Task: Create use-razorpay.ts — Comprehensive Razorpay payment integration hook
+
+Work Log:
+- Created useRazorpay hook with full Razorpay Checkout.js integration
+- Dynamic script loading via DOM injection with dedup check
+- initiatePayment(options) creates backend order then opens Razorpay modal
+- Payment retry flow: max 3 retries, increments attemptNumber in notes, exports retryPayment()
+- Failure recovery: stores failed attempts in sessionStorage (key: `bys_payment_attempts`) with 24h auto-cleanup
+  - getFailedPayments() retrieves past failed attempts
+  - recoverPayment(paymentId) retries a specific failed payment
+- Idempotency: generates UUID v4 key per booking, stored in sessionStorage; if key exists and payment is pending, resumes instead of creating new order
+- Webhook verification frontend sync: after Razorpay success callback, sends payment_id/order_id/signature to /api/payments/verify
+  - Polls /api/payments/verify-status (5 attempts, 2s interval)
+  - If verification fails, marks as `verification_pending`; exports reverifyPayment(paymentId)
+- Uses useAuth() hook for authFetch (authenticated API calls)
+- Uses VITE_RAZORPAY_KEY_ID env var with test key fallback
+- All types exported: PaymentOptions, PaymentResult, FailedPayment, UseRazorpayReturn
+- Vite build: successful
+
+Stage Summary:
+- Full Razorpay payment lifecycle: order creation → checkout modal → success/failure handling → backend verification → retry/recovery
+- Idempotency prevents duplicate orders for same booking
+- Failed payments persist in sessionStorage for recovery across page refreshes
+- All 5 required features implemented: checkout integration, retry flow, failure recovery, idempotency, webhook verification
+
+---
+Task ID: 2-a
+Agent: Subagent (Auth & Security Libs)
+Task: Fix frontend/src/lib/auth.ts — Add cookie strategy helpers, refresh rotation awareness, token invalidation system
+
+Work Log:
+- Added cookie strategy helpers: parseCookies(), getCookie(), getCookieFromRequest(), getRefreshTokenFromCookies(), getRefreshTokenFromRequest(), hasRefreshCookie(), hasRefreshCookieInRequest()
+- Added JWT decode without verification: decodeTokenPayload() — base64url decode of JWT payload segment, returns DecodedTokenPayload interface
+- Added token expiry helpers: getTokenExpiry(), isTokenExpiringSoon(), isTokenExpired(), getTokenTimeToLive() — all use client-side decode (no signature verification)
+- Added client-side token invalidation blacklist: in-memory Map<string, BlacklistEntry> with TTL-based expiry
+  - isTokenInvalidated(jtiOrTokenHash) — checks if a token ID is blacklisted
+  - invalidateToken(jtiOrTokenHash, ttlMs?) — adds to blacklist with configurable TTL (default 20min)
+  - invalidateAccessToken(token) / isAccessTokenInvalidated(token) — convenience wrappers that decode JWT to extract JTI
+  - clearTokenBlacklist(), getTokenBlacklistSize() — utility functions
+  - Lazy purge on every access, max 1000 entries with LRU eviction
+- Preserved all existing server-side SignJWT/jwtVerify functions (signAccessToken, signRefreshToken, verifyToken)
+- Zero breaking changes to existing middleware.ts consumer
+
+Stage Summary:
+- auth.ts: 53 lines → 377 lines
+- All new features are additive exports; existing interfaces unchanged
+- Client-side helpers work in both browser and SSR contexts
+- Token blacklist complements server-side blacklist (defense-in-depth)
+
+---
+Task ID: 2-b
+Agent: Subagent (Auth & Security Libs)
+Task: Create frontend/src/lib/safe.ts — Centralized sanitization enforcement
+
+Work Log:
+- Created sanitizeHtml(dirty): strips dangerous tags (script, iframe, object, embed, form, applet, base, link, meta, noscript, svg, math) and attributes (on* event handlers, javascript:/data:/vbscript: URLs in href/src/action)
+- Created sanitizeInput(input): trims whitespace, strips null bytes, normalizes unicode (NFC), escapes HTML entities (<, >, &, ", ')
+- Created sanitizeUrl(url): allows http:, https:, mailto:, tel: protocols and relative URLs; rejects javascript:, data:, vbscript:
+- Created sanitizeObject<T>(obj): recursively sanitizes all string values in an object using sanitizeInput
+- Created containsSqlInjection(input): detects 20+ SQL injection patterns (UNION, OR 1=1, stacked queries, time-based blind, information_schema, etc.)
+- Created containsXss(input): detects 25+ XSS patterns (script tags, event handlers, javascript: protocol, eval(), document.cookie, etc.)
+- Exported constants: MAX_INPUT_LENGTH (256), MAX_TEXT_LENGTH (5000), MAX_HTML_LENGTH (50000)
+- All functions are pure (no DOM dependencies) — works in both SSR and CSR contexts
+- No external dependencies required (regex-based approach)
+
+Stage Summary:
+- safe.ts: 325 lines, 7 exported functions + 3 exported constants
+- Comprehensive defense against XSS, SQL injection, and HTML injection
+- Pure functions — safe for server-side rendering and edge functions
+
+---
+Task ID: 2-c
+Agent: Subagent (Auth & Security Libs)
+Task: Create frontend/src/lib/sentry.ts — Error tracking integration with graceful fallback
+
+Work Log:
+- Created initSentry(): initializes Sentry only when VITE_SENTRY_DSN is set
+  - Environment separation via VITE_ENV/MODE
+  - Release tracking via VITE_APP_VERSION
+  - Sample rates: 100% errors, 10% transactions in prod (100% in dev), 10% replay sessions, 100% replays on error
+  - beforeSend hook sanitizes PII (email addresses, phone numbers) from error messages, exceptions, and breadcrumbs
+- Created setSentryUser(user) / clearSentryUser(): user context with PII redaction (email replaced with [email-redacted])
+- Created captureException(error, context?) / captureMessage(message, level?) / addBreadcrumb(category, message, data?): error capture helpers
+- Created withSentryErrorBoundary(Component, fallback?): HOC wrapping component with Sentry ErrorBoundary via React.createElement
+- Created startSpan(name, op) / endSpan(span): performance monitoring with breadcrumb recording
+- Created isSentryAvailable(): check if Sentry is active
+- Full resilience: if @sentry/react is not installed, ALL functions are no-ops; file NEVER throws
+  - Uses try/catch around require('@sentry/react')
+  - Uses getEnvVar() helper with try/catch around import.meta.env access
+  - All public functions have try/catch guards
+
+Stage Summary:
+- sentry.ts: 451 lines, 10 exported functions + 3 exported types + 1 exported constant check
+- Zero runtime errors if Sentry SDK is absent
+- PII sanitization in beforeSend prevents email/phone leaking to Sentry
+- TypeScript compilation: 0 errors in all 3 files (auth.ts, safe.ts, sentry.ts)
+- Vite build: successful
+
+---
+Task ID: 4
+Agent: Main Agent
+Task: Create a dedicated Admin Login Page
+
+Work Log:
+- Created `/home/z/my-project/frontend/src/components/bys/admin-login-page.tsx` — a standalone admin-only login page
+  - Dark slate/amber color scheme matching the admin tab in the existing login page
+  - Left decorative panel with dark slate gradient (slate-950 → slate-800 → amber-900), floating shield particles, security highlights
+  - Right form panel with glassmorphism card, amber accent gradient top bar
+  - Shield icon branding ("Admin Portal" heading, Shield icon in header)
+  - Uses `useAuth` hook's `login` function for authentication
+  - On successful login, checks if user's roleId is 3 (ADMIN) or 7 (SUB_ADMIN)
+  - If not admin, shows error: "Access denied. This portal is for administrators only."
+  - If admin, navigates to `admin-dashboard` using `navigate` from `useApp`
+  - "Back to Home" link at the top
+  - "Regular user? Sign in here" link that navigates to the main login page
+  - Prominent security notice: "All admin actions are logged and audited"
+  - Email and password fields with admin-themed amber styling
+  - Show/hide password toggle
+  - Loading state with Loader2 spinner during login
+  - framer-motion animations (slide-in error, spring header animation, floating particles)
+  - Uses same shadcn/ui components (Button, Input, Label)
+  - Responsive design (left panel hidden on mobile, form stacks vertically)
+  - Icons: Shield, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft, AlertTriangle, Fingerprint, LockKeyhole
+- Updated `/home/z/my-project/frontend/src/App.tsx`:
+  - Added lazy import: `const AdminLoginPage = React.lazy(() => import(/* webpackChunkName: "auth" */ '@/components/bys/admin-login-page').then(m => ({ default: m.AdminLoginPage })));`
+  - Added switch case: `case 'admin-login': return <AdminLoginPage />;`
+- Updated `/home/z/my-project/frontend/src/contexts/app-context.tsx`:
+  - Added `'admin-login'` to the `Page` type union
+- Vite build: successful
+- TypeScript: only pre-existing use-razorpay.ts error (not related to this task)
+
+Stage Summary:
+- Dedicated admin login page fully functional at the `admin-login` route
+- Admin role validation (roleId 3 or 7) with "Access denied" error for non-admins
+- Professional security-focused design with dark slate/amber theme
+- All required features implemented: navigation links, security notices, show/hide password, loading states, animations, responsive design
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Remove mock/demo data and replace with realistic DB queries
+
+Work Log:
+- Analyzed `/home/z/my-project/mini-services/api-service/index.ts` to identify all mock/demo/fallback data sources
+- Identified 6 areas with mock data:
+  1. GET /api/stats - hardcoded "500+", "10K+", "4.8" fallback values
+  2. GET /api/providers/nearby - mockProviders with fake IDs like prov_mock_0, svc_mock_0
+  3. GET /api/service-areas - mockAreas with hardcoded Indian city data
+  4. In-memory stores (waitingListStore, areaManagerApplicationsStore, referralStore) used as DB write fallback
+  5. getAreaStatus() helper - deterministic fake numbers based on city name hash
+  6. GET /api/area/status and /api/area/activation - demo data fallback using getAreaStatus()
+
+Changes made:
+1. **GET /api/stats**: Replaced hardcoded "500+", "10K+", "4.8" with real DB queries:
+   - First tries PlatformStats table (existing behavior)
+   - Falls back to COUNT(*) from User table (providers: roleId=2, customers: roleId=1)
+   - Falls back to AVG(averageRating) from Service table
+   - Error fallback returns "0" instead of fake numbers
+
+2. **GET /api/providers/nearby**: Removed entire mockProviders generation block:
+   - DB query failure now returns empty array `{ providers: [], total: 0, radius }` instead of fake providers
+   - Removed `note: 'Mock data'` field
+
+3. **GET /api/service-areas**: Replaced mockAreas with DB queries:
+   - Tries ServiceArea table first
+   - Falls back to AreaActivation table
+   - Returns empty array `[]` if neither table has data
+   - Removed hardcoded 5 Indian cities with fake counts
+
+4. **In-memory stores**: Removed all three in-memory store declarations:
+   - Removed `waitingListStore`, `areaManagerApplicationsStore`, `referralStore` arrays
+   - Updated POST /api/referral/track: direct DB insert, no in-memory fallback
+   - Updated POST /api/waiting-list/join: direct DB insert, no in-memory fallback
+   - Updated POST /api/area-manager/apply: direct DB insert, no in-memory fallback
+   - If DB insert fails, the outer try/catch handles the error properly
+
+5. **getAreaStatus() helper**: Replaced with `getAreaStatusFromDB()` async function:
+   - Queries AreaActivation table first
+   - Falls back to real COUNT(*) from User table filtered by city name
+   - Computes isActive from actual provider count (≥5 = active)
+   - Computes launchProgress from real provider/customer counts vs targets
+   - Returns honest zeros when no data available
+
+6. **GET /api/area/status**: Replaced demo data path with getAreaStatusFromDB():
+   - Uses shared helper for all code paths
+   - Returns honest zeros for unknown cities
+
+7. **GET /api/area/activation**: Replaced demo data path with getAreaStatusFromDB():
+   - Uses shared helper, then adds activationMeter computed from real data
+   - No more fake progress percentages
+
+CRITICAL: No routes or endpoints were deleted. API response shapes are preserved. Only the data SOURCES changed from mock → real DB queries.
+
+Stage Summary:
+- All 6 mock/demo data sources replaced with realistic DB queries
+- No endpoints removed, no API contracts broken
+- Honest empty/zero responses when DB has no data (instead of fake inflated numbers)
+- Server running and all modified endpoints responding correctly
+- Minimal changes as requested by user ("baki jyada change nahi karna")
+
+---
+Task ID: 2-a through 2-g, 3, 4
+Agent: Main Agent (coordinating subagents)
+
+Work Log:
+- Read all audit-targeted files: auth.ts, auth-context.tsx, use-geolocation.ts, use-razorpay.ts (missing), sentry.ts (missing), safe.ts (missing), App.tsx
+- Read backend auth routes (index.ts) to understand refresh token flow, cookie strategy, token blacklist
+- Launched 3 parallel subagents for independent file implementations
+- Subagent 1 (2-a,2-b,2-c): Enhanced auth.ts with cookie helpers, refresh rotation, token invalidation; created safe.ts with sanitization; created sentry.ts with error tracking
+- Subagent 2 (2-d,2-e): Enhanced use-geolocation.ts with fallback, caching, drift protection, spoof detection; created use-razorpay.ts with retry, idempotency, verification
+- Subagent 3 (2-g): Converted App.tsx to lazy-loaded routes with 9 webpack chunks, added PageLoader suspense fallback, enhanced route guards with synchronous authorization check
+- Fixed TypeScript error in use-razorpay.ts (rzp.on callback type mismatch)
+- Launched 2 more parallel subagents
+- Subagent 4 (3): Removed mock/demo data from backend - replaced hardcoded stats with DB counts, removed mockProviders/mockAreas, replaced in-memory stores with DB queries
+- Subagent 5 (4): Created dedicated admin-login-page.tsx with security-focused design, added route to App.tsx
+- Verified: TypeScript check passes (0 errors), Vite build succeeds, both dev servers running
+
+Stage Summary:
+- All 6 audit files fixed/enhanced: auth.ts, safe.ts, sentry.ts, use-geolocation.ts, use-razorpay.ts, App.tsx
+- Mock data removed from backend: stats, providers, areas now use real DB queries
+- Admin login page created at /admin-login route
+- Lazy loading reduces initial bundle - pages load on demand in 9 logical chunks
+- All changes compile and servers are running successfully
