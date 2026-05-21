@@ -755,3 +755,255 @@ Stage Summary:
 - Admin login page created at /admin-login route
 - Lazy loading reduces initial bundle - pages load on demand in 9 logical chunks
 - All changes compile and servers are running successfully
+
+---
+Task ID: 10, 11, 12
+Agent: Backend Enhancement Agent
+Task: Enhance logger.ts, queues/index.ts, and notification.worker.ts
+
+Work Log:
+- Enhanced `/home/z/my-project/mini-services/api-service/lib/logger.ts` (242 → ~490 lines):
+  - **Request Tracing:**
+    - `generateTraceId(): string` — Generates unique trace ID format `bys-{timestamp}-{random}` (e.g., `bys-1700000000-a1b2c3`)
+    - `traceMiddleware(): MiddlewareHandler` — Hono middleware that checks `X-Request-ID` header or generates new trace ID, sets it on response, stores in Hono context via `c.set('traceId', traceId)`, and adds traceId to all logger defaultMeta for the request duration
+    - `getChildLogger(traceId, module): winston.Logger` — Creates a child logger with traceId and module in every log entry
+  - **Trace Correlation:**
+    - `correlateLogs(traceId): LogEntry[]` — Searches all log files (combined.log, auth.log, booking.log, api.log) for entries matching the given traceId, with deduplication
+    - `getRelatedTraces(userId, minutes=60): string[]` — Finds all trace IDs associated with a user in the last N minutes across all log files
+  - **Observability Pipeline:**
+    - `exportLogs(format, since): Promise<string>` — Exports logs in JSON (array of entries) or OpenTelemetry format (resourceLogs with LogRecords, severity mapping, attributes)
+    - `getLogMetrics()` — Returns `{ totalEntries, errorCount, warnCount, avgResponseTime, topErrors: [{message, count}] }` computed from combined.log
+    - `flushLogs(): Promise<void>` — Forces flush of all buffered log entries to disk with 5-second safety timeout
+  - Added `LogEntry` and `MiddlewareHandler` type exports
+  - All existing code preserved (loggers, event helpers, middleware)
+
+- Enhanced `/home/z/my-project/mini-services/api-service/queues/index.ts` (344 → ~520 lines):
+  - **Dead Letter Queue:**
+    - `DEAD_LETTER_QUEUE_NAME = 'bys:dead-letter'` constant
+    - `deadLetterQueue: Queue | null` instance (created alongside notification/booking queues in `initializeQueues()`)
+    - Modified `pushNotificationJob` and `pushBookingJob` to include `deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 }` config option
+    - `processDeadLetterQueue(): Promise<void>` — Processes DLQ entries, logs each with job ID, reason, attempts, timestamp
+    - `getDeadLetterCount(): Promise<number>` — Returns total count of DLQ entries
+    - `purgeDeadLetterQueue(): Promise<number>` — Removes all DLQ entries and obliterates the queue
+    - `retryDeadLetterJob(jobId): Promise<boolean>` — Re-queues a specific DLQ job to its original queue (notification or booking), then removes from DLQ
+    - Added DLQ queue close to `shutdownQueues()`
+  - **Retry Policy Tuning:**
+    - `RetryPolicy` interface: `{ maxRetries, backoffType: 'exponential'|'linear'|'fixed', initialDelayMs, maxDelayMs, jitterMs }`
+    - Default policies: NOTIFICATION (maxRetries: 5, exponential, 5s-5min, 1s jitter), BOOKING (maxRetries: 3, exponential, 2s-1min, 500ms jitter)
+    - `setRetryPolicy(jobType, policy): void` — Update retry policy at runtime
+    - `getRetryPolicy(jobType): RetryPolicy` — Get current retry policy (falls back to NOTIFICATION)
+    - `calculateBackoffDelayForPolicy(attempt, policy): number` — Calculates backoff with exponential/linear/fixed + jitter
+  - **Queue Metrics Dashboard:**
+    - `QueueMetricsDetail` interface: `{ waiting, active, completed, failed, delayed, dlqCount }`
+    - `QueueMetrics` interface: `{ notification, booking, totalProcessed, totalFailed, avgProcessingTimeMs, isHealthy }`
+    - `recordProcessingTime(durationMs): void` — Records processing time sample (max 1000 samples)
+    - `getQueueMetrics(): Promise<QueueMetrics>` — Returns comprehensive metrics using BullMQ's `queue.getJobCounts()`, with health check logic
+    - `startMetricsCollection(intervalMs=30000): void` — Starts periodic collection, stores in Redis key `bys:queue:metrics:{timestamp}` with 1-hour TTL
+    - `stopMetricsCollection(): void` — Stops the periodic collection interval
+  - All existing code preserved (queues, workers, job processors, senders, shutdown)
+
+- Enhanced `/home/z/my-project/mini-services/api-service/workers/notification.worker.ts` (314 → ~570 lines):
+  - **Notification Prioritization:**
+    - Priority constants: `URGENT=1` (OTP, security alerts), `HIGH=2` (booking confirmations), `NORMAL=3` (general), `LOW=4` (marketing, promotions)
+    - `getPriorityForTemplate(template): number` — Maps templates to priorities:
+      - `otp_verification`, `security_alert` → URGENT
+      - `booking_confirmation`, `booking_cancelled`, `provider_assigned` → HIGH
+      - `booking_reminder`, `review_request`, `payment_received` → NORMAL
+      - `promotional_offer`, `newsletter`, `feature_update` → LOW
+    - `shouldThrottleNotification(template, recipientId): boolean` — Rate limits LOW priority to max 3/day per user
+    - `getThrottleState(recipientId): { lowPrioritySentToday, limit, nextResetAt }` — Check throttle status
+    - `recordLowPrioritySent(recipientId): void` — Records that a LOW priority notification was sent
+    - Hourly cleanup of expired throttle entries
+  - **Provider SLA Tracking:**
+    - `NotificationSLA` interface: `{ channel, maxDeliveryTimeMs, targetSuccessRate, retryStrategy }`
+    - Default SLAs: WHATSAPP (30s/95%/exponential), SMS (15s/99%/exponential), EMAIL (60s/98%/linear), PUSH (10s/90%/fixed)
+    - `SLATracker` class:
+      - `recordDelivery(channel, deliveryTimeMs, success): void` — Tracks per-channel delivery metrics (max 500 samples)
+      - `getSLAStatus()` — Returns `{ avgDeliveryTimeMs, successRate, meetsSLA, samples }` per channel
+      - `isChannelDegraded(channel): boolean` — Returns true if success rate < SLA target (requires ≥10 samples)
+      - `getFallbackChannel(primaryChannel): string | null` — Returns fallback channel if primary is degraded (WHATSAPP→SMS, SMS→EMAIL, PUSH→EMAIL, EMAIL→SMS) with second-level fallback
+      - `getSLADefinition(channel)` / `getAllSLAs()` — SLA definition accessors
+    - `slaTracker` singleton exported
+    - Automatic fallback: `dispatchNotification()` checks if primary channel is degraded and tries fallback before original channel
+  - All existing code preserved (JobTracker, processNotificationWithRetry, handleRetry, getWorkerStatus)
+
+Stage Summary:
+- lib/logger.ts: ✅ Enhanced with Request Tracing, Trace Correlation, Observability Pipeline (242→~490 lines)
+- queues/index.ts: ✅ Enhanced with Dead Letter Queue, Retry Policy Tuning, Queue Metrics Dashboard (344→~520 lines)
+- workers/notification.worker.ts: ✅ Enhanced with Notification Prioritization, Provider SLA Tracking (314→~570 lines)
+- TypeScript: No new errors introduced (only pre-existing sentry.ts errors remain)
+- All existing functionality preserved across all three files
+
+---
+Task ID: 5, 6
+Agent: Backend Developer
+Task: Enhance lib/security.ts and lib/redis.ts
+
+Work Log:
+
+### Task 5: Enhanced `lib/security.ts` (311 → 770 lines)
+
+All existing code preserved. Added 4 new features:
+
+1. **WAFFirewall class**
+   - Tracks IP behavior scores (0–100, higher = more suspicious)
+   - Violation scores: SQL injection (+30), XSS (+25), path traversal (+20), rapid 401/403 (+15), unusual user agent (+10)
+   - Auto-bans IPs exceeding score 80 for 1 hour
+   - `evaluateRequest(ip, violations)` → returns `{ action: 'allow'|'challenge'|'block', score, reason? }`
+   - `getIPScore(ip)` → returns current suspicion score
+   - `resetIP(ip)` → admin unban
+   - Score decay: -5 points every 10 minutes (via setInterval)
+   - Cleanup: removes stale records (score 0, not seen in 2 hours)
+   - Extra: `getTrackedIPCount()`, `getBannedIPs()`, `shutdown()`
+   - Exported singleton: `export const waf = new WAFFirewall()`
+
+2. **SessionFingerprinter class**
+   - Generates device fingerprints: SHA-256 hash of (user-agent + accept-language + accept-encoding)
+   - Tracks `userId → Set<fingerprintHash>` mappings
+   - Detects new device anomalies
+   - `registerSession(userId, fingerprint)` → returns `{ isNewDevice: boolean }`
+   - `getUserDevices(userId)` → returns array of fingerprint hashes
+   - `clearUserSessions(userId)` → removes all device tracking for a user
+   - Extra: `generateFingerprint()`, `getDeviceCount()`, `isKnownDevice()`
+   - Exported singleton: `export const fingerprinter = new SessionFingerprinter()`
+
+3. **Allowlist Validation Strategy**
+   - `validateAgainstSchema(input, schema)` → returns `{ valid, sanitized, reason? }`
+   - Email: RFC 5322 compliant regex, max 254 chars, lowercase normalization
+   - Phone: Indian numbers (+91 or 10 digits starting with 6-9), normalized to +91 format
+   - Name: Letters, spaces, hyphens, apostrophes only (2-100 chars), NFC unicode normalization
+   - Pincode: Exactly 6 digits
+   - URL: http/https only, blocks javascript:/data:/vbscript: protocols, max 2048 chars
+
+4. **Hono WAF Middleware**
+   - `wafMiddleware()` → MiddlewareHandler integrating WAF into request pipeline
+   - Detects violations: SQL injection (path+query), XSS (path+query), path traversal, unusual user agents
+   - Block → 403 with WAF_BLOCKED code
+   - Challenge → adds `X-WAF-Challenge: true` header, continues
+   - Always injects `c.set('wafScore', score)` into context
+
+### Task 6: Enhanced `lib/redis.ts` (464 → 866 lines)
+
+All existing code preserved. Added 3 feature groups + auto-recovery:
+
+1. **Auto-recovery infrastructure**
+   - `consecutiveFailures` counter and `autoRecoveryThreshold = 5`
+   - `recordSuccess()` — resets failure counter
+   - `recordFailure()` — increments counter, triggers `forceReconnect()` if ≥5 failures
+   - Integrated into get/set/del and all new methods
+
+2. **Distributed Invalidation**
+   - `invalidateByTag(tag)` → Uses Redis hash (`__tag:{tag}`) to track keys by tag, then deletes all. In-memory fallback via `tagStore` Map. Returns count of invalidated keys.
+   - `tagKey(key, tags[])` → Associates a cache key with one or more tags. Uses Redis pipeline for multi-tag sets. In-memory fallback.
+   - `invalidateUser(userId)` → Convenience method, calls `invalidateByTag('user:{userId}')`
+
+3. **Eviction Policy Management**
+   - `setEvictionPolicy(policy)` → Sets Redis maxmemory-policy via CONFIG SET. Supports: allkeys-lru, volatile-lru, allkeys-lfu, volatile-lfu, noeviction
+   - `getEvictionPolicy()` → Gets current maxmemory-policy via CONFIG GET
+   - `getMemoryInfo()` → Returns `{ usedMemory, maxMemory, fragmentationRatio, evictionPolicy }` by parsing Redis INFO memory
+
+4. **Health Recovery**
+   - `forceReconnect()` → Force-closes current connection (quit or disconnect), resets state, creates new connection. Returns boolean success.
+   - `healthCheck()` → Comprehensive check: tests read+write+delete, returns `{ status: 'healthy'|'degraded'|'down', backend, latencyMs, memoryUsage?, connectedClients? }`. Gets memory and client stats from Redis INFO.
+
+### Bug Fix
+- Fixed pre-existing TypeScript error in `delByPattern()`: Redis v5 SCAN command uses string cursor ('0'), not number
+
+Stage Summary:
+- lib/security.ts: ✅ Enhanced with WAFFirewall, SessionFingerprinter, Allowlist Validation, WAF Middleware (311→770 lines)
+- lib/redis.ts: ✅ Enhanced with Distributed Invalidation, Eviction Policy, Health Recovery, Auto-recovery (464→866 lines)
+- TypeScript: Zero new errors in modified files (pre-existing sentry.ts/frontend errors remain)
+- All existing functionality preserved across both files
+
+---
+Task ID: 7, 8, 9
+Agent: Backend Lib Enhancement Agent
+Task: Enhance lib/backup.ts, lib/cloudflare.ts, lib/razorpay.ts with new features
+
+Work Log:
+- Enhanced lib/backup.ts (605 → 989 lines):
+  - Added Encrypted Backup Storage:
+    - ENCRYPTION_KEY from process.env.BACKUP_ENCRYPTION_KEY
+    - encryptBackup(data): AES-256-GCM encryption, returns ENCRYPTED:{iv}:{authTag}:{ciphertext} format
+    - decryptBackup(encryptedData): Decrypts AES-256-GCM format
+    - Modified createBackup to encrypt before storage if key available (after compression, before upload)
+    - Modified restoreBackup to decrypt before restoring if encrypted (before decompression)
+    - Skips encryption with warning if BACKUP_ENCRYPTION_KEY not set
+  - Added Offsite Backup (S3-compatible):
+    - uploadToS3(backupId, data, timestamp): AWS Signature V4 signing, standard fetch (no SDK)
+    - Env vars: S3_ENDPOINT, S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_REGION
+    - Integrated into createBackup after Supabase upload attempt
+    - Skips with warning if S3 env vars not set (same pattern as Supabase)
+  - Added Restore Verification:
+    - verifyBackupIntegrity(backupId): Checks JSON parsing, table/row counts, SHA-256 checksum, null bytes, truncated JSON, empty tables, metadata consistency
+    - verifyRestore(pool, backupId): Compares row counts in restored DB against backup metadata, reports discrepancies
+- Enhanced lib/cloudflare.ts (380 → 759 lines):
+  - Added Bot Score Integration:
+    - getBotScore(c): Extracts cf.botmanagement-score, cf.botmanagement-verifiedBot, cf.botmanagement-staticResource
+    - botScoreMiddleware(): Score < 20 → block 403, score 20-40 → X-Bot-Suspect header, score > 40 → allow; injects c.set('botScore', score); logs suspicious activity
+  - Added Adaptive Rate Limiting:
+    - adaptiveRateLimitMiddleware(): Dynamic limits based on bot score (30/min for <40, 100 normal), country risk (50% high, 75% medium), peak hours (80%), auth endpoints (1/3)
+    - setCountryRiskLevel(country, level): Admin utility
+    - getAdaptiveConfig(): Returns current config state
+    - Uses composite key (IP + endpoint type) with X-RateLimit-Limit/Remaining headers
+  - Added Advanced Challenge Flow:
+    - challengeMiddleware(): For bot score 20-40, sets X-Challenge-Required header, returns 202 with proof-of-work challenge for API requests
+    - verifyChallengeResponse(token, response): Verifies SHA-256(token+nonce) starts with required zeros
+    - Challenge store: In-memory Map with 5-minute TTL, periodic cleanup
+- Enhanced lib/razorpay.ts (381 → 945 lines):
+  - Added Settlement Reconciliation:
+    - Types: Settlement, ReconciliationResult interfaces
+    - fetchSettlements(fromDate, toDate): Fetches from Razorpay /settlements API
+    - reconcileSettlement(pool, settlementId): Compares settlement data against payment records, flags discrepancies
+  - Added Payout Ledger:
+    - Type: PayoutLedgerEntry interface
+    - Auto-creates PayoutLedger table (same pattern as RefreshToken)
+    - recordPayoutLedgerEntry(pool, entry): Records payout with fees, GST, net amount
+    - getPayoutLedger(pool, providerId, limit): Gets payout history for provider
+    - getPayoutSummary(pool, providerId): Returns totalEarned, totalFees, totalPayout, pendingAmount
+  - Added Accounting Audit Trail:
+    - Type: AuditEntry interface (entityType, entityId, action, previousState, newState, performedBy, metadata)
+    - Auto-creates PaymentAudit table with indexes
+    - recordAuditEntry(pool, entry): Records audit entry
+    - getAuditTrail(pool, entityType, entityId): Gets full chronological audit trail
+    - withAuditTrail<T>(pool, entityType, entityId, action, performedBy, fn): Wraps DB operation with automatic audit recording
+- TypeScript compilation: No errors in any of the three enhanced files
+- All existing functionality preserved (all original exports intact)
+
+Stage Summary:
+- lib/backup.ts: ✅ 605 → 989 lines (encrypted storage, S3 upload, restore verification)
+- lib/cloudflare.ts: ✅ 380 → 759 lines (bot score, adaptive rate limiting, challenge flow)
+- lib/razorpay.ts: ✅ 381 → 945 lines (settlement reconciliation, payout ledger, audit trail)
+- All files compile cleanly with no TypeScript errors
+- Zero breaking changes — all existing exports and functionality preserved
+
+---
+Task ID: 1, 2, 3, 4, 5-12
+Agent: Main Agent (coordinating subagents)
+
+Work Log:
+- Read all audit-targeted files: index.ts (5081 lines), security.ts, redis.ts, backup.ts, cloudflare.ts, razorpay.ts, logger.ts, queues/index.ts, notification.worker.ts
+- Identified 4 critical issues and 8 enhancement tasks from the audit
+- Launched 3 parallel subagents for independent file implementations
+- Subagent 1 (5,6): Enhanced lib/security.ts with WAF firewall, session fingerprinting, allowlist validation, wafMiddleware; enhanced lib/redis.ts with distributed invalidation, eviction policy, health recovery
+- Subagent 2 (7,8,9): Enhanced lib/backup.ts with encrypted storage (AES-256-GCM), S3 offsite backup, restore verification; enhanced lib/cloudflare.ts with bot score integration, adaptive rate limiting, challenge flow; enhanced lib/razorpay.ts with settlement reconciliation, payout ledger, accounting audit trail
+- Subagent 3 (10,11,12): Enhanced lib/logger.ts with request tracing, trace correlation, observability pipeline; enhanced queues/index.ts with dead letter queue, retry policy tuning, queue metrics dashboard; enhanced workers/notification.worker.ts with notification prioritization, provider SLA tracking
+- Created lib/shared.ts: Centralized shared state with JWT_SECRET fail-hard-in-production, pool, token blacklist, rate limiting, cookie helpers, auth helpers, data transformers, DB initialization
+- Fixed JWT_SECRET: Changed from silent fallback to throw Error in production — server refuses to start without JWT_SECRET
+- Created validators/ directory with login.schema.ts, signup.schema.ts, create-booking.schema.ts, provider.schema.ts, validate.ts to fix missing import errors
+- Verified both servers running and backend responding
+
+Stage Summary:
+- JWT_SECRET now fails hard in production (Task 2 ✅)
+- Shared module created for startup separation (Task 3 ✅)
+- DB initialization moved to shared module (Task 4 ✅)
+- lib/security.ts: WAF firewall, session fingerprinting, allowlist validation, wafMiddleware (Task 5 ✅)
+- lib/redis.ts: Tag-based invalidation, eviction policy management, health recovery with auto-reconnect (Task 6 ✅)
+- lib/backup.ts: AES-256-GCM encryption, S3-compatible offsite backup, integrity + restore verification (Task 7 ✅)
+- lib/cloudflare.ts: Bot score middleware, adaptive rate limiting, proof-of-work challenge flow (Task 8 ✅)
+- lib/razorpay.ts: Settlement reconciliation, payout ledger with auto-table creation, accounting audit trail (Task 9 ✅)
+- lib/logger.ts: Request tracing (X-Request-ID), trace correlation across logs, OTel export, log metrics (Task 10 ✅)
+- queues/index.ts: Dead letter queue, configurable retry policies per job type, queue metrics dashboard (Task 11 ✅)
+- workers/notification.worker.ts: 4-level priority with throttling, SLA tracking per channel with auto-fallback (Task 12 ✅)
+- Modularization (Task 1): Partially complete — lib/shared.ts created as foundation, validators extracted, full route split deferred to avoid breaking changes
+- All changes compile and both servers running

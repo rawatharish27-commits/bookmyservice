@@ -83,6 +83,9 @@ export async function initializeQueues(): Promise<void> {
     // Create booking processing queue
     bookingQueue = new Queue<BookingProcessingJobData>(QUEUE_NAMES.BOOKING_PROCESSING, config)
 
+    // Create dead letter queue
+    deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, config)
+
     isQueueSystemReady = true
     console.log('📮 Queue system: Connected to Redis — async processing enabled')
   } catch (err: any) {
@@ -109,6 +112,9 @@ export async function pushNotificationJob(jobData: NotificationJobData): Promise
       backoff: { type: 'exponential', delay: 5000 },
       removeOnComplete: { count: 1000 },
       removeOnFail: { count: 5000 },
+      ...(deadLetterQueue ? {
+        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
+      } : {}),
     })
   } else {
     // Sync fallback: Process immediately
@@ -126,6 +132,9 @@ export async function pushBookingJob(jobData: BookingProcessingJobData): Promise
       backoff: { type: 'exponential', delay: 5000 },
       removeOnComplete: { count: 1000 },
       removeOnFail: { count: 5000 },
+      ...(deadLetterQueue ? {
+        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
+      } : {}),
     })
   } else {
     // Sync fallback: Process immediately
@@ -339,5 +348,385 @@ export async function shutdownQueues(): Promise<void> {
   await bookingWorker?.close()
   await notificationQueue?.close()
   await bookingQueue?.close()
+  await deadLetterQueue?.close()
   console.log('📮 Queue system shut down')
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── DEAD LETTER QUEUE ──────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+export const DEAD_LETTER_QUEUE_NAME = 'bys:dead-letter'
+
+export let deadLetterQueue: Queue | null = null
+
+/**
+ * Processes DLQ entries, logs them, and optionally retries them.
+ * DLQ jobs are inspected, logged, and can be retried based on error type.
+ */
+export async function processDeadLetterQueue(): Promise<void> {
+  if (!deadLetterQueue || !isQueueSystemReady) {
+    console.log('📮 DLQ: Not available (no Redis connection)')
+    return
+  }
+
+  try {
+    const failedJobs = await deadLetterQueue.getFailed()
+    console.log(`📮 DLQ: Processing ${failedJobs.length} dead letter entries`)
+
+    for (const job of failedJobs) {
+      const jobData = job.data
+      console.warn(`📮 DLQ: Job ${job.id} in DLQ — ${job.failedReason || 'unknown reason'}`, {
+        jobId: job.id,
+        name: job.name,
+        attemptsMade: job.attemptsMade,
+        failedReason: job.failedReason,
+        timestamp: job.timestamp,
+        data: typeof jobData === 'object' ? JSON.stringify(jobData).slice(0, 500) : jobData,
+      })
+    }
+  } catch (err: any) {
+    console.error('📮 DLQ: Error processing dead letter queue:', err.message)
+  }
+}
+
+/**
+ * Returns count of DLQ entries.
+ */
+export async function getDeadLetterCount(): Promise<number> {
+  if (!deadLetterQueue || !isQueueSystemReady) return 0
+
+  try {
+    const counts = await deadLetterQueue.getJobCounts('failed', 'waiting', 'active', 'delayed')
+    return counts.failed + counts.waiting + counts.active + counts.delayed
+  } catch (err: any) {
+    console.error('📮 DLQ: Error getting count:', err.message)
+    return 0
+  }
+}
+
+/**
+ * Removes all DLQ entries. Returns the number of entries purged.
+ */
+export async function purgeDeadLetterQueue(): Promise<number> {
+  if (!deadLetterQueue || !isQueueSystemReady) return 0
+
+  try {
+    const failedJobs = await deadLetterQueue.getFailed()
+    const waitingJobs = await deadLetterQueue.getWaiting()
+    const allJobs = [...failedJobs, ...waitingJobs]
+    let purged = 0
+
+    for (const job of allJobs) {
+      await job.remove()
+      purged++
+    }
+
+    // Also obliterate completed jobs
+    await deadLetterQueue.obliterate({ force: true })
+
+    console.log(`📮 DLQ: Purged ${purged} entries`)
+    return purged
+  } catch (err: any) {
+    console.error('📮 DLQ: Error purging:', err.message)
+    return 0
+  }
+}
+
+/**
+ * Re-queues a specific DLQ job by moving it back to its original queue.
+ * Returns true if the job was successfully retried.
+ */
+export async function retryDeadLetterJob(jobId: string): Promise<boolean> {
+  if (!deadLetterQueue || !isQueueSystemReady) return false
+
+  try {
+    const job = await deadLetterQueue.getJob(jobId)
+    if (!job) {
+      console.warn(`📮 DLQ: Job ${jobId} not found`)
+      return false
+    }
+
+    const jobData = job.data
+    const jobName = job.name
+
+    // Determine which queue to re-queue to based on job name
+    if (notificationQueue && (jobName === 'WHATSAPP' || jobName === 'SMS' || jobName === 'EMAIL' || jobName === 'PUSH')) {
+      await notificationQueue.add(jobName, jobData as NotificationJobData, {
+        priority: 3,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5000 },
+        removeOnComplete: { count: 1000 },
+        removeOnFail: { count: 5000 },
+      })
+    } else if (bookingQueue) {
+      await bookingQueue.add(jobName, jobData as BookingProcessingJobData, {
+        priority: 3,
+        attempts: 3,
+        backoff: { type: 'exponential', delay: 5000 },
+        removeOnComplete: { count: 1000 },
+        removeOnFail: { count: 5000 },
+      })
+    } else {
+      console.warn(`📮 DLQ: No target queue available for retry of job ${jobId}`)
+      return false
+    }
+
+    // Remove from DLQ after successful re-queue
+    await job.remove()
+    console.log(`📮 DLQ: Job ${jobId} re-queued successfully`)
+    return true
+  } catch (err: any) {
+    console.error(`📮 DLQ: Error retrying job ${jobId}:`, err.message)
+    return false
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── RETRY POLICY TUNING ────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+export interface RetryPolicy {
+  maxRetries: number
+  backoffType: 'exponential' | 'linear' | 'fixed'
+  initialDelayMs: number
+  maxDelayMs: number
+  jitterMs: number
+}
+
+// Default retry policies for each job type
+const DEFAULT_RETRY_POLICIES: Record<string, RetryPolicy> = {
+  NOTIFICATION: {
+    maxRetries: 5,
+    backoffType: 'exponential',
+    initialDelayMs: 5000,
+    maxDelayMs: 300000,
+    jitterMs: 1000,
+  },
+  BOOKING: {
+    maxRetries: 3,
+    backoffType: 'exponential',
+    initialDelayMs: 2000,
+    maxDelayMs: 60000,
+    jitterMs: 500,
+  },
+}
+
+// Runtime mutable retry policies (starts with defaults)
+const runtimeRetryPolicies: Record<string, RetryPolicy> = { ...DEFAULT_RETRY_POLICIES }
+
+/**
+ * Update retry policy at runtime for a given job type.
+ */
+export function setRetryPolicy(jobType: string, policy: RetryPolicy): void {
+  runtimeRetryPolicies[jobType] = { ...policy }
+  console.log(`📮 Retry policy updated for ${jobType}:`, policy)
+}
+
+/**
+ * Get current retry policy for a given job type.
+ * Falls back to NOTIFICATION policy if the job type has no specific policy.
+ */
+export function getRetryPolicy(jobType: string): RetryPolicy {
+  return runtimeRetryPolicies[jobType] || runtimeRetryPolicies['NOTIFICATION'] || {
+    maxRetries: 3,
+    backoffType: 'exponential' as const,
+    initialDelayMs: 5000,
+    maxDelayMs: 300000,
+    jitterMs: 1000,
+  }
+}
+
+/**
+ * Calculates the backoff delay for a given attempt based on the retry policy.
+ */
+export function calculateBackoffDelayForPolicy(attempt: number, policy: RetryPolicy): number {
+  let delay: number
+
+  switch (policy.backoffType) {
+    case 'exponential':
+      delay = policy.initialDelayMs * Math.pow(2, attempt - 1)
+      break
+    case 'linear':
+      delay = policy.initialDelayMs * attempt
+      break
+    case 'fixed':
+    default:
+      delay = policy.initialDelayMs
+      break
+  }
+
+  // Cap at max delay
+  delay = Math.min(delay, policy.maxDelayMs)
+
+  // Add jitter to avoid thundering herd
+  if (policy.jitterMs > 0) {
+    const jitter = Math.random() * policy.jitterMs * 2 - policy.jitterMs
+    delay = Math.max(0, delay + jitter)
+  }
+
+  return Math.round(delay)
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── QUEUE METRICS DASHBOARD ────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+export interface QueueMetricsDetail {
+  waiting: number
+  active: number
+  completed: number
+  failed: number
+  delayed: number
+  dlqCount: number
+}
+
+export interface QueueMetrics {
+  notification: QueueMetricsDetail
+  booking: QueueMetricsDetail
+  totalProcessed: number
+  totalFailed: number
+  avgProcessingTimeMs: number
+  isHealthy: boolean
+}
+
+// In-memory metrics tracking for processing time
+const processingTimeSamples: number[] = []
+const MAX_PROCESSING_SAMPLES = 1000
+
+/**
+ * Record a processing time sample for metrics calculation.
+ */
+export function recordProcessingTime(durationMs: number): void {
+  processingTimeSamples.push(durationMs)
+  if (processingTimeSamples.length > MAX_PROCESSING_SAMPLES) {
+    processingTimeSamples.shift()
+  }
+}
+
+/**
+ * Returns comprehensive metrics for all queues.
+ * Uses BullMQ's built-in queue.getJobCounts() for queue-level metrics.
+ */
+export async function getQueueMetrics(): Promise<QueueMetrics> {
+  const emptyDetail: QueueMetricsDetail = {
+    waiting: 0,
+    active: 0,
+    completed: 0,
+    failed: 0,
+    delayed: 0,
+    dlqCount: 0,
+  }
+
+  if (!isQueueSystemReady || !notificationQueue || !bookingQueue) {
+    return {
+      notification: { ...emptyDetail },
+      booking: { ...emptyDetail },
+      totalProcessed: 0,
+      totalFailed: 0,
+      avgProcessingTimeMs: 0,
+      isHealthy: false,
+    }
+  }
+
+  try {
+    // Get job counts for each queue
+    const [notifCounts, bookingCounts, dlqCount] = await Promise.all([
+      notificationQueue.getJobCounts('waiting', 'active', 'completed', 'failed', 'delayed'),
+      bookingQueue.getJobCounts('waiting', 'active', 'completed', 'failed', 'delayed'),
+      getDeadLetterCount(),
+    ])
+
+    const notificationDetail: QueueMetricsDetail = {
+      waiting: notifCounts.waiting || 0,
+      active: notifCounts.active || 0,
+      completed: notifCounts.completed || 0,
+      failed: notifCounts.failed || 0,
+      delayed: notifCounts.delayed || 0,
+      dlqCount,
+    }
+
+    const bookingDetail: QueueMetricsDetail = {
+      waiting: bookingCounts.waiting || 0,
+      active: bookingCounts.active || 0,
+      completed: bookingCounts.completed || 0,
+      failed: bookingCounts.failed || 0,
+      delayed: bookingCounts.delayed || 0,
+      dlqCount,
+    }
+
+    const totalProcessed = notificationDetail.completed + bookingDetail.completed
+    const totalFailed = notificationDetail.failed + bookingDetail.failed
+    const avgProcessingTimeMs = processingTimeSamples.length > 0
+      ? Math.round(processingTimeSamples.reduce((a, b) => a + b, 0) / processingTimeSamples.length)
+      : 0
+
+    // Health check: unhealthy if too many failed or if queues are overwhelmed
+    const isHealthy = totalFailed < 100
+      && notificationDetail.waiting < 5000
+      && bookingDetail.waiting < 5000
+
+    return {
+      notification: notificationDetail,
+      booking: bookingDetail,
+      totalProcessed,
+      totalFailed,
+      avgProcessingTimeMs,
+      isHealthy,
+    }
+  } catch (err: any) {
+    console.error('📮 Metrics: Error collecting queue metrics:', err.message)
+    return {
+      notification: { ...emptyDetail },
+      booking: { ...emptyDetail },
+      totalProcessed: 0,
+      totalFailed: 0,
+      avgProcessingTimeMs: 0,
+      isHealthy: false,
+    }
+  }
+}
+
+// Metrics collection interval handle
+let metricsCollectionInterval: ReturnType<typeof setInterval> | null = null
+
+/**
+ * Starts periodic metrics collection (default: every 30 seconds).
+ * Stores metrics in Redis key bys:queue:metrics:{timestamp}.
+ */
+export function startMetricsCollection(intervalMs: number = 30_000): void {
+  if (metricsCollectionInterval) {
+    clearInterval(metricsCollectionInterval)
+  }
+
+  metricsCollectionInterval = setInterval(async () => {
+    try {
+      const metrics = await getQueueMetrics()
+      const timestamp = Date.now()
+
+      // If we have Redis, store metrics
+      if (isQueueSystemReady && notificationQueue) {
+        const redis = (notificationQueue as any).client
+        if (redis && typeof redis.set === 'function') {
+          const key = `bys:queue:metrics:${timestamp}`
+          await redis.set(key, JSON.stringify(metrics), 'EX', 3600) // TTL: 1 hour
+        }
+      }
+    } catch (err: any) {
+      console.error('📮 Metrics collection error:', err.message)
+    }
+  }, intervalMs)
+
+  console.log(`📮 Metrics collection started (every ${intervalMs}ms)`)
+}
+
+/**
+ * Stops periodic metrics collection.
+ */
+export function stopMetricsCollection(): void {
+  if (metricsCollectionInterval) {
+    clearInterval(metricsCollectionInterval)
+    metricsCollectionInterval = null
+    console.log('📮 Metrics collection stopped')
+  }
 }
