@@ -82,10 +82,32 @@ model User {
   adminActions       AdminAction[]           @relation("AdminActionAdmin")
   referralRewardsGiven   ReferralReward[]    @relation("ReferralRewardReferrer")
   referralRewardsReceived ReferralReward[]   @relation("ReferralRewardReferee")
+  refreshTokens          RefreshToken[]
 
   @@index([roleId])
   @@index([status])
   @@index([city])
+}
+
+// ============================================================================
+// REFRESH TOKEN
+// ============================================================================
+
+model RefreshToken {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt   DateTime
+  revokedAt   DateTime?
+  isRevoked   Boolean   @default(false)
+  deviceInfo  String?
+  ipAddress   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([token])
+  @@index([expiresAt])
 }
 
 // ============================================================================

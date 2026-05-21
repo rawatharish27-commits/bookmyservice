@@ -166,7 +166,7 @@ function formatTime(t: string): string {
 /* ------------------------------------------------------------------ */
 
 export function BookingPage() {
-  const { user } = useAuth();
+  const { user, authFetch } = useAuth();
   const { nav, navigate, goBack } = useApp();
   const serviceId = nav.params?.serviceId;
 
@@ -293,11 +293,10 @@ export function BookingPage() {
     const fetchProviders = async () => {
       setProvidersLoading(true);
       try {
-        const token = localStorage.getItem('bys_token');
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
         const params = new URLSearchParams({ serviceId, lat: String(latitude ?? 0), lng: String(longitude ?? 0) });
-        const res = await fetch(apiUrl(`/api/providers/nearby?${params}`), { headers });
+        const res = await authFetch(`/api/providers/nearby?${params}`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
         if (!cancelled && Array.isArray(data)) {
@@ -318,7 +317,7 @@ export function BookingPage() {
     };
     fetchProviders();
     return () => { cancelled = true; };
-  }, [step, serviceId, latitude, longitude, basePrice]);
+  }, [step, serviceId, latitude, longitude, basePrice, authFetch]);
 
   /* ---- Fetch technician when reaching step 5 ---- */
   useEffect(() => {
@@ -327,10 +326,9 @@ export function BookingPage() {
     const fetchTechnician = async () => {
       setTechnicianLoading(true);
       try {
-        const token = localStorage.getItem('bys_token');
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        const res = await fetch(apiUrl(`/api/providers/${selectedProviderId}/technician`), { headers });
+        const res = await authFetch(`/api/providers/${selectedProviderId}/technician`, {
+          headers: { 'Content-Type': 'application/json' },
+        });
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
         if (!cancelled) {
@@ -348,7 +346,7 @@ export function BookingPage() {
     };
     fetchTechnician();
     return () => { cancelled = true; };
-  }, [step, selectedProviderId, service?.category?.name]);
+  }, [step, selectedProviderId, service?.category?.name, authFetch]);
 
   /* ---- Coupon apply ---- */
   const applyCoupon = useCallback(async () => {
@@ -356,12 +354,9 @@ export function BookingPage() {
     setCouponLoading(true);
     setCouponError('');
     try {
-      const token = localStorage.getItem('bys_token');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch(apiUrl('/api/coupons/validate'), {
+      const res = await authFetch('/api/coupons/validate', {
         method: 'POST',
-        headers,
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code: couponCode, serviceId, amount: subtotal }),
       });
       const data = await res.json();
@@ -375,7 +370,7 @@ export function BookingPage() {
     } finally {
       setCouponLoading(false);
     }
-  }, [couponCode, serviceId, subtotal]);
+  }, [couponCode, serviceId, subtotal, authFetch]);
 
   /* ---- Validation helpers ---- */
   const validateStep2 = (): boolean => {

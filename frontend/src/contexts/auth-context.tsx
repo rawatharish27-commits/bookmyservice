@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react';
 import { apiUrl } from '@/lib/api-url';
 
 export interface TechnicianProfile {
@@ -88,6 +88,7 @@ interface AuthContextType {
   updateProfile: (data: Partial<User>) => Promise<void>;
   refreshProfile: () => Promise<void>;
   socialLogin: (authToken: string, userData: User) => void;
+  authFetch: (url: string, options?: RequestInit) => Promise<Response>;
 }
 
 export interface RegisterData {
@@ -100,7 +101,7 @@ export interface RegisterData {
   specialization?: string;
 }
 
-// Sensitive fields that should never be stored in localStorage (Old #46 fix)
+// Sensitive fields that should never be stored in localStorage
 const SENSITIVE_FIELDS = ['passwordHash', 'resetToken', 'resetTokenExpiry', 'password', 'token', 'bankAccountNumber', 'ifscCode', 'upiId'] as const;
 
 function sanitizeUser(user: User | null): User | null {
@@ -112,9 +113,30 @@ function sanitizeUser(user: User | null): User | null {
   return sanitized;
 }
 
+// Retry with exponential backoff for network errors only
+async function fetchWithRetry(url: string, options: RequestInit, maxRetries = 2): Promise<Response> {
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const res = await fetch(url, options);
+      return res;
+    } catch (err) {
+      if (attempt === maxRetries) throw err;
+      // Only retry on network errors, not HTTP errors
+      const delay = Math.pow(2, attempt) * 1000 + Math.random() * 500;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  // Token stored in-memory ONLY (not localStorage - prevents XSS token theft)
+  const [token, setToken] = useState<string | null>(null);
+  const tokenRef = useRef<string | null>(null);
+
+  // User data can be stored in localStorage (not a security risk)
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window === 'undefined') return null;
     try {
@@ -124,19 +146,119 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return null;
     }
   });
-  const [token, setToken] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null;
-    const stored = localStorage.getItem('bys_token');
-    // Guard against the literal string "undefined" or "null" being stored (Old #42 fix)
-    if (!stored || stored === 'undefined' || stored === 'null') return null;
-    return stored;
-  });
+
   const [loading, setLoading] = useState(() => {
-    // If there's a stored token, we need to verify it on mount
     if (typeof window === 'undefined') return false;
-    const stored = localStorage.getItem('bys_token');
-    return !!stored && stored !== 'undefined';
+    // If there's a stored user, we need to verify/refresh on mount
+    try {
+      const saved = localStorage.getItem('bys_user');
+      return !!saved;
+    } catch {
+      return false;
+    }
   });
+
+  // Track if we're currently refreshing to prevent concurrent refreshes
+  const isRefreshingRef = useRef(false);
+  const pendingRefreshPromiseRef = useRef<Promise<string | null> | null>(null);
+
+  // Keep tokenRef in sync
+  const updateToken = useCallback((newToken: string | null) => {
+    setToken(newToken);
+    tokenRef.current = newToken;
+  }, []);
+
+  const refreshAccessToken = useCallback(async (): Promise<string | null> => {
+    // Prevent concurrent refresh calls
+    if (isRefreshingRef.current && pendingRefreshPromiseRef.current) {
+      return pendingRefreshPromiseRef.current;
+    }
+
+    isRefreshingRef.current = true;
+    pendingRefreshPromiseRef.current = (async () => {
+      try {
+        const res = await fetch(apiUrl('/api/auth/refresh'), {
+          method: 'POST',
+          credentials: 'include', // Send HttpOnly cookie
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) {
+          // Refresh failed - clear auth state
+          updateToken(null);
+          setUser(null);
+          localStorage.removeItem('bys_user');
+          return null;
+        }
+
+        const data = await res.json();
+        if (data.accessToken) {
+          updateToken(data.accessToken);
+        }
+        if (data.user) {
+          setUser(data.user);
+          localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
+        }
+        return data.accessToken;
+      } catch (err) {
+        // Network error during refresh - don't logout, just return null
+        console.warn('Token refresh failed (network error):', err);
+        return null;
+      } finally {
+        isRefreshingRef.current = false;
+        pendingRefreshPromiseRef.current = null;
+      }
+    })();
+
+    return pendingRefreshPromiseRef.current;
+  }, [updateToken]);
+
+  // Centralized auth-aware fetch with automatic token refresh on 401
+  const authFetch = useCallback(async (url: string, options: RequestInit = {}): Promise<Response> => {
+    const currentToken = tokenRef.current;
+
+    const headers: Record<string, string> = {
+      ...(options.headers as Record<string, string> || {}),
+    };
+
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
+    }
+
+    // Add refresh token header for logout
+    if (url.includes('/api/auth/logout')) {
+      headers['X-Refresh-Token'] = 'auto'; // Backend reads from cookie
+    }
+
+    const fullUrl = apiUrl(url);
+
+    let res = await fetchWithRetry(fullUrl, {
+      ...options,
+      headers,
+      credentials: 'include', // Always send cookies
+    });
+
+    // If 401 and we have a token, try to refresh and retry once
+    if (res.status === 401 && currentToken) {
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        // Retry with new token
+        headers['Authorization'] = `Bearer ${newToken}`;
+        res = await fetchWithRetry(fullUrl, {
+          ...options,
+          headers,
+          credentials: 'include',
+        });
+      } else {
+        // Refresh failed, clear auth
+        updateToken(null);
+        setUser(null);
+        localStorage.removeItem('bys_user');
+      }
+    }
+
+    return res;
+  }, [refreshAccessToken, updateToken]);
 
   const login = useCallback(async (email: string, password: string) => {
     setLoading(true);
@@ -144,29 +266,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Login failed');
       const authToken = data.accessToken || data.token;
       if (authToken) {
-        setToken(authToken);
+        updateToken(authToken);
         setUser(data.user);
-        localStorage.setItem('bys_token', authToken);
         localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
+        // Don't store token in localStorage anymore!
       } else {
         throw new Error('No token received');
       }
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [updateToken]);
 
   const register = useCallback(async (data: RegisterData) => {
     setLoading(true);
     try {
       // Map roleId to role string for the API, supporting all new roles
-      // Include specialization if provided (N45 fix)
+      // Include specialization if provided
       const payload = {
         ...data,
         roleId: data.roleId || 1,
@@ -175,15 +298,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch(apiUrl('/api/auth/register'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(payload),
       });
       const result = await res.json();
       if (!res.ok) throw new Error(result.error || 'Registration failed');
       const authToken = result.accessToken || result.token;
       if (authToken) {
-        setToken(authToken);
+        updateToken(authToken);
         setUser(result.user);
-        localStorage.setItem('bys_token', authToken);
         localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(result.user)));
       } else {
         throw new Error('No token received');
@@ -191,95 +314,109 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [updateToken]);
 
-  const logout = useCallback(() => {
-    // Fire-and-forget call to invalidate the JWT on the server
-    if (token) {
-      fetch(apiUrl('/api/auth/logout'), {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` },
-      }).catch(() => { /* ignore */ });
+  const logout = useCallback(async () => {
+    const currentToken = tokenRef.current;
+    try {
+      // Call backend to invalidate tokens (fire-and-forget with a short timeout)
+      if (currentToken) {
+        await fetch(apiUrl('/api/auth/logout'), {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${currentToken}`,
+            'X-Refresh-Token': 'auto',
+          },
+          credentials: 'include',
+        }).catch(() => { /* ignore */ });
+      }
+    } finally {
+      updateToken(null);
+      setUser(null);
+      localStorage.removeItem('bys_user');
+      localStorage.removeItem('bys_token'); // Clean up old token if present
     }
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('bys_token');
-    localStorage.removeItem('bys_user');
-  }, [token]);
+  }, [updateToken]);
 
   const updateProfile = useCallback(async (profileData: Partial<User>) => {
-    const res = await fetch(apiUrl('/api/auth/profile'), {
+    const res = await authFetch('/api/auth/profile', {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(profileData),
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Update failed');
     setUser(data.user);
     localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
-  }, [token]);
+  }, [authFetch]);
 
   const refreshProfile = useCallback(async () => {
-    if (!token) return;
+    if (!tokenRef.current) return;
     setLoading(true);
     try {
-      const res = await fetch(apiUrl('/api/auth/profile'), {
-        headers: { 'Authorization': `Bearer ${token}` },
+      const res = await authFetch('/api/auth/profile', {
+        headers: {},
       });
       if (res.ok) {
         const data = await res.json();
         setUser(data.user);
         localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(data.user)));
-        // Refresh the JWT token so it doesn't expire mid-session
+        // The profile endpoint returns a fresh access token
         if (data.accessToken) {
-          setToken(data.accessToken);
-          localStorage.setItem('bys_token', data.accessToken);
+          updateToken(data.accessToken);
         }
-      } else {
-        // Auto-logout on 401/invalid token (N4, N7 fix)
-        setToken(null);
-        setUser(null);
-        localStorage.removeItem('bys_token');
-        localStorage.removeItem('bys_user');
+      } else if (res.status === 401) {
+        // Try refresh token flow
+        const newToken = await refreshAccessToken();
+        if (!newToken) {
+          updateToken(null);
+          setUser(null);
+          localStorage.removeItem('bys_user');
+        }
       }
     } catch {
       // Network error — don't auto-logout, just stop loading
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, [authFetch, refreshAccessToken, updateToken]);
 
-  // Bug #26: Refresh profile on mount if there's a stored token
+  // On mount: if there's a stored user, try to get a fresh access token via refresh flow
   useEffect(() => {
-    if (token) {
-      refreshProfile();
+    const storedUser = localStorage.getItem('bys_user');
+    if (storedUser) {
+      refreshAccessToken().then(newToken => {
+        if (!newToken) {
+          // Refresh failed, but don't clear user yet - profile fetch might still work
+          // Try profile fetch as fallback
+          refreshProfile();
+        } else {
+          // Got a new token, refresh profile data
+          refreshProfile();
+        }
+      });
     }
   // Only run on mount
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Bug #27: Token refresh mechanism - refresh every 14 minutes (token expires at 15 min)
+  // Token refresh mechanism - refresh every 14 minutes (token expires at 15 min)
   useEffect(() => {
     if (!token) return;
     const interval = setInterval(() => {
-      refreshProfile();
+      refreshAccessToken();
     }, 14 * 60 * 1000); // 14 minutes
     return () => clearInterval(interval);
-  }, [token, refreshProfile]);
+  }, [token, refreshAccessToken]);
 
-  // Social login function — properly updates React state + localStorage (N23 fix)
+  // Social login function — properly updates React state + localStorage
   const socialLogin = useCallback((authToken: string, userData: User) => {
-    setToken(authToken);
+    updateToken(authToken);
     setUser(userData);
-    localStorage.setItem('bys_token', authToken);
     localStorage.setItem('bys_user', JSON.stringify(sanitizeUser(userData)));
-  }, []);
+  }, [updateToken]);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, refreshProfile, socialLogin }}>
+    <AuthContext.Provider value={{ user, token, loading, login, register, logout, updateProfile, refreshProfile, socialLogin, authFetch }}>
       {children}
     </AuthContext.Provider>
   );

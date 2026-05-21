@@ -959,7 +959,7 @@ export function HomePage() {
                         onClick={() => {
                           if (!isAvailable) return;
                           // Step 5: Auth check before booking flow
-                          const currentUser = localStorage.getItem('bys_user') || localStorage.getItem('bys_token');
+                          const currentUser = localStorage.getItem('bys_user');
                           if (!currentUser && !user) {
                             navigate('login');
                             return;
