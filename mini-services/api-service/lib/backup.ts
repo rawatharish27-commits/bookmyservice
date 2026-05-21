@@ -1,6 +1,7 @@
 import { Pool } from 'pg'
 import node_cron from 'node-cron'
 import { createReadStream } from 'fs'
+import * as crypto from 'crypto'
 
 // ─── Types ──────────────────────────────────────────────────────────────
 
@@ -57,6 +58,85 @@ const EXCLUDED_TABLES = new Set([
   'BackupRecord',
   'DeviceToken',
 ])
+
+// ─── Encrypted Backup Storage ───────────────────────────────────────────
+
+const ENCRYPTION_KEY = process.env.BACKUP_ENCRYPTION_KEY || ''
+
+/**
+ * Encrypt backup data using AES-256-GCM.
+ * Returns format: ENCRYPTED:{iv}:{authTag}:{ciphertext} (all base64)
+ * If BACKUP_ENCRYPTION_KEY is not set, returns data unchanged with a warning.
+ */
+export function encryptBackup(data: string): string {
+  if (!ENCRYPTION_KEY) {
+    console.warn('⚠️  BACKUP_ENCRYPTION_KEY not set — backup data will not be encrypted')
+    return data
+  }
+
+  try {
+    // Derive a 32-byte key from the hex string
+    const key = Buffer.from(ENCRYPTION_KEY, 'hex')
+    if (key.length !== 32) {
+      console.warn('⚠️  BACKUP_ENCRYPTION_KEY must be a 32-byte hex string (64 hex chars) — encryption skipped')
+      return data
+    }
+
+    const iv = crypto.randomBytes(16)
+    const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
+
+    let ciphertext = cipher.update(data, 'utf8', 'base64')
+    ciphertext += cipher.final('base64')
+
+    const authTag = cipher.getAuthTag()
+
+    return `ENCRYPTED:${iv.toString('base64')}:${authTag.toString('base64')}:${ciphertext}`
+  } catch (err: any) {
+    console.error('❌ Backup encryption failed:', err.message)
+    return data
+  }
+}
+
+/**
+ * Decrypt backup data that was encrypted with AES-256-GCM.
+ * Expects format: ENCRYPTED:{iv}:{authTag}:{ciphertext} (all base64)
+ * If the data doesn't start with ENCRYPTED:, returns it unchanged.
+ */
+export function decryptBackup(encryptedData: string): string {
+  if (!encryptedData.startsWith('ENCRYPTED:')) {
+    return encryptedData
+  }
+
+  if (!ENCRYPTION_KEY) {
+    throw new Error('Cannot decrypt backup: BACKUP_ENCRYPTION_KEY not set')
+  }
+
+  try {
+    const key = Buffer.from(ENCRYPTION_KEY, 'hex')
+    if (key.length !== 32) {
+      throw new Error('BACKUP_ENCRYPTION_KEY must be a 32-byte hex string (64 hex chars)')
+    }
+
+    const parts = encryptedData.split(':')
+    if (parts.length !== 4) {
+      throw new Error('Invalid encrypted backup format — expected ENCRYPTED:{iv}:{authTag}:{ciphertext}')
+    }
+
+    const iv = Buffer.from(parts[1], 'base64')
+    const authTag = Buffer.from(parts[2], 'base64')
+    const ciphertext = parts[3]
+
+    const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
+    decipher.setAuthTag(authTag)
+
+    let decrypted = decipher.update(ciphertext, 'base64', 'utf8')
+    decrypted += decipher.final('utf8')
+
+    return decrypted
+  } catch (err: any) {
+    throw new Error(`Backup decryption failed: ${err.message}`)
+  }
+}
 
 // ─── Core Functions ─────────────────────────────────────────────────────
 
@@ -115,6 +195,8 @@ export function initBackupSystem(pool: Pool, config?: Partial<BackupConfig>): vo
  * Strategy: Use SQL queries to export all table data as JSON.
  * For each table: SELECT * and serialize to JSON.
  * Store as BackupRecord in database.
+ * Encrypts data if BACKUP_ENCRYPTION_KEY is set.
+ * Uploads to S3-compatible storage if S3 env vars are configured.
  */
 export async function createBackup(pool: Pool): Promise<BackupRecord> {
   const startTime = Date.now()
@@ -232,17 +314,43 @@ export async function createBackup(pool: Pool): Promise<BackupRecord> {
       }
     }
 
+    // Encrypt if BACKUP_ENCRYPTION_KEY is set
+    if (ENCRYPTION_KEY) {
+      try {
+        dataStr = encryptBackup(dataStr)
+        if (dataStr.startsWith('ENCRYPTED:')) {
+          storageLocation = storageLocation.includes('compressed')
+            ? storageLocation.replace('compressed', 'encrypted-compressed')
+            : storageLocation + '-encrypted'
+        }
+      } catch (encErr: any) {
+        console.warn('⚠️  Encryption failed, storing unencrypted:', encErr.message)
+      }
+    }
+
     const duration = Date.now() - startTime
 
     // Attempt Supabase Storage upload if configured
     if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
       try {
         await uploadToSupabaseStorage(backupId, dataStr, backupData.timestamp)
-        storageLocation = storageLocation.includes('compressed')
-          ? 'supabase-storage+database-compressed'
-          : 'supabase-storage+database'
+        storageLocation = storageLocation.includes('supabase')
+          ? storageLocation
+          : 'supabase-storage+' + storageLocation
       } catch (uploadErr: any) {
         console.warn('⚠️  Supabase Storage upload failed:', uploadErr.message)
+      }
+    }
+
+    // Attempt S3-compatible upload if configured
+    if (process.env.S3_ENDPOINT && process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY && process.env.S3_BUCKET) {
+      try {
+        await uploadToS3(backupId, dataStr, backupData.timestamp)
+        storageLocation = storageLocation.includes('s3')
+          ? storageLocation
+          : storageLocation + '+s3-storage'
+      } catch (uploadErr: any) {
+        console.warn('⚠️  S3 upload failed:', uploadErr.message)
       }
     }
 
@@ -314,6 +422,7 @@ export async function createBackup(pool: Pool): Promise<BackupRecord> {
 /**
  * Restore from a specific backup.
  * Read backup data from BackupRecord.
+ * Decrypt if encrypted.
  * Clear and repopulate tables.
  * DANGEROUS — should only be used by admins as a last resort.
  */
@@ -332,6 +441,15 @@ export async function restoreBackup(pool: Pool, backupId: string): Promise<{ suc
     let dataStr = record.data
     if (!dataStr) {
       throw new Error('Backup data is empty or not stored in database')
+    }
+
+    // Decrypt if encrypted
+    if (dataStr.startsWith('ENCRYPTED:')) {
+      try {
+        dataStr = decryptBackup(dataStr)
+      } catch (decErr: any) {
+        throw new Error(`Failed to decrypt backup data: ${decErr.message}`)
+      }
     }
 
     // Decompress if needed
@@ -551,6 +669,273 @@ export function stopBackupScheduler(): void {
     cronTask.stop()
     cronTask = null
     console.log('📋 Backup scheduler stopped')
+  }
+}
+
+// ─── Offsite Backup (S3-compatible) ─────────────────────────────────────
+
+/**
+ * Upload backup data to S3-compatible storage using standard fetch.
+ * Uses env vars: S3_ENDPOINT, S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_REGION
+ * If S3 env vars are not set, skips with warning (same pattern as Supabase).
+ */
+export async function uploadToS3(backupId: string, data: string, timestamp: string): Promise<void> {
+  const endpoint = process.env.S3_ENDPOINT
+  const accessKey = process.env.S3_ACCESS_KEY
+  const secretKey = process.env.S3_SECRET_KEY
+  const bucket = process.env.S3_BUCKET
+  const region = process.env.S3_REGION || 'us-east-1'
+
+  if (!endpoint || !accessKey || !secretKey || !bucket) {
+    console.warn('⚠️  S3 env vars not set (S3_ENDPOINT, S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET) — skipping S3 upload')
+    return
+  }
+
+  const filePath = `backups/${timestamp.split('T')[0]}/${backupId}.json`
+  const url = `${endpoint.replace(/\/$/, '')}/${bucket}/${filePath}`
+
+  // AWS Signature Version 4 signing
+  const now = new Date()
+  const dateStamp = now.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z'
+  const dateOnly = dateStamp.slice(0, 8)
+  const service = 's3'
+
+  // Create canonical request
+  const payloadHash = crypto.createHash('sha256').update(data).digest('hex')
+  const canonicalHeaders = `host:${new URL(url).host}\nx-amz-content-sha256:${payloadHash}\nx-amz-date:${dateStamp}\n`
+  const signedHeaders = 'host;x-amz-content-sha256;x-amz-date'
+  const canonicalRequest = `PUT\n/${bucket}/${filePath}\n\n${canonicalHeaders}\n${signedHeaders}\n${payloadHash}`
+
+  // Create string to sign
+  const credentialScope = `${dateOnly}/${region}/${service}/aws4_request`
+  const stringToSign = `AWS4-HMAC-SHA256\n${dateStamp}\n${credentialScope}\n${crypto.createHash('sha256').update(canonicalRequest).digest('hex')}`
+
+  // Calculate signing key
+  const kDate = crypto.createHmac('sha256', `AWS4${secretKey}`).update(dateOnly).digest()
+  const kRegion = crypto.createHmac('sha256', kDate).update(region).digest()
+  const kService = crypto.createHmac('sha256', kRegion).update(service).digest()
+  const kSigning = crypto.createHmac('sha256', kService).update('aws4_request').digest()
+
+  // Calculate signature
+  const signature = crypto.createHmac('sha256', kSigning).update(stringToSign).digest('hex')
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-amz-content-sha256': payloadHash,
+      'x-amz-date': dateStamp,
+      'Authorization': `AWS4-HMAC-SHA256 Credential=${accessKey}/${credentialScope}, SignedHeaders=${signedHeaders}, Signature=${signature}`,
+    },
+    body: data,
+  })
+
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`S3 upload failed: ${response.status} - ${errorText}`)
+  }
+
+  console.log(`☁️  Backup uploaded to S3: ${filePath}`)
+}
+
+// ─── Restore Verification ──────────────────────────────────────────────
+
+/**
+ * Verify a backup's integrity by checking JSON parsing, table/row counts,
+ * checksum computation, and potential data corruption.
+ */
+export async function verifyBackupIntegrity(backupId: string): Promise<{
+  valid: boolean
+  tableCount: number
+  totalRows: number
+  checksum: string
+  issues: string[]
+}> {
+  const issues: string[] = []
+
+  try {
+    if (!poolRef) {
+      throw new Error('Backup system not initialized — pool reference unavailable')
+    }
+
+    const result = await poolRef.query('SELECT * FROM "BackupRecord" WHERE id = $1', [backupId])
+    if (!result.rows[0]) {
+      return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: ['Backup not found'] }
+    }
+
+    const record = result.rows[0]
+    let dataStr = record.data
+
+    if (!dataStr) {
+      return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: ['Backup data is empty or not stored in database'] }
+    }
+
+    // Compute SHA-256 checksum of raw backup data before any processing
+    const checksum = crypto.createHash('sha256').update(dataStr).digest('hex')
+
+    // Decrypt if encrypted
+    if (dataStr.startsWith('ENCRYPTED:')) {
+      try {
+        dataStr = decryptBackup(dataStr)
+      } catch (decErr: any) {
+        return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`Decryption failed: ${decErr.message}`] }
+      }
+    }
+
+    // Decompress if needed
+    if (dataStr.startsWith('COMPRESSED_BASE64:')) {
+      try {
+        const zlib = await import('zlib')
+        const base64Data = dataStr.replace('COMPRESSED_BASE64:', '')
+        const compressed = Buffer.from(base64Data, 'base64')
+        dataStr = zlib.inflateSync(compressed).toString('utf8')
+      } catch (decompErr: any) {
+        return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`Decompression failed: ${decompErr.message}`] }
+      }
+    }
+
+    // Check JSON parsing
+    let backupData: BackupData
+    try {
+      backupData = JSON.parse(dataStr)
+    } catch (parseErr: any) {
+      // Check for truncated JSON
+      if (dataStr.includes('\0')) {
+        issues.push('Backup data contains null bytes — possible corruption')
+      }
+      if (!dataStr.trim().endsWith('}')) {
+        issues.push('Backup data appears to be truncated JSON')
+      }
+      return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`JSON parsing failed: ${parseErr.message}`] }
+    }
+
+    // Check for null bytes in the raw data
+    if (dataStr.includes('\0')) {
+      issues.push('Backup data contains null bytes — possible corruption')
+    }
+
+    // Count tables and rows
+    const tableNames = Object.keys(backupData.tables || {})
+    const tableCount = tableNames.length
+    let totalRows = 0
+
+    for (const tableName of tableNames) {
+      const tableData = backupData.tables[tableName]
+      const rowCount = tableData?.count ?? (tableData?.rows?.length ?? 0)
+      totalRows += rowCount
+
+      // Check for tables with 0 rows (potential issue)
+      if (rowCount === 0) {
+        issues.push(`Table "${tableName}" has 0 rows — potential data loss or empty table`)
+      }
+
+      // Check for corrupted row data
+      if (tableData?.rows) {
+        for (let i = 0; i < tableData.rows.length; i++) {
+          const row = tableData.rows[i]
+          if (row === null || row === undefined) {
+            issues.push(`Table "${tableName}" has null/undefined row at index ${i}`)
+            break
+          }
+          // Check row values for null bytes
+          const rowStr = JSON.stringify(row)
+          if (rowStr.includes('\0')) {
+            issues.push(`Table "${tableName}" row ${i} contains null bytes — possible corruption`)
+            break
+          }
+        }
+      }
+    }
+
+    // Verify metadata consistency
+    if (backupData.metadata) {
+      if (backupData.metadata.totalTables !== tableCount) {
+        issues.push(`Metadata table count mismatch: metadata says ${backupData.metadata.totalTables}, actual ${tableCount}`)
+      }
+      if (backupData.metadata.totalRows !== totalRows) {
+        issues.push(`Metadata row count mismatch: metadata says ${backupData.metadata.totalRows}, actual ${totalRows}`)
+      }
+    }
+
+    const valid = issues.length === 0
+
+    return { valid, tableCount, totalRows, checksum, issues }
+  } catch (err: any) {
+    return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: [`Verification error: ${err.message}`] }
+  }
+}
+
+/**
+ * After a restore, compare row counts in the restored DB against the backup
+ * metadata to verify the restore was complete.
+ */
+export async function verifyRestore(pool: Pool, backupId: string): Promise<{
+  success: boolean
+  verified: boolean
+  discrepancies: string[]
+}> {
+  const discrepancies: string[] = []
+
+  try {
+    // Get backup record
+    const result = await pool.query('SELECT * FROM "BackupRecord" WHERE id = $1', [backupId])
+    if (!result.rows[0]) {
+      return { success: false, verified: false, discrepancies: ['Backup not found'] }
+    }
+
+    const record = result.rows[0]
+    let dataStr = record.data
+
+    if (!dataStr) {
+      return { success: false, verified: false, discrepancies: ['Backup data is empty'] }
+    }
+
+    // Decrypt if encrypted
+    if (dataStr.startsWith('ENCRYPTED:')) {
+      try {
+        dataStr = decryptBackup(dataStr)
+      } catch (decErr: any) {
+        return { success: false, verified: false, discrepancies: [`Decryption failed: ${decErr.message}`] }
+      }
+    }
+
+    // Decompress if needed
+    if (dataStr.startsWith('COMPRESSED_BASE64:')) {
+      try {
+        const zlib = await import('zlib')
+        const base64Data = dataStr.replace('COMPRESSED_BASE64:', '')
+        const compressed = Buffer.from(base64Data, 'base64')
+        dataStr = zlib.inflateSync(compressed).toString('utf8')
+      } catch (decompErr: any) {
+        return { success: false, verified: false, discrepancies: [`Decompression failed: ${decompErr.message}`] }
+      }
+    }
+
+    const backupData: BackupData = JSON.parse(dataStr)
+
+    // Compare row counts for each table
+    for (const [tableName, tableData] of Object.entries(backupData.tables)) {
+      if (EXCLUDED_TABLES.has(tableName)) continue
+
+      const expectedCount = tableData.rows?.length ?? 0
+
+      try {
+        const countResult = await pool.query(`SELECT COUNT(*) as count FROM "${tableName}"`)
+        const actualCount = parseInt(countResult.rows[0]?.count || '0')
+
+        if (actualCount !== expectedCount) {
+          discrepancies.push(`Table "${tableName}": expected ${expectedCount} rows, found ${actualCount}`)
+        }
+      } catch (tableErr: any) {
+        discrepancies.push(`Table "${tableName}": could not verify — ${tableErr.message?.substring(0, 100)}`)
+      }
+    }
+
+    const verified = discrepancies.length === 0
+
+    return { success: true, verified, discrepancies }
+  } catch (err: any) {
+    return { success: false, verified: false, discrepancies: [`Verification error: ${err.message}`] }
   }
 }
 

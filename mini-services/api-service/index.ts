@@ -244,8 +244,21 @@ process.on('SIGINT', async () => {
 
 const app = new Hono()
 
-if (!process.env.JWT_SECRET) { console.warn('⚠️  JWT_SECRET not set — using development fallback. DO NOT use in production!'); }
-const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024';
+// ─── JWT SECRET — FAIL HARD IN PRODUCTION ──────────────────────────────────
+// If JWT_SECRET is not set in production, the server MUST NOT start.
+// Using a fallback secret in production is a critical security vulnerability.
+const JWT_SECRET = (() => {
+  if (process.env.JWT_SECRET) return process.env.JWT_SECRET
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error(
+      'FATAL: JWT_SECRET environment variable is required in production. ' +
+      'The server cannot start without a secure JWT secret. ' +
+      'Set JWT_SECRET in your environment and restart.'
+    )
+  }
+  console.warn('⚠️  JWT_SECRET not set — using development fallback. DO NOT use in production!')
+  return 'bys-dev-secret-key-change-in-production-2024'
+})();
 
 // ─── Data Transformer ─────────────────────────────────────────────────────
 // Backend SQL returns flat fields (providerName, categoryName, etc.)

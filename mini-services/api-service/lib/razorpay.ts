@@ -12,8 +12,14 @@
 //   If Razorpay credentials are not configured, all payment operations are
 //   logged as stubs — the app continues to work normally (stub mode).
 //   This is useful for development and testing without real payments.
+//
+// Features:
+//   - Settlement Reconciliation: Fetch settlements and reconcile with payments
+//   - Payout Ledger: Track provider payouts with fee calculations
+//   - Accounting Audit Trail: Full audit trail for payment entities
 
 import * as crypto from 'crypto'
+import { Pool } from 'pg'
 
 // ─── Configuration ──────────────────────────────────────────────────────
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || ''
@@ -112,6 +118,56 @@ export interface RefundPaymentParams {
   notes?: Record<string, string>
   receipt?: string
   speed?: 'normal' | 'optimum'
+}
+
+// ─── Settlement Reconciliation Types ────────────────────────────────────
+
+export interface Settlement {
+  id: string
+  amount: number
+  status: string
+  created_at: number
+  utr: string
+}
+
+export interface ReconciliationResult {
+  settlementId: string
+  matched: boolean
+  payments: {
+    paymentId: string
+    amount: number
+    status: string
+    matched: boolean
+  }[]
+  discrepancies: string[]
+}
+
+// ─── Payout Ledger Types ───────────────────────────────────────────────
+
+export interface PayoutLedgerEntry {
+  id?: string
+  providerId: string
+  amount: number
+  platformFee: number
+  gst: number
+  netAmount: number
+  settlementId: string | null
+  status: string
+  createdAt?: string
+}
+
+// ─── Accounting Audit Trail Types ──────────────────────────────────────
+
+export interface AuditEntry {
+  id?: string
+  entityType: 'payment' | 'refund' | 'settlement' | 'payout'
+  entityId: string
+  action: string
+  previousState: string | null
+  newState: string | null
+  performedBy: string
+  metadata: Record<string, any> | null
+  createdAt?: string
 }
 
 // ─── Razorpay Status ───────────────────────────────────────────────────
@@ -377,4 +433,513 @@ export function mapRazorpayStatus(status: string): PaymentStatus {
     'refunded': 'REFUNDED',
   }
   return statusMap[status] || 'PENDING'
+}
+
+// ─── Settlement Reconciliation ──────────────────────────────────────────
+
+/**
+ * Fetch settlements from Razorpay API.
+ * Returns a list of settlements within the specified date range.
+ */
+export async function fetchSettlements(fromDate: string, toDate: string): Promise<Settlement[]> {
+  if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    console.log(`💳 [RAZORPAY STUB] Fetch settlements: ${fromDate} to ${toDate}`)
+    return []
+  }
+
+  try {
+    // Razorpay settlements endpoint with date filters
+    const fromTimestamp = Math.floor(new Date(fromDate).getTime() / 1000)
+    const toTimestamp = Math.floor(new Date(toDate).getTime() / 1000)
+
+    const response = await razorpayRequest<{ items: any[] }>(
+      'GET',
+      `/settlements?from=${fromTimestamp}&to=${toTimestamp}&count=100`
+    )
+
+    const settlements: Settlement[] = (response.items || []).map((item: any) => ({
+      id: item.id,
+      amount: item.amount || 0,
+      status: item.status || 'unknown',
+      created_at: item.created_at || 0,
+      utr: item.utr || '',
+    }))
+
+    console.log(`💳 [Razorpay] Fetched ${settlements.length} settlements from ${fromDate} to ${toDate}`)
+    return settlements
+  } catch (err: any) {
+    console.error(`💳 [Razorpay] Failed to fetch settlements: ${err.message}`)
+    return []
+  }
+}
+
+/**
+ * Reconcile a settlement against payment records in the database.
+ * Compares settlement data against payment records and flags discrepancies.
+ */
+export async function reconcileSettlement(pool: Pool, settlementId: string): Promise<ReconciliationResult> {
+  const result: ReconciliationResult = {
+    settlementId,
+    matched: false,
+    payments: [],
+    discrepancies: [],
+  }
+
+  try {
+    // Fetch the settlement details from Razorpay
+    let settlement: Settlement | null = null
+
+    if (RAZORPAY_KEY_ID && RAZORPAY_KEY_SECRET) {
+      try {
+        const response = await razorpayRequest<any>('GET', `/settlements/${settlementId}`)
+        settlement = {
+          id: response.id,
+          amount: response.amount || 0,
+          status: response.status || 'unknown',
+          created_at: response.created_at || 0,
+          utr: response.utr || '',
+        }
+      } catch (err: any) {
+        result.discrepancies.push(`Failed to fetch settlement from Razorpay: ${err.message}`)
+      }
+    } else {
+      // Stub mode — create a dummy settlement for testing
+      console.log(`💳 [RAZORPAY STUB] Reconcile settlement: ${settlementId}`)
+      settlement = {
+        id: settlementId,
+        amount: 0,
+        status: 'processed',
+        created_at: Math.floor(Date.now() / 1000),
+        utr: '',
+      }
+    }
+
+    if (!settlement) {
+      result.discrepancies.push('Settlement not found on Razorpay')
+      return result
+    }
+
+    // Fetch payments linked to this settlement from the database
+    let dbPayments: any[] = []
+    try {
+      const paymentResult = await pool.query(
+        `SELECT "paymentId", amount, status, metadata FROM "Payment" WHERE metadata->>'settlement_id' = $1 OR "paymentId" IN (
+          SELECT "paymentId" FROM "Payment" WHERE metadata->>'settlement_id' = $1
+        )`,
+        [settlementId]
+      )
+      dbPayments = paymentResult.rows
+    } catch (dbErr: any) {
+      // Payment table may not exist or metadata column may not have settlement_id
+      console.warn(`⚠️  Could not fetch payments for settlement ${settlementId}: ${dbErr.message}`)
+    }
+
+    // If no payments found via settlement_id, try to find captured payments
+    // around the settlement time
+    if (dbPayments.length === 0) {
+      try {
+        const settlementDate = new Date(settlement.created_at * 1000).toISOString()
+        const dayBefore = new Date(settlement.created_at * 1000 - 86400000).toISOString()
+
+        const paymentResult = await pool.query(
+          `SELECT "paymentId", amount, status, metadata FROM "Payment"
+           WHERE status = 'CAPTURED' AND "createdAt" BETWEEN $1 AND $2`,
+          [dayBefore, settlementDate]
+        )
+        dbPayments = paymentResult.rows
+      } catch (dbErr: any) {
+        console.warn(`⚠️  Could not fetch captured payments: ${dbErr.message}`)
+      }
+    }
+
+    // Compare settlement amount against sum of captured payments
+    const totalDbAmount = dbPayments.reduce((sum: number, p: any) => sum + (p.amount || 0), 0)
+
+    for (const payment of dbPayments) {
+      const paymentEntry = {
+        paymentId: payment.paymentId,
+        amount: payment.amount || 0,
+        status: payment.status,
+        matched: payment.status === 'CAPTURED',
+      }
+      result.payments.push(paymentEntry)
+
+      if (payment.status !== 'CAPTURED') {
+        result.discrepancies.push(
+          `Payment ${payment.paymentId} has status "${payment.status}" but is linked to a processed settlement`
+        )
+      }
+    }
+
+    // Check if total payment amounts match settlement
+    if (settlement.amount > 0 && totalDbAmount > 0) {
+      const settlementAmountInRupees = settlement.amount / 100 // Razorpay amounts are in paise
+      if (Math.abs(settlementAmountInRupees - totalDbAmount) > 1) {
+        result.discrepancies.push(
+          `Settlement amount (₹${settlementAmountInRupees}) does not match total captured payments (₹${totalDbAmount})`
+        )
+      }
+    }
+
+    // Check for empty payments in a non-zero settlement
+    if (dbPayments.length === 0 && settlement.amount > 0) {
+      result.discrepancies.push(
+        `Settlement has amount ₹${settlement.amount / 100} but no matching payments found in database`
+      )
+    }
+
+    result.matched = result.discrepancies.length === 0
+
+    console.log(`💳 [Razorpay] Reconciliation for ${settlementId}: ${result.matched ? 'MATCHED' : 'DISCREPANCIES'} (${result.discrepancies.length} issues)`)
+    return result
+  } catch (err: any) {
+    result.discrepancies.push(`Reconciliation error: ${err.message}`)
+    return result
+  }
+}
+
+// ─── Payout Ledger ─────────────────────────────────────────────────────
+
+/**
+ * Ensure the PayoutLedger table exists. Auto-creates if it doesn't.
+ * Same pattern as RefreshToken table.
+ */
+async function ensurePayoutLedgerTable(pool: Pool): Promise<void> {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "PayoutLedger" (
+        id VARCHAR(36) PRIMARY KEY,
+        "providerId" VARCHAR(36) NOT NULL,
+        amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+        "platformFee" DECIMAL(12,2) NOT NULL DEFAULT 0,
+        gst DECIMAL(12,2) NOT NULL DEFAULT 0,
+        "netAmount" DECIMAL(12,2) NOT NULL DEFAULT 0,
+        "settlementId" VARCHAR(255),
+        status VARCHAR(50) NOT NULL DEFAULT 'PENDING',
+        "createdAt" TIMESTAMP NOT NULL DEFAULT NOW(),
+        "updatedAt" TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `)
+    // Create index on providerId for fast lookups
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "PayoutLedger_providerId_idx" ON "PayoutLedger" ("providerId")
+    `)
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "PayoutLedger_settlementId_idx" ON "PayoutLedger" ("settlementId")
+    `)
+  } catch (err: any) {
+    console.warn('⚠️  Could not create PayoutLedger table:', err.message)
+  }
+}
+
+/**
+ * Record a payout ledger entry.
+ * Auto-creates PayoutLedger table if it doesn't exist.
+ */
+export async function recordPayoutLedgerEntry(pool: Pool, entry: PayoutLedgerEntry): Promise<void> {
+  try {
+    await ensurePayoutLedgerTable(pool)
+
+    const id = entry.id || `payout_${crypto.randomUUID().replace(/-/g, '').slice(0, 20)}`
+
+    await pool.query(
+      `INSERT INTO "PayoutLedger" (id, "providerId", amount, "platformFee", gst, "netAmount", "settlementId", status, "createdAt", "updatedAt")
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())`,
+      [
+        id,
+        entry.providerId,
+        entry.amount,
+        entry.platformFee,
+        entry.gst,
+        entry.netAmount,
+        entry.settlementId,
+        entry.status || 'PENDING',
+      ]
+    )
+
+    console.log(`💰 [PayoutLedger] Recorded payout: ${id} for provider ${entry.providerId}, net ₹${entry.netAmount}`)
+  } catch (err: any) {
+    console.error(`💰 [PayoutLedger] Failed to record payout: ${err.message}`)
+    throw new Error(`Failed to record payout ledger entry: ${err.message}`)
+  }
+}
+
+/**
+ * Get payout history for a provider.
+ * Returns entries ordered by most recent first.
+ */
+export async function getPayoutLedger(pool: Pool, providerId: string, limit: number = 50): Promise<PayoutLedgerEntry[]> {
+  try {
+    await ensurePayoutLedgerTable(pool)
+
+    const result = await pool.query(
+      `SELECT id, "providerId", amount, "platformFee", gst, "netAmount", "settlementId", status, "createdAt"
+       FROM "PayoutLedger"
+       WHERE "providerId" = $1
+       ORDER BY "createdAt" DESC
+       LIMIT $2`,
+      [providerId, limit]
+    )
+
+    return result.rows.map((row: any) => ({
+      id: row.id,
+      providerId: row.providerId,
+      amount: parseFloat(row.amount) || 0,
+      platformFee: parseFloat(row.platformFee) || 0,
+      gst: parseFloat(row.gst) || 0,
+      netAmount: parseFloat(row.netAmount) || 0,
+      settlementId: row.settlementId,
+      status: row.status,
+      createdAt: row.createdAt,
+    }))
+  } catch (err: any) {
+    console.error(`💰 [PayoutLedger] Failed to get payouts: ${err.message}`)
+    return []
+  }
+}
+
+/**
+ * Get a summary of all payouts for a provider.
+ * Returns total earned, total fees, total payout, and pending amount.
+ */
+export async function getPayoutSummary(pool: Pool, providerId: string): Promise<{
+  totalEarned: number
+  totalFees: number
+  totalPayout: number
+  pendingAmount: number
+}> {
+  try {
+    await ensurePayoutLedgerTable(pool)
+
+    const result = await pool.query(
+      `SELECT
+        COALESCE(SUM(amount), 0) as "totalEarned",
+        COALESCE(SUM("platformFee" + gst), 0) as "totalFees",
+        COALESCE(SUM(CASE WHEN status IN ('COMPLETED', 'PROCESSED') THEN "netAmount" ELSE 0 END), 0) as "totalPayout",
+        COALESCE(SUM(CASE WHEN status IN ('PENDING', 'PROCESSING') THEN "netAmount" ELSE 0 END), 0) as "pendingAmount"
+       FROM "PayoutLedger"
+       WHERE "providerId" = $1`,
+      [providerId]
+    )
+
+    const row = result.rows[0]
+    return {
+      totalEarned: parseFloat(row.totalEarned) || 0,
+      totalFees: parseFloat(row.totalFees) || 0,
+      totalPayout: parseFloat(row.totalPayout) || 0,
+      pendingAmount: parseFloat(row.pendingAmount) || 0,
+    }
+  } catch (err: any) {
+    console.error(`💰 [PayoutLedger] Failed to get payout summary: ${err.message}`)
+    return { totalEarned: 0, totalFees: 0, totalPayout: 0, pendingAmount: 0 }
+  }
+}
+
+// ─── Accounting Audit Trail ────────────────────────────────────────────
+
+/**
+ * Ensure the PaymentAudit table exists. Auto-creates if it doesn't.
+ * Same pattern as RefreshToken table.
+ */
+async function ensurePaymentAuditTable(pool: Pool): Promise<void> {
+  try {
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "PaymentAudit" (
+        id VARCHAR(36) PRIMARY KEY,
+        "entityType" VARCHAR(50) NOT NULL,
+        "entityId" VARCHAR(255) NOT NULL,
+        action VARCHAR(100) NOT NULL,
+        "previousState" TEXT,
+        "newState" TEXT,
+        "performedBy" VARCHAR(255) NOT NULL,
+        metadata JSONB,
+        "createdAt" TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `)
+    // Create indexes for fast lookups
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "PaymentAudit_entityType_entityId_idx" ON "PaymentAudit" ("entityType", "entityId")
+    `)
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "PaymentAudit_entityId_idx" ON "PaymentAudit" ("entityId")
+    `)
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS "PaymentAudit_createdAt_idx" ON "PaymentAudit" ("createdAt")
+    `)
+  } catch (err: any) {
+    console.warn('⚠️  Could not create PaymentAudit table:', err.message)
+  }
+}
+
+/**
+ * Record an audit entry for a payment entity.
+ * Auto-creates PaymentAudit table if it doesn't exist.
+ */
+export async function recordAuditEntry(pool: Pool, entry: AuditEntry): Promise<void> {
+  try {
+    await ensurePaymentAuditTable(pool)
+
+    const id = entry.id || `audit_${crypto.randomUUID().replace(/-/g, '').slice(0, 20)}`
+
+    await pool.query(
+      `INSERT INTO "PaymentAudit" (id, "entityType", "entityId", action, "previousState", "newState", "performedBy", metadata, "createdAt")
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())`,
+      [
+        id,
+        entry.entityType,
+        entry.entityId,
+        entry.action,
+        entry.previousState || null,
+        entry.newState || null,
+        entry.performedBy,
+        entry.metadata ? JSON.stringify(entry.metadata) : null,
+      ]
+    )
+  } catch (err: any) {
+    console.error(`📋 [PaymentAudit] Failed to record audit entry: ${err.message}`)
+    throw new Error(`Failed to record audit entry: ${err.message}`)
+  }
+}
+
+/**
+ * Get the full audit trail for a specific entity.
+ * Returns audit entries ordered by creation time (chronological order).
+ */
+export async function getAuditTrail(pool: Pool, entityType: string, entityId: string): Promise<AuditEntry[]> {
+  try {
+    await ensurePaymentAuditTable(pool)
+
+    const result = await pool.query(
+      `SELECT id, "entityType", "entityId", action, "previousState", "newState", "performedBy", metadata, "createdAt"
+       FROM "PaymentAudit"
+       WHERE "entityType" = $1 AND "entityId" = $2
+       ORDER BY "createdAt" ASC`,
+      [entityType, entityId]
+    )
+
+    return result.rows.map((row: any) => ({
+      id: row.id,
+      entityType: row.entityType,
+      entityId: row.entityId,
+      action: row.action,
+      previousState: row.previousState,
+      newState: row.newState,
+      performedBy: row.performedBy,
+      metadata: row.metadata,
+      createdAt: row.createdAt,
+    }))
+  } catch (err: any) {
+    console.error(`📋 [PaymentAudit] Failed to get audit trail: ${err.message}`)
+    return []
+  }
+}
+
+/**
+ * Wrap a DB operation with automatic audit trail recording.
+ * Records the previous state, executes the operation, then records the new state.
+ * If the operation fails, still records the attempt in the audit trail.
+ */
+export async function withAuditTrail<T>(
+  pool: Pool,
+  entityType: string,
+  entityId: string,
+  action: string,
+  performedBy: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  let previousState: string | null = null
+
+  // Attempt to capture previous state
+  try {
+    await ensurePaymentAuditTable(pool)
+
+    if (entityType === 'payment') {
+      const result = await pool.query(
+        `SELECT * FROM "Payment" WHERE "paymentId" = $1 OR id = $1`,
+        [entityId]
+      )
+      previousState = result.rows[0] ? JSON.stringify(result.rows[0]) : null
+    } else if (entityType === 'payout') {
+      const result = await pool.query(
+        `SELECT * FROM "PayoutLedger" WHERE id = $1`,
+        [entityId]
+      )
+      previousState = result.rows[0] ? JSON.stringify(result.rows[0]) : null
+    } else if (entityType === 'settlement') {
+      previousState = `settlement:${entityId}`
+    } else if (entityType === 'refund') {
+      const result = await pool.query(
+        `SELECT * FROM "Payment" WHERE "refundId" = $1 OR "paymentId" = $1`,
+        [entityId]
+      )
+      previousState = result.rows[0] ? JSON.stringify(result.rows[0]) : null
+    }
+  } catch (err: any) {
+    console.warn(`📋 [PaymentAudit] Could not capture previous state: ${err.message}`)
+    previousState = null
+  }
+
+  try {
+    // Execute the operation
+    const result = await fn()
+
+    // Capture new state after successful operation
+    let newState: string | null = null
+    try {
+      if (entityType === 'payment') {
+        const stateResult = await pool.query(
+          `SELECT * FROM "Payment" WHERE "paymentId" = $1 OR id = $1`,
+          [entityId]
+        )
+        newState = stateResult.rows[0] ? JSON.stringify(stateResult.rows[0]) : null
+      } else if (entityType === 'payout') {
+        const stateResult = await pool.query(
+          `SELECT * FROM "PayoutLedger" WHERE id = $1`,
+          [entityId]
+        )
+        newState = stateResult.rows[0] ? JSON.stringify(stateResult.rows[0]) : null
+      } else if (entityType === 'settlement') {
+        newState = `settlement:${entityId}:processed`
+      } else if (entityType === 'refund') {
+        const stateResult = await pool.query(
+          `SELECT * FROM "Payment" WHERE "refundId" = $1 OR "paymentId" = $1`,
+          [entityId]
+        )
+        newState = stateResult.rows[0] ? JSON.stringify(stateResult.rows[0]) : null
+      }
+    } catch (err: any) {
+      console.warn(`📋 [PaymentAudit] Could not capture new state: ${err.message}`)
+      newState = 'operation_completed'
+    }
+
+    // Record the audit entry
+    await recordAuditEntry(pool, {
+      entityType: entityType as AuditEntry['entityType'],
+      entityId,
+      action,
+      previousState,
+      newState,
+      performedBy,
+      metadata: { success: true },
+    })
+
+    return result
+  } catch (err: any) {
+    // Record the failed attempt in audit trail
+    try {
+      await recordAuditEntry(pool, {
+        entityType: entityType as AuditEntry['entityType'],
+        entityId,
+        action: `${action}_FAILED`,
+        previousState,
+        newState: null,
+        performedBy,
+        metadata: { success: false, error: err.message?.substring(0, 500) },
+      })
+    } catch (auditErr: any) {
+      console.error(`📋 [PaymentAudit] Failed to record failed audit entry: ${auditErr.message}`)
+    }
+
+    throw err
+  }
 }
