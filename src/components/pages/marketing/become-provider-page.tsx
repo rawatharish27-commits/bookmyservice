@@ -58,7 +58,7 @@ const requirements = [
 
 const successStories = [
   { name: 'Ramesh Kumar', avatar: 'RK', color: 'bg-blue-600', service: 'Plumber', city: 'Bengaluru', earnings: '₹65,000/month', story: 'I was struggling to find consistent work before joining BookMyService. Now I earn over ₹65,000 a month with a steady stream of bookings. The training improved my skills and the flexible hours let me balance family time.' },
-  { name: 'Sunita Devi', avatar: 'SD', color: 'bg-emerald-600', service: 'Beauty Professional', city: 'Delhi', earnings: '₹55,000/month', story: 'As a single mother, I needed flexible working hours. BookMyService gave me the freedom to choose my schedule and earn a dignified livelihood. The safety features make me feel secure visiting customers\' homes.' },
+  { name: 'Sunita Devi', avatar: 'SD', color: 'bg-emerald-600', service: 'Electrician', city: 'Delhi', earnings: '₹55,000/month', story: 'As a single mother, I needed flexible working hours. BookMyService gave me the freedom to choose my schedule and earn a dignified livelihood. The safety features make me feel secure visiting customers\' homes.' },
   { name: 'Arjun Patel', avatar: 'AP', color: 'bg-purple-600', service: 'Electrician', city: 'Ahmedabad', earnings: '₹72,000/month', story: 'From earning ₹15,000 doing odd jobs to ₹72,000 a month — BookMyService changed my life. The insurance coverage and equipment support have been invaluable. I\'ve even hired 2 assistants now!' },
 ]
 
@@ -67,7 +67,7 @@ export function BecomeProviderPage() {
   const [city, setCity] = useState('')
   const [bookingsPerDay, setBookingsPerDay] = useState('3')
 
-  const avgBookingValue = 800
+  const avgBookingValue = 299
   const providerShare = 0.80
   const estimatedMonthly = Math.round(Number(bookingsPerDay) * avgBookingValue * providerShare * 26)
 
@@ -159,13 +159,17 @@ export function BecomeProviderPage() {
                   onChange={(e) => setServiceCategory(e.target.value)}
                 >
                   <option value="">Select category</option>
-                  <option value="plumbing">Plumbing</option>
-                  <option value="electrical">Electrical</option>
-                  <option value="cleaning">Cleaning</option>
-                  <option value="beauty">Beauty & Wellness</option>
-                  <option value="carpentry">Carpentry</option>
-                  <option value="painting">Painting</option>
-                  <option value="appliance">Appliance Repair</option>
+                  <option value="air-conditioner">Air Conditioner</option>
+                  <option value="refrigerator">Refrigerator</option>
+                  <option value="washing-machine">Washing Machine</option>
+                  <option value="kitchen-appliances">Kitchen Appliances</option>
+                  <option value="tv-repair">TV Repair</option>
+                  <option value="water-purifier">Water Purifier</option>
+                  <option value="geyser">Geyser</option>
+                  <option value="plumber">Plumber</option>
+                  <option value="electrician">Electrician</option>
+                  <option value="water-tank-cleaning">Water Tank Cleaning</option>
+                  <option value="movers-packers">Movers and Packers</option>
                 </select>
               </div>
               <div>

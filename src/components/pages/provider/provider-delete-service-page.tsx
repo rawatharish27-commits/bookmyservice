@@ -22,8 +22,8 @@ export function ProviderDeleteServicePage() {
             <div className="flex items-center gap-4">
               <div className="flex size-12 items-center justify-center rounded-lg bg-red-100"><Trash2 className="size-6 text-red-600" /></div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-900">AC Repair & Service</h2>
-                <p className="text-sm text-slate-500">Category: Appliance • Price: ₹499</p>
+                <h2 className="text-lg font-semibold text-slate-900">Air Conditioner</h2>
+                <p className="text-sm text-slate-500">Category: Air Conditioner • Price: ₹499</p>
               </div>
             </div>
           </CardContent>

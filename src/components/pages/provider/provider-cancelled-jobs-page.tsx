@@ -7,9 +7,9 @@ import { Separator } from '@/components/ui/separator'
 import { XCircle, RotateCcw, MessageSquare, ChevronRight } from 'lucide-react'
 
 const cancelledJobs = [
-  { id: 'BK-1021', service: 'AC Service', customer: 'Neha Gupta', date: '19 May 2024', amount: '₹499', reason: 'Customer unavailable', refundStatus: 'Refunded', cancelledBy: 'Customer' },
-  { id: 'BK-1015', service: 'Deep Cleaning', customer: 'Ravi Prasad', date: '15 May 2024', amount: '₹2,500', reason: 'Scheduling conflict', refundStatus: 'Processing', cancelledBy: 'Provider' },
-  { id: 'BK-1010', service: 'Plumbing', customer: 'Kavita Rao', date: '10 May 2024', amount: '₹800', reason: 'Service not needed', refundStatus: 'Refunded', cancelledBy: 'Customer' },
+  { id: 'BK-1021', service: 'Air Conditioner', customer: 'Neha Gupta', date: '19 May 2024', amount: '₹499', reason: 'Customer unavailable', refundStatus: 'Refunded', cancelledBy: 'Customer' },
+  { id: 'BK-1015', service: 'Water Tank Cleaning', customer: 'Ravi Prasad', date: '15 May 2024', amount: '₹499', reason: 'Scheduling conflict', refundStatus: 'Processing', cancelledBy: 'Provider' },
+  { id: 'BK-1010', service: 'Plumber', customer: 'Kavita Rao', date: '10 May 2024', amount: '₹499', reason: 'Service not needed', refundStatus: 'Refunded', cancelledBy: 'Customer' },
 ]
 
 const refundColors: Record<string, string> = {

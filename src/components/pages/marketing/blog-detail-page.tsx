@@ -148,7 +148,7 @@ export function BlogDetailPage() {
 
               <h3 className="text-lg font-semibold text-slate-900 mb-3">Winter (October-February)</h3>
               <p className="text-slate-600 leading-relaxed text-base mb-6">
-                Winter is the ideal time for deep cleaning and major repairs. Schedule painting, plumbing overhauls, and electrical
+                Winter is the ideal time for deep cleaning and major repairs. Schedule Kitchen Appliances, Plumber overhauls, and Electrician
                 rewiring during these months when demand (and prices) are lower.
               </p>
 

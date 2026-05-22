@@ -5,12 +5,16 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { Lock, Eye, EyeOff, Shield, CheckCircle } from 'lucide-react'
+import { Lock, Eye, EyeOff, Shield, CheckCircle, Loader2 } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
 
 export function ResetPasswordPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { navigate } = useApp()
 
   const checks = [
     { label: 'At least 8 characters', pass: password.length >= 8 },
@@ -24,11 +28,21 @@ export function ResetPasswordPage() {
   const strengthColor = strength <= 2 ? 'bg-red-500' : strength <= 3 ? 'bg-amber-500' : strength <= 4 ? 'bg-green-500' : 'bg-emerald-500'
   const strengthLabel = strength <= 2 ? 'Weak' : strength <= 3 ? 'Fair' : strength <= 4 ? 'Good' : 'Strong'
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (strength < 3) { setError('Password is not strong enough'); return }
+    setLoading(true)
+    setError(null)
+    setTimeout(() => {
+      setLoading(false)
+      navigate('login')
+    }, 1000)
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
       <Card className="w-full max-w-md bg-white rounded-xl shadow-sm border-slate-100">
         <CardContent className="p-8">
-          {/* Icon */}
           <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-6">
             <Shield className="size-8 text-blue-600" />
           </div>
@@ -38,14 +52,18 @@ export function ResetPasswordPage() {
             <p className="text-slate-500 text-sm mt-2">Create a new password for your account</p>
           </div>
 
-          <div className="space-y-4">
+          {error && (
+            <div className="mb-4 p-3 rounded-xl bg-red-50 text-red-600 text-sm" role="alert">{error}</div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1 block">New Password</label>
+              <label htmlFor="newPassword" className="text-xs font-medium text-slate-700 mb-1 block">New Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-                <Input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter new password" className="pl-10 pr-10 rounded-xl border-slate-200" />
-                <button onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Input id="newPassword" type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Enter new password" className="pl-10 pr-10 rounded-xl border-slate-200" required />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label={showPassword ? 'Hide password' : 'Show password'}>
                   {showPassword ? <EyeOff className="size-4 text-slate-400" /> : <Eye className="size-4 text-slate-400" />}
                 </button>
               </div>
@@ -74,18 +92,20 @@ export function ResetPasswordPage() {
             </div>
 
             <div>
-              <label className="text-xs font-medium text-slate-700 mb-1 block">Confirm Password</label>
+              <label htmlFor="confirmPassword" className="text-xs font-medium text-slate-700 mb-1 block">Confirm Password</label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-                <Input type={showConfirm ? 'text' : 'password'} placeholder="Re-enter new password" className="pl-10 pr-10 rounded-xl border-slate-200" />
-                <button onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2">
+                <Input id="confirmPassword" type={showConfirm ? 'text' : 'password'} placeholder="Re-enter new password" className="pl-10 pr-10 rounded-xl border-slate-200" required />
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2" aria-label={showConfirm ? 'Hide confirm password' : 'Show confirm password'}>
                   {showConfirm ? <EyeOff className="size-4 text-slate-400" /> : <Eye className="size-4 text-slate-400" />}
                 </button>
               </div>
             </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 py-5 rounded-xl">Reset Password</Button>
-          </div>
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-5 rounded-xl" disabled={loading}>
+              {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : null} {loading ? 'Resetting...' : 'Reset Password'}
+            </Button>
+          </form>
         </CardContent>
       </Card>
     </div>

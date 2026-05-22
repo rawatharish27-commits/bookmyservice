@@ -44,7 +44,7 @@ const conversations: Conversation[] = [
     unread: 3,
     type: 'provider',
     online: true,
-    serviceName: 'AC Service & Repair',
+    serviceName: 'Air Conditioner',
     bookingId: 'BK-2024-1847',
   },
   {
@@ -57,7 +57,7 @@ const conversations: Conversation[] = [
     unread: 0,
     type: 'client',
     online: true,
-    serviceName: 'Deep Home Cleaning',
+    serviceName: 'Water Tank Cleaning',
     bookingId: 'BK-2024-1832',
   },
   {
@@ -81,7 +81,7 @@ const conversations: Conversation[] = [
     unread: 2,
     type: 'provider',
     online: false,
-    serviceName: 'Plumbing Repair',
+    serviceName: 'Plumber',
     bookingId: 'BK-2024-1801',
   },
   {
@@ -89,12 +89,12 @@ const conversations: Conversation[] = [
     name: 'Sneha Reddy',
     initials: 'SR',
     avatarColor: 'bg-rose-600',
-    lastMessage: 'The painting looks amazing, thank you!',
+    lastMessage: 'The Kitchen Appliances service looks amazing, thank you!',
     time: '3 hrs ago',
     unread: 0,
     type: 'client',
     online: false,
-    serviceName: 'Interior Painting',
+    serviceName: 'Kitchen Appliances',
     bookingId: 'BK-2024-1795',
   },
   {
@@ -107,7 +107,7 @@ const conversations: Conversation[] = [
     unread: 0,
     type: 'provider',
     online: false,
-    serviceName: 'Carpentry Work',
+    serviceName: 'Kitchen Appliances',
     bookingId: 'BK-2024-1756',
   },
   {
@@ -131,7 +131,7 @@ const conversations: Conversation[] = [
     unread: 0,
     type: 'client',
     online: false,
-    serviceName: 'Electrical Repair',
+    serviceName: 'Electrician',
     bookingId: 'BK-2024-1712',
   },
   {
@@ -157,7 +157,7 @@ const conversations: Conversation[] = [
     unread: 0,
     type: 'client',
     online: false,
-    serviceName: 'Pest Control',
+    serviceName: 'Water Purifier',
     bookingId: 'BK-2024-1645',
   },
 ]

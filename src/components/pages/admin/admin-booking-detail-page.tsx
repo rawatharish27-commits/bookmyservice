@@ -8,7 +8,7 @@ import { Calendar, User, MapPin, Clock, Phone, RotateCcw, MessageSquare } from '
 
 const timeline = [
   { time: '10:00 AM', event: 'Booking Created', detail: 'By Rahul Sharma', color: 'bg-blue-500' },
-  { time: '10:05 AM', event: 'Payment Received', detail: '₹1,200 via UPI', color: 'bg-emerald-500' },
+  { time: '10:05 AM', event: 'Payment Received', detail: '₹499 via UPI', color: 'bg-emerald-500' },
   { time: '10:10 AM', event: 'Provider Assigned', detail: 'Cool Care Services', color: 'bg-purple-500' },
   { time: '10:15 AM', event: 'Provider Accepted', detail: 'Arvind Kumar accepted', color: 'bg-emerald-500' },
   { time: '02:00 PM', event: 'Service Started', detail: 'Provider arrived at location', color: 'bg-blue-500' },
@@ -22,7 +22,7 @@ export function AdminBookingDetailPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-slate-900">Booking #BK-1024</h1>
-            <p className="text-sm text-slate-500 mt-1">AC Repair Service</p>
+            <p className="text-sm text-slate-500 mt-1">Air Conditioner Service</p>
           </div>
           <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Completed</Badge>
         </div>
@@ -63,7 +63,7 @@ export function AdminBookingDetailPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center justify-between mb-3">
-              <div><p className="text-sm font-semibold text-slate-900">Payment</p><p className="text-xs text-slate-400">₹1,200 via UPI</p></div>
+              <div><p className="text-sm font-semibold text-slate-900">Payment</p><p className="text-xs text-slate-400">₹499 via UPI</p></div>
               <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200">Paid</Badge>
             </div>
             <div className="flex gap-3">

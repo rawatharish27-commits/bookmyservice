@@ -56,10 +56,10 @@ const leadSources = [
 ]
 
 const recentInteractions = [
-  { customer: 'Ananya Iyer', action: 'Booked AC Service', time: '2 min ago', channel: 'App', type: 'booking' },
+  { customer: 'Ananya Iyer', action: 'Booked Air Conditioner Service', time: '2 min ago', channel: 'App', type: 'booking' },
   { customer: 'Vikram Singh', action: 'Left 5-star review', time: '15 min ago', channel: 'App', type: 'review' },
   { customer: 'Meera Joshi', action: 'Inquired about AMC plan', time: '32 min ago', channel: 'Chat', type: 'inquiry' },
-  { customer: 'Arjun Reddy', action: 'Rebooked plumbing service', time: '1 hr ago', channel: 'Call', type: 'booking' },
+  { customer: 'Arjun Reddy', action: 'Rebooked Plumber service', time: '1 hr ago', channel: 'Call', type: 'booking' },
   { customer: 'Pooja Nair', action: 'Submitted refund request', time: '2 hrs ago', channel: 'Email', type: 'support' },
   { customer: 'Rohan Gupta', action: 'Upgraded to Premium', time: '3 hrs ago', channel: 'App', type: 'upgrade' },
 ]

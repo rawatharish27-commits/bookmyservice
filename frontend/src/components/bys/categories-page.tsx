@@ -458,7 +458,7 @@ export function CategoriesPage() {
               className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"
             >
               Expert{' '}
-              <RotatingWords words={['Plumbing', 'Electrical', 'AC & HVAC']} />
+              <RotatingWords words={['Plumber', 'Electrician', 'Air Conditioner']} />
               <br />
               <span className="text-gradient">at Your Doorstep</span>
             </motion.h1>
@@ -469,7 +469,7 @@ export function CategoriesPage() {
               transition={{ duration: 0.6, delay: 0.35 }}
               className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-emerald-100/75 sm:text-xl"
             >
-              Book verified professionals for plumbing, electrical, and AC/HVAC services.
+              Book verified professionals for Plumber, Electrician, and Air Conditioner services.
               Quality work, transparent pricing, and our satisfaction guarantee.
             </motion.p>
 

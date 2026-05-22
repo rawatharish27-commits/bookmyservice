@@ -9,11 +9,11 @@ import { Separator } from '@/components/ui/separator'
 import { TrendingUp, TrendingDown, Search, Filter, Download, Calendar } from 'lucide-react'
 
 const transactions = [
-  { id: 1, desc: 'AC Service - BK001', amount: '-₹1,200', type: 'debit', date: '15 May 2025', method: 'Wallet', status: 'Success' },
+  { id: 1, desc: 'Air Conditioner - BK001', amount: '-₹499', type: 'debit', date: '15 May 2025', method: 'Wallet', status: 'Success' },
   { id: 2, desc: 'Wallet Top-up', amount: '+₹500', type: 'credit', date: '10 May 2025', method: 'UPI', status: 'Success' },
   { id: 3, desc: 'Refund - BK004', amount: '+₹600', type: 'credit', date: '8 May 2025', method: 'Refund', status: 'Success' },
-  { id: 4, desc: 'Deep Cleaning - BK003', amount: '-₹2,500', type: 'debit', date: '5 May 2025', method: 'Card', status: 'Success' },
-  { id: 5, desc: 'Plumbing - BK002', amount: '-₹800', type: 'debit', date: '3 May 2025', method: 'Wallet', status: 'Success' },
+  { id: 4, desc: 'Water Tank Cleaning - BK003', amount: '-₹499', type: 'debit', date: '5 May 2025', method: 'Card', status: 'Success' },
+  { id: 5, desc: 'Plumber - BK002', amount: '-₹499', type: 'debit', date: '3 May 2025', method: 'Wallet', status: 'Success' },
   { id: 6, desc: 'Cashback Reward', amount: '+₹50', type: 'credit', date: '1 May 2025', method: 'Reward', status: 'Success' },
 ]
 

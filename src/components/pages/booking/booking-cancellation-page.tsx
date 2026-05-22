@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { XCircle, AlertCircle, ArrowDownLeft, Clock } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
 
 const reasons = [
   'Schedule conflict',
@@ -17,6 +18,17 @@ const reasons = [
 
 export function BookingCancellationPage() {
   const [selected, setSelected] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { navigate } = useApp()
+
+  const handleCancel = () => {
+    if (!selected) return
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+      navigate('client-dashboard')
+    }, 1000)
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
@@ -28,7 +40,7 @@ export function BookingCancellationPage() {
             <AlertCircle className="size-5 text-amber-500 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-semibold text-amber-800">Cancellation Policy</p>
-              <p className="text-xs text-amber-700 mt-0.5">Free cancellation up to 2 hours before the service. A cancellation fee of ₹100 may apply after that.</p>
+              <p className="text-xs text-amber-700 mt-0.5">Free cancellation up to 2 hours before the service. A cancellation fee of ₹50 may apply after that.</p>
             </div>
           </CardContent>
         </Card>
@@ -50,13 +62,13 @@ export function BookingCancellationPage() {
 
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5 space-y-2">
-            <div className="flex justify-between text-sm"><span className="text-slate-500">Booking Amount</span><span className="text-slate-900">₹1,039</span></div>
+            <div className="flex justify-between text-sm"><span className="text-slate-500">Booking Amount</span><span className="text-slate-900">₹299</span></div>
             <div className="flex justify-between text-sm"><span className="text-slate-500">Cancellation Fee</span><span className="text-amber-600">-₹0</span></div>
             <Separator />
             <div className="flex items-center justify-between">
               <span className="text-sm font-semibold text-slate-900">Refund Amount</span>
               <div className="text-right">
-                <span className="text-lg font-bold text-emerald-600">₹1,039</span>
+                <span className="text-lg font-bold text-emerald-600">₹299</span>
                 <div className="flex items-center gap-1 text-xs text-slate-400"><ArrowDownLeft className="size-3" />Refunded to Wallet</div>
               </div>
             </div>
@@ -64,8 +76,8 @@ export function BookingCancellationPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-red-600 hover:bg-red-700 gap-1 rounded-xl py-5" disabled={!selected}>
-          <XCircle className="size-4" /> Confirm Cancellation
+        <Button className="w-full bg-red-600 hover:bg-red-700 gap-1 rounded-xl py-5" disabled={!selected || loading} onClick={handleCancel}>
+          <XCircle className="size-4" /> {loading ? 'Cancelling...' : 'Confirm Cancellation'}
         </Button>
       </div>
     </div>

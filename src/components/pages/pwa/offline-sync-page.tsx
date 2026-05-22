@@ -52,8 +52,8 @@ const mockPendingActions: PendingAction[] = [
   {
     id: '1',
     type: 'booking',
-    title: 'Book Deep Cleaning Service',
-    subtitle: '3 BHK, Koramangala • ₹2,499',
+    title: 'Book Water Tank Cleaning Service',
+    subtitle: '3 BHK, Koramangala • ₹499',
     timestamp: '2 min ago',
     status: 'pending',
     retryCount: 0,
@@ -62,7 +62,7 @@ const mockPendingActions: PendingAction[] = [
     id: '2',
     type: 'review',
     title: 'Submit Review for Rajesh K.',
-    subtitle: 'Plumbing Repair • ⭐ 4.5/5',
+    subtitle: 'Plumber Repair • ⭐ 4.5/5',
     timestamp: '15 min ago',
     status: 'failed',
     retryCount: 2,
@@ -70,8 +70,8 @@ const mockPendingActions: PendingAction[] = [
   {
     id: '3',
     type: 'payment',
-    title: 'Payment for AC Service',
-    subtitle: 'Wallet payment • ₹1,299',
+    title: 'Payment for Air Conditioner',
+    subtitle: 'Wallet payment • ₹499',
     timestamp: '28 min ago',
     status: 'syncing',
     retryCount: 0,
@@ -79,8 +79,8 @@ const mockPendingActions: PendingAction[] = [
   {
     id: '4',
     type: 'cancellation',
-    title: 'Cancel Painting Booking',
-    subtitle: 'Scheduled for Mar 8 • Refund ₹3,500',
+    title: 'Cancel Kitchen Appliances Booking',
+    subtitle: 'Scheduled for Mar 8 • Refund ₹499',
     timestamp: '1 hr ago',
     status: 'conflict',
     retryCount: 1,
@@ -88,8 +88,8 @@ const mockPendingActions: PendingAction[] = [
   {
     id: '5',
     type: 'booking',
-    title: 'Book Carpenter Visit',
-    subtitle: 'Door repair, HSR Layout • ₹899',
+    title: 'Book Geyser Visit',
+    subtitle: 'Door repair, HSR Layout • ₹499',
     timestamp: '2 hrs ago',
     status: 'pending',
     retryCount: 0,
@@ -99,7 +99,7 @@ const mockPendingActions: PendingAction[] = [
 const mockConflicts: ConflictItem[] = [
   {
     id: 'c1',
-    title: 'Painting Booking #BK-2847',
+    title: 'Kitchen Appliances Booking #BK-2847',
     localData: 'Cancelled',
     serverData: 'Provider already en route',
     field: 'Status',

@@ -68,10 +68,10 @@ const providerSteps = [
 ]
 
 const testimonials = [
-  { name: 'Ananya Krishnan', city: 'Chennai', avatar: 'AK', color: 'bg-blue-600', rating: 5, text: 'I booked a deep cleaning service and was amazed at the quality. The professional was on time, courteous, and my apartment looked brand new. Will definitely book again!', service: 'Deep Cleaning' },
-  { name: 'Rohit Verma', city: 'Delhi', avatar: 'RV', color: 'bg-emerald-600', rating: 5, text: 'The AC repair was done in under an hour. The technician was skilled and even explained what went wrong. Fair pricing, no hidden charges. Very impressed!', service: 'AC Repair' },
-  { name: 'Sunita Joshi', city: 'Pune', avatar: 'SJ', color: 'bg-purple-600', rating: 5, text: 'As a working professional, I rarely have time for home maintenance. BookMyService has been a lifesaver. Salon at home is my weekly ritual now!', service: 'Salon at Home' },
-  { name: 'Mohammed Faisal', city: 'Hyderabad', avatar: 'MF', color: 'bg-orange-600', rating: 4, text: 'Great platform for finding reliable electricians. The booking process is smooth and I love the real-time tracking feature. Highly recommended!', service: 'Electrical Repair' },
+  { name: 'Ananya Krishnan', city: 'Chennai', avatar: 'AK', color: 'bg-blue-600', rating: 5, text: 'I booked a Water Tank Cleaning service and was amazed at the quality. The professional was on time, courteous, and my water tank looked brand new. Will definitely book again!', service: 'Water Tank Cleaning' },
+  { name: 'Rohit Verma', city: 'Delhi', avatar: 'RV', color: 'bg-emerald-600', rating: 5, text: 'The Air Conditioner repair was done in under an hour. The technician was skilled and even explained what went wrong. Fair pricing, no hidden charges. Very impressed!', service: 'Air Conditioner' },
+  { name: 'Sunita Joshi', city: 'Pune', avatar: 'SJ', color: 'bg-purple-600', rating: 5, text: 'As a working professional, I rarely have time for home maintenance. BookMyService has been a lifesaver. Getting my Geyser repaired at home is so convenient!', service: 'Geyser' },
+  { name: 'Mohammed Faisal', city: 'Hyderabad', avatar: 'MF', color: 'bg-orange-600', rating: 4, text: 'Great platform for finding reliable electricians. The booking process is smooth and I love the real-time tracking feature. Highly recommended!', service: 'Electrician' },
 ]
 
 const whyChoose = [

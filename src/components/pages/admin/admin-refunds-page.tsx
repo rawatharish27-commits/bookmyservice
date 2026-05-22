@@ -9,10 +9,10 @@ import { Input } from '@/components/ui/input'
 
 const refunds = [
   { id: 'REF-201', booking: 'BK-1021', customer: 'Neha Gupta', amount: '₹499', reason: 'Service cancelled by customer', status: 'Processed', date: '19 May 2024' },
-  { id: 'REF-200', booking: 'BK-1018', customer: 'Vikas Singh', amount: '₹1,500', reason: 'Service quality issue', status: 'Pending', date: '18 May 2024' },
-  { id: 'REF-199', booking: 'BK-1015', customer: 'Ravi Prasad', amount: '₹2,500', reason: 'Provider no-show', status: 'Pending', date: '15 May 2024' },
-  { id: 'REF-198', booking: 'BK-1012', customer: 'Meena Devi', amount: '₹800', reason: 'Wrong service performed', status: 'Approved', date: '12 May 2024' },
-  { id: 'REF-197', booking: 'BK-1010', customer: 'Kavita Rao', amount: '₹600', reason: 'Duplicate payment', status: 'Rejected', date: '10 May 2024' },
+  { id: 'REF-200', booking: 'BK-1018', customer: 'Vikas Singh', amount: '₹299', reason: 'Service quality issue', status: 'Pending', date: '18 May 2024' },
+  { id: 'REF-199', booking: 'BK-1015', customer: 'Ravi Prasad', amount: '₹399', reason: 'Provider no-show', status: 'Pending', date: '15 May 2024' },
+  { id: 'REF-198', booking: 'BK-1012', customer: 'Meena Devi', amount: '₹349', reason: 'Wrong service performed', status: 'Approved', date: '12 May 2024' },
+  { id: 'REF-197', booking: 'BK-1010', customer: 'Kavita Rao', amount: '₹449', reason: 'Duplicate payment', status: 'Rejected', date: '10 May 2024' },
 ]
 
 const statusColors: Record<string, string> = {

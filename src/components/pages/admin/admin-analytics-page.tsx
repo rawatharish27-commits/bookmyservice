@@ -4,34 +4,32 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { TrendingUp, Users, Calendar, IndianRupee, BarChart3, Download } from 'lucide-react'
-
-const kpiCards = [
-  { label: 'Total Revenue', value: '₹12,45,000', change: '+18.2%', icon: IndianRupee, color: 'bg-blue-100 text-blue-600' },
-  { label: 'Active Users', value: '8,432', change: '+12.5%', icon: Users, color: 'bg-emerald-100 text-emerald-600' },
-  { label: 'Total Bookings', value: '3,256', change: '+8.3%', icon: Calendar, color: 'bg-purple-100 text-purple-600' },
-  { label: 'Conversion Rate', value: '4.8%', change: '+0.5%', icon: TrendingUp, color: 'bg-amber-100 text-amber-600' },
-]
-
-const systemHealth = [
-  { metric: 'API Uptime', value: '99.9%', status: 'Healthy' },
-  { metric: 'Avg Response Time', value: '245ms', status: 'Good' },
-  { metric: 'Error Rate', value: '0.12%', status: 'Healthy' },
-  { metric: 'Active Sessions', value: '1,234', status: 'Normal' },
-]
+import { TrendingUp, Users, Calendar, IndianRupee, BarChart3, Download, Loader2, AlertCircle } from 'lucide-react'
+import { useApi } from '@/hooks/use-api'
 
 export function AdminAnalyticsPage() {
+  const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useApi<{ label: string; value: string; change: string; icon: string; color: string }[]>('/admin/analytics/kpi')
+  const { data: healthData, isLoading: healthLoading, error: healthError } = useApi<{ metric: string; value: string; status: string }[]>('/admin/analytics/health')
+
+  const iconMap: Record<string, React.ElementType> = { IndianRupee, Users, Calendar, TrendingUp }
+
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
+    <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6" role="main" aria-label="System Analytics">
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">System Analytics</h1>
-          <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
+          <Button variant="outline" size="sm" className="gap-1 rounded-xl" aria-label="Export analytics data"><Download className="size-4" /> Export</Button>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {kpiCards.map((kpi) => {
-            const Icon = kpi.icon
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4" role="region" aria-label="Key Performance Indicators">
+          {kpiLoading ? (
+            Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="bg-white rounded-xl"><CardContent className="p-4 flex items-center justify-center h-24"><Loader2 className="size-6 animate-spin text-slate-300" /></CardContent></Card>
+            ))
+          ) : kpiError ? (
+            <Card className="bg-white rounded-xl col-span-full"><CardContent className="p-4 flex items-center gap-2 text-red-600"><AlertCircle className="size-4" /><span className="text-sm">Failed to load KPI data</span></CardContent></Card>
+          ) : (kpiData && kpiData.length > 0) ? kpiData.map((kpi) => {
+            const Icon = iconMap[kpi.icon] || TrendingUp
             return (
               <Card key={kpi.label} className="bg-white rounded-xl">
                 <CardContent className="p-4">
@@ -43,7 +41,9 @@ export function AdminAnalyticsPage() {
                 </CardContent>
               </Card>
             )
-          })}
+          }) : (
+            <Card className="bg-white rounded-xl col-span-full"><CardContent className="p-8 text-center text-slate-400 text-sm">No analytics data available</CardContent></Card>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -63,7 +63,11 @@ export function AdminAnalyticsPage() {
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">System Health</CardTitle></CardHeader>
             <CardContent className="space-y-0">
-              {systemHealth.map((item, i) => (
+              {healthLoading ? (
+                <div className="flex items-center justify-center py-8"><Loader2 className="size-6 animate-spin text-slate-300" /></div>
+              ) : healthError ? (
+                <div className="flex items-center gap-2 text-red-600 py-4"><AlertCircle className="size-4" /><span className="text-sm">Failed to load health data</span></div>
+              ) : (healthData && healthData.length > 0) ? healthData.map((item, i) => (
                 <div key={item.metric}>
                   <div className="flex items-center justify-between py-3">
                     <span className="text-sm text-slate-700">{item.metric}</span>
@@ -72,9 +76,11 @@ export function AdminAnalyticsPage() {
                       <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200 text-[10px]">{item.status}</Badge>
                     </div>
                   </div>
-                  {i < systemHealth.length - 1 && <Separator className="bg-slate-100" />}
+                  {i < healthData.length - 1 && <Separator className="bg-slate-100" />}
                 </div>
-              ))}
+              )) : (
+                <p className="text-center text-slate-400 text-sm py-4">No health data available</p>
+              )}
             </CardContent>
           </Card>
         </div>

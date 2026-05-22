@@ -25,7 +25,7 @@ const categories = ['All', 'Home Maintenance', 'Cleaning Tips', 'Interior Design
 
 const featuredPost = {
   title: 'The Complete Guide to Home Maintenance in India: What Every Homeowner Needs to Know',
-  excerpt: 'From monsoon prep to annual deep cleaning, learn the essential home maintenance schedule that will keep your home in top shape year-round. Expert tips from our top service providers.',
+  excerpt: 'From monsoon prep to annual Water Tank Cleaning, learn the essential home maintenance schedule that will keep your home in top shape year-round. Expert tips from our top service providers.',
   author: 'Priya Sharma',
   authorInitials: 'PS',
   authorColor: 'bg-blue-600',

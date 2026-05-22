@@ -37,7 +37,7 @@ Effective Date: January 1, 2025
 By accessing or using the BookYourService platform, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
 
 2. DESCRIPTION OF SERVICE
-BookYourService is an online marketplace that connects customers with verified home service professionals including plumbing, electrical, and AC & HVAC services across India.
+BookYourService is an online marketplace that connects customers with verified home service professionals including Plumber, Electrician, and Air Conditioner services across India.
 
 3. USER ACCOUNTS
 - You must create an account to use our services

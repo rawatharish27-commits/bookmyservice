@@ -7,10 +7,10 @@ import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Eye, Flag, AlertTriangle, Clock } from 'lucide-react'
 
 const activeConversations = [
-  { id: 1, customer: 'Rahul Sharma', provider: 'Cool Care Services', topic: 'AC Repair Booking', messages: 8, lastMessage: '5 min ago', flagged: false },
+  { id: 1, customer: 'Rahul Sharma', provider: 'Cool Care Services', topic: 'Air Conditioner Booking', messages: 8, lastMessage: '5 min ago', flagged: false },
   { id: 2, customer: 'Priya Patel', provider: 'QuickFix Solutions', topic: 'Cleaning Service', messages: 12, lastMessage: '15 min ago', flagged: false },
   { id: 3, customer: 'Amit Verma', provider: 'HomePro Services', topic: 'Plumbing Issue', messages: 5, lastMessage: '1 hour ago', flagged: true },
-  { id: 4, customer: 'Sonia Mehta', provider: 'SparkClean Pro', topic: 'Electrical Repair', messages: 3, lastMessage: '2 hours ago', flagged: false },
+  { id: 4, customer: 'Sonia Mehta', provider: 'SparkClean Pro', topic: 'Electrician', messages: 3, lastMessage: '2 hours ago', flagged: false },
 ]
 
 const flaggedMessages = [

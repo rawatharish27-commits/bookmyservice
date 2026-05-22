@@ -17,11 +17,11 @@ const bookingTrends = [
 ]
 
 const categoryDist = [
-  { category: 'AC & Appliance', bookings: 856, percentage: 32 },
-  { category: 'Cleaning', bookings: 654, percentage: 24 },
-  { category: 'Plumbing', bookings: 432, percentage: 16 },
-  { category: 'Electrical', bookings: 324, percentage: 12 },
-  { category: 'Painting', bookings: 215, percentage: 8 },
+  { category: 'Air Conditioner', bookings: 856, percentage: 32 },
+  { category: 'Water Tank Cleaning', bookings: 654, percentage: 24 },
+  { category: 'Plumber', bookings: 432, percentage: 16 },
+  { category: 'Electrician', bookings: 324, percentage: 12 },
+  { category: 'Geyser', bookings: 215, percentage: 8 },
   { category: 'Others', bookings: 195, percentage: 8 },
 ]
 

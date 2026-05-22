@@ -13,7 +13,7 @@ const metrics = [
   { label: 'Avg Rating', value: '4.7', change: '+0.2', trend: 'up' },
   { label: 'Response Time', value: '8 min', change: '-2 min', trend: 'up' },
   { label: 'Repeat Customers', value: '38%', change: '-5%', trend: 'down' },
-  { label: 'Earnings/Booking', value: '₹1,250', change: '+8%', trend: 'up' },
+  { label: 'Earnings/Booking', value: '₹349', change: '+8%', trend: 'up' },
 ]
 
 const weeklyData = [

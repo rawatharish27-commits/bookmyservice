@@ -148,7 +148,7 @@ export function AboutPage() {
                 transformation.
               </p>
               <p>
-                Starting with just 3 categories — plumbing, electrical, and cleaning — from a small
+                Starting with just 3 categories — plumber, electrician, and water tank cleaning — from a small
                 office in Koramangala, Bengaluru, BookMyService set out to bring trust, transparency,
                 and convenience to an industry that had none.
               </p>

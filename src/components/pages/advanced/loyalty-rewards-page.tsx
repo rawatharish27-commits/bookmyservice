@@ -111,11 +111,11 @@ const memberStats = [
 
 const rewardCatalog = [
   { id: 1, name: '₹200 Off Next Booking', points: 500, category: 'Discount', popularity: 92, stock: 'Unlimited' },
-  { id: 2, name: 'Free Deep Cleaning (2BHK)', points: 2500, category: 'Service', popularity: 78, stock: 'Limited' },
-  { id: 3, name: 'Free AC Service', points: 1800, category: 'Service', popularity: 85, stock: 'Available' },
+  { id: 2, name: 'Free Water Tank Cleaning', points: 2500, category: 'Service', popularity: 78, stock: 'Limited' },
+  { id: 3, name: 'Free Air Conditioner Service', points: 1800, category: 'Service', popularity: 85, stock: 'Available' },
   { id: 4, name: '₹500 Off AMC Plan', points: 1000, category: 'Discount', popularity: 88, stock: 'Unlimited' },
   { id: 5, name: 'Priority Booking Access', points: 300, category: 'Perk', popularity: 72, stock: 'Unlimited' },
-  { id: 6, name: 'Free Pest Control', points: 1500, category: 'Service', popularity: 65, stock: 'Limited' },
+  { id: 6, name: 'Free Water Purifier Service', points: 1500, category: 'Service', popularity: 65, stock: 'Limited' },
 ]
 
 export function LoyaltyRewardsPage() {

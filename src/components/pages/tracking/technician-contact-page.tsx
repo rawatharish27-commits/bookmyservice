@@ -40,7 +40,7 @@ export function TechnicianContactPage() {
               <Zap className="size-4 text-blue-600" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-slate-900">Current Service</p>
-                <p className="text-xs text-slate-400">AC Service & Repair • BK001</p>
+                <p className="text-xs text-slate-400">Air Conditioner • BK001</p>
               </div>
             </div>
             <Separator />

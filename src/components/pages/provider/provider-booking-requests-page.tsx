@@ -7,9 +7,9 @@ import { Separator } from '@/components/ui/separator'
 import { CheckCircle, XCircle, Phone, MapPin, Clock, User } from 'lucide-react'
 
 const requests = [
-  { id: 'BR-1001', service: 'AC Repair', customer: 'Rahul Sharma', phone: '+91 98765 12345', address: '12, MG Road, Delhi', date: '22 May 2024', time: '10:00 AM', amount: '₹1,200', urgency: 'Normal' },
-  { id: 'BR-1002', service: 'Plumbing Emergency', customer: 'Anita Desai', phone: '+91 87654 54321', address: '34, Janakpuri, Delhi', date: '22 May 2024', time: '11:30 AM', amount: '₹800', urgency: 'Urgent' },
-  { id: 'BR-1003', service: 'Deep Cleaning', customer: 'Vikram Joshi', phone: '+91 76543 67890', address: '56, Dwarka, Delhi', date: '23 May 2024', time: '09:00 AM', amount: '₹2,500', urgency: 'Normal' },
+  { id: 'BR-1001', service: 'Air Conditioner', customer: 'Rahul Sharma', phone: '+91 98765 12345', address: '12, MG Road, Delhi', date: '22 May 2024', time: '10:00 AM', amount: '₹499', urgency: 'Normal' },
+  { id: 'BR-1002', service: 'Plumber', customer: 'Anita Desai', phone: '+91 87654 54321', address: '34, Janakpuri, Delhi', date: '22 May 2024', time: '11:30 AM', amount: '₹499', urgency: 'Urgent' },
+  { id: 'BR-1003', service: 'Water Tank Cleaning', customer: 'Vikram Joshi', phone: '+91 76543 67890', address: '56, Dwarka, Delhi', date: '23 May 2024', time: '09:00 AM', amount: '₹499', urgency: 'Normal' },
 ]
 
 export function ProviderBookingRequestsPage() {

@@ -10,11 +10,11 @@ import { Calendar, Clock, ChevronRight, Filter } from 'lucide-react'
 type TabKey = 'all' | 'active' | 'completed' | 'cancelled'
 
 const bookings = [
-  { id: 'BK-1024', service: 'AC Repair', customer: 'Rahul Sharma', date: '22 May 2024', time: '10:00 AM', amount: '₹1,200', status: 'Active' },
-  { id: 'BK-1023', service: 'Deep Cleaning', customer: 'Priya Patel', date: '21 May 2024', time: '02:00 PM', amount: '₹2,500', status: 'Completed' },
-  { id: 'BK-1022', service: 'Plumbing', customer: 'Amit Verma', date: '20 May 2024', time: '11:00 AM', amount: '₹800', status: 'Completed' },
-  { id: 'BK-1021', service: 'AC Service', customer: 'Neha Gupta', date: '19 May 2024', time: '09:00 AM', amount: '₹499', status: 'Cancelled' },
-  { id: 'BK-1020', service: 'Electrical Repair', customer: 'Vikas Singh', date: '18 May 2024', time: '04:00 PM', amount: '₹1,500', status: 'Active' },
+  { id: 'BK-1024', service: 'Air Conditioner', customer: 'Rahul Sharma', date: '22 May 2024', time: '10:00 AM', amount: '₹499', status: 'Active' },
+  { id: 'BK-1023', service: 'Water Tank Cleaning', customer: 'Priya Patel', date: '21 May 2024', time: '02:00 PM', amount: '₹499', status: 'Completed' },
+  { id: 'BK-1022', service: 'Plumber', customer: 'Amit Verma', date: '20 May 2024', time: '11:00 AM', amount: '₹499', status: 'Completed' },
+  { id: 'BK-1021', service: 'Air Conditioner', customer: 'Neha Gupta', date: '19 May 2024', time: '09:00 AM', amount: '₹499', status: 'Cancelled' },
+  { id: 'BK-1020', service: 'Electrician', customer: 'Vikas Singh', date: '18 May 2024', time: '04:00 PM', amount: '₹499', status: 'Active' },
 ]
 
 const statusColors: Record<string, string> = {

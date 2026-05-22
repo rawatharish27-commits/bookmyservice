@@ -1,4 +1,6 @@
-// ─── Mock Data for All Three Dashboards ────────────────────────────────
+// ─── Data for All Three Dashboards ────────────────────────────────
+// This data should eventually come from API endpoints via useApi hooks.
+// Currently used as placeholder data for dashboard components.
 
 // ─── Admin Dashboard Data ──────────────────────────────────────────────
 
@@ -53,11 +55,11 @@ export const bookingsByStatusData = [
 ]
 
 export const recentBookingsAdmin = [
-  { id: '1', service: 'Deep Cleaning Service', date: 'May 19, 2024', time: '10:30 AM', status: 'Completed', amount: '₹799', color: 'green' },
-  { id: '2', service: 'AC Repair Service', date: 'May 19, 2024', time: '11:00 AM', status: 'Confirmed', amount: '₹499', color: 'blue' },
-  { id: '3', service: 'Plumbing Service', date: 'May 19, 2024', time: '12:30 PM', status: 'Pending', amount: '₹399', color: 'orange' },
-  { id: '4', service: 'Sofa Cleaning', date: 'May 19, 2024', time: '02:00 PM', status: 'Confirmed', amount: '₹599', color: 'blue' },
-  { id: '5', service: 'Kitchen Cleaning', date: 'May 19, 2024', time: '03:30 PM', status: 'Cancelled', amount: '₹699', color: 'red' },
+  { id: '1', service: 'Air Conditioner', date: 'May 19, 2024', time: '10:30 AM', status: 'Completed', amount: '₹499', color: 'green' },
+  { id: '2', service: 'Plumber', date: 'May 19, 2024', time: '11:00 AM', status: 'Confirmed', amount: '₹199', color: 'blue' },
+  { id: '3', service: 'Electrician', date: 'May 19, 2024', time: '12:30 PM', status: 'Pending', amount: '₹299', color: 'orange' },
+  { id: '4', service: 'Washing Machine Repair', date: 'May 19, 2024', time: '02:00 PM', status: 'Confirmed', amount: '₹349', color: 'blue' },
+  { id: '5', service: 'Water Purifier Service', date: 'May 19, 2024', time: '03:30 PM', status: 'Cancelled', amount: '₹349', color: 'red' },
 ]
 
 export const revenueOverviewData = [
@@ -76,11 +78,11 @@ export const revenueOverviewData = [
 ]
 
 export const topServicesData = [
-  { rank: 1, name: 'Deep Cleaning', revenue: '₹6,14,400', bookings: '2,456', growth: '25.0%', icon: '🧹' },
-  { rank: 2, name: 'AC Repair', revenue: '₹4,70,104', bookings: '1,896', growth: '19.1%', icon: '❄️' },
-  { rank: 3, name: 'Plumbing', revenue: '₹3,85,512', bookings: '1,542', growth: '15.7%', icon: '🔧' },
-  { rank: 4, name: 'Sofa Cleaning', revenue: '₹3,14,400', bookings: '1,256', growth: '12.8%', icon: '🛋️' },
-  { rank: 5, name: 'Kitchen Cleaning', revenue: '₹2,58,000', bookings: '1,032', growth: '10.5%', icon: '🍳' },
+  { rank: 1, name: 'Air Conditioner', revenue: '₹6,14,400', bookings: '2,456', growth: '25.0%', icon: '❄️' },
+  { rank: 2, name: 'Plumber', revenue: '₹4,70,104', bookings: '1,896', growth: '19.1%', icon: '🔧' },
+  { rank: 3, name: 'Electrician', revenue: '₹3,85,512', bookings: '1,542', growth: '15.7%', icon: '⚡' },
+  { rank: 4, name: 'Water Purifier', revenue: '₹3,14,400', bookings: '1,256', growth: '12.8%', icon: '💧' },
+  { rank: 5, name: 'Washing Machine', revenue: '₹2,58,000', bookings: '1,032', growth: '10.5%', icon: '🫧' },
 ]
 
 export const userGrowthData = [
@@ -109,7 +111,7 @@ export const clientMetrics = [
 ]
 
 export const upcomingBooking = {
-  service: 'AC Repair & Service',
+  service: 'Air Conditioner',
   status: 'Confirmed',
   date: '22 May 2024',
   time: '10:00 AM - 12:00 PM',
@@ -119,10 +121,10 @@ export const upcomingBooking = {
 }
 
 export const clientRecentBookings = [
-  { id: '1', service: 'Plumbing Service', date: '18 May 2024', time: '11:00 AM', status: 'Completed', amount: '₹399' },
-  { id: '2', service: 'Deep Cleaning', date: '15 May 2024', time: '02:00 PM', status: 'Completed', amount: '₹799' },
-  { id: '3', service: 'Electrical Repair', date: '10 May 2024', time: '04:30 PM', status: 'Completed', amount: '₹449' },
-  { id: '4', service: 'Sofa Cleaning', date: '05 May 2024', time: '01:00 PM', status: 'Cancelled', amount: '₹599' },
+  { id: '1', service: 'Plumber', date: '18 May 2024', time: '11:00 AM', status: 'Completed', amount: '₹199' },
+  { id: '2', service: 'Electrician', date: '15 May 2024', time: '02:00 PM', status: 'Completed', amount: '₹299' },
+  { id: '3', service: 'Washing Machine Repair', date: '10 May 2024', time: '04:30 PM', status: 'Completed', amount: '₹349' },
+  { id: '4', service: 'TV Repair', date: '05 May 2024', time: '01:00 PM', status: 'Cancelled', amount: '₹399' },
 ]
 
 export const clientQuickActions = [
@@ -135,7 +137,7 @@ export const clientQuickActions = [
 
 export const walletTransactions = [
   { id: '1', description: 'Added Money', date: '20 May 2024', amount: '+₹500', type: 'credit' as const },
-  { id: '2', description: 'Booking Payment', date: '18 May 2024', amount: '-₹399', type: 'debit' as const },
+  { id: '2', description: 'Booking Payment', date: '18 May 2024', amount: '-₹299', type: 'debit' as const },
   { id: '3', description: 'Cashback Credit', date: '15 May 2024', amount: '+₹50', type: 'credit' as const },
 ]
 
@@ -149,8 +151,8 @@ export const activeAMC = {
 }
 
 export const clientOffers = [
-  { title: 'UPTO 20% OFF', subtitle: 'on Deep Cleaning Services', code: 'CLEAN20', color: 'purple' },
-  { title: 'Flat ₹100 Off', subtitle: 'on Your Next Booking', code: 'BMS100', color: 'orange' },
+  { title: 'UPTO 20% OFF', subtitle: 'on Air Conditioner', code: 'AC20', color: 'purple' },
+  { title: 'Flat ₹50 Off', subtitle: 'on Your Next Booking', code: 'BMS50', color: 'orange' },
 ]
 
 // ─── Provider Dashboard Data ───────────────────────────────────────────
@@ -174,26 +176,26 @@ export const earningsOverviewData = [
 ]
 
 export const providerRecentBookings = [
-  { id: '1', service: 'AC Repair & Service', date: '19 May 2024', time: '10:00 AM', amount: '₹599', status: 'Upcoming' },
-  { id: '2', service: 'Deep Cleaning', date: '19 May 2024', time: '02:00 PM', amount: '₹899', status: 'Completed' },
-  { id: '3', service: 'Plumbing Service', date: '18 May 2024', time: '11:30 AM', amount: '₹499', status: 'Completed' },
-  { id: '4', service: 'Electrical Repair', date: '18 May 2024', time: '04:00 PM', amount: '₹449', status: 'Upcoming' },
-  { id: '5', service: 'Sofa Cleaning', date: '17 May 2024', time: '01:00 PM', amount: '₹699', status: 'Cancelled' },
+  { id: '1', service: 'Air Conditioner', date: '19 May 2024', time: '10:00 AM', amount: '₹499', status: 'Upcoming' },
+  { id: '2', service: 'Refrigerator Repair', date: '19 May 2024', time: '02:00 PM', amount: '₹399', status: 'Completed' },
+  { id: '3', service: 'Plumber', date: '18 May 2024', time: '11:30 AM', amount: '₹199', status: 'Completed' },
+  { id: '4', service: 'Electrician', date: '18 May 2024', time: '04:00 PM', amount: '₹299', status: 'Upcoming' },
+  { id: '5', service: 'Washing Machine Repair', date: '17 May 2024', time: '01:00 PM', amount: '₹349', status: 'Cancelled' },
 ]
 
 export const todaySchedule = [
-  { time: '10:00 AM', service: 'AC Repair & Service', location: 'Green Park', status: 'upcoming' },
-  { time: '12:00 PM', service: 'Electrical Repair', location: 'Hauz Khas', status: 'upcoming' },
-  { time: '02:00 PM', service: 'Plumbing Service', location: 'Saket', status: 'completed' },
-  { time: '04:00 PM', service: 'Deep Cleaning', location: 'Malviya Nagar', status: 'upcoming' },
-  { time: '06:00 PM', service: 'Sofa Cleaning', location: 'Kotla', status: 'upcoming' },
+  { time: '10:00 AM', service: 'Air Conditioner', location: 'Green Park', status: 'upcoming' },
+  { time: '12:00 PM', service: 'Electrician', location: 'Hauz Khas', status: 'upcoming' },
+  { time: '02:00 PM', service: 'Plumber', location: 'Saket', status: 'completed' },
+  { time: '04:00 PM', service: 'Geyser Installation', location: 'Malviya Nagar', status: 'upcoming' },
+  { time: '06:00 PM', service: 'Water Purifier Service', location: 'Kotla', status: 'upcoming' },
 ]
 
 export const providerServices = [
-  { name: 'AC Repair & Service', price: '₹499', status: 'Active' },
-  { name: 'Deep Cleaning', price: '₹799', status: 'Active' },
-  { name: 'Plumbing Service', price: '₹399', status: 'Active' },
-  { name: 'Electrical Repair', price: '₹449', status: 'Active' },
+  { name: 'Air Conditioner', price: '₹499', status: 'Active' },
+  { name: 'Refrigerator Repair', price: '₹399', status: 'Active' },
+  { name: 'Plumber', price: '₹199', status: 'Active' },
+  { name: 'Electrician', price: '₹299', status: 'Active' },
 ]
 
 export const customerReviews = {

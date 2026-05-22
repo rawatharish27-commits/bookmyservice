@@ -8,11 +8,11 @@ import { Separator } from '@/components/ui/separator'
 import { Search, Filter, Download, Trash2, Eye } from 'lucide-react'
 
 const bookings = [
-  { id: 'BK-1024', customer: 'Rahul Sharma', provider: 'Cool Care Services', service: 'AC Repair', date: '22 May 2024', amount: '₹1,200', status: 'Confirmed' },
-  { id: 'BK-1023', customer: 'Priya Patel', provider: 'QuickFix Solutions', service: 'Deep Cleaning', date: '21 May 2024', amount: '₹2,500', status: 'Completed' },
-  { id: 'BK-1022', customer: 'Amit Verma', provider: 'Cool Care Services', service: 'Plumbing', date: '20 May 2024', amount: '₹800', status: 'Completed' },
-  { id: 'BK-1021', customer: 'Neha Gupta', provider: 'HomePro Services', service: 'AC Service', date: '19 May 2024', amount: '₹499', status: 'Cancelled' },
-  { id: 'BK-1020', customer: 'Vikas Singh', provider: 'SparkClean Pro', service: 'Electrical', date: '18 May 2024', amount: '₹1,500', status: 'In Progress' },
+  { id: 'BK-1024', customer: 'Rahul Sharma', provider: 'Cool Care Services', service: 'Air Conditioner', date: '22 May 2024', amount: '₹499', status: 'Confirmed' },
+  { id: 'BK-1023', customer: 'Priya Patel', provider: 'QuickFix Solutions', service: 'Water Tank Cleaning', date: '21 May 2024', amount: '₹399', status: 'Completed' },
+  { id: 'BK-1022', customer: 'Amit Verma', provider: 'Cool Care Services', service: 'Plumber', date: '20 May 2024', amount: '₹349', status: 'Completed' },
+  { id: 'BK-1021', customer: 'Neha Gupta', provider: 'HomePro Services', service: 'Refrigerator', date: '19 May 2024', amount: '₹499', status: 'Cancelled' },
+  { id: 'BK-1020', customer: 'Vikas Singh', provider: 'SparkClean Pro', service: 'Electrician', date: '18 May 2024', amount: '₹299', status: 'In Progress' },
 ]
 
 const statusColors: Record<string, string> = {

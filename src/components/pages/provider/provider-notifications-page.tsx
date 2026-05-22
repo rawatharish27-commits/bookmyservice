@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { Bell, Calendar, IndianRupee, Settings, ChevronRight, Check } from 'lucide-react'
 
 const notifications = [
-  { id: 1, title: 'New Booking Request', message: 'Rahul Sharma requested AC Repair on 22 May', type: 'booking', time: '5 min ago', read: false },
+  { id: 1, title: 'New Booking Request', message: 'Rahul Sharma requested Air Conditioner on 22 May', type: 'booking', time: '5 min ago', read: false },
   { id: 2, title: 'Payment Received', message: '₹2,125 credited for booking #1023', type: 'payment', time: '1 hour ago', read: false },
   { id: 3, title: 'Review Received', message: 'Priya Patel left a 5-star review', type: 'system', time: '3 hours ago', read: true },
   { id: 4, title: 'Booking Cancelled', message: 'Booking #1021 was cancelled by customer', type: 'booking', time: '5 hours ago', read: true },

@@ -1,12 +1,42 @@
 'use client'
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MapPin, Calendar, Clock, User, Tag, Zap, Shield } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
+import { useMockApi } from '@/lib/use-api'
+import { useCallback } from 'react'
+import { Loader2 } from 'lucide-react'
+
+const summaryData = {
+  service: { name: 'Air Conditioner', desc: 'Complete diagnostic and repair' },
+  provider: { name: 'Amit Sharma' },
+  date: '20 May 2025',
+  time: '10:00 AM - 11:00 AM',
+  address: '42, Rajouri Garden, Delhi',
+  pricing: { serviceCharge: 299, convenienceFee: 50, gst: 0, discount: 50, total: 299 },
+}
 
 export function BookingSummaryPage() {
+  const { navigate } = useApp()
+
+  const summaryLoader = useCallback(() => summaryData, [])
+  const { data, loading } = useMockApi(summaryData, 600)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading booking summary">
+        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  if (!data) return null
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
       <div className="mx-auto max-w-2xl space-y-6">
@@ -17,16 +47,16 @@ export function BookingSummaryPage() {
             <div className="flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
               <div>
-                <h3 className="text-sm font-semibold text-slate-900">AC Service & Repair</h3>
-                <p className="text-xs text-slate-400">Complete diagnostic and repair</p>
+                <h3 className="text-sm font-semibold text-slate-900">{data.service.name}</h3>
+                <p className="text-xs text-slate-400">{data.service.desc}</p>
               </div>
             </div>
             <Separator />
             <div className="space-y-2.5">
-              <div className="flex items-center gap-2 text-sm text-slate-600"><User className="size-4 text-slate-400" /> Provider: <strong className="text-slate-900">Amit Sharma</strong></div>
-              <div className="flex items-center gap-2 text-sm text-slate-600"><Calendar className="size-4 text-slate-400" /> Date: <strong className="text-slate-900">20 May 2025</strong></div>
-              <div className="flex items-center gap-2 text-sm text-slate-600"><Clock className="size-4 text-slate-400" /> Time: <strong className="text-slate-900">10:00 AM - 11:00 AM</strong></div>
-              <div className="flex items-center gap-2 text-sm text-slate-600"><MapPin className="size-4 text-slate-400" /> Address: <strong className="text-slate-900">42, Rajouri Garden, Delhi</strong></div>
+              <div className="flex items-center gap-2 text-sm text-slate-600"><User className="size-4 text-slate-400" /> Provider: <strong className="text-slate-900">{data.provider.name}</strong></div>
+              <div className="flex items-center gap-2 text-sm text-slate-600"><Calendar className="size-4 text-slate-400" /> Date: <strong className="text-slate-900">{data.date}</strong></div>
+              <div className="flex items-center gap-2 text-sm text-slate-600"><Clock className="size-4 text-slate-400" /> Time: <strong className="text-slate-900">{data.time}</strong></div>
+              <div className="flex items-center gap-2 text-sm text-slate-600"><MapPin className="size-4 text-slate-400" /> Address: <strong className="text-slate-900">{data.address}</strong></div>
             </div>
           </CardContent>
         </Card>
@@ -34,13 +64,12 @@ export function BookingSummaryPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Price Details</CardTitle></CardHeader>
           <CardContent className="space-y-2">
-            <div className="flex justify-between text-sm"><span className="text-slate-500">Service Charge</span><span className="text-slate-900">₹1,000</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-500">Convenience Fee</span><span className="text-slate-900">₹50</span></div>
-            <div className="flex justify-between text-sm"><span className="text-slate-500">GST (18%)</span><span className="text-slate-900">₹189</span></div>
+            <div className="flex justify-between text-sm"><span className="text-slate-500">Service Charge</span><span className="text-slate-900">₹{data.pricing.serviceCharge}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-slate-500">Convenience Fee</span><span className="text-slate-900">₹{data.pricing.convenienceFee}</span></div>
             <Separator />
-            <div className="flex items-center gap-2 text-sm"><Tag className="size-3.5 text-emerald-500" /><span className="text-emerald-600">SAVE20 Applied</span><span className="text-emerald-600 ml-auto">-₹200</span></div>
+            <div className="flex items-center gap-2 text-sm"><Tag className="size-3.5 text-emerald-500" /><span className="text-emerald-600">FIRST50 Applied</span><span className="text-emerald-600 ml-auto">-₹{data.pricing.discount}</span></div>
             <Separator />
-            <div className="flex justify-between text-lg font-bold"><span className="text-slate-900">Total</span><span className="text-blue-600">₹1,039</span></div>
+            <div className="flex justify-between text-lg font-bold"><span className="text-slate-900">Total</span><span className="text-blue-600">₹{data.pricing.total}</span></div>
           </CardContent>
         </Card>
 
@@ -53,6 +82,8 @@ export function BookingSummaryPage() {
             </div>
           </CardContent>
         </Card>
+
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment</Button>
       </div>
     </div>
   )

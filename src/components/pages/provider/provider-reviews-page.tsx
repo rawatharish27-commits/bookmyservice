@@ -8,11 +8,11 @@ import { Separator } from '@/components/ui/separator'
 import { Star, MessageSquare, Filter } from 'lucide-react'
 
 const reviews = [
-  { id: 1, customer: 'Priya Patel', rating: 5, service: 'Deep Cleaning', date: '21 May 2024', comment: 'Excellent work! Very thorough and professional.', replied: false },
-  { id: 2, customer: 'Amit Verma', rating: 4, service: 'Plumbing Service', date: '20 May 2024', comment: 'Good service, arrived on time. Fixed the issue quickly.', replied: true },
-  { id: 3, customer: 'Sonia Mehta', rating: 3, service: 'AC Repair', date: '18 May 2024', comment: 'Service was okay but could have been more careful with the unit.', replied: false },
-  { id: 4, customer: 'Deepak Kumar', rating: 5, service: 'Electrical Repair', date: '16 May 2024', comment: 'Very knowledgeable technician. Fixed everything in one visit.', replied: true },
-  { id: 5, customer: 'Kavita Rao', rating: 2, service: 'AC Service', date: '14 May 2024', comment: 'Not satisfied. Had to call again for the same issue.', replied: false },
+  { id: 1, customer: 'Priya Patel', rating: 5, service: 'Water Tank Cleaning', date: '21 May 2024', comment: 'Excellent work! Very thorough and professional.', replied: false },
+  { id: 2, customer: 'Amit Verma', rating: 4, service: 'Plumber', date: '20 May 2024', comment: 'Good service, arrived on time. Fixed the issue quickly.', replied: true },
+  { id: 3, customer: 'Sonia Mehta', rating: 3, service: 'Air Conditioner', date: '18 May 2024', comment: 'Service was okay but could have been more careful with the unit.', replied: false },
+  { id: 4, customer: 'Deepak Kumar', rating: 5, service: 'Electrician', date: '16 May 2024', comment: 'Very knowledgeable technician. Fixed everything in one visit.', replied: true },
+  { id: 5, customer: 'Kavita Rao', rating: 2, service: 'Air Conditioner', date: '14 May 2024', comment: 'Not satisfied. Had to call again for the same issue.', replied: false },
 ]
 
 const starFilters = [5, 4, 3, 2, 1]

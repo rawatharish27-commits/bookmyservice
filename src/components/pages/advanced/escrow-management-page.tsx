@@ -50,31 +50,31 @@ interface Escrow {
 }
 
 const escrows: Escrow[] = [
-  { id: 'ESC-001', booking: 'BK-4521', customer: 'Ananya Iyer', provider: 'Ramesh Kumar', amount: '₹3,500', status: 'Active', createdDate: '12 Mar 2025', releaseDate: null, service: 'Deep Home Cleaning' },
-  { id: 'ESC-002', booking: 'BK-4518', customer: 'Vikram Singh', provider: 'Sunil Yadav', amount: '₹2,800', status: 'Active', createdDate: '11 Mar 2025', releaseDate: null, service: 'AC Service' },
-  { id: 'ESC-003', booking: 'BK-4515', customer: 'Priya Sharma', provider: 'Deepak Verma', amount: '₹4,200', status: 'Pending', createdDate: '10 Mar 2025', releaseDate: null, service: 'Beauty & Spa' },
-  { id: 'ESC-004', booking: 'BK-4510', customer: 'Arjun Reddy', provider: 'Mohan Das', amount: '₹1,500', status: 'Released', createdDate: '08 Mar 2025', releaseDate: '10 Mar 2025', service: 'Plumbing Repair' },
-  { id: 'ESC-005', booking: 'BK-4505', customer: 'Meera Joshi', provider: 'Raju Patel', amount: '₹18,000', status: 'Disputed', createdDate: '07 Mar 2025', releaseDate: null, service: 'House Painting' },
-  { id: 'ESC-006', booking: 'BK-4500', customer: 'Karthik Raja', provider: 'Venkat Rao', amount: '₹6,500', status: 'Released', createdDate: '05 Mar 2025', releaseDate: '08 Mar 2025', service: 'AC Installation' },
-  { id: 'ESC-007', booking: 'BK-4495', customer: 'Rohan Gupta', provider: 'Amit Tiwari', amount: '₹2,200', status: 'Released', createdDate: '04 Mar 2025', releaseDate: '06 Mar 2025', service: 'Plumbing Repair' },
-  { id: 'ESC-008', booking: 'BK-4490', customer: 'Pooja Nair', provider: 'Suresh Menon', amount: '₹3,500', status: 'Active', createdDate: '03 Mar 2025', releaseDate: null, service: 'Home Cleaning' },
-  { id: 'ESC-009', booking: 'BK-4485', customer: 'Deepak Kumar', provider: 'Manoj Singh', amount: '₹5,800', status: 'Disputed', createdDate: '02 Mar 2025', releaseDate: null, service: 'Electrical Repair' },
-  { id: 'ESC-010', booking: 'BK-4480', customer: 'Lakshmi Reddy', provider: 'Kiran Babu', amount: '₹2,500', status: 'Pending', createdDate: '01 Mar 2025', releaseDate: null, service: 'Pest Control' },
+  { id: 'ESC-001', booking: 'BK-4521', customer: 'Ananya Iyer', provider: 'Ramesh Kumar', amount: '₹499', status: 'Active', createdDate: '12 Mar 2025', releaseDate: null, service: 'Water Tank Cleaning' },
+  { id: 'ESC-002', booking: 'BK-4518', customer: 'Vikram Singh', provider: 'Sunil Yadav', amount: '₹499', status: 'Active', createdDate: '11 Mar 2025', releaseDate: null, service: 'Air Conditioner' },
+  { id: 'ESC-003', booking: 'BK-4515', customer: 'Priya Sharma', provider: 'Deepak Verma', amount: '₹499', status: 'Pending', createdDate: '10 Mar 2025', releaseDate: null, service: 'Electrician' },
+  { id: 'ESC-004', booking: 'BK-4510', customer: 'Arjun Reddy', provider: 'Mohan Das', amount: '₹499', status: 'Released', createdDate: '08 Mar 2025', releaseDate: '10 Mar 2025', service: 'Plumber' },
+  { id: 'ESC-005', booking: 'BK-4505', customer: 'Meera Joshi', provider: 'Raju Patel', amount: '₹499', status: 'Disputed', createdDate: '07 Mar 2025', releaseDate: null, service: 'Kitchen Appliances' },
+  { id: 'ESC-006', booking: 'BK-4500', customer: 'Karthik Raja', provider: 'Venkat Rao', amount: '₹499', status: 'Released', createdDate: '05 Mar 2025', releaseDate: '08 Mar 2025', service: 'Air Conditioner' },
+  { id: 'ESC-007', booking: 'BK-4495', customer: 'Rohan Gupta', provider: 'Amit Tiwari', amount: '₹349', status: 'Released', createdDate: '04 Mar 2025', releaseDate: '06 Mar 2025', service: 'Plumber' },
+  { id: 'ESC-008', booking: 'BK-4490', customer: 'Pooja Nair', provider: 'Suresh Menon', amount: '₹499', status: 'Active', createdDate: '03 Mar 2025', releaseDate: null, service: 'Water Tank Cleaning' },
+  { id: 'ESC-009', booking: 'BK-4485', customer: 'Deepak Kumar', provider: 'Manoj Singh', amount: '₹499', status: 'Disputed', createdDate: '02 Mar 2025', releaseDate: null, service: 'Electrician' },
+  { id: 'ESC-010', booking: 'BK-4480', customer: 'Lakshmi Reddy', provider: 'Kiran Babu', amount: '₹399', status: 'Pending', createdDate: '01 Mar 2025', releaseDate: null, service: 'Water Purifier' },
 ]
 
 const transactionTimeline = [
-  { time: '12:45 PM', event: 'Escrow ESC-001 created', amount: '₹3,500', type: 'created' as const },
-  { time: '11:30 AM', event: 'Escrow ESC-003 moved to Pending', amount: '₹4,200', type: 'pending' as const },
-  { time: '10:15 AM', event: 'Escrow ESC-004 released to provider', amount: '₹1,500', type: 'released' as const },
-  { time: '09:00 AM', event: 'Escrow ESC-005 dispute raised', amount: '₹18,000', type: 'disputed' as const },
-  { time: 'Yesterday', event: 'Escrow ESC-006 released to provider', amount: '₹6,500', type: 'released' as const },
-  { time: 'Yesterday', event: 'Escrow ESC-007 released to provider', amount: '₹2,200', type: 'released' as const },
-  { time: '2 days ago', event: 'Escrow ESC-009 dispute raised', amount: '₹5,800', type: 'disputed' as const },
+  { time: '12:45 PM', event: 'Escrow ESC-001 created', amount: '₹499', type: 'created' as const },
+  { time: '11:30 AM', event: 'Escrow ESC-003 moved to Pending', amount: '₹499', type: 'pending' as const },
+  { time: '10:15 AM', event: 'Escrow ESC-004 released to provider', amount: '₹499', type: 'released' as const },
+  { time: '09:00 AM', event: 'Escrow ESC-005 dispute raised', amount: '₹499', type: 'disputed' as const },
+  { time: 'Yesterday', event: 'Escrow ESC-006 released to provider', amount: '₹499', type: 'released' as const },
+  { time: 'Yesterday', event: 'Escrow ESC-007 released to provider', amount: '₹349', type: 'released' as const },
+  { time: '2 days ago', event: 'Escrow ESC-009 dispute raised', amount: '₹499', type: 'disputed' as const },
 ]
 
 const disputedEscrows = [
-  { id: 'ESC-005', customer: 'Meera Joshi', provider: 'Raju Patel', amount: '₹18,000', reason: 'Service quality not as expected - painting peeling within 3 days', filedDate: '09 Mar 2025', status: 'Under Review' },
-  { id: 'ESC-009', customer: 'Deepak Kumar', provider: 'Manoj Singh', amount: '₹5,800', reason: 'Electrical issue not resolved - recurring problem after service', filedDate: '08 Mar 2025', status: 'Mediation' },
+  { id: 'ESC-005', customer: 'Meera Joshi', provider: 'Raju Patel', amount: '₹499', reason: 'Service quality not as expected - kitchen appliance issue within 3 days', filedDate: '09 Mar 2025', status: 'Under Review' },
+  { id: 'ESC-009', customer: 'Deepak Kumar', provider: 'Manoj Singh', amount: '₹499', reason: 'Electrical issue not resolved - recurring problem after service', filedDate: '08 Mar 2025', status: 'Mediation' },
 ]
 
 const statusConfig: Record<EscrowStatus, { badge: string; icon: React.ReactNode }> = {

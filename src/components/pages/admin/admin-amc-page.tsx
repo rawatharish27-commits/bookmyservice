@@ -7,10 +7,10 @@ import { Separator } from '@/components/ui/separator'
 import { Shield, Plus, Calendar, Users } from 'lucide-react'
 
 const amcPlans = [
-  { id: 1, name: 'Basic Care', price: '₹1,999/year', services: 2, visits: 4, customers: 156, active: true },
-  { id: 2, name: 'Standard Care', price: '₹3,999/year', services: 4, visits: 8, customers: 243, active: true },
-  { id: 3, name: 'Premium Care', price: '₹6,999/year', services: 6, visits: 12, customers: 89, active: true },
-  { id: 4, name: 'Enterprise Care', price: '₹12,999/year', services: 10, visits: 24, customers: 12, active: false },
+  { id: 1, name: 'Basic Care', price: '₹999/year', services: 2, visits: 4, customers: 156, active: true },
+  { id: 2, name: 'Standard Care', price: '₹1,999/year', services: 4, visits: 8, customers: 243, active: true },
+  { id: 3, name: 'Premium Care', price: '₹2,999/year', services: 6, visits: 12, customers: 89, active: true },
+  { id: 4, name: 'Enterprise Care', price: '₹4,999/year', services: 10, visits: 24, customers: 12, active: false },
 ]
 
 const subscriptions = [

@@ -32,7 +32,7 @@ import {
 } from 'lucide-react'
 
 type VendorStatus = 'Active' | 'Pending' | 'Suspended'
-type VendorCategory = 'Cleaning' | 'AC & HVAC' | 'Plumbing' | 'Beauty' | 'Painting' | 'Electrical'
+type VendorCategory = 'Water Tank Cleaning' | 'Air Conditioner' | 'Plumber' | 'Electrician' | 'Kitchen Appliances' | 'Geyser'
 
 interface Vendor {
   id: number
@@ -51,32 +51,32 @@ interface Vendor {
 }
 
 const vendors: Vendor[] = [
-  { id: 1, name: 'SparkClean Solutions', category: 'Cleaning', city: 'Bengaluru', rating: 4.8, totalServices: 1245, compliance: 95, status: 'Active', onboardingProgress: 100, phone: '+91 98765 11111', email: 'info@sparkclean.in', joinDate: 'Jan 2023', revenue: '₹18,45,000' },
-  { id: 2, name: 'CoolAir Technologies', category: 'AC & HVAC', city: 'Mumbai', rating: 4.6, totalServices: 876, compliance: 88, status: 'Active', onboardingProgress: 100, phone: '+91 98765 22222', email: 'support@coolair.in', joinDate: 'Mar 2023', revenue: '₹14,32,000' },
-  { id: 3, name: 'PipeFix India', category: 'Plumbing', city: 'Pune', rating: 4.5, totalServices: 654, compliance: 92, status: 'Active', onboardingProgress: 100, phone: '+91 98765 33333', email: 'contact@pipefix.in', joinDate: 'Feb 2023', revenue: '₹9,87,000' },
-  { id: 4, name: 'GlowUp Beauty', category: 'Beauty', city: 'Delhi', rating: 4.9, totalServices: 987, compliance: 97, status: 'Active', onboardingProgress: 100, phone: '+91 98765 44444', email: 'hello@glowup.in', joinDate: 'Apr 2023', revenue: '₹16,54,000' },
-  { id: 5, name: 'ProPaint Services', category: 'Painting', city: 'Hyderabad', rating: 4.3, totalServices: 432, compliance: 78, status: 'Pending', onboardingProgress: 65, phone: '+91 98765 55555', email: 'info@propaint.in', joinDate: 'Dec 2024', revenue: '₹6,45,000' },
-  { id: 6, name: 'WireMaster Electric', category: 'Electrical', city: 'Chennai', rating: 4.7, totalServices: 567, compliance: 90, status: 'Active', onboardingProgress: 100, phone: '+91 98765 66666', email: 'service@wiremaster.in', joinDate: 'May 2023', revenue: '₹8,76,000' },
-  { id: 7, name: 'AquaFlow Plumbing', category: 'Plumbing', city: 'Kolkata', rating: 3.8, totalServices: 234, compliance: 62, status: 'Suspended', onboardingProgress: 100, phone: '+91 98765 77777', email: 'info@aquaflow.in', joinDate: 'Jul 2023', revenue: '₹3,21,000' },
-  { id: 8, name: 'FreshAir Systems', category: 'AC & HVAC', city: 'Jaipur', rating: 4.4, totalServices: 345, compliance: 82, status: 'Pending', onboardingProgress: 40, phone: '+91 98765 88888', email: 'hello@freshair.in', joinDate: 'Jan 2025', revenue: '₹2,34,000' },
+  { id: 1, name: 'SparkClean Solutions', category: 'Water Tank Cleaning', city: 'Bengaluru', rating: 4.8, totalServices: 1245, compliance: 95, status: 'Active', onboardingProgress: 100, phone: '+91 98765 11111', email: 'info@sparkclean.in', joinDate: 'Jan 2023', revenue: '₹18,45,000' },
+  { id: 2, name: 'CoolAir Technologies', category: 'Air Conditioner', city: 'Mumbai', rating: 4.6, totalServices: 876, compliance: 88, status: 'Active', onboardingProgress: 100, phone: '+91 98765 22222', email: 'support@coolair.in', joinDate: 'Mar 2023', revenue: '₹14,32,000' },
+  { id: 3, name: 'PipeFix India', category: 'Plumber', city: 'Pune', rating: 4.5, totalServices: 654, compliance: 92, status: 'Active', onboardingProgress: 100, phone: '+91 98765 33333', email: 'contact@pipefix.in', joinDate: 'Feb 2023', revenue: '₹9,87,000' },
+  { id: 4, name: 'PowerFix Electric', category: 'Electrician', city: 'Delhi', rating: 4.9, totalServices: 987, compliance: 97, status: 'Active', onboardingProgress: 100, phone: '+91 98765 44444', email: 'hello@powerfix.in', joinDate: 'Apr 2023', revenue: '₹16,54,000' },
+  { id: 5, name: 'ProKitchen Services', category: 'Kitchen Appliances', city: 'Hyderabad', rating: 4.3, totalServices: 432, compliance: 78, status: 'Pending', onboardingProgress: 65, phone: '+91 98765 55555', email: 'info@prokitchen.in', joinDate: 'Dec 2024', revenue: '₹6,45,000' },
+  { id: 6, name: 'HeatMaster Geyser', category: 'Geyser', city: 'Chennai', rating: 4.7, totalServices: 567, compliance: 90, status: 'Active', onboardingProgress: 100, phone: '+91 98765 66666', email: 'service@heatmaster.in', joinDate: 'May 2023', revenue: '₹8,76,000' },
+  { id: 7, name: 'AquaFlow Plumbing', category: 'Plumber', city: 'Kolkata', rating: 3.8, totalServices: 234, compliance: 62, status: 'Suspended', onboardingProgress: 100, phone: '+91 98765 77777', email: 'info@aquaflow.in', joinDate: 'Jul 2023', revenue: '₹3,21,000' },
+  { id: 8, name: 'FreshAir Systems', category: 'Air Conditioner', city: 'Jaipur', rating: 4.4, totalServices: 345, compliance: 82, status: 'Pending', onboardingProgress: 40, phone: '+91 98765 88888', email: 'hello@freshair.in', joinDate: 'Jan 2025', revenue: '₹2,34,000' },
 ]
 
 const categoryColors: Record<VendorCategory, string> = {
-  'Cleaning': 'bg-blue-100 text-blue-700',
-  'AC & HVAC': 'bg-cyan-100 text-cyan-700',
-  'Plumbing': 'bg-indigo-100 text-indigo-700',
-  'Beauty': 'bg-pink-100 text-pink-700',
-  'Painting': 'bg-amber-100 text-amber-700',
-  'Electrical': 'bg-yellow-100 text-yellow-700',
+  'Water Tank Cleaning': 'bg-blue-100 text-blue-700',
+  'Air Conditioner': 'bg-cyan-100 text-cyan-700',
+  'Plumber': 'bg-indigo-100 text-indigo-700',
+  'Electrician': 'bg-yellow-100 text-yellow-700',
+  'Kitchen Appliances': 'bg-amber-100 text-amber-700',
+  'Geyser': 'bg-orange-100 text-orange-700',
 }
 
 const categoryIcons: Record<VendorCategory, React.ReactNode> = {
-  'Cleaning': <Sparkles className="size-4" />,
-  'AC & HVAC': <Wind className="size-4" />,
-  'Plumbing': <Droplets className="size-4" />,
-  'Beauty': <Star className="size-4" />,
-  'Painting': <Layers className="size-4" />,
-  'Electrical': <Zap className="size-4" />,
+  'Water Tank Cleaning': <Droplets className="size-4" />,
+  'Air Conditioner': <Wind className="size-4" />,
+  'Plumber': <Wrench className="size-4" />,
+  'Electrician': <Zap className="size-4" />,
+  'Kitchen Appliances': <Package className="size-4" />,
+  'Geyser': <Sparkles className="size-4" />,
 }
 
 const summaryStats = [
@@ -152,12 +152,12 @@ export function VendorManagementPage() {
             onChange={(e) => setCategoryFilter(e.target.value as VendorCategory | 'all')}
           >
             <option value="all">All Categories</option>
-            <option value="Cleaning">Cleaning</option>
-            <option value="AC & HVAC">AC & HVAC</option>
-            <option value="Plumbing">Plumbing</option>
-            <option value="Beauty">Beauty</option>
-            <option value="Painting">Painting</option>
-            <option value="Electrical">Electrical</option>
+            <option value="Water Tank Cleaning">Water Tank Cleaning</option>
+            <option value="Air Conditioner">Air Conditioner</option>
+            <option value="Plumber">Plumber</option>
+            <option value="Electrician">Electrician</option>
+            <option value="Kitchen Appliances">Kitchen Appliances</option>
+            <option value="Geyser">Geyser</option>
           </select>
           <select
             className="h-9 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-700"

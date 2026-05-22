@@ -4,16 +4,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Plus, TrendingUp, TrendingDown, ArrowUpRight, Wallet } from 'lucide-react'
+import { Plus, TrendingUp, TrendingDown, ArrowUpRight, Wallet, Loader2 } from 'lucide-react'
+import { useApi } from '@/lib/use-api'
+import { useApp } from '@/lib/app-context'
 
-const transactions = [
-  { id: 1, desc: 'Added via UPI', amount: '+₹500', type: 'credit', date: '10 May 2025' },
-  { id: 2, desc: 'AC Service Payment', amount: '-₹1,200', type: 'debit', date: '12 May 2025' },
-  { id: 3, desc: 'Refund - Cancelled Booking', amount: '+₹600', type: 'credit', date: '8 May 2025' },
-  { id: 4, desc: 'Cleaning Service Payment', amount: '-₹2,500', type: 'debit', date: '5 May 2025' },
-]
+interface WalletTransaction {
+  id: string
+  desc: string
+  amount: string
+  type: 'credit' | 'debit'
+  date: string
+}
+
+interface WalletData {
+  balance: number
+  transactions: WalletTransaction[]
+}
 
 export function ClientWalletPage() {
+  const { navigate } = useApp()
+  const { data: wallet, loading, error, refetch } = useApi<WalletData>(async () => {
+    const res = await fetch('/api/client/wallet')
+    if (!res.ok) throw new Error('Failed to load wallet')
+    return res.json()
+  })
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading wallet">
+        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex flex-col items-center justify-center gap-4">
+        <p className="text-red-500" role="alert">Failed to load wallet</p>
+        <Button variant="outline" onClick={refetch}>Retry</Button>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
       <div className="mx-auto max-w-2xl space-y-6">
@@ -25,12 +58,11 @@ export function ClientWalletPage() {
               <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-blue-100">Available Balance</span></div>
               <Badge className="bg-white/20 text-white border-0 hover:bg-white/20">Active</Badge>
             </div>
-            <p className="text-3xl font-bold">₹1,250.00</p>
-            <p className="text-xs text-blue-200 mt-1">Updated just now</p>
+            <p className="text-3xl font-bold">₹{(wallet?.balance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="bg-white p-4 flex gap-3">
-            <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl"><Plus className="size-4" /> Add Money</Button>
-            <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
+            <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" onClick={() => navigate('client-add-money')} aria-label="Add money to wallet"><Plus className="size-4" /> Add Money</Button>
+            <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl" aria-label="Withdraw from wallet"><ArrowUpRight className="size-4" /> Withdraw</Button>
           </div>
         </Card>
 
@@ -38,25 +70,29 @@ export function ClientWalletPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-slate-900">Recent Transactions</CardTitle>
-              <Button variant="ghost" size="sm" className="text-blue-600 text-xs">View All</Button>
+              <Button variant="ghost" size="sm" className="text-blue-600 text-xs" onClick={() => navigate('client-wallet-transactions')} aria-label="View all transactions">View All</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">
-            {transactions.map((txn, i) => (
-              <div key={txn.id}>
-                <div className="flex items-center gap-3 py-3">
-                  <div className={`flex size-8 items-center justify-center rounded-lg ${txn.type === 'credit' ? 'bg-emerald-100' : 'bg-red-100'}`}>
-                    {txn.type === 'credit' ? <TrendingUp className="size-4 text-emerald-600" /> : <TrendingDown className="size-4 text-red-600" />}
+            {(!wallet?.transactions || wallet.transactions.length === 0) ? (
+              <p className="text-center text-slate-400 py-8 text-sm">No transactions yet</p>
+            ) : (
+              wallet.transactions.map((txn, i) => (
+                <div key={txn.id}>
+                  <div className="flex items-center gap-3 py-3">
+                    <div className={`flex size-8 items-center justify-center rounded-lg ${txn.type === 'credit' ? 'bg-emerald-100' : 'bg-red-100'}`}>
+                      {txn.type === 'credit' ? <TrendingUp className="size-4 text-emerald-600" /> : <TrendingDown className="size-4 text-red-600" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-900">{txn.desc}</p>
+                      <p className="text-xs text-slate-400">{txn.date}</p>
+                    </div>
+                    <span className={`text-sm font-semibold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-600'}`}>{txn.amount}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900">{txn.desc}</p>
-                    <p className="text-xs text-slate-400">{txn.date}</p>
-                  </div>
-                  <span className={`text-sm font-semibold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-600'}`}>{txn.amount}</span>
+                  {i < wallet.transactions.length - 1 && <Separator className="bg-slate-100" />}
                 </div>
-                {i < transactions.length - 1 && <Separator className="bg-slate-100" />}
-              </div>
-            ))}
+              ))
+            )}
           </CardContent>
         </Card>
       </div>

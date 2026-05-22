@@ -8,12 +8,12 @@ import { Separator } from '@/components/ui/separator'
 import { Plus, Search, Edit2, GripVertical, LayoutGrid } from 'lucide-react'
 
 const categories = [
-  { id: 1, name: 'AC & Appliance', services: 45, icon: '❄️', active: true, order: 1 },
-  { id: 2, name: 'Cleaning', services: 38, icon: '🧹', active: true, order: 2 },
-  { id: 3, name: 'Plumbing', services: 24, icon: '🔧', active: true, order: 3 },
-  { id: 4, name: 'Electrical', services: 20, icon: '⚡', active: true, order: 4 },
-  { id: 5, name: 'Painting', services: 12, icon: '🎨', active: true, order: 5 },
-  { id: 6, name: 'Pest Control', services: 8, icon: '🐛', active: false, order: 6 },
+  { id: 1, name: 'Air Conditioner', services: 45, icon: '❄️', active: true, order: 1 },
+  { id: 2, name: 'Water Tank Cleaning', services: 38, icon: '💧', active: true, order: 2 },
+  { id: 3, name: 'Plumber', services: 24, icon: '🔧', active: true, order: 3 },
+  { id: 4, name: 'Electrician', services: 20, icon: '⚡', active: true, order: 4 },
+  { id: 5, name: 'Geyser', services: 12, icon: '🔥', active: true, order: 5 },
+  { id: 6, name: 'Movers and Packers', services: 8, icon: '📦', active: false, order: 6 },
 ]
 
 export function AdminCategoriesPage() {

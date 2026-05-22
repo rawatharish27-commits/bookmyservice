@@ -279,7 +279,7 @@ function ProfileForm({
               </div>
               <div className="flex gap-2">
                 <Input
-                  placeholder="Add a skill (e.g., AC Repair, Plumbing)"
+                  placeholder="Add a skill (e.g., Air Conditioner, Plumber)"
                   value={newSkill}
                   onChange={(e) => setNewSkill(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}

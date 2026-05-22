@@ -8,11 +8,11 @@ import { Separator } from '@/components/ui/separator'
 import { Search, Filter, Download, RotateCcw, CreditCard, Eye } from 'lucide-react'
 
 const payments = [
-  { id: 'PAY-501', booking: 'BK-1024', customer: 'Rahul Sharma', amount: '₹1,200', method: 'UPI', status: 'Successful', date: '22 May 2024' },
-  { id: 'PAY-500', booking: 'BK-1023', customer: 'Priya Patel', amount: '₹2,500', method: 'Card', status: 'Successful', date: '21 May 2024' },
-  { id: 'PAY-499', booking: 'BK-1022', customer: 'Amit Verma', amount: '₹800', method: 'Wallet', status: 'Successful', date: '20 May 2024' },
+  { id: 'PAY-501', booking: 'BK-1024', customer: 'Rahul Sharma', amount: '₹499', method: 'UPI', status: 'Successful', date: '22 May 2024' },
+  { id: 'PAY-500', booking: 'BK-1023', customer: 'Priya Patel', amount: '₹399', method: 'Card', status: 'Successful', date: '21 May 2024' },
+  { id: 'PAY-499', booking: 'BK-1022', customer: 'Amit Verma', amount: '₹349', method: 'Wallet', status: 'Successful', date: '20 May 2024' },
   { id: 'PAY-498', booking: 'BK-1021', customer: 'Neha Gupta', amount: '₹499', method: 'UPI', status: 'Refunded', date: '19 May 2024' },
-  { id: 'PAY-497', booking: 'BK-1020', customer: 'Vikas Singh', amount: '₹1,500', method: 'Card', status: 'Failed', date: '18 May 2024' },
+  { id: 'PAY-497', booking: 'BK-1020', customer: 'Vikas Singh', amount: '₹299', method: 'Card', status: 'Failed', date: '18 May 2024' },
 ]
 
 const statusColors: Record<string, string> = {

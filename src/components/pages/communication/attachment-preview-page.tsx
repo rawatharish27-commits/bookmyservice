@@ -51,7 +51,7 @@ const attachments: AttachmentInfo[] = [
     senderColor: 'bg-blue-600',
     date: '4 Mar 2025, 9:20 AM',
     bookingId: 'BK-2024-1847',
-    serviceName: 'AC Service & Repair',
+    serviceName: 'Air Conditioner',
     mimeType: 'image/jpeg',
   },
   {
@@ -64,7 +64,7 @@ const attachments: AttachmentInfo[] = [
     senderColor: 'bg-emerald-600',
     date: '4 Mar 2025, 9:23 AM',
     bookingId: 'BK-2024-1847',
-    serviceName: 'AC Service & Repair',
+    serviceName: 'Air Conditioner',
     mimeType: 'application/pdf',
   },
   {
@@ -77,7 +77,7 @@ const attachments: AttachmentInfo[] = [
     senderColor: 'bg-rose-600',
     date: '3 Mar 2025, 2:15 PM',
     bookingId: 'BK-2024-1801',
-    serviceName: 'Plumbing Repair',
+    serviceName: 'Plumber',
     mimeType: 'image/jpeg',
   },
   {
@@ -90,7 +90,7 @@ const attachments: AttachmentInfo[] = [
     senderColor: 'bg-amber-600',
     date: '2 Mar 2025, 11:30 AM',
     bookingId: 'BK-2024-1756',
-    serviceName: 'Electrical Repair',
+    serviceName: 'Electrician',
     mimeType: 'application/pdf',
   },
   {
@@ -103,7 +103,7 @@ const attachments: AttachmentInfo[] = [
     senderColor: 'bg-purple-600',
     date: '1 Mar 2025, 4:00 PM',
     bookingId: 'BK-2024-1795',
-    serviceName: 'Interior Painting',
+    serviceName: 'Kitchen Appliances',
     mimeType: 'image/png',
   },
 ]

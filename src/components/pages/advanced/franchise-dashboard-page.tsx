@@ -36,11 +36,11 @@ const branchPerformance = [
 ]
 
 const topServices = [
-  { name: 'Deep Home Cleaning', bookings: 1245, revenue: '₹12,45,000', share: 28 },
-  { name: 'AC Service & Repair', bookings: 987, revenue: '₹9,87,000', share: 22 },
-  { name: 'Plumbing Services', bookings: 756, revenue: '₹7,56,000', share: 17 },
-  { name: 'Beauty & Spa', bookings: 654, revenue: '₹6,54,000', share: 15 },
-  { name: 'Painting', bookings: 432, revenue: '₹4,32,000', share: 10 },
+  { name: 'Water Tank Cleaning', bookings: 1245, revenue: '₹12,45,000', share: 28 },
+  { name: 'Air Conditioner', bookings: 987, revenue: '₹9,87,000', share: 22 },
+  { name: 'Plumber', bookings: 756, revenue: '₹7,56,000', share: 17 },
+  { name: 'Electrician', bookings: 654, revenue: '₹6,54,000', share: 15 },
+  { name: 'Kitchen Appliances', bookings: 432, revenue: '₹4,32,000', share: 10 },
 ]
 
 const monthlyBookings = [

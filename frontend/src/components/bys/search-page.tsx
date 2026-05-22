@@ -201,7 +201,7 @@ export function SearchPage() {
               Find Your Perfect Service
             </h1>
             <p className="mx-auto mb-8 max-w-lg text-emerald-100">
-              Search across verified professionals for plumbing, electrical, and AC services
+              Search across verified professionals for Plumber, Electrician, and Air Conditioner services
             </p>
 
             {/* Search Input */}
@@ -213,7 +213,7 @@ export function SearchPage() {
                     <Search className="size-5 text-emerald-500" />
                   </div>
                   <Input
-                    placeholder="Search for plumbing, electrical, AC services..."
+                    placeholder="Search for Plumber, Electrician, Air Conditioner services..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -617,9 +617,9 @@ export function SearchPage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             {[
-              { label: 'Plumbing', icon: <Droplets className="size-4" />, color: 'from-blue-500 to-cyan-500' },
-              { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-sky-500 to-yellow-500' },
-              { label: 'AC & HVAC', icon: <Wind className="size-4" />, color: 'from-teal-500 to-emerald-500' },
+              { label: 'Plumber', icon: <Droplets className="size-4" />, color: 'from-blue-500 to-cyan-500' },
+              { label: 'Electrician', icon: <Zap className="size-4" />, color: 'from-sky-500 to-yellow-500' },
+              { label: 'Air Conditioner', icon: <Wind className="size-4" />, color: 'from-teal-500 to-emerald-500' },
             ].map((item) => (
               <motion.button
                 key={item.label}

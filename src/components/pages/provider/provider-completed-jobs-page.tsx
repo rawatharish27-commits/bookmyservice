@@ -7,10 +7,10 @@ import { Separator } from '@/components/ui/separator'
 import { CheckCircle, Star, IndianRupee, ChevronRight } from 'lucide-react'
 
 const completedJobs = [
-  { id: 'BK-1023', service: 'Deep Cleaning', customer: 'Priya Patel', date: '21 May 2024', amount: '₹2,500', earnings: '₹2,125', rating: 5, hasReview: true },
-  { id: 'BK-1022', service: 'Plumbing Service', customer: 'Amit Verma', date: '20 May 2024', amount: '₹800', earnings: '₹680', rating: 4, hasReview: true },
-  { id: 'BK-1019', service: 'AC Repair', customer: 'Sonia Mehta', date: '18 May 2024', amount: '₹1,200', earnings: '₹1,020', rating: 0, hasReview: false },
-  { id: 'BK-1017', service: 'Electrical Repair', customer: 'Deepak Kumar', date: '16 May 2024', amount: '₹1,500', earnings: '₹1,275', rating: 5, hasReview: true },
+  { id: 'BK-1023', service: 'Water Tank Cleaning', customer: 'Priya Patel', date: '21 May 2024', amount: '₹499', earnings: '₹424', rating: 5, hasReview: true },
+  { id: 'BK-1022', service: 'Plumber', customer: 'Amit Verma', date: '20 May 2024', amount: '₹499', earnings: '₹424', rating: 4, hasReview: true },
+  { id: 'BK-1019', service: 'Air Conditioner', customer: 'Sonia Mehta', date: '18 May 2024', amount: '₹499', earnings: '₹424', rating: 0, hasReview: false },
+  { id: 'BK-1017', service: 'Electrician', customer: 'Deepak Kumar', date: '16 May 2024', amount: '₹499', earnings: '₹424', rating: 5, hasReview: true },
 ]
 
 export function ProviderCompletedJobsPage() {

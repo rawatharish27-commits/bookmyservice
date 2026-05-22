@@ -16,15 +16,15 @@ export function ProviderAddServicePage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Service Details</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div><label className="text-xs font-medium text-slate-500 mb-1 block">Service Name</label><Input placeholder="e.g., AC Repair & Service" /></div>
+            <div><label className="text-xs font-medium text-slate-500 mb-1 block">Service Name</label><Input placeholder="e.g., Air Conditioner" /></div>
             <div><label className="text-xs font-medium text-slate-500 mb-1 block">Category</label>
               <Select><SelectTrigger><SelectValue placeholder="Select category" /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="appliance">Appliance Repair</SelectItem>
-                  <SelectItem value="cleaning">Cleaning</SelectItem>
-                  <SelectItem value="plumbing">Plumbing</SelectItem>
-                  <SelectItem value="electrical">Electrical</SelectItem>
-                  <SelectItem value="painting">Painting</SelectItem>
+                  <SelectItem value="appliance">Air Conditioner</SelectItem>
+                  <SelectItem value="cleaning">Water Tank Cleaning</SelectItem>
+                  <SelectItem value="plumbing">Plumber</SelectItem>
+                  <SelectItem value="electrical">Electrician</SelectItem>
+                  <SelectItem value="painting">Kitchen Appliances</SelectItem>
                 </SelectContent>
               </Select>
             </div>

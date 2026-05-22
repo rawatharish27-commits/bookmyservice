@@ -3,10 +3,9 @@
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
-import { Calendar, Clock, ChevronLeft, ChevronRight, RefreshCw, AlertCircle } from 'lucide-react'
+import { Calendar, Clock, RefreshCw, AlertCircle } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
 
 const timeSlots = ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM']
 const dates = [
@@ -25,6 +24,16 @@ export function BookingReschedulePage() {
   const [selectedDate, setSelectedDate] = useState(23)
   const [selectedTime, setSelectedTime] = useState('10:00 AM')
   const [reason, setReason] = useState('')
+  const [loading, setLoading] = useState(false)
+  const { navigate } = useApp()
+
+  const handleReschedule = () => {
+    setLoading(true)
+    setTimeout(() => {
+      setLoading(false)
+      navigate('booking-confirmation')
+    }, 1000)
+  }
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
@@ -46,9 +55,7 @@ export function BookingReschedulePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-blue-600" />New Date</CardTitle>
-            </div>
+            <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-blue-600" />New Date</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 gap-2">
@@ -89,8 +96,10 @@ export function BookingReschedulePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button variant="outline" className="flex-1 rounded-xl border-slate-200">Cancel</Button>
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl"><RefreshCw className="size-4" /> Confirm Reschedule</Button>
+          <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => navigate('booking-confirmation')}>Cancel</Button>
+          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
+            <RefreshCw className="size-4" /> {loading ? 'Rescheduling...' : 'Confirm Reschedule'}
+          </Button>
         </div>
       </div>
     </div>

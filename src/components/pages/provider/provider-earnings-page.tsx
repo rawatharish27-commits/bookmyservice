@@ -17,10 +17,10 @@ const dailyEarnings = [
 ]
 
 const breakdown = [
-  { source: 'AC Repair', amount: '₹8,200', percentage: 35 },
-  { source: 'Deep Cleaning', amount: '₹6,500', percentage: 28 },
-  { source: 'Plumbing', amount: '₹4,800', percentage: 20 },
-  { source: 'Electrical', amount: '₹3,900', percentage: 17 },
+  { source: 'Air Conditioner', amount: '₹8,200', percentage: 35 },
+  { source: 'Water Tank Cleaning', amount: '₹6,500', percentage: 28 },
+  { source: 'Plumber', amount: '₹4,800', percentage: 20 },
+  { source: 'Electrician', amount: '₹3,900', percentage: 17 },
 ]
 
 export function ProviderEarningsPage() {

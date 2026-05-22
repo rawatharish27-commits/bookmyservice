@@ -2,11 +2,13 @@
 
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { XCircle, RefreshCw, ArrowLeft, AlertCircle, CreditCard } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
 
 export function PaymentFailedPage() {
+  const { navigate } = useApp()
+
   return (
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
@@ -29,15 +31,15 @@ export function PaymentFailedPage() {
             <Separator />
 
             <div className="space-y-2 text-left text-sm">
-              <div className="flex justify-between"><span className="text-slate-500">Amount</span><span className="font-bold text-slate-900">₹1,039</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Amount</span><span className="font-bold text-slate-900">₹299</span></div>
               <div className="flex justify-between"><span className="text-slate-500">Transaction ID</span><span className="text-slate-700">TXN20250520</span></div>
-              <div className="flex justify-between"><span className="text-slate-500">Method</span><span className="text-slate-700">Card •••• 4242</span></div>
+              <div className="flex justify-between"><span className="text-slate-500">Method</span><span className="text-slate-700">UPI</span></div>
             </div>
 
             <div className="space-y-2 pt-2">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl"><RefreshCw className="size-4" /> Retry Payment</Button>
-              <Button variant="outline" className="w-full gap-1 border-slate-200 rounded-xl"><CreditCard className="size-4" /> Try Different Method</Button>
-              <Button variant="ghost" className="w-full gap-1 text-slate-500"><ArrowLeft className="size-4" /> Back to Checkout</Button>
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" onClick={() => navigate('booking-payment')}><RefreshCw className="size-4" /> Retry Payment</Button>
+              <Button variant="outline" className="w-full gap-1 border-slate-200 rounded-xl" onClick={() => navigate('booking-payment')}><CreditCard className="size-4" /> Try Different Method</Button>
+              <Button variant="ghost" className="w-full gap-1 text-slate-500" onClick={() => navigate('booking-checkout')}><ArrowLeft className="size-4" /> Back to Checkout</Button>
             </div>
           </CardContent>
         </Card>

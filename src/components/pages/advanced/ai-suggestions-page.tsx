@@ -55,10 +55,10 @@ interface Suggestion {
 
 const suggestions: Suggestion[] = [
   {
-    id: 1, title: 'Increase AC Service Pricing by 15%', description: 'Demand for AC services has increased 45% in the last 2 weeks. Current pricing is 20% below market average for your top metro cities.',
+    id: 1, title: 'Increase Air Conditioner Service Pricing by 15%', description: 'Demand for Air Conditioner services has increased 45% in the last 2 weeks. Current pricing is 20% below market average for your top metro cities.',
     category: 'pricing', confidence: 92, impact: '₹4.2L/mo', effort: 'Low', status: 'new',
     metric: 'Revenue', metricChange: '+15%', metricDirection: 'up',
-    details: ['Mumbai AC bookings up 52%', 'Delhi AC bookings up 38%', 'Current avg price ₹2,800 vs market ₹3,400', 'Premium time slots fully booked']
+    details: ['Mumbai AC bookings up 52%', 'Delhi AC bookings up 38%', 'Current avg price ₹399 vs market ₹499', 'Premium time slots fully booked']
   },
   {
     id: 2, title: 'Expand to Whitefield, Bengaluru', description: 'High demand area with 3,400+ monthly searches and zero active providers. Estimated 120+ bookings/month potential.',
@@ -70,13 +70,13 @@ const suggestions: Suggestion[] = [
     id: 3, title: 'Reallocate 3 Providers to Hinjewadi', description: 'Hinjewadi branch has 23% more bookings than capacity. Koramangala has 15% spare capacity. Rebalancing can reduce wait times by 40%.',
     category: 'allocation', confidence: 89, impact: '₹1.5L/mo', effort: 'Low', status: 'new',
     metric: 'Wait Time', metricChange: '-40%', metricDirection: 'down',
-    details: ['Hinjewadi: 89% utilization, avg wait 2.3hrs', 'Koramangala: 74% utilization, avg wait 45min', '3 plumbing providers available for transfer', 'Similar service profiles match']
+    details: ['Hinjewadi: 89% utilization, avg wait 2.3hrs', 'Koramangala: 74% utilization, avg wait 45min', '3 Plumber providers available for transfer', 'Similar service profiles match']
   },
   {
-    id: 4, title: 'Launch Weekend Deep Cleaning Package', description: 'Analysis shows 68% of deep cleaning bookings happen on weekends. A bundled package with 10% discount can increase conversion by 25%.',
+    id: 4, title: 'Launch Weekend Water Tank Cleaning Package', description: 'Analysis shows 68% of water tank cleaning bookings happen on weekends. A bundled package with 10% discount can increase conversion by 25%.',
     category: 'expansion', confidence: 78, impact: '₹1.8L/mo', effort: 'Medium', status: 'new',
     metric: 'Conversion', metricChange: '+25%', metricDirection: 'up',
-    details: ['68% weekend booking concentration', 'Average basket size: ₹3,500', 'Bundle: Deep Clean + Kitchen Clean', 'Target: 2BHK/3BHK apartments']
+    details: ['68% weekend booking concentration', 'Average basket size: ₹499', 'Bundle: Water Tank Cleaning + Kitchen Appliances', 'Target: 2BHK/3BHK apartments']
   },
   {
     id: 5, title: 'Reduce Plumber Response Time in Pune', description: 'Average plumber response time in Pune is 3.2 hours vs 1.8 hours national average. Adding 2 on-call plumbers can reduce to 1.5 hours.',
@@ -100,12 +100,12 @@ const categoryConfig: Record<SuggestionCategory, { label: string; color: string;
 }
 
 const insightTimeline = [
-  { time: '2 hrs ago', event: 'AC service demand spike detected in Mumbai', type: 'expansion' as const, impact: '+45% bookings' },
+  { time: '2 hrs ago', event: 'Air Conditioner service demand spike detected in Mumbai', type: 'expansion' as const, impact: '+45% bookings' },
   { time: '5 hrs ago', event: 'Pune plumber response time exceeded threshold', type: 'optimization' as const, impact: '3.2 hrs avg' },
   { time: '8 hrs ago', event: 'Whitefield search volume crossed 3K/month', type: 'expansion' as const, impact: '3,400 searches' },
   { time: 'Yesterday', event: 'Morning slot cancellation rate above 30%', type: 'pricing' as const, impact: '35% cancel rate' },
   { time: '2 days ago', event: 'Hinjewadi capacity utilization hit 89%', type: 'allocation' as const, impact: 'Over capacity' },
-  { time: '3 days ago', event: 'Weekend cleaning demand pattern identified', type: 'expansion' as const, impact: '68% weekend' },
+  { time: '3 days ago', event: 'Weekend water tank cleaning demand pattern identified', type: 'expansion' as const, impact: '68% weekend' },
 ]
 
 export function AISuggestionsPage() {

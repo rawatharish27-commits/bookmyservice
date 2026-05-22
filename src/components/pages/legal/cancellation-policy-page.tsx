@@ -248,7 +248,7 @@ export function CancellationPolicyPage() {
                 <span className="text-sm font-semibold text-blue-900">Example</span>
               </div>
               <p className="text-xs text-blue-700">
-                If you booked a plumbing service for ₹1,000 and cancel 4 hours before the scheduled time, the cancellation fee would be ₹250 (25%). You would receive a refund of ₹750.
+                If you booked a plumber service for ₹399 and cancel 4 hours before the scheduled time, the cancellation fee would be ₹100 (25%). You would receive a refund of ₹299.
               </p>
             </div>
           </CardContent>

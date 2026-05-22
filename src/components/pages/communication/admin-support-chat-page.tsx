@@ -66,7 +66,7 @@ const supportTickets: SupportTicket[] = [
     subject: 'Refund not received for cancelled booking',
     priority: 'high',
     status: 'open',
-    lastMessage: 'It has been 5 days and I still have not received my refund of ₹1,250',
+    lastMessage: 'It has been 5 days and I still have not received my refund of ₹499',
     lastMessageTime: '2 min ago',
     unread: 2,
     category: 'Refund',
@@ -95,7 +95,7 @@ const supportTickets: SupportTicket[] = [
     subject: 'Wrong service performed by provider',
     priority: 'medium',
     status: 'waiting',
-    lastMessage: 'I booked deep cleaning but they did basic cleaning only',
+    lastMessage: 'I booked Water Tank Cleaning but they did basic cleaning only',
     lastMessageTime: '1 hr ago',
     unread: 0,
     assignedAgent: 'Kavitha R.',
@@ -148,15 +148,15 @@ const supportTickets: SupportTicket[] = [
 
 const ticketMessages: Record<number, ChatMessage[]> = {
   1: [
-    { id: 1, from: 'customer', senderName: 'Rahul Sharma', text: 'Hi, I cancelled my AC repair booking (BK-2024-1847) 5 days ago but I have not received my refund yet.', time: '10:30 AM', read: true },
+    { id: 1, from: 'customer', senderName: 'Rahul Sharma', text: 'Hi, I cancelled my Air Conditioner repair booking (BK-2024-1847) 5 days ago but I have not received my refund yet.', time: '10:30 AM', read: true },
     { id: 2, from: 'system', senderName: 'System', text: 'Ticket SUP-2024-452 created and assigned to queue.', time: '10:30 AM', read: true },
     { id: 3, from: 'agent', senderName: 'Suresh M.', text: 'Hello Rahul, I apologize for the delay. Let me check the status of your refund right away.', time: '10:35 AM', read: true },
-    { id: 4, from: 'customer', senderName: 'Rahul Sharma', text: 'Please do. The amount is ₹1,250 and it was supposed to be refunded within 3-5 business days.', time: '10:37 AM', read: true },
+    { id: 4, from: 'customer', senderName: 'Rahul Sharma', text: 'Please do. The amount is ₹499 and it was supposed to be refunded within 3-5 business days.', time: '10:37 AM', read: true },
     { id: 5, from: 'agent', senderName: 'Suresh M.', text: 'I can see the refund was initiated on our end. It seems there is a delay from the payment gateway. Let me escalate this.', time: '10:40 AM', read: true },
-    { id: 6, from: 'customer', senderName: 'Rahul Sharma', text: 'It has been 5 days and I still have not received my refund of ₹1,250. This is really frustrating.', time: '10:45 AM', read: false },
+    { id: 6, from: 'customer', senderName: 'Rahul Sharma', text: 'It has been 5 days and I still have not received my refund of ₹499. This is really frustrating.', time: '10:45 AM', read: false },
   ],
   2: [
-    { id: 1, from: 'customer', senderName: 'Priya Patel', text: 'I had a booking for electrical repair today at 2 PM but the provider never showed up!', time: '2:15 PM', read: true },
+    { id: 1, from: 'customer', senderName: 'Priya Patel', text: 'I had a booking for Electrician repair today at 2 PM but the provider never showed up!', time: '2:15 PM', read: true },
     { id: 2, from: 'agent', senderName: 'Suresh M.', text: 'I am sorry to hear that, Priya. Let me check the provider status immediately.', time: '2:20 PM', read: true },
     { id: 3, from: 'customer', senderName: 'Priya Patel', text: 'The electrician never arrived and I waited for 2 hours. This is unacceptable.', time: '4:15 PM', read: false },
   ],

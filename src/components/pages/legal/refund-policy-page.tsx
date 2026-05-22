@@ -243,7 +243,7 @@ export function RefundPolicyPage() {
                   <tr className="border-b border-slate-100">
                     <td className="py-2 px-3">Minor quality issue</td>
                     <td className="py-2 px-3"><Badge className="bg-green-100 text-green-700 hover:bg-green-100">25%</Badge></td>
-                    <td className="py-2 px-3 text-xs">Small area not cleaned in deep cleaning service</td>
+                    <td className="py-2 px-3 text-xs">Small area not cleaned in water tank cleaning service</td>
                   </tr>
                   <tr className="border-b border-slate-100">
                     <td className="py-2 px-3">Moderate quality issue</td>
@@ -253,7 +253,7 @@ export function RefundPolicyPage() {
                   <tr className="border-b border-slate-100">
                     <td className="py-2 px-3">Significant quality issue</td>
                     <td className="py-2 px-3"><Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100">75%</Badge></td>
-                    <td className="py-2 px-3 text-xs">Plumbing repair but leak persists partially</td>
+                    <td className="py-2 px-3 text-xs">Plumber repair but leak persists partially</td>
                   </tr>
                   <tr>
                     <td className="py-2 px-3">Service not rendered</td>
@@ -277,14 +277,14 @@ export function RefundPolicyPage() {
           <CardContent className="space-y-4">
             <div className="grid sm:grid-cols-2 gap-3">
               {[
-                { category: 'Home Cleaning', policy: 'If unsatisfied, free re-service within 48 hours or 50% refund', icon: '🏠' },
-                { category: 'AC & Appliance Repair', policy: '7-day service guarantee. Free re-repair or full refund if issue recurs', icon: '❄️' },
-                { category: 'Plumbing', policy: '30-day warranty on repairs. Full refund if problem not resolved', icon: '🔧' },
-                { category: 'Electrical', policy: '15-day warranty. Free re-service or 75% refund on quality issues', icon: '⚡' },
-                { category: 'Painting', policy: 'Inspection within 7 days. Touch-up free or 25-50% refund for uneven work', icon: '🎨' },
-                { category: 'Beauty & Wellness', policy: 'Same-day complaint only. 50% refund for service quality issues', icon: '💅' },
-                { category: 'Pest Control', policy: '30-day guarantee. Free re-treatment or full refund if pests return', icon: '🐛' },
-                { category: 'Moving & Packing', policy: 'Damage claims within 24 hours. Full compensation for documented damages', icon: '📦' },
+                { category: 'Water Tank Cleaning', policy: 'If unsatisfied, free re-service within 48 hours or 50% refund', icon: '🏠' },
+                { category: 'Air Conditioner', policy: '7-day service guarantee. Free re-repair or full refund if issue recurs', icon: '❄️' },
+                { category: 'Plumber', policy: '30-day warranty on repairs. Full refund if problem not resolved', icon: '🔧' },
+                { category: 'Electrician', policy: '15-day warranty. Free re-service or 75% refund on quality issues', icon: '⚡' },
+                { category: 'Kitchen Appliances', policy: 'Inspection within 7 days. Touch-up free or 25-50% refund for uneven work', icon: '🎨' },
+                { category: 'Electrician', policy: 'Same-day complaint only. 50% refund for service quality issues', icon: '💅' },
+                { category: 'Water Purifier', policy: '30-day guarantee. Free re-treatment or full refund if pests return', icon: '🐛' },
+                { category: 'Movers and Packers', policy: 'Damage claims within 24 hours. Full compensation for documented damages', icon: '📦' },
               ].map((item) => (
                 <div key={item.category} className="rounded-lg border border-slate-200 p-3">
                   <div className="flex items-center gap-2 mb-1">

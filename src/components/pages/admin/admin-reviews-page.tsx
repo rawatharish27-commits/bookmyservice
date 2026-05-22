@@ -7,11 +7,11 @@ import { Separator } from '@/components/ui/separator'
 import { Star, Flag, Eye, MessageSquare, ThumbsUp, ThumbsDown } from 'lucide-react'
 
 const reviews = [
-  { id: 1, customer: 'Priya Patel', provider: 'Cool Care Services', service: 'Deep Cleaning', rating: 5, comment: 'Excellent work! Very thorough and professional.', date: '21 May 2024', flagged: false, replied: true },
-  { id: 2, customer: 'Amit Verma', provider: 'QuickFix Solutions', service: 'Plumbing', rating: 4, comment: 'Good service, arrived on time.', date: '20 May 2024', flagged: false, replied: false },
-  { id: 3, customer: 'Sonia Mehta', provider: 'HomePro Services', service: 'AC Repair', rating: 2, comment: 'Very poor service. The issue came back within a day.', date: '18 May 2024', flagged: true, replied: false },
-  { id: 4, customer: 'Kavita Rao', provider: 'SparkClean Pro', service: 'Electrical', rating: 1, comment: 'Unprofessional behavior. Would not recommend.', date: '14 May 2024', flagged: true, replied: false },
-  { id: 5, customer: 'Deepak Kumar', provider: 'Cool Care Services', service: 'AC Repair', rating: 5, comment: 'Fixed everything in one visit. Great!', date: '16 May 2024', flagged: false, replied: true },
+  { id: 1, customer: 'Priya Patel', provider: 'Cool Care Services', service: 'Water Tank Cleaning', rating: 5, comment: 'Excellent work! Very thorough and professional.', date: '21 May 2024', flagged: false, replied: true },
+  { id: 2, customer: 'Amit Verma', provider: 'QuickFix Solutions', service: 'Plumber', rating: 4, comment: 'Good service, arrived on time.', date: '20 May 2024', flagged: false, replied: false },
+  { id: 3, customer: 'Sonia Mehta', provider: 'HomePro Services', service: 'Air Conditioner', rating: 2, comment: 'Very poor service. The issue came back within a day.', date: '18 May 2024', flagged: true, replied: false },
+  { id: 4, customer: 'Kavita Rao', provider: 'SparkClean Pro', service: 'Electrician', rating: 1, comment: 'Unprofessional behavior. Would not recommend.', date: '14 May 2024', flagged: true, replied: false },
+  { id: 5, customer: 'Deepak Kumar', provider: 'Cool Care Services', service: 'Air Conditioner', rating: 5, comment: 'Fixed everything in one visit. Great!', date: '16 May 2024', flagged: false, replied: true },
 ]
 
 export function AdminReviewsPage() {

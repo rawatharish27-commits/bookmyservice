@@ -129,10 +129,10 @@ const scheduleColorMap: Record<string, string> = {
 // ─── Service Icon Map ────────────────────────────────────────────────────────
 
 const serviceIconMap: Record<string, string> = {
-  'AC Repair & Service': '❄️',
-  'Deep Cleaning': '🧹',
-  'Plumbing Service': '🔧',
-  'Electrical Repair': '⚡',
+  'Air Conditioner': '❄️',
+  'Water Tank Cleaning': '🧹',
+  'Plumber': '🔧',
+  'Electrician': '⚡',
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────

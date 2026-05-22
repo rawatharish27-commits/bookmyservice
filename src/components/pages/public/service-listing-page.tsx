@@ -8,30 +8,41 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   Search, Star, SlidersHorizontal, MapPin, Clock, ChevronDown,
-  Grid3x3, List, Heart, ArrowUpDown, Filter, X
+  Grid3x3, List, Heart, ArrowUpDown, Filter, X, Loader2
 } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
+import { useMockApi } from '@/lib/use-api'
+import { useCallback } from 'react'
 
-const services = [
-  { name: 'AC Service & Repair', provider: 'CoolAir Solutions', rating: 4.8, reviews: 234, price: 599, category: 'HVAC', image: '❄️', verified: true },
-  { name: 'Deep Home Cleaning', provider: 'SparkleClean Pro', rating: 4.9, reviews: 512, price: 1299, category: 'Cleaning', image: '🏠', verified: true },
-  { name: 'Electrical Wiring', provider: 'PowerTech Electric', rating: 4.7, reviews: 189, price: 449, category: 'Electrical', image: '⚡', verified: false },
-  { name: 'Plumbing Fix', provider: 'AquaFix Experts', rating: 4.6, reviews: 167, price: 399, category: 'Plumbing', image: '🔧', verified: true },
-  { name: 'Interior Painting', provider: 'ColorCraft Studio', rating: 4.5, reviews: 98, price: 2499, category: 'Painting', image: '🎨', verified: true },
-  { name: 'CCTV Installation', provider: 'SecureView Tech', rating: 4.8, reviews: 76, price: 1899, category: 'Security', image: '📷', verified: false },
-  { name: 'RO Water Purifier', provider: 'PureFlow Services', rating: 4.4, reviews: 145, price: 349, category: 'Appliance', image: '💧', verified: true },
-  { name: 'Car Detailing', provider: 'AutoShine Pro', rating: 4.7, reviews: 203, price: 999, category: 'Auto', image: '🚗', verified: true },
-  { name: 'WiFi Setup', provider: 'NetConnect Hub', rating: 4.3, reviews: 54, price: 299, category: 'Networking', image: '📶', verified: false },
+const servicesData = [
+  { id: '1', name: 'Air Conditioner', provider: 'CoolAir Solutions', rating: 4.8, reviews: 234, price: 499, category: 'Air Conditioner', image: '❄️', verified: true },
+  { id: '2', name: 'Washing Machine Repair', provider: 'WashFix Pro', rating: 4.7, reviews: 189, price: 349, category: 'Washing Machine', image: '🫧', verified: true },
+  { id: '3', name: 'Electrician - Wiring', provider: 'PowerTech Electric', rating: 4.7, reviews: 189, price: 299, category: 'Electrician', image: '⚡', verified: false },
+  { id: '4', name: 'Plumber - Leak Fix', provider: 'AquaFix Experts', rating: 4.6, reviews: 167, price: 199, category: 'Plumber', image: '🔧', verified: true },
+  { id: '5', name: 'RO Water Purifier Service', provider: 'PureFlow Services', rating: 4.4, reviews: 145, price: 349, category: 'Water Purifier', image: '💧', verified: true },
+  { id: '6', name: 'TV Repair - LED/LCD', provider: 'ScreenFix Tech', rating: 4.5, reviews: 98, price: 399, category: 'TV Repair', image: '📺', verified: true },
+  { id: '7', name: 'Refrigerator Repair', provider: 'CoolTech Services', rating: 4.6, reviews: 156, price: 399, category: 'Refrigerator', image: '🧊', verified: false },
+  { id: '8', name: 'Geyser Installation', provider: 'HeatFix Experts', rating: 4.5, reviews: 112, price: 299, category: 'Geyser', image: '🔥', verified: true },
+  { id: '9', name: 'Water Tank Cleaning', provider: 'AquaClean Pro', rating: 4.3, reviews: 87, price: 199, category: 'Water Tank Cleaning', image: '🪣', verified: false },
 ]
 
 const filterOptions = {
-  categories: ['All', 'HVAC', 'Cleaning', 'Electrical', 'Plumbing', 'Painting', 'Security'],
-  priceRanges: ['All', 'Under ₹500', '₹500-₹1000', '₹1000-₹2000', 'Above ₹2000'],
+  categories: ['All', 'Air Conditioner', 'Washing Machine', 'Electrician', 'Plumber', 'Water Purifier', 'TV Repair', 'Refrigerator', 'Geyser', 'Kitchen Appliances', 'Water Tank Cleaning', 'Movers and Packers'],
+  priceRanges: ['All', 'Under ₹200', '₹200-₹300', '₹300-₹400', '₹400-₹499'],
   ratings: ['All', '4.5+', '4.0+', '3.5+'],
 }
 
 export function ServiceListingPage() {
   const [activeCategory, setActiveCategory] = useState('All')
   const [showFilters, setShowFilters] = useState(false)
+  const { navigate } = useApp()
+
+  const servicesLoader = useCallback(() => servicesData, [])
+  const { data: services, loading, error } = useMockApi(servicesData, 700)
+
+  const filteredServices = services?.filter((s) =>
+    activeCategory === 'All' || s.category === activeCategory
+  ) ?? []
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -42,12 +53,12 @@ export function ServiceListingPage() {
           <div className="flex gap-3">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
-              <Input placeholder="Search services..." className="pl-10 rounded-xl border-slate-200" />
+              <Input placeholder="Search services..." className="pl-10 rounded-xl border-slate-200" aria-label="Search services" />
             </div>
-            <Button variant="outline" className="gap-2 rounded-xl" onClick={() => setShowFilters(!showFilters)}>
+            <Button variant="outline" className="gap-2 rounded-xl" onClick={() => setShowFilters(!showFilters)} aria-expanded={showFilters}>
               <SlidersHorizontal className="size-4" /> Filters
             </Button>
-            <Button variant="outline" className="gap-2 rounded-xl">
+            <Button variant="outline" className="gap-2 rounded-xl" aria-label="Sort services">
               <ArrowUpDown className="size-4" /> Sort
             </Button>
           </div>
@@ -57,12 +68,12 @@ export function ServiceListingPage() {
       <div className="max-w-7xl mx-auto px-4 py-6">
         <div className="flex gap-6">
           {/* Sidebar Filters */}
-          <aside className={`${showFilters ? 'block' : 'hidden'} lg:block w-64 shrink-0`}>
+          <aside className={`${showFilters ? 'block' : 'hidden'} lg:block w-64 shrink-0`} aria-label="Filters">
             <Card className="bg-white rounded-xl shadow-sm border-slate-100 sticky top-4">
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-slate-900">Filters</h3>
-                  <Button variant="ghost" size="sm" className="text-xs text-blue-600">Clear All</Button>
+                  <Button variant="ghost" size="sm" className="text-xs text-blue-600" onClick={() => setActiveCategory('All')}>Clear All</Button>
                 </div>
                 <Separator className="mb-4" />
                 <div className="mb-5">
@@ -102,52 +113,62 @@ export function ServiceListingPage() {
 
           {/* Service Cards */}
           <div className="flex-1">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-slate-500">{services.length} services found</p>
-              <div className="flex gap-2">
-                <Button variant="outline" size="icon-sm"><Grid3x3 className="size-4" /></Button>
-                <Button variant="outline" size="icon-sm"><List className="size-4" /></Button>
+            {loading ? (
+              <div className="flex items-center justify-center py-20" role="status" aria-label="Loading services">
+                <Loader2 className="size-8 text-blue-600 animate-spin" />
+                <span className="sr-only">Loading...</span>
               </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {services.map((svc) => (
-                <Card key={svc.name} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow group">
-                  <CardContent className="p-5">
-                    <div className="flex items-start justify-between mb-3">
-                      <span className="text-3xl">{svc.image}</span>
-                      <div className="flex items-center gap-2">
-                        {svc.verified && <Badge className="bg-green-100 text-green-700 text-[10px] border-0">✓ Verified</Badge>}
-                        <Button variant="ghost" size="icon-xs"><Heart className="size-4 text-slate-400" /></Button>
-                      </div>
-                    </div>
-                    <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{svc.name}</h3>
-                    <p className="text-sm text-slate-500 mt-1">{svc.provider}</p>
-                    <div className="flex items-center gap-1 mt-2">
-                      <Star className="size-4 fill-amber-400 text-amber-400" />
-                      <span className="text-sm font-medium text-slate-900">{svc.rating}</span>
-                      <span className="text-xs text-slate-500">({svc.reviews})</span>
-                    </div>
-                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
-                      <span className="flex items-center gap-1"><Clock className="size-3" /> 2 hrs</span>
-                      <span className="flex items-center gap-1"><MapPin className="size-3" /> 2.5 km</span>
-                    </div>
-                    <Separator className="my-3" />
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900">₹{svc.price}</span>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">Book Now</Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-            {/* Pagination */}
-            <div className="flex items-center justify-center gap-2 mt-8">
-              <Button variant="outline" size="sm" disabled>Previous</Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700">1</Button>
-              <Button variant="outline" size="sm">2</Button>
-              <Button variant="outline" size="sm">3</Button>
-              <Button variant="outline" size="sm">Next</Button>
-            </div>
+            ) : error ? (
+              <div className="text-center py-20">
+                <p className="text-red-500 mb-4">Failed to load services</p>
+                <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-sm text-slate-500">{filteredServices.length} services found</p>
+                  <div className="flex gap-2">
+                    <Button variant="outline" size="icon-sm" aria-label="Grid view"><Grid3x3 className="size-4" /></Button>
+                    <Button variant="outline" size="icon-sm" aria-label="List view"><List className="size-4" /></Button>
+                  </div>
+                </div>
+                {filteredServices.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                    {filteredServices.map((svc) => (
+                      <Card key={svc.id} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow group">
+                        <CardContent className="p-5">
+                          <div className="flex items-start justify-between mb-3">
+                            <span className="text-3xl" aria-hidden="true">{svc.image}</span>
+                            <div className="flex items-center gap-2">
+                              {svc.verified && <Badge className="bg-green-100 text-green-700 text-[10px] border-0">Verified</Badge>}
+                              <Button variant="ghost" size="icon-xs" aria-label="Add to favorites"><Heart className="size-4 text-slate-400" /></Button>
+                            </div>
+                          </div>
+                          <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{svc.name}</h3>
+                          <p className="text-sm text-slate-500 mt-1">{svc.provider}</p>
+                          <div className="flex items-center gap-1 mt-2">
+                            <Star className="size-4 fill-amber-400 text-amber-400" />
+                            <span className="text-sm font-medium text-slate-900">{svc.rating}</span>
+                            <span className="text-xs text-slate-500">({svc.reviews})</span>
+                          </div>
+                          <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                            <span className="flex items-center gap-1"><Clock className="size-3" /> 1-2 hrs</span>
+                            <span className="flex items-center gap-1"><MapPin className="size-3" /> Nearby</span>
+                          </div>
+                          <Separator className="my-3" />
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-900">₹{svc.price}</span>
+                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-slate-500 py-20">No services found for this category.</p>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

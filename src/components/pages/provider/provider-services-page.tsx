@@ -7,11 +7,11 @@ import { Separator } from '@/components/ui/separator'
 import { Plus, Edit2, Power, MoreVertical } from 'lucide-react'
 
 const services = [
-  { id: 1, name: 'AC Repair & Service', category: 'Appliance', price: '₹499', duration: '1-2 hrs', status: 'Active', bookings: 86 },
-  { id: 2, name: 'Deep Cleaning', category: 'Cleaning', price: '₹1,499', duration: '2-3 hrs', status: 'Active', bookings: 52 },
-  { id: 3, name: 'Plumbing Service', category: 'Plumbing', price: '₹399', duration: '1 hr', status: 'Active', bookings: 38 },
-  { id: 4, name: 'Electrical Repair', category: 'Electrical', price: '₹599', duration: '1-2 hrs', status: 'Paused', bookings: 24 },
-  { id: 5, name: 'Painting Service', category: 'Painting', price: '₹2,999', duration: '4-6 hrs', status: 'Active', bookings: 15 },
+  { id: 1, name: 'Air Conditioner', category: 'Air Conditioner', price: '₹499', duration: '1-2 hrs', status: 'Active', bookings: 86 },
+  { id: 2, name: 'Water Tank Cleaning', category: 'Water Tank Cleaning', price: '₹499', duration: '2-3 hrs', status: 'Active', bookings: 52 },
+  { id: 3, name: 'Plumber', category: 'Plumber', price: '₹399', duration: '1 hr', status: 'Active', bookings: 38 },
+  { id: 4, name: 'Electrician', category: 'Electrician', price: '₹499', duration: '1-2 hrs', status: 'Paused', bookings: 24 },
+  { id: 5, name: 'Kitchen Appliances', category: 'Kitchen Appliances', price: '₹499', duration: '4-6 hrs', status: 'Active', bookings: 15 },
 ]
 
 const statusColors: Record<string, string> = {

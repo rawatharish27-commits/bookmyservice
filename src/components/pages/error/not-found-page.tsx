@@ -20,7 +20,7 @@ import {
 
 const popularPages = [
   { icon: Wrench, label: 'Home Services', href: '#', tag: 'Popular' },
-  { icon: Sparkles, label: 'Beauty & Spa', href: '#', tag: 'Trending' },
+  { icon: Sparkles, label: 'Water Purifier', href: '#', tag: 'Popular' },
   { icon: ShoppingCart, label: 'My Bookings', href: '#', tag: null },
   { icon: Headphones, label: 'Support', href: '#', tag: null },
   { icon: MapPin, label: 'Nearby Providers', href: '#', tag: 'New' },

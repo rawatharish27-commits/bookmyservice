@@ -6,8 +6,8 @@ import { Separator } from '@/components/ui/separator'
 import { CheckCircle2, Circle, Clock, Calendar, User, MapPin, CreditCard, Zap } from 'lucide-react'
 
 const timelineSteps = [
-  { time: '10:00 AM', title: 'Booking Placed', desc: 'AC Service & Repair booked for 20 May 2025', status: 'completed' },
-  { time: '10:02 AM', title: 'Payment Confirmed', desc: '₹1,039 paid via MyService Wallet', status: 'completed' },
+  { time: '10:00 AM', title: 'Booking Placed', desc: 'Air Conditioner booked for 20 May 2025', status: 'completed' },
+  { time: '10:02 AM', title: 'Payment Confirmed', desc: '₹499 paid via MyService Wallet', status: 'completed' },
   { time: '10:05 AM', title: 'Provider Assigned', desc: 'Amit Sharma assigned to your booking', status: 'completed' },
   { time: '9:45 AM', title: 'Provider En Route', desc: 'Amit is heading to your location', status: 'current' },
   { time: '~10:00 AM', title: 'Service In Progress', desc: 'AC repair work in progress', status: 'upcoming' },
@@ -26,11 +26,11 @@ export function BookingTimelinePage() {
             <div className="flex items-center gap-3">
               <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
               <div className="flex-1">
-                <h3 className="text-sm font-semibold text-slate-900">AC Service & Repair</h3>
+                <h3 className="text-sm font-semibold text-slate-900">Air Conditioner</h3>
                 <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-1">
                   <span className="flex items-center gap-1"><Calendar className="size-3" />20 May 2025</span>
                   <span className="flex items-center gap-1"><User className="size-3" />Amit Sharma</span>
-                  <span className="flex items-center gap-1"><CreditCard className="size-3" />₹1,039</span>
+                  <span className="flex items-center gap-1"><CreditCard className="size-3" />₹499</span>
                 </div>
               </div>
               <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">In Progress</Badge>

@@ -119,7 +119,7 @@ const notificationPreviews: NotificationPreview[] = [
     id: '1',
     category: 'Booking',
     title: 'Booking Confirmed! ✅',
-    body: 'Your deep cleaning service is confirmed for tomorrow, 10 AM. Provider: Rajesh K.',
+    body: 'Your Water Tank Cleaning service is confirmed for tomorrow, 10 AM. Provider: Rajesh K.',
     time: 'Just now',
     icon: CalendarCheck,
     color: 'text-blue-600',
@@ -127,7 +127,7 @@ const notificationPreviews: NotificationPreview[] = [
   {
     id: '2',
     category: 'Promotion',
-    title: '🎉 Flat 30% Off AC Service!',
+    title: '🎉 Flat 30% Off Air Conditioner!',
     body: 'Summer special! Book AC service this week and save big. Use code: COOL30',
     time: '2 hrs ago',
     icon: Tag,

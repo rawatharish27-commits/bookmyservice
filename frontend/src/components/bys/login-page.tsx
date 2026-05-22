@@ -392,9 +392,9 @@ export function LoginPage() {
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {[
-                            { Icon: Droplets, label: 'Plumbing', color: 'bg-blue-50 text-blue-600 border-blue-100' },
-                            { Icon: Zap, label: 'Electrical', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-                            { Icon: Wind, label: 'AC & HVAC', color: 'bg-teal-50 text-teal-600 border-teal-100' },
+                            { Icon: Droplets, label: 'Plumber', color: 'bg-blue-50 text-blue-600 border-blue-100' },
+                            { Icon: Zap, label: 'Electrician', color: 'bg-sky-50 text-sky-600 border-sky-100' },
+                            { Icon: Wind, label: 'Air Conditioner', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}

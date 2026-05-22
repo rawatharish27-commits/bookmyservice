@@ -46,19 +46,19 @@ interface InventoryItem {
 }
 
 const inventoryItems: InventoryItem[] = [
-  { id: 1, name: 'Cleaning Solution (5L)', category: 'Cleaning', sku: 'CLN-001', currentStock: 145, maxStock: 200, reorderPoint: 50, unitPrice: '₹320', totalValue: '₹46,400', status: 'In Stock', lastRestocked: '10 Mar 2025', supplier: 'CleanPro Supplies' },
-  { id: 2, name: 'AC Gas R32 (1kg)', category: 'AC & HVAC', sku: 'AC-001', currentStock: 28, maxStock: 100, reorderPoint: 30, unitPrice: '₹850', totalValue: '₹23,800', status: 'Low Stock', lastRestocked: '05 Mar 2025', supplier: 'CoolTech India' },
-  { id: 3, name: 'Paint Roller Set', category: 'Painting', sku: 'PNT-001', currentStock: 67, maxStock: 150, reorderPoint: 40, unitPrice: '₹180', totalValue: '₹12,060', status: 'In Stock', lastRestocked: '12 Mar 2025', supplier: 'PaintMaster Co.' },
-  { id: 4, name: 'PVC Pipe 1-inch (10m)', category: 'Plumbing', sku: 'PLM-001', currentStock: 0, maxStock: 80, reorderPoint: 25, unitPrice: '₹450', totalValue: '₹0', status: 'Out of Stock', lastRestocked: '20 Feb 2025', supplier: 'PipeFix Wholesale' },
-  { id: 5, name: 'Facial Kit (Premium)', category: 'Beauty', sku: 'BTY-001', currentStock: 42, maxStock: 100, reorderPoint: 35, unitPrice: '₹560', totalValue: '₹23,520', status: 'In Stock', lastRestocked: '08 Mar 2025', supplier: 'GlowUp Beauty Supply' },
-  { id: 6, name: 'Wire Cable 2.5mm (100m)', category: 'Electrical', sku: 'ELC-001', currentStock: 15, maxStock: 60, reorderPoint: 20, unitPrice: '₹2,800', totalValue: '₹42,000', status: 'Low Stock', lastRestocked: '01 Mar 2025', supplier: 'WireMaster Electric' },
-  { id: 7, name: 'Disinfectant Spray (1L)', category: 'Cleaning', sku: 'CLN-002', currentStock: 180, maxStock: 250, reorderPoint: 60, unitPrice: '₹280', totalValue: '₹50,400', status: 'In Stock', lastRestocked: '11 Mar 2025', supplier: 'CleanPro Supplies' },
-  { id: 8, name: 'AC Filter (Universal)', category: 'AC & HVAC', sku: 'AC-002', currentStock: 5, maxStock: 50, reorderPoint: 15, unitPrice: '₹220', totalValue: '₹1,100', status: 'Low Stock', lastRestocked: '25 Feb 2025', supplier: 'CoolTech India' },
-  { id: 9, name: 'Wall Primer (20L)', category: 'Painting', sku: 'PNT-002', currentStock: 0, maxStock: 40, reorderPoint: 12, unitPrice: '₹1,850', totalValue: '₹0', status: 'Out of Stock', lastRestocked: '15 Feb 2025', supplier: 'PaintMaster Co.' },
-  { id: 10, name: 'Pipe Wrench (12 inch)', category: 'Plumbing', sku: 'PLM-002', currentStock: 38, maxStock: 60, reorderPoint: 20, unitPrice: '₹650', totalValue: '₹24,700', status: 'In Stock', lastRestocked: '07 Mar 2025', supplier: 'PipeFix Wholesale' },
+  { id: 1, name: 'Cleaning Solution (5L)', category: 'Water Tank Cleaning', sku: 'CLN-001', currentStock: 145, maxStock: 200, reorderPoint: 50, unitPrice: '₹320', totalValue: '₹46,400', status: 'In Stock', lastRestocked: '10 Mar 2025', supplier: 'CleanPro Supplies' },
+  { id: 2, name: 'AC Gas R32 (1kg)', category: 'Air Conditioner', sku: 'AC-001', currentStock: 28, maxStock: 100, reorderPoint: 30, unitPrice: '₹499', totalValue: '₹13,972', status: 'Low Stock', lastRestocked: '05 Mar 2025', supplier: 'CoolTech India' },
+  { id: 3, name: 'Kitchen Tool Set', category: 'Kitchen Appliances', sku: 'KTA-001', currentStock: 67, maxStock: 150, reorderPoint: 40, unitPrice: '₹180', totalValue: '₹12,060', status: 'In Stock', lastRestocked: '12 Mar 2025', supplier: 'KitchenPro Supplies' },
+  { id: 4, name: 'PVC Pipe 1-inch (10m)', category: 'Plumber', sku: 'PLM-001', currentStock: 0, maxStock: 80, reorderPoint: 25, unitPrice: '₹450', totalValue: '₹0', status: 'Out of Stock', lastRestocked: '20 Feb 2025', supplier: 'PipeFix Wholesale' },
+  { id: 5, name: 'Electrician Repair Kit (Premium)', category: 'Electrician', sku: 'ELC-001', currentStock: 42, maxStock: 100, reorderPoint: 35, unitPrice: '₹499', totalValue: '₹20,958', status: 'In Stock', lastRestocked: '08 Mar 2025', supplier: 'ElectraPro Supply' },
+  { id: 6, name: 'Geyser Heating Element', category: 'Geyser', sku: 'GYS-001', currentStock: 15, maxStock: 60, reorderPoint: 20, unitPrice: '₹499', totalValue: '₹7,485', status: 'Low Stock', lastRestocked: '01 Mar 2025', supplier: 'HeatMaster Supplies' },
+  { id: 7, name: 'Disinfectant Spray (1L)', category: 'Water Tank Cleaning', sku: 'CLN-002', currentStock: 180, maxStock: 250, reorderPoint: 60, unitPrice: '₹280', totalValue: '₹50,400', status: 'In Stock', lastRestocked: '11 Mar 2025', supplier: 'CleanPro Supplies' },
+  { id: 8, name: 'AC Filter (Universal)', category: 'Air Conditioner', sku: 'AC-002', currentStock: 5, maxStock: 50, reorderPoint: 15, unitPrice: '₹220', totalValue: '₹1,100', status: 'Low Stock', lastRestocked: '25 Feb 2025', supplier: 'CoolTech India' },
+  { id: 9, name: 'Kitchen Appliance Parts Kit', category: 'Kitchen Appliances', sku: 'KTA-002', currentStock: 0, maxStock: 40, reorderPoint: 12, unitPrice: '₹499', totalValue: '₹0', status: 'Out of Stock', lastRestocked: '15 Feb 2025', supplier: 'KitchenPro Supplies' },
+  { id: 10, name: 'Pipe Wrench (12 inch)', category: 'Plumber', sku: 'PLM-002', currentStock: 38, maxStock: 60, reorderPoint: 20, unitPrice: '₹499', totalValue: '₹18,962', status: 'In Stock', lastRestocked: '07 Mar 2025', supplier: 'PipeFix Wholesale' },
 ]
 
-const categories = ['All', 'Cleaning', 'AC & HVAC', 'Painting', 'Plumbing', 'Beauty', 'Electrical']
+const categories = ['All', 'Water Tank Cleaning', 'Air Conditioner', 'Kitchen Appliances', 'Plumber', 'Electrician', 'Geyser']
 
 const summaryStats = [
   { label: 'Total Items', value: '156', icon: Package, color: 'bg-blue-100 text-blue-600' },

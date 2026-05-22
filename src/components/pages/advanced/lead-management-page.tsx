@@ -21,7 +21,6 @@ import {
   Sparkles,
   Wrench,
   Droplets,
-  Paintbrush,
   Home,
   Wind,
 } from 'lucide-react'
@@ -50,29 +49,27 @@ const stages: { name: LeadStage; color: string; bgColor: string }[] = [
 ]
 
 const initialLeads: Lead[] = [
-  { id: 1, name: 'Rahul Verma', phone: '+91 98765 11111', email: 'rahul@gmail.com', service: 'Deep Home Cleaning', source: 'Google', followUpDate: '15 Mar', value: '₹3,500', notes: 'Interested in weekly cleaning', stage: 'New' },
-  { id: 2, name: 'Sneha Patel', phone: '+91 98765 22222', email: 'sneha@gmail.com', service: 'AC Service', source: 'Facebook', followUpDate: '14 Mar', value: '₹2,800', notes: 'Has 3 ACs, wants AMC', stage: 'New' },
-  { id: 3, name: 'Arjun Reddy', phone: '+91 98765 33333', email: 'arjun@gmail.com', service: 'Plumbing', source: 'Referral', followUpDate: '13 Mar', value: '₹1,500', notes: 'Kitchen pipe leakage', stage: 'New' },
-  { id: 4, name: 'Priya Sharma', phone: '+91 98765 44444', email: 'priya@gmail.com', service: 'Beauty & Spa', source: 'Instagram', followUpDate: '14 Mar', value: '₹4,200', notes: 'Bridal package inquiry', stage: 'Contacted' },
-  { id: 5, name: 'Vikram Singh', phone: '+91 98765 55555', email: 'vikram@gmail.com', service: 'Painting', source: 'Google', followUpDate: '12 Mar', value: '₹18,000', notes: 'Full house painting, 3BHK', stage: 'Contacted' },
-  { id: 6, name: 'Meera Joshi', phone: '+91 98765 66666', email: 'meera@gmail.com', service: 'Pest Control', source: 'Website', followUpDate: '11 Mar', value: '₹2,500', notes: 'Termite issue in society flat', stage: 'Contacted' },
-  { id: 7, name: 'Karthik Raja', phone: '+91 98765 77777', email: 'karthik@gmail.com', service: 'AC Installation', source: 'Referral', followUpDate: '10 Mar', value: '₹6,500', notes: 'New AC installation, 2 units', stage: 'Qualified' },
-  { id: 8, name: 'Ananya Iyer', phone: '+91 98765 88888', email: 'ananya@gmail.com', service: 'Deep Cleaning', source: 'Google', followUpDate: '09 Mar', value: '₹5,000', notes: 'Move-in cleaning, 2BHK', stage: 'Qualified' },
-  { id: 9, name: 'Rohan Gupta', phone: '+91 98765 99999', email: 'rohan@gmail.com', service: 'Plumbing', source: 'WhatsApp', followUpDate: '-', value: '₹2,200', notes: 'Booked bathroom repair', stage: 'Converted' },
-  { id: 10, name: 'Pooja Nair', phone: '+91 98765 00000', email: 'pooja@gmail.com', service: 'Home Cleaning', source: 'Google', followUpDate: '-', value: '₹3,500', notes: 'Recurring weekly booking', stage: 'Converted' },
-  { id: 11, name: 'Deepak Kumar', phone: '+91 98765 12345', email: 'deepak@gmail.com', service: 'Painting', source: 'Facebook', followUpDate: '-', value: '₹12,000', notes: 'Went with competitor', stage: 'Lost' },
-  { id: 12, name: 'Lakshmi Reddy', phone: '+91 98765 67890', email: 'lakshmi@gmail.com', service: 'AC Service', source: 'Website', followUpDate: '-', value: '₹2,800', notes: 'Budget mismatch', stage: 'Lost' },
+  { id: 1, name: 'Rahul Verma', phone: '+91 98765 11111', email: 'rahul@gmail.com', service: 'Water Tank Cleaning', source: 'Google', followUpDate: '15 Mar', value: '₹499', notes: 'Interested in weekly water tank cleaning', stage: 'New' },
+  { id: 2, name: 'Sneha Patel', phone: '+91 98765 22222', email: 'sneha@gmail.com', service: 'Air Conditioner', source: 'Facebook', followUpDate: '14 Mar', value: '₹499', notes: 'Has 3 ACs, wants AMC', stage: 'New' },
+  { id: 3, name: 'Arjun Reddy', phone: '+91 98765 33333', email: 'arjun@gmail.com', service: 'Plumber', source: 'Referral', followUpDate: '13 Mar', value: '₹299', notes: 'Kitchen pipe leakage', stage: 'New' },
+  { id: 4, name: 'Priya Sharma', phone: '+91 98765 44444', email: 'priya@gmail.com', service: 'Electrician', source: 'Instagram', followUpDate: '14 Mar', value: '₹499', notes: 'Wiring inspection inquiry', stage: 'Contacted' },
+  { id: 5, name: 'Vikram Singh', phone: '+91 98765 55555', email: 'vikram@gmail.com', service: 'Kitchen Appliances', source: 'Google', followUpDate: '12 Mar', value: '₹499', notes: 'Full kitchen appliance check, 3BHK', stage: 'Contacted' },
+  { id: 6, name: 'Meera Joshi', phone: '+91 98765 66666', email: 'meera@gmail.com', service: 'Water Purifier', source: 'Website', followUpDate: '11 Mar', value: '₹399', notes: 'Water purifier issue in society flat', stage: 'Contacted' },
+  { id: 7, name: 'Karthik Raja', phone: '+91 98765 77777', email: 'karthik@gmail.com', service: 'Air Conditioner', source: 'Referral', followUpDate: '10 Mar', value: '₹499', notes: 'New AC installation, 2 units', stage: 'Qualified' },
+  { id: 8, name: 'Ananya Iyer', phone: '+91 98765 88888', email: 'ananya@gmail.com', service: 'Water Tank Cleaning', source: 'Google', followUpDate: '09 Mar', value: '₹499', notes: 'Move-in water tank cleaning, 2BHK', stage: 'Qualified' },
+  { id: 9, name: 'Rohan Gupta', phone: '+91 98765 99999', email: 'rohan@gmail.com', service: 'Plumber', source: 'WhatsApp', followUpDate: '-', value: '₹349', notes: 'Booked bathroom repair', stage: 'Converted' },
+  { id: 10, name: 'Pooja Nair', phone: '+91 98765 00000', email: 'pooja@gmail.com', service: 'Water Tank Cleaning', source: 'Google', followUpDate: '-', value: '₹499', notes: 'Recurring weekly booking', stage: 'Converted' },
+  { id: 11, name: 'Deepak Kumar', phone: '+91 98765 12345', email: 'deepak@gmail.com', service: 'Kitchen Appliances', source: 'Facebook', followUpDate: '-', value: '₹499', notes: 'Went with competitor', stage: 'Lost' },
+  { id: 12, name: 'Lakshmi Reddy', phone: '+91 98765 67890', email: 'lakshmi@gmail.com', service: 'Air Conditioner', source: 'Website', followUpDate: '-', value: '₹499', notes: 'Budget mismatch', stage: 'Lost' },
 ]
 
 const serviceIcons: Record<string, React.ReactNode> = {
-  'Deep Home Cleaning': <Home className="size-3.5" />,
-  'Home Cleaning': <Home className="size-3.5" />,
-  'AC Service': <Wind className="size-3.5" />,
-  'AC Installation': <Wind className="size-3.5" />,
-  'Plumbing': <Droplets className="size-3.5" />,
-  'Painting': <Paintbrush className="size-3.5" />,
-  'Beauty & Spa': <Sparkles className="size-3.5" />,
-  'Pest Control': <Wrench className="size-3.5" />,
+  'Water Tank Cleaning': <Home className="size-3.5" />,
+  'Air Conditioner': <Wind className="size-3.5" />,
+  'Plumber': <Droplets className="size-3.5" />,
+  'Kitchen Appliances': <Wrench className="size-3.5" />,
+  'Electrician': <Sparkles className="size-3.5" />,
+  'Water Purifier': <Droplets className="size-3.5" />,
 }
 
 export function LeadManagementPage() {

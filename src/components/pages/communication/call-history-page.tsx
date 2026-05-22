@@ -56,7 +56,7 @@ const callHistory: CallRecord[] = [
     duration: '12:34',
     date: '4 Mar 2025',
     time: '10:00 AM',
-    serviceName: 'AC Service & Repair',
+    serviceName: 'Air Conditioner',
     bookingId: 'BK-2024-1847',
   },
   {
@@ -70,7 +70,7 @@ const callHistory: CallRecord[] = [
     duration: '5:12',
     date: '4 Mar 2025',
     time: '8:30 AM',
-    serviceName: 'Deep Home Cleaning',
+    serviceName: 'Water Tank Cleaning',
     bookingId: 'BK-2024-1832',
   },
   {
@@ -84,7 +84,7 @@ const callHistory: CallRecord[] = [
     duration: '—',
     date: '3 Mar 2025',
     time: '3:45 PM',
-    serviceName: 'Plumbing Repair',
+    serviceName: 'Plumber',
     bookingId: 'BK-2024-1801',
   },
   {
@@ -98,7 +98,7 @@ const callHistory: CallRecord[] = [
     duration: '25:08',
     date: '3 Mar 2025',
     time: '11:00 AM',
-    serviceName: 'Interior Painting',
+    serviceName: 'Kitchen Appliances',
     bookingId: 'BK-2024-1795',
   },
   {
@@ -112,7 +112,7 @@ const callHistory: CallRecord[] = [
     duration: '—',
     date: '2 Mar 2025',
     time: '5:30 PM',
-    serviceName: 'Carpentry Work',
+    serviceName: 'Geyser',
     bookingId: 'BK-2024-1756',
   },
   {
@@ -140,7 +140,7 @@ const callHistory: CallRecord[] = [
     duration: '—',
     date: '1 Mar 2025',
     time: '9:00 AM',
-    serviceName: 'Electrical Repair',
+    serviceName: 'Electrician',
     bookingId: 'BK-2024-1712',
   },
   {
@@ -154,7 +154,7 @@ const callHistory: CallRecord[] = [
     duration: '15:22',
     date: '28 Feb 2025',
     time: '4:00 PM',
-    serviceName: 'Pest Control',
+    serviceName: 'Water Purifier',
     bookingId: 'BK-2024-1645',
   },
   {
@@ -168,7 +168,7 @@ const callHistory: CallRecord[] = [
     duration: '3:56',
     date: '27 Feb 2025',
     time: '1:30 PM',
-    serviceName: 'Appliance Installation',
+    serviceName: 'TV Repair',
     bookingId: 'BK-2024-1623',
   },
   {
@@ -182,7 +182,7 @@ const callHistory: CallRecord[] = [
     duration: '—',
     date: '26 Feb 2025',
     time: '6:00 PM',
-    serviceName: 'Home Sanitization',
+    serviceName: 'Water Tank Cleaning',
     bookingId: 'BK-2024-1598',
   },
 ]

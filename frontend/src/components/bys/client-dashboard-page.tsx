@@ -476,9 +476,9 @@ export function ClientDashboardPage() {
   ];
 
   const SERVICE_ICONS = [
-    { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumbing' },
-    { icon: Zap, color: 'from-cyan-400 to-yellow-400', label: 'Electrical' },
-    { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'AC & HVAC' },
+    { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumber' },
+    { icon: Zap, color: 'from-cyan-400 to-yellow-400', label: 'Electrician' },
+    { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'Air Conditioner' },
   ];
 
   /* ================================================================

@@ -43,7 +43,7 @@ const chatMessages: ChatMessage[] = [
   { id: 2, from: 'self', name: 'You', text: 'Sure, let me adjust the camera', time: '10:03' },
   { id: 3, from: 'other', name: 'Amit Sharma', text: 'I can see the issue clearly now. The filter needs replacement.', time: '10:04' },
   { id: 4, from: 'self', name: 'You', text: 'How much will that cost?', time: '10:05' },
-  { id: 5, from: 'other', name: 'Amit Sharma', text: 'Filter replacement will be around ₹350 + service charge ₹200', time: '10:05' },
+  { id: 5, from: 'other', name: 'Amit Sharma', text: 'Filter replacement will be around ₹350 + service charge ₹149', time: '10:05' },
 ]
 
 export function VideoConsultationPage() {
@@ -92,7 +92,7 @@ export function VideoConsultationPage() {
               </AvatarFallback>
             </Avatar>
             <p className="text-white text-lg font-semibold">Amit Sharma</p>
-            <p className="text-slate-400 text-sm">AC Service Expert</p>
+            <p className="text-slate-400 text-sm">Air Conditioner Expert</p>
             {isCameraOff && (
               <Badge className="mt-3 bg-slate-700 text-slate-300 border-slate-600">
                 <VideoOff className="size-3 mr-1" />
@@ -255,7 +255,7 @@ export function VideoConsultationPage() {
               <div className="bg-slate-700/50 rounded-xl p-3">
                 <div className="flex items-center gap-2 mb-2">
                   <Wrench className="size-4 text-blue-400" />
-                  <p className="text-sm font-semibold text-white">AC Service & Repair</p>
+                  <p className="text-sm font-semibold text-white">Air Conditioner</p>
                 </div>
                 <div className="space-y-1.5">
                   <div className="flex justify-between">
@@ -272,7 +272,7 @@ export function VideoConsultationPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[11px] text-slate-400">Amount</span>
-                    <span className="text-[11px] text-emerald-400 font-semibold">₹599</span>
+                    <span className="text-[11px] text-emerald-400 font-semibold">₹499</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[11px] text-slate-400">Status</span>

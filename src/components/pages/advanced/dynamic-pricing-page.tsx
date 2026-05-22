@@ -46,13 +46,13 @@ interface PricingRule {
 const pricingRules: PricingRule[] = [
   { id: 1, name: 'Weekend Rush Pricing', type: 'time-based', service: 'All Services', multiplier: '1.3x', condition: 'Sat-Sun, 9AM-6PM', active: true, impact: '+₹2.4L/mo', lastModified: '10 Mar 2025' },
   { id: 2, name: 'Late Night Surcharge', type: 'time-based', service: 'All Services', multiplier: '1.5x', condition: 'After 9PM', active: true, impact: '+₹1.8L/mo', lastModified: '08 Mar 2025' },
-  { id: 3, name: 'Early Bird Discount', type: 'time-based', service: 'Home Cleaning', multiplier: '0.85x', condition: 'Mon-Fri, 8AM-11AM', active: true, impact: '-₹0.6L/mo', lastModified: '05 Mar 2025' },
+  { id: 3, name: 'Early Bird Discount', type: 'time-based', service: 'Water Tank Cleaning', multiplier: '0.85x', condition: 'Mon-Fri, 8AM-11AM', active: true, impact: '-₹0.6L/mo', lastModified: '05 Mar 2025' },
   { id: 4, name: 'Festival Demand Surge', type: 'demand-based', service: 'All Services', multiplier: '1.4x', condition: 'Booking volume > 80%', active: true, impact: '+₹3.2L/mo', lastModified: '12 Mar 2025' },
-  { id: 5, name: 'Monsoon Premium', type: 'demand-based', service: 'Plumbing, Pest Control', multiplier: '1.25x', condition: 'Jul-Sep (Monsoon)', active: false, impact: '+₹1.5L/mo', lastModified: '01 Mar 2025' },
-  { id: 6, name: 'Summer AC Surge', type: 'demand-based', service: 'AC & HVAC', multiplier: '1.35x', condition: 'Apr-Jun (Summer)', active: true, impact: '+₹4.1L/mo', lastModified: '15 Mar 2025' },
+  { id: 5, name: 'Monsoon Premium', type: 'demand-based', service: 'Plumber, Water Purifier', multiplier: '1.25x', condition: 'Jul-Sep (Monsoon)', active: false, impact: '+₹1.5L/mo', lastModified: '01 Mar 2025' },
+  { id: 6, name: 'Summer AC Surge', type: 'demand-based', service: 'Air Conditioner', multiplier: '1.35x', condition: 'Apr-Jun (Summer)', active: true, impact: '+₹4.1L/mo', lastModified: '15 Mar 2025' },
   { id: 7, name: 'Metro City Premium', type: 'location-based', service: 'All Services', multiplier: '1.2x', condition: 'Mumbai, Delhi, Bengaluru', active: true, impact: '+₹5.8L/mo', lastModified: '10 Mar 2025' },
   { id: 8, name: 'Tier-2 City Discount', type: 'location-based', service: 'All Services', multiplier: '0.9x', condition: 'Indore, Jaipur, Kochi', active: true, impact: '-₹1.2L/mo', lastModified: '08 Mar 2025' },
-  { id: 9, name: 'Premium Locality', type: 'location-based', service: 'Beauty & Spa', multiplier: '1.15x', condition: 'South Delhi, Bandra, Jubilee Hills', active: false, impact: '+₹0.8L/mo', lastModified: '02 Mar 2025' },
+  { id: 9, name: 'Premium Locality', type: 'location-based', service: 'Electrician', multiplier: '1.15x', condition: 'South Delhi, Bandra, Jubilee Hills', active: false, impact: '+₹0.8L/mo', lastModified: '02 Mar 2025' },
 ]
 
 const multiplierCards = [
@@ -63,14 +63,14 @@ const multiplierCards = [
 ]
 
 const zonePricing = [
-  { zone: 'South Mumbai', city: 'Mumbai', multiplier: '1.25x', avgPrice: '₹3,500', bookings: 456 },
-  { zone: 'Koramangala', city: 'Bengaluru', multiplier: '1.15x', avgPrice: '₹2,800', bookings: 389 },
-  { zone: 'Connaught Place', city: 'Delhi', multiplier: '1.2x', avgPrice: '₹3,200', bookings: 342 },
-  { zone: 'Hinjewadi', city: 'Pune', multiplier: '1.0x', avgPrice: '₹2,200', bookings: 267 },
-  { zone: 'T. Nagar', city: 'Chennai', multiplier: '1.05x', avgPrice: '₹2,400', bookings: 198 },
-  { zone: 'Salt Lake', city: 'Kolkata', multiplier: '0.95x', avgPrice: '₹1,800', bookings: 145 },
-  { zone: 'Jubilee Hills', city: 'Hyderabad', multiplier: '1.1x', avgPrice: '₹2,600', bookings: 234 },
-  { zone: 'Vijay Nagar', city: 'Indore', multiplier: '0.85x', avgPrice: '₹1,500', bookings: 112 },
+  { zone: 'South Mumbai', city: 'Mumbai', multiplier: '1.25x', avgPrice: '₹499', bookings: 456 },
+  { zone: 'Koramangala', city: 'Bengaluru', multiplier: '1.15x', avgPrice: '₹449', bookings: 389 },
+  { zone: 'Connaught Place', city: 'Delhi', multiplier: '1.2x', avgPrice: '₹499', bookings: 342 },
+  { zone: 'Hinjewadi', city: 'Pune', multiplier: '1.0x', avgPrice: '₹349', bookings: 267 },
+  { zone: 'T. Nagar', city: 'Chennai', multiplier: '1.05x', avgPrice: '₹399', bookings: 198 },
+  { zone: 'Salt Lake', city: 'Kolkata', multiplier: '0.95x', avgPrice: '₹299', bookings: 145 },
+  { zone: 'Jubilee Hills', city: 'Hyderabad', multiplier: '1.1x', avgPrice: '₹449', bookings: 234 },
+  { zone: 'Vijay Nagar', city: 'Indore', multiplier: '0.85x', avgPrice: '₹249', bookings: 112 },
 ]
 
 const typeConfig: Record<PricingType, { label: string; color: string; icon: React.ReactNode }> = {

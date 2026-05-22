@@ -7,8 +7,8 @@ import { Separator } from '@/components/ui/separator'
 import { Timer, Phone, Navigation, MessageSquare, CheckCircle } from 'lucide-react'
 
 const activeJobs = [
-  { id: 'BK-1024', service: 'AC Repair', customer: 'Rahul Sharma', phone: '+91 98765 12345', address: '12, MG Road, Delhi', startedAt: '10:00 AM', elapsed: '1h 25m', status: 'In Progress' },
-  { id: 'BK-1028', service: 'Plumbing Fix', customer: 'Anita Desai', phone: '+91 87654 54321', address: '34, Janakpuri, Delhi', startedAt: '02:00 PM', elapsed: '0h 15m', status: 'On the Way' },
+  { id: 'BK-1024', service: 'Air Conditioner', customer: 'Rahul Sharma', phone: '+91 98765 12345', address: '12, MG Road, Delhi', startedAt: '10:00 AM', elapsed: '1h 25m', status: 'In Progress' },
+  { id: 'BK-1028', service: 'Plumber', customer: 'Anita Desai', phone: '+91 87654 54321', address: '34, Janakpuri, Delhi', startedAt: '02:00 PM', elapsed: '0h 15m', status: 'On the Way' },
 ]
 
 export function ProviderActiveJobsPage() {

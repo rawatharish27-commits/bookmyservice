@@ -254,10 +254,10 @@ export function InstallAppPage() {
                     <div className="text-[10px] text-slate-500 mb-2">Good morning, Priya! 👋</div>
                     <div className="bg-blue-600 rounded-lg p-2 mb-2">
                       <div className="text-[8px] text-blue-100">Upcoming Booking</div>
-                      <div className="text-[10px] text-white font-semibold">Deep Cleaning - Today 2:00 PM</div>
+                      <div className="text-[10px] text-white font-semibold">Water Tank Cleaning - Today 2:00 PM</div>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5 mb-2">
-                      {['Cleaning', 'Plumbing', 'Electrical', 'Painting'].map((cat) => (
+                      {['Water Tank Cleaning', 'Plumber', 'Electrician', 'Kitchen Appliances'].map((cat) => (
                         <div key={cat} className="bg-slate-100 rounded-lg p-2 text-center">
                           <div className="w-4 h-4 rounded bg-blue-100 mx-auto mb-1" />
                           <span className="text-[8px] text-slate-600">{cat}</span>
@@ -266,7 +266,7 @@ export function InstallAppPage() {
                     </div>
                     <div className="bg-slate-50 rounded-lg p-2">
                       <div className="text-[8px] text-slate-400">Special Offer</div>
-                      <div className="text-[10px] text-slate-900 font-medium">20% off AC Service</div>
+                      <div className="text-[10px] text-slate-900 font-medium">20% off Air Conditioner</div>
                     </div>
                   </div>
                 </div>

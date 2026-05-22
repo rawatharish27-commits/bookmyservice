@@ -42,7 +42,7 @@ const initialMessages: Message[] = [
   {
     id: 1,
     from: 'system',
-    text: 'Booking #BK-2024-1847 has been confirmed for AC Service & Repair on 4 Mar 2025, 10:00 AM',
+    text: 'Booking #BK-2024-1847 has been confirmed for Air Conditioner on 4 Mar 2025, 10:00 AM',
     time: '9:00 AM',
     read: true,
     type: 'system',
@@ -204,7 +204,7 @@ export function ProviderCustomerChatPage() {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-semibold text-slate-900">Amit Sharma</p>
-              <p className="text-xs text-emerald-500">Online • AC Service Expert</p>
+              <p className="text-xs text-emerald-500">Online • Air Conditioner Expert</p>
             </div>
             <Button variant="ghost" size="icon" className="text-slate-400 shrink-0">
               <Phone className="size-5" />
@@ -224,7 +224,7 @@ export function ProviderCustomerChatPage() {
                 <Wrench className="size-4 text-blue-600 shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-blue-900 truncate">
-                    AC Service & Repair
+                    Air Conditioner
                   </p>
                   <p className="text-[10px] text-blue-600">BK-2024-1847 • 4 Mar, 10:00 AM</p>
                 </div>

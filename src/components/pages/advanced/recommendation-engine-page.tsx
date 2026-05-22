@@ -47,8 +47,8 @@ interface RecommendationConfig {
 }
 
 const recommendationConfigs: RecommendationConfig[] = [
-  { id: 1, name: 'Frequently Booked Together', type: 'service', description: 'Suggest services commonly booked together (e.g., AC Service + Deep Cleaning)', active: true, priority: 1, ctr: 18.5, conversion: 8.2, impressions: 45230 },
-  { id: 2, name: 'Seasonal Services', type: 'service', description: 'Recommend services based on current season (AC in summer, plumbing in monsoon)', active: true, priority: 2, ctr: 22.3, conversion: 11.5, impressions: 38450 },
+  { id: 1, name: 'Frequently Booked Together', type: 'service', description: 'Suggest services commonly booked together (e.g., Air Conditioner + Water Tank Cleaning)', active: true, priority: 1, ctr: 18.5, conversion: 8.2, impressions: 45230 },
+  { id: 2, name: 'Seasonal Services', type: 'service', description: 'Recommend services based on current season (AC in summer, Plumber in monsoon)', active: true, priority: 2, ctr: 22.3, conversion: 11.5, impressions: 38450 },
   { id: 3, name: 'Top-Rated Provider', type: 'provider', description: 'Recommend highest-rated providers in the customer\'s area', active: true, priority: 1, ctr: 24.7, conversion: 14.8, impressions: 52340 },
   { id: 4, name: 'Previous Provider', type: 'provider', description: 'Suggest providers the customer has booked before', active: true, priority: 3, ctr: 32.1, conversion: 22.4, impressions: 28900 },
   { id: 5, name: 'Nearest Available', type: 'provider', description: 'Recommend closest available provider for faster service', active: false, priority: 4, ctr: 15.8, conversion: 6.9, impressions: 41200 },

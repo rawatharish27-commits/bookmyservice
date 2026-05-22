@@ -7,11 +7,11 @@ import { Separator } from '@/components/ui/separator'
 import { Wallet, TrendingUp, TrendingDown, Plus, ArrowUpRight } from 'lucide-react'
 
 const transactions = [
-  { id: 1, desc: 'AC Repair - Booking #1024', amount: '+₹1,020', type: 'credit', date: '22 May 2024' },
+  { id: 1, desc: 'Air Conditioner - Booking #1024', amount: '+₹424', type: 'credit', date: '22 May 2024' },
   { id: 2, desc: 'Withdrawal to HDFC Bank', amount: '-₹5,000', type: 'debit', date: '21 May 2024' },
-  { id: 3, desc: 'Deep Cleaning - Booking #1023', amount: '+₹2,125', type: 'credit', date: '21 May 2024' },
+  { id: 3, desc: 'Water Tank Cleaning - Booking #1023', amount: '+₹424', type: 'credit', date: '21 May 2024' },
   { id: 4, desc: 'Platform Fee', amount: '-₹150', type: 'debit', date: '21 May 2024' },
-  { id: 5, desc: 'Plumbing - Booking #1022', amount: '+₹680', type: 'credit', date: '20 May 2024' },
+  { id: 5, desc: 'Plumber - Booking #1022', amount: '+₹424', type: 'credit', date: '20 May 2024' },
 ]
 
 export function ProviderWalletPage() {
