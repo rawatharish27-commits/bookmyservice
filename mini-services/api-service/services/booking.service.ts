@@ -32,6 +32,7 @@ export async function createBooking(userId: string, userEmail: string, data: Cre
   if (!svcResult.rows[0]) return { success: false, error: 'Service not found', status: 404 }
   const service = svcResult.rows[0]
   const basePrice = service.basePrice || 0
+  if (basePrice < 99 || basePrice > 499) return { success: false, error: 'Invalid service price', status: 400 }
   const bookingId = 'bkg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
   const bookingNumber = 'BK' + Date.now().toString().slice(-8) + Math.random().toString(36).slice(2, 5).toUpperCase()
   const otpCode = Math.floor(100000 + Math.random() * 900000).toString()

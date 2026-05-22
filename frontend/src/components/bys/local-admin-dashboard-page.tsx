@@ -94,52 +94,7 @@ interface LocalAdminDashboardData {
   bookingsAnalytics: LocalBookingsAnalytics;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
 
-function getMockLocalAdminData(): LocalAdminDashboardData {
-  return {
-    localAreaControl: {
-      area: 'Andheri West',
-      pincode: '400053',
-      activeProviders: 32,
-      activeBookings: 18,
-      satisfactionScore: 4.6,
-      status: 'Active',
-    },
-    providerVerifications: [
-      { id: 'pv1', name: 'Rajesh Sharma', service: 'AC Repair', status: 'Pending', submittedAt: '1 hour ago', documents: 3 },
-      { id: 'pv2', name: 'Priya Patel', service: 'Plumbing', status: 'Under Review', submittedAt: '3 hours ago', documents: 4 },
-      { id: 'pv3', name: 'Sunil Verma', service: 'Electrical', status: 'Pending', submittedAt: '5 hours ago', documents: 2 },
-      { id: 'pv4', name: 'Kavita Joshi', service: 'Cleaning', status: 'Verified', submittedAt: '1 day ago', documents: 5 },
-    ],
-    technicianAssignments: [
-      { id: 'ta1', name: 'Amit Desai', specialty: 'AC Technician', currentJob: 'AC Gas Refill - Lokhandwala', status: 'On Job', rating: 4.8, area: 'Andheri West' },
-      { id: 'ta2', name: 'Nitin Rane', specialty: 'Plumber', currentJob: null, status: 'Available', rating: 4.5, area: 'Andheri West' },
-      { id: 'ta3', name: 'Prakash Mali', specialty: 'Electrician', currentJob: 'Switch Board Fix - Versova', status: 'On Job', rating: 4.7, area: 'Andheri West' },
-      { id: 'ta4', name: 'Vijay Sawant', specialty: 'Cleaner', currentJob: null, status: 'Break', rating: 4.3, area: 'Andheri West' },
-      { id: 'ta5', name: 'Rahul Naik', specialty: 'Painter', currentJob: null, status: 'Available', rating: 4.6, area: 'Andheri West' },
-    ],
-    areaComplaints: [
-      { id: 'LAC-101', client: 'Meera S.', provider: 'Amit D.', issue: 'AC not cooling after service', priority: 'High', status: 'Open', createdAt: '2 hours ago' },
-      { id: 'LAC-099', client: 'Rohit K.', provider: 'Prakash M.', issue: 'Incomplete electrical work', priority: 'Medium', status: 'In Progress', createdAt: '5 hours ago' },
-      { id: 'LAC-096', client: 'Sonal P.', provider: 'Nitin R.', issue: 'Leakage reappeared after repair', priority: 'High', status: 'Escalated', createdAt: '1 day ago' },
-    ],
-    bookingsAnalytics: {
-      today: 24,
-      thisWeek: 156,
-      thisMonth: 640,
-      avgValue: 1250,
-      completionRate: 94.2,
-      topServices: [
-        { name: 'AC Repair', bookings: 45 },
-        { name: 'Plumbing', bookings: 38 },
-        { name: 'Electrical', bookings: 29 },
-        { name: 'Cleaning', bookings: 24 },
-        { name: 'Painting', bookings: 18 },
-      ],
-    },
-  };
-}
 
 // ─── Helper Components ────────────────────────────────────────────────────────
 
@@ -208,17 +163,13 @@ export function LocalAdminDashboardPage() {
   const { mutate } = useApiMutation();
   const [selectedTechnician, setSelectedTechnician] = useState<string>('');
 
-  const mockFallback = getMockLocalAdminData();
-  const data: LocalAdminDashboardData = apiData
-    ? {
-        localAreaControl: apiData.localAreaControl || mockFallback.localAreaControl,
-        providerVerifications: apiData.providerVerifications || [],
-        technicianAssignments: apiData.technicianAssignments || [],
-        areaComplaints: apiData.areaComplaints || [],
-        bookingsAnalytics: apiData.bookingsAnalytics || mockFallback.bookingsAnalytics,
-      }
-    : mockFallback;
-  const isUsingMockData = !apiData;
+  const data: LocalAdminDashboardData = apiData || {
+    localAreaControl: { area: '-', pincode: '-', activeProviders: 0, activeBookings: 0, satisfactionScore: 0, status: 'Inactive' },
+    providerVerifications: [],
+    technicianAssignments: [],
+    areaComplaints: [],
+    bookingsAnalytics: { today: 0, thisWeek: 0, thisMonth: 0, avgValue: 0, completionRate: 0, topServices: [] },
+  };
 
   const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -243,15 +194,6 @@ export function LocalAdminDashboardPage() {
         <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Local Admin Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage local area, verify providers & monitor bookings</p>
       </motion.div>
-
-      {/* Demo Data Banner */}
-      {isUsingMockData && (
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5">
-          <AlertCircle className="size-4 shrink-0 text-amber-600" />
-          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
-          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
-        </div>
-      )}
 
       {/* Welcome Banner */}
       <motion.div

@@ -66,12 +66,19 @@ interface ValidationResult {
 /* ---------- applicable type config ---------- */
 const TYPE_CONFIG: Record<string, { gradient: string; bg: string; label: string }> = {
   ALL: { gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'All Services' },
-  PLUMBING: { gradient: 'from-blue-400 to-cyan-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Plumbing' },
-  ELECTRICAL: { gradient: 'from-cyan-400 to-yellow-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Electrical' },
-  HVAC: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'HVAC' },
-  CLEANING: { gradient: 'from-violet-400 to-purple-500', bg: 'bg-violet-50 text-violet-700 border-violet-200', label: 'Cleaning' },
+  AIR_CONDITIONER: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'Air Conditioner' },
+  REFRIGERATOR: { gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Refrigerator' },
+  WASHING_MACHINE: { gradient: 'from-indigo-400 to-violet-500', bg: 'bg-indigo-50 text-indigo-700 border-indigo-200', label: 'Washing Machine' },
+  KITCHEN_APPLIANCES: { gradient: 'from-amber-400 to-orange-500', bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Kitchen Appliances' },
+  TV_REPAIR: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'TV Repair' },
+  WATER_PURIFIER: { gradient: 'from-cyan-400 to-teal-500', bg: 'bg-cyan-50 text-cyan-700 border-cyan-200', label: 'Water Purifier' },
+  GEYSER: { gradient: 'from-red-400 to-orange-500', bg: 'bg-red-50 text-red-700 border-red-200', label: 'Geyser' },
+  PLUMBING: { gradient: 'from-blue-400 to-cyan-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Plumber' },
+  ELECTRICAL: { gradient: 'from-cyan-400 to-yellow-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Electrician' },
+  WATER_TANK_CLEANING: { gradient: 'from-blue-400 to-indigo-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Water Tank Cleaning' },
+  MOVERS_AND_PACKERS: { gradient: 'from-emerald-400 to-lime-500', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Movers and Packers' },
+  HVAC: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'Air Conditioner' },
   APPLIANCE: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'Appliance' },
-  PAINTING: { gradient: 'from-sky-400 to-red-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Painting' },
 };
 
 function getTypeConfig(type: string) {

@@ -146,7 +146,7 @@ const CATEGORY_STYLES: Record<string, {
     heroAccent: 'from-cyan-400/30 to-yellow-400/20',
     cardAccent: 'ring-sky-200/50',
   },
-  'ac-hvac': {
+  'air-conditioner': {
     gradient: 'from-teal-500 to-emerald-500',
     headerGradient: 'from-teal-600 via-teal-500 to-emerald-400',
     lightBg: 'bg-teal-50',
@@ -166,7 +166,7 @@ const CATEGORY_STYLES: Record<string, {
 const CATEGORY_IMAGE_MAP: Record<string, string> = {
   plumbing: '/images/plumbing.jpg',
   electrical: '/images/electrical.jpg',
-  'ac-hvac': '/images/hvac.jpg',
+  'air-conditioner': '/images/air-conditioner.jpg',
 };
 
 const DEFAULT_STYLE = {

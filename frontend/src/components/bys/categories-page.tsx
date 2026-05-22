@@ -105,7 +105,7 @@ const CATEGORY_GRADIENTS: Record<string, {
     shadowGlow: 'shadow-sky-500/15',
     heroGradient: 'from-sky-600 via-sky-500 to-yellow-400',
   },
-  'ac-hvac': {
+  'air-conditioner': {
     gradient: 'from-teal-500 to-emerald-500',
     headerGradient: 'from-teal-700 via-teal-600 to-emerald-500',
     lightBg: 'bg-teal-50',
@@ -124,7 +124,7 @@ const CATEGORY_GRADIENTS: Record<string, {
 const CATEGORY_IMAGE_MAP: Record<string, string> = {
   plumbing: '/images/plumbing.jpg',
   electrical: '/images/electrical.jpg',
-  'ac-hvac': '/images/hvac.jpg',
+  'air-conditioner': '/images/air-conditioner.jpg',
 };
 
 const DEFAULT_GRADIENT = {

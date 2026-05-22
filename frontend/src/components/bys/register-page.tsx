@@ -14,7 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 const specializations = [
   { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
   { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-sky-500 via-blue-500 to-yellow-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Wiring, switches, fixtures' },
-  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
+  { value: 'air-conditioner', label: 'Air Conditioner', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
 ];
 
 const roleOptions = [

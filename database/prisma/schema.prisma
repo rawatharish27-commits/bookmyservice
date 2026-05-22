@@ -22,6 +22,8 @@ enum UserRole {
   ADMIN
   SUB_ADMIN
   AREA_MANAGER
+  MANAGER
+  LOCAL_ADMIN
 }
 
 enum UserStatus {
@@ -368,6 +370,20 @@ enum CouponApplicableTargetType {
   CITY
 }
 
+enum ServiceCategoryName {
+  AIR_CONDITIONER
+  REFRIGERATOR
+  WASHING_MACHINE
+  KITCHEN_APPLIANCES
+  TV_REPAIR
+  WATER_PURIFIER
+  GEYSER
+  PLUMBER
+  ELECTRICIAN
+  WATER_TANK_CLEANING
+  MOVERS_AND_PACKERS
+}
+
 // ============================================================================
 // DOMAIN: ROLES & USERS
 // ============================================================================
@@ -594,7 +610,7 @@ model ProviderServiceArea {
 
 model ServiceCategory {
   id             Int               @id @default(autoincrement())
-  name           String            @unique
+  name           ServiceCategoryName @unique
   slug           String            @unique
   description    String?
   iconUrl        String?

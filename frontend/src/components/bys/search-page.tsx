@@ -62,19 +62,19 @@ interface Category {
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   plumbing: <Droplets className="size-4" />,
   electrical: <Zap className="size-4" />,
-  'ac-hvac': <Wind className="size-4" />,
+  'air-conditioner': <Wind className="size-4" />,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
   plumbing: 'from-blue-500 to-cyan-500',
   electrical: 'from-sky-500 to-yellow-500',
-  'ac-hvac': 'from-teal-500 to-emerald-500',
+  'air-conditioner': 'from-teal-500 to-emerald-500',
 };
 
 const CATEGORY_BG_COLORS: Record<string, string> = {
   plumbing: 'bg-blue-50 text-blue-700 border-blue-200',
   electrical: 'bg-sky-50 text-sky-700 border-sky-200',
-  'ac-hvac': 'bg-teal-50 text-teal-700 border-teal-200',
+  'air-conditioner': 'bg-teal-50 text-teal-700 border-teal-200',
 };
 
 const fadeUp = {

@@ -219,6 +219,7 @@ export async function createService(userId: string, data: CreateServiceInput): P
   success: true; service: { id: string; title: string; status: string }
 } | { success: false; error: string; status: number }> {
   const { title, description, categoryId, subcategoryId, basePrice, images, serviceDurationMinutes, isEmergencyAvailable } = data
+  if (basePrice < 99 || basePrice > 499) return { success: false, error: 'Service price must be between ₹99 and ₹499', status: 400 }
   const id = 'svc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
   await pool.query(
     'INSERT INTO "Service" (id, title, description, "categoryId", "subcategoryId", "providerId", "basePrice", images, "serviceDurationMinutes", "isEmergencyAvailable", "isActive", "isApproved", "isFeatured", "averageRating", "totalReviews", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, true, false, false, 0, 0, NOW(), NOW())',
@@ -238,6 +239,7 @@ export async function updateService(userId: string, roleId: number, serviceId: s
   if (!existing.rows[0]) return { success: false, error: 'Service not found', status: 404 }
   if (existing.rows[0].providerId !== userId && roleId !== 5) return { success: false, error: 'Not authorized to update this service', status: 403 }
 
+  if (fields.basePrice !== undefined && (fields.basePrice < 99 || fields.basePrice > 499)) return { success: false, error: 'Service price must be between ₹99 and ₹499', status: 400 }
   const allowedFields = ['title', 'description', 'basePrice', 'images', 'serviceDurationMinutes', 'isEmergencyAvailable', 'isActive']
   const updates: string[] = []
   const values: any[] = []

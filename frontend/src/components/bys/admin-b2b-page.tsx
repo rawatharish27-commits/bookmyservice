@@ -23,7 +23,6 @@ import {
   BarChart3,
   ShieldCheck,
   Clock,
-  AlertTriangle,
   Loader2,
 } from 'lucide-react';
 
@@ -39,41 +38,6 @@ interface B2BPartner {
   totalSpent: number;
 }
 
-const samplePartners: B2BPartner[] = [
-  {
-    id: '1',
-    companyName: 'TechCorp Solutions',
-    contactPerson: 'Rahul Verma',
-    email: 'rahul@techcorp.in',
-    phone: '+91 9876543210',
-    plan: 'Enterprise',
-    status: 'ACTIVE',
-    totalBookings: 156,
-    totalSpent: 245000,
-  },
-  {
-    id: '2',
-    companyName: 'Green Valley Hotels',
-    contactPerson: 'Priya Patel',
-    email: 'priya@greenvalley.com',
-    phone: '+91 8765432109',
-    plan: 'Business',
-    status: 'ACTIVE',
-    totalBookings: 89,
-    totalSpent: 134000,
-  },
-  {
-    id: '3',
-    companyName: 'Metro Properties',
-    contactPerson: 'Amit Kumar',
-    email: 'amit@metroprops.in',
-    phone: '+91 7654321098',
-    plan: 'Business',
-    status: 'PENDING',
-    totalBookings: 0,
-    totalSpent: 0,
-  },
-];
 
 const b2bPlans = [
   {
@@ -103,9 +67,7 @@ export function AdminB2bPage() {
   const { goBack } = useApp();
   const { data: apiPartners, loading: apiLoading, error: apiError } = useApi<B2BPartner[]>('/api/admin/b2b');
 
-  // Fall back to sample data when API hasn't returned real data yet
-  const partners = apiPartners && apiPartners.length > 0 ? apiPartners : samplePartners;
-  const isDemoData = !apiPartners || apiPartners.length === 0;
+  const partners = apiPartners || [];
 
   // Compute stats from data source
   const activePartners = partners.filter(p => p.status === 'ACTIVE').length;
@@ -123,14 +85,6 @@ export function AdminB2bPage() {
         <p className="mt-1 text-sm text-muted-foreground">Manage corporate accounts & business partnerships</p>
       </motion.div>
 
-      {/* Demo Data Banner (Old #49 fix) */}
-      {isDemoData && !apiLoading && (
-        <motion.div initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} className="mb-4 flex items-center gap-2 rounded-lg bg-amber-50 border border-amber-200 px-4 py-3 text-sm text-amber-800">
-          <AlertTriangle className="size-4 shrink-0" />
-          <span><strong>Demo Data:</strong> Showing sample data. Connect the B2B API endpoint (<code className="bg-amber-100 px-1 rounded text-xs">/api/admin/b2b</code>) to display live partner information.</span>
-        </motion.div>
-      )}
-
       {/* Loading state */}
       {apiLoading && (
         <div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
@@ -142,7 +96,7 @@ export function AdminB2bPage() {
       {/* API Error */}
       {apiError && !apiLoading && (
         <div className="mb-4 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
-          Failed to load live data: {apiError}. Showing demo data below.
+          Failed to load live data: {apiError}.
         </div>
       )}
 
