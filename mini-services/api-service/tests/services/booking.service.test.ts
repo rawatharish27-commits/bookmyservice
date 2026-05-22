@@ -50,6 +50,9 @@ import { pool } from '../../lib/shared'
 describe('Booking Service', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset pool.query mock to prevent leftover mockResolvedValueOnce from bleeding between tests
+    ;(pool.query as any).mockReset()
+    ;(pool.query as any).mockResolvedValue({ rows: [], rowCount: 0 })
   })
 
   // ─── createBooking ─────────────────────────────────────────────────
@@ -73,7 +76,7 @@ describe('Booking Service', () => {
       const mockService = {
         id: 'svc_abc123',
         providerId: 'usr_provider123',
-        basePrice: 500,
+        basePrice: 299,
         categoryId: 'cat_abc123',
       }
       const mockBooking = {
@@ -82,8 +85,8 @@ describe('Booking Service', () => {
         clientId: 'usr_client123',
         serviceId: 'svc_abc123',
         status: 'PENDING',
-        basePrice: 500,
-        finalPrice: 500,
+        basePrice: 299,
+        finalPrice: 299,
         otpCode: '654321',
       }
 
@@ -110,7 +113,7 @@ describe('Booking Service', () => {
       const mockService = {
         id: 'svc_abc123',
         providerId: 'usr_provider123',
-        basePrice: 1000,
+        basePrice: 399,
         categoryId: 'cat_abc123',
       }
       const mockCoupon = {
@@ -125,7 +128,7 @@ describe('Booking Service', () => {
         .mockResolvedValueOnce({ rows: [mockService], rowCount: 1 }) // service lookup
         .mockResolvedValueOnce({ rows: [mockCoupon], rowCount: 1 }) // coupon lookup
         .mockResolvedValueOnce({ rows: [], rowCount: 0 }) // INSERT booking
-        .mockResolvedValueOnce({ rows: [{ id: 'bkg_1', status: 'PENDING', finalPrice: 900 }], rowCount: 1 })
+        .mockResolvedValueOnce({ rows: [{ id: 'bkg_1', status: 'PENDING', finalPrice: 359.1 }], rowCount: 1 })
 
       const result = await createBooking('usr_client123', 'client@example.com', {
         serviceId: 'svc_abc123',

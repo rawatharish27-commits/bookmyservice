@@ -31,3 +31,24 @@ Stage Summary:
 - Price range ₹99-₹499 enforced in UI, API validators, and service layer
 - All mock data removed, replaced with API-driven data
 - Application loads correctly and runs without hanging
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix Cloudflare Pages build failure and test failures
+
+Work Log:
+- Analyzed Cloudflare Pages build error: "Can't resolve 'shadcn/tailwind.css'" in frontend/src/globals.css
+- Removed `@import "shadcn/tailwind.css"` from globals.css since all CSS variables are already defined inline
+- Verified frontend build succeeds: ✓ built in 943ms with 210 precache entries
+- Analyzed 9 failing booking.service.test.ts tests:
+  - Root cause 1: Test mocks used basePrice 500/1000 which fails new validation (₹99-₹499)
+  - Root cause 2: vi.clearAllMocks() doesn't clear mockResolvedValueOnce queue, causing leftover mocks to bleed between tests
+- Fixed test mock prices: changed 500→299 and 1000→399 (within ₹99-₹499 range)
+- Added mockReset() + mockResolvedValue() in beforeEach to prevent mock bleeding
+- Verified all 179 tests pass (0 failures)
+
+Stage Summary:
+- Frontend build now succeeds on Cloudflare Pages
+- All 179 backend tests passing
+- 2 files modified: frontend/src/globals.css, mini-services/api-service/tests/services/booking.service.test.ts
