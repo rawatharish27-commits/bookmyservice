@@ -3,6 +3,7 @@
  *
  * All Socket.IO event handlers for the tracking service.
  * Uses database.ts for persistence and the shared liveLocations Map.
+ * Leverages redis-adapter.ts for cross-instance location storage.
  */
 
 import { Server, Socket } from 'socket.io'
@@ -13,6 +14,7 @@ import {
   verifyBookingAccess,
 } from './database'
 import { AuthPayload } from './auth'
+import { storeLocation, retrieveLocation, removeLocation } from './redis-adapter'
 
 // ─── In-Memory State (for when DB is unavailable, or fast retrieval) ──
 export const liveLocations = new Map<string, {
@@ -63,8 +65,21 @@ export function registerHandlers(io: Server, socket: Socket): void {
       socket.join(roomName)
       console.log(`📍 User ${userId} joined booking room: ${roomName}`)
 
-      // Send current location if available (in-memory fallback)
-      const currentLocation = liveLocations.get(bookingId)
+      // Try to send current location:
+      // 1. Check in-memory map first (fast, local instance)
+      // 2. Fall back to Redis location store (cross-instance)
+      let currentLocation = liveLocations.get(bookingId)
+
+      if (!currentLocation) {
+        // Try Redis-backed location store (from another instance)
+        const redisLocation = await retrieveLocation(bookingId)
+        if (redisLocation) {
+          currentLocation = redisLocation
+          // Cache in local memory for faster subsequent lookups
+          liveLocations.set(bookingId, redisLocation)
+        }
+      }
+
       if (currentLocation) {
         socket.emit('location-update', {
           bookingId,
@@ -152,10 +167,15 @@ export function registerHandlers(io: Server, socket: Socket): void {
         location: { lat, lng },
       })
 
-      // Store in-memory (for fast retrieval)
-      liveLocations.set(bookingId, {
+      // Store in-memory (for fast retrieval on this instance)
+      const locationData = {
         lat, lng, accuracy, heading, speed, updatedAt: now,
-      })
+      }
+      liveLocations.set(bookingId, locationData)
+
+      // Store in Redis (for cross-instance retrieval)
+      // Non-blocking — if Redis is unavailable, in-memory still works
+      storeLocation(bookingId, locationData).catch(() => {})
 
       // Persist to database (non-blocking)
       persistLocationUpdate(userId, lat, lng, accuracy, heading, speed).catch(() => {})
@@ -228,6 +248,12 @@ export function registerHandlers(io: Server, socket: Socket): void {
         changedBy: userId,
         timestamp: Date.now(),
       })
+
+      // If booking is completed or cancelled, clean up location data
+      if (status === 'COMPLETED' || status === 'CANCELLED') {
+        liveLocations.delete(bookingId)
+        removeLocation(bookingId).catch(() => {})
+      }
 
       // Persist to database (non-blocking)
       persistStatusChange(bookingId, status, userId, note).catch(() => {})
