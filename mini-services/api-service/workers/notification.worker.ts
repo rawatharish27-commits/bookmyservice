@@ -705,3 +705,309 @@ export class SLATracker {
 
 // ─── Singleton SLA Tracker ─────────────────────────────────────────────
 export const slaTracker = new SLATracker()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: BullMQ-based Retry ────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * BullMQ job options with built-in retry mechanism.
+ * Replaces the recursive handleRetry with BullMQ's native retry support.
+ * Set `attempts` and `backoff` on job options to let BullMQ handle retries
+ * automatically — no recursive calls needed.
+ *
+ * Usage:
+ *   await notificationQueue.add('EMAIL', jobData, BULLMQ_RETRY_OPTIONS)
+ */
+export const BULLMQ_RETRY_OPTIONS = {
+  attempts: 4,                           // Total attempts (1 initial + 3 retries)
+  backoff: {
+    type: 'exponential' as const,
+    delay: 5000,                         // 5s initial delay, doubles each retry
+  },
+  removeOnComplete: { count: 1000 },
+  removeOnFail: { count: 5000 },
+}
+
+/**
+ * Process a notification using BullMQ's built-in retry mechanism.
+ * Instead of recursively calling handleRetry, let BullMQ manage
+ * the retry lifecycle. Failed jobs are automatically retried with
+ * exponential backoff based on BULLMQ_RETRY_OPTIONS.
+ *
+ * This function should be used as the BullMQ worker processor.
+ *
+ * @param jobData - The notification job data
+ * @param attempt - Current attempt number (provided by BullMQ)
+ */
+export async function processNotificationWithBullMQRetry(
+  jobData: NotificationJobData,
+  attempt?: number
+): Promise<{ success: boolean; channel: string }> {
+  const startTime = Date.now()
+  const { type, recipient, template, data } = jobData
+
+  // Check notification throttling for LOW priority
+  const priority = getPriorityForTemplate(template)
+  const recipientId = recipient.userId || recipient.email || recipient.phone || 'unknown'
+
+  if (priority === NOTIFICATION_PRIORITY.LOW && shouldThrottleNotification(template, recipientId)) {
+    console.log(`🔔 [WORKER] LOW priority notification throttled for ${recipientId}`)
+    return { success: false, channel: type }
+  }
+
+  // Check if channel is degraded and try fallback
+  const primaryChannel = channelTypeToSLAKey(type)
+  let channel = type
+
+  if (slaTracker.isChannelDegraded(primaryChannel)) {
+    const fallbackChannel = slaTracker.getFallbackChannel(primaryChannel)
+    if (fallbackChannel) {
+      console.warn(`🔔 [WORKER] Channel ${primaryChannel} degraded — trying fallback ${fallbackChannel}`)
+      channel = fallbackChannel
+    }
+  }
+
+  try {
+    let result: { success: boolean; messageId?: string }
+
+    switch (channel) {
+      case 'WHATSAPP':
+        result = await sendWhatsAppNotification(recipient, template, data)
+        break
+      case 'SMS':
+        result = await sendSMSNotification(recipient, template, data)
+        break
+      case 'EMAIL':
+        result = await sendEmailNotification(recipient, template, data)
+        break
+      case 'PUSH':
+        result = await sendPushNotification(recipient, template, data)
+        break
+      default:
+        result = { success: false }
+    }
+
+    const deliveryTime = Date.now() - startTime
+
+    // Record SLA data
+    slaTracker.recordDelivery(channel, deliveryTime, result.success)
+
+    if (result.success) {
+      // Record LOW priority send for throttle tracking
+      if (priority === NOTIFICATION_PRIORITY.LOW) {
+        recordLowPrioritySent(recipientId)
+      }
+
+      return { success: true, channel }
+    }
+
+    // If this is a BullMQ-managed retry, throw to trigger BullMQ retry
+    throw new Error(`Notification send failed for channel ${channel}`)
+
+  } catch (err: any) {
+    const deliveryTime = Date.now() - startTime
+    slaTracker.recordDelivery(channel, deliveryTime, false)
+
+    // Re-throw to let BullMQ handle the retry
+    throw err
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: SLA Alerting ──────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** SLA alert listeners */
+const slaAlertListeners: Array<(channel: string, metric: string, value: number, threshold: number) => void> = []
+
+/**
+ * Register a listener for SLA alerts.
+ * Called when any channel's SLA drops below its threshold.
+ */
+export function onSLAAlert(
+  listener: (channel: string, metric: string, value: number, threshold: number) => void
+): void {
+  slaAlertListeners.push(listener)
+}
+
+/**
+ * Check SLA alerts for all channels.
+ * Emits warnings when any channel's SLA drops below its threshold.
+ * Returns an array of alerts that were triggered.
+ */
+export function checkSLAAlerts(): Array<{
+  channel: string
+  metric: string
+  value: number
+  threshold: number
+  message: string
+}> {
+  const alerts: Array<{
+    channel: string
+    metric: string
+    value: number
+    threshold: number
+    message: string
+  }> = []
+
+  const slaStatus = slaTracker.getSLAStatus()
+
+  for (const [channel, status] of Object.entries(slaStatus)) {
+    const slaDef = slaTracker.getSLADefinition(channel)
+    if (!slaDef || status.samples < 10) continue
+
+    // Check delivery time SLA
+    if (status.avgDeliveryTimeMs > slaDef.maxDeliveryTimeMs) {
+      const alert = {
+        channel,
+        metric: 'avgDeliveryTimeMs',
+        value: status.avgDeliveryTimeMs,
+        threshold: slaDef.maxDeliveryTimeMs,
+        message: `Channel ${channel} avg delivery time ${status.avgDeliveryTimeMs}ms exceeds SLA ${slaDef.maxDeliveryTimeMs}ms`,
+      }
+      alerts.push(alert)
+      console.warn(`⚠️  [SLA] ${alert.message}`)
+    }
+
+    // Check success rate SLA
+    if (status.successRate < slaDef.targetSuccessRate) {
+      const alert = {
+        channel,
+        metric: 'successRate',
+        value: status.successRate,
+        threshold: slaDef.targetSuccessRate,
+        message: `Channel ${channel} success rate ${(status.successRate * 100).toFixed(1)}% below SLA ${(slaDef.targetSuccessRate * 100).toFixed(1)}%`,
+      }
+      alerts.push(alert)
+      console.warn(`⚠️  [SLA] ${alert.message}`)
+    }
+  }
+
+  // Notify listeners
+  for (const alert of alerts) {
+    for (const listener of slaAlertListeners) {
+      try {
+        listener(alert.channel, alert.metric, alert.value, alert.threshold)
+      } catch {
+        // ignore listener errors
+      }
+    }
+  }
+
+  return alerts
+}
+
+// Periodic SLA check (every 5 minutes)
+setInterval(() => {
+  checkSLAAlerts()
+}, 5 * 60 * 1000)
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Batch Notification Support ────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+export interface BatchNotificationResult {
+  total: number
+  succeeded: number
+  failed: number
+  throttled: number
+  results: Array<{
+    recipient: string
+    channel: string
+    success: boolean
+    throttled: boolean
+    error?: string
+  }>
+}
+
+/**
+ * Process multiple notifications in a single batch call.
+ * Sends notifications in parallel (up to 10 concurrent) and returns
+ * aggregate results including throttled and failed counts.
+ *
+ * @param notifications - Array of notification job data to process
+ * @param maxConcurrent - Maximum concurrent sends (default: 10)
+ * @returns Batch result with success/failure/throttled counts
+ */
+export async function processBatchNotifications(
+  notifications: NotificationJobData[],
+  maxConcurrent: number = 10
+): Promise<BatchNotificationResult> {
+  const result: BatchNotificationResult = {
+    total: notifications.length,
+    succeeded: 0,
+    failed: 0,
+    throttled: 0,
+    results: [],
+  }
+
+  // Process in batches of maxConcurrent
+  for (let i = 0; i < notifications.length; i += maxConcurrent) {
+    const batch = notifications.slice(i, i + maxConcurrent)
+
+    const batchResults = await Promise.allSettled(
+      batch.map(async (jobData) => {
+        const recipientId = jobData.recipient.userId || jobData.recipient.email || jobData.recipient.phone || 'unknown'
+        const priority = getPriorityForTemplate(jobData.template)
+
+        // Check throttle for LOW priority
+        if (priority === NOTIFICATION_PRIORITY.LOW && shouldThrottleNotification(jobData.template, recipientId)) {
+          return {
+            recipient: recipientId,
+            channel: jobData.type,
+            success: false,
+            throttled: true,
+          }
+        }
+
+        try {
+          const sendResult = await dispatchNotification(jobData)
+
+          // Record SLA and throttle tracking
+          if (sendResult.success && priority === NOTIFICATION_PRIORITY.LOW) {
+            recordLowPrioritySent(recipientId)
+          }
+
+          return {
+            recipient: recipientId,
+            channel: jobData.type,
+            success: sendResult.success,
+            throttled: false,
+          }
+        } catch (err: any) {
+          return {
+            recipient: recipientId,
+            channel: jobData.type,
+            success: false,
+            throttled: false,
+            error: err.message,
+          }
+        }
+      })
+    )
+
+    for (const settled of batchResults) {
+      const item = settled.status === 'fulfilled' ? settled.value : {
+        recipient: 'unknown',
+        channel: 'unknown',
+        success: false,
+        throttled: false,
+        error: settled.reason?.message || 'Unknown error',
+      }
+
+      result.results.push(item)
+
+      if (item.throttled) {
+        result.throttled++
+      } else if (item.success) {
+        result.succeeded++
+      } else {
+        result.failed++
+      }
+    }
+  }
+
+  console.log(`🔔 [WORKER] Batch complete: ${result.succeeded} succeeded, ${result.failed} failed, ${result.throttled} throttled out of ${result.total}`)
+  return result
+}

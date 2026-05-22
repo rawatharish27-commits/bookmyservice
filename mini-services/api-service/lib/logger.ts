@@ -647,3 +647,229 @@ export async function flushLogs(): Promise<void> {
   await Promise.all(flushPromises)
   logger.debug('Log flush completed')
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: PII Redaction ─────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** PII patterns to detect and redact */
+const PII_PATTERNS: Array<{ pattern: RegExp; replacement: string; name: string }> = [
+  // Email addresses
+  { pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, replacement: '[REDACTED_EMAIL]', name: 'email' },
+  // Indian phone numbers (+91 or 10 digits starting with 6-9)
+  { pattern: /(\+91[-\s]?)?[6-9]\d{9}/g, replacement: '[REDACTED_PHONE]', name: 'phone' },
+  // Credit card numbers (basic pattern: 13-19 digits with spaces/dashes)
+  { pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{3,4}\b/g, replacement: '[REDACTED_CARD]', name: 'card' },
+  // Aadhaar numbers (12 digits)
+  { pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, replacement: '[REDACTED_AADHAAR]', name: 'aadhaar' },
+  // PAN numbers (5 letters + 4 digits + 1 letter)
+  { pattern: /\b[A-Z]{5}\d{4}[A-Z]\b/g, replacement: '[REDACTED_PAN]', name: 'pan' },
+]
+
+/** Sensitive field names to redact from objects */
+const SENSITIVE_FIELDS = new Set([
+  'password', 'token', 'secret', 'apiKey', 'api_key', 'accessToken', 'access_token',
+  'refreshToken', 'refresh_token', 'authorization', 'cookie', 'sessionId', 'session_id',
+  'creditCard', 'credit_card', 'cardNumber', 'card_number', 'cvv', 'pin', 'otp',
+  'ssn', 'socialSecurity', 'aadhaar', 'panNumber', 'pan_number',
+])
+
+/**
+ * Redact PII (Personally Identifiable Information) from a log message.
+ * Detects and replaces email addresses, phone numbers, and common
+ * sensitive fields in log entries.
+ *
+ * @param message - The log message or stringified object to redact
+ * @returns Redacted version with PII replaced by placeholders
+ */
+export function redactPII(message: string): string {
+  if (!message || typeof message !== 'string') return message
+
+  let redacted = message
+
+  // Apply PII pattern redaction
+  for (const { pattern, replacement } of PII_PATTERNS) {
+    redacted = redacted.replace(pattern, replacement)
+  }
+
+  // Redact sensitive field values in JSON-like structures
+  // Matches patterns like "password": "value" or password=value
+  for (const field of SENSITIVE_FIELDS) {
+    // JSON format: "field": "value"
+    const jsonRegex = new RegExp(`("${field}"\\s*:\\s*)"[^"]*"`, 'gi')
+    redacted = redacted.replace(jsonRegex, `$1"[REDACTED_${field.toUpperCase()}]"`)
+
+    // Key-value format: field=value
+    const kvRegex = new RegExp(`(${field}=)[^,\\s}\\]]+`, 'gi')
+    redacted = redacted.replace(kvRegex, `$1[REDACTED_${field.toUpperCase()}]`)
+  }
+
+  return redacted
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: AsyncLocalStorage Trace ID ────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+import { AsyncLocalStorage } from 'async_hooks'
+
+/** AsyncLocalStorage for request-scoped trace ID — prevents trace ID bleeding */
+const traceContext = new AsyncLocalStorage<{ traceId: string }>()
+
+/**
+ * Get the current trace ID from AsyncLocalStorage.
+ * Returns undefined if not in a request context.
+ */
+export function getCurrentTraceId(): string | undefined {
+  return traceContext.getStore()?.traceId
+}
+
+/**
+ * Enhanced traceMiddleware that uses AsyncLocalStorage instead of
+ * modifying defaultMeta. This prevents trace ID bleeding between
+ * concurrent requests — each request gets its own isolated context.
+ */
+export function traceMiddlewareAsync(): MiddlewareHandler {
+  return async (c: any, next: () => Promise<void>) => {
+    // Check for X-Request-ID header, or generate a new trace ID
+    const traceId = c.req.header('X-Request-ID') || generateTraceId()
+
+    // Set X-Request-ID on the response
+    c.header('X-Request-ID', traceId)
+
+    // Store trace ID in Hono context
+    c.set('traceId', traceId)
+
+    // Use AsyncLocalStorage to scope the trace ID to this request only
+    await traceContext.run({ traceId }, async () => {
+      // Create child loggers with the trace ID for this request scope
+      const childLogger = logger.child({ traceId })
+      const childAuthLogger = authLogger.child({ traceId })
+      const childBookingLogger = bookingLogger.child({ traceId })
+      const childApiLogger = apiLogger.child({ traceId })
+
+      // Store scoped loggers in context for use within the request
+      c.set('scopedLogger', childLogger)
+      c.set('scopedAuthLogger', childAuthLogger)
+      c.set('scopedBookingLogger', childBookingLogger)
+      c.set('scopedApiLogger', childApiLogger)
+
+      await next()
+    })
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Date-based Log Rotation ───────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Create a Winston file transport with date-based log file naming
+ * alongside size-based rotation.
+ *
+ * File naming pattern: logs/{baseName}-{YYYY-MM-DD}.log
+ * Also respects maxsize and maxFiles for size-based rotation.
+ */
+export function createDateBasedFileTransport(baseName: string, level: string, maxsize: number = 10 * 1024 * 1024, maxFiles: number = 5) {
+  const today = new Date().toISOString().split('T')[0] // YYYY-MM-DD
+  return new winston.transports.File({
+    filename: `logs/${baseName}-${today}.log`,
+    level,
+    maxsize,
+    maxFiles,
+    tailable: true,
+  })
+}
+
+/**
+ * Reconfigure all loggers with date-based file transports.
+ * Call this at startup or on date change to get date-based log files.
+ */
+export function reconfigureWithDateBasedRotation(): void {
+  // Note: In production, you'd want to call this at midnight to rotate
+  // to a new date-based file. This is a setup function for initial configuration.
+  const today = new Date().toISOString().split('T')[0]
+
+  const dateBasedTransports = {
+    combinedFile: new winston.transports.File({
+      filename: `logs/combined-${today}.log`,
+      level: 'info',
+      maxsize: 10 * 1024 * 1024,
+      maxFiles: 5,
+      tailable: true,
+    }),
+    errorFile: new winston.transports.File({
+      filename: `logs/error-${today}.log`,
+      level: 'error',
+      maxsize: 10 * 1024 * 1024,
+      maxFiles: 5,
+      tailable: true,
+    }),
+  }
+
+  // Add date-based transports to all loggers (keep existing transports)
+  logger.add(dateBasedTransports.combinedFile)
+  logger.add(dateBasedTransports.errorFile)
+
+  console.log(`📝 [Logger] Date-based log rotation configured for ${today}`)
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Per-Module Log Level Override ─────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** Module-level log level overrides */
+const moduleLogLevels = new Map<string, string>()
+
+/** Cache of module-specific child loggers */
+const moduleLoggers = new Map<string, winston.Logger>()
+
+/**
+ * Set the log level for a specific module.
+ * This allows fine-grained control over logging verbosity per module.
+ *
+ * @param module - Module name (e.g., 'auth', 'booking', 'payment')
+ * @param level - Log level ('error', 'warn', 'info', 'http', 'verbose', 'debug', 'silly')
+ */
+export function setModuleLogLevel(module: string, level: string): void {
+  moduleLogLevels.set(module, level)
+
+  // Update existing child logger if it exists
+  const existing = moduleLoggers.get(module)
+  if (existing) {
+    existing.level = level
+  }
+
+  console.log(`📝 [Logger] Module "${module}" log level set to: ${level}`)
+}
+
+/**
+ * Get a module-specific logger with its own log level.
+ * If a custom level has been set via setModuleLogLevel, it will be used.
+ * Otherwise, inherits the global log level.
+ *
+ * @param module - Module name
+ * @returns Winston logger instance scoped to the module
+ */
+export function getModuleLogger(module: string): winston.Logger {
+  const existing = moduleLoggers.get(module)
+  if (existing) return existing
+
+  const level = moduleLogLevels.get(module) || process.env.LOG_LEVEL || 'info'
+  const moduleLogger = logger.child({ module })
+  moduleLogger.level = level
+
+  moduleLoggers.set(module, moduleLogger)
+  return moduleLogger
+}
+
+/**
+ * Get all current module log level overrides.
+ */
+export function getModuleLogLevels(): Record<string, string> {
+  const levels: Record<string, string> = {}
+  for (const [module, level] of moduleLogLevels.entries()) {
+    levels[module] = level
+  }
+  return levels
+}

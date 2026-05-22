@@ -7,8 +7,25 @@ import { initializeQueues, startWorkers, shutdownQueues } from './queues'
 import { setNotificationWorkerPool } from './workers/notification-worker'
 import { initBackupSystem, cleanupOldBackups, stopBackupScheduler } from './lib/backup'
 import { logger } from './lib/logger'
+import { validateEnv } from './lib/env'
+import { shutdownManager } from './lib/scaling'
 
 export async function bootstrap(): Promise<void> {
+  // 0. Validate environment variables
+  const envResult = validateEnv()
+  if (!envResult.valid) {
+    console.error('❌ Environment validation failed:')
+    envResult.errors.forEach(e => console.error(`  - ${e}`))
+    // Don't exit — log and continue (dev-friendly)
+  }
+  if (envResult.warnings.length > 0) {
+    console.warn('⚠️  Environment warnings:')
+    envResult.warnings.forEach(w => console.warn(`  - ${w}`))
+  }
+  if (envResult.valid && envResult.warnings.length === 0) {
+    console.log('✅ Environment validation passed')
+  }
+
   // 1. Initialize Sentry
   initSentry()
   startMemoryMonitoring()
@@ -115,19 +132,18 @@ export async function bootstrap(): Promise<void> {
     console.warn('📮 Queue system initialization failed (non-fatal):', err.message)
   }
 
-  // 6. Graceful shutdown handlers
-  process.on('SIGTERM', async () => {
-    logger.info('SIGTERM received — shutting down gracefully')
-    stopMemoryMonitoring()
-    stopBackupScheduler()
+  // 6. Graceful shutdown with GracefulShutdownManager
+  // Register shutdown callbacks (executed in reverse order on signal)
+  shutdownManager.register(async () => {
     await shutdownQueues()
-    process.exit(0)
   })
-  process.on('SIGINT', async () => {
-    logger.info('SIGINT received — shutting down gracefully')
-    stopMemoryMonitoring()
+  shutdownManager.register(async () => {
     stopBackupScheduler()
-    await shutdownQueues()
-    process.exit(0)
   })
+  shutdownManager.register(async () => {
+    stopMemoryMonitoring()
+  })
+
+  process.on('SIGTERM', () => shutdownManager.shutdown('SIGTERM'))
+  process.on('SIGINT', () => shutdownManager.shutdown('SIGINT'))
 }

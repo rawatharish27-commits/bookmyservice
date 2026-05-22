@@ -943,3 +943,288 @@ export async function withAuditTrail<T>(
     throw err
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Idempotency Key Support ───────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** In-memory idempotency key store (key → result) */
+const idempotencyStore = new Map<string, { result: any; expiresAt: number }>()
+const IDEMPOTENCY_TTL = 24 * 60 * 60 * 1000 // 24 hours
+
+// Periodic cleanup of expired idempotency keys
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, entry] of idempotencyStore) {
+    if (now >= entry.expiresAt) {
+      idempotencyStore.delete(key)
+    }
+  }
+}, 60 * 60 * 1000)
+
+/**
+ * Create a Razorpay order with idempotency key support.
+ * If the same idempotencyKey was used before (within 24h),
+ * returns the previously created order instead of creating a duplicate.
+ *
+ * @param params - Order creation parameters
+ * @param idempotencyKey - Unique key to prevent duplicate orders
+ * @returns The Razorpay order (new or cached from previous call)
+ */
+export async function createOrderWithIdempotency(
+  params: CreateOrderParams,
+  idempotencyKey?: string
+): Promise<RazorpayOrder> {
+  // If idempotency key provided, check for existing order
+  if (idempotencyKey) {
+    const cached = idempotencyStore.get(idempotencyKey)
+    if (cached && Date.now() < cached.expiresAt) {
+      console.log(`💳 [Razorpay] Idempotent hit for key: ${idempotencyKey}`)
+      return cached.result as RazorpayOrder
+    }
+  }
+
+  // Create the order (using existing createOrder logic)
+  const order = await createOrder(params)
+
+  // Cache the result if idempotency key provided
+  if (idempotencyKey) {
+    idempotencyStore.set(idempotencyKey, {
+      result: order,
+      expiresAt: Date.now() + IDEMPOTENCY_TTL,
+    })
+  }
+
+  return order
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Circuit Breaker ───────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * RazorpayCircuitBreaker — Tracks consecutive API failures and opens
+ * the circuit after a threshold is reached, preventing cascading failures.
+ *
+ * When the circuit is OPEN, all API calls immediately fail without hitting
+ * Razorpay. After a cooldown period, the circuit transitions to HALF-OPEN
+ * and allows one test request through. If it succeeds, the circuit closes.
+ */
+export class RazorpayCircuitBreaker {
+  private state: 'CLOSED' | 'OPEN' | 'HALF_OPEN' = 'CLOSED'
+  private failureCount = 0
+  private lastFailureTime = 0
+  private readonly failureThreshold: number
+  private readonly cooldownMs: number
+  private readonly halfOpenMaxAttempts: number
+  private halfOpenAttempts = 0
+
+  constructor(failureThreshold: number = 5, cooldownMs: number = 60_000, halfOpenMaxAttempts: number = 1) {
+    this.failureThreshold = failureThreshold
+    this.cooldownMs = cooldownMs
+    this.halfOpenMaxAttempts = halfOpenMaxAttempts
+  }
+
+  /**
+   * Check if the circuit allows a request through.
+   * Returns true if the request should proceed, false if it should be rejected.
+   */
+  canProceed(): boolean {
+    if (this.state === 'CLOSED') {
+      return true
+    }
+
+    if (this.state === 'OPEN') {
+      // Check if cooldown period has passed
+      if (Date.now() - this.lastFailureTime >= this.cooldownMs) {
+        this.state = 'HALF_OPEN'
+        this.halfOpenAttempts = 0
+        console.log('💳 [CircuitBreaker] Transitioning to HALF_OPEN — allowing test request')
+        return true
+      }
+      return false
+    }
+
+    if (this.state === 'HALF_OPEN') {
+      // Allow limited test requests
+      return this.halfOpenAttempts < this.halfOpenMaxAttempts
+    }
+
+    return false
+  }
+
+  /**
+   * Record a successful API call.
+   */
+  recordSuccess(): void {
+    this.failureCount = 0
+    if (this.state === 'HALF_OPEN') {
+      this.state = 'CLOSED'
+      console.log('💳 [CircuitBreaker] Test request succeeded — circuit CLOSED')
+    }
+  }
+
+  /**
+   * Record a failed API call.
+   */
+  recordFailure(): void {
+    this.failureCount++
+    this.lastFailureTime = Date.now()
+
+    if (this.state === 'HALF_OPEN') {
+      // Test request failed — go back to OPEN
+      this.state = 'OPEN'
+      console.warn('💳 [CircuitBreaker] Test request failed — circuit back to OPEN')
+      return
+    }
+
+    if (this.failureCount >= this.failureThreshold) {
+      this.state = 'OPEN'
+      console.warn(`💳 [CircuitBreaker] ${this.failureCount} consecutive failures — circuit OPEN`)
+    }
+  }
+
+  /**
+   * Get the current circuit breaker state.
+   */
+  getState(): { state: string; failureCount: number; lastFailureTime: number } {
+    return {
+      state: this.state,
+      failureCount: this.failureCount,
+      lastFailureTime: this.lastFailureTime,
+    }
+  }
+
+  /**
+   * Manually reset the circuit breaker.
+   */
+  reset(): void {
+    this.state = 'CLOSED'
+    this.failureCount = 0
+    this.lastFailureTime = 0
+    this.halfOpenAttempts = 0
+    console.log('💳 [CircuitBreaker] Manually reset — circuit CLOSED')
+  }
+}
+
+/** Singleton circuit breaker instance for Razorpay API */
+export const razorpayCircuitBreaker = new RazorpayCircuitBreaker()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Rate Limit Handler (429 + Exponential Backoff) ────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Execute a Razorpay API request with automatic 429 (rate limit) handling.
+ * Detects 429 responses and implements exponential backoff retry.
+ *
+ * @param fn - The API call function to execute
+ * @param maxRetries - Maximum number of retries for 429 responses (default: 3)
+ * @param baseDelayMs - Initial backoff delay in ms (default: 1000)
+ * @returns The API response
+ * @throws The last error if all retries are exhausted
+ */
+export async function withRateLimitRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelayMs: number = 1000
+): Promise<T> {
+  let lastError: any
+
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn()
+    } catch (err: any) {
+      lastError = err
+
+      // Check if it's a 429 rate limit error
+      const isRateLimitError = err.message?.includes('429') ||
+        err.message?.toLowerCase().includes('rate limit') ||
+        err.message?.toLowerCase().includes('too many requests')
+
+      if (!isRateLimitError || attempt >= maxRetries) {
+        throw err
+      }
+
+      // Exponential backoff: 1s, 2s, 4s, etc.
+      const delay = baseDelayMs * Math.pow(2, attempt)
+      const jitter = delay * 0.2 * (Math.random() * 2 - 1)
+      const totalDelay = Math.round(delay + jitter)
+
+      console.warn(`💳 [Razorpay] Rate limited (429) — retrying in ${totalDelay}ms (attempt ${attempt + 1}/${maxRetries})`)
+      await new Promise(resolve => setTimeout(resolve, totalDelay))
+    }
+  }
+
+  throw lastError
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Partial Capture Support ───────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+export interface PartialCapturePaymentParams extends CapturePaymentParams {
+  /** If true, allows capturing less than the authorized amount */
+  partialCapture?: boolean
+}
+
+/**
+ * Capture a payment with optional partial capture support.
+ * When partialCapture is true, the amount parameter can be less than
+ * the authorized amount, capturing only a portion of the funds.
+ *
+ * @param params - Capture parameters including partialCapture flag
+ * @returns The captured payment details
+ */
+export async function capturePaymentWithPartial(
+  params: PartialCapturePaymentParams
+): Promise<RazorpayPayment> {
+  if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    console.log(`💳 [RAZORPAY STUB] Capture payment: ${params.paymentId}, amount=${params.amount}, partial=${params.partialCapture || false}`)
+    return {
+      id: params.paymentId,
+      entity: 'payment',
+      amount: Math.round(params.amount * 100),
+      currency: params.currency || 'INR',
+      status: 'captured',
+      method: null,
+      order_id: '',
+      email: '',
+      contact: '',
+      captured: true,
+      description: `Stub capture${params.partialCapture ? ' (partial)' : ''}`,
+      fee: 0,
+      tax: 0,
+      created_at: Math.floor(Date.now() / 1000),
+    }
+  }
+
+  // Check circuit breaker
+  if (!razorpayCircuitBreaker.canProceed()) {
+    throw new Error('Razorpay circuit breaker is OPEN — request rejected to prevent cascading failure')
+  }
+
+  const amountInPaise = Math.round(params.amount * 100)
+
+  const payload: Record<string, any> = {
+    amount: amountInPaise,
+    currency: params.currency || 'INR',
+  }
+
+  try {
+    const payment = await withRateLimitRetry(async () => {
+      return razorpayRequest<RazorpayPayment>(
+        'POST',
+        `/payments/${params.paymentId}/capture`,
+        payload
+      )
+    })
+
+    razorpayCircuitBreaker.recordSuccess()
+    console.log(`💳 [Razorpay] Payment captured: ${params.paymentId} for ₹${params.amount}${params.partialCapture ? ' (partial)' : ''}`)
+    return payment
+  } catch (err: any) {
+    razorpayCircuitBreaker.recordFailure()
+    throw err
+  }
+}

@@ -768,3 +768,566 @@ export function wafMiddleware(): MiddlewareHandler {
     await next()
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Redis-backed WAF ──────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * RedisWAF — A Redis-backed WAF that stores IP scores and blacklists in Redis
+ * for multi-instance sharing. Falls back to in-memory when Redis is unavailable.
+ *
+ * This allows multiple API instances to share WAF state, so if one instance
+ * detects a malicious IP, all instances will block it.
+ */
+export class RedisWAF {
+  private redisClient: any = null
+  private memoryFallback: WAFFirewall = new WAFFirewall()
+  private connected = false
+  private readonly KEY_PREFIX = 'waf:'
+
+  constructor() {
+    this.initRedis()
+  }
+
+  private async initRedis(): Promise<void> {
+    try {
+      const redisUrl = process.env.REDIS_URL
+      if (!redisUrl) {
+        this.connected = false
+        return
+      }
+
+      const { createClient } = await import('redis')
+      this.redisClient = createClient({ url: redisUrl })
+
+      this.redisClient.on('connect', () => {
+        this.connected = true
+      })
+      this.redisClient.on('disconnect', () => {
+        this.connected = false
+      })
+      this.redisClient.on('error', () => {
+        this.connected = false
+      })
+
+      await this.redisClient.connect()
+    } catch {
+      this.connected = false
+    }
+  }
+
+  /**
+   * Evaluate a request against the Redis-backed WAF.
+   * Falls back to in-memory WAF when Redis is unavailable.
+   */
+  async evaluateRequest(ip: string, violations: string[]): Promise<WAFAction> {
+    if (!this.connected || !this.redisClient) {
+      return this.memoryFallback.evaluateRequest(ip, violations)
+    }
+
+    try {
+      const scoreKey = `${this.KEY_PREFIX}score:${ip}`
+      const banKey = `${this.KEY_PREFIX}ban:${ip}`
+
+      // Check if currently banned in Redis
+      const banData = await this.redisClient.get(banKey)
+      if (banData) {
+        const ban = JSON.parse(banData)
+        if (Date.now() < ban.expiry) {
+          return { action: 'block', score: ban.score, reason: `IP banned until ${new Date(ban.expiry).toISOString()}` }
+        }
+        // Ban expired
+        await this.redisClient.del(banKey)
+      }
+
+      // Accumulate score from violations
+      let scoreIncrement = 0
+      for (const violation of violations) {
+        scoreIncrement += VIOLATION_SCORES[violation] || 5
+      }
+
+      // Increment score in Redis (atomic)
+      const newScore = await this.redisClient.incrByFloat(scoreKey, scoreIncrement)
+      await this.redisClient.expire(scoreKey, 7200) // 2 hour TTL on score
+
+      const currentScore = Math.min(100, Math.round(newScore))
+
+      // Auto-ban if score exceeds 80
+      if (currentScore >= 80) {
+        const banExpiry = Date.now() + 60 * 60 * 1000 // 1 hour
+        await this.redisClient.set(banKey, JSON.stringify({ score: currentScore, expiry: banExpiry }), { PX: 60 * 60 * 1000 })
+        return { action: 'block', score: currentScore, reason: `Score ${currentScore} exceeds threshold 80 — auto-banned for 1 hour` }
+      }
+
+      // Challenge if score is between 50–79
+      if (currentScore >= 50) {
+        return { action: 'challenge', score: currentScore, reason: `Score ${currentScore} — challenge required` }
+      }
+
+      return { action: 'allow', score: currentScore }
+    } catch {
+      // Redis operation failed — fall back to in-memory
+      return this.memoryFallback.evaluateRequest(ip, violations)
+    }
+  }
+
+  /**
+   * Get the current score for an IP from Redis.
+   */
+  async getIPScore(ip: string): Promise<number> {
+    if (!this.connected || !this.redisClient) {
+      return this.memoryFallback.getIPScore(ip)
+    }
+    try {
+      const score = await this.redisClient.get(`${this.KEY_PREFIX}score:${ip}`)
+      return score ? Math.min(100, parseInt(score, 10)) : 0
+    } catch {
+      return this.memoryFallback.getIPScore(ip)
+    }
+  }
+
+  /**
+   * Reset (unban) an IP address — for admin use.
+   */
+  async resetIP(ip: string): Promise<void> {
+    if (!this.connected || !this.redisClient) {
+      this.memoryFallback.resetIP(ip)
+      return
+    }
+    try {
+      await this.redisClient.del(`${this.KEY_PREFIX}score:${ip}`)
+      await this.redisClient.del(`${this.KEY_PREFIX}ban:${ip}`)
+    } catch {
+      this.memoryFallback.resetIP(ip)
+    }
+  }
+
+  /**
+   * Add an IP to the shared Redis blacklist.
+   */
+  async blacklistIP(ip: string, reason?: string, ttlMs?: number): Promise<void> {
+    if (!this.connected || !this.redisClient) return
+    try {
+      const entry = JSON.stringify({ reason: reason || 'manual', addedAt: Date.now() })
+      const opts = ttlMs ? { PX: ttlMs } : {}
+      await this.redisClient.set(`${this.KEY_PREFIX}blacklist:${ip}`, entry, opts)
+    } catch {
+      // ignore
+    }
+  }
+
+  /**
+   * Check if an IP is on the shared Redis blacklist.
+   */
+  async isBlacklisted(ip: string): Promise<boolean> {
+    if (!this.connected || !this.redisClient) return false
+    try {
+      return !!(await this.redisClient.get(`${this.KEY_PREFIX}blacklist:${ip}`))
+    } catch {
+      return false
+    }
+  }
+
+  /**
+   * Remove an IP from the shared Redis blacklist.
+   */
+  async unblacklistIP(ip: string): Promise<void> {
+    if (!this.connected || !this.redisClient) return
+    try {
+      await this.redisClient.del(`${this.KEY_PREFIX}blacklist:${ip}`)
+    } catch {
+      // ignore
+    }
+  }
+
+  /**
+   * Get all currently banned IPs from Redis.
+   */
+  async getBannedIPs(): Promise<Array<{ ip: string; score: number; banExpiry: Date | null }>> {
+    if (!this.connected || !this.redisClient) {
+      return this.memoryFallback.getBannedIPs()
+    }
+    try {
+      const keys: string[] = []
+      let cursor = '0'
+      do {
+        const result = await this.redisClient.scan(cursor, { MATCH: `${this.KEY_PREFIX}ban:*`, COUNT: 100 })
+        cursor = result.cursor
+        keys.push(...result.keys)
+      } while (cursor !== '0')
+
+      const banned: Array<{ ip: string; score: number; banExpiry: Date | null }> = []
+      for (const key of keys) {
+        const ip = key.replace(`${this.KEY_PREFIX}ban:`, '')
+        const data = await this.redisClient.get(key)
+        if (data) {
+          const parsed = JSON.parse(data)
+          banned.push({ ip, score: parsed.score, banExpiry: parsed.expiry ? new Date(parsed.expiry) : null })
+        }
+      }
+      return banned
+    } catch {
+      return this.memoryFallback.getBannedIPs()
+    }
+  }
+
+  /**
+   * Shutdown the Redis WAF.
+   */
+  async shutdown(): Promise<void> {
+    this.memoryFallback.shutdown()
+    if (this.redisClient) {
+      try {
+        await this.redisClient.quit()
+      } catch {
+        this.redisClient.disconnect()
+      }
+    }
+  }
+}
+
+/** Singleton Redis-backed WAF instance */
+export const redisWaf = new RedisWAF()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: CSP Nonce-based Protection ────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Generate a nonce-based Content Security Policy header value.
+ * Unlike unsafe-inline/unsafe-eval, this only allows scripts/styles
+ * that include the correct nonce attribute.
+ *
+ * @param nonce - The CSP nonce to embed in the policy
+ * @returns CSP header value string that uses nonce-based allowlisting
+ */
+export function getCSPHeader(nonce: string): string {
+  return [
+    `default-src 'self'`,
+    `script-src 'self' 'nonce-${nonce}'`,
+    `style-src 'self' 'nonce-${nonce}'`,
+    `img-src 'self' data: blob: https:`,
+    `font-src 'self' data:`,
+    `connect-src 'self'`,
+    `frame-ancestors 'none'`,
+    `base-uri 'self'`,
+    `form-action 'self'`,
+    `object-src 'none'`,
+    `media-src 'self'`,
+  ].join('; ')
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Session Fingerprinting with TTL ───────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * TTL-aware device entry that auto-expires.
+ * Prevents memory leaks by removing old device fingerprints.
+ */
+interface TTLDeviceEntry {
+  fingerprint: string
+  lastSeen: number
+  expiresAt: number
+}
+
+/**
+ * SessionFingerprinterWithTTL — Enhanced SessionFingerprinter that
+ * adds TTL to device entries so they auto-expire (memory leak fix).
+ *
+ * Devices that haven't been seen within the TTL window are automatically
+ * cleaned up during registration and periodic maintenance.
+ */
+export class SessionFingerprinterWithTTL {
+  private userDevices = new Map<string, Map<string, TTLDeviceEntry>>()
+  private cleanupInterval: NodeJS.Timeout
+  private readonly deviceTTL: number // milliseconds
+
+  constructor(deviceTTL: number = 90 * 24 * 60 * 60 * 1000) { // default: 90 days
+    this.deviceTTL = deviceTTL
+
+    // Cleanup expired entries every hour
+    this.cleanupInterval = setInterval(() => {
+      this.cleanupExpired()
+    }, 60 * 60 * 1000)
+  }
+
+  /**
+   * Generate a device fingerprint from request headers.
+   * Uses SHA-256 hash of user-agent + accept-language + accept-encoding.
+   */
+  generateFingerprint(userAgent: string, acceptLanguage: string, acceptEncoding: string): string {
+    const raw = `${userAgent}||${acceptLanguage}||${acceptEncoding}`
+    return crypto.createHash('sha256').update(raw).digest('hex')
+  }
+
+  /**
+   * Register a session for a user. Detects if this is a new device.
+   * Auto-cleans expired device entries.
+   */
+  registerSession(userId: string, fingerprint: string): { isNewDevice: boolean } {
+    let devices = this.userDevices.get(userId)
+
+    // Cleanup expired entries for this user first
+    if (devices) {
+      const now = Date.now()
+      for (const [fp, entry] of devices) {
+        if (now >= entry.expiresAt) {
+          devices.delete(fp)
+        }
+      }
+    }
+
+    const existing = devices?.get(fingerprint)
+    const isNewDevice = !existing || Date.now() >= existing.expiresAt
+
+    if (!devices) {
+      devices = new Map<string, TTLDeviceEntry>()
+      this.userDevices.set(userId, devices)
+    }
+
+    const now = Date.now()
+    devices.set(fingerprint, {
+      fingerprint,
+      lastSeen: now,
+      expiresAt: now + this.deviceTTL,
+    })
+
+    return { isNewDevice }
+  }
+
+  /**
+   * Get all non-expired device fingerprints for a user.
+   */
+  getUserDevices(userId: string): string[] {
+    const devices = this.userDevices.get(userId)
+    if (!devices) return []
+
+    const now = Date.now()
+    return [...devices.entries()]
+      .filter(([_, entry]) => now < entry.expiresAt)
+      .map(([fp]) => fp)
+  }
+
+  /**
+   * Clear all registered sessions/devices for a user.
+   */
+  clearUserSessions(userId: string): void {
+    this.userDevices.delete(userId)
+  }
+
+  /**
+   * Get the number of non-expired devices for a user.
+   */
+  getDeviceCount(userId: string): number {
+    return this.getUserDevices(userId).length
+  }
+
+  /**
+   * Check if a fingerprint is recognized and not expired for a user.
+   */
+  isKnownDevice(userId: string, fingerprint: string): boolean {
+    const devices = this.userDevices.get(userId)
+    if (!devices) return false
+    const entry = devices.get(fingerprint)
+    if (!entry) return false
+    return Date.now() < entry.expiresAt
+  }
+
+  /**
+   * Cleanup all expired device entries across all users.
+   */
+  private cleanupExpired(): void {
+    const now = Date.now()
+    for (const [userId, devices] of this.userDevices) {
+      for (const [fp, entry] of devices) {
+        if (now >= entry.expiresAt) {
+          devices.delete(fp)
+        }
+      }
+      // Remove user entries with no devices left
+      if (devices.size === 0) {
+        this.userDevices.delete(userId)
+      }
+    }
+  }
+
+  /**
+   * Shutdown the fingerprinter.
+   */
+  shutdown(): void {
+    clearInterval(this.cleanupInterval)
+    this.userDevices.clear()
+  }
+}
+
+/** Singleton TTL-aware fingerprinter instance */
+export const fingerprinterWithTTL = new SessionFingerprinterWithTTL()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Mutation XSS Detection ────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Mutation XSS (mXSS) patterns — double-encoding and mutation-based XSS
+ * that bypasses basic sanitization by exploiting browser parser quirks.
+ *
+ * Examples:
+ *   &lt;script&gt; → <script> (double-encoded HTML entities)
+ *   %26lt%3Bscript%26gt%3B → <script> (double URL-encoded)
+ *   &#60;script&#62; → <script> (numeric HTML entities)
+ *   &#x3c;script&#x3e; → <script> (hex HTML entities)
+ */
+const MUTATION_XSS_PATTERNS = [
+  // Double-encoded HTML entities: &amp;lt; → &lt; → < (when decoded twice)
+  /&amp;lt;/i,
+  /&amp;gt;/i,
+  /&amp;#x3c;/i,
+  /&amp;#x3e;/i,
+  /&amp;#60;/i,
+  /&amp;#62;/i,
+
+  // HTML entity encoded angle brackets that decode to <script>
+  /&lt;script/i,
+  /&gt;\/script/i,
+  /&#60;script/i,
+  /&#62;\/script/i,
+  /&#x3c;script/i,
+  /&#x3e;\/script/i,
+  /&#x3C;script/i,
+  /&#x3E;\/script/i,
+
+  // Double URL-encoded angle brackets
+  /%253C/i,
+  /%253E/i,
+  /%252f/i,
+
+  // SVG/MathML namespace mutation vectors
+  /<math\b/i,
+  /<xmp\b/i,
+  /<noscript\b/i,
+  /<noembed\b/i,
+  /<listing\b/i,
+
+  // CSS expression in encoded form
+  /expression\s*\(/i,
+
+  // Mutation via backtick in IE
+  /`[^`]*`[\s]*\(/,
+
+  // Null byte inside tag names (browser strips null bytes)
+  /<\0script/i,
+  /<scr\0ipt/i,
+
+  // Unicode normalization abuse
+  /[\u200b\u200c\u200d\ufeff]/, // zero-width characters
+
+  // Backtick-based event handlers
+  /on(click|load|error|mouseover|focus|blur|submit|change)\s*=\s*`/i,
+]
+
+/**
+ * Enhanced sanitizeInput with mutation XSS detection.
+ * Detects double-encoding and mutation XSS patterns that can bypass
+ * basic sanitization by exploiting browser parser quirks.
+ *
+ * This wraps the original sanitizeInput and adds an additional pass
+ * to detect and neutralize mXSS vectors.
+ */
+export function sanitizeInputEnhanced(input: string): string {
+  if (!input || typeof input !== 'string') return input
+
+  // First pass: original sanitization
+  let sanitized = sanitizeInput(input)
+
+  // Second pass: decode common HTML entities and re-sanitize
+  // This catches double-encoded payloads like &lt;script&gt;
+  const decodedOnce = sanitized
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#x27;/gi, "'")
+    .replace(/&#x3c;/gi, '<')
+    .replace(/&#x3e;/gi, '>')
+    .replace(/&#60;/gi, '<')
+    .replace(/&#62;/gi, '>')
+
+  // Re-run sanitization on the decoded version to catch mXSS
+  sanitized = sanitizeInput(decodedOnce)
+
+  // Third pass: remove zero-width characters
+  sanitized = sanitized.replace(/[\u200b\u200c\u200d\ufeff]/g, '')
+
+  // Fourth pass: remove null bytes inside tags
+  sanitized = sanitized.replace(/<\0/g, '<')
+  sanitized = sanitized.replace(/\0>/g, '>')
+
+  return sanitized.trim()
+}
+
+/**
+ * Detect mutation XSS patterns in input.
+ * Returns true if potential mXSS is detected.
+ */
+export function detectMutationXSS(input: string): boolean {
+  if (!input || typeof input !== 'string') return false
+
+  for (const pattern of MUTATION_XSS_PATTERNS) {
+    if (pattern.test(input)) return true
+  }
+
+  return false
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: JWT Secret Rotation ───────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Secret rotation support
+ * Enables zero-downtime JWT secret rotation by accepting both old and new secrets
+ */
+
+// Import JWT_SECRET from shared module (lazy to avoid circular deps at module load)
+let _jwtSecret: string | null = null
+function getJWTSecret(): string {
+  if (!_jwtSecret) {
+    // Dynamic require to avoid circular dependency at module load time
+    try {
+      const shared = require('./shared')
+      _jwtSecret = shared.JWT_SECRET
+    } catch {
+      _jwtSecret = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
+    }
+  }
+  return _jwtSecret
+}
+
+let jwtSecretRotation: { current: string; previous?: string; rotatedAt?: Date } | null = null
+
+export function rotateJWTSecret(newSecret: string): void {
+  jwtSecretRotation = {
+    current: newSecret,
+    previous: getJWTSecret(), // Current becomes previous
+    rotatedAt: new Date(),
+  }
+  console.log('🔄 JWT secret rotated at', new Date().toISOString())
+}
+
+export function getActiveJWTSecrets(): string[] {
+  if (!jwtSecretRotation) return [getJWTSecret()]
+  return [jwtSecretRotation.current, jwtSecretRotation.previous].filter(Boolean) as string[]
+}
+
+export function isSecretRotated(): boolean {
+  return jwtSecretRotation !== null
+}
+
+export function getSecretRotationInfo(): { rotated: boolean; rotatedAt?: string } {
+  return {
+    rotated: isSecretRotated(),
+    rotatedAt: jwtSecretRotation?.rotatedAt?.toISOString(),
+  }
+}

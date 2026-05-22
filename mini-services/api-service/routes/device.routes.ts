@@ -1,11 +1,13 @@
 // ─── routes/device.routes.ts ──────────────────────────────────────────
 // FCM Device Token & Worker/Monitoring endpoints
+// Refactored: thin handlers that delegate to device.service
 // ─────────────────────────────────────────────────────────────────────
 
 import { Hono } from 'hono'
-import { pool, getAuthUser } from '../lib/shared'
+import { getAuthUser } from '../lib/shared'
 import { getFCMStatus } from '../lib/firebase'
 import { getWorkerStatus, jobTracker } from '../workers/notification.worker'
+import * as deviceService from '../services/device.service'
 
 const router = new Hono()
 
@@ -17,30 +19,9 @@ router.post('/api/devices/token', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { token, platform, appVersion } = await c.req.json()
-    if (!token) return c.json({ error: 'FCM device token is required' }, 400)
-    if (typeof token !== 'string' || token.length > 500) return c.json({ error: 'Invalid device token' }, 400)
-
-    const tokenId = 'dtk_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-
-    // Upsert: deactivate old tokens for this device, insert new one
-    // Check if this token already exists for any user
-    const existing = await pool.query('SELECT id, "userId" FROM "DeviceToken" WHERE token = $1', [token])
-    if (existing.rows.length > 0) {
-      // Token already registered — update it to this user (handles re-login)
-      await pool.query(
-        'UPDATE "DeviceToken" SET "userId" = $1, platform = $2, "appVersion" = $3, "isActive" = true, "updatedAt" = NOW() WHERE token = $4',
-        [user.id, platform || 'unknown', appVersion || null, token]
-      )
-      return c.json({ message: 'Device token updated', id: existing.rows[0].id })
-    }
-
-    // New token — insert
-    await pool.query(
-      'INSERT INTO "DeviceToken" (id, "userId", token, platform, "appVersion", "isActive", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, true, NOW(), NOW())',
-      [tokenId, user.id, token, platform || 'unknown', appVersion || null]
-    )
-
-    return c.json({ message: 'Device token registered', id: tokenId }, 201)
+    const result = await deviceService.registerDeviceToken(user.id, { token, platform, appVersion })
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: result.message, id: result.id }, result.created ? 201 : 200)
   } catch (e) {
     console.error('Device token registration error:', e)
     return c.json({ error: 'Failed to register device token' }, 500)
@@ -52,15 +33,9 @@ router.delete('/api/devices/token', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { token } = await c.req.json()
-    if (!token) return c.json({ error: 'FCM device token is required' }, 400)
-
-    // Deactivate the token instead of deleting (for analytics)
-    await pool.query(
-      'UPDATE "DeviceToken" SET "isActive" = false, "updatedAt" = NOW() WHERE token = $1 AND "userId" = $2',
-      [token, user.id]
-    )
-
-    return c.json({ message: 'Device token removed' })
+    const result = await deviceService.removeDeviceToken(user.id, token)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: result.message })
   } catch (e) {
     console.error('Device token removal error:', e)
     return c.json({ error: 'Failed to remove device token' }, 500)

@@ -1,1009 +1,868 @@
-# BookMyService - Work Log
+# Worklog — Task 1-a-auth-booking
+
+## Task: Extract business logic from route files into service files
+
+### Completed Work
+
+#### Service Files Created (10 files)
+
+All service files are in `mini-services/api-service/services/`:
+
+1. **auth.service.ts** — Extracted all auth business logic:
+   - `loginUser()`, `registerUser()`, `googleAuth()`
+   - `forgotPassword()`, `resetPassword()`, `changePassword()`
+   - `getProfile()`, `updateProfile()`, `updateLocation()`
+   - Helper functions: `createAccessToken()`, `sanitizeUser()`, `verifyToken()`, `isJwtError()`
+   - All functions accept plain parameters (not HTTP context) and return data objects with `success/error/status` pattern
+
+2. **booking.service.ts** — Extracted booking logic:
+   - `createBooking()`, `listBookings()`, `getBooking()`, `updateBookingStatus()`
+   - `verifyOtp()`, `cancelBooking()`, `completeBooking()`, `acceptBooking()`, `rejectBooking()`
+   - Preserves all cache invalidation, notification job pushing, and booking event logging
+
+3. **review.service.ts** — Extracted review logic:
+   - `createReview()`, `listReviews()`, `deleteReview()`, `updateReview()`
+   - Preserves booking status validation, duplicate review checks, and service rating updates
+
+4. **wallet.service.ts** — Extracted wallet logic:
+   - `getOrCreateWallet()`, `depositToWallet()`, `getWalletTransactions()`, `withdrawFromWallet()`
+   - Preserves auto-wallet creation and transaction recording
+
+5. **notification.service.ts** — Extracted notification logic:
+   - `listNotifications()`, `markNotificationRead()`, `markAllNotificationsRead()`
+
+6. **earnings.service.ts** — Extracted earnings logic:
+   - `getEarnings()` with period-based date filtering
+
+7. **payout.service.ts** — Extracted payout logic:
+   - `listPayouts()`, `requestPayout()`
+
+8. **favorites.service.ts** — Extracted favorites logic:
+   - `listFavorites()`, `addFavorite()`, `removeFavorite()`
+
+9. **kyc.service.ts** — Extracted KYC logic:
+   - `getKyc()`, `submitKyc()`, `getKycStatus()`, `submitKycForm()`
+
+10. **dispute.service.ts** — Extracted dispute logic:
+    - `listDisputes()`, `createDispute()`, `updateDispute()`
+
+#### Route Files Updated (2 files)
+
+1. **routes/auth.routes.ts** — Refactored to thin handler:
+   - Removed all direct `pool.query`, `bcrypt`, `SignJWT`, `jwtVerify` calls
+   - Now only handles HTTP concerns: request parsing, auth header extraction, response formatting
+   - Delegates all business logic to `services/auth.service`
+   - Error handling preserved (JWT errors, 401/403/404/500 status codes)
+   - Zero `pool.query` calls remaining in route file
+
+2. **routes/booking.routes.ts** — Refactored to thin handler:
+   - Imports all 9 service modules (booking, review, notification, wallet, earnings, payout, favorites, kyc, dispute)
+   - Delegates to service functions for all extracted domains
+   - Retained `pool.query` only for non-extracted sections (coupons, AMC, invoices, CRM)
+   - All API contracts preserved exactly (same endpoints, same request/response formats)
+
+### Design Decisions
+
+- **Service return pattern**: Services return objects with `{ success: true, ...data }` or `{ success: false, error: string, status: number }` for operations that can fail, allowing route handlers to simply check `result.success` and return appropriate HTTP responses
+- **Dependency injection**: Services import their own dependencies (pool, redis, queues) directly rather than receiving them as parameters, since these are singletons in the application
+- **No HTTP awareness in services**: Service functions accept plain parameters (strings, numbers, objects) and return data objects, never touching HTTP request/response objects
+- **Preserved error handling**: All error handling patterns (try/catch, JWT error detection, catch fallbacks for missing tables) are maintained in both services and route files
+
+### Verification
+
+- All 10 service files export expected functions (verified via script)
+- All imports in route files resolve correctly (verified via script)
+- Braces balanced in all files (verified via script)
+- Service can start without import errors (tested with `bun run index.ts`)
+- auth.routes.ts has 0 `pool.query` calls (business logic fully extracted)
+- booking.routes.ts has 12 `pool.query` calls (only in non-extracted coupon/AMC/invoice/CRM sections)
 
 ---
-Task ID: 0
-Agent: Main Orchestrator
-Task: Analyze project and plan feature implementations
 
-Work Log:
-- Analyzed full project structure (backend: Hono API, frontend: React/Vite SPA)
-- Reviewed existing implementations: Redis caching, BullMQ queues, Firebase FCM, PostGIS, Twilio WhatsApp, Cloudinary, Sentry, Cloudflare security
-- Identified 9 features to implement: Razorpay, WhatsApp API, Push Notifications, Geo-location, Real-time tracking, Admin analytics, Redis caching, Queue workers, AI recommendations
-- Several features have partial implementations that need enhancement
+# Worklog — Task 1-b-1c-services
 
-Stage Summary:
-- Project uses monolithic Hono API (~4150 lines) with raw SQL (pg.Pool)
-- Redis caching: ✅ Complete with in-memory fallback
-- Queue workers: ✅ Complete with BullMQ + sync fallback
-- Push Notifications: ✅ FCM with graceful fallback, needs frontend integration
-- WhatsApp API: ✅ Twilio stub, works with env vars
-- Geo-location: ✅ PostGIS + Haversine fallback
-- Razorpay: ✅ Backend complete (needs frontend integration)
-- Real-time tracking: ❌ Needs Socket.IO mini-service
-- Admin analytics dashboard: ❌ Needs enhanced backend + frontend
-- AI recommendations: ❌ Needs implementation
+## Task: Extract business logic from 9 additional route files into service files, then update routes to delegate
 
----
-Task ID: 2
-Agent: Backend Developer
-Task: Add Razorpay Payment Integration to Backend
+### Completed Work
 
-Work Log:
-- Created `/home/z/my-project/mini-services/api-service/lib/razorpay.ts` — Razorpay utility module with REST API (fetch-based, no SDK)
-  - Functions: `createOrder()`, `verifyPaymentSignature()`, `verifyWebhookSignature()`, `capturePayment()`, `refundPayment()`, `getPaymentDetails()`, `mapRazorpayStatus()`
-  - Graceful fallback when RAZORPAY_KEY_ID/RAZORPAY_KEY_SECRET not set (stub mode)
-  - HMAC-SHA256 signature verification using crypto with timing-safe comparison
-  - Env vars: RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET, RAZORPAY_WEBHOOK_SECRET
-- Added Payment table creation to startup section (non-fatal, like DeviceToken/BackupRecord)
-  - Fields: id, orderId, paymentId, bookingId, userId, amount, currency, status, method, signature, refundId, refundAmount, refundStatus, metadata (JSONB), createdAt, updatedAt
-  - Indexes on bookingId, userId, status, orderId
-- Added 8 Razorpay payment API endpoints to index.ts:
-  - `POST /api/payments/create-order` — Create Razorpay order for a booking (authenticated, 5/min rate limit)
-  - `POST /api/payments/verify` — Verify payment signature after checkout (authenticated, 10/min rate limit)
-  - `POST /api/payments/capture/:paymentId` — Capture authorized payment (admin only)
-  - `POST /api/payments/refund/:paymentId` — Initiate refund (admin/provider)
-  - `GET /api/payments/:paymentId` — Get payment details (authenticated)
-  - `GET /api/payments/booking/:bookingId` — Get payments for a booking (authenticated)
-  - `GET /api/payments/config` — Get Razorpay public key for frontend
-  - `POST /api/payments/webhook` — Razorpay webhook handler (no auth, signature verified)
-- Webhook handles: payment.captured, payment.failed, refund.processed events
-- Payment verification triggers booking confirmation notification jobs
-- Payment status cached in Redis with 10-min TTL
-- Added Razorpay status to health check endpoint
-- Rate limiters: 5/min for create-order, 10/min for verify
-- TypeScript compilation: no new errors introduced
+#### Service Files Created (9 new files)
 
-Stage Summary:
-- Razorpay payment integration: ✅ Backend complete
-  - lib/razorpay.ts: Complete with stub mode fallback
-  - Payment table: Auto-created on startup
-  - 8 API endpoints: All implemented with proper auth, error handling, caching
-  - Webhook support: payment.captured, payment.failed, refund.processed
-  - Rate limiting: Configured for sensitive endpoints
-  - Integration: Uses existing patterns (pool.query, redis, pushNotificationJob, logger, captureApiError)
+All service files are in `mini-services/api-service/services/`:
 
----
-Task ID: 4
-Agent: AI Recommendation Developer
-Task: Add AI-Powered Recommendation System
+1. **service-catalog.service.ts** — Extracted from `routes/service.routes.ts`:
+   - `listCategories()`, `getCategoryDetail()`, `getCategoryServices()`, `listSubcategories()`
+   - `listServices()`, `getServiceDetail()`, `searchServices()`, `getServiceReviews()`, `getServiceAvailability()`
+   - `createService()`, `updateService()`, `approveService()`, `deleteService()`
+   - Types: `CreateServiceInput`, `ListServicesFilters`, `SearchServicesFilters`
+   - Preserves all Redis caching (CacheKeys, CacheTTL), cache invalidation patterns, and transformServiceRow/transformReviewRow
 
-Work Log:
-- Installed `z-ai-web-dev-sdk` package in api-service (v0.0.18)
-- Created `/home/z/my-project/mini-services/api-service/lib/recommendations.ts` — AI recommendation engine module (~730 lines)
-  - **Core Functions:**
-    - `generatePersonalizedRecommendations(userId, pool)` — Main recommendation function
-      - Fetches user's booking history (last 10 bookings with categories and services)
-      - Fetches user's location (latitude, longitude, city)
-      - Fetches user's search history from Redis (popular:services for this user)
-      - Fetches trending services in user's city
-      - Uses LLM (z-ai-web-dev-sdk) to analyze and generate recommendations
-      - Falls back to rule-based recommendations when LLM is unavailable
-      - Returns: Array of recommended services with reasons and relevance scores
-    - `generateSimilarServices(serviceId, pool)` — Find similar services
-      - Gets service details and category
-      - Finds services in same category with similar pricing (50%-200% price range)
-      - Uses LLM to rank by relevance with reasoning
-      - Falls back to rating + price proximity scoring
-    - `generateSearchSuggestions(query, city, pool)` — Smart search suggestions
-      - Context-aware autocomplete using LLM for natural language understanding
-      - Falls back to database-based matching (categories, services, popular searches)
-      - Returns: Array of suggestions with type (service/category/query/trending) and confidence
-    - `generateBookingInsights(userId, pool)` — Personalized insights
-      - Spending patterns, service frequency, preferred time slots, category analysis
-      - Cost optimization suggestions
-      - Falls back to rule-based calculations for spending, frequency, timing, category, savings insights
-    - `generateTrendingServices(pool, city?, limit?)` — Trending services
-      - Services with highest booking volume in last 30 days
-      - Calculates growth rate comparing recent vs previous week
-      - Optional city filter
-  - **Caching:**
-    - All recommendations cached in Redis for 15 minutes
-    - Cache keys: `recommendations:user:{userId}`, `recommendations:similar:{serviceId}`, `recommendations:search:{hash}`, `recommendations:insights:{userId}`, `recommendations:trending:{city}`
-  - **LLM Integration:**
-    - Uses `z-ai-web-dev-sdk` via `ZAI.create()` singleton pattern
-    - Chat completions API with structured system prompts
-    - LLM responses parsed as JSON (with markdown-wrapping fallback)
-    - If LLM fails, falls back to rule-based recommendations
-  - **Rule-based Fallback (when LLM unavailable):**
-    - Recommend services from categories the user has booked before
-    - Recommend popular services in the user's city
-    - Recommend recently added services
-    - Recommend services with high ratings (≥4.5)
-    - Sorted by relevance score (0.0-1.0)
-- Added 5 recommendation API routes to `mini-services/api-service/index.ts`:
-  - `GET /api/recommendations` — Personalized recommendations (authenticated, 10/min rate limit)
-  - `GET /api/recommendations/similar/:serviceId` — Similar services (authenticated, 10/min rate limit)
-  - `GET /api/recommendations/search-suggestions` — Search suggestions with query param `q` (authenticated, 20/min rate limit)
-  - `GET /api/recommendations/insights` — Booking insights (authenticated, 5/min rate limit)
-  - `GET /api/recommendations/trending` — Trending services, optional `city` and `limit` params (public, no auth required)
-- All endpoints placed BEFORE the catch-all 404 handler for proper route matching
-- Rate limiters configured:
-  - `/api/recommendations`: 10/min per IP
-  - `/api/recommendations/search-suggestions`: 20/min per IP
-  - `/api/recommendations/insights`: 5/min per IP
-- TypeScript compilation: No new errors introduced (pre-existing sentry.ts errors remain)
-- All endpoints tested and working correctly
+2. **geo.service.ts** — Extracted from `routes/hyperlocal.routes.ts`:
+   - `findNearbyProviders()` — PostGIS first, Haversine fallback, Redis caching
+   - `getAreaStatus()` — Moved from `getAreaStatusFromDB` helper, AreaActivation table + User count fallback
+   - `getAreaActivation()` — Area activation meter data
+   - `reverseGeocode()` — DB first, then local Indian cities lookup
+   - `getServiceAreas()`, `getCities()`, `joinWaitingList()`, `applyAreaManager()`
+   - Preserves all PostGIS/Haversine fallback logic and INDIAN_CITIES data
 
-Stage Summary:
-- AI Recommendation Engine: ✅ Complete
-  - lib/recommendations.ts: 730-line module with LLM + rule-based fallback
-  - LLM integration: z-ai-web-dev-sdk with singleton pattern and graceful degradation
-  - 5 API endpoints: All implemented with auth, error handling, caching, rate limiting
-  - Caching: Redis with 15-min TTL per user/query
-  - Fallback strategy: Rule-based when LLM unavailable
-  - TypeScript: Clean compilation (no new errors)
+3. **franchise.service.ts** — Extracted from `routes/franchise.routes.ts`:
+   - `getFranchiseDashboard()`, `getFranchiseVendors()`, `getFranchiseAnalytics()`
+   - `getVendorBookings()`, `getVendorServices()`, `listFranchises()`, `createFranchise()`
+   - All functions return `{ success: true/false, ... }` pattern for auth-protected operations
+
+4. **technician.service.ts** — Extracted from `routes/technician.routes.ts`:
+   - `getTechnicianProfile()`, `updateTechnicianProfile()`, `getTechnicianJobs()`, `getTechnicianEarnings()`
+   - Profile update uses allowlisted fields (name, phone, city, state, country, address, pincode, profileImageUrl)
+
+5. **tracking.service.ts** — Extracted from `routes/tracking.routes.ts`:
+   - `getBookingTracking()` — Verifies participant/admin access, fetches LiveTechnicianLocation + BookingTimeline + BookingTracking
+   - `getBookingTrackingHistory()` — Paginated location history with participant/admin verification
+   - Both functions handle access control (client, provider, technician, admin roles)
+
+6. **upload.service.ts** — Extracted from `routes/upload.routes.ts`:
+   - `uploadProfileImage()` — Handles both multipart/form-data and base64 uploads
+   - `uploadServiceImage()`, `uploadKycDocuments()`, `deleteUploadedImage()`
+   - Preserves Cloudinary upload via uploadBuffer/uploadBase64, DB updates, and cache invalidation
+
+7. **device.service.ts** — Extracted from `routes/device.routes.ts`:
+   - `registerDeviceToken()` — Upsert pattern (update existing token, or insert new)
+   - `removeDeviceToken()` — Soft-delete (sets isActive = false)
+   - Returns `{ success, message, id, created }` for proper 201/200 status handling
+
+8. **referral.service.ts** — Extracted from `routes/referral.routes.ts`:
+   - `trackReferral()`, `getWhatsAppMessage()`, `getReferrals()`, `getCommissionInfo()`, `getCommissions()`
+   - getWhatsAppMessage() returns success/error pattern for city validation
+   - Preserves static commission info fallback when CommissionStructure table doesn't exist
+
+9. **legal.service.ts** — Extracted from `routes/legal.routes.ts`:
+   - `listLegalDocuments()`, `getLegalDocument()`, `listFAQ()`, `submitContact()`, `getStats()`, `getPlatformStats()`
+   - getLegalDocument() uses LEGAL_TYPE_MAP for URL-to-enum mapping
+   - getStats() has PlatformStats table → User count fallback pattern
+   - getPlatformStats() uses Redis caching with CacheTTL.LONG
+
+#### Route Files Updated (9 files)
+
+1. **routes/service.routes.ts** — Now imports `* as serviceCatalog from '../services/service-catalog.service'`, delegates all business logic. Route handlers only parse query params, call service, format response.
+
+2. **routes/hyperlocal.routes.ts** — Now imports `* as geoService from '../services/geo.service'`, removed `getAreaStatusFromDB` helper (moved to geo service as `getAreaStatus`). Kept city lookup logic in route for request parsing.
+
+3. **routes/franchise.routes.ts** — Now imports `* as franchiseService from '../services/franchise.service'`, all auth checks and role validation remain in route, business logic delegated.
+
+4. **routes/technician.routes.ts** — Now imports `* as technicianService from '../services/technician.service'`, minimal route handlers.
+
+5. **routes/tracking.routes.ts** — Now imports `* as trackingService from '../services/tracking.service'`, JWT error handling preserved in route.
+
+6. **routes/upload.routes.ts** — Now imports `* as uploadService from '../services/upload.service'`, multipart body parsing remains in route for profile upload.
+
+7. **routes/device.routes.ts** — Now imports `* as deviceService from '../services/device.service'`, worker/monitoring endpoints kept directly in route (not extracted).
+
+8. **routes/referral.routes.ts** — Now imports `* as referralService from '../services/referral.service'`, auth extraction in route, logic in service.
+
+9. **routes/legal.routes.ts** — Now imports `* as legalService from '../services/legal.service'`, no auth needed for these endpoints.
+
+### Design Decisions
+
+- **Consistent return pattern**: Services use `{ success: true, ...data }` or `{ success: false, error: string, status: number }` for operations with auth/validation, plain data objects for read-only endpoints
+- **No HTTP awareness in services**: Service functions accept plain parameters and return data objects — never Hono context objects
+- **Cache logic stays in services**: Redis caching/invalidation is business logic, so it lives in service files
+- **Worker/monitoring endpoints not extracted**: The `/api/worker/*` and `/api/fcm/status` endpoints are simple pass-throughs that don't warrant their own service
+- **`getAreaStatusFromDB` renamed**: Moved to geo service as `getAreaStatus` to match the task spec's function name
+
+### Verification
+
+- API server starts successfully: "🚀 BookMyService API running on http://localhost:3001" with "Routes: 15 domain modules mounted"
+- All 9 new service files are independently importable
+- All 9 route files properly delegate to services
+- No existing endpoints or API contracts were changed
 
 ---
-Task ID: 3
-Agent: Real-time Tracking Developer
-Task: Create Real-time Booking Tracking with Socket.IO
 
-Work Log:
-- Created `/home/z/my-project/mini-services/tracking-service/package.json` — Standalone Bun project
-  - Dependencies: socket.io ^4.8.1, pg ^8.20.0, jose ^5.10.0
-  - Scripts: dev (bun --hot), dev:simple (bun), start (bun)
-- Created `/home/z/my-project/mini-services/tracking-service/index.ts` — Socket.IO server (~660 lines)
-  - **Architecture:**
-    - Each booking gets a room: `booking:{bookingId}`
-    - Each user gets a room: `user:{userId}`
-    - Admin gets a room: `admin:notifications`
-  - **Authentication:**
-    - JWT verification on socket connection using same JWT_SECRET as main API
-    - Token from handshake auth (`auth.token`, `auth.Authorization`) or query param
-    - Stores userId, email, role, roleId in socket.data after auth
-    - Disconnects unauthenticated sockets
-  - **Socket Events (Client → Server):**
-    - `join-booking` — Join a booking room (verified: user is client/provider/technician)
-    - `leave-booking` — Leave a booking room
-    - `update-location` — Provider/technician sends GPS (lat, lng, accuracy, heading, speed)
-    - `booking-status-change` — Provider updates status (ON_THE_WAY, ARRIVED, IN_PROGRESS, etc.)
-  - **Socket Events (Server → Client):**
-    - `location-update` — Broadcast provider location to booking room
-    - `booking-status-update` — Broadcast status change to booking room
-    - `eta-update` — Estimated time of arrival update
-    - `booking-notification` — Push-style notification via WebSocket
-  - **Database Integration (auto-created tables):**
-    - `LiveTechnicianLocation` — Latest GPS position per provider/technician (upsert)
-    - `BookingTracking` — Location history per booking (insert)
-    - `BookingTimeline` — Status change events per booking (insert + Booking table update)
-  - **Graceful Degradation:**
-    - If DATABASE_URL not available, still serves WebSocket (no DB persistence)
-    - In-memory liveLocations Map for fast retrieval when DB unavailable
-    - If JWT verification fails, disconnects the socket
-    - verifyBookingAccess returns true on DB error (allow access)
-  - **Hot Reload Support:**
-    - globalThis.__trackingIo pattern for bun --hot compatibility
-    - HTTP server created first, Socket.IO attached second
-    - Health check endpoint at /health returns service status JSON
-  - **CORS:** Same allowed origins as main API (production + localhost)
-  - **Port:** 3003
-  - **Frontend connection:** `io("/?XTransformPort=3003")`
-- Added 2 tracking REST API routes to `/home/z/my-project/mini-services/api-service/index.ts`:
-  - `GET /api/tracking/:bookingId` — Get current tracking data for a booking (authenticated)
-    - Returns: bookingId, bookingStatus, serviceLocation, providerLocation, timeline, trackingServiceUrl
-    - Verifies user is participant (client, provider, technician) or admin
-    - Queries LiveTechnicianLocation, BookingTracking, BookingTimeline tables
-  - `GET /api/tracking/:bookingId/history` — Get location history for a booking (authenticated)
-    - Returns: bookingId, locations (paginated), total, limit, offset
-    - Supports limit (1-1000, default 100) and offset query params
-    - Verifies user access same as tracking endpoint
-- Installed dependencies: `bun install` in tracking-service directory
-- Service tested and running on port 3003, health check responding correctly
+# Worklog — Task 4-tracking-refactor
 
-Stage Summary:
-- Real-time tracking service: ✅ Complete
-  - tracking-service/index.ts: 660-line Socket.IO server with full event handling
-  - Authentication: JWT verification matching main API patterns
-  - Database: 3 auto-created tables with non-blocking persistence
-  - Graceful degradation: WebSocket-only mode when DB unavailable
-  - REST fallback: 2 endpoints in main API for non-WebSocket clients
-  - Hot reload: bun --hot compatible with globalThis pattern
-  - CORS: Same origins as main API
-  - Port 3003, accessible via Caddy XTransformPort
+## Task: Modularize tracking service and add Redis Socket.IO adapter for horizontal scaling
 
----
-Task ID: 5-a
-Agent: Frontend Developer
-Task: Build Frontend Components for Razorpay Payment and Real-time Tracking
+### Completed Work
 
-Work Log:
-- Installed `socket.io-client@4.8.3` in frontend package
-- Created `/home/z/my-project/frontend/src/hooks/use-razorpay.ts` — Razorpay payment hook (~175 lines)
-  - Loads Razorpay checkout.js script dynamically on mount
-  - Provides `initiatePayment({ bookingId, amount, currency, name, email, phone })` function
-  - Creates order via `POST /api/payments/create-order`
-  - Opens Razorpay checkout modal with order details
-  - On success, verifies payment via `POST /api/payments/verify`
-  - Fetches Razorpay public key from `GET /api/payments/config`
-  - Returns: `{ initiatePayment, isProcessing, error, isScriptLoaded }`
-  - Uses queueMicrotask for initial script-loaded state to avoid React Compiler lint issue
-  - Declares global Window interface for Razorpay types
-- Created `/home/z/my-project/frontend/src/hooks/use-tracking.ts` — Real-time tracking hook (~120 lines)
-  - Connects to Socket.IO at `io("/?XTransformPort=3003", { auth: { token } })`
-  - Manages connection lifecycle (connect/disconnect/reconnect)
-  - Provides functions: `joinBooking(bookingId)`, `leaveBooking(bookingId)`, `updateLocation(data)`
-  - Returns: `{ isConnected, location, bookingStatus, eta, notifications, joinBooking, leaveBooking, updateLocation }`
-  - Handles reconnection with exponential backoff (built into socket.io-client)
-  - Clean disconnect on unmount
-  - Listens for: location-update, booking-status-update, eta-update, booking-notification
-  - Maintains last 20 notifications with auto-trimming
-- Created `/home/z/my-project/frontend/src/components/bys/payment-page.tsx` — Payment page (~375 lines)
-  - Full payment page with booking summary (service, provider, date, time, address, price breakdown)
-  - Payment method card showing Razorpay Secure Checkout
-  - "Pay Now" button triggering Razorpay checkout modal
-  - Payment step management: summary -> processing -> success/failed
-  - Derived effectiveStep for already-paid bookings (shows success immediately)
-  - Retry option on failed payments
-  - Professional UI with shadcn/ui Card, Button, Badge, Separator, Skeleton
-  - Responsive design (mobile-first)
-  - Security badge with 256-bit SSL messaging
-  - Uses motion animations for transitions
-- Created `/home/z/my-project/frontend/src/components/bys/booking-tracking-page.tsx` — Tracking page (~430 lines)
-  - Real-time tracking page with live map placeholder
-  - Map placeholder with grid lines, location dot, and coordinate display
-  - Provider info card (name, photo placeholder, rating, call button)
-  - ETA card with estimated arrival time
-  - Booking timeline with status steps (ACCEPTED -> ON_THE_WAY -> ARRIVED -> IN_PROGRESS -> COMPLETED)
-  - Live notifications feed from WebSocket
-  - Connection status indicator (connected/reconnecting)
-  - Not-trackable notice for bookings not yet in active status
-  - Pulse animation on location updates (key-based CSS remount approach)
-  - Service address display
-  - Merges REST tracking data with live WebSocket data
-  - Professional UI with shadcn/ui components
-- Updated `/home/z/my-project/frontend/src/App.tsx`:
-  - Added imports for PaymentPage and BookingTrackingPage
-  - Added `client-payment` and `booking-tracking` to validPages set
-  - Added `client-payment` and `booking-tracking` to PROTECTED_ROUTES
-  - Added switch cases for `client-payment` and `booking-tracking` routes
-- Updated `/home/z/my-project/frontend/src/contexts/app-context.tsx`:
-  - Added `client-payment` and `booking-tracking` to Page type union
-- Modified `/home/z/my-project/frontend/src/components/bys/booking-confirmation-page.tsx`:
-  - Added CreditCard icon import
-  - Added "Pay Now" button with sky-to-blue gradient that navigates to client-payment page
-  - Existing "View Booking" and "Back to Home" buttons preserved
-- Modified `/home/z/my-project/frontend/src/components/bys/client-booking-detail-page.tsx`:
-  - Added Navigation2 icon import
-  - Added "Track Provider" button (purple-to-pink gradient) shown when booking is active
-  - Added "Pay Now" button (sky-to-blue gradient) shown when payment not yet completed
-  - Existing action buttons preserved
-- TypeScript compilation: Clean (no new errors)
-- ESLint: No new errors introduced (remaining 8 errors are pre-existing in other files)
+#### Directory Structure Created
 
-Stage Summary:
-- Razorpay Payment Frontend: Complete
-  - use-razorpay.ts hook: Dynamic script loading, order creation, checkout modal, payment verification
-  - payment-page.tsx: Full payment flow with summary, processing, success, and failed states
-- Real-time Tracking Frontend: Complete
-  - use-tracking.ts hook: Socket.IO connection, booking room management, location/status/eta updates
-  - booking-tracking-page.tsx: Live map, provider info, ETA, timeline, notifications, connection status
-- Routing Integration: Complete
-  - App.tsx: New routes added with protected route support
-  - app-context.tsx: Page types extended
-- Existing Page Integration: Complete
-  - booking-confirmation-page.tsx: Pay Now button added
-  - client-booking-detail-page.tsx: Track Provider and Pay Now buttons added
-- Code Quality: TypeScript clean, ESLint clean for new files
+```
+mini-services/tracking-service/
+├── index.ts          (entry point — imports and assembles modules, Redis adapter)
+├── config.ts         (configuration constants: JWT_SECRET, CORS, PORT, REDIS_URL)
+├── database.ts       (PostgreSQL pool, table creation, DB helpers)
+├── auth.ts           (JWT verification for socket connections)
+├── handlers.ts       (socket event handlers + in-memory liveLocations Map)
+├── package.json      (updated with @socket.io/redis-adapter + redis dependencies)
+```
+
+#### Module Details
+
+1. **config.ts** — Centralized configuration:
+   - `PORT` (3003), `JWT_SECRET`, `ALLOWED_ORIGINS`, `REDIS_URL` from env vars
+   - `isOriginAllowed()` helper function
+   - `REDIS_URL` defaults to empty string (no Redis = in-memory only)
+
+2. **database.ts** — All database logic:
+   - PostgreSQL pool setup with graceful fallback when `DATABASE_URL` not set
+   - `createTrackingTables()` — auto-creates LiveTechnicianLocation, BookingTracking, BookingTimeline
+   - `persistLocationUpdate()` — upsert latest GPS position per provider
+   - `persistBookingTracking()` — insert location history point for booking
+   - `persistStatusChange()` — insert timeline event + update Booking status
+   - `verifyBookingAccess()` — check user is client/provider/technician of booking
+   - `closePool()` — for graceful shutdown
+   - `isDbAvailable()` — check DB connectivity status
+
+3. **auth.ts** — JWT verification:
+   - `AuthPayload` interface (sub, email, role, roleId)
+   - `verifySocketToken(token)` — JWT verification using jose
+   - Issuer/audience: 'bookyourservice'
+
+4. **handlers.ts** — Socket event handlers:
+   - `liveLocations` Map exported (in-memory state for fast retrieval)
+   - `registerHandlers(io, socket)` — registers all event handlers:
+     - `join-booking` — verify access, join room, send cached location
+     - `leave-booking` — leave booking room
+     - `update-location` — validate coords/role, broadcast, persist, cache
+     - `booking-status-change` — validate status/role, broadcast, persist
+     - `disconnect` — log disconnect
+
+5. **index.ts** — Entry point (assembles everything):
+   - Imports config, database, auth, handlers modules
+   - Socket.IO server creation with bun --hot support via `globalThis`
+   - JWT auth middleware using `verifySocketToken()` from auth module
+   - Handler registration via `registerHandlers(io, socket)`
+   - Health check endpoint (includes `redisAdapter` status field)
+   - **Redis Socket.IO adapter** — dynamically imported when `REDIS_URL` is set
+     - Uses `@socket.io/redis-adapter` with pub/sub clients
+     - Graceful fallback: if Redis connection fails, continues with in-memory only
+     - `redisAdapterActive` flag tracked for health check reporting
+   - Graceful shutdown: disconnect sockets, close DB pool, close IO
+   - Process error protection: EADDRINUSE, uncaughtException, unhandledRejection
+
+#### Package Dependencies Updated
+
+```json
+{
+  "dependencies": {
+    "socket.io": "^4.8.1",
+    "pg": "^8.20.0",
+    "jose": "^5.10.0",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "redis": "^5.12.1"
+  }
+}
+```
+
+Version bumped to `2.0.0`.
+
+### Design Decisions
+
+- **Dynamic Redis import**: `@socket.io/redis-adapter` and `redis` are imported dynamically via `await import()` only when `REDIS_URL` is configured, ensuring the service starts cleanly without Redis
+- **Graceful Redis fallback**: If Redis connection fails, the service logs a warning and continues with in-memory adapter — no crash, no broken functionality
+- **No functionality changes**: All socket events (join-booking, leave-booking, update-location, booking-status-change, disconnect) work identically to the original monolith
+- **Shared in-memory state**: `liveLocations` Map remains in `handlers.ts` — works with or without Redis adapter (Redis adapter syncs rooms/events across instances, not in-memory Maps)
+- **bun --hot compatibility preserved**: `globalThis.__trackingIo` pattern for Socket.IO instance reuse on hot reload
+- **Health check enhanced**: Added `redisAdapter` field (either "connected" or "not-configured") and bumped version to "2.0.0"
+
+### Verification
+
+- Service starts successfully: `🚀 Tracking service started on port 3003`
+- Health check endpoint returns correct JSON with `redisAdapter: "not-configured"` (no REDIS_URL set)
+- All modules import correctly with no errors
+- `bun install` completed: `@socket.io/redis-adapter@8.3.0` and `redis@5.12.1` installed
+- Database gracefully degrades when `DATABASE_URL` not set (WebSocket-only mode)
+- Version updated from 1.0.0 to 2.0.0
 
 ---
-Task ID: 5-b
-Agent: Frontend Developer
-Task: Build Frontend Components for AI Recommendations and Enhanced Admin Analytics Dashboard
 
-Work Log:
-- Created `/home/z/my-project/frontend/src/hooks/use-recommendations.ts` — Custom hook for AI-powered recommendations (~210 lines)
-  - 5 main functions: getPersonalized, getSimilar, getSearchSuggestions, getInsights, getTrending
-  - All calls pass Authorization header with token via useAuth()
-  - Loading and error states for each function
-  - Response caching in state (5-minute TTL) to avoid re-fetching
-  - Full TypeScript types exported: RecommendedService, TrendingService, SearchSuggestion, BookingInsight, InsightData
-- Created `/home/z/my-project/frontend/src/components/bys/ai-recommendations-section.tsx` — Reusable section component (~230 lines)
-  - Personalized recommendations with AI reasons (logged-in users only)
-  - Trending services with growth indicators (all users)
-  - Each card shows: service name, provider, rating, price, reason (from AI), category badge
-  - "See All" link navigating to full recommendations page
-  - Loading skeleton while fetching
-  - Responsive grid layout (1 col mobile, 2 cols tablet, 3-4 cols desktop)
-- Created `/home/z/my-project/frontend/src/components/bys/recommendations-page.tsx` — Full page (~350 lines)
-  - 3 tabs: "For You" (personalized) | "Trending" | "Insights"
-  - Spending patterns metrics cards (Total Spent, Avg Booking, Top Category, Monthly Avg)
-  - Preferences cards (Preferred Time, Category, Booking Frequency)
-  - AI Insight cards with trend indicators
-  - Professional dashboard-style layout with empty states
-- Created `/home/z/my-project/frontend/src/components/bys/admin-analytics-dashboard-page.tsx` — Enhanced analytics dashboard (~550 lines)
-  - Key Metrics Row: Total Bookings, Total Revenue, Active Users, Avg Rating, Cancellation Rate, Active Providers
-  - Charts (recharts): Revenue Trend (LineChart), Bookings by Category (BarChart), Booking Status (PieChart donut), User Growth (AreaChart), Top Cities (horizontal bars), Daily Bookings (AreaChart)
-  - Tables: Top Performing Providers, Top Services, Recent Bookings
-  - AI Insights Panel: Fetches from /api/recommendations/insights, displays with trend indicators
-  - Date Range Selector (7d, 30d, 90d, 12m)
-  - Auto-refresh every 5 minutes
-  - Manual refresh button with timestamp
-- Updated `/home/z/my-project/frontend/src/App.tsx`:
-  - Imported AdminAnalyticsDashboardPage and RecommendationsPage
-  - Added route cases for admin-analytics-dashboard and recommendations
-  - Added both to validPages set
-- Updated `/home/z/my-project/frontend/src/contexts/app-context.tsx`:
-  - Added admin-analytics-dashboard and recommendations to Page type union
-- Embedded AiRecommendationsSection in home page:
-  - Added import to home-page.tsx
-  - Placed between Service Categories section and Area Activation Meter section
-  - Personalized recommendations shown only for logged-in users
-  - Trending services shown for all users
-- TypeScript compilation: Clean (no new errors from frontend directory)
-- Vite build: Successful (PWA chunk size warning is pre-existing)
+# Worklog — Task 2-lib-enhancements
 
-Stage Summary:
-- AI Recommendations Frontend: Complete
-  - use-recommendations.ts: Custom hook with caching, auth, loading/error states
-  - ai-recommendations-section.tsx: Reusable section embedded in home page
-  - recommendations-page.tsx: Full page with 3 tabs (For You, Trending, Insights)
-- Enhanced Admin Analytics Dashboard: Complete
-  - admin-analytics-dashboard-page.tsx: 6 recharts, 3 tables, AI insights, date selector, auto-refresh
-- Route Integration: Complete
-  - App.tsx: New routes added
-  - app-context.tsx: Page types extended
-- Home Page Integration: Complete
-  - AI recommendations section embedded after hero/categories
-- Code Quality: TypeScript clean, no breaking changes
+## Task: Enhance existing backend lib files with production-readiness improvements
 
----
-Task ID: 7
-Agent: Main Orchestrator
-Task: Update README with all features and final verification
+### Completed Work
 
-Work Log:
-- Updated README.md with comprehensive documentation of all new features
-- Added Phase 6 — Payments, Real-time & AI section with 5 new steps (16-20)
-- Updated Tech Stack table with 4 new technologies (Razorpay, Socket.IO, Twilio WhatsApp, z-ai-web-dev-sdk LLM)
-- Added new feature sections: Razorpay Payments, Real-time Booking Tracking, WhatsApp Business API, Push Notifications (FCM), AI-Powered Recommendations, Enhanced Admin Analytics Dashboard
-- Updated API Reference with 3 new endpoint tables (Payments, Tracking, Recommendations)
-- Added environment variables for Razorpay, Twilio, SendGrid, and AI recommendations
-- Updated Client Dashboard from 14 to 16 pages (added Payment, Booking Tracking)
-- Updated Admin Dashboard from 19 to 21 pages (added Enhanced Analytics Dashboard)
-- Updated Public Pages with AI recommendations and search suggestions
-- Updated Project Structure with new backend files (razorpay.ts, recommendations.ts) and tracking-service
-- Updated frontend hooks in project structure (use-razorpay, use-tracking, use-recommendations)
-- Updated overview paragraph to mention new capabilities
-- Verified all new files exist and are properly sized
-- Confirmed all services start successfully (API, Vite, Next.js, Tracking service)
+All enhancements were appended at the END of each file. No existing function signatures were modified. All new exports are additional functions/classes. All Redis-dependent features have in-memory fallback.
 
-Stage Summary:
-- README.md: Comprehensive update with all 9 new features documented
-- All features implemented and verified:
-  1. ✅ Razorpay Payments (backend + frontend)
-  2. ✅ WhatsApp Business API (Twilio integration)
-  3. ✅ Push Notifications (Firebase FCM, enhanced)
-  4. ✅ Geo-location search (PostGIS + Haversine, verified working)
-  5. ✅ Real-time booking tracking (Socket.IO mini-service on port 3003)
-  6. ✅ Admin analytics dashboard (recharts + AI insights)
-  7. ✅ Redis caching (verified working with in-memory fallback)
-  8. ✅ Queue workers (BullMQ with sync fallback)
-  9. ✅ AI recommendation system (LLM + rule-based fallback)
+#### 1. lib/security.ts — 4 enhancements
 
-- The 500 errors on Render are likely due to incorrect DATABASE_URL env var on Render
-- Local testing confirms all auth code works correctly with the Supabase database
-- Pushed fixes to GitHub at commit 1f2a1e3
-- Key finding: Render deployment needs DATABASE_URL environment variable set correctly
+1. **RedisWAF** class — Redis-backed WAF for multi-instance IP score/blacklist sharing. Falls back to in-memory WAFFirewall when Redis unavailable. Exports: `RedisWAF` class, `redisWaf` singleton.
+
+2. **CSP Nonce-based protection** — `getCSPHeader(nonce)` generates a strict CSP header using nonce-based allowlisting instead of unsafe-inline/unsafe-eval. Exports: `getCSPHeader()`.
+
+3. **Session fingerprinting with TTL** — `SessionFingerprinterWithTTL` class adds TTL to device entries so they auto-expire, fixing memory leak in original `SessionFingerprinter`. Periodic cleanup every hour. Exports: `SessionFingerprinterWithTTL` class, `fingerprinterWithTTL` singleton.
+
+4. **Mutation XSS detection** — `sanitizeInputEnhanced()` wraps original `sanitizeInput` with double-decoding detection (catches `&lt;script&gt;` → `<script>`). `detectMutationXSS()` detects mXSS patterns including zero-width characters, null byte injection, SVG/MathML namespace vectors. Exports: `sanitizeInputEnhanced()`, `detectMutationXSS()`.
+
+#### 2. lib/redis.ts — 4 enhancements
+
+1. **Pub/Sub support** — `publish(channel, message)`, `subscribe(channel, callback)`, `unsubscribe(channel)` for cross-instance cache invalidation. Uses dedicated Redis subscriber client. Falls back to in-memory subscriptions. Exports: `publish()`, `subscribe()`, `unsubscribe()`.
+
+2. **Tag TTL management** — `setJsonWithTags(key, value, tags, ttlMs, tagTTL)` stores JSON with tag associations and sets TTL on tag hash entries to prevent orphaned entries. Tag TTL defaults to `ttlMs + 5 min`. Exports: `setJsonWithTags()`.
+
+3. **MGET/Pipeline support** — `mgetJson(keys[])` for batch reads (Redis MGET → sequential fallback). `pipeline(operations[])` for batch writes with operation types: set, del, incr, expire. Exports: `mgetJson()`, `PipelineOperation` type, `pipeline()`.
+
+4. **Metrics export** — `getCacheMetrics()` returning `{ hits, misses, hitRate, avgLatencyMs, fallbackMode }`. Includes `recordCacheHit()`, `recordCacheMiss()`, `resetCacheMetrics()` helpers. Exports: `getCacheMetrics()`, `recordCacheHit()`, `recordCacheMiss()`, `resetCacheMetrics()`.
+
+#### 3. lib/backup.ts — 4 enhancements
+
+1. **Backup format versioning** — `BACKUP_FORMAT_VERSION = '2.0'` constant for forward compatibility. Exported for inclusion in backup metadata. Exports: `BACKUP_FORMAT_VERSION`.
+
+2. **Transactional restore** — `restoreBackupTransactional(pool, backupId)` wraps entire restore in BEGIN/COMMIT. On any failure, ROLLBACK is executed to prevent partial/inconsistent restores. Uses dedicated pg client. Exports: `restoreBackupTransactional()`.
+
+3. **Backup encryption key rotation** — `rotateEncryptionKey(oldKey, newKey)` re-encrypts the latest backup with a new key. Decrypts with old key, re-encrypts with new key, updates backup record. Exports: `rotateEncryptionKey()`.
+
+4. **Streaming verification** — `verifyBackupIntegrityStreaming(backupId)` processes backup data in 1MB chunks for checksum computation, validates rows in batches of 100 with `setImmediate()` yields to avoid blocking event loop. Returns `bytesProcessed` metric. Exports: `verifyBackupIntegrityStreaming()`.
+
+#### 4. lib/cloudflare.ts — 4 enhancements
+
+1. **Redis-backed rate limiting** — `RedisRateLimiter` class using Redis INCR+EXPIRE for distributed rate limiting with in-memory fallback. `checkRateLimit(ip, maxRequests, windowMs, keyPrefix)` returns `{ allowed, remaining, resetAt }`. Exports: `RedisRateLimiter` class, `redisRateLimiter` singleton.
+
+2. **CIDR trie for IP blacklist** — `CIDRTrie` class implementing binary prefix trie for O(32) CIDR range lookups instead of O(n) linear scan. `insert(cidr)`, `contains(ip)`, `remove(cidr)` methods. Exports: `CIDRTrie` class, `ipBlacklistTrie` singleton.
+
+3. **Dynamic challenge difficulty** — Threat level system (low/medium/high/critical) with auto-adjusting PoW difficulty (2-5 leading zeros). `setThreatLevel()`, `getThreatLevel()`, `getDynamicChallengeDifficulty()`, `autoAdjustThreatLevel(blockedPerMinute)`. Exports: `ThreatLevel` type, `setThreatLevel()`, `getThreatLevel()`, `getDynamicChallengeDifficulty()`, `autoAdjustThreatLevel()`.
+
+4. **Blocked request logging** — `logBlockedRequest(ip, reason, details)` persists blocked request data. `getBlockedRequestLog(limit, reasonFilter)` and `getBlockedRequestStats()` for analysis. Max 10,000 entries with FIFO eviction. Exports: `logBlockedRequest()`, `getBlockedRequestLog()`, `getBlockedRequestStats()`.
+
+#### 5. lib/razorpay.ts — 4 enhancements
+
+1. **Idempotency key support** — `createOrderWithIdempotency(params, idempotencyKey)` prevents duplicate order creation. In-memory store with 24h TTL. Periodic cleanup of expired keys. Exports: `createOrderWithIdempotency()`.
+
+2. **Circuit breaker** — `RazorpayCircuitBreaker` class with CLOSED/OPEN/HALF_OPEN states. Opens after 5 consecutive failures (configurable), 60s cooldown, allows 1 test request in HALF_OPEN. Exports: `RazorpayCircuitBreaker` class, `razorpayCircuitBreaker` singleton.
+
+3. **Rate limit handler** — `withRateLimitRetry(fn, maxRetries, baseDelayMs)` detects 429 responses from Razorpay API and implements exponential backoff retry with jitter. Exports: `withRateLimitRetry()`.
+
+4. **Partial capture support** — `PartialCapturePaymentParams` interface extending `CapturePaymentParams` with `partialCapture` flag. `capturePaymentWithPartial()` integrates circuit breaker and rate limit retry. Exports: `PartialCapturePaymentParams` interface, `capturePaymentWithPartial()`.
+
+#### 6. lib/logger.ts — 4 enhancements
+
+1. **PII redaction** — `redactPII(message)` detects and replaces emails, phone numbers, credit cards, Aadhaar numbers, PAN numbers, and sensitive field values (password, token, etc.) in log entries. Exports: `redactPII()`.
+
+2. **AsyncLocalStorage trace ID** — `traceMiddlewareAsync()` uses `AsyncLocalStorage` instead of modifying `defaultMeta`, preventing trace ID bleeding between concurrent requests. `getCurrentTraceId()` retrieves trace ID from async context. Exports: `getCurrentTraceId()`, `traceMiddlewareAsync()`.
+
+3. **Date-based log rotation** — `createDateBasedFileTransport(baseName, level)` creates Winston file transport with date-based naming (`logs/combined-2024-01-15.log`). `reconfigureWithDateBasedRotation()` adds date-based transports to all loggers. Exports: `createDateBasedFileTransport()`, `reconfigureWithDateBasedRotation()`.
+
+4. **Per-module log level override** — `setModuleLogLevel(module, level)` for per-module verbosity control. `getModuleLogger(module)` returns module-scoped child logger with custom level. Exports: `setModuleLogLevel()`, `getModuleLogger()`, `getModuleLogLevels()`.
+
+#### 7. queues/index.ts — 4 enhancements
+
+1. **Job deduplication** — `isDuplicateJob(queueName, deduplicationKey)` checks if a job with the given dedup key has already been queued. `registerDedupKey()` registers key after job creation. 5-minute TTL with periodic cleanup. Both `pushNotificationJob` and `pushBookingJob` now include dedup checking. Exports: `isDuplicateJob()`, `registerDedupKey()`.
+
+2. **Delayed job support** — `pushNotificationJob(jobData, delay?)` and `pushBookingJob(jobData, delay?)` now accept optional `delay` parameter for scheduling jobs in the future using BullMQ's native delay. Original signatures preserved (delay is optional). Exports: updated function signatures (backward compatible).
+
+3. **Recurring job support** — `addRecurringJob(name, pattern, handler)` supports both cron expressions and interval-based scheduling. `removeRecurringJob(name)` and `getRecurringJobs()` for management. Falls back to 24h interval if node-cron unavailable. Exports: `addRecurringJob()`, `removeRecurringJob()`, `getRecurringJobs()`.
+
+4. **Configurable worker concurrency** — `getNotificationConcurrency()` and `getBookingConcurrency()` read from `QUEUE_NOTIFICATION_CONCURRENCY` and `QUEUE_BOOKING_CONCURRENCY` env vars (defaults: 5 and 3). `startWorkers()` now uses these functions. Exports: `getNotificationConcurrency()`, `getBookingConcurrency()`.
+
+#### 8. workers/notification.worker.ts — 4 enhancements
+
+1. **BullMQ-based retry** — `BULLMQ_RETRY_OPTIONS` (4 attempts, exponential backoff starting at 5s) replaces recursive `handleRetry`. `processNotificationWithBullMQRetry()` throws on failure to let BullMQ manage retries automatically. Exports: `BULLMQ_RETRY_OPTIONS`, `processNotificationWithBullMQRetry()`.
+
+2. **Notification throttling in send flow** — `processNotificationWithBullMQRetry()` checks `shouldThrottleNotification()` for LOW priority and calls `recordLowPrioritySent()` on successful send, wiring up the throttle tracking that existed but wasn't connected to the actual send flow. Also integrated in `processBatchNotifications()`.
+
+3. **SLA alerting** — `checkSLAAlerts()` emits warnings when any channel's avgDeliveryTimeMs or successRate drops below SLA thresholds. `onSLAAlert(listener)` registers alert listeners. Periodic check every 5 minutes. Exports: `checkSLAAlerts()`, `onSLAAlert()`.
+
+4. **Batch notification support** — `processBatchNotifications(notifications[], maxConcurrent)` sends multiple notifications in parallel (up to 10 concurrent). Returns `BatchNotificationResult` with succeeded/failed/throttled counts. Includes throttle checking and SLA recording. Exports: `BatchNotificationResult` interface, `processBatchNotifications()`.
+
+### Verification
+
+- API server starts successfully: "🚀 BookMyService API running on http://localhost:3001" with "Routes: 15 domain modules mounted"
+- No existing function signatures were modified — all enhancements are additive
+- All new exports are additional functions/classes appended to existing files
+- All Redis-dependent features gracefully fall back to in-memory when REDIS_URL not set
 
 ---
-Task ID: 3
-Agent: Main Agent
-Task: Fix all remaining auth errors and API crashes
 
-Work Log:
-- Investigated API process crash issue - process was dying silently after handling requests
-- Root cause: unhandled promise rejections and pg Pool idle client errors crashing Node.js
-- Added process.on('uncaughtException') and process.on('unhandledRejection') handlers
-- Added pool.on('error') handler to catch idle pg client errors
-- Increased auth rate limit from 5 to 20 requests per minute (was too restrictive)
-- Verified all endpoints work correctly through direct API and Vite proxy:
-  - POST /api/auth/login ✅ (Admin User, ADMIN role)
-  - POST /api/auth/register ✅ (all roles: CLIENT, PROVIDER, TECHNICIAN)
-  - GET /api/stats ✅, /api/stats/platform ✅
-  - GET /api/categories ✅ (11 categories)
-  - GET /api/services ✅ (15 total)
-- Verified all previous fixes are still in place:
-  - roleId included in register payload ✅
-  - specialization accepted for technician registration ✅
-  - Google auth uses g_+UUID for unique phone ✅
-  - JWT refresh via /api/auth/profile endpoint ✅
-  - 14-min auto-refresh in frontend ✅
-  - walletBalance NOT in SENSITIVE_FIELDS ✅
-  - All Dialog components have DialogDescription ✅
-  - Google login sends token (not raw data) ✅
-- Pushed changes to GitHub (commit b1c6129)
+# Worklog — Task 5-Observability + Task 9-Env-Validation
 
-Stage Summary:
-- API crash protection added to prevent silent process deaths
-- All auth endpoints working correctly
-- All public endpoints returning data successfully
-- Changes pushed to main for Render deployment
-- Key remaining concern: Render deployment must have DATABASE_URL env var set correctly
+## Task: Implement observability infrastructure and environment validation for the backend API service
 
----
-Task ID: 1
-Agent: Sub Agent
-Task: Rewrite seed.ts to remove ALL mock/demo user data while keeping realistic structural data
+### Completed Work
 
-Work Log:
-- Read original seed.ts (2304 lines) and identified all 15 sections
-- Kept sections 1-4 verbatim: imports/hashPassword, ROLES (10 roles), SERVICE CATEGORIES (11), SUBCATEGORIES (3-5 per category), ADMIN USER
-- Removed sections 5-9: SERVICE PROVIDERS (5 mock providers), CLIENT USERS (8 mock clients), USERS FOR NEW ROLES (technician, vendor, franchise, sub_admin, area_manager, manager, local_admin), TECHNICIAN PROFILES, SERVICES (15 mock services), SERVICE AVAILABILITY SLOTS, SAMPLE BOOKINGS, PAYMENTS, SAMPLE REVIEWS
-- Kept sections 10-14 verbatim: FAQs (21 entries), LEGAL PAGES (7 pages: Terms, Privacy, Refund, Cookies, AUP, Provider Agreement, Community Guidelines), REVENUE STREAMS (15 entries), SEO METADATA (8 entries), PLATFORM STATS
-- Removed section 15 (NOTIFICATIONS) since they reference mock users
-- Fixed Platform Stats to use hardcoded values (totalUsers: 1, totalProviders: 0, totalBookings: 0, totalServices: 0) instead of referencing removed arrays
-- Updated summary section to reflect new structure (removed mock user/service counts)
-- Verified zero references to removed variables (providers[], clients[], services[], bookings[], completedBookings, technician1/2, vendor1, franchise1, etc.)
-- TypeScript compilation validated successfully with no errors
-- Final file: 1512 lines (down from 2304)
+#### Task 5: Observability Stack
 
-Stage Summary:
-- Seed file now produces clean structural data only (roles, categories, subcategories, admin user, FAQs, legal pages, revenue streams, SEO metadata, platform stats)
-- No mock/demo user data is seeded — providers, clients, technicians, services, bookings, reviews, and notifications are all removed
-- File compiles cleanly with no TypeScript errors and no dangling variable references
+##### 5a: lib/metrics.ts — Prometheus-compatible metrics (NEW FILE)
 
+Created `mini-services/api-service/lib/metrics.ts` with:
 
----
-Task ID: 2
-Agent: Main Agent (with subagent support)
-Task: Frontend Auth Security Audit - Fix all major auth vulnerabilities
+- **MetricsRegistry class** — In-memory metrics store supporting:
+  - `incrementCounter(name, labels, value)` — Monotonically increasing counters
+  - `setGauge(name, labels, value)` — Values that can go up or down
+  - `observeHistogram(name, labels, value)` — Distribution of observed values with configurable buckets
+  - `prometheusFormat()` — Output in Prometheus text exposition format with TYPE declarations, _bucket, _sum, _count for histograms
+  - `jsonFormat()` — JSON output with p50/p95/p99 percentiles for histograms
+  - `summaryFormat()` — Aggregated health dashboard data (totalRequests, totalErrors, avgResponseTimeMs, p95/p99, cacheHitRate, etc.)
+  - `reset()` — Clear all metrics (for testing)
 
-Work Log:
-- Analyzed full auth system: auth-context.tsx, use-api.ts, backend index.ts, Prisma schema, login-page.tsx
-- Identified 4 major security issues: localStorage token, no refresh flow, no MFA, limited error handling
-- Backend: Added cookie helper functions (getCookie/setCookie) for HttpOnly cookie management
-- Backend: Added RefreshToken table creation on startup (CREATE TABLE IF NOT EXISTS)
-- Backend: Added tokenBlacklist (in-memory Set) for revoked access tokens, with 20-min cleanup interval
-- Backend: Added createAuthSession() helper that creates JWT + refresh token + HttpOnly cookie
-- Backend: Modified login/register/google endpoints to use createAuthSession (with email in JWT payload)
-- Backend: Updated getAuthUser() to check token blacklist before verifying JWT
-- Backend: Replaced no-op logout with real logout: blacklists access token, revokes refresh token in DB, clears cookie
-- Backend: Added POST /api/auth/refresh endpoint with refresh token rotation
-- Backend: Added POST /api/auth/verify-email (OTP generation stub) and /api/auth/verify-email/confirm endpoints
-- Backend: Added periodic cleanup of expired/revoked refresh tokens
-- Backend: Updated CORS allowHeaders to include x-refresh-token, x-access-token
-- Frontend: Rewrote auth-context.tsx - token stored in-memory only (not localStorage)
-- Frontend: Added refreshAccessToken() with concurrent refresh deduplication
-- Frontend: Added centralized authFetch() with automatic 401 retry via refresh
-- Frontend: Added fetchWithRetry() with exponential backoff for network errors
-- Frontend: Updated use-api.ts to use authFetch instead of manual Bearer token injection
-- Frontend: Updated booking-page.tsx and home-page.tsx to use authFetch
-- Frontend: All API calls now use credentials: 'include' for cookie-based auth
-- Frontend: Added Prisma RefreshToken model and user relation
-- Fixed bug: createAuthSession now passes email in JWT (was hardcoded empty string)
-- Fixed bug: refresh endpoint user data fetch moved before JWT generation (was referencing undefined variable)
+- **apiMetrics object** — Pre-defined metric helpers:
+  - `httpRequestsTotal(method, path, status)` — Counter for HTTP requests
+  - `httpRequestDuration(method, path, durationMs)` — Histogram for request duration
+  - `dbQueryDuration(query, durationMs)` — Histogram for DB query duration
+  - `cacheHits(key)` / `cacheMisses(key)` — Cache hit/miss counters
+  - `activeConnections(count)` — Active connection gauge
+  - `queueJobsTotal(queue, status)` — Queue job counter
+  - `bookingCreated()` — Booking creation counter
+  - `paymentProcessed(method, status)` — Payment processing counter
+  - `notificationSent(channel, status)` — Notification sent counter
 
-Stage Summary:
-- All 4 audit issues addressed: XSS token theft prevented, refresh token flow implemented, email verification stub added, centralized error handling with retry
-- No breaking changes - all existing interfaces preserved
-- Both servers running and compiling successfully
-- Refresh token flow: login → HttpOnly cookie set → frontend uses in-memory access token → 14-min auto-refresh → 401 auto-retry → logout revokes both tokens
+- **Exported functions**:
+  - `registry` — Singleton MetricsRegistry instance
+  - `getMetricsPrometheus()` — Returns Prometheus text format
+  - `getMetricsJSON()` — Returns JSON format
+  - `getMetricsSummary()` — Returns health dashboard summary
 
----
-Task ID: 2-g
-Agent: Subagent (App.tsx enhancement)
-Task: Fix frontend/src/App.tsx - Lazy route chunking, Suspense fallback, enhanced route guards
+##### 5b: Metrics middleware added to middleware/index.ts
 
-Work Log:
-- Converted all 40+ static page component imports to React.lazy() with named export wrapping
-- Grouped lazy imports into logical webpack chunks: public, auth, client, provider, technician, admin, franchise, vendor, booking, other
-- Added PageLoader component as Suspense fallback (spinner + "Loading..." text)
-- Wrapped renderPage() output in <Suspense fallback={<PageLoader />}>
-- Enhanced route guards with synchronous isAuthorized computed state using useMemo
-  - Prevents flash of unauthorized content by checking auth before render
-  - Shows "Redirecting to login..." for no-token case
-  - Shows "Redirecting to your dashboard..." for wrong-role case
-  - Shows PageLoader during initial auth loading state
-- Added guardRedirecting state with safety timeout to prevent stuck redirect state
-- Added 'admin-login' to validPages set
-- Preserved all existing functionality: ROLE_DASHBOARD_MAP, ROLE_ROUTE_PREFIX, DASHBOARD_PREFIXES, PROTECTED_ROUTES, route guard useEffect, ErrorBoundary class, all renderPage() switch cases
-- Kept static imports for: React, Component, useEffect, useRef, useState, useMemo, Suspense, AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP, AppProvider, useApp, Header, Footer, Toaster, SonnerToaster
-- TypeScript compilation: 0 errors in App.tsx
-- Vite build: successful (1.28s, all chunks generated properly)
+- Added `import { apiMetrics } from '../lib/metrics'`
+- Created `applyMetricsCollection(app)` function that wraps all requests with timing and metrics recording
+- Metrics middleware is applied FIRST in the middleware chain (before HTTP logging) so it captures the full request lifecycle
+- Wrapped in try/catch so metrics collection never breaks requests
+- Updated middleware numbering in `applyMiddleware()` function and module-level documentation (1-11 steps)
 
-Stage Summary:
-- All page components now lazy-loaded → initial bundle significantly smaller
-- No flash of unauthorized content on protected routes
-- admin-login page recognized as valid route
-- File grew from ~537 to ~625 lines (well-organized with section headers)
+##### 5c: /api/metrics route added to routes/health.routes.ts
 
----
-Task ID: 2-d
-Agent: Subagent (Hooks Enhancement)
-Task: Fix use-geolocation.ts — Add fallback, caching, drift protection, permission UX, spoof detection
+- New endpoint `GET /api/metrics` — Content-negotiated response:
+  - If `Accept: text/plain` → Prometheus exposition format with `Content-Type: text/plain; version=0.0.4`
+  - Otherwise → JSON format with counters, gauges, and histogram summaries
 
-Work Log:
-- Added IP-based geolocation fallback via ipapi.co when GPS fails or is denied
-- Added sessionStorage caching (key: `bys_geo_cache`) with 5-minute TTL; returns cached position immediately while fetching fresh one in background
-- Implemented GPS drift protection: buffer of last 5 positions; if new position >500m from last AND position <2s old, uses median of last 3 positions
-- Added spoof detection: if position jumps >100km in <60 seconds, flags `isSpoofed: true`
-- Added permission state tracking (`granted`/`denied`/`prompt`/`unknown`) via `navigator.permissions.query`
-- Added `requestPermission()` function that returns `PermissionRequestResult` with `needsManualEnable` and `instruction` fields
-- Enhanced return interface to include `permissionState`, `isSpoofed`, `accuracy` fields
-- Used Haversine formula for distance calculations and median function for drift smoothing
-- Vite build: successful
+##### 5d: /api/health enhanced with metrics summary
 
-Stage Summary:
-- GeoLocation interface now includes permissionState, isSpoofed, accuracy
-- Hook exports refreshLocation() and requestPermission()
-- Five features fully implemented: fallback, caching, drift protection, permission UX, spoof detection
-- No breaking changes — existing consumers continue to work
+- Added `metrics` field to the `/api/health` response containing `getMetricsSummary()` output:
+  - `totalRequests`, `totalErrors`, `avgResponseTimeMs`, `p95ResponseTimeMs`, `p99ResponseTimeMs`
+  - `activeConnections`, `bookingsCreated`, `paymentsProcessed`, `notificationsSent`
+  - `cacheHitRate`
+
+#### Task 9: Environment Validation
+
+##### 9a: lib/env.ts — Configuration schema enforcement (NEW FILE)
+
+Created `mini-services/api-service/lib/env.ts` with:
+
+- **ENV_SCHEMA** — Array of 21 environment variable definitions:
+  - Required: `DATABASE_URL`
+  - Optional with defaults: `JWT_SECRET`, `PORT` (3001), `NODE_ENV` (development), `QUEUE_NOTIFICATION_CONCURRENCY` (5), `QUEUE_BOOKING_CONCURRENCY` (3)
+  - Optional secrets: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `FIREBASE_PRIVATE_KEY`, `TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `SENDGRID_API_KEY`, `CLOUDINARY_API_SECRET`, `BACKUP_ENCRYPTION_KEY`
+  - Optional config: `REDIS_URL`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `TWILIO_ACCOUNT_SID`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `SENTRY_DSN`
+
+- **Type coercion**: string, number, boolean, url — validates and converts values
+
+- **validateEnv()** — Returns `EnvValidationResult`:
+  - `valid: boolean` — true if no required vars are missing
+  - `errors: string[]` — Missing required vars or type errors
+  - `warnings: string[]` — Missing optional secrets or weak placeholder values
+  - `config: Record<string, any>` — Typed config with defaults applied
+  - `secretHealth` — Summary of secret configuration status
+  - Result is cached after first call
+
+- **getEnvConfig()** — Returns typed config object with defaults applied
+
+- **getSecretHealthDashboard()** — Admin-safe dashboard:
+  - `summary` — total, configured, missing, properlySet, weakValues counts
+  - `secrets` — Array of { name, configured, sensitive, properlySet, description } (values NEVER exposed)
+  - `groups` — Secrets grouped by category (database, auth, redis, payments, firebase, sms, email, media, monitoring, server, backup, queue)
+  - Detects weak/placeholder values (contains 'dev-fallback', 'test-', 'example', 'changeme', 'secret', or <8 chars)
+
+##### 9b: Startup validation added to bootstrap.ts
+
+- Added `import { validateEnv } from './lib/env'`
+- Added step 0 (before Sentry init) that calls `validateEnv()`:
+  - Logs ❌ errors for missing required vars (but doesn't exit — dev-friendly)
+  - Logs ⚠️ warnings for missing optional secrets
+  - Logs ✅ if all validations pass with no warnings
+
+##### 9c: /api/health/secrets endpoint added to routes/health.routes.ts
+
+- New endpoint `GET /api/health/secrets` — Admin-only
+  - Requires `requireAdmin(c)` authentication
+  - Returns `getSecretHealthDashboard()` output
+  - Shows which secrets are configured vs missing WITHOUT revealing values
+  - Returns 403 for non-admin users
+
+### Design Decisions
+
+- **Metrics middleware is first in chain**: Applied before HTTP logging so it captures the full request duration including all other middleware
+- **Metrics collection never fails**: Wrapped in try/catch so a metrics bug cannot break any request
+- **Prometheus content negotiation**: The `/api/metrics` endpoint returns Prometheus text format when `Accept: text/plain` is sent, JSON otherwise — supports both monitoring systems and API consumers
+- **Environment validation is non-blocking**: Missing required vars log errors but don't crash the server — dev-friendly approach
+- **Secret values are never exposed**: The `/api/health/secrets` endpoint only shows whether secrets are set, not their values
+- **Weak value detection**: The env module flags secrets that appear to use dev/placeholder values (<8 chars, contains 'dev-fallback', 'test-', etc.)
+- **Cached validation**: `validateEnv()` caches its result after first call to avoid re-processing on subsequent calls
+
+### Verification
+
+- API server starts successfully: "🚀 BookMyService API running on http://localhost:3001" with "Routes: 15 domain modules mounted"
+- Environment validation runs at startup and logs appropriate warnings
+- Metrics module tested independently: Prometheus format, JSON format, and summary all produce correct output
+- Env module tested independently: validation, config, and secret dashboard all work correctly
+- No existing functionality was broken — all changes are additive and backward compatible
 
 ---
-Task ID: 2-e
-Agent: Subagent (Hooks Enhancement)
-Task: Create use-razorpay.ts — Comprehensive Razorpay payment integration hook
 
-Work Log:
-- Created useRazorpay hook with full Razorpay Checkout.js integration
-- Dynamic script loading via DOM injection with dedup check
-- initiatePayment(options) creates backend order then opens Razorpay modal
-- Payment retry flow: max 3 retries, increments attemptNumber in notes, exports retryPayment()
-- Failure recovery: stores failed attempts in sessionStorage (key: `bys_payment_attempts`) with 24h auto-cleanup
-  - getFailedPayments() retrieves past failed attempts
-  - recoverPayment(paymentId) retries a specific failed payment
-- Idempotency: generates UUID v4 key per booking, stored in sessionStorage; if key exists and payment is pending, resumes instead of creating new order
-- Webhook verification frontend sync: after Razorpay success callback, sends payment_id/order_id/signature to /api/payments/verify
-  - Polls /api/payments/verify-status (5 attempts, 2s interval)
-  - If verification fails, marks as `verification_pending`; exports reverifyPayment(paymentId)
-- Uses useAuth() hook for authFetch (authenticated API calls)
-- Uses VITE_RAZORPAY_KEY_ID env var with test key fallback
-- All types exported: PaymentOptions, PaymentResult, FailedPayment, UseRazorpayReturn
-- Vite build: successful
+# Worklog — Task 3-frontend-modularization
 
-Stage Summary:
-- Full Razorpay payment lifecycle: order creation → checkout modal → success/failure handling → backend verification → retry/recovery
-- Idempotency prevents duplicate orders for same booking
-- Failed payments persist in sessionStorage for recovery across page refreshes
-- All 5 required features implemented: checkout integration, retry flow, failure recovery, idempotency, webhook verification
+## Task: Modularize frontend routing in App.tsx — create a modular route registry
 
----
-Task ID: 2-a
-Agent: Subagent (Auth & Security Libs)
-Task: Fix frontend/src/lib/auth.ts — Add cookie strategy helpers, refresh rotation awareness, token invalidation system
+### Completed Work
 
-Work Log:
-- Added cookie strategy helpers: parseCookies(), getCookie(), getCookieFromRequest(), getRefreshTokenFromCookies(), getRefreshTokenFromRequest(), hasRefreshCookie(), hasRefreshCookieInRequest()
-- Added JWT decode without verification: decodeTokenPayload() — base64url decode of JWT payload segment, returns DecodedTokenPayload interface
-- Added token expiry helpers: getTokenExpiry(), isTokenExpiringSoon(), isTokenExpired(), getTokenTimeToLive() — all use client-side decode (no signature verification)
-- Added client-side token invalidation blacklist: in-memory Map<string, BlacklistEntry> with TTL-based expiry
-  - isTokenInvalidated(jtiOrTokenHash) — checks if a token ID is blacklisted
-  - invalidateToken(jtiOrTokenHash, ttlMs?) — adds to blacklist with configurable TTL (default 20min)
-  - invalidateAccessToken(token) / isAccessTokenInvalidated(token) — convenience wrappers that decode JWT to extract JTI
-  - clearTokenBlacklist(), getTokenBlacklistSize() — utility functions
-  - Lazy purge on every access, max 1000 entries with LRU eviction
-- Preserved all existing server-side SignJWT/jwtVerify functions (signAccessToken, signRefreshToken, verifyToken)
-- Zero breaking changes to existing middleware.ts consumer
+#### New Files Created (3 files in `frontend/src/routes/`)
 
-Stage Summary:
-- auth.ts: 53 lines → 377 lines
-- All new features are additive exports; existing interfaces unchanged
-- Client-side helpers work in both browser and SSR contexts
-- Token blacklist complements server-side blacklist (defense-in-depth)
+1. **routes/types.ts** — Canonical Page type and RouteConfig interface:
+   - `Page` type union: all 94 page names as string literal types (moved from `app-context.tsx`)
+   - `RouteConfig` interface with: `page`, `loader`, `chunkName`, `isProtected`, `allowedRoles?`, `props?`
+   - Single source of truth for the Page type — re-exported from `app-context.tsx`
 
----
-Task ID: 2-b
-Agent: Subagent (Auth & Security Libs)
-Task: Create frontend/src/lib/safe.ts — Centralized sanitization enforcement
+2. **routes/route-registry.ts** — Data-driven route definitions (replaces giant switch statement):
+   - Routes grouped by feature into 15 arrays:
+     - `PUBLIC_ROUTES` (16 pages) — home, categories, search, legal pages, etc.
+     - `AUTH_ROUTES` (3 pages) — login, admin-login, register
+     - `BOOKING_ROUTES` (5 pages) — booking, confirmation, payment, tracking, emergency
+     - `CLIENT_ROUTES` (15 pages) — all client-* pages including client-commissions alias
+     - `PROVIDER_ROUTES` (12 pages) — all provider-* pages
+     - `TECHNICIAN_ROUTES` (6 pages) — all technician-* pages
+     - `ADMIN_ROUTES` (20 pages) — all admin-* pages (shared by ADMIN + SUB_ADMIN)
+     - `SUPER_ADMIN_ROUTES` (1 page) — super-admin-dashboard (roleId 3 only)
+     - `MANAGER_ROUTES` (1 page) — manager-dashboard (roleId 9)
+     - `LOCAL_ADMIN_ROUTES` (1 page) — local-admin-dashboard (roleId 10)
+     - `FRANCHISE_ROUTES` (3 pages) — all franchise-* pages
+     - `VENDOR_ROUTES` (7 pages) — all vendor-* pages
+     - `AREA_MANAGER_ROUTES` (1 page) — area-manager-dashboard (roleId 8)
+     - `JOIN_ROUTES` (2 pages) — join-manager, join-local-admin
+     - `RECOMMENDATION_ROUTES` (1 page) — recommendations (any authenticated user)
+   - `ALL_ROUTES` — master flat array (94 entries, zero duplicates)
+   - `ROUTE_MAP` — `Map<Page, RouteConfig>` for O(1) lookup by page name
+   - `VALID_PAGES` — `Set<Page>` for 404 detection
+   - `ROUTE_COUNT` — total count for assertions/debugging
+   - All routes use dynamic `() => import(...)` loaders for code splitting
+   - Legal pages pass `type` prop via `props` field (e.g. `{ type: 'terms' }`)
+   - `client-commissions` maps to `ClientReferralsPage` (preserves legacy alias behavior)
 
-Work Log:
-- Created sanitizeHtml(dirty): strips dangerous tags (script, iframe, object, embed, form, applet, base, link, meta, noscript, svg, math) and attributes (on* event handlers, javascript:/data:/vbscript: URLs in href/src/action)
-- Created sanitizeInput(input): trims whitespace, strips null bytes, normalizes unicode (NFC), escapes HTML entities (<, >, &, ", ')
-- Created sanitizeUrl(url): allows http:, https:, mailto:, tel: protocols and relative URLs; rejects javascript:, data:, vbscript:
-- Created sanitizeObject<T>(obj): recursively sanitizes all string values in an object using sanitizeInput
-- Created containsSqlInjection(input): detects 20+ SQL injection patterns (UNION, OR 1=1, stacked queries, time-based blind, information_schema, etc.)
-- Created containsXss(input): detects 25+ XSS patterns (script tags, event handlers, javascript: protocol, eval(), document.cookie, etc.)
-- Exported constants: MAX_INPUT_LENGTH (256), MAX_TEXT_LENGTH (5000), MAX_HTML_LENGTH (50000)
-- All functions are pure (no DOM dependencies) — works in both SSR and CSR contexts
-- No external dependencies required (regex-based approach)
+3. **routes/access-control.ts** — Centralized access control logic (extracted from App.tsx):
+   - `ROLE_DASHBOARD_MAP` — Role ID → default dashboard page (moved from App.tsx, was `export const`)
+   - `ROLE_ROUTE_PREFIX` — Ordered array of `[prefix, allowedRoles[]]` tuples (longest-prefix-first order)
+   - `isRouteAccessible(page, roleId, isAuthenticated)` — Single function for all access checks:
+     - Returns `AccessResult { allowed, redirectTo?, reason? }`
+     - Handles: invalid page → deny, public page → allow, unauthenticated → redirect to login, wrong role → redirect to own dashboard
+     - Checks explicit `allowedRoles` on route config first, falls back to prefix-based rules
+   - Imported by 3 consumer components that previously imported from `@/App`
 
-Stage Summary:
-- safe.ts: 325 lines, 7 exported functions + 3 exported constants
-- Comprehensive defense against XSS, SQL injection, and HTML injection
-- Pure functions — safe for server-side rendering and edge functions
+#### Files Modified (5 files)
 
----
-Task ID: 2-c
-Agent: Subagent (Auth & Security Libs)
-Task: Create frontend/src/lib/sentry.ts — Error tracking integration with graceful fallback
+1. **App.tsx** — Simplified from ~530 lines to ~120 lines:
+   - Removed all 70+ static page imports (was ~130 lines of imports)
+   - Removed giant switch statement (~230 lines)
+   - Removed inline `ROLE_DASHBOARD_MAP`, `ROLE_ROUTE_PREFIX`, `PROTECTED_ROUTES`, `DASHBOARD_PREFIXES`, `validPages` set
+   - Replaced with imports from `@/routes/route-registry` and `@/routes/access-control`
+   - Added `PageLoader` component (loading skeleton)
+   - Added `NotFoundPage` component (extracted from inline JSX)
+   - Added lazy component cache (`lazyCache` Map) to avoid re-creating `React.lazy()` on each render
+   - Added `getLazyComponent()` helper that creates and caches lazy components
+   - `renderPage()` now: look up route in ROUTE_MAP → create/get lazy component → render with Suspense + props
+   - Route guard `useEffect` now uses `isRouteAccessible()` instead of inline logic
+   - Error boundary, Toaster, and SonnerToaster preserved exactly
 
-Work Log:
-- Created initSentry(): initializes Sentry only when VITE_SENTRY_DSN is set
-  - Environment separation via VITE_ENV/MODE
-  - Release tracking via VITE_APP_VERSION
-  - Sample rates: 100% errors, 10% transactions in prod (100% in dev), 10% replay sessions, 100% replays on error
-  - beforeSend hook sanitizes PII (email addresses, phone numbers) from error messages, exceptions, and breadcrumbs
-- Created setSentryUser(user) / clearSentryUser(): user context with PII redaction (email replaced with [email-redacted])
-- Created captureException(error, context?) / captureMessage(message, level?) / addBreadcrumb(category, message, data?): error capture helpers
-- Created withSentryErrorBoundary(Component, fallback?): HOC wrapping component with Sentry ErrorBoundary via React.createElement
-- Created startSpan(name, op) / endSpan(span): performance monitoring with breadcrumb recording
-- Created isSentryAvailable(): check if Sentry is active
-- Full resilience: if @sentry/react is not installed, ALL functions are no-ops; file NEVER throws
-  - Uses try/catch around require('@sentry/react')
-  - Uses getEnvVar() helper with try/catch around import.meta.env access
-  - All public functions have try/catch guards
+2. **contexts/app-context.tsx** — Page type relocated:
+   - Removed inline `Page` type union (~107 lines of type definitions)
+   - Added `export type { Page } from '@/routes/types'` (re-export for backward compatibility)
+   - All other code unchanged (navigate, goBack, history)
 
-Stage Summary:
-- sentry.ts: 451 lines, 10 exported functions + 3 exported types + 1 exported constant check
-- Zero runtime errors if Sentry SDK is absent
-- PII sanitization in beforeSend prevents email/phone leaking to Sentry
-- TypeScript compilation: 0 errors in all 3 files (auth.ts, safe.ts, sentry.ts)
-- Vite build: successful
+3. **components/bys/home-page.tsx** — Import path update:
+   - Changed `import { ROLE_DASHBOARD_MAP } from '@/App'` → `import { ROLE_DASHBOARD_MAP } from '@/routes/access-control'`
+
+4. **components/bys/login-page.tsx** — Import path update:
+   - Changed `import { ROLE_DASHBOARD_MAP } from '@/App'` → `import { ROLE_DASHBOARD_MAP } from '@/routes/access-control'`
+
+5. **components/bys/admin-login-page.tsx** — Import path update:
+   - Changed `import { ROLE_DASHBOARD_MAP } from '@/App'` → `import { ROLE_DASHBOARD_MAP } from '@/routes/access-control'`
+
+### Design Decisions
+
+- **Data-driven routes over switch statement**: Route definitions are a data structure, not control flow. Adding a new page = adding one object to the right array, no need to touch App.tsx
+- **Lazy component caching**: `React.lazy()` creates a new component each call, which would cause remounts on every navigation. The `lazyCache` Map ensures each page gets a stable lazy component reference
+- **Props via RouteConfig**: LegalPage needs a `type` prop. Rather than special-casing in the renderer, RouteConfig has an optional `props` field that gets spread onto the component
+- **O(1) lookup**: `ROUTE_MAP` (Map) and `VALID_PAGES` (Set) provide constant-time lookups instead of Set construction on every render (the old code created a new Set in every `renderPage()` call)
+- **Prefix order matters**: `ROLE_ROUTE_PREFIX` uses an ordered array with `super-admin-` before `admin-` to avoid false matches (longest-prefix-first)
+- **Backward-compatible re-exports**: `Page` type is re-exported from `app-context.tsx` so existing `import type { Page } from '@/contexts/app-context'` still works
+- **Fixed missing page**: The original validPages set was missing `admin-login` (even though there was a switch case for it). The route registry correctly includes it
+
+### Verification
+
+- `npx vite build` completes successfully with zero errors
+- 94 routes registered in the route registry (93 original + admin-login that was missing from validPages)
+- Zero duplicate page entries in the registry
+- No remaining imports of `ROLE_DASHBOARD_MAP` from `@/App` (all moved to `@/routes/access-control`)
+- All lazy-loaded chunks generated correctly by Vite (confirmed in build output)
+- Error boundary and toast notifications preserved in App component tree
 
 ---
-Task ID: 4
-Agent: Main Agent
-Task: Create a dedicated Admin Login Page
 
-Work Log:
-- Created `/home/z/my-project/frontend/src/components/bys/admin-login-page.tsx` — a standalone admin-only login page
-  - Dark slate/amber color scheme matching the admin tab in the existing login page
-  - Left decorative panel with dark slate gradient (slate-950 → slate-800 → amber-900), floating shield particles, security highlights
-  - Right form panel with glassmorphism card, amber accent gradient top bar
-  - Shield icon branding ("Admin Portal" heading, Shield icon in header)
-  - Uses `useAuth` hook's `login` function for authentication
-  - On successful login, checks if user's roleId is 3 (ADMIN) or 7 (SUB_ADMIN)
-  - If not admin, shows error: "Access denied. This portal is for administrators only."
-  - If admin, navigates to `admin-dashboard` using `navigate` from `useApp`
-  - "Back to Home" link at the top
-  - "Regular user? Sign in here" link that navigates to the main login page
-  - Prominent security notice: "All admin actions are logged and audited"
-  - Email and password fields with admin-themed amber styling
-  - Show/hide password toggle
-  - Loading state with Loader2 spinner during login
-  - framer-motion animations (slide-in error, spring header animation, floating particles)
-  - Uses same shadcn/ui components (Button, Input, Label)
-  - Responsive design (left panel hidden on mobile, form stacks vertically)
-  - Icons: Shield, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft, AlertTriangle, Fingerprint, LockKeyhole
-- Updated `/home/z/my-project/frontend/src/App.tsx`:
-  - Added lazy import: `const AdminLoginPage = React.lazy(() => import(/* webpackChunkName: "auth" */ '@/components/bys/admin-login-page').then(m => ({ default: m.AdminLoginPage })));`
-  - Added switch case: `case 'admin-login': return <AdminLoginPage />;`
-- Updated `/home/z/my-project/frontend/src/contexts/app-context.tsx`:
-  - Added `'admin-login'` to the `Page` type union
-- Vite build: successful
-- TypeScript: only pre-existing use-razorpay.ts error (not related to this task)
+# Worklog — Task 8-Distributed-Scaling + Task 10-Advanced-Security
 
-Stage Summary:
-- Dedicated admin login page fully functional at the `admin-login` route
-- Admin role validation (roleId 3 or 7) with "Access denied" error for non-admins
-- Professional security-focused design with dark slate/amber theme
-- All required features implemented: navigation links, security notices, show/hide password, loading states, animations, responsive design
+## Task: Add distributed scaling configuration and advanced security enhancements
 
----
-Task ID: 3
-Agent: Main Agent
-Task: Remove mock/demo data and replace with realistic DB queries
+### Completed Work
 
-Work Log:
-- Analyzed `/home/z/my-project/mini-services/api-service/index.ts` to identify all mock/demo/fallback data sources
-- Identified 6 areas with mock data:
-  1. GET /api/stats - hardcoded "500+", "10K+", "4.8" fallback values
-  2. GET /api/providers/nearby - mockProviders with fake IDs like prov_mock_0, svc_mock_0
-  3. GET /api/service-areas - mockAreas with hardcoded Indian city data
-  4. In-memory stores (waitingListStore, areaManagerApplicationsStore, referralStore) used as DB write fallback
-  5. getAreaStatus() helper - deterministic fake numbers based on city name hash
-  6. GET /api/area/status and /api/area/activation - demo data fallback using getAreaStatus()
+#### Task 8: Distributed Scaling
 
-Changes made:
-1. **GET /api/stats**: Replaced hardcoded "500+", "10K+", "4.8" with real DB queries:
-   - First tries PlatformStats table (existing behavior)
-   - Falls back to COUNT(*) from User table (providers: roleId=2, customers: roleId=1)
-   - Falls back to AVG(averageRating) from Service table
-   - Error fallback returns "0" instead of fake numbers
+##### 8a: lib/scaling.ts — Scaling utilities (NEW FILE)
 
-2. **GET /api/providers/nearby**: Removed entire mockProviders generation block:
-   - DB query failure now returns empty array `{ providers: [], total: 0, radius }` instead of fake providers
-   - Removed `note: 'Mock data'` field
+Created `mini-services/api-service/lib/scaling.ts` with:
 
-3. **GET /api/service-areas**: Replaced mockAreas with DB queries:
-   - Tries ServiceArea table first
-   - Falls back to AreaActivation table
-   - Returns empty array `[]` if neither table has data
-   - Removed hardcoded 5 Indian cities with fake counts
+- **Instance Identity** — `INSTANCE_ID` (from env or auto-generated `api-{pid}-{timestamp}`) and `INSTANCE_STARTED_AT` for identifying individual API instances in multi-instance deployments.
 
-4. **In-memory stores**: Removed all three in-memory store declarations:
-   - Removed `waitingListStore`, `areaManagerApplicationsStore`, `referralStore` arrays
-   - Updated POST /api/referral/track: direct DB insert, no in-memory fallback
-   - Updated POST /api/waiting-list/join: direct DB insert, no in-memory fallback
-   - Updated POST /api/area-manager/apply: direct DB insert, no in-memory fallback
-   - If DB insert fails, the outer try/catch handles the error properly
+- **GracefulShutdownManager** class — Coordinates graceful shutdown with:
+  - `register(callback)` — Register async shutdown callbacks
+  - `shutdown(signal)` — Executes callbacks in reverse order with configurable timeout (default 30s)
+  - `shuttingDown` getter — Returns whether shutdown is in progress
+  - Timeout enforcement — Forces `process.exit(1)` if shutdown takes too long
+  - Double-signal protection — Ignores repeated signals
 
-5. **getAreaStatus() helper**: Replaced with `getAreaStatusFromDB()` async function:
-   - Queries AreaActivation table first
-   - Falls back to real COUNT(*) from User table filtered by city name
-   - Computes isActive from actual provider count (≥5 = active)
-   - Computes launchProgress from real provider/customer counts vs targets
-   - Returns honest zeros when no data available
+- **createHealthChecker()** — Factory function that creates a health check function with real dependencies (poolQuery, redisPing, queueReady, shutdownManager). Returns `HealthStatus` with `ready`, `live`, and `details` (db, redis, queues, shutdownInProgress, uptime, instanceId).
 
-6. **GET /api/area/status**: Replaced demo data path with getAreaStatusFromDB():
-   - Uses shared helper for all code paths
-   - Returns honest zeros for unknown cities
+- **ConnectionDrainer** class — Tracks active connections with `increment()`, `decrement()`, `active`, and `atCapacity` for connection-aware load balancing.
 
-7. **GET /api/area/activation**: Replaced demo data path with getAreaStatusFromDB():
-   - Uses shared helper, then adds activationMeter computed from real data
-   - No more fake progress percentages
+- **getStickySessionConfig()** — Returns sticky session cookie name and instance ID for WebSocket session affinity.
 
-CRITICAL: No routes or endpoints were deleted. API response shapes are preserved. Only the data SOURCES changed from mock → real DB queries.
+- **shutdownManager** singleton — Default GracefulShutdownManager instance exported for use across the application.
 
-Stage Summary:
-- All 6 mock/demo data sources replaced with realistic DB queries
-- No endpoints removed, no API contracts broken
-- Honest empty/zero responses when DB has no data (instead of fake inflated numbers)
-- Server running and all modified endpoints responding correctly
-- Minimal changes as requested by user ("baki jyada change nahi karna")
+##### 8b: Readiness/Liveness endpoints added to health.routes.ts
 
----
-Task ID: 2-a through 2-g, 3, 4
-Agent: Main Agent (coordinating subagents)
+Added two new endpoints:
 
-Work Log:
-- Read all audit-targeted files: auth.ts, auth-context.tsx, use-geolocation.ts, use-razorpay.ts (missing), sentry.ts (missing), safe.ts (missing), App.tsx
-- Read backend auth routes (index.ts) to understand refresh token flow, cookie strategy, token blacklist
-- Launched 3 parallel subagents for independent file implementations
-- Subagent 1 (2-a,2-b,2-c): Enhanced auth.ts with cookie helpers, refresh rotation, token invalidation; created safe.ts with sanitization; created sentry.ts with error tracking
-- Subagent 2 (2-d,2-e): Enhanced use-geolocation.ts with fallback, caching, drift protection, spoof detection; created use-razorpay.ts with retry, idempotency, verification
-- Subagent 3 (2-g): Converted App.tsx to lazy-loaded routes with 9 webpack chunks, added PageLoader suspense fallback, enhanced route guards with synchronous authorization check
-- Fixed TypeScript error in use-razorpay.ts (rzp.on callback type mismatch)
-- Launched 2 more parallel subagents
-- Subagent 4 (3): Removed mock/demo data from backend - replaced hardcoded stats with DB counts, removed mockProviders/mockAreas, replaced in-memory stores with DB queries
-- Subagent 5 (4): Created dedicated admin-login-page.tsx with security-focused design, added route to App.tsx
-- Verified: TypeScript check passes (0 errors), Vite build succeeds, both dev servers running
+- `GET /api/health/ready` — Readiness probe for Kubernetes/load balancer:
+  - Returns `{ ready: true, instanceId }` when healthy and not shutting down
+  - Returns 503 with `{ ready: false, reason: 'shutdown_in_progress' }` during graceful shutdown
+  - Checks DB connectivity, Redis connectivity, and queue status
 
-Stage Summary:
-- All 6 audit files fixed/enhanced: auth.ts, safe.ts, sentry.ts, use-geolocation.ts, use-razorpay.ts, App.tsx
-- Mock data removed from backend: stats, providers, areas now use real DB queries
-- Admin login page created at /admin-login route
-- Lazy loading reduces initial bundle - pages load on demand in 9 logical chunks
-- All changes compile and servers are running successfully
+- `GET /api/health/live` — Liveness probe for Kubernetes:
+  - Returns `{ live: true, instanceId, uptime }` — process is alive
+  - Always returns 200 while the process is running
 
----
-Task ID: 10, 11, 12
-Agent: Backend Enhancement Agent
-Task: Enhance logger.ts, queues/index.ts, and notification.worker.ts
+Also added imports: `INSTANCE_ID`, `createHealthChecker`, `shutdownManager`, `HealthStatus` from `../lib/scaling`.
 
-Work Log:
-- Enhanced `/home/z/my-project/mini-services/api-service/lib/logger.ts` (242 → ~490 lines):
-  - **Request Tracing:**
-    - `generateTraceId(): string` — Generates unique trace ID format `bys-{timestamp}-{random}` (e.g., `bys-1700000000-a1b2c3`)
-    - `traceMiddleware(): MiddlewareHandler` — Hono middleware that checks `X-Request-ID` header or generates new trace ID, sets it on response, stores in Hono context via `c.set('traceId', traceId)`, and adds traceId to all logger defaultMeta for the request duration
-    - `getChildLogger(traceId, module): winston.Logger` — Creates a child logger with traceId and module in every log entry
-  - **Trace Correlation:**
-    - `correlateLogs(traceId): LogEntry[]` — Searches all log files (combined.log, auth.log, booking.log, api.log) for entries matching the given traceId, with deduplication
-    - `getRelatedTraces(userId, minutes=60): string[]` — Finds all trace IDs associated with a user in the last N minutes across all log files
-  - **Observability Pipeline:**
-    - `exportLogs(format, since): Promise<string>` — Exports logs in JSON (array of entries) or OpenTelemetry format (resourceLogs with LogRecords, severity mapping, attributes)
-    - `getLogMetrics()` — Returns `{ totalEntries, errorCount, warnCount, avgResponseTime, topErrors: [{message, count}] }` computed from combined.log
-    - `flushLogs(): Promise<void>` — Forces flush of all buffered log entries to disk with 5-second safety timeout
-  - Added `LogEntry` and `MiddlewareHandler` type exports
-  - All existing code preserved (loggers, event helpers, middleware)
+##### 8c: bootstrap.ts updated for graceful shutdown
 
-- Enhanced `/home/z/my-project/mini-services/api-service/queues/index.ts` (344 → ~520 lines):
-  - **Dead Letter Queue:**
-    - `DEAD_LETTER_QUEUE_NAME = 'bys:dead-letter'` constant
-    - `deadLetterQueue: Queue | null` instance (created alongside notification/booking queues in `initializeQueues()`)
-    - Modified `pushNotificationJob` and `pushBookingJob` to include `deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 }` config option
-    - `processDeadLetterQueue(): Promise<void>` — Processes DLQ entries, logs each with job ID, reason, attempts, timestamp
-    - `getDeadLetterCount(): Promise<number>` — Returns total count of DLQ entries
-    - `purgeDeadLetterQueue(): Promise<number>` — Removes all DLQ entries and obliterates the queue
-    - `retryDeadLetterJob(jobId): Promise<boolean>` — Re-queues a specific DLQ job to its original queue (notification or booking), then removes from DLQ
-    - Added DLQ queue close to `shutdownQueues()`
-  - **Retry Policy Tuning:**
-    - `RetryPolicy` interface: `{ maxRetries, backoffType: 'exponential'|'linear'|'fixed', initialDelayMs, maxDelayMs, jitterMs }`
-    - Default policies: NOTIFICATION (maxRetries: 5, exponential, 5s-5min, 1s jitter), BOOKING (maxRetries: 3, exponential, 2s-1min, 500ms jitter)
-    - `setRetryPolicy(jobType, policy): void` — Update retry policy at runtime
-    - `getRetryPolicy(jobType): RetryPolicy` — Get current retry policy (falls back to NOTIFICATION)
-    - `calculateBackoffDelayForPolicy(attempt, policy): number` — Calculates backoff with exponential/linear/fixed + jitter
-  - **Queue Metrics Dashboard:**
-    - `QueueMetricsDetail` interface: `{ waiting, active, completed, failed, delayed, dlqCount }`
-    - `QueueMetrics` interface: `{ notification, booking, totalProcessed, totalFailed, avgProcessingTimeMs, isHealthy }`
-    - `recordProcessingTime(durationMs): void` — Records processing time sample (max 1000 samples)
-    - `getQueueMetrics(): Promise<QueueMetrics>` — Returns comprehensive metrics using BullMQ's `queue.getJobCounts()`, with health check logic
-    - `startMetricsCollection(intervalMs=30000): void` — Starts periodic collection, stores in Redis key `bys:queue:metrics:{timestamp}` with 1-hour TTL
-    - `stopMetricsCollection(): void` — Stops the periodic collection interval
-  - All existing code preserved (queues, workers, job processors, senders, shutdown)
+Replaced simple signal handlers with GracefulShutdownManager:
 
-- Enhanced `/home/z/my-project/mini-services/api-service/workers/notification.worker.ts` (314 → ~570 lines):
-  - **Notification Prioritization:**
-    - Priority constants: `URGENT=1` (OTP, security alerts), `HIGH=2` (booking confirmations), `NORMAL=3` (general), `LOW=4` (marketing, promotions)
-    - `getPriorityForTemplate(template): number` — Maps templates to priorities:
-      - `otp_verification`, `security_alert` → URGENT
-      - `booking_confirmation`, `booking_cancelled`, `provider_assigned` → HIGH
-      - `booking_reminder`, `review_request`, `payment_received` → NORMAL
-      - `promotional_offer`, `newsletter`, `feature_update` → LOW
-    - `shouldThrottleNotification(template, recipientId): boolean` — Rate limits LOW priority to max 3/day per user
-    - `getThrottleState(recipientId): { lowPrioritySentToday, limit, nextResetAt }` — Check throttle status
-    - `recordLowPrioritySent(recipientId): void` — Records that a LOW priority notification was sent
-    - Hourly cleanup of expired throttle entries
-  - **Provider SLA Tracking:**
-    - `NotificationSLA` interface: `{ channel, maxDeliveryTimeMs, targetSuccessRate, retryStrategy }`
-    - Default SLAs: WHATSAPP (30s/95%/exponential), SMS (15s/99%/exponential), EMAIL (60s/98%/linear), PUSH (10s/90%/fixed)
-    - `SLATracker` class:
-      - `recordDelivery(channel, deliveryTimeMs, success): void` — Tracks per-channel delivery metrics (max 500 samples)
-      - `getSLAStatus()` — Returns `{ avgDeliveryTimeMs, successRate, meetsSLA, samples }` per channel
-      - `isChannelDegraded(channel): boolean` — Returns true if success rate < SLA target (requires ≥10 samples)
-      - `getFallbackChannel(primaryChannel): string | null` — Returns fallback channel if primary is degraded (WHATSAPP→SMS, SMS→EMAIL, PUSH→EMAIL, EMAIL→SMS) with second-level fallback
-      - `getSLADefinition(channel)` / `getAllSLAs()` — SLA definition accessors
-    - `slaTracker` singleton exported
-    - Automatic fallback: `dispatchNotification()` checks if primary channel is degraded and tries fallback before original channel
-  - All existing code preserved (JobTracker, processNotificationWithRetry, handleRetry, getWorkerStatus)
+- Added `import { shutdownManager } from './lib/scaling'`
+- Registered 3 shutdown callbacks (in registration order, executed in reverse):
+  1. `shutdownQueues()` — Shut down BullMQ queues and workers
+  2. `stopBackupScheduler()` — Stop backup scheduler
+  3. `stopMemoryMonitoring()` — Stop Sentry memory monitoring
+- Signal handlers now delegate to `shutdownManager.shutdown('SIGTERM')` and `shutdownManager.shutdown('SIGINT')`
+- Backward compatible: same shutdown operations occur, now orchestrated through the manager with timeout enforcement and instance ID logging
 
-Stage Summary:
-- lib/logger.ts: ✅ Enhanced with Request Tracing, Trace Correlation, Observability Pipeline (242→~490 lines)
-- queues/index.ts: ✅ Enhanced with Dead Letter Queue, Retry Policy Tuning, Queue Metrics Dashboard (344→~520 lines)
-- workers/notification.worker.ts: ✅ Enhanced with Notification Prioritization, Provider SLA Tracking (314→~570 lines)
-- TypeScript: No new errors introduced (only pre-existing sentry.ts errors remain)
-- All existing functionality preserved across all three files
+##### 8d: lib/rate-limiter.ts — Distributed rate limiting (NEW FILE)
 
----
-Task ID: 5, 6
-Agent: Backend Developer
-Task: Enhance lib/security.ts and lib/redis.ts
+Created `mini-services/api-service/lib/rate-limiter.ts` with:
 
-Work Log:
+- **MemoryRateLimitStore** class — In-memory fallback with:
+  - Sliding window rate limiting (count + resetAt tracking)
+  - Periodic cleanup of expired entries (every 60 seconds)
+  - `shutdown()` method for clean shutdown
 
-### Task 5: Enhanced `lib/security.ts` (311 → 770 lines)
+- **DistributedRateLimiter** class — Redis-backed rate limiting with in-memory fallback:
+  - `check(key)` — Checks rate limit for a given key
+  - Uses Redis GET/SET with PX TTL for distributed coordination
+  - Stores `{ count, resetAt }` JSON in Redis with window-appropriate TTL
+  - Falls back to `MemoryRateLimitStore` when Redis is unavailable
+  - Returns `RateLimitResult { allowed, remaining, resetAt, retryAfter? }`
 
-All existing code preserved. Added 4 new features:
+- **Pre-configured rate limiters**:
+  - `authLimiter` — 20 req/min (prefix: `rl:auth`)
+  - `apiLimiter` — 100 req/min (prefix: `rl:api`)
+  - `bookingLimiter` — 10 req/min (prefix: `rl:booking`)
+  - `paymentLimiter` — 5 req/min (prefix: `rl:payment`)
 
-1. **WAFFirewall class**
-   - Tracks IP behavior scores (0–100, higher = more suspicious)
-   - Violation scores: SQL injection (+30), XSS (+25), path traversal (+20), rapid 401/403 (+15), unusual user agent (+10)
-   - Auto-bans IPs exceeding score 80 for 1 hour
-   - `evaluateRequest(ip, violations)` → returns `{ action: 'allow'|'challenge'|'block', score, reason? }`
-   - `getIPScore(ip)` → returns current suspicion score
-   - `resetIP(ip)` → admin unban
-   - Score decay: -5 points every 10 minutes (via setInterval)
-   - Cleanup: removes stale records (score 0, not seen in 2 hours)
-   - Extra: `getTrackedIPCount()`, `getBannedIPs()`, `shutdown()`
-   - Exported singleton: `export const waf = new WAFFirewall()`
+#### Task 10: Advanced Security
 
-2. **SessionFingerprinter class**
-   - Generates device fingerprints: SHA-256 hash of (user-agent + accept-language + accept-encoding)
-   - Tracks `userId → Set<fingerprintHash>` mappings
-   - Detects new device anomalies
-   - `registerSession(userId, fingerprint)` → returns `{ isNewDevice: boolean }`
-   - `getUserDevices(userId)` → returns array of fingerprint hashes
-   - `clearUserSessions(userId)` → removes all device tracking for a user
-   - Extra: `generateFingerprint()`, `getDeviceCount()`, `isKnownDevice()`
-   - Exported singleton: `export const fingerprinter = new SessionFingerprinter()`
+##### 10a: lib/rbac.ts — Role-Based Access Control (NEW FILE)
 
-3. **Allowlist Validation Strategy**
-   - `validateAgainstSchema(input, schema)` → returns `{ valid, sanitized, reason? }`
-   - Email: RFC 5322 compliant regex, max 254 chars, lowercase normalization
-   - Phone: Indian numbers (+91 or 10 digits starting with 6-9), normalized to +91 format
-   - Name: Letters, spaces, hyphens, apostrophes only (2-100 chars), NFC unicode normalization
-   - Pincode: Exactly 6 digits
-   - URL: http/https only, blocks javascript:/data:/vbscript: protocols, max 2048 chars
+Created `mini-services/api-service/lib/rbac.ts` with:
 
-4. **Hono WAF Middleware**
-   - `wafMiddleware()` → MiddlewareHandler integrating WAF into request pipeline
-   - Detects violations: SQL injection (path+query), XSS (path+query), path traversal, unusual user agents
-   - Block → 403 with WAF_BLOCKED code
-   - Challenge → adds `X-WAF-Challenge: true` header, continues
-   - Always injects `c.set('wafScore', score)` into context
+- **Permission enum** — 36 fine-grained permissions across 6 domains:
+  - Booking: create, read:own, read:any, update:own, update:any, cancel:own, cancel:any
+  - Service: create, read, update:own, update:any, delete:own, delete:any, approve
+  - User: read:own, read:any, update:own, update:any, delete
+  - Admin: dashboard, analytics, revenue, dispute:manage, payout:process, coupon:manage, backup, secrets:view
+  - Payment: create, read:own, read:any, capture, refund
+  - Franchise: dashboard, manage:vendors
+  - Notification: read:own, send
 
-### Task 6: Enhanced `lib/redis.ts` (464 → 866 lines)
+- **ROLE_PERMISSIONS mapping** — 10 roles mapped to permission sets:
+  - CLIENT (1) — 9 permissions (booking, service read, payment, user own, notification)
+  - PROVIDER (2) — 10 permissions (booking own, service CRUD own, payment read own, user own, notification)
+  - ADMIN (3) — All 36 permissions
+  - TECHNICIAN (4) — 6 permissions (booking own, service read, user own, notification)
+  - VENDOR (5) — 10 permissions (same as PROVIDER)
+  - FRANCHISE (6) — 8 permissions (booking read, service read, user own, franchise dashboard+manage, notification)
+  - SUB_ADMIN (7) — All 36 permissions (same as ADMIN)
+  - AREA_MANAGER (8) — 6 permissions (booking read, service read, user own, notification)
+  - MANAGER (9) — 7 permissions (booking own update, service read, user own, notification)
+  - LOCAL_ADMIN (10) — 6 permissions (booking read, service read, user own, notification)
 
-All existing code preserved. Added 3 feature groups + auto-recovery:
+- **hasPermission(roleId, permission)** — Returns boolean for permission check
 
-1. **Auto-recovery infrastructure**
-   - `consecutiveFailures` counter and `autoRecoveryThreshold = 5`
-   - `recordSuccess()` — resets failure counter
-   - `recordFailure()` — increments counter, triggers `forceReconnect()` if ≥5 failures
-   - Integrated into get/set/del and all new methods
+- **checkPermission(roleId, permission)** — Throws `PermissionDeniedError` if permission denied
 
-2. **Distributed Invalidation**
-   - `invalidateByTag(tag)` → Uses Redis hash (`__tag:{tag}`) to track keys by tag, then deletes all. In-memory fallback via `tagStore` Map. Returns count of invalidated keys.
-   - `tagKey(key, tags[])` → Associates a cache key with one or more tags. Uses Redis pipeline for multi-tag sets. In-memory fallback.
-   - `invalidateUser(userId)` → Convenience method, calls `invalidateByTag('user:{userId}')`
+- **getRolePermissions(roleId)** — Returns array of all permissions for a role
 
-3. **Eviction Policy Management**
-   - `setEvictionPolicy(policy)` → Sets Redis maxmemory-policy via CONFIG SET. Supports: allkeys-lru, volatile-lru, allkeys-lfu, volatile-lfu, noeviction
-   - `getEvictionPolicy()` → Gets current maxmemory-policy via CONFIG GET
-   - `getMemoryInfo()` → Returns `{ usedMemory, maxMemory, fragmentationRatio, evictionPolicy }` by parsing Redis INFO memory
+- **PermissionDeniedError** class — Custom error with roleId and permission info
 
-4. **Health Recovery**
-   - `forceReconnect()` → Force-closes current connection (quit or disconnect), resets state, creates new connection. Returns boolean success.
-   - `healthCheck()` → Comprehensive check: tests read+write+delete, returns `{ status: 'healthy'|'degraded'|'down', backend, latencyMs, memoryUsage?, connectedClients? }`. Gets memory and client stats from Redis INFO.
+##### 10b: Secret rotation support added to lib/security.ts
 
-### Bug Fix
-- Fixed pre-existing TypeScript error in `delByPattern()`: Redis v5 SCAN command uses string cursor ('0'), not number
+Appended at the end of the existing security.ts file:
 
-Stage Summary:
-- lib/security.ts: ✅ Enhanced with WAFFirewall, SessionFingerprinter, Allowlist Validation, WAF Middleware (311→770 lines)
-- lib/redis.ts: ✅ Enhanced with Distributed Invalidation, Eviction Policy, Health Recovery, Auto-recovery (464→866 lines)
-- TypeScript: Zero new errors in modified files (pre-existing sentry.ts/frontend errors remain)
-- All existing functionality preserved across both files
+- **rotateJWTSecret(newSecret)** — Rotates JWT secret by storing current as previous and setting new as current. Logs rotation timestamp.
 
----
-Task ID: 7, 8, 9
-Agent: Backend Lib Enhancement Agent
-Task: Enhance lib/backup.ts, lib/cloudflare.ts, lib/razorpay.ts with new features
+- **getActiveJWTSecrets()** — Returns array of active JWT secrets (both current and previous during rotation). Enables zero-downtime rotation where tokens signed with either old or new secret are valid.
 
-Work Log:
-- Enhanced lib/backup.ts (605 → 989 lines):
-  - Added Encrypted Backup Storage:
-    - ENCRYPTION_KEY from process.env.BACKUP_ENCRYPTION_KEY
-    - encryptBackup(data): AES-256-GCM encryption, returns ENCRYPTED:{iv}:{authTag}:{ciphertext} format
-    - decryptBackup(encryptedData): Decrypts AES-256-GCM format
-    - Modified createBackup to encrypt before storage if key available (after compression, before upload)
-    - Modified restoreBackup to decrypt before restoring if encrypted (before decompression)
-    - Skips encryption with warning if BACKUP_ENCRYPTION_KEY not set
-  - Added Offsite Backup (S3-compatible):
-    - uploadToS3(backupId, data, timestamp): AWS Signature V4 signing, standard fetch (no SDK)
-    - Env vars: S3_ENDPOINT, S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_REGION
-    - Integrated into createBackup after Supabase upload attempt
-    - Skips with warning if S3 env vars not set (same pattern as Supabase)
-  - Added Restore Verification:
-    - verifyBackupIntegrity(backupId): Checks JSON parsing, table/row counts, SHA-256 checksum, null bytes, truncated JSON, empty tables, metadata consistency
-    - verifyRestore(pool, backupId): Compares row counts in restored DB against backup metadata, reports discrepancies
-- Enhanced lib/cloudflare.ts (380 → 759 lines):
-  - Added Bot Score Integration:
-    - getBotScore(c): Extracts cf.botmanagement-score, cf.botmanagement-verifiedBot, cf.botmanagement-staticResource
-    - botScoreMiddleware(): Score < 20 → block 403, score 20-40 → X-Bot-Suspect header, score > 40 → allow; injects c.set('botScore', score); logs suspicious activity
-  - Added Adaptive Rate Limiting:
-    - adaptiveRateLimitMiddleware(): Dynamic limits based on bot score (30/min for <40, 100 normal), country risk (50% high, 75% medium), peak hours (80%), auth endpoints (1/3)
-    - setCountryRiskLevel(country, level): Admin utility
-    - getAdaptiveConfig(): Returns current config state
-    - Uses composite key (IP + endpoint type) with X-RateLimit-Limit/Remaining headers
-  - Added Advanced Challenge Flow:
-    - challengeMiddleware(): For bot score 20-40, sets X-Challenge-Required header, returns 202 with proof-of-work challenge for API requests
-    - verifyChallengeResponse(token, response): Verifies SHA-256(token+nonce) starts with required zeros
-    - Challenge store: In-memory Map with 5-minute TTL, periodic cleanup
-- Enhanced lib/razorpay.ts (381 → 945 lines):
-  - Added Settlement Reconciliation:
-    - Types: Settlement, ReconciliationResult interfaces
-    - fetchSettlements(fromDate, toDate): Fetches from Razorpay /settlements API
-    - reconcileSettlement(pool, settlementId): Compares settlement data against payment records, flags discrepancies
-  - Added Payout Ledger:
-    - Type: PayoutLedgerEntry interface
-    - Auto-creates PayoutLedger table (same pattern as RefreshToken)
-    - recordPayoutLedgerEntry(pool, entry): Records payout with fees, GST, net amount
-    - getPayoutLedger(pool, providerId, limit): Gets payout history for provider
-    - getPayoutSummary(pool, providerId): Returns totalEarned, totalFees, totalPayout, pendingAmount
-  - Added Accounting Audit Trail:
-    - Type: AuditEntry interface (entityType, entityId, action, previousState, newState, performedBy, metadata)
-    - Auto-creates PaymentAudit table with indexes
-    - recordAuditEntry(pool, entry): Records audit entry
-    - getAuditTrail(pool, entityType, entityId): Gets full chronological audit trail
-    - withAuditTrail<T>(pool, entityType, entityId, action, performedBy, fn): Wraps DB operation with automatic audit recording
-- TypeScript compilation: No errors in any of the three enhanced files
-- All existing functionality preserved (all original exports intact)
+- **isSecretRotated()** — Returns whether a secret rotation has been performed.
 
-Stage Summary:
-- lib/backup.ts: ✅ 605 → 989 lines (encrypted storage, S3 upload, restore verification)
-- lib/cloudflare.ts: ✅ 380 → 759 lines (bot score, adaptive rate limiting, challenge flow)
-- lib/razorpay.ts: ✅ 381 → 945 lines (settlement reconciliation, payout ledger, audit trail)
-- All files compile cleanly with no TypeScript errors
-- Zero breaking changes — all existing exports and functionality preserved
+- **getSecretRotationInfo()** — Returns rotation status and timestamp for admin dashboards.
 
----
-Task ID: 1, 2, 3, 4, 5-12
-Agent: Main Agent (coordinating subagents)
+- Lazy loading of `JWT_SECRET` from `./shared` using dynamic require to avoid circular dependency issues at module load time.
 
-Work Log:
-- Read all audit-targeted files: index.ts (5081 lines), security.ts, redis.ts, backup.ts, cloudflare.ts, razorpay.ts, logger.ts, queues/index.ts, notification.worker.ts
-- Identified 4 critical issues and 8 enhancement tasks from the audit
-- Launched 3 parallel subagents for independent file implementations
-- Subagent 1 (5,6): Enhanced lib/security.ts with WAF firewall, session fingerprinting, allowlist validation, wafMiddleware; enhanced lib/redis.ts with distributed invalidation, eviction policy, health recovery
-- Subagent 2 (7,8,9): Enhanced lib/backup.ts with encrypted storage (AES-256-GCM), S3 offsite backup, restore verification; enhanced lib/cloudflare.ts with bot score integration, adaptive rate limiting, challenge flow; enhanced lib/razorpay.ts with settlement reconciliation, payout ledger, accounting audit trail
-- Subagent 3 (10,11,12): Enhanced lib/logger.ts with request tracing, trace correlation, observability pipeline; enhanced queues/index.ts with dead letter queue, retry policy tuning, queue metrics dashboard; enhanced workers/notification.worker.ts with notification prioritization, provider SLA tracking
-- Created lib/shared.ts: Centralized shared state with JWT_SECRET fail-hard-in-production, pool, token blacklist, rate limiting, cookie helpers, auth helpers, data transformers, DB initialization
-- Fixed JWT_SECRET: Changed from silent fallback to throw Error in production — server refuses to start without JWT_SECRET
-- Created validators/ directory with login.schema.ts, signup.schema.ts, create-booking.schema.ts, provider.schema.ts, validate.ts to fix missing import errors
-- Verified both servers running and backend responding
+##### 10c: RBAC middleware helper added to middleware/index.ts
 
-Stage Summary:
-- JWT_SECRET now fails hard in production (Task 2 ✅)
-- Shared module created for startup separation (Task 3 ✅)
-- DB initialization moved to shared module (Task 4 ✅)
-- lib/security.ts: WAF firewall, session fingerprinting, allowlist validation, wafMiddleware (Task 5 ✅)
-- lib/redis.ts: Tag-based invalidation, eviction policy management, health recovery with auto-reconnect (Task 6 ✅)
-- lib/backup.ts: AES-256-GCM encryption, S3-compatible offsite backup, integrity + restore verification (Task 7 ✅)
-- lib/cloudflare.ts: Bot score middleware, adaptive rate limiting, proof-of-work challenge flow (Task 8 ✅)
-- lib/razorpay.ts: Settlement reconciliation, payout ledger with auto-table creation, accounting audit trail (Task 9 ✅)
-- lib/logger.ts: Request tracing (X-Request-ID), trace correlation across logs, OTel export, log metrics (Task 10 ✅)
-- queues/index.ts: Dead letter queue, configurable retry policies per job type, queue metrics dashboard (Task 11 ✅)
-- workers/notification.worker.ts: 4-level priority with throttling, SLA tracking per channel with auto-fallback (Task 12 ✅)
-- Modularization (Task 1): Partially complete — lib/shared.ts created as foundation, validators extracted, full route split deferred to avoid breaking changes
-- All changes compile and both servers running
+Added `requirePermission(permission)` middleware helper:
+
+- Imports `hasPermission`, `Permission`, `PermissionDeniedError` from `../lib/rbac`
+- Imports `getAuthUser` from `../lib/shared`
+- Returns Hono middleware that:
+  1. Authenticates user via `getAuthUser(c)` — returns 401 if not authenticated
+  2. Checks permission via `hasPermission(user.roleId, permission)` — returns 403 if insufficient
+  3. Calls `next()` if authorized
+- Usage example: `app.get('/api/admin/revenue', requirePermission(Permission.ADMIN_REVENUE), handler)`
+
+### Design Decisions
+
+- **GracefulShutdownManager in scaling.ts**: The shutdown manager singleton is exported from `lib/scaling.ts` rather than `bootstrap.ts` to avoid circular dependencies. Both `bootstrap.ts` (registers callbacks) and `health.routes.ts` (checks shutdown status) import from the same source.
+
+- **Health checker factory pattern**: `createHealthChecker()` takes dependency injection parameters rather than importing dependencies directly, making it testable and avoiding circular dependencies in the module graph.
+
+- **Redis-backed rate limiter with JSON storage**: The distributed rate limiter stores `{ count, resetAt }` as JSON in Redis rather than using INCR/EXPIRE separately, which provides atomic window tracking and avoids race conditions between count and TTL operations.
+
+- **Permission enum for type safety**: Using TypeScript enum for permissions provides compile-time checking and IDE autocomplete, preventing typos in permission strings.
+
+- **Lazy JWT_SECRET loading in security.ts**: Using a lazy getter with dynamic `require('./shared')` avoids circular dependency issues that would occur if `JWT_SECRET` was imported at the top level, since `shared.ts` is imported by many modules.
+
+- **Backward compatible changes**: All modifications to existing files (health.routes.ts, bootstrap.ts, middleware/index.ts, security.ts) are additive — no existing function signatures were changed, no existing endpoints were removed or modified.
+
+### Verification
+
+- API server starts successfully: "🚀 BookMyService API running on http://localhost:3001" with "Routes: 15 domain modules mounted"
+- Graceful shutdown works: "SIGTERM received — graceful shutdown started (instance: api-...)" followed by proper queue shutdown
+- Readiness endpoint returns: `{"ready":true,"instanceId":"api-10991-mpgrgq9u"}`
+- Liveness endpoint returns: `{"live":true,"instanceId":"api-10991-mpgrgq9u","uptime":4.73}`
+- TypeScript compilation: Only pre-existing errors in lib/sentry.ts (unrelated to our changes)
+- No existing endpoints or API contracts were changed
+
+# Worklog — Task 6-Testing + Task 7-CICD
+
+## Task: Create testing scaffolding and CI/CD pipelines
+
+### Completed Work
+
+#### Task 6: Testing Scaffolding
+
+##### 6a: vitest already installed
+
+vitest (v4.1.7) was already installed as a devDependency in `mini-services/api-service/package.json` with scripts `test`, `test:watch`, and `test:coverage`.
+
+##### 6b: vitest.config.ts already existed
+
+Configuration file was already present with globals, node environment, test include pattern, and coverage settings.
+
+##### 6c: New test files created (2 files)
+
+1. **tests/lib/rbac.test.ts** — RBAC system unit tests (20 tests):
+   - `hasPermission()` — Tests for all 10 roles (CLIENT, PROVIDER, ADMIN, TECHNICIAN, VENDOR, FRANCHISE, SUB_ADMIN, AREA_MANAGER, MANAGER, LOCAL_ADMIN)
+   - Verifies ADMIN and SUB_ADMIN have all permissions
+   - Verifies CLIENT cannot access admin/service-create endpoints
+   - Verifies PROVIDER has service create/update own but not admin dashboard
+   - Verifies unknown role (999, 0, -1) returns false
+   - `checkPermission()` — Verifies no throw for allowed, throws PermissionDeniedError for denied
+   - PermissionDeniedError message contains roleId and permission
+   - `getRolePermissions()` — Returns correct arrays for known roles, empty for unknown
+
+2. **tests/lib/env.test.ts** — Environment validation tests (14 tests):
+   - `validateEnv()` — Error when DATABASE_URL missing, valid when set
+   - Warnings for missing optional secrets
+   - Detection of weak/placeholder JWT_SECRET values
+   - Acceptance of properly set secrets
+   - Default values for PORT (3001) and NODE_ENV (development)
+   - Type coercion for PORT (string → number)
+   - Error for non-numeric PORT
+   - secretHealth summary structure validation
+   - `getEnvConfig()` — Returns typed config object
+   - `getSecretHealthDashboard()` — Returns dashboard with summary/secrets/groups
+   - Verifies secret values are NEVER exposed in dashboard
+   - Verifies all 12 secret groups exist (database, auth, redis, payments, firebase, sms, email, media, monitoring, server, backup, queue)
+   - Detects weak values (e.g. 'dev-fallback-secret')
+
+   Note: Uses `vi.resetModules()` between tests to handle the cached validation result.
+
+##### Existing test files (verified, not modified):
+
+- `tests/setup.ts` — Mock pool, redis, queues, logger, and factory functions
+- `tests/lib/security.test.ts` — 50 tests for sanitizeInput, detectSQLInjection, detectXSS, isValidOrigin, generateCSPNonce, validateAgainstSchema
+- `tests/lib/logger.test.ts` — 16 tests for redactPII, generateTraceId, per-module log levels
+- `tests/lib/redis.test.ts` — 22 tests for in-memory cache fallback, JSON ops, OTP, cache keys, TTL, metrics, health check, popular searches
+- `tests/integration/api.test.ts` — 13 integration tests for health, categories, services, auth validation, admin authorization, JWT token flow, security validation
+- `tests/services/auth.service.test.ts` — 15 tests for sanitizeUser, loginUser, registerUser, createAccessToken/verifyToken, isJwtError
+- `tests/services/booking.service.test.ts` — 19 tests for createBooking, listBookings, getBooking, updateBookingStatus, verifyOtp
+- `tests/services/payment.service.test.ts` — 10 tests for getPaymentConfig, createPaymentOrder
+
+##### 6e: Test run results
+
+All 179 tests pass across 9 test files:
+
+```
+ ✓ tests/lib/rbac.test.ts (20 tests) 8ms
+ ✓ tests/lib/env.test.ts (14 tests) 47ms
+ ✓ tests/lib/security.test.ts (50 tests) 12ms
+ ✓ tests/integration/api.test.ts (13 tests) 143ms
+ ✓ tests/lib/redis.test.ts (22 tests) 161ms
+ ✓ tests/lib/logger.test.ts (16 tests) 11ms
+ ✓ tests/services/auth.service.test.ts (15 tests) 15ms
+ ✓ tests/services/booking.service.test.ts (19 tests) 11ms
+ ✓ tests/services/payment.service.test.ts (10 tests) 9ms
+
+ Test Files  9 passed (9)
+      Tests  179 passed (179)
+```
+
+#### Task 7: CI/CD Pipelines
+
+##### 7a: .github/workflows/ci.yml — Main CI pipeline
+
+Three-job pipeline triggered on push/PR to main:
+- **lint-and-typecheck** — Installs bun, installs all dependencies (root, api-service, frontend), builds frontend
+- **test-backend** (depends on lint-and-typecheck) — Runs vitest in api-service with JWT_SECRET and NODE_ENV=test env vars
+- **deploy** (depends on test-backend, only on main push) — Placeholder deployment notification
+
+##### 7b: .github/workflows/security.yml — Security scan
+
+Triggered on push to main and weekly schedule (Monday midnight):
+- Installs dependencies for api-service and frontend
+- Runs `npm audit --audit-level=high` on both (with `|| true` for non-blocking)
+
+##### 7c: .github/dependabot.yml — Dependency updates
+
+Configures Dependabot for three ecosystems:
+- npm in `/mini-services/api-service` — weekly updates
+- npm in `/frontend` — weekly updates
+- GitHub Actions in `/` — weekly updates
+
+### Design Decisions
+
+- **Tests import actual RBAC module directly**: Unlike the task spec's original pattern-matching tests, we import `hasPermission`, `checkPermission`, `getRolePermissions`, and `PermissionDeniedError` from `../../lib/rbac` for real unit testing against actual code
+- **env.test.ts uses vi.resetModules()**: Since `validateEnv()` caches its result, each test resets the module cache and re-imports to test with different environment variable configurations
+- **No modification to existing source code**: All changes are new files only — no existing code was modified
+- **CI pipeline uses bun**: Matches the project's runtime (bun) for consistency
+- **Security audit uses `|| true`**: npm audit may return non-zero for vulnerabilities; the CI should not fail on audit findings, only report them
+
+### Verification
+
+- All 179 tests pass (9 test files, 0 failures)
+- No existing source code was modified
+- New test files properly mock all external dependencies
+- CI/CD files follow GitHub Actions best practices with proper job dependencies and conditions

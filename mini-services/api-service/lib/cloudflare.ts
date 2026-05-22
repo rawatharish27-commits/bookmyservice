@@ -757,3 +757,395 @@ export function verifyChallengeResponse(challengeToken: string, response: string
     return false
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Redis-backed Rate Limiting ────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * RedisRateLimiter — Distributed rate limiting using Redis for
+ * multi-instance coordination. Falls back to in-memory when Redis
+ * is unavailable.
+ */
+export class RedisRateLimiter {
+  private redisClient: any = null
+  private connected = false
+  private memoryStore = new Map<string, { count: number; firstSeen: number }>()
+
+  constructor() {
+    this.initRedis()
+  }
+
+  private async initRedis(): Promise<void> {
+    try {
+      const redisUrl = process.env.REDIS_URL
+      if (!redisUrl) {
+        this.connected = false
+        return
+      }
+
+      const { createClient } = await import('redis')
+      this.redisClient = createClient({ url: redisUrl })
+
+      this.redisClient.on('connect', () => { this.connected = true })
+      this.redisClient.on('disconnect', () => { this.connected = false })
+      this.redisClient.on('error', () => { this.connected = false })
+
+      await this.redisClient.connect()
+    } catch {
+      this.connected = false
+    }
+  }
+
+  /**
+   * Check if an IP has exceeded the rate limit.
+   * Returns { allowed, remaining, resetAt }.
+   *
+   * @param ip - Client IP
+   * @param maxRequests - Max requests per window
+   * @param windowMs - Window duration in milliseconds
+   * @param keyPrefix - Redis key prefix for namespacing
+   */
+  async checkRateLimit(
+    ip: string,
+    maxRequests: number = 100,
+    windowMs: number = 60_000,
+    keyPrefix: string = 'ratelimit:'
+  ): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
+    const key = `${keyPrefix}${ip}`
+    const now = Date.now()
+    const windowStart = now - windowMs
+    const resetAt = now + windowMs
+
+    // Redis path
+    if (this.connected && this.redisClient) {
+      try {
+        // Use Redis INCR + EXPIRE for atomic rate limiting
+        const current = await this.redisClient.incr(key)
+        if (current === 1) {
+          await this.redisClient.expire(key, Math.ceil(windowMs / 1000))
+        }
+
+        const ttl = await this.redisClient.ttl(key)
+        const resetAtTime = ttl > 0 ? now + ttl * 1000 : resetAt
+
+        return {
+          allowed: current <= maxRequests,
+          remaining: Math.max(0, maxRequests - current),
+          resetAt: resetAtTime,
+        }
+      } catch {
+        // Fall through to in-memory
+      }
+    }
+
+    // In-memory fallback
+    const state = this.memoryStore.get(key)
+    if (!state || now - state.firstSeen > windowMs) {
+      this.memoryStore.set(key, { count: 1, firstSeen: now })
+      return { allowed: true, remaining: maxRequests - 1, resetAt }
+    }
+
+    state.count++
+    return {
+      allowed: state.count <= maxRequests,
+      remaining: Math.max(0, maxRequests - state.count),
+      resetAt: state.firstSeen + windowMs,
+    }
+  }
+
+  /**
+   * Reset the rate limit counter for an IP.
+   */
+  async resetRateLimit(ip: string, keyPrefix: string = 'ratelimit:'): Promise<void> {
+    const key = `${keyPrefix}${ip}`
+    this.memoryStore.delete(key)
+    if (this.connected && this.redisClient) {
+      try {
+        await this.redisClient.del(key)
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  /**
+   * Shutdown the rate limiter.
+   */
+  async shutdown(): Promise<void> {
+    this.memoryStore.clear()
+    if (this.redisClient) {
+      try {
+        await this.redisClient.quit()
+      } catch {
+        this.redisClient.disconnect()
+      }
+    }
+  }
+}
+
+/** Singleton Redis rate limiter instance */
+export const redisRateLimiter = new RedisRateLimiter()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: CIDR Trie for IP Blacklist ────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * CIDRTrieNode — A binary trie node for CIDR prefix matching.
+ * Each node represents a bit in the IP address and can have
+ * left (0) and right (1) children.
+ */
+class CIDRTrieNode {
+  children: [CIDRTrieNode | null, CIDRTrieNode | null] = [null, null]
+  isEnd: boolean = false // Marks the end of a CIDR prefix
+}
+
+/**
+ * CIDRTrie — A prefix trie for efficient CIDR-based IP blacklisting.
+ * Provides O(1) lookups (32 steps for IPv4) instead of O(n) linear scan.
+ *
+ * Usage:
+ *   const trie = new CIDRTrie()
+ *   trie.insert('10.0.0.0/8')
+ *   trie.contains('10.1.2.3') // true
+ *   trie.contains('192.168.1.1') // false
+ */
+export class CIDRTrie {
+  private root = new CIDRTrieNode()
+
+  /**
+   * Insert a CIDR range into the trie.
+   * @param cidr - CIDR notation (e.g., '10.0.0.0/8', '192.168.1.0/24')
+   */
+  insert(cidr: string): void {
+    const [ip, prefixLen] = cidr.split('/')
+    const bits = parseInt(prefixLen || '32', 10)
+    const num = ipToNum(ip)
+
+    let node = this.root
+    for (let i = 31; i >= 32 - bits; i--) {
+      const bit = (num >> i) & 1
+      if (!node.children[bit]) {
+        node.children[bit] = new CIDRTrieNode()
+      }
+      node = node.children[bit]!
+    }
+    node.isEnd = true
+  }
+
+  /**
+   * Check if an IP address falls within any CIDR range in the trie.
+   * @param ip - IP address string (e.g., '10.1.2.3')
+   * @returns true if the IP is in any inserted CIDR range
+   */
+  contains(ip: string): boolean {
+    const num = ipToNum(ip)
+    let node = this.root
+
+    for (let i = 31; i >= 0; i--) {
+      if (node.isEnd) return true
+      const bit = (num >> i) & 1
+      if (!node.children[bit]) return false
+      node = node.children[bit]!
+    }
+
+    return node.isEnd
+  }
+
+  /**
+   * Remove a CIDR range from the trie.
+   * @param cidr - CIDR notation to remove
+   */
+  remove(cidr: string): void {
+    const [ip, prefixLen] = cidr.split('/')
+    const bits = parseInt(prefixLen || '32', 10)
+    const num = ipToNum(ip)
+
+    // Track the path for cleanup
+    const path: CIDRTrieNode[] = [this.root]
+    let node = this.root
+
+    for (let i = 31; i >= 32 - bits; i--) {
+      const bit = (num >> i) & 1
+      if (!node.children[bit]) return
+      node = node.children[bit]!
+      path.push(node)
+    }
+
+    node.isEnd = false
+
+    // Clean up empty branches from leaf to root
+    for (let i = path.length - 1; i > 0; i--) {
+      const current = path[i]
+      if (current.isEnd || current.children[0] || current.children[1]) {
+        break // Node is still needed
+      }
+      const parent = path[i - 1]
+      const bit = (num >> (32 - bits + (path.length - 1 - i))) & 1
+      parent.children[bit] = null
+    }
+  }
+}
+
+/** Singleton CIDR trie instance for IP blacklist */
+export const ipBlacklistTrie = new CIDRTrie()
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Dynamic Challenge Difficulty ──────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** Threat level that determines challenge difficulty */
+export type ThreatLevel = 'low' | 'medium' | 'high' | 'critical'
+
+/** Current global threat level (adjustable at runtime) */
+let currentThreatLevel: ThreatLevel = 'low'
+
+/** Threat level → difficulty mapping */
+const THREAT_DIFFICULTY_MAP: Record<ThreatLevel, number> = {
+  low: 2,       // 2 leading zeros — fast to solve
+  medium: 3,    // 3 leading zeros — moderate
+  high: 4,      // 4 leading zeros — harder
+  critical: 5,  // 5 leading zeros — very hard
+}
+
+/**
+ * Set the current threat level for auto-adjusting challenge difficulty.
+ */
+export function setThreatLevel(level: ThreatLevel): void {
+  currentThreatLevel = level
+  console.log(`🛡️  [Cloudflare] Threat level set to: ${level} (difficulty: ${THREAT_DIFFICULTY_MAP[level]})`)
+}
+
+/**
+ * Get the current threat level.
+ */
+export function getThreatLevel(): ThreatLevel {
+  return currentThreatLevel
+}
+
+/**
+ * Get the challenge difficulty based on current threat level.
+ * Auto-adjusts difficulty so higher threat levels require more computation.
+ */
+export function getDynamicChallengeDifficulty(): number {
+  return THREAT_DIFFICULTY_MAP[currentThreatLevel] || 3
+}
+
+/**
+ * Auto-adjust threat level based on recent blocked request rate.
+ * Called periodically or on-demand to dynamically adapt.
+ *
+ * @param blockedPerMinute - Number of requests blocked in the last minute
+ */
+export function autoAdjustThreatLevel(blockedPerMinute: number): ThreatLevel {
+  if (blockedPerMinute > 100) {
+    currentThreatLevel = 'critical'
+  } else if (blockedPerMinute > 50) {
+    currentThreatLevel = 'high'
+  } else if (blockedPerMinute > 20) {
+    currentThreatLevel = 'medium'
+  } else {
+    currentThreatLevel = 'low'
+  }
+  return currentThreatLevel
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Blocked Request Logging ───────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** In-memory store for recent blocked requests */
+const blockedRequestLog: Array<{
+  ip: string
+  reason: string
+  details: Record<string, any>
+  timestamp: number
+}> = []
+
+const MAX_BLOCKED_LOG_ENTRIES = 10000
+
+/**
+ * Log a blocked request for security analysis.
+ * Persists blocked request data including IP, reason, and contextual details.
+ *
+ * @param ip - The blocked IP address
+ * @param reason - The reason for blocking (e.g., 'WAF_BLOCKED', 'IP_BLACKLISTED')
+ * @param details - Additional context (path, user-agent, violations, etc.)
+ */
+export function logBlockedRequest(
+  ip: string,
+  reason: string,
+  details: Record<string, any> = {}
+): void {
+  blockedRequestLog.push({
+    ip,
+    reason,
+    details,
+    timestamp: Date.now(),
+  })
+
+  // Trim to max entries (FIFO)
+  if (blockedRequestLog.length > MAX_BLOCKED_LOG_ENTRIES) {
+    blockedRequestLog.splice(0, blockedRequestLog.length - MAX_BLOCKED_LOG_ENTRIES)
+  }
+}
+
+/**
+ * Get recent blocked request logs.
+ *
+ * @param limit - Max number of entries to return
+ * @param reasonFilter - Optional filter by reason
+ * @returns Array of blocked request entries, most recent first
+ */
+export function getBlockedRequestLog(
+  limit: number = 100,
+  reasonFilter?: string
+): Array<{
+  ip: string
+  reason: string
+  details: Record<string, any>
+  timestamp: number
+}> {
+  let entries = reasonFilter
+    ? blockedRequestLog.filter(e => e.reason === reasonFilter)
+    : blockedRequestLog
+
+  return entries.slice(-limit).reverse()
+}
+
+/**
+ * Get blocked request statistics.
+ */
+export function getBlockedRequestStats(): {
+  totalBlocked: number
+  byReason: Record<string, number>
+  topIPs: Array<{ ip: string; count: number }>
+  last24h: number
+} {
+  const now = Date.now()
+  const dayAgo = now - 24 * 60 * 60 * 1000
+  const byReason: Record<string, number> = {}
+  const ipCounts: Record<string, number> = {}
+  let last24h = 0
+
+  for (const entry of blockedRequestLog) {
+    byReason[entry.reason] = (byReason[entry.reason] || 0) + 1
+    ipCounts[entry.ip] = (ipCounts[entry.ip] || 0) + 1
+    if (entry.timestamp >= dayAgo) {
+      last24h++
+    }
+  }
+
+  const topIPs = Object.entries(ipCounts)
+    .map(([ip, count]) => ({ ip, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 20)
+
+  return {
+    totalBlocked: blockedRequestLog.length,
+    byReason,
+    topIPs,
+    last24h,
+  }
+}

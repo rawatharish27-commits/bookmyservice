@@ -103,44 +103,16 @@ export function getQueueStatus(): { ready: boolean; backend: string } {
 }
 
 // ─── Push Notification Job ─────────────────────────────────────────────
-export async function pushNotificationJob(jobData: NotificationJobData): Promise<void> {
-  if (isQueueSystemReady && notificationQueue) {
-    // Async: Push to BullMQ queue
-    await notificationQueue.add(jobData.type, jobData, {
-      priority: jobData.priority || 3,
-      attempts: 3,
-      backoff: { type: 'exponential', delay: 5000 },
-      removeOnComplete: { count: 1000 },
-      removeOnFail: { count: 5000 },
-      ...(deadLetterQueue ? {
-        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
-      } : {}),
-    })
-  } else {
-    // Sync fallback: Process immediately
-    await processNotificationJob(jobData)
-  }
-}
+// NOTE: The enhanced version of pushNotificationJob with delay and dedup
+// support is defined below in the ENHANCEMENT section.
+// This stub is here for backward compatibility — the actual implementation
+// is at the bottom of this file.
 
 // ─── Push Booking Processing Job ───────────────────────────────────────
-export async function pushBookingJob(jobData: BookingProcessingJobData): Promise<void> {
-  if (isQueueSystemReady && bookingQueue) {
-    // Async: Push to BullMQ queue
-    await bookingQueue.add(jobData.type, jobData, {
-      priority: jobData.priority || 3,
-      attempts: 3,
-      backoff: { type: 'exponential', delay: 5000 },
-      removeOnComplete: { count: 1000 },
-      removeOnFail: { count: 5000 },
-      ...(deadLetterQueue ? {
-        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
-      } : {}),
-    })
-  } else {
-    // Sync fallback: Process immediately
-    await processBookingJob(jobData)
-  }
-}
+// NOTE: The enhanced version of pushBookingJob with delay and dedup
+// support is defined below in the ENHANCEMENT section.
+// This stub is here for backward compatibility — the actual implementation
+// is at the bottom of this file.
 
 // ─── Notification Job Processor ────────────────────────────────────────
 export async function processNotificationJob(job: NotificationJobData): Promise<void> {
@@ -303,7 +275,7 @@ export async function startWorkers(): Promise<void> {
       },
       {
         connection: config.connection,
-        concurrency: 5,
+        concurrency: getNotificationConcurrency(),
       }
     )
 
@@ -316,6 +288,7 @@ export async function startWorkers(): Promise<void> {
     })
 
     // Booking processing worker
+    const bookingConcurrency = getBookingConcurrency()
     bookingWorker = new Worker<BookingProcessingJobData>(
       QUEUE_NAMES.BOOKING_PROCESSING,
       async (job: Job<BookingProcessingJobData>) => {
@@ -323,7 +296,7 @@ export async function startWorkers(): Promise<void> {
       },
       {
         connection: config.connection,
-        concurrency: 3,
+        concurrency: bookingConcurrency,
       }
     )
 
@@ -335,7 +308,7 @@ export async function startWorkers(): Promise<void> {
       console.warn(`📮 [BOOKING] Job ${job?.id} failed:`, err.message)
     })
 
-    console.log('📮 Workers started: notifications (concurrency: 5), bookings (concurrency: 3)')
+    console.log(`📮 Workers started: notifications (concurrency: ${getNotificationConcurrency()}), bookings (concurrency: ${getBookingConcurrency()})`)
   } catch (err: any) {
     console.warn('📮 Workers failed to start:', err.message)
   }
@@ -729,4 +702,257 @@ export function stopMetricsCollection(): void {
     metricsCollectionInterval = null
     console.log('📮 Metrics collection stopped')
   }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Job Deduplication ─────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** In-memory deduplication tracking (dedupKey → { jobId, expiresAt }) */
+const deduplicationStore = new Map<string, { jobId: string; expiresAt: number }>()
+const DEDUP_TTL = 5 * 60 * 1000 // 5 minutes
+
+// Periodic cleanup of expired dedup entries
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, entry] of deduplicationStore) {
+    if (now >= entry.expiresAt) {
+      deduplicationStore.delete(key)
+    }
+  }
+}, 60 * 1000)
+
+/**
+ * Check if a job with the given deduplication key has already been queued.
+ * Returns the existing job ID if a duplicate is found, or null if it's a new job.
+ *
+ * @param queueName - The queue name (for namespacing)
+ * @param deduplicationKey - Unique key for deduplication (e.g., `booking:${bookingId}`)
+ * @returns Existing job ID if duplicate, null if new
+ */
+export function isDuplicateJob(queueName: string, deduplicationKey: string): string | null {
+  const fullKey = `${queueName}:${deduplicationKey}`
+  const existing = deduplicationStore.get(fullKey)
+
+  if (existing && Date.now() < existing.expiresAt) {
+    return existing.jobId
+  }
+
+  return null
+}
+
+/**
+ * Register a deduplication key after a job is successfully added.
+ *
+ * @param queueName - The queue name
+ * @param deduplicationKey - The dedup key
+ * @param jobId - The job ID that was created
+ */
+export function registerDedupKey(queueName: string, deduplicationKey: string, jobId: string): void {
+  const fullKey = `${queueName}:${deduplicationKey}`
+  deduplicationStore.set(fullKey, { jobId, expiresAt: Date.now() + DEDUP_TTL })
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Delayed Job Support ───────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Push a notification job with an optional delay.
+ * When delay is specified, the job will be scheduled to run after
+ * the specified number of milliseconds.
+ *
+ * @param jobData - Notification job data
+ * @param delay - Delay in milliseconds before the job runs
+ */
+export async function pushNotificationJob(jobData: NotificationJobData, delay?: number): Promise<void> {
+  if (isQueueSystemReady && notificationQueue) {
+    // Check deduplication
+    const dedupKey = `${jobData.type}:${jobData.recipient.userId || jobData.recipient.email || jobData.recipient.phone}:${jobData.template}`
+    const existingJobId = isDuplicateJob(QUEUE_NAMES.NOTIFICATION, dedupKey)
+    if (existingJobId) {
+      console.log(`📮 Dedup: Notification job already queued (jobId: ${existingJobId})`)
+      return
+    }
+
+    // Async: Push to BullMQ queue with optional delay
+    const job = await notificationQueue.add(jobData.type, jobData, {
+      priority: jobData.priority || 3,
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { count: 1000 },
+      removeOnFail: { count: 5000 },
+      ...(delay ? { delay } : {}),
+      ...(deadLetterQueue ? {
+        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
+      } : {}),
+    })
+
+    // Register dedup key
+    registerDedupKey(QUEUE_NAMES.NOTIFICATION, dedupKey, job.id || '')
+  } else {
+    // Sync fallback: Process immediately (no delay support in sync mode)
+    await processNotificationJob(jobData)
+  }
+}
+
+/**
+ * Push a booking processing job with an optional delay.
+ *
+ * @param jobData - Booking job data
+ * @param delay - Delay in milliseconds before the job runs
+ */
+export async function pushBookingJob(jobData: BookingProcessingJobData, delay?: number): Promise<void> {
+  if (isQueueSystemReady && bookingQueue) {
+    // Check deduplication
+    const dedupKey = `${jobData.type}:${jobData.bookingId}`
+    const existingJobId = isDuplicateJob(QUEUE_NAMES.BOOKING_PROCESSING, dedupKey)
+    if (existingJobId) {
+      console.log(`📮 Dedup: Booking job already queued (jobId: ${existingJobId})`)
+      return
+    }
+
+    // Async: Push to BullMQ queue with optional delay
+    const job = await bookingQueue.add(jobData.type, jobData, {
+      priority: jobData.priority || 3,
+      attempts: 3,
+      backoff: { type: 'exponential', delay: 5000 },
+      removeOnComplete: { count: 1000 },
+      removeOnFail: { count: 5000 },
+      ...(delay ? { delay } : {}),
+      ...(deadLetterQueue ? {
+        deadLetterQueue: { queue: deadLetterQueue, maxRetries: 3 },
+      } : {}),
+    })
+
+    // Register dedup key
+    registerDedupKey(QUEUE_NAMES.BOOKING_PROCESSING, dedupKey, job.id || '')
+  } else {
+    // Sync fallback: Process immediately
+    await processBookingJob(jobData)
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Recurring Job Support ─────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** Registered recurring jobs */
+const recurringJobs = new Map<string, {
+  name: string
+  pattern: string | number // cron pattern or interval in ms
+  handler: () => Promise<void>
+  intervalId: ReturnType<typeof setInterval> | null
+}>()
+
+/**
+ * Add a recurring job that runs on a schedule.
+ *
+ * @param name - Unique name for the recurring job
+ * @param pattern - Cron expression (string) or interval in milliseconds (number)
+ * @param handler - The function to execute on each run
+ */
+export function addRecurringJob(
+  name: string,
+  pattern: string | number,
+  handler: () => Promise<void>
+): void {
+  if (recurringJobs.has(name)) {
+    console.warn(`📮 Recurring job "${name}" already exists — replacing`)
+    removeRecurringJob(name)
+  }
+
+  let intervalId: ReturnType<typeof setInterval> | null = null
+
+  if (typeof pattern === 'number') {
+    // Interval-based recurring job (pattern = milliseconds)
+    intervalId = setInterval(async () => {
+      try {
+        await handler()
+      } catch (err: any) {
+        console.error(`📮 Recurring job "${name}" error:`, err.message)
+      }
+    }, pattern)
+  } else {
+    // Cron-based recurring job (pattern = cron expression)
+    try {
+      const node_cron = require('node-cron')
+      if (node_cron.validate(pattern)) {
+        const task = node_cron.schedule(pattern, async () => {
+          try {
+            await handler()
+          } catch (err: any) {
+            console.error(`📮 Recurring job "${name}" error:`, err.message)
+          }
+        }, { scheduled: true })
+        intervalId = task as any
+      } else {
+        console.error(`📮 Invalid cron pattern for "${name}": ${pattern}`)
+        return
+      }
+    } catch {
+      // node-cron not available — use approximate interval
+      console.warn(`📮 node-cron not available for "${name}" — using 24h interval fallback`)
+      intervalId = setInterval(async () => {
+        try {
+          await handler()
+        } catch (err: any) {
+          console.error(`📮 Recurring job "${name}" error:`, err.message)
+        }
+      }, 24 * 60 * 60 * 1000)
+    }
+  }
+
+  recurringJobs.set(name, { name, pattern, handler, intervalId })
+  console.log(`📮 Recurring job "${name}" added (pattern: ${pattern})`)
+}
+
+/**
+ * Remove a recurring job by name.
+ */
+export function removeRecurringJob(name: string): boolean {
+  const job = recurringJobs.get(name)
+  if (!job) return false
+
+  if (job.intervalId) {
+    if (typeof job.intervalId === 'object' && 'stop' in job.intervalId) {
+      ;(job.intervalId as any).stop()
+    } else {
+      clearInterval(job.intervalId)
+    }
+  }
+
+  recurringJobs.delete(name)
+  console.log(`📮 Recurring job "${name}" removed`)
+  return true
+}
+
+/**
+ * Get all registered recurring jobs.
+ */
+export function getRecurringJobs(): Array<{ name: string; pattern: string | number; active: boolean }> {
+  return Array.from(recurringJobs.values()).map(job => ({
+    name: job.name,
+    pattern: job.pattern,
+    active: !!job.intervalId,
+  }))
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Configurable Worker Concurrency ───────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Get worker concurrency from environment variables with fallback defaults.
+ * QUEUE_NOTIFICATION_CONCURRENCY — notification worker concurrency (default: 5)
+ * QUEUE_BOOKING_CONCURRENCY — booking worker concurrency (default: 3)
+ */
+export function getNotificationConcurrency(): number {
+  const env = process.env.QUEUE_NOTIFICATION_CONCURRENCY
+  return env ? Math.max(1, parseInt(env, 10)) : 5
+}
+
+export function getBookingConcurrency(): number {
+  const env = process.env.QUEUE_BOOKING_CONCURRENCY
+  return env ? Math.max(1, parseInt(env, 10)) : 3
 }

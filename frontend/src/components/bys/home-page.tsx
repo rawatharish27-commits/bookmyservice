@@ -55,7 +55,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { COMPANY_INFO } from '@/config/company';
-import { ROLE_DASHBOARD_MAP } from '@/App';
+import { ROLE_DASHBOARD_MAP } from '@/routes/access-control';
 import { AiRecommendationsSection } from '@/components/bys/ai-recommendations-section';
 
 // ─── Types ────────────────────────────────────────────────────────────────────

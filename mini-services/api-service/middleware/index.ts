@@ -5,16 +5,17 @@
  * Provides granular functions to apply middleware independently or all at once.
  *
  * Middleware order (applied top-to-bottom, executed in reverse for responses):
- *   1. HTTP Request Logging (Morgan-style)
- *   2. CORS (Cross-Origin Resource Sharing)
- *   3. Security Headers (X-Content-Type-Options, X-Frame-Options, etc.)
- *   4. Request Size Limit (1MB max)
- *   5. Bot Protection (Cloudflare-aware)
- *   6. DDoS Throttle (Cloudflare-aware)
- *   7. Request Validation (path traversal, SQL injection, XSS detection)
- *   8. Cache Headers for public GET endpoints (CDN-friendly)
- *   9. Rate Limiting (per-endpoint granular limits)
- *  10. Global Error Handler (Sentry + logger integration)
+ *   1. Metrics Collection (Prometheus-compatible)
+ *   2. HTTP Request Logging (Morgan-style)
+ *   3. CORS (Cross-Origin Resource Sharing)
+ *   4. Security Headers (X-Content-Type-Options, X-Frame-Options, etc.)
+ *   5. Request Size Limit (1MB max)
+ *   6. Bot Protection (Cloudflare-aware)
+ *   7. DDoS Throttle (Cloudflare-aware)
+ *   8. Request Validation (path traversal, SQL injection, XSS detection)
+ *   9. Cache Headers for public GET endpoints (CDN-friendly)
+ *  10. Rate Limiting (per-endpoint granular limits)
+ *  11. Global Error Handler (Sentry + logger integration)
  *
  * Usage:
  *   import { applyMiddleware } from './middleware'
@@ -39,6 +40,9 @@ import {
 import { requestValidationMiddleware } from '../lib/security'
 import { captureApiError } from '../lib/sentry'
 import { logger, apiLogger, httpLoggingMiddleware } from '../lib/logger'
+import { apiMetrics } from '../lib/metrics'
+import { hasPermission, Permission, PermissionDeniedError } from '../lib/rbac'
+import { getAuthUser } from '../lib/shared'
 
 // ─── Allowed Origins for CORS ──────────────────────────────────────────────
 
@@ -323,6 +327,27 @@ export function applyRateLimits(app: Hono): void {
   }
 }
 
+// ─── Apply Metrics Collection ──────────────────────────────────────────────
+/**
+ * Applies Prometheus-compatible metrics collection middleware.
+ * Records HTTP request count, status, and duration for every request.
+ * This must be applied early so it wraps the entire request lifecycle.
+ */
+function applyMetricsCollection(app: Hono): void {
+  app.use('*', async (c, next) => {
+    const start = Date.now()
+    await next()
+    const duration = Date.now() - start
+    try {
+      const pathname = new URL(c.req.url).pathname
+      apiMetrics.httpRequestsTotal(c.req.method, pathname, c.res.status)
+      apiMetrics.httpRequestDuration(c.req.method, pathname, duration)
+    } catch {
+      // Metrics collection must never break requests
+    }
+  })
+}
+
 // ─── Apply HTTP Logging ────────────────────────────────────────────────────
 /**
  * Applies Morgan-style HTTP request logging middleware.
@@ -338,42 +363,68 @@ function applyHTTPLogging(app: Hono): void {
  * This is the primary entry point for middleware setup.
  *
  * Middleware is applied in this order (which determines execution sequence):
- *   1. HTTP Request Logging     — logs every request/response
- *   2. CORS                     — handles cross-origin requests
- *   3. Global Error Handler     — catches unhandled errors
- *   4. Security Headers         — adds security headers to responses
- *   5. Request Size Limit       — rejects oversized request bodies
- *   6. Bot Protection           — blocks known malicious bots
- *   7. DDoS Throttle            — throttles excessive requests per IP
- *   8. Request Validation       — blocks path traversal, SQLi, XSS
- *   9. Cache Headers            — sets CDN cache headers for public endpoints
- *  10. Rate Limiting            — enforces per-endpoint rate limits
+ *   1. Metrics Collection       — records HTTP request count and duration
+ *   2. HTTP Request Logging     — logs every request/response
+ *   3. CORS                     — handles cross-origin requests
+ *   4. Global Error Handler     — catches unhandled errors
+ *   5. Security Headers         — adds security headers to responses
+ *   6. Request Size Limit       — rejects oversized request bodies
+ *   7. Bot Protection           — blocks known malicious bots
+ *   8. DDoS Throttle            — throttles excessive requests per IP
+ *   9. Request Validation       — blocks path traversal, SQLi, XSS
+ *  10. Cache Headers            — sets CDN cache headers for public endpoints
+ *  11. Rate Limiting            — enforces per-endpoint rate limits
  */
 export function applyMiddleware(app: Hono): void {
-  // 1. HTTP Request Logging (Morgan-style)
+  // 1. Metrics Collection (Prometheus-compatible)
+  applyMetricsCollection(app)
+
+  // 2. HTTP Request Logging (Morgan-style)
   applyHTTPLogging(app)
 
-  // 2. CORS
+  // 3. CORS
   applyCORS(app)
 
-  // 3. Global Error Handler (Sentry + logger)
+  // 4. Global Error Handler (Sentry + logger)
   applyGlobalErrorHandler(app)
 
-  // 4. Security Headers
+  // 5. Security Headers
   applySecurityHeaders(app)
 
-  // 5. Request Size Limit (1MB max)
+  // 6. Request Size Limit (1MB max)
   applyRequestSizeLimit(app)
 
-  // 6. Bot Protection & DDoS Throttle (Cloudflare-aware)
+  // 7. Bot Protection & DDoS Throttle (Cloudflare-aware)
   applyBotProtection(app)
 
-  // 7. Request Validation (path traversal, SQL injection, XSS detection)
+  // 8. Request Validation (path traversal, SQL injection, XSS detection)
   applyRequestValidation(app)
 
-  // 8. Cache Headers for public GET endpoints (CDN-friendly)
+  // 9. Cache Headers for public GET endpoints (CDN-friendly)
   applyCacheHeaders(app)
 
-  // 9. Rate Limiting (per-endpoint granular limits)
+  // 10. Rate Limiting (per-endpoint granular limits)
   applyRateLimits(app)
+}
+
+// ─── RBAC Middleware Helper ────────────────────────────────────────────
+
+/**
+ * Require a specific permission for the authenticated user.
+ * Returns 401 if not authenticated, 403 if the user's role lacks the permission.
+ *
+ * Usage:
+ *   import { requirePermission } from './middleware'
+ *   import { Permission } from './lib/rbac'
+ *   app.get('/api/admin/revenue', requirePermission(Permission.ADMIN_REVENUE), handler)
+ */
+export function requirePermission(permission: Permission) {
+  return async (c: any, next: any) => {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+    if (!hasPermission(user.roleId, permission)) {
+      return c.json({ error: 'Insufficient permissions', required: permission }, 403)
+    }
+    await next()
+  }
 }

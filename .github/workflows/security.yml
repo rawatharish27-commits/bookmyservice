@@ -1,0 +1,22 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 0 * * 1'
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: |
+          cd mini-services/api-service && bun install
+          cd ../../frontend && bun install
+      - name: Audit dependencies
+        run: |
+          cd mini-services/api-service && npm audit --audit-level=high || true
+          cd ../../frontend && npm audit --audit-level=high || true

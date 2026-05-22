@@ -2,15 +2,26 @@
 // All /api/bookings/*, /api/reviews/*, /api/notifications/*, /api/wallet/*, 
 // /api/earnings, /api/payouts/*, /api/favorites/*, /api/kyc/*, /api/disputes/*, 
 // /api/coupons/*, /api/amc-plans, /api/amc-subscriptions, /api/invoices/*
+//
+// Refactored: thin handlers that delegate to service modules
 // ─────────────────────────────────────────────────────────────────────
 
 import { Hono } from 'hono'
-import { pool, getAuthUser, requireAdmin, transformServiceRow, transformReviewRow } from '../lib/shared'
-import { redis, CacheKeys, CacheTTL } from '../lib/redis'
+import { pool, getAuthUser } from '../lib/shared'
 import { createBookingSchema } from '../validators/create-booking.schema'
 import { validateBody } from '../validators/validate'
-import { pushNotificationJob, pushBookingJob } from '../queues'
 import { BookingEvents } from '../lib/logger'
+
+// Service imports
+import * as bookingService from '../services/booking.service'
+import * as reviewService from '../services/review.service'
+import * as notificationService from '../services/notification.service'
+import * as walletService from '../services/wallet.service'
+import * as earningsService from '../services/earnings.service'
+import * as payoutService from '../services/payout.service'
+import * as favoritesService from '../services/favorites.service'
+import * as kycService from '../services/kyc.service'
+import * as disputeService from '../services/dispute.service'
 
 const router = new Hono()
 
@@ -24,41 +35,11 @@ router.post('/api/bookings', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const vResult = await validateBody(c, createBookingSchema)
     if (!vResult.success) return vResult.response
-    const { serviceId: sId, providerId, technicianId, scheduledDate, scheduledTime, address: serviceAddress, lat: serviceLatitude, lng: serviceLongitude, notes: specialInstructions, couponId } = vResult.data
+    const { serviceId: sId, providerId, technicianId, scheduledDate, scheduledTime, address, lat, lng, notes, couponId } = vResult.data
     serviceId = sId
-    const svcResult = await pool.query('SELECT id, "providerId", "basePrice" FROM "Service" WHERE id = $1 AND "isActive" = true', [serviceId])
-    if (!svcResult.rows[0]) return c.json({ error: 'Service not found' }, 404)
-    const service = svcResult.rows[0]
-    const basePrice = service.basePrice || 0
-    const bookingId = 'bkg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    const bookingNumber = 'BK' + Date.now().toString().slice(-8) + Math.random().toString(36).slice(2, 5).toUpperCase()
-    const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
-    let couponDiscount = 0
-    if (couponId) {
-      try {
-        const couponResult = await pool.query('SELECT * FROM "Coupon" WHERE id = $1 AND "isActive" = true AND "validTo" > NOW()', [couponId])
-        if (couponResult.rows[0]) {
-          const coupon = couponResult.rows[0]
-          if (coupon.discountType === 'PERCENTAGE') { couponDiscount = (basePrice * coupon.discountValue) / 100; if (coupon.maxDiscount && couponDiscount > coupon.maxDiscount) couponDiscount = coupon.maxDiscount } else { couponDiscount = coupon.discountValue }
-        }
-      } catch (e) { /* coupon table may not exist */ }
-    }
-    const finalPrice = Math.max(0, basePrice - couponDiscount)
-    await pool.query(
-      'INSERT INTO "Booking" (id, "bookingNumber", "clientId", "providerId", "technicianId", "serviceId", "scheduledDate", "scheduledTime", "serviceAddress", "serviceLatitude", "serviceLongitude", "specialInstructions", "basePrice", "couponDiscount", "finalPrice", "couponId", "otpCode", status, "paymentStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, \'PENDING\', \'PENDING\', NOW(), NOW())',
-      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, serviceAddress, serviceLatitude || null, serviceLongitude || null, specialInstructions || null, basePrice, couponDiscount, finalPrice, couponId || null, otpCode]
-    )
-    const result = await pool.query('SELECT b.*, u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [bookingId]).catch(async () => {
-      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', basePrice, couponDiscount, finalPrice, otpCode, scheduledDate, serviceAddress }] }
-    })
-    await redis.delByPattern('cache:stats:*').catch(() => {})
-    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
-    BookingEvents.created(bookingId, user.id, serviceId)
-    pushBookingJob({ type: 'BOOKING_CONFIRMATION', bookingId, data: { clientName: result.rows[0]?.clientName || '', clientEmail: user.email, clientPhone: result.rows[0]?.clientPhone || '', providerName: service.providerId || '', serviceName: '', scheduledDate, scheduledTime: scheduledTime || null, otp: otpCode }, priority: 2 }).catch(() => {})
-    pushBookingJob({ type: 'INVOICE', bookingId, data: { finalPrice, basePrice, couponDiscount, serviceName: '' }, priority: 3 }).catch(() => {})
-    pushBookingJob({ type: 'ANALYTICS', bookingId, data: { categoryId: service.categoryId || null, providerId: service.providerId || null }, priority: 4 }).catch(() => {})
-    pushBookingJob({ type: 'REFERRAL_REWARD', bookingId, data: { clientId: user.id, referrerId: null, basePrice }, priority: 4 }).catch(() => {})
-    return c.json({ message: 'Booking created successfully', booking: result.rows[0] }, 201)
+    const result = await bookingService.createBooking(user.id, user.email, { serviceId, providerId, technicianId, scheduledDate, scheduledTime, address, lat, lng, notes, couponId })
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Booking created successfully', booking: result.booking }, 201)
   } catch (e) { console.error('Create booking error:', e); BookingEvents.failed(user?.id || 'unknown', serviceId || 'unknown', e instanceof Error ? e.message : String(e)); return c.json({ error: 'Failed to create booking' }, 500) }
 })
 
@@ -70,18 +51,8 @@ router.get('/api/bookings', async (c) => {
     const status = c.req.query('status')
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    let query = 'SELECT b.*, s.title as "serviceName", u.name as "clientName", u.phone as "clientPhone", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE '
-    const params: any[] = []
-    let idx = 1
-    if (user.roleId === 2 || user.role === 'PROVIDER') { query += `b."providerId" = $${idx}`; params.push(user.id) }
-    else if (user.roleId === 4 || user.role === 'TECHNICIAN') { query += `b."technicianId" = $${idx}`; params.push(user.id) }
-    else { query += `b."clientId" = $${idx}`; params.push(user.id) }
-    idx++
-    if (status) { query += ` AND b.status = $${idx}`; params.push(status); idx++ }
-    query += ` ORDER BY b."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
-    params.push(limit, offset)
-    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
-    return c.json({ bookings: result.rows, total: result.rows.length, limit, offset })
+    const result = await bookingService.listBookings(user.id, user.roleId, user.role, { status: status || undefined, limit, offset })
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list bookings' }, 500) }
 })
 
@@ -91,14 +62,9 @@ router.get('/api/bookings/:id', async (c) => {
     const auth = await getAuthUser(c)
     if (!auth) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    const result = await pool.query(
-      'SELECT b.*, s.title as "serviceName", s."images" as "serviceImage", u.name as "clientName", u.phone as "clientPhone", u."profileImageUrl" as "clientImage", p.name as "providerName", p.phone as "providerPhone", p."profileImageUrl" as "providerImage", t.name as "technicianName", sc.name as "categoryName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" t ON b."technicianId" = t.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE b.id = $1',
-      [id]
-    ).catch(() => ({ rows: [] }))
-    if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
-    const booking = result.rows[0]
-    if (booking.clientId !== auth.userId && booking.providerId !== auth.userId && auth.roleId !== 1 && auth.roleId !== 3 && auth.roleId !== 7) return c.json({ error: 'Forbidden' }, 403)
-    return c.json({ booking })
+    const result = await bookingService.getBooking(id, auth.id, auth.roleId)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ booking: result.booking })
   } catch (e) { return c.json({ error: 'Failed to get booking' }, 500) }
 })
 
@@ -109,27 +75,9 @@ router.patch('/api/bookings/:id', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const { status, cancellationReason } = await c.req.json()
-    const validStatuses = ['ACCEPTED', 'ON_THE_WAY', 'ARRIVED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']
-    if (!status || !validStatuses.includes(status)) return c.json({ error: `Invalid status. Must be one of: ${validStatuses.join(', ')}` }, 400)
-    const existingResult = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
-    if (!existingResult.rows[0]) return c.json({ error: 'Booking not found' }, 404)
-    const booking = existingResult.rows[0]
-    const allowedTransitions: Record<string, number[]> = { 'CANCELLED': [1, 2], 'ACCEPTED': [2, 4], 'REJECTED': [2, 4], 'IN_PROGRESS': [2, 4], 'COMPLETED': [2, 4] }
-    const allowedRoles = allowedTransitions[status] || []
-    if (!allowedRoles.includes(user.roleId) && user.roleId !== 1 && user.roleId !== 3) return c.json({ error: 'Not authorized for this status change' }, 403)
-    const updates = ['status = $1', '"updatedAt" = NOW()']
-    const values: any[] = [status]
-    let idx = 2
-    if (status === 'COMPLETED') { updates.push(`"completedAt" = NOW()`) }
-    if (status === 'CANCELLED') { updates.push(`"cancelledAt" = NOW()`) }
-    if (cancellationReason) { updates.push(`"cancellationReason" = $${idx}`); values.push(cancellationReason); idx++ }
-    values.push(id)
-    await pool.query(`UPDATE "Booking" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
-    if (status === 'COMPLETED' && booking.providerId) {
-      await pool.query('UPDATE "User" SET "completedJobsCount" = COALESCE("completedJobsCount", 0) + 1 WHERE id = $1', [booking.providerId])
-    }
-    const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => existingResult)
-    return c.json({ message: 'Booking status updated', booking: result.rows[0] })
+    const result = await bookingService.updateBookingStatus(id, user.id, user.roleId, status, cancellationReason)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Booking status updated', booking: result.booking })
   } catch (e) { console.error('Update booking error:', e); return c.json({ error: 'Failed to update booking' }, 500) }
 })
 
@@ -140,13 +88,9 @@ router.post('/api/bookings/:id/otp-verify', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const { otp } = await c.req.json()
-    if (!otp) return c.json({ error: 'OTP is required' }, 400)
-    const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
-    if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
-    const booking = result.rows[0]
-    if (booking.otpCode !== otp) return c.json({ error: 'Invalid OTP' }, 400)
-    await pool.query('UPDATE "Booking" SET status = \'IN_PROGRESS\', "startedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
-    return c.json({ message: 'OTP verified, service started', bookingId: id })
+    const result = await bookingService.verifyOtp(id, otp)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'OTP verified, service started', bookingId: result.bookingId })
   } catch (e) { return c.json({ error: 'OTP verification failed' }, 500) }
 })
 
@@ -157,15 +101,8 @@ router.patch('/api/bookings/:id/cancel', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const body = await c.req.json().catch(() => ({}))
-    const reason = body.reason || ''
-    const bookingResult = await pool.query('SELECT b.*, s.title as "serviceName", u.name as "clientName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" u ON b."clientId" = u.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE b.id = $1', [id])
-    const booking = bookingResult.rows[0]
-    await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
-    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
-    if (booking) {
-      if (booking.clientId) { pushNotificationJob({ type: 'PUSH', recipient: { userId: booking.clientId }, template: 'booking_cancelled', data: { serviceName: booking.serviceName || 'Service', reason, bookingId: id }, priority: 2 }).catch(() => {}) }
-      if (booking.providerId && booking.providerId !== user.id) { pushNotificationJob({ type: 'PUSH', recipient: { userId: booking.providerId }, template: 'booking_cancelled', data: { serviceName: booking.serviceName || 'Service', reason: reason || 'Client cancelled', bookingId: id }, priority: 2 }).catch(() => {}) }
-    }
+    const result = await bookingService.cancelBooking(id, user.id, body.reason)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Booking cancelled' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -176,11 +113,8 @@ router.patch('/api/bookings/:id/complete', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    const bookingResult = await pool.query('SELECT b.*, s.title as "serviceName", p.name as "providerName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" p ON b."providerId" = p.id WHERE b.id = $1', [id])
-    const booking = bookingResult.rows[0]
-    await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
-    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
-    if (booking?.clientId) { pushBookingPush(booking.clientId, 'booking_completed', { serviceName: booking.serviceName || 'Service', providerName: booking.providerName || 'Provider', bookingId: id }) }
+    const result = await bookingService.completeBooking(id, user.id)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Booking completed' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -192,11 +126,8 @@ router.patch('/api/bookings/:id/reject', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
     const body = await c.req.json().catch(() => ({}))
-    const reason = body.reason || ''
-    const bookingResult = await pool.query('SELECT b.*, s.title as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE b.id = $1', [id])
-    const booking = bookingResult.rows[0]
-    await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
-    if (booking?.clientId) { pushNotificationJob({ type: 'PUSH', recipient: { userId: booking.clientId }, template: 'booking_cancelled', data: { serviceName: booking.serviceName || 'Service', reason: reason || 'Provider declined', bookingId: id }, priority: 2 }).catch(() => {}) }
+    const result = await bookingService.rejectBooking(id, user.id, body.reason)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Booking rejected' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -207,13 +138,8 @@ router.patch('/api/bookings/:id/accept', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    const bookingResult = await pool.query('SELECT b.*, s.title as "serviceName", p.name as "providerName", u.name as "clientName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id LEFT JOIN "User" p ON b."providerId" = p.id LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [id])
-    const booking = bookingResult.rows[0]
-    await pool.query('UPDATE "Booking" SET status = \'ACCEPTED\', "updatedAt" = NOW() WHERE id = $1', [id])
-    await redis.del('cache:admin:analytics:dashboard').catch(() => {})
-    if (booking?.clientId) {
-      pushNotificationJob({ type: 'PUSH', recipient: { userId: booking.clientId }, template: 'provider_accepted', data: { providerName: booking.providerName || user.name || 'Provider', serviceName: booking.serviceName || 'Service', scheduledDate: booking.scheduledDate ? new Date(booking.scheduledDate).toLocaleDateString() : 'TBD', bookingId: id }, priority: 1 }).catch(() => {})
-    }
+    const result = await bookingService.acceptBooking(id, user.id, user.name)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Booking accepted' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -226,20 +152,9 @@ router.post('/api/reviews', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { bookingId, serviceId, reviewedId, rating, comment } = await c.req.json()
-    if (!serviceId || !rating) return c.json({ error: 'serviceId and rating are required' }, 400)
-    if (rating < 1 || rating > 5) return c.json({ error: 'Rating must be between 1 and 5' }, 400)
-    if (bookingId) {
-      const bookingResult = await pool.query('SELECT status FROM "Booking" WHERE id = $1 AND "clientId" = $2', [bookingId, user.id]).catch(() => ({ rows: [] }))
-      if (bookingResult.rows[0] && bookingResult.rows[0].status !== 'COMPLETED') return c.json({ error: 'Can only review completed bookings' }, 400)
-    }
-    if (bookingId) {
-      const existing = await pool.query('SELECT id FROM "Review" WHERE "bookingId" = $1', [bookingId])
-      if (existing.rows.length > 0) return c.json({ error: 'Review already exists for this booking' }, 409)
-    }
-    const id = 'rev_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "Review" (id, "bookingId", "serviceId", "reviewerId", rating, comment, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())', [id, bookingId || null, serviceId, user.id, rating, comment || null])
-    try { await pool.query('UPDATE "Service" SET "averageRating" = (SELECT AVG(rating) FROM "Review" WHERE "serviceId" = $1), "totalReviews" = (SELECT COUNT(*) FROM "Review" WHERE "serviceId" = $1), "updatedAt" = NOW() WHERE id = $1', [serviceId]) } catch (e) { /* ignore */ }
-    return c.json({ message: 'Review submitted successfully', review: { id, rating, comment } }, 201)
+    const result = await reviewService.createReview(user.id, { bookingId, serviceId, reviewedId, rating, comment })
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Review submitted successfully', review: result.review }, 201)
   } catch (e) { console.error('Create review error:', e); return c.json({ error: 'Failed to submit review' }, 500) }
 })
 
@@ -250,15 +165,8 @@ router.get('/api/reviews', async (c) => {
     const reviewedId = c.req.query('reviewedId')
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    let query = 'SELECT r.*, u.name as "reviewerName", u."profileImageUrl" as "reviewerImage" FROM "Review" r LEFT JOIN "User" u ON r."reviewerId" = u.id WHERE 1=1'
-    const params: any[] = []
-    let idx = 1
-    if (serviceId) { query += ` AND r."serviceId" = $${idx}`; params.push(serviceId); idx++ }
-    if (reviewedId) { query += ` AND r."reviewedId" = $${idx}`; params.push(reviewedId); idx++ }
-    query += ` ORDER BY r."createdAt" DESC LIMIT $${idx} OFFSET $${idx + 1}`
-    params.push(limit, offset)
-    const result = await pool.query(query, params).catch(() => ({ rows: [] }))
-    return c.json({ reviews: result.rows.map(transformReviewRow), total: result.rows.length, limit, offset })
+    const result = await reviewService.listReviews({ serviceId: serviceId || undefined, reviewedId: reviewedId || undefined, limit, offset })
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list reviews' }, 500) }
 })
 
@@ -268,10 +176,8 @@ router.delete('/api/reviews/:id', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    const reviewCheck = await pool.query('SELECT "reviewerId" FROM "Review" WHERE id = $1', [id])
-    if (reviewCheck.rows.length === 0) return c.json({ error: 'Review not found' }, 404)
-    if (reviewCheck.rows[0].reviewerId !== user.id && user.roleId !== 1 && user.roleId !== 3) return c.json({ error: 'Not authorized' }, 403)
-    await pool.query('DELETE FROM "Review" WHERE id = $1', [id])
+    const result = await reviewService.deleteReview(id, user.id, user.roleId)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Review deleted' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -281,16 +187,8 @@ router.patch('/api/reviews/:id', async (c) => {
   try {
     const id = c.req.param('id')
     const body = await c.req.json()
-    const updates = []
-    const values = []
-    let idx = 1
-    for (const f of ['rating', 'comment']) {
-      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
-    }
-    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
-    updates.push('"updatedAt" = NOW()')
-    values.push(id)
-    await pool.query(`UPDATE "Review" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
+    const result = await reviewService.updateReview(id, body)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Review updated' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
@@ -304,9 +202,8 @@ router.get('/api/notifications', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    const result = await pool.query('SELECT * FROM "Notification" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3', [user.id, limit, offset]).catch(() => ({ rows: [] }))
-    const unreadResult = await pool.query('SELECT COUNT(*) as count FROM "Notification" WHERE "userId" = $1 AND "isRead" = false', [user.id]).catch(() => ({ rows: [{ count: 0 }] }))
-    return c.json({ notifications: result.rows, unreadCount: parseInt(unreadResult.rows[0].count), total: result.rows.length, limit, offset })
+    const result = await notificationService.listNotifications(user.id, limit, offset)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list notifications' }, 500) }
 })
 
@@ -316,7 +213,7 @@ router.patch('/api/notifications/:id/read', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE id = $1 AND "userId" = $2', [id, user.id])
+    await notificationService.markNotificationRead(id, user.id)
     return c.json({ message: 'Notification marked as read' })
   } catch (e) { return c.json({ message: 'Notification marked as read' }) }
 })
@@ -326,7 +223,7 @@ router.patch('/api/notifications', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    await pool.query('UPDATE "Notification" SET "isRead" = true WHERE "userId" = $1', [user.id])
+    await notificationService.markAllNotificationsRead(user.id)
     return c.json({ message: 'All notifications marked as read' })
   } catch (e) { return c.json({ message: 'All notifications marked as read' }) }
 })
@@ -338,16 +235,8 @@ router.get('/api/wallet', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const result = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    if (!result.rows[0]) {
-      const walletId = 'wlt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-      try {
-        await pool.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id])
-        const newResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id])
-        return c.json({ wallet: newResult.rows[0] })
-      } catch (e) { return c.json({ wallet: { id: walletId, userId: user.id, balance: 0 } }) }
-    }
-    return c.json({ wallet: result.rows[0] })
+    const wallet = await walletService.getOrCreateWallet(user.id)
+    return c.json({ wallet })
   } catch (e) { return c.json({ error: 'Failed to get wallet' }, 500) }
 })
 
@@ -357,19 +246,9 @@ router.post('/api/wallet/deposit', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { amount, category, referenceId, referenceType } = await c.req.json()
-    if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
-    let walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    if (!walletResult.rows[0]) {
-      const walletId = 'wlt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-      await pool.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id])
-      walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [{ id: walletId, balance: 0 }] }))
-    }
-    const wallet = walletResult.rows[0]
-    await pool.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id])
-    const txnId = 'txn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "WalletTransaction" (id, "walletId", "userId", type, category, amount, description, "referenceId", "referenceType", status, "createdAt") VALUES ($1, $2, $3, \'CREDIT\', $4, $5, \'Wallet deposit\', $6, $7, \'COMPLETED\', NOW())', [txnId, wallet.id, user.id, category || 'CASHBACK', amount, referenceId || null, referenceType || null])
-    const updated = await pool.query('SELECT * FROM "Wallet" WHERE id = $1', [wallet.id]).catch(() => ({ rows: [{ ...wallet, balance: (wallet.balance || 0) + amount }] }))
-    return c.json({ message: 'Deposit successful', wallet: updated.rows[0], transactionId: txnId })
+    const result = await walletService.depositToWallet(user.id, amount, category, referenceId, referenceType)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Deposit successful', wallet: result.wallet, transactionId: result.transactionId })
   } catch (e) { console.error('Wallet deposit error:', e); return c.json({ error: 'Failed to deposit' }, 500) }
 })
 
@@ -378,8 +257,8 @@ router.get('/api/wallet/transactions', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT * FROM "WalletTransaction" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT 50', [user.id]).catch(() => ({ rows: [] }))
-    return c.json({ transactions: result.rows, total: result.rows.length })
+    const result = await walletService.getWalletTransactions(user.id)
+    return c.json(result)
   } catch (e) { return c.json({ transactions: [], total: 0 }) }
 })
 
@@ -389,14 +268,9 @@ router.post('/api/wallet/withdraw', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
     const { amount, method } = await c.req.json()
-    if (!amount || amount <= 0) return c.json({ error: 'Invalid amount' }, 400)
-    const walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    const wallet = walletResult.rows[0]
-    if (wallet && wallet.balance < amount) return c.json({ error: 'Insufficient balance' }, 400)
-    const id = 'pay_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "PayoutRequest" (id, "userId", amount, method, status, "createdAt") VALUES ($1, $2, $3, $4, $5, NOW())', [id, user.id, amount, method || 'BANK_TRANSFER', 'PENDING'])
-    await pool.query('UPDATE "Wallet" SET balance = balance - $1 WHERE "userId" = $2', [amount, user.id])
-    return c.json({ message: 'Withdrawal request submitted', amount, payoutId: id })
+    const result = await walletService.withdrawFromWallet(user.id, amount, method)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Withdrawal request submitted', amount: result.amount, payoutId: result.payoutId })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
@@ -408,14 +282,8 @@ router.get('/api/earnings', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const period = c.req.query('period') || 'month'
-    let dateFilter = ''
-    if (period === 'week') dateFilter = "AND b.\"completedAt\" >= NOW() - INTERVAL '7 days'"
-    else if (period === 'month') dateFilter = "AND b.\"completedAt\" >= NOW() - INTERVAL '30 days'"
-    else if (period === 'year') dateFilter = "AND b.\"completedAt\" >= NOW() - INTERVAL '365 days'"
-    const earningsResult = await pool.query(`SELECT COALESCE(SUM(b."finalPrice"), 0) as "totalEarnings", COUNT(*) as "totalJobs", COALESCE(AVG(b."finalPrice"), 0) as "avgEarning" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = 'COMPLETED' ${dateFilter}`, [user.id]).catch(() => ({ rows: [{ totalEarnings: 0, totalJobs: 0, avgEarning: 0 }] }))
-    const pendingResult = await pool.query('SELECT COALESCE(SUM(b."finalPrice"), 0) as "pendingAmount" FROM "Booking" b WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b."paymentStatus" = \'PENDING\'', [user.id]).catch(() => ({ rows: [{ pendingAmount: 0 }] }))
-    const recentResult = await pool.query('SELECT b.id, b."bookingNumber", b."finalPrice", b."completedAt", s.title as "serviceName" FROM "Booking" b LEFT JOIN "Service" s ON b."serviceId" = s.id WHERE (b."providerId" = $1 OR b."technicianId" = $1) AND b.status = \'COMPLETED\' ORDER BY b."completedAt" DESC LIMIT 10', [user.id]).catch(() => ({ rows: [] }))
-    return c.json({ earnings: { ...earningsResult.rows[0], pendingAmount: pendingResult.rows[0].pendingAmount }, recentBookings: recentResult.rows, period })
+    const result = await earningsService.getEarnings(user.id, period)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to get earnings' }, 500) }
 })
 
@@ -428,8 +296,8 @@ router.get('/api/payouts', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    const result = await pool.query('SELECT * FROM "PayoutRequest" WHERE "userId" = $1 ORDER BY "createdAt" DESC LIMIT $2 OFFSET $3', [user.id, limit, offset]).catch(() => ({ rows: [] }))
-    return c.json({ payouts: result.rows, total: result.rows.length, limit, offset })
+    const result = await payoutService.listPayouts(user.id, limit, offset)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list payouts' }, 500) }
 })
 
@@ -439,15 +307,9 @@ router.post('/api/payouts/request', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { amount, method, metadata } = await c.req.json()
-    if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
-    if (!method || !['BANK_TRANSFER', 'UPI'].includes(method)) return c.json({ error: 'method must be BANK_TRANSFER or UPI' }, 400)
-    const walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    const wallet = walletResult.rows[0]
-    if (wallet && wallet.balance < amount) return c.json({ error: 'Insufficient wallet balance' }, 400)
-    const id = 'pay_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "PayoutRequest" (id, "userId", amount, method, metadata, status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, \'PENDING\', NOW(), NOW())', [id, user.id, amount, method, metadata || null])
-    if (wallet) { await pool.query('UPDATE "Wallet" SET balance = balance - $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id]) }
-    return c.json({ message: 'Payout request submitted', payout: { id, amount, status: 'PENDING' } }, 201)
+    const result = await payoutService.requestPayout(user.id, amount, method, metadata)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Payout request submitted', payout: result.payout }, 201)
   } catch (e) { console.error('Payout request error:', e); return c.json({ error: 'Failed to create payout request' }, 500) }
 })
 
@@ -458,8 +320,8 @@ router.get('/api/favorites', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const result = await pool.query('SELECT f.*, s.title as "serviceName", s."images" as "serviceImage", s."basePrice", s."basePrice" as "finalPrice", s."averageRating", sc.name as "categoryName" FROM "Favorite" f LEFT JOIN "Service" s ON f."serviceId" = s.id LEFT JOIN "ServiceCategory" sc ON s."categoryId" = sc.id WHERE f."userId" = $1 ORDER BY f."createdAt" DESC', [user.id]).catch(() => ({ rows: [] }))
-    return c.json({ favorites: result.rows, total: result.rows.length })
+    const result = await favoritesService.listFavorites(user.id)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list favorites' }, 500) }
 })
 
@@ -469,12 +331,9 @@ router.post('/api/favorites', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { serviceId } = await c.req.json()
-    if (!serviceId) return c.json({ error: 'serviceId is required' }, 400)
-    const existing = await pool.query('SELECT id FROM "Favorite" WHERE "userId" = $1 AND "serviceId" = $2', [user.id, serviceId]).catch(() => ({ rows: [] }))
-    if (existing.rows.length > 0) return c.json({ error: 'Already in favorites' }, 409)
-    const id = 'fav_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "Favorite" (id, "userId", "serviceId", "createdAt") VALUES ($1, $2, $3, NOW())', [id, user.id, serviceId])
-    return c.json({ message: 'Added to favorites', favorite: { id, serviceId } }, 201)
+    const result = await favoritesService.addFavorite(user.id, serviceId)
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Added to favorites', favorite: result.favorite }, 201)
   } catch (e) { return c.json({ error: 'Failed to add favorite' }, 500) }
 })
 
@@ -484,7 +343,7 @@ router.delete('/api/favorites/:serviceId', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const serviceId = c.req.param('serviceId')
-    await pool.query('DELETE FROM "Favorite" WHERE "userId" = $1 AND "serviceId" = $2', [user.id, serviceId])
+    await favoritesService.removeFavorite(user.id, serviceId)
     return c.json({ message: 'Removed from favorites' })
   } catch (e) { return c.json({ error: 'Failed to remove favorite' }, 500) }
 })
@@ -496,9 +355,8 @@ router.get('/api/kyc', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
-    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    if (!result.rows[0]) return c.json({ kyc: { status: 'NOT_SUBMITTED', providerId: user.id } })
-    return c.json({ kyc: result.rows[0] })
+    const result = await kycService.getKyc(user.id)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to get KYC status' }, 500) }
 })
 
@@ -508,15 +366,9 @@ router.post('/api/kyc', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl } = await c.req.json()
-    if (!documentType || !documentNumber || !documentFrontUrl) return c.json({ error: 'documentType, documentNumber, and documentFrontUrl are required' }, 400)
-    const existing = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id]).catch(() => ({ rows: [] }))
-    if (existing.rows[0]) {
-      await pool.query('UPDATE "ProviderKyc" SET "documentType" = $1, "documentNumber" = $2, "documentFrontUrl" = $3, "documentBackUrl" = $4, "selfieUrl" = $5, "verificationStatus" = \'PENDING\', "updatedAt" = NOW() WHERE "providerId" = $6', [documentType, documentNumber, documentFrontUrl, documentBackUrl || null, selfieUrl || null, user.id])
-      return c.json({ message: 'KYC updated, pending verification', kyc: { providerId: user.id, verificationStatus: 'PENDING' } })
-    }
-    const id = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "documentBackUrl", "selfieUrl", "verificationStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, \'PENDING\', NOW(), NOW())', [id, user.id, documentType, documentNumber, documentFrontUrl, documentBackUrl || null, selfieUrl || null])
-    return c.json({ message: 'KYC submitted, pending verification', kyc: { id, providerId: user.id, verificationStatus: 'PENDING' } }, 201)
+    const result = await kycService.submitKyc(user.id, { documentType, documentNumber, documentFrontUrl, documentBackUrl, selfieUrl })
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: result.message, kyc: result.kyc }, result.created ? 201 : 200)
   } catch (e) { console.error('KYC submit error:', e); return c.json({ error: 'Failed to submit KYC' }, 500) }
 })
 
@@ -525,8 +377,8 @@ router.get('/api/kyc/status', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT * FROM "ProviderKyc" WHERE "providerId" = $1', [user.id])
-    return c.json({ kyc: result.rows[0] || { verificationStatus: 'PENDING' } })
+    const result = await kycService.getKycStatus(user.id)
+    return c.json(result)
   } catch (e) { return c.json({ kyc: { verificationStatus: 'PENDING' } }) }
 })
 
@@ -536,9 +388,8 @@ router.post('/api/kyc/submit', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
     const body = await c.req.json()
-    const kycId = 'kyc_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "ProviderKyc" (id, "providerId", "documentType", "documentNumber", "documentFrontUrl", "selfieUrl", "verificationStatus") VALUES ($1, $2, $3, $4, $5, $6, \'PENDING\') ON CONFLICT ("providerId") DO UPDATE SET "documentType" = $3, "documentNumber" = $4, "documentFrontUrl" = $5, "selfieUrl" = $6, "verificationStatus" = \'PENDING\', "updatedAt" = NOW()', [kycId, user.id, body.documentType || 'AADHAAR', body.documentNumber || '', body.documentFrontUrl || '/pending', body.selfieUrl || '/pending'])
-    return c.json({ message: 'KYC submitted successfully', status: 'PENDING' })
+    const result = await kycService.submitKycForm(user.id, body)
+    return c.json(result)
   } catch (e) { return c.json({ message: 'KYC submitted successfully', status: 'PENDING' }) }
 })
 
@@ -551,8 +402,8 @@ router.get('/api/disputes', async (c) => {
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const limit = parseInt(c.req.query('limit') || '20')
     const offset = parseInt(c.req.query('offset') || '0')
-    const result = await pool.query('SELECT d.*, b."bookingNumber" FROM "Dispute" d LEFT JOIN "Booking" b ON d."bookingId" = b.id WHERE d."raisedBy" = $1 OR d."assignedTo" = $1 ORDER BY d."createdAt" DESC LIMIT $2 OFFSET $3', [user.id, limit, offset]).catch(() => ({ rows: [] }))
-    return c.json({ disputes: result.rows, total: result.rows.length, limit, offset })
+    const result = await disputeService.listDisputes(user.id, limit, offset)
+    return c.json(result)
   } catch (e) { return c.json({ error: 'Failed to list disputes' }, 500) }
 })
 
@@ -562,10 +413,9 @@ router.post('/api/disputes', async (c) => {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { bookingId, assignedTo, disputeType, description, evidence } = await c.req.json()
-    if (!bookingId || !disputeType || !description) return c.json({ error: 'bookingId, disputeType, and description are required' }, 400)
-    const id = 'dsp_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "Dispute" (id, "bookingId", "raisedBy", "assignedTo", "disputeType", description, evidence, status, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, \'OPEN\', NOW(), NOW())', [id, bookingId, user.id, assignedTo || null, disputeType || 'OTHER', description, evidence || null])
-    return c.json({ message: 'Dispute created', dispute: { id, status: 'OPEN', disputeType } }, 201)
+    const result = await disputeService.createDispute(user.id, { bookingId, assignedTo, disputeType, description, evidence })
+    if (!result.success) return c.json({ error: result.error }, result.status)
+    return c.json({ message: 'Dispute created', dispute: result.dispute }, 201)
   } catch (e) { console.error('Create dispute error:', e); return c.json({ error: 'Failed to create dispute' }, 500) }
 })
 
@@ -575,18 +425,9 @@ router.patch('/api/disputes/:id', async (c) => {
     const auth = await getAuthUser(c)
     if (!auth) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
-    const disputeCheck = await pool.query('SELECT "raisedBy", "assignedTo" FROM "Dispute" WHERE id = $1', [id])
-    if (disputeCheck.rows.length === 0) return c.json({ error: 'Dispute not found' }, 404)
-    if (disputeCheck.rows[0].raisedBy !== auth.id && disputeCheck.rows[0].assignedTo !== auth.id && auth.roleId !== 1 && auth.roleId !== 3 && auth.roleId !== 7) return c.json({ error: 'Not authorized' }, 403)
     const body = await c.req.json()
-    const updates = []; const values = []; let idx = 1
-    for (const f of ['status', 'resolution', 'adminNotes']) {
-      if (body[f] !== undefined) { updates.push(`"${f}" = $${idx}`); values.push(body[f]); idx++ }
-    }
-    if (updates.length === 0) return c.json({ error: 'No fields' }, 400)
-    updates.push('"updatedAt" = NOW()')
-    values.push(id)
-    await pool.query(`UPDATE "Dispute" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
+    const result = await disputeService.updateDispute(id, auth.id, auth.roleId, body)
+    if (!result.success) return c.json({ error: result.error }, result.status)
     return c.json({ message: 'Dispute updated' })
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
