@@ -329,4 +329,4 @@ router.patch('/api/auth/profile', async (c) => {
 // POST /api/auth/logout
 router.post('/api/auth/logout', (c) => c.json({ success: true, message: 'Logged out' }))
 
-export default router
+export const authRoutes = router

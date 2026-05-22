@@ -244,4 +244,4 @@ router.delete('/api/services/:id', async (c) => {
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
-export default router
+export const serviceRoutes = router

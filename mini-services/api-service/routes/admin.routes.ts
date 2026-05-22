@@ -5,7 +5,8 @@
 import { Hono } from 'hono'
 import { pool, requireAdmin, transformServiceRow } from '../lib/shared'
 import { redis, CacheKeys, CacheTTL } from '../lib/redis'
-import { logger, captureApiError } from '../lib/sentry'
+import { logger } from '../lib/logger'
+import { captureApiError } from '../lib/sentry'
 import { listBackups, createBackup, getBackupStatus, getBackupDetails, deleteBackup, restoreBackup } from '../lib/backup'
 
 const router = new Hono()
@@ -533,4 +534,4 @@ router.get('/api/admin/backups/:id', async (c) => { const admin = await requireA
 router.delete('/api/admin/backups/:id', async (c) => { const admin = await requireAdmin(c); if (!admin) return c.json({ error: 'Admin access required' }, 403); try { const backupId = c.req.param('id'); const deleted = await deleteBackup(pool, backupId); if (!deleted) return c.json({ error: 'Backup not found' }, 404); return c.json({ message: 'Backup deleted', id: backupId }) } catch (e) { console.error('Delete backup error:', e); return c.json({ error: 'Failed to delete backup' }, 500) } })
 router.post('/api/admin/backups/:id/restore', async (c) => { const admin = await requireAdmin(c); if (!admin) return c.json({ error: 'Admin access required' }, 403); try { const backupId = c.req.param('id'); const body = await c.req.json().catch(() => ({})); if (!body.confirm || body.confirm !== 'RESTORE') { return c.json({ error: 'Restoring a backup is DANGEROUS and will overwrite current data. Send { confirm: "RESTORE" } in the request body to proceed.' }, 400) } const result = await restoreBackup(pool, backupId); return c.json({ message: 'Backup restored', ...result }) } catch (e) { console.error('Restore backup error:', e); return c.json({ error: 'Failed to restore backup', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) } })
 
-export default router
+export const adminRoutes = router

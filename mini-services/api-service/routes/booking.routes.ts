@@ -5,7 +5,7 @@
 // ─────────────────────────────────────────────────────────────────────
 
 import { Hono } from 'hono'
-import { pool, getAuthUser, requireAdmin, transformServiceRow, transformReviewRow, sendBookingPush } from '../lib/shared'
+import { pool, getAuthUser, requireAdmin, transformServiceRow, transformReviewRow } from '../lib/shared'
 import { redis, CacheKeys, CacheTTL } from '../lib/redis'
 import { createBookingSchema } from '../validators/create-booking.schema'
 import { validateBody } from '../validators/validate'
@@ -728,4 +728,4 @@ router.post('/api/crm/follow-ups', async (c) => {
   } catch (e) { return c.json({ error: 'Failed' }, 500) }
 })
 
-export default router
+export const bookingRoutes = router
