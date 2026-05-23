@@ -1,7 +1,7 @@
 import { SignJWT, jwtVerify } from 'jose';
 
 const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
+  process.env.JWT_SECRET || (process.env.NODE_ENV === 'development' ? 'dev-secret-key' : (() => { throw new Error('JWT_SECRET environment variable is required in production') })())
 );
 
 const ACCESS_TOKEN_EXPIRY = '15m';

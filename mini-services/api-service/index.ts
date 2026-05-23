@@ -29,6 +29,55 @@ import { requestValidationMiddleware } from './lib/security'
 import { generatePersonalizedRecommendations, generateSimilarServices, generateSearchSuggestions, generateBookingInsights, generateTrendingServices } from './lib/recommendations'
 import { createOrder, verifyPaymentSignature, verifyWebhookSignature, capturePayment, refundPayment, getPaymentDetails, mapRazorpayStatus, getRazorpayStatus, getRazorpayKeyId } from './lib/razorpay'
 import type { PaymentStatus, PaymentMethod } from './lib/razorpay'
+import { createHash } from 'crypto'
+
+// ═══ OTP SECURITY: Rate limiting & lockout ══════════════════════════════
+const otpAttempts = new Map<string, { count: number; lockedUntil: number }>()
+const MAX_OTP_ATTEMPTS = 3
+const OTP_LOCKOUT_MS = 15 * 60 * 1000 // 15 minutes lockout after 3 failed attempts
+
+/** Hash an OTP code using SHA-256 */
+function hashOtp(otp: string): string {
+  return createHash('sha256').update(otp).digest('hex')
+}
+
+/** Check if a booking is locked out from OTP verification */
+function isOtpLockedOut(bookingId: string): { locked: boolean; remainingMs: number } {
+  const record = otpAttempts.get(bookingId)
+  if (!record) return { locked: false, remainingMs: 0 }
+  if (record.lockedUntil && Date.now() < record.lockedUntil) {
+    return { locked: true, remainingMs: record.lockedUntil - Date.now() }
+  }
+  if (record.lockedUntil && Date.now() >= record.lockedUntil) {
+    otpAttempts.delete(bookingId)
+  }
+  return { locked: false, remainingMs: 0 }
+}
+
+/** Record a failed OTP attempt */
+function recordOtpFailure(bookingId: string): void {
+  const record = otpAttempts.get(bookingId) || { count: 0, lockedUntil: 0 }
+  record.count++
+  if (record.count >= MAX_OTP_ATTEMPTS) {
+    record.lockedUntil = Date.now() + OTP_LOCKOUT_MS
+  }
+  otpAttempts.set(bookingId, record)
+}
+
+/** Clear OTP attempts on success */
+function clearOtpAttempts(bookingId: string): void {
+  otpAttempts.delete(bookingId)
+}
+
+// Periodic cleanup of expired OTP attempt records (every 10 minutes)
+setInterval(() => {
+  const now = Date.now()
+  for (const [key, record] of otpAttempts.entries()) {
+    if (record.lockedUntil && now >= record.lockedUntil) {
+      otpAttempts.delete(key)
+    }
+  }
+}, 10 * 60 * 1000)
 
 // ─── Fix SSL for hosted PostgreSQL (Supabase, Render, etc.) ─────────────
 // Newer pg (v8.20+) / pg-connection-string treat sslmode=require as verify-full,
@@ -1876,6 +1925,7 @@ app.post('/api/bookings', async (c) => {
     const bookingId = 'bkg_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     const bookingNumber = 'BK' + Date.now().toString().slice(-8) + Math.random().toString(36).slice(2, 5).toUpperCase()
     const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+    const otpCodeHashed = hashOtp(otpCode) // Store hashed OTP, not plaintext
     let couponDiscount = 0
     if (couponId) {
       try {
@@ -1896,10 +1946,10 @@ app.post('/api/bookings', async (c) => {
     const finalPrice = Math.max(0, basePrice - couponDiscount)
     await pool.query(
       'INSERT INTO "Booking" (id, "bookingNumber", "clientId", "providerId", "technicianId", "serviceId", "scheduledDate", "scheduledTime", "serviceAddress", "serviceLatitude", "serviceLongitude", "specialInstructions", "basePrice", "couponDiscount", "finalPrice", "couponId", "otpCode", status, "paymentStatus", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, \'PENDING\', \'PENDING\', NOW(), NOW())',
-      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, serviceAddress, serviceLatitude || null, serviceLongitude || null, specialInstructions || null, basePrice, couponDiscount, finalPrice, couponId || null, otpCode]
+      [bookingId, bookingNumber, user.id, providerId || service.providerId, technicianId || null, serviceId, scheduledDate, scheduledTime || null, serviceAddress, serviceLatitude || null, serviceLongitude || null, specialInstructions || null, basePrice, couponDiscount, finalPrice, couponId || null, otpCodeHashed]
     )
     const result = await pool.query('SELECT b.*, u.name as "clientName", u.phone as "clientPhone" FROM "Booking" b LEFT JOIN "User" u ON b."clientId" = u.id WHERE b.id = $1', [bookingId]).catch(async () => {
-      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', basePrice, couponDiscount, finalPrice, otpCode, scheduledDate, serviceAddress }] }
+      return { rows: [{ id: bookingId, bookingNumber, clientId: user.id, serviceId, status: 'PENDING', basePrice, couponDiscount, finalPrice, scheduledDate, serviceAddress }] }
     })
     // Invalidate caches
     await redis.delByPattern('cache:stats:*').catch(() => {})
@@ -2030,10 +2080,32 @@ app.post('/api/bookings/:id/otp-verify', async (c) => {
     const id = c.req.param('id')
     const { otp } = await c.req.json()
     if (!otp) return c.json({ error: 'OTP is required' }, 400)
+
+    // Check rate limiting and lockout
+    const lockoutStatus = isOtpLockedOut(id)
+    if (lockoutStatus.locked) {
+      const remainingMin = Math.ceil(lockoutStatus.remainingMs / 60000)
+      return c.json({ error: `OTP verification locked. Try again in ${remainingMin} minutes.`, attemptsRemaining: 0 }, 429)
+    }
+
     const result = await pool.query('SELECT * FROM "Booking" WHERE id = $1', [id]).catch(() => ({ rows: [] }))
     if (!result.rows[0]) return c.json({ error: 'Booking not found' }, 404)
     const booking = result.rows[0]
-    if (booking.otpCode !== otp) return c.json({ error: 'Invalid OTP' }, 400)
+
+    // Compare hashed OTP
+    const inputHashed = hashOtp(otp)
+    if (booking.otpCode !== inputHashed) {
+      recordOtpFailure(id)
+      const currentAttempts = otpAttempts.get(id)
+      const attemptsRemaining = MAX_OTP_ATTEMPTS - (currentAttempts?.count || 0)
+      if (attemptsRemaining <= 0) {
+        return c.json({ error: 'OTP verification locked due to too many failed attempts. Try again later.', attemptsRemaining: 0 }, 429)
+      }
+      return c.json({ error: 'Invalid OTP', attemptsRemaining }, 400)
+    }
+
+    // OTP verified successfully
+    clearOtpAttempts(id)
     await pool.query('UPDATE "Booking" SET status = \'IN_PROGRESS\', "startedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
     return c.json({ message: 'OTP verified, service started', bookingId: id })
   } catch (e) { return c.json({ error: 'OTP verification failed' }, 500) }
@@ -2138,28 +2210,38 @@ app.get('/api/wallet', async (c) => {
 
 // POST /api/wallet/deposit - Deposit to wallet
 app.post('/api/wallet/deposit', async (c) => {
+  const client = await pool.connect()
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Authentication required' }, 401)
     const { amount, category, referenceId, referenceType } = await c.req.json()
     if (!amount || amount <= 0) return c.json({ error: 'Amount must be positive' }, 400)
-    // Ensure wallet exists
-    let walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
+
+    await client.query('BEGIN')
+    // Acquire row lock on wallet
+    let walletResult = await client.query('SELECT * FROM "Wallet" WHERE "userId" = $1 FOR UPDATE', [user.id])
     if (!walletResult.rows[0]) {
       const walletId = 'wlt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-      await pool.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id])
-      walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [{ id: walletId, balance: 0 }] }))
+      await client.query('INSERT INTO "Wallet" (id, "userId", balance, "createdAt", "updatedAt") VALUES ($1, $2, 0, NOW(), NOW())', [walletId, user.id])
+      walletResult = await client.query('SELECT * FROM "Wallet" WHERE "userId" = $1 FOR UPDATE', [user.id])
     }
     const wallet = walletResult.rows[0]
-    await pool.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id])
+    await client.query('UPDATE "Wallet" SET balance = balance + $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id])
     const txnId = 'txn_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query(
+    await client.query(
       'INSERT INTO "WalletTransaction" (id, "walletId", "userId", type, category, amount, description, "referenceId", "referenceType", status, "createdAt") VALUES ($1, $2, $3, \'CREDIT\', $4, $5, \'Wallet deposit\', $6, $7, \'COMPLETED\', NOW())',
       [txnId, wallet.id, user.id, category || 'CASHBACK', amount, referenceId || null, referenceType || null]
     )
+    await client.query('COMMIT')
     const updated = await pool.query('SELECT * FROM "Wallet" WHERE id = $1', [wallet.id]).catch(() => ({ rows: [{ ...wallet, balance: (wallet.balance || 0) + amount }] }))
     return c.json({ message: 'Deposit successful', wallet: updated.rows[0], transactionId: txnId })
-  } catch (e) { console.error('Wallet deposit error:', e); return c.json({ error: 'Failed to deposit' }, 500) }
+  } catch (e) {
+    await client.query('ROLLBACK').catch(() => {})
+    console.error('Wallet deposit error:', e)
+    return c.json({ error: 'Failed to deposit' }, 500)
+  } finally {
+    client.release()
+  }
 })
 
 // ============================================================
@@ -3153,6 +3235,10 @@ app.patch('/api/bookings/:id/cancel', async (c) => {
       [id]
     )
     const booking = bookingResult.rows[0]
+    if (!booking) return c.json({ error: 'Booking not found' }, 404)
+    // Ownership check: only the booking client or admin can cancel
+    const isAdmin = user.roleId === 1 || user.roleId === 3 || user.roleId === 7
+    if (booking.clientId !== user.id && !isAdmin) return c.json({ error: 'Only the booking client or admin can cancel this booking' }, 403)
 
     await pool.query('UPDATE "Booking" SET status = \'CANCELLED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
 
@@ -3199,6 +3285,10 @@ app.patch('/api/bookings/:id/complete', async (c) => {
       [id]
     )
     const booking = bookingResult.rows[0]
+    if (!booking) return c.json({ error: 'Booking not found' }, 404)
+    // Ownership check: only the booking provider or admin can complete
+    const isAdmin = user.roleId === 1 || user.roleId === 3 || user.roleId === 7
+    if (booking.providerId !== user.id && !isAdmin) return c.json({ error: 'Only the booking provider or admin can complete this booking' }, 403)
 
     await pool.query('UPDATE "Booking" SET status = \'COMPLETED\', "completedAt" = NOW(), "updatedAt" = NOW() WHERE id = $1', [id])
 
@@ -3234,6 +3324,10 @@ app.patch('/api/bookings/:id/reject', async (c) => {
       [id]
     )
     const booking = bookingResult.rows[0]
+    if (!booking) return c.json({ error: 'Booking not found' }, 404)
+    // Ownership check: only the booking provider or admin can reject
+    const isAdmin = user.roleId === 1 || user.roleId === 3 || user.roleId === 7
+    if (booking.providerId !== user.id && !isAdmin) return c.json({ error: 'Only the booking provider or admin can reject this booking' }, 403)
 
     await pool.query('UPDATE "Booking" SET status = \'REJECTED\', "cancellationReason" = $2, "updatedAt" = NOW() WHERE id = $1', [id, reason])
 
@@ -3264,6 +3358,10 @@ app.patch('/api/bookings/:id/accept', async (c) => {
       [id]
     )
     const booking = bookingResult.rows[0]
+    if (!booking) return c.json({ error: 'Booking not found' }, 404)
+    // Ownership check: only the booking provider or admin can accept
+    const isAdmin = user.roleId === 1 || user.roleId === 3 || user.roleId === 7
+    if (booking.providerId !== user.id && !isAdmin) return c.json({ error: 'Only the booking provider or admin can accept this booking' }, 403)
 
     await pool.query('UPDATE "Booking" SET status = \'ACCEPTED\', "updatedAt" = NOW() WHERE id = $1', [id])
 
@@ -3323,19 +3421,36 @@ app.get('/api/wallet/transactions', async (c) => {
 
 // Wallet withdraw
 app.post('/api/wallet/withdraw', async (c) => {
+  const client = await pool.connect()
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
     const { amount, method } = await c.req.json()
     if (!amount || amount <= 0) return c.json({ error: 'Invalid amount' }, 400)
-    const walletResult = await pool.query('SELECT * FROM "Wallet" WHERE "userId" = $1', [user.id]).catch(() => ({ rows: [] }))
+
+    await client.query('BEGIN')
+    // Acquire row lock on wallet
+    const walletResult = await client.query('SELECT * FROM "Wallet" WHERE "userId" = $1 FOR UPDATE', [user.id])
     const wallet = walletResult.rows[0]
-    if (wallet && wallet.balance < amount) return c.json({ error: 'Insufficient balance' }, 400)
+    if (!wallet) {
+      await client.query('ROLLBACK')
+      return c.json({ error: 'Wallet not found' }, 404)
+    }
+    if (wallet.balance < amount) {
+      await client.query('ROLLBACK')
+      return c.json({ error: 'Insufficient balance' }, 400)
+    }
     const id = 'pay_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
-    await pool.query('INSERT INTO "PayoutRequest" (id, "userId", amount, method, status, "createdAt") VALUES ($1, $2, $3, $4, $5, NOW())', [id, user.id, amount, method || 'BANK_TRANSFER', 'PENDING'])
-    await pool.query('UPDATE "Wallet" SET balance = balance - $1 WHERE "userId" = $2', [amount, user.id])
+    await client.query('INSERT INTO "PayoutRequest" (id, "userId", amount, method, status, "createdAt") VALUES ($1, $2, $3, $4, $5, NOW())', [id, user.id, amount, method || 'BANK_TRANSFER', 'PENDING'])
+    await client.query('UPDATE "Wallet" SET balance = balance - $1, "updatedAt" = NOW() WHERE id = $2', [amount, wallet.id])
+    await client.query('COMMIT')
     return c.json({ message: 'Withdrawal request submitted', amount, payoutId: id })
-  } catch (e) { return c.json({ error: 'Failed' }, 500) }
+  } catch (e) {
+    await client.query('ROLLBACK').catch(() => {})
+    return c.json({ error: 'Failed' }, 500)
+  } finally {
+    client.release()
+  }
 })
 
 // Admin dashboard - Comprehensive metrics
@@ -3694,7 +3809,14 @@ app.delete('/api/reviews/:id', async (c) => {
 
 app.patch('/api/reviews/:id', async (c) => {
   try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
     const id = c.req.param('id')
+    // Ownership check: verify the user is the reviewer or admin
+    const reviewCheck = await pool.query('SELECT "reviewerId" FROM "Review" WHERE id = $1', [id])
+    if (reviewCheck.rows.length === 0) return c.json({ error: 'Review not found' }, 404)
+    const isAdmin = user.roleId === 1 || user.roleId === 3 || user.roleId === 7
+    if (reviewCheck.rows[0].reviewerId !== user.id && !isAdmin) return c.json({ error: 'Not authorized to update this review' }, 403)
     const body = await c.req.json()
     const updates = []
     const values = []

@@ -147,48 +147,7 @@ interface Testimonial {
   service: string;
 }
 
-const DEFAULT_TESTIMONIALS: Testimonial[] = [
-  {
-    name: 'Priya Sharma',
-    role: 'Homeowner, Mumbai',
-    rating: 5,
-    quote: 'The AC technician arrived within 30 minutes and fixed the cooling issue perfectly. Transparent pricing and professional service. Highly recommend!',
-    avatar: 'PS',
-    service: 'AC Repair',
-  },
-  {
-    name: 'Rajesh Kumar',
-    role: 'Business Owner, Delhi',
-    rating: 5,
-    quote: 'Got our office plumbing fixed before an important meeting. The plumber was well-trained and explained everything clearly. Great experience overall.',
-    avatar: 'RK',
-    service: 'Plumbing',
-  },
-  {
-    name: 'Ananya Patel',
-    role: 'Apartment Resident, Bangalore',
-    rating: 4,
-    quote: 'Electrical work at my apartment was done neatly. The provider was KYC verified which gave me peace of mind. Will use again!',
-    avatar: 'AP',
-    service: 'Electrical',
-  },
-  {
-    name: 'Vikram Singh',
-    role: 'Property Manager, Pune',
-    rating: 5,
-    quote: 'Managing multiple properties, I rely on BookYourService for all maintenance. From appliance repair to plumbing, their verified providers never disappoint.',
-    avatar: 'VS',
-    service: 'Appliance Repair',
-  },
-  {
-    name: 'Meera Joshi',
-    role: 'Homeowner, Hyderabad',
-    rating: 5,
-    quote: 'Booked an emergency electrical repair late evening. The provider came on time and resolved the issue safely. Impressive service!',
-    avatar: 'MJ',
-    service: 'Electrical',
-  },
-];
+// No hardcoded testimonials — section is hidden when no real data
 
 // ─── Animated Counter ─────────────────────────────────────────────────────────
 
@@ -1289,13 +1248,23 @@ export function HomePage() {
       </section>
 
       {/* ═══════════ 8. Testimonials Carousel ═══════════ */}
-      <section className="bg-white py-16">
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #eef2ff 50%, #f1f5f9 100%)' }}>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-12 text-center">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/20">
+              <Star className="size-8" />
+            </div>
             <h2 className="text-3xl font-extrabold text-[#0a1628] sm:text-4xl">What Our Customers Say</h2>
             <p className="mt-3 text-lg text-muted-foreground">Real reviews from real customers</p>
           </motion.div>
-          <TestimonialCarousel testimonials={DEFAULT_TESTIMONIALS} />
+
+          <div className="flex items-center justify-center p-8 text-center text-muted-foreground">
+            <div>
+              <MessageCircle className="mx-auto mb-4 size-12 text-[#2d5a8e]/40" />
+              <p className="text-lg font-medium">No reviews yet — be the first to review!</p>
+              <p className="mt-2 text-sm">Customer testimonials will appear here once reviews are submitted.</p>
+            </div>
+          </div>
         </div>
       </section>
 

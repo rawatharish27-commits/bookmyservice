@@ -35,7 +35,11 @@ function initializeRazorpay(): void {
 
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
     initError = 'Missing RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET env vars'
-    console.log('💳 [Razorpay] Not configured — payment operations will be logged as stubs. Set Razorpay env vars to enable.')
+    if (process.env.NODE_ENV === 'production') {
+      console.error('💳 [Razorpay] FATAL: Not configured but running in production. Payment operations will fail. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET env vars.')
+    } else {
+      console.log('💳 [Razorpay] Not configured — payment operations will be logged as stubs. Set Razorpay env vars to enable.')
+    }
     isInitialized = true
     return
   }
@@ -222,7 +226,10 @@ async function razorpayRequest<T>(
 // order ID to open the Razorpay checkout modal.
 export async function createOrder(params: CreateOrderParams): Promise<RazorpayOrder> {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
-    // Stub mode — return a mock order
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables to process payments.')
+    }
+    // Stub mode — return a mock order (development only)
     const stubId = `order_stub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
     console.log(`💳 [RAZORPAY STUB] Create order: amount=${params.amount} ${params.currency || 'INR'}, receipt=${params.receipt}`)
     return {
@@ -261,7 +268,11 @@ export function verifyPaymentSignature(
   signature: string
 ): boolean {
   if (!RAZORPAY_KEY_SECRET) {
-    // Stub mode — accept all signatures
+    if (process.env.NODE_ENV === 'production') {
+      console.error('💳 [Razorpay] FATAL: Cannot verify payment signature without RAZORPAY_KEY_SECRET in production')
+      return false
+    }
+    // Stub mode — accept all signatures (development only)
     console.log(`💳 [RAZORPAY STUB] Verify signature: order=${orderId}, payment=${paymentId}`)
     return true
   }
@@ -292,6 +303,10 @@ export function verifyWebhookSignature(
   signature: string
 ): boolean {
   if (!RAZORPAY_WEBHOOK_SECRET) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('💳 [Razorpay] FATAL: Cannot verify webhook signature without RAZORPAY_WEBHOOK_SECRET in production')
+      return false
+    }
     console.log(`💳 [RAZORPAY STUB] Verify webhook signature`)
     return true
   }
@@ -317,6 +332,9 @@ export function verifyWebhookSignature(
 // that are first authorized and then need manual capture.
 export async function capturePayment(params: CapturePaymentParams): Promise<RazorpayPayment> {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables to capture payments.')
+    }
     console.log(`💳 [RAZORPAY STUB] Capture payment: ${params.paymentId}, amount=${params.amount}`)
     return {
       id: params.paymentId,
@@ -356,6 +374,9 @@ export async function capturePayment(params: CapturePaymentParams): Promise<Razo
 // Initiates a refund for a captured payment.
 export async function refundPayment(params: RefundPaymentParams): Promise<RazorpayRefund> {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables to process refunds.')
+    }
     const stubId = `rfnd_stub_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
     console.log(`💳 [RAZORPAY STUB] Refund payment: ${params.paymentId}, amount=${params.amount || 'full'}`)
     return {
@@ -401,6 +422,9 @@ export async function refundPayment(params: RefundPaymentParams): Promise<Razorp
 // Fetches payment details from Razorpay by payment ID.
 export async function getPaymentDetails(paymentId: string): Promise<RazorpayPayment> {
   if (!RAZORPAY_KEY_ID || !RAZORPAY_KEY_SECRET) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Razorpay is not configured. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET environment variables to fetch payment details.')
+    }
     console.log(`💳 [RAZORPAY STUB] Get payment details: ${paymentId}`)
     return {
       id: paymentId,
@@ -503,7 +527,11 @@ export async function reconcileSettlement(pool: Pool, settlementId: string): Pro
         result.discrepancies.push(`Failed to fetch settlement from Razorpay: ${err.message}`)
       }
     } else {
-      // Stub mode — create a dummy settlement for testing
+      // Stub mode — create a dummy settlement for testing (development only)
+      if (process.env.NODE_ENV === 'production') {
+        result.discrepancies.push('Razorpay is not configured. Cannot reconcile settlements without RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET.')
+        return result
+      }
       console.log(`💳 [RAZORPAY STUB] Reconcile settlement: ${settlementId}`)
       settlement = {
         id: settlementId,

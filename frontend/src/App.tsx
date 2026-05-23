@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
@@ -6,127 +6,316 @@ import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
+import { PageLoader } from '@/components/page-loader';
 
-// Public pages
-import { HomePage } from '@/components/bys/home-page';
-import { CategoriesPage } from '@/components/bys/categories-page';
-import { CategoryDetailPage } from '@/components/bys/category-detail-page';
-import { ServiceDetailPage } from '@/components/bys/service-detail-page';
-import { SearchPage } from '@/components/bys/search-page';
-import { AboutPage } from '@/components/bys/about-page';
-import { HowItWorksPage } from '@/components/bys/how-it-works-page';
-import { FaqPage } from '@/components/bys/faq-page';
-import { ContactPage } from '@/components/bys/contact-page';
-import { LegalPage } from '@/components/bys/legal-page';
+/* ---------------------------------------------------------------------------
+ * Lazy-loaded page components
+ *
+ * Every page component from the bys/ folder is loaded on-demand via
+ * React.lazy().  Named exports are re-mapped to `default` so that
+ * React.lazy() can consume them.
+ *
+ * Groups match the route areas for readability.
+ * --------------------------------------------------------------------------- */
 
-// Auth pages
-import { LoginPage } from '@/components/bys/login-page';
-import { AdminLoginPage } from '@/components/bys/admin-login-page';
-import { RegisterPage } from '@/components/bys/register-page';
+// ── Public pages ──────────────────────────────────────────────────────────────
+const HomePage = React.lazy(() =>
+  import('@/components/bys/home-page').then(m => ({ default: m.HomePage })),
+);
+const CategoriesPage = React.lazy(() =>
+  import('@/components/bys/categories-page').then(m => ({ default: m.CategoriesPage })),
+);
+const CategoryDetailPage = React.lazy(() =>
+  import('@/components/bys/category-detail-page').then(m => ({ default: m.CategoryDetailPage })),
+);
+const ServiceDetailPage = React.lazy(() =>
+  import('@/components/bys/service-detail-page').then(m => ({ default: m.ServiceDetailPage })),
+);
+const SearchPage = React.lazy(() =>
+  import('@/components/bys/search-page').then(m => ({ default: m.SearchPage })),
+);
+const AboutPage = React.lazy(() =>
+  import('@/components/bys/about-page').then(m => ({ default: m.AboutPage })),
+);
+const HowItWorksPage = React.lazy(() =>
+  import('@/components/bys/how-it-works-page').then(m => ({ default: m.HowItWorksPage })),
+);
+const FaqPage = React.lazy(() =>
+  import('@/components/bys/faq-page').then(m => ({ default: m.FaqPage })),
+);
+const ContactPage = React.lazy(() =>
+  import('@/components/bys/contact-page').then(m => ({ default: m.ContactPage })),
+);
+const LegalPage = React.lazy(() =>
+  import('@/components/bys/legal-page').then(m => ({ default: m.LegalPage })),
+);
 
-// Client pages
-import { ClientDashboardPage } from '@/components/bys/client-dashboard-page';
-import { ClientBookingsPage } from '@/components/bys/client-bookings-page';
-import { ClientBookingDetailPage } from '@/components/bys/client-booking-detail-page';
-import { ClientProfilePage } from '@/components/bys/client-profile-page';
-import { ClientReviewsPage } from '@/components/bys/client-reviews-page';
-import { ClientFavoritesPage } from '@/components/bys/client-favorites-page';
-import { ClientNotificationsPage } from '@/components/bys/client-notifications-page';
+// ── Auth pages ────────────────────────────────────────────────────────────────
+const LoginPage = React.lazy(() =>
+  import('@/components/bys/login-page').then(m => ({ default: m.LoginPage })),
+);
+const AdminLoginPage = React.lazy(() =>
+  import('@/components/bys/admin-login-page').then(m => ({ default: m.AdminLoginPage })),
+);
+const RegisterPage = React.lazy(() =>
+  import('@/components/bys/register-page').then(m => ({ default: m.RegisterPage })),
+);
 
-// Client enhanced pages
-import { ClientWalletPage } from '@/components/bys/client-wallet-page';
-import { ClientAmcPage } from '@/components/bys/client-amc-page';
-import { ClientAmcDetailPage } from '@/components/bys/client-amc-detail-page';
-import { ClientCouponsPage } from '@/components/bys/client-coupons-page';
-import { ClientReferralsPage } from '@/components/bys/client-referrals-page';
-import { ClientInvoicesPage } from '@/components/bys/client-invoices-page';
-import { ClientInvoiceDetailPage } from '@/components/bys/client-invoice-detail-page';
+// ── Client pages ──────────────────────────────────────────────────────────────
+const ClientDashboardPage = React.lazy(() =>
+  import('@/components/bys/client-dashboard-page').then(m => ({ default: m.ClientDashboardPage })),
+);
+const ClientBookingsPage = React.lazy(() =>
+  import('@/components/bys/client-bookings-page').then(m => ({ default: m.ClientBookingsPage })),
+);
+const ClientBookingDetailPage = React.lazy(() =>
+  import('@/components/bys/client-booking-detail-page').then(m => ({ default: m.ClientBookingDetailPage })),
+);
+const ClientProfilePage = React.lazy(() =>
+  import('@/components/bys/client-profile-page').then(m => ({ default: m.ClientProfilePage })),
+);
+const ClientReviewsPage = React.lazy(() =>
+  import('@/components/bys/client-reviews-page').then(m => ({ default: m.ClientReviewsPage })),
+);
+const ClientFavoritesPage = React.lazy(() =>
+  import('@/components/bys/client-favorites-page').then(m => ({ default: m.ClientFavoritesPage })),
+);
+const ClientNotificationsPage = React.lazy(() =>
+  import('@/components/bys/client-notifications-page').then(m => ({ default: m.ClientNotificationsPage })),
+);
 
-// Booking pages
-import { BookingPage } from '@/components/bys/booking-page';
-import { BookingConfirmationPage } from '@/components/bys/booking-confirmation-page';
-import { PaymentPage } from '@/components/bys/payment-page';
-import { BookingTrackingPage } from '@/components/bys/booking-tracking-page';
+// ── Client enhanced pages ─────────────────────────────────────────────────────
+const ClientWalletPage = React.lazy(() =>
+  import('@/components/bys/client-wallet-page').then(m => ({ default: m.ClientWalletPage })),
+);
+const ClientAmcPage = React.lazy(() =>
+  import('@/components/bys/client-amc-page').then(m => ({ default: m.ClientAmcPage })),
+);
+const ClientAmcDetailPage = React.lazy(() =>
+  import('@/components/bys/client-amc-detail-page').then(m => ({ default: m.ClientAmcDetailPage })),
+);
+const ClientCouponsPage = React.lazy(() =>
+  import('@/components/bys/client-coupons-page').then(m => ({ default: m.ClientCouponsPage })),
+);
+const ClientReferralsPage = React.lazy(() =>
+  import('@/components/bys/client-referrals-page').then(m => ({ default: m.ClientReferralsPage })),
+);
+const ClientInvoicesPage = React.lazy(() =>
+  import('@/components/bys/client-invoices-page').then(m => ({ default: m.ClientInvoicesPage })),
+);
+const ClientInvoiceDetailPage = React.lazy(() =>
+  import('@/components/bys/client-invoice-detail-page').then(m => ({ default: m.ClientInvoiceDetailPage })),
+);
 
-// Emergency booking page
-import { EmergencyBookingPage } from '@/components/bys/emergency-booking-page';
+// ── Booking pages ─────────────────────────────────────────────────────────────
+const BookingPage = React.lazy(() =>
+  import('@/components/bys/booking-page').then(m => ({ default: m.BookingPage })),
+);
+const BookingConfirmationPage = React.lazy(() =>
+  import('@/components/bys/booking-confirmation-page').then(m => ({ default: m.BookingConfirmationPage })),
+);
+const PaymentPage = React.lazy(() =>
+  import('@/components/bys/payment-page').then(m => ({ default: m.PaymentPage })),
+);
+const BookingTrackingPage = React.lazy(() =>
+  import('@/components/bys/booking-tracking-page').then(m => ({ default: m.BookingTrackingPage })),
+);
 
-// Provider pages
-import { ProviderDashboardPage } from '@/components/bys/provider-dashboard-page';
-import { ProviderServicesPage } from '@/components/bys/provider-services-page';
-import { ProviderCreateServicePage } from '@/components/bys/provider-create-service-page';
-import { ProviderBookingsPage } from '@/components/bys/provider-bookings-page';
-import { ProviderBookingDetailPage } from '@/components/bys/provider-booking-detail-page';
-import { ProviderEarningsPage } from '@/components/bys/provider-earnings-page';
-import { ProviderReviewsPage } from '@/components/bys/provider-reviews-page';
-import { ProviderProfilePage } from '@/components/bys/provider-profile-page';
-import { ProviderKycPage } from '@/components/bys/provider-kyc-page';
+// ── Emergency booking page ────────────────────────────────────────────────────
+const EmergencyBookingPage = React.lazy(() =>
+  import('@/components/bys/emergency-booking-page').then(m => ({ default: m.EmergencyBookingPage })),
+);
 
-// Provider enhanced pages
-import { ProviderWalletPage } from '@/components/bys/provider-wallet-page';
-import { ProviderPayoutsPage } from '@/components/bys/provider-payouts-page';
-import { ProviderInvoicesPage } from '@/components/bys/provider-invoices-page';
+// ── Provider pages ────────────────────────────────────────────────────────────
+const ProviderDashboardPage = React.lazy(() =>
+  import('@/components/bys/provider-dashboard-page').then(m => ({ default: m.ProviderDashboardPage })),
+);
+const ProviderServicesPage = React.lazy(() =>
+  import('@/components/bys/provider-services-page').then(m => ({ default: m.ProviderServicesPage })),
+);
+const ProviderCreateServicePage = React.lazy(() =>
+  import('@/components/bys/provider-create-service-page').then(m => ({ default: m.ProviderCreateServicePage })),
+);
+const ProviderBookingsPage = React.lazy(() =>
+  import('@/components/bys/provider-bookings-page').then(m => ({ default: m.ProviderBookingsPage })),
+);
+const ProviderBookingDetailPage = React.lazy(() =>
+  import('@/components/bys/provider-booking-detail-page').then(m => ({ default: m.ProviderBookingDetailPage })),
+);
+const ProviderEarningsPage = React.lazy(() =>
+  import('@/components/bys/provider-earnings-page').then(m => ({ default: m.ProviderEarningsPage })),
+);
+const ProviderReviewsPage = React.lazy(() =>
+  import('@/components/bys/provider-reviews-page').then(m => ({ default: m.ProviderReviewsPage })),
+);
+const ProviderProfilePage = React.lazy(() =>
+  import('@/components/bys/provider-profile-page').then(m => ({ default: m.ProviderProfilePage })),
+);
+const ProviderKycPage = React.lazy(() =>
+  import('@/components/bys/provider-kyc-page').then(m => ({ default: m.ProviderKycPage })),
+);
 
-// Technician pages
-import { TechnicianDashboardPage } from '@/components/bys/technician-dashboard-page';
-import { TechnicianJobsPage } from '@/components/bys/technician-jobs-page';
-import { TechnicianJobDetailPage } from '@/components/bys/technician-job-detail-page';
-import { TechnicianEarningsPage } from '@/components/bys/technician-earnings-page';
-import { TechnicianProfilePage } from '@/components/bys/technician-profile-page';
-import { TechnicianAvailabilityPage } from '@/components/bys/technician-availability-page';
+// ── Provider enhanced pages ───────────────────────────────────────────────────
+const ProviderWalletPage = React.lazy(() =>
+  import('@/components/bys/provider-wallet-page').then(m => ({ default: m.ProviderWalletPage })),
+);
+const ProviderPayoutsPage = React.lazy(() =>
+  import('@/components/bys/provider-payouts-page').then(m => ({ default: m.ProviderPayoutsPage })),
+);
+const ProviderInvoicesPage = React.lazy(() =>
+  import('@/components/bys/provider-invoices-page').then(m => ({ default: m.ProviderInvoicesPage })),
+);
 
-// Admin pages
-import { AdminDashboardPage } from '@/components/bys/admin-dashboard-page';
-import { AdminUsersPage } from '@/components/bys/admin-users-page';
-import { AdminUserDetailPage } from '@/components/bys/admin-user-detail-page';
-import { AdminServicesPage } from '@/components/bys/admin-services-page';
-import { AdminBookingsPage } from '@/components/bys/admin-bookings-page';
-import { AdminDisputesPage } from '@/components/bys/admin-disputes-page';
-import { AdminCategoriesPage } from '@/components/bys/admin-categories-page';
-import { AdminFaqPage } from '@/components/bys/admin-faq-page';
-import { AdminRevenuePage } from '@/components/bys/admin-revenue-page';
-import { AdminLogsPage } from '@/components/bys/admin-logs-page';
+// ── Technician pages ──────────────────────────────────────────────────────────
+const TechnicianDashboardPage = React.lazy(() =>
+  import('@/components/bys/technician-dashboard-page').then(m => ({ default: m.TechnicianDashboardPage })),
+);
+const TechnicianJobsPage = React.lazy(() =>
+  import('@/components/bys/technician-jobs-page').then(m => ({ default: m.TechnicianJobsPage })),
+);
+const TechnicianJobDetailPage = React.lazy(() =>
+  import('@/components/bys/technician-job-detail-page').then(m => ({ default: m.TechnicianJobDetailPage })),
+);
+const TechnicianEarningsPage = React.lazy(() =>
+  import('@/components/bys/technician-earnings-page').then(m => ({ default: m.TechnicianEarningsPage })),
+);
+const TechnicianProfilePage = React.lazy(() =>
+  import('@/components/bys/technician-profile-page').then(m => ({ default: m.TechnicianProfilePage })),
+);
+const TechnicianAvailabilityPage = React.lazy(() =>
+  import('@/components/bys/technician-availability-page').then(m => ({ default: m.TechnicianAvailabilityPage })),
+);
 
-// Admin enhanced pages
-import { AdminAnalyticsPage } from '@/components/bys/admin-analytics-page';
-import { AdminAnalyticsDashboardPage } from '@/components/bys/admin-analytics-dashboard-page';
-import { AdminFranchisesPage } from '@/components/bys/admin-franchises-page';
-import { AdminFranchiseDetailPage } from '@/components/bys/admin-franchise-detail-page';
-import { AdminCrmPage } from '@/components/bys/admin-crm-page';
-import { AdminPayoutsPage } from '@/components/bys/admin-payouts-page';
-import { AdminInventoryPage } from '@/components/bys/admin-inventory-page';
-import { AdminCouponsPage } from '@/components/bys/admin-coupons-page';
-import { AdminAmcPage } from '@/components/bys/admin-amc-page';
-import { AdminB2bPage } from '@/components/bys/admin-b2b-page';
+// ── Admin pages ───────────────────────────────────────────────────────────────
+const AdminDashboardPage = React.lazy(() =>
+  import('@/components/bys/admin-dashboard-page').then(m => ({ default: m.AdminDashboardPage })),
+);
+const AdminUsersPage = React.lazy(() =>
+  import('@/components/bys/admin-users-page').then(m => ({ default: m.AdminUsersPage })),
+);
+const AdminUserDetailPage = React.lazy(() =>
+  import('@/components/bys/admin-user-detail-page').then(m => ({ default: m.AdminUserDetailPage })),
+);
+const AdminServicesPage = React.lazy(() =>
+  import('@/components/bys/admin-services-page').then(m => ({ default: m.AdminServicesPage })),
+);
+const AdminBookingsPage = React.lazy(() =>
+  import('@/components/bys/admin-bookings-page').then(m => ({ default: m.AdminBookingsPage })),
+);
+const AdminDisputesPage = React.lazy(() =>
+  import('@/components/bys/admin-disputes-page').then(m => ({ default: m.AdminDisputesPage })),
+);
+const AdminCategoriesPage = React.lazy(() =>
+  import('@/components/bys/admin-categories-page').then(m => ({ default: m.AdminCategoriesPage })),
+);
+const AdminFaqPage = React.lazy(() =>
+  import('@/components/bys/admin-faq-page').then(m => ({ default: m.AdminFaqPage })),
+);
+const AdminRevenuePage = React.lazy(() =>
+  import('@/components/bys/admin-revenue-page').then(m => ({ default: m.AdminRevenuePage })),
+);
+const AdminLogsPage = React.lazy(() =>
+  import('@/components/bys/admin-logs-page').then(m => ({ default: m.AdminLogsPage })),
+);
 
-// AI Recommendations
-import { RecommendationsPage } from '@/components/bys/recommendations-page';
+// ── Admin enhanced pages ──────────────────────────────────────────────────────
+const AdminAnalyticsPage = React.lazy(() =>
+  import('@/components/bys/admin-analytics-page').then(m => ({ default: m.AdminAnalyticsPage })),
+);
+const AdminAnalyticsDashboardPage = React.lazy(() =>
+  import('@/components/bys/admin-analytics-dashboard-page').then(m => ({ default: m.AdminAnalyticsDashboardPage })),
+);
+const AdminFranchisesPage = React.lazy(() =>
+  import('@/components/bys/admin-franchises-page').then(m => ({ default: m.AdminFranchisesPage })),
+);
+const AdminFranchiseDetailPage = React.lazy(() =>
+  import('@/components/bys/admin-franchise-detail-page').then(m => ({ default: m.AdminFranchiseDetailPage })),
+);
+const AdminCrmPage = React.lazy(() =>
+  import('@/components/bys/admin-crm-page').then(m => ({ default: m.AdminCrmPage })),
+);
+const AdminPayoutsPage = React.lazy(() =>
+  import('@/components/bys/admin-payouts-page').then(m => ({ default: m.AdminPayoutsPage })),
+);
+const AdminInventoryPage = React.lazy(() =>
+  import('@/components/bys/admin-inventory-page').then(m => ({ default: m.AdminInventoryPage })),
+);
+const AdminCouponsPage = React.lazy(() =>
+  import('@/components/bys/admin-coupons-page').then(m => ({ default: m.AdminCouponsPage })),
+);
+const AdminAmcPage = React.lazy(() =>
+  import('@/components/bys/admin-amc-page').then(m => ({ default: m.AdminAmcPage })),
+);
+const AdminB2bPage = React.lazy(() =>
+  import('@/components/bys/admin-b2b-page').then(m => ({ default: m.AdminB2bPage })),
+);
 
-// Franchise pages
-import { FranchiseDashboardPage } from '@/components/bys/franchise-dashboard-page';
-import { FranchiseVendorsPage } from '@/components/bys/franchise-vendors-page';
-import { FranchiseAnalyticsPage } from '@/components/bys/franchise-analytics-page';
+// ── AI Recommendations ───────────────────────────────────────────────────────
+const RecommendationsPage = React.lazy(() =>
+  import('@/components/bys/recommendations-page').then(m => ({ default: m.RecommendationsPage })),
+);
 
-// Vendor pages
-import { VendorDashboardPage } from '@/components/bys/vendor-dashboard-page';
-import { VendorBookingsPage } from '@/components/bys/vendor-bookings-page';
-import { VendorServicesPage } from '@/components/bys/vendor-services-page';
-import { VendorProfilePage } from '@/components/bys/vendor-profile-page';
-import { VendorKycPage } from '@/components/bys/vendor-kyc-page';
-import { VendorWalletPage } from '@/components/bys/vendor-wallet-page';
-import { VendorPayoutsPage } from '@/components/bys/vendor-payouts-page';
+// ── Franchise pages ──────────────────────────────────────────────────────────
+const FranchiseDashboardPage = React.lazy(() =>
+  import('@/components/bys/franchise-dashboard-page').then(m => ({ default: m.FranchiseDashboardPage })),
+);
+const FranchiseVendorsPage = React.lazy(() =>
+  import('@/components/bys/franchise-vendors-page').then(m => ({ default: m.FranchiseVendorsPage })),
+);
+const FranchiseAnalyticsPage = React.lazy(() =>
+  import('@/components/bys/franchise-analytics-page').then(m => ({ default: m.FranchiseAnalyticsPage })),
+);
 
-// Area Manager pages
-import { AreaManagerDashboardPage } from '@/components/bys/area-manager-dashboard-page';
+// ── Vendor pages ─────────────────────────────────────────────────────────────
+const VendorDashboardPage = React.lazy(() =>
+  import('@/components/bys/vendor-dashboard-page').then(m => ({ default: m.VendorDashboardPage })),
+);
+const VendorBookingsPage = React.lazy(() =>
+  import('@/components/bys/vendor-bookings-page').then(m => ({ default: m.VendorBookingsPage })),
+);
+const VendorServicesPage = React.lazy(() =>
+  import('@/components/bys/vendor-services-page').then(m => ({ default: m.VendorServicesPage })),
+);
+const VendorProfilePage = React.lazy(() =>
+  import('@/components/bys/vendor-profile-page').then(m => ({ default: m.VendorProfilePage })),
+);
+const VendorKycPage = React.lazy(() =>
+  import('@/components/bys/vendor-kyc-page').then(m => ({ default: m.VendorKycPage })),
+);
+const VendorWalletPage = React.lazy(() =>
+  import('@/components/bys/vendor-wallet-page').then(m => ({ default: m.VendorWalletPage })),
+);
+const VendorPayoutsPage = React.lazy(() =>
+  import('@/components/bys/vendor-payouts-page').then(m => ({ default: m.VendorPayoutsPage })),
+);
 
-// Join pages
-import { JoinManagerPage } from '@/components/bys/join-manager-page';
-import { JoinLocalAdminPage } from '@/components/bys/join-local-admin-page';
+// ── Area Manager pages ───────────────────────────────────────────────────────
+const AreaManagerDashboardPage = React.lazy(() =>
+  import('@/components/bys/area-manager-dashboard-page').then(m => ({ default: m.AreaManagerDashboardPage })),
+);
 
-// Missing dashboards
-import { SuperAdminDashboardPage } from '@/components/bys/super-admin-dashboard-page';
-import { ManagerDashboardPage } from '@/components/bys/manager-dashboard-page';
-import { LocalAdminDashboardPage } from '@/components/bys/local-admin-dashboard-page';
+// ── Join pages ───────────────────────────────────────────────────────────────
+const JoinManagerPage = React.lazy(() =>
+  import('@/components/bys/join-manager-page').then(m => ({ default: m.JoinManagerPage })),
+);
+const JoinLocalAdminPage = React.lazy(() =>
+  import('@/components/bys/join-local-admin-page').then(m => ({ default: m.JoinLocalAdminPage })),
+);
+
+// ── Missing dashboards ───────────────────────────────────────────────────────
+const SuperAdminDashboardPage = React.lazy(() =>
+  import('@/components/bys/super-admin-dashboard-page').then(m => ({ default: m.SuperAdminDashboardPage })),
+);
+const ManagerDashboardPage = React.lazy(() =>
+  import('@/components/bys/manager-dashboard-page').then(m => ({ default: m.ManagerDashboardPage })),
+);
+const LocalAdminDashboardPage = React.lazy(() =>
+  import('@/components/bys/local-admin-dashboard-page').then(m => ({ default: m.LocalAdminDashboardPage })),
+);
+
+/* ---------------------------------------------------------------------------
+ * Role / routing constants (unchanged)
+ * --------------------------------------------------------------------------- */
 
 // Single source of truth for role → dashboard mapping (Old #28 fix)
 export const ROLE_DASHBOARD_MAP: Record<number, string> = {
@@ -229,7 +418,7 @@ function AppRouter() {
   const renderPage = () => {
     // All valid page names for 404 detection
     const validPages = new Set([
-      'home', 'login', 'register', 'categories', 'category-detail', 'service-detail',
+      'home', 'login', 'admin-login', 'register', 'categories', 'category-detail', 'service-detail',
       'search', 'booking', 'booking-confirmation', 'about', 'how-it-works', 'faq',
       'contact', 'terms', 'privacy', 'refund-policy', 'cookie-policy', 'aup',
       'provider-agreement', 'community-guidelines', 'emergency-booking',
@@ -509,7 +698,9 @@ function AppRouter() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <main className="flex-1">
-        {renderPage()}
+        <Suspense fallback={<PageLoader />}>
+          {renderPage()}
+        </Suspense>
       </main>
       <Footer />
     </div>

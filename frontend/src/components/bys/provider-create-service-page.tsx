@@ -219,7 +219,7 @@ export function ProviderCreateServicePage() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label>Title *</Label>
-              <Input placeholder="e.g. Deep Home Cleaning" value={title} onChange={(e) => setTitle(e.target.value)} />
+              <Input placeholder="e.g. AC Repair & Service" value={title} onChange={(e) => setTitle(e.target.value)} />
             </div>
             <div className="space-y-2">
               <Label>Description *</Label>

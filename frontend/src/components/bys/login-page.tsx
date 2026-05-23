@@ -261,7 +261,7 @@ export function LoginPage() {
             </h2>
 
             <p className="text-emerald-100/80 text-lg mb-10 max-w-md leading-relaxed">
-              Connect with verified professionals for plumbing, electrical, and AC &amp; HVAC services — all in one place.
+              Connect with verified professionals for plumbing, electrical, and air conditioner services — all in one place.
             </p>
 
             {/* Stats */}
@@ -394,7 +394,7 @@ export function LoginPage() {
                           {[
                             { Icon: Droplets, label: 'Plumbing', color: 'bg-blue-50 text-blue-600 border-blue-100' },
                             { Icon: Zap, label: 'Electrical', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-                            { Icon: Wind, label: 'AC & HVAC', color: 'bg-teal-50 text-teal-600 border-teal-100' },
+                            { Icon: Wind, label: 'Air Conditioner', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}
@@ -579,7 +579,7 @@ export function LoginPage() {
                           {[
                             { Icon: Droplets, label: 'Plumbing Jobs', color: 'bg-blue-50 text-blue-600 border-blue-100' },
                             { Icon: Zap, label: 'Electrical Jobs', color: 'bg-sky-50 text-sky-600 border-sky-100' },
-                            { Icon: Wind, label: 'HVAC Jobs', color: 'bg-teal-50 text-teal-600 border-teal-100' },
+                            { Icon: Wind, label: 'Air Conditioner Jobs', color: 'bg-teal-50 text-teal-600 border-teal-100' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}

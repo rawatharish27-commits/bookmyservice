@@ -121,89 +121,7 @@ interface DashboardData {
   monthlyGrowth: { month: string; growth: number }[];
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
-
-function getMockDashboardData(): DashboardData {
-  return {
-    stats: {
-      totalBookings: 12847,
-      totalRevenue: 4523890,
-      activeProviders: 834,
-      complaints: 47,
-      cancellations: 312,
-      avgCompletionTime: '2.4 hrs',
-    },
-    topProviders: [
-      { name: 'Rajesh Kumar', city: 'Mumbai', rating: 4.9, bookings: 234 },
-      { name: 'Priya Sharma', city: 'Delhi', rating: 4.8, bookings: 189 },
-      { name: 'Amit Patel', city: 'Bangalore', rating: 4.8, bookings: 167 },
-      { name: 'Sneha Reddy', city: 'Hyderabad', rating: 4.7, bookings: 156 },
-      { name: 'Vikram Singh', city: 'Pune', rating: 4.7, bookings: 143 },
-    ],
-    escalatedComplaints: [
-      { id: 'CMP-4521', type: 'Service Quality', priority: 'Critical', status: 'Open' },
-      { id: 'CMP-4518', type: 'Payment Issue', priority: 'High', status: 'In Progress' },
-      { id: 'CMP-4515', type: 'No-Show', priority: 'High', status: 'Open' },
-      { id: 'CMP-4512', type: 'Overcharging', priority: 'Medium', status: 'Escalated' },
-      { id: 'CMP-4508', type: 'Rude Behavior', priority: 'Critical', status: 'Open' },
-    ],
-    areaPerformance: [
-      { city: 'Mumbai', providers: 245, bookings: 3420, revenue: 1450000 },
-      { city: 'Delhi', providers: 198, bookings: 2890, revenue: 1230000 },
-      { city: 'Bangalore', providers: 156, bookings: 2150, revenue: 890000 },
-      { city: 'Hyderabad', providers: 112, bookings: 1640, revenue: 567000 },
-      { city: 'Chennai', providers: 89, bookings: 1230, revenue: 386000 },
-    ],
-    liveMonitoring: {
-      liveJobs: 142,
-      liveProviders: 387,
-      liveTechnicians: 94,
-      fraudAlerts: 3,
-    },
-    aiAnalysis: {
-      demandPrediction: [
-        { category: 'AC Repair', demand: 'Very High', trend: 'up' },
-        { category: 'Plumbing', demand: 'High', trend: 'stable' },
-        { category: 'Electrical', demand: 'Medium', trend: 'up' },
-        { category: 'Cleaning', demand: 'High', trend: 'up' },
-        { category: 'Painting', demand: 'Medium', trend: 'down' },
-      ],
-      cityExpansion: [
-        { city: 'Nagpur', score: 87, reason: 'High search volume + no competitors' },
-        { city: 'Kochi', score: 82, reason: 'Growing urban population' },
-        { city: 'Vizag', score: 76, reason: 'Industrial corridor demand' },
-      ],
-      pricingOptimization: [
-        { category: 'AC Repair', current: 599, suggested: 699, impact: '+16.7% revenue' },
-        { category: 'Plumbing', current: 399, suggested: 449, impact: '+12.5% revenue' },
-        { category: 'Cleaning', current: 799, suggested: 899, impact: '+12.5% revenue' },
-      ],
-    },
-    dailyBookings: [
-      { day: 'Mon', bookings: 180 },
-      { day: 'Tue', bookings: 210 },
-      { day: 'Wed', bookings: 195 },
-      { day: 'Thu', bookings: 240 },
-      { day: 'Fri', bookings: 260 },
-      { day: 'Sat', bookings: 310 },
-      { day: 'Sun', bookings: 285 },
-    ],
-    weeklyRevenue: [
-      { week: 'W1', revenue: 645000 },
-      { week: 'W2', revenue: 712000 },
-      { week: 'W3', revenue: 698000 },
-      { week: 'W4', revenue: 780000 },
-    ],
-    monthlyGrowth: [
-      { month: 'Jan', growth: 8 },
-      { month: 'Feb', growth: 12 },
-      { month: 'Mar', growth: 15 },
-      { month: 'Apr', growth: 11 },
-      { month: 'May', growth: 18 },
-      { month: 'Jun', growth: 22 },
-    ],
-  };
-}
+// ─── Empty Data (no mock data) ────────────────────────────────────────────────
 
 // ─── Chart Configs ────────────────────────────────────────────────────────────
 
@@ -285,8 +203,7 @@ export function SuperAdminDashboardPage() {
   const { data: apiData, loading, error } = useApi<DashboardData>('/api/admin/dashboard');
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Use API data when available; fallback to mock only when API is unreachable
-  const isUsingMockData = !apiData;
+  // Use API data when available; fallback to empty/zero defaults when API is unreachable
   const data: DashboardData = apiData
     ? {
         stats: {
@@ -306,7 +223,24 @@ export function SuperAdminDashboardPage() {
         weeklyRevenue: apiData.weeklyRevenue || [],
         monthlyGrowth: apiData.monthlyGrowth || [],
       }
-    : getMockDashboardData();
+    : {
+        stats: {
+          totalBookings: 0,
+          totalRevenue: 0,
+          activeProviders: 0,
+          complaints: 0,
+          cancellations: 0,
+          avgCompletionTime: '-',
+        },
+        topProviders: [],
+        escalatedComplaints: [],
+        areaPerformance: [],
+        liveMonitoring: { liveJobs: 0, liveProviders: 0, liveTechnicians: 0, fraudAlerts: 0 },
+        aiAnalysis: { demandPrediction: [], cityExpansion: [], pricingOptimization: [] },
+        dailyBookings: [],
+        weeklyRevenue: [],
+        monthlyGrowth: [],
+      };
 
   const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -346,19 +280,6 @@ export function SuperAdminDashboardPage() {
           </div>
         </div>
       </motion.div>
-
-      {/* Demo Data Banner */}
-      {isUsingMockData && (
-        <motion.div
-          initial={{ opacity: 0, y: -5 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5"
-        >
-          <AlertTriangle className="size-4 shrink-0 text-amber-600" />
-          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
-          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
-        </motion.div>
-      )}
 
       {/* Analytics Cards Row */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>

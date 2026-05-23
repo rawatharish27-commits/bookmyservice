@@ -80,45 +80,27 @@ interface ManagerDashboardData {
   revenueTracking: RevenueTracking;
 }
 
-// ─── Mock Data ────────────────────────────────────────────────────────────────
+// ─── Empty Data (no mock data) ────────────────────────────────────────────────
 
-function getMockManagerData(): ManagerDashboardData {
-  return {
-    cityAnalytics: {
-      city: 'Mumbai',
-      providers: 245,
-      bookings: 3420,
-      revenue: 1450000,
-      growth: 12.4,
-    },
-    pendingProviders: [
-      { id: 'p1', name: 'Suresh Patil', service: 'AC Repair', city: 'Mumbai', appliedAt: '2 hours ago' },
-      { id: 'p2', name: 'Meena Joshi', service: 'Plumbing', city: 'Mumbai', appliedAt: '5 hours ago' },
-      { id: 'p3', name: 'Kiran Deshmukh', service: 'Electrical', city: 'Mumbai', appliedAt: '1 day ago' },
-      { id: 'p4', name: 'Anil Kulkarni', service: 'Cleaning', city: 'Mumbai', appliedAt: '2 days ago' },
-    ],
-    activeTechnicians: [
-      { id: 't1', name: 'Ravi Shinde', status: 'On Job', currentJob: 'AC Gas Refill - Andheri', rating: 4.8 },
-      { id: 't2', name: 'Prasad Mane', status: 'Available', currentJob: '-', rating: 4.5 },
-      { id: 't3', name: 'Santosh Jadhav', status: 'On Job', currentJob: 'Pipe Repair - Borivali', rating: 4.7 },
-      { id: 't4', name: 'Mahesh Pawar', status: 'Break', currentJob: '-', rating: 4.3 },
-      { id: 't5', name: 'Dinesh Kadam', status: 'Offline', currentJob: '-', rating: 4.6 },
-    ],
-    openComplaints: [
-      { id: 'CMP-201', client: 'Anita S.', provider: 'Ravi S.', issue: 'Late arrival by 45 minutes', priority: 'Medium', createdAt: '3 hours ago' },
-      { id: 'CMP-199', client: 'Raj M.', provider: 'Prasad M.', issue: 'Incomplete repair work', priority: 'High', createdAt: '6 hours ago' },
-      { id: 'CMP-195', client: 'Sneha K.', provider: 'Santosh J.', issue: 'Overcharged for parts', priority: 'High', createdAt: '1 day ago' },
-      { id: 'CMP-192', client: 'Vikram T.', provider: 'Mahesh P.', issue: 'Rude behavior', priority: 'Medium', createdAt: '2 days ago' },
-    ],
-    revenueTracking: {
-      today: 42580,
-      thisWeek: 287450,
-      thisMonth: 1450000,
-      pendingPayouts: 54200,
-      commissionEarned: 217500,
-    },
-  };
-}
+const EMPTY_MANAGER_DATA: ManagerDashboardData = {
+  cityAnalytics: {
+    city: '—',
+    providers: 0,
+    bookings: 0,
+    revenue: 0,
+    growth: 0,
+  },
+  pendingProviders: [],
+  activeTechnicians: [],
+  openComplaints: [],
+  revenueTracking: {
+    today: 0,
+    thisWeek: 0,
+    thisMonth: 0,
+    pendingPayouts: 0,
+    commissionEarned: 0,
+  },
+};
 
 // ─── Helper Components ────────────────────────────────────────────────────────
 
@@ -158,17 +140,7 @@ export function ManagerDashboardPage() {
   const { data: apiData, loading } = useApi<ManagerDashboardData>('/api/manager/dashboard');
   const { mutate } = useApiMutation();
 
-  const mockFallback = getMockManagerData();
-  const data: ManagerDashboardData = apiData
-    ? {
-        cityAnalytics: apiData.cityAnalytics || mockFallback.cityAnalytics,
-        pendingProviders: apiData.pendingProviders || [],
-        activeTechnicians: apiData.activeTechnicians || [],
-        openComplaints: apiData.openComplaints || [],
-        revenueTracking: apiData.revenueTracking || mockFallback.revenueTracking,
-      }
-    : mockFallback;
-  const isUsingMockData = !apiData;
+  const data: ManagerDashboardData = apiData ?? EMPTY_MANAGER_DATA;
 
   const fadeUp = {
     initial: { opacity: 0, y: 20 },
@@ -179,7 +151,7 @@ export function ManagerDashboardPage() {
     try {
       await mutate(`/api/providers/${providerId}/${action}`, { method: 'POST' });
     } catch {
-      // Silently handle for demo - mock data will persist
+      // Silently handle - empty data will persist
     }
   };
 
@@ -193,15 +165,6 @@ export function ManagerDashboardPage() {
         <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Manager Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Oversee city operations, manage providers & track performance</p>
       </motion.div>
-
-      {/* Demo Data Banner */}
-      {isUsingMockData && (
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5">
-          <AlertCircle className="size-4 shrink-0 text-amber-600" />
-          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
-          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
-        </div>
-      )}
 
       {/* Welcome Banner */}
       <motion.div
@@ -218,10 +181,10 @@ export function ManagerDashboardPage() {
               <span className="text-sm font-medium text-sky-200">Area Manager</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">
-              {data.cityAnalytics.city} Operations
+              {data.cityAnalytics.city === '—' ? 'Area' : data.cityAnalytics.city} Operations
             </h2>
             <p className="mt-1 text-sky-100/80">
-              Managing {data.cityAnalytics.providers} providers across the city
+              Managing {data.cityAnalytics.providers} provider{data.cityAnalytics.providers !== 1 ? 's' : ''} across the city
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -280,7 +243,7 @@ export function ManagerDashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Revenue</p>
-                  <p className="mt-1 text-lg font-bold">₹{(data.cityAnalytics.revenue / 100000).toFixed(1)}L</p>
+                  <p className="mt-1 text-lg font-bold">{`₹${(data.cityAnalytics.revenue / 100000).toFixed(1)}L`}</p>
                 </div>
                 <div className="rounded-lg bg-yellow-100 p-2.5 text-yellow-600">
                   <IndianRupee className="size-5" />
@@ -293,7 +256,7 @@ export function ManagerDashboardPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Growth</p>
-                  <p className="mt-1 text-lg font-bold text-green-600">+{data.cityAnalytics.growth}%</p>
+                  <p className="mt-1 text-lg font-bold text-green-600">{`+${data.cityAnalytics.growth}%`}</p>
                 </div>
                 <div className="rounded-lg bg-green-100 p-2.5 text-green-600">
                   <TrendingUp className="size-5" />

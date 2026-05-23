@@ -27,8 +27,10 @@ if (isConfigured) {
     secure: true, // Force HTTPS URLs
   })
   console.log('☁️  Cloudinary CDN configured')
+} else if (process.env.NODE_ENV === 'production') {
+  console.error('☁️  FATAL: Cloudinary is not configured but NODE_ENV is production. Upload endpoints will fail.')
 } else {
-  console.log('☁️  Cloudinary not configured — upload endpoints will return mock URLs')
+  console.log('☁️  Cloudinary not configured — upload endpoints will return mock URLs (development mode only)')
 }
 
 // ─── Upload Folder Convention ──────────────────────────────────────────
@@ -115,8 +117,11 @@ export async function uploadBuffer(
 ): Promise<UploadResult> {
   const config = UploadPresets[preset]
 
-  // If Cloudinary is not configured, return a mock URL
+  // If Cloudinary is not configured, fail in production or return mock URL in development
   if (!isConfigured) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.')
+    }
     const mockPublicId = `${config.folder}/${customFilename || Date.now()}`
     return {
       url: `https://placehold.co/400x400/eee/999?text=${encodeURIComponent(preset)}`,
@@ -172,6 +177,9 @@ export async function uploadBase64(
   const config = UploadPresets[preset]
 
   if (!isConfigured) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.')
+    }
     const mockPublicId = `${config.folder}/${customFilename || Date.now()}`
     return {
       url: `https://placehold.co/400x400/eee/999?text=${encodeURIComponent(preset)}`,
@@ -217,6 +225,9 @@ export async function uploadFromUrl(
   const config = UploadPresets[preset]
 
   if (!isConfigured) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.')
+    }
     return {
       url,
       secureUrl: url,

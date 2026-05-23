@@ -309,7 +309,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 
 1. INTRODUCTION
 1.1 This Acceptable Usage Policy and Terms of Service ("AUP," "Terms," or "Agreement") governs your access to and use of the BookYourService platform, including the website at https://bookyourservice.co.in, the mobile application, and all associated services operated by BookYourService Technologies Pvt. Ltd. ("Company," "we," "us," or "our"), a company incorporated under the laws of India.
-1.2 BookYourService is an online intermediary marketplace that connects Clients with independent Service Providers for Plumbing, Electrical, and AC & HVAC home services across India.
+1.2 BookYourService is an online intermediary marketplace that connects Clients with independent Service Providers for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers home services across India.
 1.3 By registering an account, browsing, booking, or listing services on the Platform, you acknowledge that you have read, understood, and agree to be bound by this AUP, our Privacy Policy, Refund Policy, Cookie Policy, and all applicable laws and regulations of India.
 1.4 If you are using the Platform on behalf of a business or entity, you represent and warrant that you have the authority to bind that entity to these Terms.
 1.5 This AUP sets forth the acceptable and prohibited uses of the Platform, the rights and obligations of all users, and the limitations of liability of the Company. It is designed to ensure a safe, fair, and legally compliant environment for all participants.
@@ -318,7 +318,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 2. ELIGIBILITY
 2.1 You must be at least 18 (eighteen) years of age and a resident of India to create an account and use the Platform. By using the Platform, you represent and warrant that you meet these eligibility requirements.
 2.2 Individuals who are legally barred from entering into contracts under Indian law, including but not limited to undischarged insolvents and persons of unsound mind, are not eligible to use the Platform.
-2.3 Service Providers must possess the necessary qualifications, licenses, and permits required by applicable Indian law to perform the services they list on the Platform (e.g., electrical license from the State Electricity Board, plumbing certification, HVAC technician certification).
+2.3 Service Providers must possess the necessary qualifications, licenses, and permits required by applicable Indian law to perform the services they list on the Platform (e.g., electrical license from the State Electricity Board, plumbing certification, HVAC technician certification, appliance repair certification, etc.).
 2.4 Clients must have the legal capacity and authority to request services at the address provided and must be the owner or authorized occupant of the premises where services are to be rendered.
 2.5 Users who have been previously suspended or terminated from the Platform for policy violations are not eligible to create new accounts. Creating multiple or duplicate accounts to circumvent a suspension is strictly prohibited.
 2.6 Corporate and enterprise users must designate an authorized representative who accepts these Terms on behalf of the organization and must maintain accurate business registration details on the Platform.
@@ -362,7 +362,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 5.7 KYC documents are retained for the duration of the Provider relationship plus 1 year after termination, in compliance with applicable data protection and tax laws of India.
 
 6. SERVICE LISTING RULES
-6.1 Service Providers may only list services within the three approved categories on the Platform: Plumbing, Electrical, and AC & HVAC. Listing services outside these categories is prohibited.
+6.1 Service Providers may only list services within the approved categories on the Platform: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers. Listing services outside these categories is prohibited.
 6.2 Service listings must include accurate and complete information, including but not limited to: service title, detailed description, base price (in INR), estimated service duration, service area (city and radius), and availability schedule.
 6.3 Providers must not list services that they are not qualified, licensed, or legally permitted to perform. For example, only licensed electricians may list electrical services, and only certified HVAC technicians may list AC gas refilling services.
 6.4 Service descriptions must not contain misleading claims, guarantees of results, or pricing that does not reflect the actual cost. "Bait and switch" pricing tactics are strictly prohibited.
@@ -373,7 +373,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 6.9 The Company reserves the right to remove, modify, or reject any service listing that violates these rules or is deemed inappropriate, without prior notice to the Provider.
 
 7. BOOKING RULES
-7.1 Clients can browse, select, and book services through the Platform from the available categories: Plumbing, Electrical, and AC & HVAC. All bookings are subject to provider availability and confirmation.
+7.1 Clients can browse, select, and book services through the Platform from the available categories: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers. All bookings are subject to provider availability and confirmation.
 7.2 A booking request does not constitute a confirmed appointment until the Service Provider accepts it. The Company is NOT a party to the service agreement between the Client and the Provider.
 7.3 Service prices displayed on the Platform are indicative and based on information provided by the Service Provider. The actual price may vary depending on the scope of work, materials required, and any negotiation between the Client and Provider.
 7.4 Clients must provide accurate service address, contact information, and any special instructions at the time of booking. Failure to provide accurate information may result in service cancellation without refund.
@@ -507,7 +507,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 
 19. LIMITATION OF LIABILITY
 19.1 NO WARRANTY: ALL SERVICES PROVIDED THROUGH THE PLATFORM ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, STATUTORY, OR OTHERWISE. THE COMPANY SPECIFICALLY DISCLAIMS ALL IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT.
-19.2 INTERMEDIARY STATUS: BookYourService is an INTERMEDIARY and ONLINE MARKETPLACE ONLY. The Company DOES NOT directly provide any plumbing, electrical, or AC & HVAC services. All services listed on the Platform are provided by independent third-party Service Providers who are NOT employees, agents, or representatives of the Company.
+19.2 INTERMEDIARY STATUS: BookYourService is an INTERMEDIARY and ONLINE MARKETPLACE ONLY. The Company DOES NOT directly provide any home services. All services listed on the Platform are provided by independent third-party Service Providers who are NOT employees, agents, or representatives of the Company.
 19.3 NOT RESPONSIBLE FOR SERVICE QUALITY: The Company is NOT responsible or liable for the quality, safety, legality, or appropriateness of any service provided by a Service Provider. The Company does not guarantee that any service will meet a Client's expectations or requirements.
 19.4 NO LIABILITY FOR DAMAGES: UNDER NO CIRCUMSTANCES SHALL THE COMPANY, ITS DIRECTORS, OFFICERS, EMPLOYEES, AGENTS, OR AFFILIATES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO:
 • Personal injury, bodily harm, or death resulting from services
@@ -540,7 +540,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 • The Indian Penal Code and the Code of Criminal Procedure
 • The Prevention of Money Laundering Act, 2002
 • The Equal Remuneration Act, 1976 and anti-discrimination laws
-20.2 Service Providers must obtain and maintain all necessary permits, licenses, and registrations required for their trade (plumbing, electrical, HVAC) in the jurisdiction where they operate.
+20.2 Service Providers must obtain and maintain all necessary permits, licenses, and registrations required for their trade (AC repair, plumbing, electrical, appliance repair, TV repair, water purifier service, geyser service, water tank cleaning, packing and moving, etc.) in the jurisdiction where they operate.
 20.3 Providers must comply with all applicable tax obligations, including GST registration and filing, and must provide valid tax invoices to Clients upon request.
 20.4 The Company will cooperate with law enforcement and regulatory authorities as required by law, including responding to subpoenas, court orders, and lawful requests for user information.
 20.5 The Company bears NO liability for any user's failure to comply with applicable laws and regulations. Users are solely responsible for ensuring their own legal compliance.
@@ -612,7 +612,7 @@ For questions, concerns, or notices regarding this Acceptable Usage Policy and T
 
 Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 
-BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service. It explains how we collect, use, disclose, and safeguard your information when you use our platform for Plumbing, Electrical, and AC & HVAC services.
+BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to protecting the privacy and personal data of our users. This Privacy Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service. It explains how we collect, use, disclose, and safeguard your information when you use our platform for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services.
 
 1. INTRODUCTION AND SCOPE
 1.1 This Privacy Policy applies to all users (Clients, Service Providers, and Administrators) of the BookYourService platform, including our website at https://bookyourservice.co.in and our mobile application.
@@ -629,7 +629,7 @@ BookYourService Technologies Pvt. Ltd. ("we," "our," "us") is committed to prote
 2.5 Device Information: IP address, browser type and version, device type and model, operating system, unique device identifiers, and mobile network information.
 2.6 Usage Data: Pages visited, features used, search queries, booking history, time spent on pages, click patterns, and navigation paths.
 2.7 Communications: Chat messages between Clients and Providers through the Platform, customer support tickets, and feedback submissions. Communications are logged for dispute resolution as described in Section 8 of the AUP (Communication Policy).
-2.8 Service Data: Service categories browsed (Plumbing, Electrical, AC & HVAC), subcategories selected, booking details, service addresses, and special instructions.
+2.8 Service Data: Service categories browsed (Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, Movers and Packers), subcategories selected, booking details, service addresses, and special instructions.
 2.9 Cookies and Tracking Data: As described in our Cookie Policy, we use cookies and similar technologies to enhance your experience. Please refer to our Cookie Policy for details.
 
 3. HOW WE USE YOUR INFORMATION
@@ -743,7 +743,7 @@ Last Updated: January 1, 2025 | Version: 1.0 | Effective Date: January 1, 2025
 This Refund and Cancellation Policy is referenced in and forms an integral part of our Acceptable Usage Policy and Terms of Service (Section 15 — Refunds and Cancellations). It provides detailed information about cancellation rights, refund eligibility, and dispute resolution for bookings made on the BookYourService platform.
 
 1. OVERVIEW AND INTERMEDIARY STATUS
-1.1 BookYourService facilitates connections between Clients and Service Providers for Plumbing, Electrical, and AC & HVAC services. As an intermediary platform, our refund policy applies to the Platform Fee charged by BookYourService and the facilitation of refunds for service payments between Clients and Providers.
+1.1 BookYourService facilitates connections between Clients and Service Providers for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services. As an intermediary platform, our refund policy applies to the Platform Fee charged by BookYourService and the facilitation of refunds for service payments between Clients and Providers.
 1.2 IMPORTANT: Currently, all service payments are settled directly between Clients and Providers (cash/direct transfer/UPI). The Company does NOT hold, process, or control service payments. Refunds for service payments must be arranged directly between the Client and Provider.
 1.3 The Company bears NO liability for any Provider's refusal to issue a refund or delay in refund processing, as further outlined in Section 19 of the AUP (Limitation of Liability).
 1.4 Once our online payment system is activated, the refund process will be managed through the Platform as described in the relevant sections below.
@@ -885,7 +885,7 @@ This Cookie Policy is referenced in and forms an integral part of our Acceptable
 
 2. WHAT ARE COOKIES?
 2.1 Cookies are small text files placed on your device (computer, tablet, or mobile phone) when you visit a website or use an application.
-2.2 They help us remember your preferences, understand how you use our Platform, and improve your experience when browsing for Plumbing, Electrical, and AC & HVAC services.
+2.2 They help us remember your preferences, understand how you use our Platform, and improve your experience when browsing for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services.
 2.3 Similar technologies we use include: local storage, session storage, web beacons (pixels), and device identifiers.
 
 3. TYPES OF COOKIES WE USE
@@ -901,7 +901,7 @@ These cookies are required for the Platform to function properly and cannot be d
 3.2 FUNCTIONAL COOKIES
 These cookies enable enhanced functionality and personalization:
 • Remembering your city/location and preferred service area
-• Saving your search preferences and category filters (Plumbing, Electrical, AC & HVAC)
+• Saving your search preferences and category filters (Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, Movers and Packers)
 • Storing your recently viewed services and providers
 • Language and display preferences
 • Auto-filling form data for faster booking
@@ -1033,8 +1033,8 @@ This Acceptable Usage Policy ("AUP") governs the acceptable use of the BookYourS
 
 2. ACCEPTABLE USE
 2.1 Users may use the Platform only for lawful purposes and in accordance with these policies.
-2.2 Clients may browse, search, and book services in the categories offered: Plumbing, Electrical, and AC & HVAC.
-2.3 Service Providers may list and offer services only within the three approved categories: Plumbing, Electrical, and AC & HVAC.
+2.2 Clients may browse, search, and book services in the categories offered: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers.
+2.3 Service Providers may list and offer services only within the approved categories: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers.
 2.4 All communications through the Platform must be professional, respectful, and related to service bookings.
 2.5 Users must provide accurate and truthful information at all times when using the Platform.
 
@@ -1056,10 +1056,18 @@ This Acceptable Usage Policy ("AUP") governs the acceptable use of the BookYourS
 3.3 The Company bears NO liability for any actions taken by users in violation of this Section 3.
 
 4. SERVICE-SPECIFIC RULES
-4.1 PLUMBING SERVICES: Providers offering plumbing services must hold valid plumbing certifications or licenses as required by applicable state regulations. Services include but are not limited to: leak repair, pipe installation, drain cleaning, faucet replacement, water heater service, bathroom plumbing, kitchen plumbing, sewage repair, water tank installation, and bathroom renovation plumbing.
-4.2 ELECTRICAL SERVICES: Providers offering electrical services must hold valid electrical licenses from the State Electricity Board or equivalent authority. Services include but are not limited to: wiring and rewiring, light fixture installation, ceiling fan installation, socket and switch repair, MCB and DB box installation, inverter and UPS setup, earthing and grounding, electrical safety inspection, appliance repair, and electrical renovation.
-4.3 AC & HVAC SERVICES: Providers offering AC and HVAC services must hold relevant HVAC certifications. Services include but are not limited to: AC installation, AC repair and troubleshooting, AC gas refilling, AC cleaning and servicing, ducted AC service, central AC maintenance, heater repair, ventilation system service, thermostat installation, and HVAC system overhaul.
-4.4 Providers must NOT list services outside these three categories. Any attempt to list services in unapproved categories will result in listing removal and potential account suspension.
+4.1 AIR CONDITIONER SERVICES: Providers offering AC services must hold relevant HVAC certifications. Services include but are not limited to: AC installation, AC repair and troubleshooting, AC gas refilling, AC cleaning and servicing, ducted AC service, central AC maintenance, heater repair, ventilation system service, thermostat installation, and HVAC system overhaul.
+4.2 REFRIGERATOR SERVICES: Providers offering refrigerator repair must have experience with compressor, thermostat, and gas refilling work. Services include but are not limited to: fridge cooling issue repair, compressor replacement, gas refilling, thermostat repair, fridge servicing, and new fridge installation.
+4.3 WASHING MACHINE SERVICES: Providers offering washing machine repair must be skilled in drum, motor, and drainage system work. Services include but are not limited to: washing machine repair, servicing, installation, dryer repair, and semi-automatic/fully-automatic troubleshooting.
+4.4 KITCHEN APPLIANCES SERVICES: Providers offering kitchen appliance repair must be trained in microwave, chimney, and dishwasher servicing. Services include but are not limited to: microwave repair, chimney cleaning and repair, dishwasher repair, cooktop repair, and mixer grinder repair.
+4.5 TV REPAIR SERVICES: Providers offering TV repair must be experienced in LED, LCD, and smart TV troubleshooting. Services include but are not limited to: LED/LCD TV panel and board repair, smart TV setup, TV wall mounting, and display panel repair.
+4.6 WATER PURIFIER SERVICES: Providers offering water purifier services must be trained in RO, UV, and UF systems. Services include but are not limited to: RO installation, RO repair, filter and membrane replacement, and annual maintenance contracts.
+4.7 GEYSER SERVICES: Providers offering geyser repair must be experienced with heating elements, thermostats, and pressure valves. Services include but are not limited to: geyser installation, geyser repair, geyser servicing, and solar water heater installation.
+4.8 PLUMBER SERVICES: Providers offering plumbing services must hold valid plumbing certifications or licenses as required by applicable state regulations. Services include but are not limited to: leak repair, pipe installation, drain cleaning, faucet replacement, water heater service, bathroom plumbing, kitchen plumbing, sewage repair, water tank installation, and toilet repair.
+4.9 ELECTRICIAN SERVICES: Providers offering electrical services must hold valid electrical licenses from the State Electricity Board or equivalent authority. Services include but are not limited to: wiring and rewiring, light fixture installation, ceiling fan installation, socket and switch repair, MCB and DB box installation, inverter and UPS setup, earthing and grounding, and electrical safety inspection.
+4.10 WATER TANK CLEANING SERVICES: Providers offering water tank cleaning must use professional-grade equipment and follow hygiene standards. Services include but are not limited to: domestic tank cleaning, commercial tank cleaning, tank disinfection, and sump cleaning.
+4.11 MOVERS AND PACKERS SERVICES: Providers offering moving and packing services must have proper transport arrangements and packing materials. Services include but are not limited to: house shifting, office relocation, vehicle transport, storage and warehousing, and professional packing.
+4.12 Providers must NOT list services outside these approved categories. Any attempt to list services in unapproved categories will result in listing removal and potential account suspension.
 
 5. ACCOUNT INTEGRITY
 5.1 Each user may maintain only one active account. Creating multiple accounts is prohibited.
@@ -1122,7 +1130,7 @@ IMPORTANT: THIS SERVICE PROVIDER AGREEMENT ("AGREEMENT") CONSTITUTES A LEGALLY B
 
 1. DEFINITIONS
 1.1 "Platform" means the BookYourService website at https://bookyourservice.co.in and associated mobile applications.
-1.2 "Services" means the home maintenance and repair services offered by the Provider through the Platform, limited to Plumbing, Electrical, and AC & HVAC categories.
+1.2 "Services" means the home maintenance and repair services offered by the Provider through the Platform, limited to Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers categories.
 1.3 "Client" means a user of the Platform who books services through the Platform.
 1.4 "Platform Fee" means the commission charged by the Company for facilitating the booking transaction.
 1.5 "Booking" means a confirmed appointment for a service between a Client and a Provider.
@@ -1130,7 +1138,7 @@ IMPORTANT: THIS SERVICE PROVIDER AGREEMENT ("AGREEMENT") CONSTITUTES A LEGALLY B
 2. SCOPE OF AGREEMENT
 2.1 This Agreement governs the relationship between the Provider and the Company regarding the use of the Platform to offer and deliver services to Clients.
 2.2 The Provider acknowledges that they are an INDEPENDENT CONTRACTOR and NOT an employee, agent, or representative of the Company.
-2.3 The Company is an INTERMEDIARY and MARKETPLACE ONLY. The Company does NOT provide any plumbing, electrical, or AC & HVAC services directly.
+2.3 The Company is an INTERMEDIARY and MARKETPLACE ONLY. The Company does NOT provide any home services directly.
 2.4 Nothing in this Agreement creates an employer-employee relationship, partnership, joint venture, or agency relationship between the Provider and the Company.
 
 3. PROVIDER OBLIGATIONS
@@ -1143,7 +1151,7 @@ IMPORTANT: THIS SERVICE PROVIDER AGREEMENT ("AGREEMENT") CONSTITUTES A LEGALLY B
 3.7 COMMUNICATION: The Provider must maintain professional and courteous communication with Clients through the Platform.
 
 4. SERVICE LISTING RULES
-4.1 The Provider may ONLY list services within the three approved categories: Plumbing, Electrical, and AC & HVAC.
+4.1 The Provider may ONLY list services within the approved categories: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers.
 4.2 Service listings must include accurate information: service title, detailed description, base price (INR), estimated duration, service area, and availability.
 4.3 The Provider must NOT list services they are not qualified or legally permitted to perform.
 4.4 Service descriptions must NOT contain misleading claims or "bait and switch" pricing.
@@ -1269,7 +1277,7 @@ At BookYourService, we are committed to building a safe, respectful, and trustwo
 3.3 TRANSPARENT PRICING: Clearly communicate the scope of work and pricing before starting. Do not add hidden charges or increase prices without the Client's consent.
 3.4 RESPECT CLIENT PROPERTY: Treat the Client's home and property with care. Clean up after completing work. Report any accidental damage immediately.
 3.5 HONEST REVIEWS: Do not solicit positive reviews or create fake reviews. Report any Client who offers incentives for positive reviews.
-3.6 SAFETY COMPLIANCE: Follow all safety protocols relevant to your trade. Use appropriate safety equipment. Ensure electrical, plumbing, and HVAC work meets safety codes.
+3.6 SAFETY COMPLIANCE: Follow all safety protocols relevant to your trade. Use appropriate safety equipment. Ensure all work (electrical, plumbing, AC, appliance repair, etc.) meets safety codes.
 3.7 NO PLATFORM BYPASS: Never ask Clients to book directly with you outside the Platform or share personal contact details for the purpose of circumventing the Platform.
 
 4. PROHIBITED BEHAVIOR
@@ -1356,24 +1364,64 @@ For questions about these Community Guidelines:
   });
 
   // ========================================
-  // 7. REVENUE STREAMS (for 3 categories only)
+  // 7. REVENUE STREAMS (11 categories)
   // ========================================
   console.log('💰 Creating revenue streams...');
   const revenueStreamData = [
-    // Plumbing category revenue
-    { streamType: 'Plumbing Booking Commission', description: 'Percentage commission on completed plumbing service bookings (leak repair, drain cleaning, pipe installation, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 180000, status: 'ACTIVE' },
-    { streamType: 'Plumbing Featured Listing', description: 'Featured placement for providers within the Plumbing category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 35000, status: 'ACTIVE' },
-    { streamType: 'Plumbing Premium Provider Plan', description: 'Monthly subscription for premium plumbing providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 80000, status: 'ACTIVE' },
+    // Air Conditioner category revenue
+    { streamType: 'Air Conditioner Booking Commission', description: 'Percentage commission on completed AC service bookings (installation, repair, cleaning, gas refill, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 250000, status: 'ACTIVE' },
+    { streamType: 'Air Conditioner Featured Listing', description: 'Featured placement for providers within the Air Conditioner category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 45000, status: 'ACTIVE' },
+    { streamType: 'Air Conditioner Premium Provider Plan', description: 'Monthly subscription for premium AC providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 100000, status: 'ACTIVE' },
 
-    // Electrical category revenue
-    { streamType: 'Electrical Booking Commission', description: 'Percentage commission on completed electrical service bookings (wiring, light fixture, socket repair, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 220000, status: 'ACTIVE' },
-    { streamType: 'Electrical Featured Listing', description: 'Featured placement for providers within the Electrical category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 40000, status: 'ACTIVE' },
-    { streamType: 'Electrical Premium Provider Plan', description: 'Monthly subscription for premium electrical providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 95000, status: 'ACTIVE' },
+    // Refrigerator category revenue
+    { streamType: 'Refrigerator Booking Commission', description: 'Percentage commission on completed refrigerator repair and servicing bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 120000, status: 'ACTIVE' },
+    { streamType: 'Refrigerator Featured Listing', description: 'Featured placement for providers within the Refrigerator category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 25000, status: 'ACTIVE' },
+    { streamType: 'Refrigerator Premium Provider Plan', description: 'Monthly subscription for premium refrigerator service providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 55000, status: 'ACTIVE' },
 
-    // AC & HVAC category revenue
-    { streamType: 'AC HVAC Booking Commission', description: 'Percentage commission on completed AC & HVAC service bookings (installation, repair, cleaning, gas refill, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 250000, status: 'ACTIVE' },
-    { streamType: 'AC HVAC Featured Listing', description: 'Featured placement for providers within the AC & HVAC category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 45000, status: 'ACTIVE' },
-    { streamType: 'AC HVAC Premium Provider Plan', description: 'Monthly subscription for premium AC & HVAC providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 100000, status: 'ACTIVE' },
+    // Washing Machine category revenue
+    { streamType: 'Washing Machine Booking Commission', description: 'Percentage commission on completed washing machine repair and servicing bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 110000, status: 'ACTIVE' },
+    { streamType: 'Washing Machine Featured Listing', description: 'Featured placement for providers within the Washing Machine category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 22000, status: 'ACTIVE' },
+    { streamType: 'Washing Machine Premium Provider Plan', description: 'Monthly subscription for premium washing machine service providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 50000, status: 'ACTIVE' },
+
+    // Kitchen Appliances category revenue
+    { streamType: 'Kitchen Appliances Booking Commission', description: 'Percentage commission on completed kitchen appliance repair bookings (microwave, chimney, dishwasher, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 95000, status: 'ACTIVE' },
+    { streamType: 'Kitchen Appliances Featured Listing', description: 'Featured placement for providers within the Kitchen Appliances category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 20000, status: 'ACTIVE' },
+    { streamType: 'Kitchen Appliances Premium Provider Plan', description: 'Monthly subscription for premium kitchen appliance service providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 45000, status: 'ACTIVE' },
+
+    // TV Repair category revenue
+    { streamType: 'TV Repair Booking Commission', description: 'Percentage commission on completed TV repair and installation bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 85000, status: 'ACTIVE' },
+    { streamType: 'TV Repair Featured Listing', description: 'Featured placement for providers within the TV Repair category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 18000, status: 'ACTIVE' },
+    { streamType: 'TV Repair Premium Provider Plan', description: 'Monthly subscription for premium TV repair providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 40000, status: 'ACTIVE' },
+
+    // Water Purifier category revenue
+    { streamType: 'Water Purifier Booking Commission', description: 'Percentage commission on completed water purifier installation and repair bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 75000, status: 'ACTIVE' },
+    { streamType: 'Water Purifier Featured Listing', description: 'Featured placement for providers within the Water Purifier category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 15000, status: 'ACTIVE' },
+    { streamType: 'Water Purifier Premium Provider Plan', description: 'Monthly subscription for premium water purifier service providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 35000, status: 'ACTIVE' },
+
+    // Geyser category revenue
+    { streamType: 'Geyser Booking Commission', description: 'Percentage commission on completed geyser installation and repair bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 65000, status: 'ACTIVE' },
+    { streamType: 'Geyser Featured Listing', description: 'Featured placement for providers within the Geyser category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 12000, status: 'ACTIVE' },
+    { streamType: 'Geyser Premium Provider Plan', description: 'Monthly subscription for premium geyser service providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 30000, status: 'ACTIVE' },
+
+    // Plumber category revenue
+    { streamType: 'Plumber Booking Commission', description: 'Percentage commission on completed plumbing service bookings (leak repair, drain cleaning, pipe installation, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 180000, status: 'ACTIVE' },
+    { streamType: 'Plumber Featured Listing', description: 'Featured placement for providers within the Plumber category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 35000, status: 'ACTIVE' },
+    { streamType: 'Plumber Premium Provider Plan', description: 'Monthly subscription for premium plumbing providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 80000, status: 'ACTIVE' },
+
+    // Electrician category revenue
+    { streamType: 'Electrician Booking Commission', description: 'Percentage commission on completed electrical service bookings (wiring, light fixture, socket repair, etc.)', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 220000, status: 'ACTIVE' },
+    { streamType: 'Electrician Featured Listing', description: 'Featured placement for providers within the Electrician category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 40000, status: 'ACTIVE' },
+    { streamType: 'Electrician Premium Provider Plan', description: 'Monthly subscription for premium electrical providers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 95000, status: 'ACTIVE' },
+
+    // Water Tank Cleaning category revenue
+    { streamType: 'Water Tank Cleaning Booking Commission', description: 'Percentage commission on completed water tank cleaning and sanitization bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 55000, status: 'ACTIVE' },
+    { streamType: 'Water Tank Cleaning Featured Listing', description: 'Featured placement for providers within the Water Tank Cleaning category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 10000, status: 'ACTIVE' },
+    { streamType: 'Water Tank Cleaning Premium Provider Plan', description: 'Monthly subscription for premium water tank cleaning providers', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 25000, status: 'ACTIVE' },
+
+    // Movers and Packers category revenue
+    { streamType: 'Movers and Packers Booking Commission', description: 'Percentage commission on completed house shifting, office relocation, and packing service bookings', revenueModel: 'COMMISSION', estimatedMonthlyRevenue: 150000, status: 'ACTIVE' },
+    { streamType: 'Movers and Packers Featured Listing', description: 'Featured placement for providers within the Movers and Packers category page', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 30000, status: 'ACTIVE' },
+    { streamType: 'Movers and Packers Premium Provider Plan', description: 'Monthly subscription for premium movers and packers with priority listing and lower commission', revenueModel: 'SUBSCRIPTION', estimatedMonthlyRevenue: 70000, status: 'ACTIVE' },
 
     // Cross-category revenue
     { streamType: 'Homepage Featured Listing', description: 'Featured placement on the homepage carousel across all categories', revenueModel: 'FEATURED_LISTING', estimatedMonthlyRevenue: 120000, status: 'ACTIVE' },
@@ -1389,74 +1437,146 @@ For questions about these Community Guidelines:
   }
 
   // ========================================
-  // 8. SEO METADATA (for 3 categories)
+  // 8. SEO METADATA (11 categories)
   // ========================================
   console.log('🔍 Creating SEO metadata...');
   const seoData = [
     {
       pageType: 'home',
-      title: 'BookYourService — Trusted Home Services in India | Plumbing, Electrical, AC & HVAC',
-      description: 'Book verified professionals for Plumbing, Electrical, and AC & HVAC services at your doorstep. Trusted providers in Delhi, Mumbai, Bengaluru, Hyderabad & Chennai. Transparent pricing, KYC verified providers.',
-      keywords: 'home services, plumbing services, electrical services, AC repair, HVAC services, book plumber, book electrician, AC installation, India, Delhi, Mumbai, Bengaluru, Hyderabad, Chennai',
+      title: 'BookYourService — Trusted Home Services in India | AC, Fridge, Washing Machine, TV & More',
+      description: 'Book verified professionals for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services. Trusted providers in Delhi, Mumbai, Bengaluru, Hyderabad & Chennai. Transparent pricing, KYC verified providers.',
+      keywords: 'home services, AC repair, refrigerator repair, washing machine repair, TV repair, water purifier, geyser repair, plumber near me, electrician near me, water tank cleaning, movers and packers, India, Delhi, Mumbai, Bengaluru, Hyderabad, Chennai',
       canonicalUrl: 'https://bookyourservice.co.in',
       indexed: true,
     },
     {
       pageType: 'category',
-      pageId: 'plumbing',
-      title: 'Plumbing Services — Professional Plumbers Near You | BookYourService',
+      pageId: 'plumber',
+      title: 'Plumber Services — Professional Plumbers Near You | BookYourService',
       description: 'Expert plumbing services including leak repair, drain cleaning, pipe installation, faucet repair, toilet installation, water heater repair, sewage cleaning, and more. Book verified plumbers in Delhi, Mumbai, Bengaluru, Hyderabad & Chennai.',
       keywords: 'plumber near me, leak repair, drain cleaning, pipe installation, faucet repair, toilet installation, water heater repair, plumbing services India, book plumber online',
-      canonicalUrl: 'https://bookyourservice.co.in/category/plumbing',
+      canonicalUrl: 'https://bookyourservice.co.in/category/plumber',
       indexed: true,
     },
     {
       pageType: 'category',
-      pageId: 'electrical',
-      title: 'Electrical Services — Licensed Electricians Near You | BookYourService',
+      pageId: 'electrician',
+      title: 'Electrician Services — Licensed Electricians Near You | BookYourService',
       description: 'Licensed electrical services including wiring repairs, light fixture installation, socket repairs, circuit breaker fixing, ceiling fan installation, smart home setup, generator maintenance, and more. Book verified electricians in top Indian cities.',
       keywords: 'electrician near me, wiring repair, light fixture installation, socket repair, circuit breaker, ceiling fan, smart home setup, electrical services India, book electrician online',
-      canonicalUrl: 'https://bookyourservice.co.in/category/electrical',
+      canonicalUrl: 'https://bookyourservice.co.in/category/electrician',
       indexed: true,
     },
     {
       pageType: 'category',
-      pageId: 'ac-hvac',
-      title: 'AC & HVAC Services — Certified Technicians Near You | BookYourService',
-      description: 'Professional AC & HVAC services including AC installation, repair, cleaning, gas refilling, heating unit repairs, thermostat setup, central air maintenance, duct cleaning, furnace repair, and more. Book certified technicians in top Indian cities.',
-      keywords: 'AC repair near me, AC installation, AC cleaning, gas refill, HVAC services, air conditioning repair, duct cleaning, furnace repair, AC service India, book AC technician online',
-      canonicalUrl: 'https://bookyourservice.co.in/category/ac-hvac',
+      pageId: 'air-conditioner',
+      title: 'Air Conditioner Services — Certified AC Technicians Near You | BookYourService',
+      description: 'Professional AC services including AC installation, repair, cleaning, gas refilling, heating unit repairs, thermostat setup, central air maintenance, duct cleaning, and more. Book certified technicians in top Indian cities.',
+      keywords: 'AC repair near me, AC installation, AC cleaning, gas refill, air conditioning repair, duct cleaning, AC service India, book AC technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/air-conditioner',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'refrigerator',
+      title: 'Refrigerator Repair Services — Expert Fridge Technicians | BookYourService',
+      description: 'Professional refrigerator repair and servicing including compressor repair, gas refilling, thermostat replacement, cooling issues, and new fridge installation. Book verified technicians in top Indian cities.',
+      keywords: 'refrigerator repair near me, fridge repair, compressor repair, gas refilling, fridge servicing, fridge installation, refrigerator service India, book fridge technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/refrigerator',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'washing-machine',
+      title: 'Washing Machine Repair Services — Trusted Technicians | BookYourService',
+      description: 'Expert washing machine repair, servicing, and installation including drum repair, motor fixing, drainage issues, and dryer repair. Book verified technicians in top Indian cities.',
+      keywords: 'washing machine repair near me, washing machine service, drum repair, motor repair, dryer repair, washing machine installation, book washing machine technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/washing-machine',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'kitchen-appliances',
+      title: 'Kitchen Appliance Repair — Microwave, Chimney, Dishwasher | BookYourService',
+      description: 'Professional kitchen appliance repair including microwave repair, chimney cleaning and repair, dishwasher repair, cooktop repair, and mixer grinder repair. Book verified technicians in top Indian cities.',
+      keywords: 'microwave repair near me, chimney repair, dishwasher repair, cooktop repair, mixer grinder repair, kitchen appliance service India, book kitchen appliance technician',
+      canonicalUrl: 'https://bookyourservice.co.in/category/kitchen-appliances',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'tv-repair',
+      title: 'TV Repair Services — LED, LCD, Smart TV Technicians | BookYourService',
+      description: 'Professional TV repair including LED/LCD panel repair, smart TV setup, TV wall mounting, display panel repair, and board repair. Book verified TV technicians in top Indian cities.',
+      keywords: 'TV repair near me, LED TV repair, LCD TV repair, smart TV setup, TV wall mount, TV panel repair, TV service India, book TV technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/tv-repair',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'water-purifier',
+      title: 'Water Purifier Services — RO Installation & Repair | BookYourService',
+      description: 'Professional water purifier services including RO installation, RO repair, filter and membrane replacement, UV/UF system servicing, and annual maintenance contracts. Book verified technicians in top Indian cities.',
+      keywords: 'water purifier repair near me, RO installation, RO repair, filter replacement, membrane replacement, water purifier service India, book RO technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/water-purifier',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'geyser',
+      title: 'Geyser Repair & Installation Services | BookYourService',
+      description: 'Professional geyser and water heater services including installation, heating element repair, thermostat replacement, pressure valve repair, and solar water heater installation. Book verified technicians in top Indian cities.',
+      keywords: 'geyser repair near me, geyser installation, water heater repair, thermostat repair, solar water heater, geyser service India, book geyser technician online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/geyser',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'water-tank-cleaning',
+      title: 'Water Tank Cleaning & Sanitization Services | BookYourService',
+      description: 'Professional water tank cleaning and sanitization including domestic tank cleaning, commercial tank cleaning, tank disinfection, and sump cleaning. Book verified professionals in top Indian cities.',
+      keywords: 'water tank cleaning near me, tank cleaning service, tank disinfection, sump cleaning, water tank sanitization, tank cleaning India, book tank cleaning online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/water-tank-cleaning',
+      indexed: true,
+    },
+    {
+      pageType: 'category',
+      pageId: 'movers-and-packers',
+      title: 'Movers and Packers — House Shifting & Relocation | BookYourService',
+      description: 'Reliable packing, moving, and relocation services including house shifting, office relocation, vehicle transport, storage and warehousing, and professional packing. Book verified movers in top Indian cities.',
+      keywords: 'movers and packers near me, house shifting, office relocation, vehicle transport, packing service, moving company India, book movers online',
+      canonicalUrl: 'https://bookyourservice.co.in/category/movers-and-packers',
       indexed: true,
     },
     {
       pageType: 'how-it-works',
       title: 'How It Works — BookYourService Home Services Made Easy',
-      description: 'Learn how BookYourService connects you with verified professionals for Plumbing, Electrical, and AC & HVAC services in just a few simple steps.',
-      keywords: 'how bookyourservice works, book home service, online service booking, plumbing booking, electrical booking, AC service booking',
+      description: 'Learn how BookYourService connects you with verified professionals for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services in just a few simple steps.',
+      keywords: 'how bookyourservice works, book home service, online service booking, AC booking, fridge repair booking, plumber booking, electrician booking, TV repair booking',
       canonicalUrl: 'https://bookyourservice.co.in/how-it-works',
       indexed: true,
     },
     {
       pageType: 'about',
       title: 'About BookYourService — India\'s Trusted Home Service Platform',
-      description: 'BookYourService connects homeowners with verified service providers for Plumbing, Electrical, and AC & HVAC services across major Indian cities. Learn about our mission and values.',
-      keywords: 'about bookyourservice, home service platform India, verified service providers, plumbing electrical HVAC marketplace',
+      description: 'BookYourService connects homeowners with verified service providers for Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers services across major Indian cities. Learn about our mission and values.',
+      keywords: 'about bookyourservice, home service platform India, verified service providers, home appliance repair marketplace',
       canonicalUrl: 'https://bookyourservice.co.in/about',
       indexed: true,
     },
     {
       pageType: 'faq',
       title: 'FAQ — Frequently Asked Questions | BookYourService',
-      description: 'Find answers to common questions about BookYourService including booking, payments, cancellations, and service categories — Plumbing, Electrical, and AC & HVAC.',
-      keywords: 'bookyourservice FAQ, frequently asked questions, home service questions, plumbing FAQ, electrical FAQ, AC HVAC FAQ',
+      description: 'Find answers to common questions about BookYourService including booking, payments, cancellations, and all 11 service categories.',
+      keywords: 'bookyourservice FAQ, frequently asked questions, home service questions, AC repair FAQ, appliance repair FAQ, plumber FAQ, electrician FAQ',
       canonicalUrl: 'https://bookyourservice.co.in/faq',
       indexed: true,
     },
     {
       pageType: 'contact',
       title: 'Contact Us — BookYourService Customer Support',
-      description: 'Get in touch with BookYourService for support, queries, or feedback regarding Plumbing, Electrical, or AC & HVAC services. We\'re here to help.',
-      keywords: 'contact bookyourservice, customer support, home service help, plumbing support, electrical support, AC support',
+      description: 'Get in touch with BookYourService for support, queries, or feedback regarding our home services. We\'re here to help.',
+      keywords: 'contact bookyourservice, customer support, home service help, AC support, appliance repair support, plumber support, electrician support',
       canonicalUrl: 'https://bookyourservice.co.in/contact',
       indexed: true,
     },

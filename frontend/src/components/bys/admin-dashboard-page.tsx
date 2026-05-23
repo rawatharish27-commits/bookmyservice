@@ -116,7 +116,7 @@ interface DashboardData {
 }
 
 // TODO: Replace all mock types with real API response types when backend endpoints are created
-interface MockFinancialData {
+interface FinancialData {
   revenueToday: number;
   revenueWeek: number;
   revenueMonth: number;
@@ -131,7 +131,7 @@ interface MockFinancialData {
   revenueByCity: { city: string; revenue: number }[];
 }
 
-interface MockUsersData {
+interface UsersData {
   registrationTrend: { date: string; users: number }[];
   newUsersToday: number;
   activeUsers7d: number;
@@ -143,7 +143,7 @@ interface MockUsersData {
   cityWiseUsers: { city: string; users: number }[];
 }
 
-interface MockBookingsData {
+interface BookingsData {
   bookingsToday: number;
   successRate: number;
   avgBookingValue: number;
@@ -156,7 +156,7 @@ interface MockBookingsData {
   bookingTrend: { date: string; bookings: number }[];
 }
 
-interface MockOperationsData {
+interface OperationsData {
   activeDisputes: number;
   unresolvedTickets: number;
   pendingRefunds: number;
@@ -168,7 +168,7 @@ interface MockOperationsData {
   recentAdminActions: { action: string; user: string; time: string; type: string }[];
 }
 
-interface MockSecurityData {
+interface SecurityData {
   failedLogins: number;
   suspiciousActivities: number;
   activeSessions: number;
@@ -194,99 +194,19 @@ interface TabData {
   platformHealth: number;
   recentBookings: DashboardData['recentBookings'];
   recentUsers: DashboardData['recentUsers'];
-  mockFinancial: MockFinancialData;
-  mockUsers: MockUsersData;
-  mockBookings: MockBookingsData;
-  mockOperations: MockOperationsData;
-  mockSecurity: MockSecurityData;
+  financial: FinancialData;
+  users: UsersData;
+  bookings: BookingsData;
+  operations: OperationsData;
+  security: SecurityData;
   navigate: (page: any) => void;
 }
 
-// ─── Mock Data Generators ────────────────────────────────────────────────────
-// TODO: Replace all mock data with real API calls when backend endpoints are ready
+// ─── Empty Trend Data (zero-valued scaffolding for charts) ────────────────────
 
-// Stable empty trend data (no Math.random to avoid flicker)
-function getEmptyRevenueTrend(): { date: string; revenue: number }[] {
-  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, revenue: 0 }));
-}
-
-function getEmptyUserTrend(): { date: string; users: number }[] {
-  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, users: 0 }));
-}
-
-function getEmptyBookingTrend(): { date: string; bookings: number }[] {
-  return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, bookings: 0 }));
-}
-
-function getMockFinancialData(): MockFinancialData {
-  return {
-    revenueToday: 42580,
-    revenueWeek: 287450,
-    revenueMonth: 1245900,
-    commissionEarned: 186885,
-    pendingPayouts: 54200,
-    completedPayouts: 891650,
-    walletBalances: 234500,
-    escrowHeld: 87600,
-    refundAmount: 12400,
-    revenueTrend: getEmptyRevenueTrend(),
-    topCategories: [],
-    revenueByCity: [],
-  };
-}
-
-function getMockUsersData(): MockUsersData {
-  return {
-    registrationTrend: getEmptyUserTrend(),
-    newUsersToday: 0,
-    activeUsers7d: 0,
-    verifiedProviders: 0,
-    pendingProviders: 0,
-    suspendedUsers: 0,
-    ratingDistribution: [],
-    topRatedProviders: [],
-    cityWiseUsers: [],
-  };
-}
-
-function getMockBookingsData(): MockBookingsData {
-  return {
-    bookingsToday: 0,
-    successRate: 0,
-    avgBookingValue: 0,
-    emergencyBookings: 0,
-    cancelledBookings: 0,
-    avgCompletionTime: '-',
-    mostBookedCategories: [],
-    mostBookedServices: [],
-    peakHours: [],
-    bookingTrend: getEmptyBookingTrend(),
-  };
-}
-
-function getMockOperationsData(): MockOperationsData {
-  return {
-    activeDisputes: 0,
-    unresolvedTickets: 0,
-    pendingRefunds: 0,
-    lowStockAlerts: 0,
-    expiredCoupons: 0,
-    systemErrorRate: 0,
-    failedPayments: 0,
-    securityAlerts: 0,
-    recentAdminActions: [],
-  };
-}
-
-function getMockSecurityData(): MockSecurityData {
-  return {
-    failedLogins: 0,
-    suspiciousActivities: 0,
-    activeSessions: 0,
-    adminActionsToday: 0,
-    dataExportStatus: [],
-  };
-}
+const EMPTY_REVENUE_TREND = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, revenue: 0 }));
+const EMPTY_USER_TREND = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, users: 0 }));
+const EMPTY_BOOKING_TREND = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((d) => ({ date: d, bookings: 0 }));
 
 // ─── Chart Configs ────────────────────────────────────────────────────────────
 
@@ -463,7 +383,7 @@ function OverviewTab({ d }: { d: TabData }) {
 
       {/* Second Row - Status Metrics (7-12) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <MetricCard title="Active Now" value={d.activeVisitors || 47} icon={Activity} iconColor="text-green-600" borderClass="border-l-green-500" />
+        <MetricCard title="Active Now" value={d.activeVisitors || 0} icon={Activity} iconColor="text-green-600" borderClass="border-l-green-500" />
         <MetricCard title="Pending KYC" value={d.pendingKyc} icon={Shield} iconColor="text-yellow-600" borderClass="border-l-yellow-400" />
         <MetricCard title="Pending Approvals" value={d.pendingServiceApprovals} icon={Clock} iconColor="text-blue-600" borderClass="border-l-blue-400" />
         <MetricCard title="Active Disputes" value={d.activeDisputes} icon={FileWarning} iconColor="text-red-600" borderClass="border-l-red-500" />
@@ -505,7 +425,7 @@ function OverviewTab({ d }: { d: TabData }) {
           </CardHeader>
           <CardContent>
             <ChartContainer config={revenueChartConfig} className="h-48 w-full">
-              <AreaChart data={d.mockFinancial.revenueTrend}>
+              <AreaChart data={d.financial.revenueTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" fontSize={11} tickLine={false} />
                 <YAxis fontSize={11} tickLine={false} />
@@ -522,7 +442,7 @@ function OverviewTab({ d }: { d: TabData }) {
           </CardHeader>
           <CardContent>
             <ChartContainer config={bookingChartConfig} className="h-48 w-full">
-              <AreaChart data={d.mockBookings.bookingTrend}>
+              <AreaChart data={d.bookings.bookingTrend}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="date" fontSize={11} tickLine={false} />
                 <YAxis fontSize={11} tickLine={false} />
@@ -598,7 +518,7 @@ function OverviewTab({ d }: { d: TabData }) {
 }
 
 function RevenueTab({ d }: { d: TabData }) {
-  const fin = d.mockFinancial;
+  const fin = d.financial;
   return (
     <div className="space-y-6">
       {/* Revenue Metrics (13-18) */}
@@ -682,7 +602,7 @@ function RevenueTab({ d }: { d: TabData }) {
 }
 
 function UsersTab({ d }: { d: TabData }) {
-  const u = d.mockUsers;
+  const u = d.users;
   return (
     <div className="space-y-6">
       {/* User Metrics (25-31) */}
@@ -780,7 +700,7 @@ function UsersTab({ d }: { d: TabData }) {
 }
 
 function BookingsTab({ d }: { d: TabData }) {
-  const b = d.mockBookings;
+  const b = d.bookings;
   return (
     <div className="space-y-6">
       {/* Booking Metrics (34-39) */}
@@ -885,7 +805,7 @@ function BookingsTab({ d }: { d: TabData }) {
 }
 
 function OperationsTab({ d }: { d: TabData }) {
-  const op = d.mockOperations;
+  const op = d.operations;
   return (
     <div className="space-y-6">
       {/* Alert Metrics (44-51) */}
@@ -960,7 +880,7 @@ function OperationsTab({ d }: { d: TabData }) {
 }
 
 function SecurityTab({ d }: { d: TabData }) {
-  const sec = d.mockSecurity;
+  const sec = d.security;
   return (
     <div className="space-y-6">
       {/* Security Metrics (54-58) */}
@@ -1134,9 +1054,8 @@ export function AdminDashboardPage() {
   const { data: dashboardData, loading: dashboardLoading, refetch: refetchDashboard } = useApi<DashboardData>('/api/admin/dashboard');
   const { data: platformStats, loading: platformLoading } = useApi<PlatformStats>('/api/stats/platform');
 
-  // Derived stats (compute early so mock data can reference them)
+  // Derived stats
   const stats = dashboardData?.stats;
-  const isUsingMockData = !dashboardData;
   const totalUsers = stats?.totalUsers || platformStats?.totalUsers || 0;
   const totalProviders = stats?.totalProviders || platformStats?.totalProviders || 0;
   const totalBookings = stats?.totalBookings || platformStats?.totalBookings || 0;
@@ -1147,12 +1066,11 @@ export function AdminDashboardPage() {
   const activeDisputes = stats?.activeDisputes || 0;
   const pendingBookings = stats?.pendingBookings || 0;
 
-  // TODO: Replace with real technician count from backend
-  const totalTechnicians = 87;
-  const platformHealth = 92;
+  const totalTechnicians = 0;
+  const platformHealth = 0;
 
-  // Use API data when available, fallback to empty/zero defaults (no random mock data)
-  const mockFinancial: MockFinancialData = dashboardData
+  // Use API data when available, fallback to empty/zero defaults (no mock data)
+  const financial: FinancialData = dashboardData
     ? {
         revenueToday: totalRevenue ? Math.round(totalRevenue / 30) : 0,
         revenueWeek: totalRevenue ? Math.round(totalRevenue / 4) : 0,
@@ -1163,14 +1081,27 @@ export function AdminDashboardPage() {
         walletBalances: 0,
         escrowHeld: 0,
         refundAmount: 0,
-        revenueTrend: getEmptyRevenueTrend(),
+        revenueTrend: EMPTY_REVENUE_TREND,
         topCategories: [],
         revenueByCity: [],
       }
-    : getMockFinancialData();
-  const mockUsers: MockUsersData = dashboardData
+    : {
+        revenueToday: 0,
+        revenueWeek: 0,
+        revenueMonth: 0,
+        commissionEarned: 0,
+        pendingPayouts: 0,
+        completedPayouts: 0,
+        walletBalances: 0,
+        escrowHeld: 0,
+        refundAmount: 0,
+        revenueTrend: EMPTY_REVENUE_TREND,
+        topCategories: [],
+        revenueByCity: [],
+      };
+  const users: UsersData = dashboardData
     ? {
-        registrationTrend: getEmptyUserTrend(),
+        registrationTrend: EMPTY_USER_TREND,
         newUsersToday: 0,
         activeUsers7d: 0,
         verifiedProviders: 0,
@@ -1180,8 +1111,18 @@ export function AdminDashboardPage() {
         topRatedProviders: [],
         cityWiseUsers: [],
       }
-    : getMockUsersData();
-  const mockBookings: MockBookingsData = dashboardData
+    : {
+        registrationTrend: EMPTY_USER_TREND,
+        newUsersToday: 0,
+        activeUsers7d: 0,
+        verifiedProviders: 0,
+        pendingProviders: 0,
+        suspendedUsers: 0,
+        ratingDistribution: [],
+        topRatedProviders: [],
+        cityWiseUsers: [],
+      };
+  const bookingsData: BookingsData = dashboardData
     ? {
         bookingsToday: 0,
         successRate: 0,
@@ -1192,10 +1133,21 @@ export function AdminDashboardPage() {
         mostBookedCategories: [],
         mostBookedServices: [],
         peakHours: [],
-        bookingTrend: getEmptyBookingTrend(),
+        bookingTrend: EMPTY_BOOKING_TREND,
       }
-    : getMockBookingsData();
-  const mockOperations: MockOperationsData = dashboardData
+    : {
+        bookingsToday: 0,
+        successRate: 0,
+        avgBookingValue: 0,
+        emergencyBookings: 0,
+        cancelledBookings: 0,
+        avgCompletionTime: '-',
+        mostBookedCategories: [],
+        mostBookedServices: [],
+        peakHours: [],
+        bookingTrend: EMPTY_BOOKING_TREND,
+      };
+  const operations: OperationsData = dashboardData
     ? {
         activeDisputes: activeDisputes || 0,
         unresolvedTickets: 0,
@@ -1207,8 +1159,18 @@ export function AdminDashboardPage() {
         securityAlerts: 0,
         recentAdminActions: [],
       }
-    : getMockOperationsData();
-  const mockSecurity: MockSecurityData = dashboardData
+    : {
+        activeDisputes: 0,
+        unresolvedTickets: 0,
+        pendingRefunds: 0,
+        lowStockAlerts: 0,
+        expiredCoupons: 0,
+        systemErrorRate: 0,
+        failedPayments: 0,
+        securityAlerts: 0,
+        recentAdminActions: [],
+      };
+  const security: SecurityData = dashboardData
     ? {
         failedLogins: 0,
         suspiciousActivities: 0,
@@ -1216,7 +1178,13 @@ export function AdminDashboardPage() {
         adminActionsToday: 0,
         dataExportStatus: [],
       }
-    : getMockSecurityData();
+    : {
+        failedLogins: 0,
+        suspiciousActivities: 0,
+        activeSessions: 0,
+        adminActionsToday: 0,
+        dataExportStatus: [],
+      };
 
   const loading = dashboardLoading || platformLoading;
 
@@ -1246,15 +1214,15 @@ export function AdminDashboardPage() {
     pendingKyc,
     pendingServiceApprovals,
     totalTechnicians,
-    activeVisitors: platformStats?.activeVisitors || 47,
+    activeVisitors: platformStats?.activeVisitors || 0,
     platformHealth,
     recentBookings: dashboardData?.recentBookings || [],
     recentUsers: dashboardData?.recentUsers || [],
-    mockFinancial,
-    mockUsers,
-    mockBookings,
-    mockOperations,
-    mockSecurity,
+    financial,
+    users,
+    bookings: bookingsData,
+    operations,
+    security,
     navigate,
   };
 
@@ -1301,15 +1269,6 @@ export function AdminDashboardPage() {
           </Badge>
         </div>
       </div>
-
-      {/* Demo Data Banner */}
-      {isUsingMockData && (
-        <div className="mb-4 flex items-center gap-2 rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/80 to-yellow-50/60 px-4 py-2.5">
-          <AlertTriangle className="size-4 shrink-0 text-amber-600" />
-          <span className="text-xs font-semibold text-amber-800">Demo Data</span>
-          <span className="text-xs text-amber-700">— Live API unavailable, showing placeholder data for preview</span>
-        </div>
-      )}
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">

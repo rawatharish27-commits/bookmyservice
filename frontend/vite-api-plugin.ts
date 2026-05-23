@@ -6,9 +6,8 @@ import bcrypt from 'bcryptjs';
 const DATABASE_URL = process.env.DATABASE_URL;
 if (!DATABASE_URL) { console.warn('⚠️  DATABASE_URL not set — API will not work. Set it in .env'); }
 
-// Fix #2: Remove hardcoded JWT secret, require env var (dev fallback for local development)
-if (!process.env.JWT_SECRET) { console.warn('⚠️  JWT_SECRET not set — using development fallback. DO NOT use in production!'); }
-const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024';
+// Fix #2: Remove hardcoded JWT secret, require env var in production (dev fallback for local development)
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'development' ? 'dev-secret-key' : (() => { throw new Error('JWT_SECRET environment variable is required in production') })());
 
 let pool: any = null;
 

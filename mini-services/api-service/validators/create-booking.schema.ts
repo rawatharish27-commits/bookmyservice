@@ -6,7 +6,7 @@ export const createBookingSchema = z.object({
   scheduledTime: z.string().min(1, 'Scheduled time is required'),
   serviceAddress: z.string().min(1, 'Service address is required').max(500),
   specialInstructions: z.string().max(1000).optional(),
-  basePrice: z.number().min(0).optional(),
+  basePrice: z.number().min(99, 'Price must be at least ₹99').max(499, 'Price must not exceed ₹499').optional(),
   couponCode: z.string().optional(),
 })
 

@@ -273,7 +273,7 @@ export function BookingPage() {
   /* ---- Price calculations ---- */
   const basePrice = service?.basePrice ?? 0;
   const emergencyCharge = nav.params?.emergency === 'true' ? Math.round(basePrice * 0.25) : 0;
-  const platformFee = 5; // TODO: Fetch from API/config
+  const platformFee = 5; // TODO: Fetch platform fee from API/config
   const distanceCharge = useMemo(() => {
     if (!latitude || !longitude) return 0;
     const selectedProvider = providers.find(p => p.id === selectedProviderId);

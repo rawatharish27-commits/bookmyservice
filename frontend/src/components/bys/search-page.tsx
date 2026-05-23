@@ -62,19 +62,19 @@ interface Category {
 const CATEGORY_ICONS: Record<string, React.ReactNode> = {
   plumbing: <Droplets className="size-4" />,
   electrical: <Zap className="size-4" />,
-  'ac-hvac': <Wind className="size-4" />,
+  'air-conditioner': <Wind className="size-4" />,
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
   plumbing: 'from-blue-500 to-cyan-500',
   electrical: 'from-sky-500 to-yellow-500',
-  'ac-hvac': 'from-teal-500 to-emerald-500',
+  'air-conditioner': 'from-teal-500 to-emerald-500',
 };
 
 const CATEGORY_BG_COLORS: Record<string, string> = {
   plumbing: 'bg-blue-50 text-blue-700 border-blue-200',
   electrical: 'bg-sky-50 text-sky-700 border-sky-200',
-  'ac-hvac': 'bg-teal-50 text-teal-700 border-teal-200',
+  'air-conditioner': 'bg-teal-50 text-teal-700 border-teal-200',
 };
 
 const fadeUp = {
@@ -201,7 +201,7 @@ export function SearchPage() {
               Find Your Perfect Service
             </h1>
             <p className="mx-auto mb-8 max-w-lg text-emerald-100">
-              Search across verified professionals for plumbing, electrical, and AC services
+              Search across verified professionals for plumbing, electrical, and air conditioner services
             </p>
 
             {/* Search Input */}
@@ -213,7 +213,7 @@ export function SearchPage() {
                     <Search className="size-5 text-emerald-500" />
                   </div>
                   <Input
-                    placeholder="Search for plumbing, electrical, AC services..."
+                    placeholder="Search for plumbing, electrical, air conditioner services..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -619,7 +619,7 @@ export function SearchPage() {
             {[
               { label: 'Plumbing', icon: <Droplets className="size-4" />, color: 'from-blue-500 to-cyan-500' },
               { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-sky-500 to-yellow-500' },
-              { label: 'AC & HVAC', icon: <Wind className="size-4" />, color: 'from-teal-500 to-emerald-500' },
+              { label: 'Air Conditioner', icon: <Wind className="size-4" />, color: 'from-teal-500 to-emerald-500' },
             ].map((item) => (
               <motion.button
                 key={item.label}

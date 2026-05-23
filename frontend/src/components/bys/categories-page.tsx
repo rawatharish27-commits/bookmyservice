@@ -105,7 +105,7 @@ const CATEGORY_GRADIENTS: Record<string, {
     shadowGlow: 'shadow-sky-500/15',
     heroGradient: 'from-sky-600 via-sky-500 to-yellow-400',
   },
-  'ac-hvac': {
+  'air-conditioner': {
     gradient: 'from-teal-500 to-emerald-500',
     headerGradient: 'from-teal-700 via-teal-600 to-emerald-500',
     lightBg: 'bg-teal-50',
@@ -124,7 +124,7 @@ const CATEGORY_GRADIENTS: Record<string, {
 const CATEGORY_IMAGE_MAP: Record<string, string> = {
   plumbing: '/images/plumbing.jpg',
   electrical: '/images/electrical.jpg',
-  'ac-hvac': '/images/hvac.jpg',
+  'air-conditioner': '/images/air-conditioner.jpg',
 };
 
 const DEFAULT_GRADIENT = {
@@ -458,7 +458,7 @@ export function CategoriesPage() {
               className="text-5xl font-extrabold tracking-tight text-white sm:text-6xl lg:text-7xl"
             >
               Expert{' '}
-              <RotatingWords words={['Plumbing', 'Electrical', 'AC & HVAC']} />
+              <RotatingWords words={['Plumbing', 'Electrical', 'Air Conditioner']} />
               <br />
               <span className="text-gradient">at Your Doorstep</span>
             </motion.h1>
@@ -469,7 +469,7 @@ export function CategoriesPage() {
               transition={{ duration: 0.6, delay: 0.35 }}
               className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-emerald-100/75 sm:text-xl"
             >
-              Book verified professionals for plumbing, electrical, and AC/HVAC services.
+              Book verified professionals for plumbing, electrical, and air conditioner services.
               Quality work, transparent pricing, and our satisfaction guarantee.
             </motion.p>
 

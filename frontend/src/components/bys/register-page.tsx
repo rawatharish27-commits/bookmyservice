@@ -8,13 +8,22 @@ import { Checkbox } from '@/components/ui/checkbox';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,
   Droplets, Zap, Wind, CheckCircle2, Shield, ShieldCheck, BadgeCheck, Clock,
+  Snowflake, Tv, Droplet, Flame, Truck, CookingPot,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const specializations = [
-  { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
-  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-sky-500 via-blue-500 to-yellow-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Wiring, switches, fixtures' },
-  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
+  { value: 'air-conditioner', label: 'Air Conditioner', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'AC repair & maintenance' },
+  { value: 'refrigerator', label: 'Refrigerator', Icon: Snowflake, color: 'from-sky-500 via-blue-500 to-cyan-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-sky-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Fridge repair & service' },
+  { value: 'washing-machine', label: 'Washing Machine', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Washer repair & service' },
+  { value: 'kitchen-appliances', label: 'Kitchen Appliances', Icon: CookingPot, color: 'from-amber-500 via-orange-500 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Chimney, hob, microwave' },
+  { value: 'tv-repair', label: 'TV Repair', Icon: Tv, color: 'from-rose-500 via-pink-500 to-red-400', bgColor: 'bg-rose-50 border-rose-200', activeBg: 'bg-rose-100 border-rose-400 ring-2 ring-rose-300', textColor: 'text-rose-700', desc: 'LED, LCD, OLED repair' },
+  { value: 'water-purifier', label: 'Water Purifier', Icon: Droplet, color: 'from-cyan-500 via-teal-500 to-emerald-400', bgColor: 'bg-cyan-50 border-cyan-200', activeBg: 'bg-cyan-100 border-cyan-400 ring-2 ring-cyan-300', textColor: 'text-cyan-700', desc: 'RO, UV filter service' },
+  { value: 'geyser', label: 'Geyser', Icon: Flame, color: 'from-red-500 via-orange-500 to-amber-400', bgColor: 'bg-red-50 border-red-200', activeBg: 'bg-red-100 border-red-400 ring-2 ring-red-300', textColor: 'text-red-700', desc: 'Water heater service' },
+  { value: 'plumber', label: 'Plumber', Icon: Droplets, color: 'from-blue-600 via-blue-500 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
+  { value: 'electrician', label: 'Electrician', Icon: Zap, color: 'from-sky-500 via-blue-500 to-yellow-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Wiring, switches, fixtures' },
+  { value: 'water-tank-cleaning', label: 'Water Tank Cleaning', Icon: Droplet, color: 'from-blue-500 via-indigo-500 to-violet-400', bgColor: 'bg-indigo-50 border-indigo-200', activeBg: 'bg-indigo-100 border-indigo-400 ring-2 ring-indigo-300', textColor: 'text-indigo-700', desc: 'Tank cleaning & sanitation' },
+  { value: 'movers-and-packers', label: 'Movers and Packers', Icon: Truck, color: 'from-emerald-500 via-green-500 to-teal-400', bgColor: 'bg-emerald-50 border-emerald-200', activeBg: 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-300', textColor: 'text-emerald-700', desc: 'Relocation & packing' },
 ];
 
 const roleOptions = [
@@ -479,7 +488,7 @@ export function RegisterPage() {
                       className="space-y-2"
                     >
                       <Label className="text-sm font-medium text-foreground/80">Specialization</Label>
-                      <div className="grid grid-cols-3 gap-2.5">
+                      <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-4">
                         {specializations.map((spec) => {
                           const isActive = specialization === spec.value;
                           return (

@@ -25,14 +25,16 @@ import { jwtVerify } from 'jose'
 
 // ─── Configuration ──────────────────────────────────────────────────────
 const PORT = 3003
-const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
+const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'development' ? 'dev-secret-key' : (() => { throw new Error('JWT_SECRET environment variable is required in production') })())
 
 // Allowed CORS origins — matches main API service
+// Additional origins can be added via ALLOWED_ORIGINS env var (comma-separated)
 const ALLOWED_ORIGINS = [
   'https://bookmyservice.pages.dev',
   'https://bookyourservice.co.in',
   'https://www.bookyourservice.co.in',
   'https://bookmyservice-eta.vercel.app',
+  ...(process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean) : []),
 ]
 
 function isOriginAllowed(origin: string): boolean {
@@ -322,10 +324,13 @@ if (globalForHot.__trackingIo) {
   io = new SocketIOServer(httpServer, {
     cors: {
       origin: (origin: string, callback: (err: Error | null, allow?: boolean) => void) => {
-        // Allow requests with no origin (e.g., mobile apps, curl)
+        // Allow requests with no origin (e.g., mobile apps, curl, server-to-server)
         if (!origin) return callback(null, true)
         if (isOriginAllowed(origin)) return callback(null, true)
-        // In development, be permissive
+        // In production, reject unknown origins; in development, allow all
+        if (process.env.NODE_ENV === 'production') {
+          return callback(new Error('Origin not allowed'), false)
+        }
         callback(null, true)
       },
       methods: ['GET', 'POST'],
@@ -398,7 +403,7 @@ io.use(async (socket, next) => {
 
 // ─── Socket Event Handlers ─────────────────────────────────────────────
 io.on('connection', (socket) => {
-  const { userId, role, roleId } = socket.data as AuthPayload
+  const { sub: userId, role, roleId } = socket.data as AuthPayload
   console.log(`🔌 Client connected: ${userId} (${role}) [socket=${socket.id}]`)
 
   // Auto-join user's personal room for push notifications

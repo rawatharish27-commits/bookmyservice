@@ -16,12 +16,18 @@ export async function generateInvoice(
   data: Record<string, any>
 ): Promise<{ success: boolean; invoiceUrl?: string }> {
   try {
-    // TODO: Generate PDF invoice using a library like pdfkit or puppeteer
-    // For now, create a mock invoice record
+    // In production, invoice generation must be properly configured
+    // For now, this is a placeholder — fail in production if not implemented
+    if (process.env.NODE_ENV === 'production') {
+      console.error(`📄 [INVOICE] Invoice generation is not yet implemented. Cannot generate invoice for booking ${bookingId} in production.`)
+      return { success: false }
+    }
+
+    // Development mode: create a mock invoice record
     const invoiceId = `inv_${Date.now()}_${bookingId.slice(-6)}`
     const invoiceUrl = `/invoices/${invoiceId}.pdf`
 
-    console.log(`📄 [INVOICE] Generated: ${invoiceId} for booking: ${bookingId}`, {
+    console.log(`📄 [INVOICE] Generated (mock): ${invoiceId} for booking: ${bookingId}`, {
       amount: data.finalPrice || data.basePrice,
       service: data.serviceName,
       client: data.clientName,

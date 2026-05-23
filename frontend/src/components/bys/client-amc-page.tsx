@@ -78,9 +78,17 @@ interface AMCPlan {
 
 /* ---------- category config ---------- */
 const CATEGORY_ICONS: Record<string, { icon: typeof Wrench; gradient: string }> = {
+  AIR_CONDITIONER: { icon: Wind, gradient: 'from-teal-400 to-emerald-500' },
   PLUMBING: { icon: Droplets, gradient: 'from-blue-400 to-cyan-500' },
   ELECTRICAL: { icon: Zap, gradient: 'from-cyan-400 to-yellow-500' },
-  HVAC: { icon: Wind, gradient: 'from-teal-400 to-emerald-500' },
+  REFRIGERATOR: { icon: Wrench, gradient: 'from-sky-400 to-blue-500' },
+  WASHING_MACHINE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
+  KITCHEN_APPLIANCES: { icon: Wrench, gradient: 'from-amber-400 to-orange-500' },
+  TV_REPAIR: { icon: Wrench, gradient: 'from-rose-400 to-pink-500' },
+  WATER_PURIFIER: { icon: Droplets, gradient: 'from-cyan-400 to-teal-500' },
+  GEYSER: { icon: Wrench, gradient: 'from-red-400 to-orange-500' },
+  WATER_TANK_CLEANING: { icon: Droplets, gradient: 'from-blue-400 to-indigo-500' },
+  MOVERS_AND_PACKERS: { icon: Wrench, gradient: 'from-emerald-400 to-green-500' },
   APPLIANCE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
   GENERAL: { icon: Shield, gradient: 'from-emerald-400 to-teal-500' },
 };
