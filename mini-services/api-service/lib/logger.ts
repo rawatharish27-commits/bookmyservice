@@ -607,6 +607,91 @@ export function getLogMetrics(): {
   }
 }
 
+// ═══════════════════════════════════════════════════════════════════════
+// ─── PII REDACTION ─────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Redacts Personally Identifiable Information (PII) from log messages.
+ * Removes emails, phone numbers, passwords, tokens, Aadhaar, and PAN numbers.
+ */
+export function redactPII(input: string | null | undefined): string | null | undefined {
+  if (input === null) return null
+  if (input === undefined) return undefined
+  if (typeof input !== 'string') return input
+
+  let result = input
+
+  // Redact email addresses
+  result = result.replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[REDACTED_EMAIL]')
+
+  // Redact phone numbers (with country code like +91xxxxxxxxxx or 0xxxxxxxxxx)
+  result = result.replace(/(?:\+91|0)?[6-9]\d{9}/g, '[REDACTED_PHONE]')
+
+  // Redact sensitive field values in JSON-like strings
+  const sensitiveFields = ['password', 'passwd', 'pwd', 'secret', 'apiKey', 'api_key', 'accessToken', 'access_token', 'refreshToken', 'refresh_token']
+  for (const field of sensitiveFields) {
+    const regex = new RegExp(`"${field}"\\s*:\\s*"[^"]*"`, 'gi')
+    result = result.replace(regex, `"${field}":"[REDACTED_${field.toUpperCase()}]"`)
+    // Also handle key=value format
+    const kvRegex = new RegExp(`${field}\\s*=\\s*\\S+`, 'gi')
+    result = result.replace(kvRegex, `${field}=[REDACTED_${field.toUpperCase()}]`)
+  }
+
+  // Redact token values (token=abc123, bearer tokens)
+  result = result.replace(/\btoken\s*=\s*\S+/gi, 'token=[REDACTED_TOKEN]')
+  result = result.replace(/\bBearer\s+\S+/gi, 'Bearer [REDACTED_TOKEN]')
+
+  // Redact Aadhaar-like numbers (4 digits space 4 digits space 4 digits, or 12 consecutive digits)
+  result = result.replace(/\b\d{4}\s\d{4}\s\d{4}\b/g, '[REDACTED_AADHAAR]')
+  result = result.replace(/\b(?=\d{12}\b)\d{12}\b/g, '[REDACTED_AADHAAR]')
+
+  // Redact PAN-like numbers (5 uppercase letters + 4 digits + 1 uppercase letter)
+  result = result.replace(/\b[A-Z]{5}\d{4}[A-Z]\b/g, '[REDACTED_PAN]')
+
+  return result
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── PER-MODULE LOG LEVELS ─────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+const moduleLogLevels: Record<string, string> = {}
+const moduleLoggerCache: Record<string, winston.Logger> = {}
+
+/**
+ * Sets the log level for a specific module.
+ */
+export function setModuleLogLevel(module: string, level: string): void {
+  moduleLogLevels[module] = level
+  // Invalidate cache so next getModuleLogger creates a fresh instance
+  delete moduleLoggerCache[module]
+}
+
+/**
+ * Returns a copy of all module log levels.
+ */
+export function getModuleLogLevels(): Record<string, string> {
+  return { ...moduleLogLevels }
+}
+
+/**
+ * Returns a logger for a specific module (cached).
+ * Uses the module-specific level if set, otherwise defaults to 'info'.
+ */
+export function getModuleLogger(module: string): winston.Logger {
+  if (moduleLoggerCache[module]) {
+    return moduleLoggerCache[module]
+  }
+
+  const level = moduleLogLevels[module] || 'info'
+  const modLogger = logger.child({ module, level })
+  modLogger.level = level
+
+  moduleLoggerCache[module] = modLogger
+  return modLogger
+}
+
 /**
  * Forces flush of all buffered log entries to disk/transport.
  * Winston doesn't have a direct flush API, but we can force-close and recreate,
