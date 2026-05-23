@@ -1,3 +1,21 @@
+/**
+ * BookMyService API — Main Entry Point
+ *
+ * This file is the SLIM ASSEMBLY POINT for the entire API.
+ * All business logic lives in:
+ *   - routes/       → Route handlers organized by domain
+ *   - lib/          → Shared utilities, integrations, helpers
+ *   - middleware/    → CORS, rate limiting, security, error handling
+ *   - bootstrap.ts  → Startup, DB init, queue init, graceful shutdown
+ *   - validators/   → Zod schemas for input validation
+ *   - workers/      → Background job processors
+ *   - queues/       → BullMQ queue management
+ *
+ * Architecture: Controller-Route pattern
+ *   index.ts (this file) → mounts route modules onto the Hono app
+ *   Each route file exports a Hono router with full paths
+ */
+
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
@@ -79,218 +97,30 @@ setInterval(() => {
   }
 }, 10 * 60 * 1000)
 
-// ─── Fix SSL for hosted PostgreSQL (Supabase, Render, etc.) ─────────────
-// Newer pg (v8.20+) / pg-connection-string treat sslmode=require as verify-full,
-// which fails with self-signed certs. Force sslmode=no-verify for compatibility.
-if (process.env.DATABASE_URL) {
-  // Remove any existing sslmode param (require, verify-full, etc.) and replace with no-verify
-  let url = process.env.DATABASE_URL.replace(/[?&]sslmode=[^&]*/gi, '')
-  const separator = url.includes('?') ? '&' : '?'
-  process.env.DATABASE_URL = url + `${separator}sslmode=no-verify`
-}
+// ─── Bootstrap: startup, DB init, queues, graceful shutdown ──────────────
+import { bootstrap } from './bootstrap'
 
-// ─── Initialize Sentry (before crash handlers) ─────────────────────────
-initSentry()
-startMemoryMonitoring()
+// ─── Middleware: CORS, security, rate limits, error handler ──────────────
+import { applyMiddleware } from './middleware'
 
-// ─── Pass pool reference to notification worker (for FCM token lookup) ──
-// We set this after pool is created below, but register the function first
+// ─── Route Modules ───────────────────────────────────────────────────────
+import { healthRoutes } from './routes/health.routes'
+import { legalRoutes } from './routes/legal.routes'
+import { authRoutes } from './routes/auth.routes'
+import { serviceRoutes } from './routes/service.routes'
+import { bookingRoutes } from './routes/booking.routes'
+import { adminRoutes } from './routes/admin.routes'
+import { hyperlocalRoutes } from './routes/hyperlocal.routes'
+import { referralRoutes } from './routes/referral.routes'
+import { franchiseRoutes } from './routes/franchise.routes'
+import { technicianRoutes } from './routes/technician.routes'
+import { uploadRoutes } from './routes/upload.routes'
+import { deviceRoutes } from './routes/device.routes'
+import { paymentRoutes } from './routes/payment.routes'
+import { recommendationRoutes } from './routes/recommendation.routes'
+import { trackingRoutes } from './routes/tracking.routes'
 
-// ─── Process crash protection ───────────────────────────────────────────
-process.on('uncaughtException', (err) => {
-  logger.error('Uncaught Exception (non-fatal)', { error: err.message, stack: err.stack })
-  captureApiError(err, { method: 'process', path: 'uncaughtException' })
-})
-process.on('unhandledRejection', (reason) => {
-  logger.error('Unhandled Rejection (non-fatal)', { reason: String(reason) })
-  captureApiError(reason instanceof Error ? reason : new Error(String(reason)), { method: 'process', path: 'unhandledRejection' })
-})
-
-// ─── Database Connection Pool ───────────────────────────────────────────
-// Supabase / Render PostgreSQL requires SSL. Use sslmode=no-verify for
-// hosted databases with self-signed certs (Supabase pooler, etc.).
-function getPoolSSLConfig() {
-  const dbUrl = process.env.DATABASE_URL || ''
-  // If sslmode is explicitly set in the URL, respect it
-  if (dbUrl.includes('sslmode=')) return false // let the URL param handle it
-  // Default: enable SSL with relaxed verification for hosted databases
-  return { rejectUnauthorized: false }
-}
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: getPoolSSLConfig(),
-  max: 3,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-})
-
-// Prevent idle client errors from crashing the process
-pool.on('error', (err) => {
-  logger.error('Idle pool client error', { error: err.message })
-  captureDbError(err, { operation: 'idle_pool' })
-})
-
-// ─── Pass pool to notification worker for FCM token lookup ─────────────
-setNotificationWorkerPool(pool)
-
-// Verify database connection on startup
-pool.query('SELECT 1 as ok').then(async () => {
-  console.log('✅ Database connected successfully');
-  // Seed Role table if empty — critical for registration to work
-  try {
-    const roleCount = await pool.query('SELECT COUNT(*) as count FROM "Role"')
-    if (parseInt(roleCount.rows[0].count) === 0) {
-      console.log('🔧 Seeding Role table...');
-      await pool.query(`
-        INSERT INTO "Role" (id, name, description, "createdAt") VALUES
-        (1, 'CLIENT', 'Customer who books services', NOW()),
-        (2, 'PROVIDER', 'Service provider', NOW()),
-        (3, 'ADMIN', 'Platform administrator', NOW()),
-        (4, 'TECHNICIAN', 'Field technician', NOW()),
-        (5, 'VENDOR', 'Vendor/supplier', NOW()),
-        (6, 'FRANCHISE', 'Franchise owner', NOW()),
-        (7, 'SUB_ADMIN', 'Sub administrator', NOW()),
-        (8, 'AREA_MANAGER', 'Area manager', NOW()),
-        (9, 'MANAGER', 'Manager', NOW()),
-        (10, 'LOCAL_ADMIN', 'Local administrator', NOW())
-        ON CONFLICT (id) DO NOTHING
-      `)
-      // Reset the ID sequence if needed
-      await pool.query(`SELECT setval('"Role_id_seq"', (SELECT MAX(id) FROM "Role"))`).catch(() => {})
-      console.log('✅ Role table seeded successfully');
-    }
-  } catch (seedError: any) {
-    console.error('⚠️  Role seeding error (non-fatal):', seedError.message);
-  }
-  // Apply performance indexes (non-fatal, safe to re-run)
-  try {
-    await applyDatabaseIndexes(pool)
-  } catch (idxError: any) {
-    console.error('⚠️  Index creation error (non-fatal):', idxError.message);
-  }
-  // Enable PostGIS for geospatial queries (non-fatal)
-  try {
-    const { setupPostGIS } = await import('./lib/postgis')
-    await setupPostGIS(pool)
-  } catch (pgErr: any) {
-    console.error('⚠️  PostGIS setup error (non-fatal):', pgErr.message)
-  }
-  // Create DeviceToken table for FCM push notifications (non-fatal)
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS "DeviceToken" (
-        id TEXT PRIMARY KEY,
-        "userId" TEXT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
-        token TEXT NOT NULL,
-        platform TEXT DEFAULT 'unknown',
-        "appVersion" TEXT,
-        "isActive" BOOLEAN DEFAULT true,
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "updatedAt" TIMESTAMP DEFAULT NOW()
-      );
-    `)
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_device_token_userId ON "DeviceToken" ("userId");')
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_device_token_token ON "DeviceToken" (token);')
-    console.log('✅ DeviceToken table ensured')
-  } catch (dtErr: any) {
-    console.error('⚠️  DeviceToken table creation error (non-fatal):', dtErr.message)
-  }
-  // Create BackupRecord table for database backup system (non-fatal)
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS "BackupRecord" (
-        id TEXT PRIMARY KEY,
-        timestamp TIMESTAMP NOT NULL DEFAULT NOW(),
-        status TEXT NOT NULL DEFAULT 'IN_PROGRESS',
-        "totalTables" INT DEFAULT 0,
-        "totalRows" INT DEFAULT 0,
-        "sizeBytes" INT DEFAULT 0,
-        duration INT DEFAULT 0,
-        "storageLocation" TEXT DEFAULT 'database',
-        data TEXT,
-        error TEXT,
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "updatedAt" TIMESTAMP DEFAULT NOW()
-      );
-    `)
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_backup_record_timestamp ON "BackupRecord" (timestamp DESC);')
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_backup_record_status ON "BackupRecord" (status);')
-    console.log('✅ BackupRecord table ensured')
-  } catch (brErr: any) {
-    console.error('⚠️  BackupRecord table creation error (non-fatal):', brErr.message)
-  }
-  // Create Payment table for Razorpay payment records (non-fatal)
-  try {
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS "Payment" (
-        id TEXT PRIMARY KEY,
-        "orderId" TEXT,
-        "paymentId" TEXT,
-        "bookingId" TEXT NOT NULL,
-        "userId" TEXT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
-        amount DECIMAL(12,2) NOT NULL DEFAULT 0,
-        currency TEXT DEFAULT 'INR',
-        status TEXT NOT NULL DEFAULT 'PENDING',
-        method TEXT,
-        signature TEXT,
-        "refundId" TEXT,
-        "refundAmount" DECIMAL(12,2) DEFAULT 0,
-        "refundStatus" TEXT,
-        metadata JSONB DEFAULT '{}',
-        "createdAt" TIMESTAMP DEFAULT NOW(),
-        "updatedAt" TIMESTAMP DEFAULT NOW()
-      );
-    `)
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_bookingId ON "Payment" ("bookingId");')
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_userId ON "Payment" ("userId");')
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_status ON "Payment" (status);')
-    await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_orderId ON "Payment" ("orderId");')
-    console.log('✅ Payment table ensured')
-  } catch (payErr: any) {
-    console.error('⚠️  Payment table creation error (non-fatal):', payErr.message)
-  }
-  // Initialize backup system (daily at 2 AM IST)
-  try {
-    initBackupSystem(pool, {
-      enabled: true,
-      schedule: '0 2 * * *',
-      retentionDays: 30,
-      compression: true,
-    })
-    console.log('✅ Backup system initialized — daily at 2:00 AM')
-    // Run cleanup for old backups on startup
-    const cleaned = await cleanupOldBackups(pool)
-    if (cleaned > 0) console.log(`🧹 Cleaned up ${cleaned} old backup(s) on startup`)
-  } catch (backupErr: any) {
-    console.error('⚠️  Backup system initialization error (non-fatal):', backupErr.message)
-  }
-}).catch((e) => {
-  logger.error('Database connection failed', { error: e.message });
-  captureDbError(e, { operation: 'startup_connection' })
-});
-
-// ─── Initialize Queue System ────────────────────────────────────────────
-initializeQueues().then(() => startWorkers()).catch((err) => {
-  console.warn('📮 Queue system initialization failed (non-fatal):', err.message)
-})
-
-// ─── Graceful Shutdown ──────────────────────────────────────────────────
-process.on('SIGTERM', async () => {
-  logger.info('SIGTERM received — shutting down gracefully')
-  stopMemoryMonitoring()
-  stopBackupScheduler()
-  await shutdownQueues()
-  process.exit(0)
-})
-process.on('SIGINT', async () => {
-  logger.info('SIGINT received — shutting down gracefully')
-  stopMemoryMonitoring()
-  stopBackupScheduler()
-  await shutdownQueues()
-  process.exit(0)
-})
-
+// ─── Create Hono App ────────────────────────────────────────────────────
 const app = new Hono()
 
 // ─── JWT SECRET — FAIL HARD IN PRODUCTION ──────────────────────────────────
@@ -5206,11 +5036,18 @@ app.all('/api/*', (c) => {
   return c.json({ error: 'Endpoint not found', path: c.req.path }, 404)
 })
 
-const port = Number(process.env.PORT || 3001)
+// ─── Bootstrap & Start Server ───────────────────────────────────────────
+const PORT = parseInt(process.env.PORT || '3001', 10)
 
-console.log(`🚀 API Server is running on http://localhost:${port}`)
+;(async () => {
+  // Run startup: Sentry, DB, queues, backups, graceful shutdown handlers
+  await bootstrap()
 
-serve({
-  fetch: app.fetch,
-  port,
-})
+  serve({ fetch: app.fetch, port: PORT }, (info) => {
+    console.log(`🚀 BookMyService API running on http://localhost:${info.port}`)
+    console.log(`   Health: http://localhost:${info.port}/api/health`)
+    console.log(`   Routes: 15 domain modules mounted`)
+  })
+})()
+
+export default app

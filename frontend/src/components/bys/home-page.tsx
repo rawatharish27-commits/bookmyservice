@@ -55,7 +55,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { COMPANY_INFO } from '@/config/company';
-import { ROLE_DASHBOARD_MAP } from '@/App';
+import { ROLE_DASHBOARD_MAP } from '@/routes/access-control';
 import { AiRecommendationsSection } from '@/components/bys/ai-recommendations-section';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -334,9 +334,11 @@ export function HomePage() {
   // Data fetching
   const { data: categoriesData, loading: categoriesLoading } = useApi<{ categories: Category[]; total: number }>('/api/categories');
   const { data: servicesData, loading: servicesLoading } = useApi<{ services: ServiceItem[]; pagination: { total: number } }>('/api/services?limit=6');
+  const { data: testimonialsData } = useApi<{ testimonials: Testimonial[] }>('/api/testimonials?limit=5');
 
   const categories = categoriesData?.categories || [];
   const services = servicesData?.services || [];
+  const testimonials = testimonialsData?.testimonials || [];
 
   // Location from useGeolocation hook
   const geo = useGeolocation();
@@ -683,7 +685,7 @@ export function HomePage() {
           <div className="absolute -bottom-20 -right-20 size-[700px] rounded-full bg-gradient-to-tl from-[#1e3a5f]/25 to-slate-400/10 blur-3xl" />
           <motion.div className="absolute -left-20 -top-20 size-96 rounded-full bg-sky-400/[0.06]" animate={{ x: [0, 50, 0], y: [0, -40, 0] }} transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut' }} />
           <motion.div className="absolute -bottom-10 right-10 size-72 rounded-full bg-[#2d5a8e]/[0.06]" animate={{ x: [0, -40, 0], y: [0, 40, 0] }} transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }} />
-          {Array.from({ length: 20 }).map((_, i) => {
+          {Array.from({ length: 5 }).map((_, i) => {
             const seed = (i * 2654435761) >>> 0;
             return (
               <motion.div
@@ -709,7 +711,7 @@ export function HomePage() {
 
               <motion.h1 variants={fadeUp} custom={1} className="text-4xl font-extrabold leading-[1.1] tracking-tight text-white sm:text-5xl lg:text-6xl">
                 Expert{' '}
-                <RotatingText words={['AC Repair', 'Plumbing', 'Electrical', 'Appliance Repair']} />
+                <RotatingText words={['Air Conditioner', 'Plumber', 'Electrician', 'Water Purifier']} />
                 <br />
                 <span className="bg-gradient-to-r from-sky-300 via-blue-200 to-cyan-300 bg-clip-text text-transparent" style={{ textShadow: '0 0 40px rgba(30,58,95,0.5)' }}>at Your Doorstep</span>
               </motion.h1>

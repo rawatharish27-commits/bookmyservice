@@ -373,12 +373,12 @@ function OverviewTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Top Row - Key Metrics (1-6) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Total Users" value={d.totalUsers.toLocaleString()} icon={Users} iconColor="text-emerald-600" borderClass="border-l-emerald-500" trend="up" trendValue="+8.2%" />
+        <MetricCard title="Total Users" value={d.totalUsers.toLocaleString()} icon={Users} iconColor="text-emerald-600" borderClass="border-l-emerald-500" />
         <MetricCard title="Providers" value={d.totalProviders.toLocaleString()} icon={Briefcase} iconColor="text-blue-600" borderClass="border-l-blue-500" subtitle={`${d.pendingServiceApprovals} pending`} />
         <MetricCard title="Clients" value={d.totalClients.toLocaleString()} icon={UserCheck} iconColor="text-violet-600" borderClass="border-l-violet-500" />
         <MetricCard title="Technicians" value={d.totalTechnicians} icon={Wrench} iconColor="text-orange-600" borderClass="border-l-orange-500" />
         <MetricCard title="Total Bookings" value={d.totalBookings.toLocaleString()} icon={CalendarCheck} iconColor="text-purple-600" borderClass="border-l-purple-500" subtitle={`${d.pendingBookings} pending`} />
-        <MetricCard title="Total Revenue" value={`₹${d.totalRevenue.toLocaleString()}`} icon={DollarSign} iconColor="text-yellow-600" borderClass="border-l-yellow-500" trend="up" trendValue="+12.4%" />
+        <MetricCard title="Total Revenue" value={`₹${d.totalRevenue.toLocaleString()}`} icon={DollarSign} iconColor="text-yellow-600" borderClass="border-l-yellow-500" />
       </div>
 
       {/* Second Row - Status Metrics (7-12) */}
@@ -523,9 +523,9 @@ function RevenueTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Revenue Metrics (13-18) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Revenue Today" value={`₹${fin.revenueToday.toLocaleString()}`} icon={DollarSign} iconColor="text-emerald-600" borderClass="border-l-emerald-500" trend="up" trendValue="+5.2%" />
-        <MetricCard title="Revenue This Week" value={`₹${fin.revenueWeek.toLocaleString()}`} icon={TrendingUp} iconColor="text-blue-600" borderClass="border-l-blue-500" trend="up" trendValue="+12.4%" />
-        <MetricCard title="Revenue This Month" value={`₹${(fin.revenueMonth / 100000).toFixed(1)}L`} icon={BarChart3} iconColor="text-violet-600" borderClass="border-l-violet-500" trend="up" trendValue="+8.7%" />
+        <MetricCard title="Revenue Today" value={`₹${fin.revenueToday.toLocaleString()}`} icon={DollarSign} iconColor="text-emerald-600" borderClass="border-l-emerald-500" />
+        <MetricCard title="Revenue This Week" value={`₹${fin.revenueWeek.toLocaleString()}`} icon={TrendingUp} iconColor="text-blue-600" borderClass="border-l-blue-500" />
+        <MetricCard title="Revenue This Month" value={`₹${(fin.revenueMonth / 100000).toFixed(1)}L`} icon={BarChart3} iconColor="text-violet-600" borderClass="border-l-violet-500" />
         <MetricCard title="Commission Earned" value={`₹${fin.commissionEarned.toLocaleString()}`} icon={Banknote} iconColor="text-green-600" borderClass="border-l-green-500" />
         <MetricCard title="Pending Payouts" value={`₹${fin.pendingPayouts.toLocaleString()}`} icon={Clock} iconColor="text-orange-600" borderClass="border-l-orange-500" />
         <MetricCard title="Completed Payouts" value={`₹${(fin.completedPayouts / 100000).toFixed(1)}L`} icon={CheckCircle2} iconColor="text-emerald-600" borderClass="border-l-emerald-400" />
@@ -582,19 +582,23 @@ function RevenueTab({ d }: { d: TabData }) {
           <CardTitle className="text-sm font-semibold">Revenue by City</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
-            {fin.revenueByCity.map((c, i) => (
-              <div key={c.city} className="flex items-center gap-3 rounded-lg border p-3">
-                <div className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : i === 2 ? 'bg-amber-700' : 'bg-muted'}`}>
-                  {i + 1}
+          {fin.revenueByCity.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">No city revenue data available</p>
+          ) : (
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-5">
+              {fin.revenueByCity.map((c, i) => (
+                <div key={c.city} className="flex items-center gap-3 rounded-lg border p-3">
+                  <div className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : i === 2 ? 'bg-amber-700' : 'bg-muted'}`}>
+                    {i + 1}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">{c.city}</p>
+                    <p className="text-xs text-muted-foreground">₹{(c.revenue / 1000).toFixed(0)}k</p>
+                  </div>
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{c.city}</p>
-                  <p className="text-xs text-muted-foreground">₹{(c.revenue / 1000).toFixed(0)}k</p>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
@@ -607,7 +611,7 @@ function UsersTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* User Metrics (25-31) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <MetricCard title="New Users Today" value={u.newUsersToday} icon={UserPlus} iconColor="text-emerald-600" borderClass="border-l-emerald-500" trend="up" trendValue="+15%" />
+        <MetricCard title="New Users Today" value={u.newUsersToday} icon={UserPlus} iconColor="text-emerald-600" borderClass="border-l-emerald-500" />
         <MetricCard title="Active Users (7d)" value={u.activeUsers7d.toLocaleString()} icon={Activity} iconColor="text-blue-600" borderClass="border-l-blue-500" />
         <MetricCard title="Verified Providers" value={u.verifiedProviders} icon={UserCheck} iconColor="text-green-600" borderClass="border-l-green-500" />
         <MetricCard title="Pending Providers" value={u.pendingProviders} icon={Clock} iconColor="text-yellow-600" borderClass="border-l-yellow-500" />
@@ -658,23 +662,27 @@ function UsersTab({ d }: { d: TabData }) {
             <CardTitle className="text-sm font-semibold">Top Rated Providers</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="max-h-64">
-              {u.topRatedProviders.map((p, i) => (
-                <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
-                  <div className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : 'bg-amber-700'}`}>
-                    {i + 1}
+            {u.topRatedProviders.length === 0 ? (
+              <p className="p-6 text-center text-sm text-muted-foreground">No provider data available</p>
+            ) : (
+              <ScrollArea className="max-h-64">
+                {u.topRatedProviders.map((p, i) => (
+                  <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
+                    <div className={`flex size-8 items-center justify-center rounded-full text-xs font-bold text-white ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : 'bg-amber-700'}`}>
+                      {i + 1}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">{p.name}</p>
+                      <p className="text-xs text-muted-foreground">{p.jobs} jobs completed</p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Star className="size-4 fill-yellow-400 text-yellow-400" />
+                      <span className="text-sm font-semibold">{p.rating}</span>
+                    </div>
                   </div>
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">{p.jobs} jobs completed</p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="size-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-semibold">{p.rating}</span>
-                  </div>
-                </div>
-              ))}
-            </ScrollArea>
+                ))}
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
 
@@ -705,11 +713,11 @@ function BookingsTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Booking Metrics (34-39) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Bookings Today" value={b.bookingsToday} icon={CalendarCheck} iconColor="text-emerald-600" borderClass="border-l-emerald-500" trend="up" trendValue="+7.3%" />
-        <MetricCard title="Success Rate" value={`${b.successRate}%`} icon={CheckCircle2} iconColor="text-green-600" borderClass="border-l-green-500" trend="up" trendValue="+0.8%" />
+        <MetricCard title="Bookings Today" value={b.bookingsToday} icon={CalendarCheck} iconColor="text-emerald-600" borderClass="border-l-emerald-500" />
+        <MetricCard title="Success Rate" value={`${b.successRate}%`} icon={CheckCircle2} iconColor="text-green-600" borderClass="border-l-green-500" />
         <MetricCard title="Avg. Booking Value" value={`₹${b.avgBookingValue.toLocaleString()}`} icon={DollarSign} iconColor="text-blue-600" borderClass="border-l-blue-500" />
         <MetricCard title="Emergency Bookings" value={b.emergencyBookings} icon={Zap} iconColor="text-orange-600" borderClass="border-l-orange-500" />
-        <MetricCard title="Cancelled" value={b.cancelledBookings} icon={XCircle} iconColor="text-red-600" borderClass="border-l-red-500" trend="down" trendValue="-2.1%" />
+        <MetricCard title="Cancelled" value={b.cancelledBookings} icon={XCircle} iconColor="text-red-600" borderClass="border-l-red-500" />
         <MetricCard title="Avg. Completion" value={b.avgCompletionTime} icon={Timer} iconColor="text-violet-600" borderClass="border-l-violet-500" />
       </div>
 
@@ -757,22 +765,26 @@ function BookingsTab({ d }: { d: TabData }) {
             <CardTitle className="text-sm font-semibold">Most Booked Categories</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="max-h-64">
-              {b.mostBookedCategories.map((c, i) => {
-                const maxBookings = b.mostBookedCategories[0]?.bookings || 1;
-                return (
-                  <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium">{c.name}</p>
-                        <span className="text-sm font-semibold">{c.bookings}</span>
+            {b.mostBookedCategories.length === 0 ? (
+              <p className="p-6 text-center text-sm text-muted-foreground">No category data available</p>
+            ) : (
+              <ScrollArea className="max-h-64">
+                {b.mostBookedCategories.map((c, i) => {
+                  const maxBookings = b.mostBookedCategories[0]?.bookings || 1;
+                  return (
+                    <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium">{c.name}</p>
+                          <span className="text-sm font-semibold">{c.bookings}</span>
+                        </div>
+                        <Progress value={(c.bookings / maxBookings) * 100} className="mt-1.5 h-1.5" />
                       </div>
-                      <Progress value={(c.bookings / maxBookings) * 100} className="mt-1.5 h-1.5" />
                     </div>
-                  </div>
-                );
-              })}
-            </ScrollArea>
+                  );
+                })}
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
 
@@ -781,22 +793,26 @@ function BookingsTab({ d }: { d: TabData }) {
             <CardTitle className="text-sm font-semibold">Most Booked Services</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="max-h-64">
-              {b.mostBookedServices.map((s, i) => {
-                const maxBookings = b.mostBookedServices[0]?.bookings || 1;
-                return (
-                  <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium">{s.name}</p>
-                        <span className="text-sm font-semibold">{s.bookings}</span>
+            {b.mostBookedServices.length === 0 ? (
+              <p className="p-6 text-center text-sm text-muted-foreground">No service data available</p>
+            ) : (
+              <ScrollArea className="max-h-64">
+                {b.mostBookedServices.map((s, i) => {
+                  const maxBookings = b.mostBookedServices[0]?.bookings || 1;
+                  return (
+                    <div key={i} className="flex items-center gap-3 border-b p-3 last:border-0">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-medium">{s.name}</p>
+                          <span className="text-sm font-semibold">{s.bookings}</span>
+                        </div>
+                        <Progress value={(s.bookings / maxBookings) * 100} className="mt-1.5 h-1.5" />
                       </div>
-                      <Progress value={(s.bookings / maxBookings) * 100} className="mt-1.5 h-1.5" />
                     </div>
-                  </div>
-                );
-              })}
-            </ScrollArea>
+                  );
+                })}
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
       </div>
@@ -828,17 +844,21 @@ function OperationsTab({ d }: { d: TabData }) {
           </CardHeader>
           <Separator />
           <CardContent className="p-0">
-            <ScrollArea className="max-h-80">
-              {op.recentAdminActions.map((a, i) => (
-                <div key={i} className="flex items-center justify-between border-b p-3 last:border-0">
-                  <div className="min-w-0 flex-1">
-                    <p className="text-sm font-medium">{a.action}</p>
-                    <p className="text-xs text-muted-foreground">{a.user} · {a.time}</p>
+            {op.recentAdminActions.length === 0 ? (
+              <p className="p-6 text-center text-sm text-muted-foreground">No admin actions recorded</p>
+            ) : (
+              <ScrollArea className="max-h-80">
+                {op.recentAdminActions.map((a, i) => (
+                  <div key={i} className="flex items-center justify-between border-b p-3 last:border-0">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium">{a.action}</p>
+                      <p className="text-xs text-muted-foreground">{a.user} · {a.time}</p>
+                    </div>
+                    <AdminActionTypeBadge type={a.type} />
                   </div>
-                  <AdminActionTypeBadge type={a.type} />
-                </div>
-              ))}
-            </ScrollArea>
+                ))}
+              </ScrollArea>
+            )}
           </CardContent>
         </Card>
 
@@ -900,39 +920,21 @@ function SecurityTab({ d }: { d: TabData }) {
           <Separator />
           <CardContent className="p-0">
             <ScrollArea className="max-h-64">
-              {/* TODO: Replace with real security alerts from backend */}
-              <div className="flex items-center gap-3 border-b p-3">
-                <div className="rounded-full bg-red-100 p-2"><ShieldAlert className="size-4 text-red-600" /></div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Multiple failed login attempts from IP 192.168.x.x</p>
-                  <p className="text-xs text-muted-foreground">5 min ago · High severity</p>
+              {sec.suspiciousActivities === 0 ? (
+                <div className="flex flex-col items-center gap-2 p-6">
+                  <ShieldAlert className="size-8 text-muted-foreground/40" />
+                  <p className="text-sm text-muted-foreground">No security alerts</p>
                 </div>
-                <Badge variant="outline" className="border-red-200 bg-red-50 text-red-700">Critical</Badge>
-              </div>
-              <div className="flex items-center gap-3 border-b p-3">
-                <div className="rounded-full bg-orange-100 p-2"><AlertTriangle className="size-4 text-orange-600" /></div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Unusual API request pattern detected</p>
-                  <p className="text-xs text-muted-foreground">23 min ago · Medium severity</p>
+              ) : (
+                <div className="flex items-center gap-3 border-b p-3">
+                  <div className="rounded-full bg-orange-100 p-2"><ShieldAlert className="size-4 text-orange-600" /></div>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium">{sec.suspiciousActivities} suspicious activities detected</p>
+                    <p className="text-xs text-muted-foreground">Review recommended</p>
+                  </div>
+                  <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">Warning</Badge>
                 </div>
-                <Badge variant="outline" className="border-orange-200 bg-orange-50 text-orange-700">Warning</Badge>
-              </div>
-              <div className="flex items-center gap-3 border-b p-3">
-                <div className="rounded-full bg-yellow-100 p-2"><Bell className="size-4 text-yellow-600" /></div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">New device login for admin account</p>
-                  <p className="text-xs text-muted-foreground">1 hr ago · Low severity</p>
-                </div>
-                <Badge variant="outline" className="border-yellow-200 bg-yellow-50 text-yellow-700">Info</Badge>
-              </div>
-              <div className="flex items-center gap-3 p-3">
-                <div className="rounded-full bg-yellow-100 p-2"><Lock className="size-4 text-yellow-600" /></div>
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm font-medium">Password change request for Provider #P-892</p>
-                  <p className="text-xs text-muted-foreground">2 hrs ago · Low severity</p>
-                </div>
-                <Badge variant="outline" className="border-yellow-200 bg-yellow-50 text-yellow-700">Info</Badge>
-              </div>
+              )}
             </ScrollArea>
           </CardContent>
         </Card>
@@ -944,18 +946,22 @@ function SecurityTab({ d }: { d: TabData }) {
           <Separator />
           <CardContent className="p-0">
             <ScrollArea className="max-h-64">
-              {sec.dataExportStatus.map((exp, i) => (
-                <div key={i} className="flex items-center justify-between border-b p-3 last:border-0">
-                  <div className="flex items-center gap-3">
-                    <Download className="size-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{exp.name}</p>
-                      <p className="text-xs text-muted-foreground">{exp.time}</p>
+              {sec.dataExportStatus.length === 0 ? (
+                <p className="p-6 text-center text-sm text-muted-foreground">No data exports</p>
+              ) : (
+                sec.dataExportStatus.map((exp, i) => (
+                  <div key={i} className="flex items-center justify-between border-b p-3 last:border-0">
+                    <div className="flex items-center gap-3">
+                      <Download className="size-4 text-muted-foreground" />
+                      <div>
+                        <p className="text-sm font-medium">{exp.name}</p>
+                        <p className="text-xs text-muted-foreground">{exp.time}</p>
+                      </div>
                     </div>
+                    <StatusBadge status={exp.status} />
                   </div>
-                  <StatusBadge status={exp.status} />
-                </div>
-              ))}
+                ))
+              )}
             </ScrollArea>
           </CardContent>
         </Card>
@@ -969,27 +975,13 @@ function SecurityTab({ d }: { d: TabData }) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {/* TODO: Replace with real session data from backend */}
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Client Sessions</span>
-                <span className="text-sm font-semibold">623</span>
-              </div>
-              <Progress value={73} className="h-2" />
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Provider Sessions</span>
-                <span className="text-sm font-semibold">198</span>
-              </div>
-              <Progress value={23} className="h-2" />
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Admin Sessions</span>
-                <span className="text-sm font-semibold">5</span>
-              </div>
-              <Progress value={4} className="h-2" />
-              <Separator />
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Total Active</span>
+                <span className="text-sm text-muted-foreground">Total Active Sessions</span>
                 <span className="text-sm font-bold">{sec.activeSessions.toLocaleString()}</span>
               </div>
+              {sec.activeSessions > 0 && (
+                <Progress value={Math.min(sec.activeSessions, 100)} className="h-2" />
+              )}
             </div>
           </CardContent>
         </Card>
@@ -1000,40 +992,13 @@ function SecurityTab({ d }: { d: TabData }) {
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
-              {/* TODO: Replace with real audit data from backend */}
-              <div className="flex items-center justify-between rounded-lg bg-green-50 p-3">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="size-4 text-green-600" />
-                  <span className="text-sm font-medium">Approved Actions</span>
-                </div>
-                <span className="text-sm font-bold text-green-700">18</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-blue-50 p-3">
-                <div className="flex items-center gap-2">
-                  <RefreshCcw className="size-4 text-blue-600" />
-                  <span className="text-sm font-medium">Updates Made</span>
-                </div>
-                <span className="text-sm font-bold text-blue-700">9</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-red-50 p-3">
-                <div className="flex items-center gap-2">
-                  <Ban className="size-4 text-red-600" />
-                  <span className="text-sm font-medium">Suspended/Rejected</span>
-                </div>
-                <span className="text-sm font-bold text-red-700">4</span>
-              </div>
-              <div className="flex items-center justify-between rounded-lg bg-purple-50 p-3">
-                <div className="flex items-center gap-2">
-                  <CreditCard className="size-4 text-purple-600" />
-                  <span className="text-sm font-medium">Refunds Processed</span>
-                </div>
-                <span className="text-sm font-bold text-purple-700">3</span>
-              </div>
-              <Separator />
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-muted-foreground">Total Actions Today</span>
+                <span className="text-sm font-medium text-muted-foreground">Total Admin Actions Today</span>
                 <span className="text-sm font-bold">{sec.adminActionsToday}</span>
               </div>
+              {sec.adminActionsToday === 0 && (
+                <p className="text-xs text-muted-foreground">No admin actions recorded today</p>
+              )}
             </div>
           </CardContent>
         </Card>

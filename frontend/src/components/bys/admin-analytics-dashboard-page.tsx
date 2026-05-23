@@ -284,19 +284,19 @@ export function AdminAnalyticsDashboardPage() {
         { name: 'Cancelled', value: stats?.totalBookings ? Math.round(stats.totalBookings * 0.08) : 0 },
       ];
 
-  // Simulated user growth data (would come from real API)
-  const userGrowthData = monthlyRevenue.map((m, i) => ({
+  // User growth data from API or zero defaults
+  const userGrowthData = data?.userGrowth || monthlyRevenue.map((m) => ({
     month: m.month,
-    users: Math.round((stats?.activeUsers || 0) * (0.6 + i * 0.04)),
+    users: 0,
   }));
 
-  // Simulated daily bookings (last 30 days)
-  const dailyBookingsData = Array.from({ length: 30 }).map((_, i) => {
+  // Daily bookings from API or zero defaults
+  const dailyBookingsData = data?.dailyBookings || Array.from({ length: 30 }).map((_, i) => {
     const date = new Date();
     date.setDate(date.getDate() - (29 - i));
     return {
       date: date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }),
-      bookings: Math.round((stats?.totalBookings || 0) / 30 * (0.5 + Math.random() * 1)),
+      bookings: 0,
     };
   });
 

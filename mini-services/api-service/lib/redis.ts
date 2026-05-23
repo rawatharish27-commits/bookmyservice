@@ -864,3 +864,347 @@ export const CacheTTL = {
   SESSION: 900_000,     // 15 minutes — session data (matches JWT)
   POPULAR: 3_600_000,   // 1 hour — popular searches persist longer
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Pub/Sub Support ───────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** In-memory pub/sub fallback for cross-instance cache invalidation */
+const memorySubscriptions = new Map<string, Set<(message: string) => void>>()
+
+/**
+ * Publish a message to a channel for cross-instance cache invalidation.
+ * Uses Redis Pub/Sub when available, falls back to in-memory only.
+ *
+ * @param channel - The channel to publish to
+ * @param message - The message to publish (typically JSON string)
+ * @returns Number of subscribers that received the message
+ */
+export async function publish(channel: string, message: string): Promise<number> {
+  // In-memory subscribers (always work)
+  const localSubs = memorySubscriptions.get(channel)
+  if (localSubs) {
+    for (const callback of localSubs) {
+      try {
+        callback(message)
+      } catch (err: any) {
+        console.warn(`📦 Redis publish: in-memory subscriber error on ${channel}:`, err.message)
+      }
+    }
+  }
+
+  // Redis Pub/Sub
+  try {
+    if (redis.isConnected && (redis as any).client) {
+      const client = (redis as any).client as RedisClientType
+      return await client.publish(channel, message)
+    }
+  } catch (err: any) {
+    console.warn(`📦 Redis publish ${channel} failed:`, err.message)
+  }
+
+  return localSubs?.size || 0
+}
+
+/**
+ * Subscribe to a channel for cross-instance cache invalidation.
+ * Uses Redis Pub/Sub when available, also works in-memory.
+ *
+ * @param channel - The channel to subscribe to
+ * @param callback - Function called when a message is received
+ */
+export async function subscribe(channel: string, callback: (message: string) => void): Promise<void> {
+  // Register in-memory subscription
+  if (!memorySubscriptions.has(channel)) {
+    memorySubscriptions.set(channel, new Set())
+  }
+  memorySubscriptions.get(channel)!.add(callback)
+
+  // Also subscribe via Redis if available
+  try {
+    if (redis.isConnected && (redis as any).client) {
+      // Redis subscribers need a dedicated client (can't use the same one for commands)
+      // We create a separate subscriber client lazily
+      if (!pubSubSubscriber) {
+        const redisUrl = process.env.REDIS_URL
+        if (redisUrl) {
+          const { createClient } = await import('redis')
+          pubSubSubscriber = createClient({ url: redisUrl }) as RedisClientType
+          pubSubSubscriber.on('error', (err: any) => {
+            console.warn('📦 Redis Pub/Sub subscriber error:', err.message)
+          })
+          await pubSubSubscriber.connect()
+        }
+      }
+
+      if (pubSubSubscriber) {
+        await pubSubSubscriber.subscribe(channel, (message) => {
+          try {
+            callback(message)
+          } catch (err: any) {
+            console.warn(`📦 Redis subscribe callback error on ${channel}:`, err.message)
+          }
+        })
+      }
+    }
+  } catch (err: any) {
+    console.warn(`📦 Redis subscribe ${channel} failed:`, err.message)
+  }
+}
+
+/** Lazy-initialized dedicated Redis subscriber client */
+let pubSubSubscriber: RedisClientType | null = null
+
+/**
+ * Unsubscribe from a channel.
+ *
+ * @param channel - The channel to unsubscribe from
+ */
+export async function unsubscribe(channel: string): Promise<void> {
+  // Remove in-memory subscription
+  memorySubscriptions.delete(channel)
+
+  // Also unsubscribe from Redis
+  try {
+    if (pubSubSubscriber) {
+      await pubSubSubscriber.unsubscribe(channel)
+    }
+  } catch (err: any) {
+    console.warn(`📦 Redis unsubscribe ${channel} failed:`, err.message)
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Tag TTL Management ────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Store a JSON value in cache with associated tags for invalidation,
+ * and set TTL on tag hash entries to prevent orphaned tag entries.
+ *
+ * @param key - The cache key
+ * @param value - The value to cache
+ * @param tags - Tags to associate with this key for group invalidation
+ * @param ttlMs - TTL for the cache entry itself
+ * @param tagTTL - TTL for tag tracking entries (defaults to ttlMs + 5 min buffer)
+ */
+export async function setJsonWithTags<T>(
+  key: string,
+  value: T,
+  tags: string[],
+  ttlMs?: number,
+  tagTTL?: number
+): Promise<void> {
+  // Store the JSON value
+  await redis.setJson(key, value, ttlMs)
+
+  // Tag the key with TTL on tag entries
+  if (tags && tags.length > 0) {
+    const effectiveTagTTL = tagTTL || (ttlMs ? ttlMs + 300_000 : 3_600_000) // default 1h tag TTL
+
+    try {
+      if (redis.isConnected && (redis as any).client) {
+        const client = (redis as any).client as RedisClientType
+        const pipeline = client.multi()
+        for (const tag of tags) {
+          const tagKey = `__tag:${tag}`
+          pipeline.hSet(tagKey, { [key]: '1' })
+          pipeline.expire(tagKey, Math.ceil(effectiveTagTTL / 1000))
+        }
+        await pipeline.exec()
+        return
+      }
+    } catch (err: any) {
+      console.warn(`📦 Redis setJsonWithTags ${key} failed:`, err.message)
+    }
+
+    // In-memory fallback
+    const tagStore = (redis as any).tagStore as Map<string, Set<string>>
+    for (const tag of tags) {
+      if (!tagStore.has(tag)) {
+        tagStore.set(tag, new Set())
+      }
+      tagStore.get(tag)!.add(key)
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: MGET/Pipeline Support ─────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Batch-read multiple JSON values from cache.
+ * Uses Redis MGET when available, falls back to sequential gets.
+ *
+ * @param keys - Array of cache keys to read
+ * @returns Array of parsed values (null for missing keys), same order as input keys
+ */
+export async function mgetJson<T>(keys: string[]): Promise<(T | null)[]> {
+  if (!keys || keys.length === 0) return []
+
+  // Redis MGET
+  try {
+    if (redis.isConnected && (redis as any).client) {
+      const client = (redis as any).client as RedisClientType
+      const results = await client.mGet(keys)
+      return results.map((raw: string | null) => {
+        if (!raw) return null
+        try {
+          return JSON.parse(raw) as T
+        } catch {
+          return null
+        }
+      })
+    }
+  } catch (err: any) {
+    console.warn(`📦 Redis mgetJson failed:`, err.message)
+  }
+
+  // In-memory fallback: sequential gets
+  const results: (T | null)[] = []
+  for (const key of keys) {
+    results.push(await redis.getJson<T>(key))
+  }
+  return results
+}
+
+/**
+ * Pipeline operation types for batch writes.
+ */
+export type PipelineOperation =
+  | { type: 'set'; key: string; value: string; ttlMs?: number }
+  | { type: 'del'; key: string }
+  | { type: 'incr'; key: string }
+  | { type: 'expire'; key: string; ttlMs: number }
+
+/**
+ * Execute multiple cache operations in a single pipeline/transaction.
+ * Uses Redis pipeline when available, falls back to sequential operations.
+ *
+ * @param operations - Array of pipeline operations to execute
+ * @returns Array of results (null for operations without return values)
+ */
+export async function pipeline(operations: PipelineOperation[]): Promise<any[]> {
+  if (!operations || operations.length === 0) return []
+
+  // Redis pipeline
+  try {
+    if (redis.isConnected && (redis as any).client) {
+      const client = (redis as any).client as RedisClientType
+      const pl = client.multi()
+
+      for (const op of operations) {
+        switch (op.type) {
+          case 'set':
+            if (op.ttlMs) {
+              pl.set(op.key, op.value, { PX: op.ttlMs })
+            } else {
+              pl.set(op.key, op.value)
+            }
+            break
+          case 'del':
+            pl.del(op.key)
+            break
+          case 'incr':
+            pl.incr(op.key)
+            break
+          case 'expire':
+            pl.expire(op.key, Math.ceil(op.ttlMs / 1000))
+            break
+        }
+      }
+
+      return await pl.exec()
+    }
+  } catch (err: any) {
+    console.warn(`📦 Redis pipeline failed:`, err.message)
+  }
+
+  // In-memory fallback: sequential operations
+  const results: any[] = []
+  for (const op of operations) {
+    switch (op.type) {
+      case 'set':
+        await redis.set(op.key, op.value, op.ttlMs)
+        results.push('OK')
+        break
+      case 'del':
+        await redis.del(op.key)
+        results.push(1)
+        break
+      case 'incr':
+        results.push(await redis.incr(op.key))
+        break
+      case 'expire':
+        await redis.expire(op.key, op.ttlMs)
+        results.push('OK')
+        break
+    }
+  }
+  return results
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Cache Metrics ─────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/** In-memory metrics counters */
+const cacheMetrics = {
+  hits: 0,
+  misses: 0,
+  totalLatencyMs: 0,
+  operations: 0,
+}
+
+/**
+ * Record a cache hit for metrics.
+ */
+export function recordCacheHit(latencyMs: number): void {
+  cacheMetrics.hits++
+  cacheMetrics.totalLatencyMs += latencyMs
+  cacheMetrics.operations++
+}
+
+/**
+ * Record a cache miss for metrics.
+ */
+export function recordCacheMiss(latencyMs: number): void {
+  cacheMetrics.misses++
+  cacheMetrics.totalLatencyMs += latencyMs
+  cacheMetrics.operations++
+}
+
+/**
+ * Get cache performance metrics.
+ *
+ * @returns Object with hit/miss counts, hit rate, average latency, and fallback mode status
+ */
+export function getCacheMetrics(): {
+  hits: number
+  misses: number
+  hitRate: number
+  avgLatencyMs: number
+  fallbackMode: boolean
+} {
+  const total = cacheMetrics.hits + cacheMetrics.misses
+  return {
+    hits: cacheMetrics.hits,
+    misses: cacheMetrics.misses,
+    hitRate: total > 0 ? Math.round((cacheMetrics.hits / total) * 10000) / 100 : 0,
+    avgLatencyMs: cacheMetrics.operations > 0
+      ? Math.round(cacheMetrics.totalLatencyMs / cacheMetrics.operations * 100) / 100
+      : 0,
+    fallbackMode: !redis.isConnected,
+  }
+}
+
+/**
+ * Reset cache metrics counters.
+ */
+export function resetCacheMetrics(): void {
+  cacheMetrics.hits = 0
+  cacheMetrics.misses = 0
+  cacheMetrics.totalLatencyMs = 0
+  cacheMetrics.operations = 0
+}

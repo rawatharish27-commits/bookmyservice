@@ -23,7 +23,6 @@ import {
   BarChart3,
   ShieldCheck,
   Clock,
-  AlertTriangle,
   Loader2,
 } from 'lucide-react';
 

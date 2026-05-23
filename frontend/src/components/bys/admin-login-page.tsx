@@ -4,7 +4,7 @@ import { useApp } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { ROLE_DASHBOARD_MAP } from '@/App';
+import { ROLE_DASHBOARD_MAP } from '@/routes/access-control';
 import type { Page } from '@/contexts/app-context';
 import { toast } from 'sonner';
 import {

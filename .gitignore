@@ -78,3 +78,5 @@ upload/
 
 # Skills directory
 /skills/
+# Runtime artifacts
+.zscripts/

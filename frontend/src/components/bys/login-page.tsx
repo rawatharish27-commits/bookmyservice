@@ -16,7 +16,7 @@ import {
 import { useApiMutation, useApi } from '@/hooks/use-api';
 import { apiUrl } from '@/lib/api-url';
 import type { Page } from '@/contexts/app-context';
-import { ROLE_DASHBOARD_MAP } from '@/App';
+import { ROLE_DASHBOARD_MAP } from '@/routes/access-control';
 import { toast } from 'sonner';
 import {
   Wrench, User, Briefcase, Mail, Lock, Eye, EyeOff, Loader2, ArrowLeft,

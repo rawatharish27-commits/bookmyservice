@@ -12,16 +12,20 @@
  *   - Each booking gets a room: `booking:{bookingId}`
  *   - Each user gets a room: `user:{userId}`
  *   - Admin gets a room: `admin:notifications`
+ *   - Redis adapter (optional) for horizontal scaling via pub/sub
+ *   - Redis-backed location store for cross-instance location retrieval
  *
- * Database Tables (auto-created on startup):
- *   - LiveTechnicianLocation — latest GPS position per provider/technician
- *   - BookingTracking — location history per booking
- *   - BookingTimeline — status change events per booking
+ * Modules:
+ *   - config.ts         — Configuration constants (PORT, JWT_SECRET, REDIS_URL, etc.)
+ *   - database.ts       — PostgreSQL pool, table creation, DB helpers
+ *   - auth.ts           — JWT verification for socket connections
+ *   - handlers.ts       — Socket event handlers + in-memory liveLocations
+ *   - redis-adapter.ts  — Redis Socket.IO adapter + location store
+ *   - index.ts          — Entry point (this file) — assembles all modules
  */
 
 import { Server as SocketIOServer } from 'socket.io'
-import { Pool } from 'pg'
-import { jwtVerify } from 'jose'
+import { createServer, IncomingMessage, ServerResponse } from 'http'
 
 // ─── Configuration ──────────────────────────────────────────────────────
 const PORT = 3003
@@ -288,8 +292,6 @@ const liveLocations = new Map<string, {
 // server remains bound to the port while the new module re-registers
 // event handlers on the existing Socket.IO instance via globalThis.
 
-import { createServer, IncomingMessage, ServerResponse } from 'http'
-
 const globalForHot = globalThis as any
 
 let io: SocketIOServer
@@ -304,20 +306,41 @@ if (globalForHot.__trackingIo) {
 
   // Add health check endpoint to the HTTP server BEFORE attaching Socket.IO
   // This ensures our handler runs first for HTTP requests
-  httpServer.on('request', (req: IncomingMessage, res: ServerResponse) => {
+  httpServer.on('request', async (req: IncomingMessage, res: ServerResponse) => {
     if (req.url === '/health' || req.url === '/') {
+      const adapterStatus = getAdapterStatus()
+      const redisPingOk = adapterStatus.active ? await pingRedis().catch(() => false) : null
+      const activeBookings = await getActiveLocationBookings().catch(() => [])
+
       res.writeHead(200, { 'Content-Type': 'application/json' })
       res.end(JSON.stringify({
         status: 'ok',
         service: 'tracking-service',
-        version: '1.0.0',
-        port: PORT,
-        database: dbAvailable ? 'connected' : 'unavailable',
-        connectedSockets: 0, // will be updated by the io instance
-        activeBookingRooms: 0,
+        version: '2.1.0',
+        port: config.PORT,
+        database: isDbAvailable() ? 'connected' : 'unavailable',
+        redisAdapter: {
+          active: adapterStatus.active,
+          connected: adapterStatus.connected,
+          pubClientReady: adapterStatus.pubClientReady,
+          subClientReady: adapterStatus.subClientReady,
+          locationStore: adapterStatus.locationStoreActive ? 'active' : 'inactive',
+          redisPing: redisPingOk === true ? 'pong' : redisPingOk === false ? 'failed' : 'n/a',
+          reconnectAttempts: adapterStatus.reconnectAttempts,
+          lastError: adapterStatus.lastError,
+        },
+        connectedSockets: io.sockets.sockets.size,
+        activeBookingRooms: countBookingRooms(),
+        redisLocationBookings: activeBookings.length,
         timestamp: new Date().toISOString(),
       }))
       return
+    }
+
+    // 404 for other paths
+    if (!req.url?.startsWith('/socket.io')) {
+      res.writeHead(404, { 'Content-Type': 'application/json' })
+      res.end(JSON.stringify({ error: 'Not found' }))
     }
   })
 
@@ -346,14 +369,30 @@ if (globalForHot.__trackingIo) {
     pingTimeout: 20000,
   })
 
+  // ─── Redis Socket.IO Adapter (optional — for horizontal scaling) ─────
+  // If REDIS_URL is set, use Redis adapter for multi-instance sync.
+  // This enables horizontal scaling — multiple tracking service instances
+  // can broadcast events to each other through Redis pub/sub.
+  // Also enables Redis-backed live location storage for cross-instance
+  // location retrieval when clients join a booking on a different instance.
+  setupRedisAdapter(io).then((success) => {
+    if (success) {
+      console.log('📡 Redis adapter initialized — horizontal scaling enabled')
+    } else {
+      console.log('📡 Running in single-instance mode (no Redis adapter)')
+    }
+  }).catch((err) => {
+    console.warn('📡 Redis adapter setup failed:', (err as Error).message)
+  })
+
   // Bind to port
-  httpServer.listen(PORT, () => {
-    console.log(`🚀 Tracking service started on port ${PORT}`)
+  httpServer.listen(config.PORT, () => {
+    console.log(`🚀 Tracking service started on port ${config.PORT}`)
   })
 
   httpServer.on('error', (err: any) => {
     if (err.code === 'EADDRINUSE') {
-      console.warn(`⚠️  Port ${PORT} already in use — another instance may be running`)
+      console.warn(`⚠️  Port ${config.PORT} already in use — another instance may be running`)
       return
     }
     console.error('🔴 HTTP server error:', err.message)
@@ -362,7 +401,7 @@ if (globalForHot.__trackingIo) {
   // Store for hot reload reuse
   globalForHot.__trackingIo = io
   globalForHot.__trackingHttp = httpServer
-  console.log(`🚀 Tracking service initializing on port ${PORT}`)
+  console.log(`🚀 Tracking service initializing on port ${config.PORT}`)
 }
 
 // ─── Socket Middleware: JWT Authentication ──────────────────────────────
@@ -379,7 +418,7 @@ io.use(async (socket, next) => {
       return next(new Error('Authentication required'))
     }
 
-    const payload = await verifyToken(String(token))
+    const payload = await verifySocketToken(String(token))
     if (!payload) {
       console.warn('🔐 Socket connection rejected — invalid token')
       return next(new Error('Invalid or expired token'))
@@ -401,7 +440,7 @@ io.use(async (socket, next) => {
   }
 })
 
-// ─── Socket Event Handlers ─────────────────────────────────────────────
+// ─── Register Event Handlers ───────────────────────────────────────────
 io.on('connection', (socket) => {
   const { sub: userId, role, roleId } = socket.data as AuthPayload
   console.log(`🔌 Client connected: ${userId} (${role}) [socket=${socket.id}]`)
@@ -618,6 +657,7 @@ io.on('connection', (socket) => {
   })
 })
 
+// ─── Utility ───────────────────────────────────────────────────────────
 function countBookingRooms(): number {
   let count = 0
   for (const room of io.sockets.adapter.rooms.keys()) {
@@ -626,18 +666,12 @@ function countBookingRooms(): number {
   return count
 }
 
-// ─── Graceful Shutdown ──────────────────────────────────────────────────
+// ─── Graceful Shutdown ─────────────────────────────────────────────────
 async function shutdown(signal: string) {
   console.log(`\n🛑 ${signal} received — shutting down tracking service gracefully`)
   io.disconnectSockets(true)
-  if (pool) {
-    try {
-      await pool.end()
-      console.log('✅ Database pool closed')
-    } catch (err: any) {
-      console.error('⚠️  Error closing database pool:', err.message)
-    }
-  }
+  await closeRedisAdapter()
+  await closePool()
   io.close()
   console.log('👋 Tracking service shut down')
   process.exit(0)
@@ -660,6 +694,6 @@ process.on('unhandledRejection', (reason) => {
   console.error('🔴 Unhandled Rejection (non-fatal):', String(reason))
 })
 
-console.log(`✅ Tracking service ready — WebSocket on port ${PORT}`)
-console.log(`   Frontend connects via: io("/?XTransformPort=${PORT}")`)
-console.log(`   Health check: http://localhost:${PORT}/health`)
+console.log(`✅ Tracking service ready — WebSocket on port ${config.PORT}`)
+console.log(`   Frontend connects via: io("/?XTransformPort=${config.PORT}")`)
+console.log(`   Health check: http://localhost:${config.PORT}/health`)

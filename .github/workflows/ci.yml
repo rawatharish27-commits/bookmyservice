@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: |
+          bun install
+          cd mini-services/api-service && bun install
+          cd ../../frontend && bun install
+      - name: Build Frontend
+        run: cd frontend && npx vite build
+
+  test-backend:
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    env:
+      JWT_SECRET: test-secret-key
+      NODE_ENV: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: cd mini-services/api-service && bun install
+      - name: Run tests
+        run: cd mini-services/api-service && npx vitest run
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [test-backend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy notification
+        run: echo "All checks passed — ready for deployment"

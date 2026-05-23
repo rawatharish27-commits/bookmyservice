@@ -117,17 +117,17 @@ async function main() {
   // ========================================
   console.log('📂 Creating service categories...');
   const categoryData = [
-    { name: 'Air Conditioner', slug: 'air-conditioner', icon: 'Wind', imageUrl: '/images/air-conditioner.jpg', description: 'Professional AC repair, installation, and maintenance services for your home' },
-    { name: 'Refrigerator', slug: 'refrigerator', icon: 'Snowflake', imageUrl: '/images/refrigerator.jpg', description: 'Expert refrigerator repair and servicing for all brands and models' },
-    { name: 'Washing Machine', slug: 'washing-machine', icon: 'WashingMachine', imageUrl: '/images/washing-machine.jpg', description: 'Washing machine repair, installation, and maintenance services' },
-    { name: 'Kitchen Appliances', slug: 'kitchen-appliances', icon: 'ChefHat', imageUrl: '/images/kitchen-appliances.jpg', description: 'Repair and servicing for all kitchen appliances including microwave, chimney, and dishwasher' },
-    { name: 'TV Repair', slug: 'tv-repair', icon: 'Tv', imageUrl: '/images/tv-repair.jpg', description: 'LED, LCD, and smart TV repair and installation services' },
-    { name: 'Water Purifier', slug: 'water-purifier', icon: 'Droplets', imageUrl: '/images/water-purifier.jpg', description: 'RO, UV, and UF water purifier installation, repair, and maintenance services' },
-    { name: 'Geyser', slug: 'geyser', icon: 'Flame', imageUrl: '/images/geyser.jpg', description: 'Water geyser and heater repair, installation, and servicing' },
-    { name: 'Plumber', slug: 'plumber', icon: 'Wrench', imageUrl: '/images/plumber.jpg', description: 'Professional plumbing services for leaks, pipes, drains, and fixtures' },
-    { name: 'Electrician', slug: 'electrician', icon: 'Zap', imageUrl: '/images/electrician.jpg', description: 'Licensed electrical services for wiring, fixtures, and safety' },
-    { name: 'Water Tank Cleaning', slug: 'water-tank-cleaning', icon: 'Droplet', imageUrl: '/images/water-tank-cleaning.jpg', description: 'Professional water tank cleaning and sanitization services' },
-    { name: 'Movers and Packers', slug: 'movers-and-packers', icon: 'Truck', imageUrl: '/images/movers-and-packers.jpg', description: 'Reliable packing, moving, and relocation services for homes and offices' },
+    { name: 'AIR_CONDITIONER', slug: 'air-conditioner', icon: 'Wind', imageUrl: '/images/air-conditioner.jpg', description: 'Professional AC repair, installation, and maintenance services for your home' },
+    { name: 'REFRIGERATOR', slug: 'refrigerator', icon: 'Snowflake', imageUrl: '/images/refrigerator.jpg', description: 'Expert refrigerator repair and servicing for all brands and models' },
+    { name: 'WASHING_MACHINE', slug: 'washing-machine', icon: 'WashingMachine', imageUrl: '/images/washing-machine.jpg', description: 'Washing machine repair, installation, and maintenance services' },
+    { name: 'KITCHEN_APPLIANCES', slug: 'kitchen-appliances', icon: 'ChefHat', imageUrl: '/images/kitchen-appliances.jpg', description: 'Repair and servicing for all kitchen appliances including microwave, chimney, and dishwasher' },
+    { name: 'TV_REPAIR', slug: 'tv-repair', icon: 'Tv', imageUrl: '/images/tv-repair.jpg', description: 'LED, LCD, and smart TV repair and installation services' },
+    { name: 'WATER_PURIFIER', slug: 'water-purifier', icon: 'Droplets', imageUrl: '/images/water-purifier.jpg', description: 'RO, UV, and UF water purifier installation, repair, and maintenance services' },
+    { name: 'GEYSER', slug: 'geyser', icon: 'Flame', imageUrl: '/images/geyser.jpg', description: 'Water geyser and heater repair, installation, and servicing' },
+    { name: 'PLUMBER', slug: 'plumber', icon: 'Wrench', imageUrl: '/images/plumber.jpg', description: 'Professional plumbing services for leaks, pipes, drains, and fixtures' },
+    { name: 'ELECTRICIAN', slug: 'electrician', icon: 'Zap', imageUrl: '/images/electrician.jpg', description: 'Licensed electrical services for wiring, fixtures, and safety' },
+    { name: 'WATER_TANK_CLEANING', slug: 'water-tank-cleaning', icon: 'Droplet', imageUrl: '/images/water-tank-cleaning.jpg', description: 'Professional water tank cleaning and sanitization services' },
+    { name: 'MOVERS_AND_PACKERS', slug: 'movers-and-packers', icon: 'Truck', imageUrl: '/images/movers-and-packers.jpg', description: 'Reliable packing, moving, and relocation services for homes and offices' },
   ];
 
   const categories: Record<string, any> = {};
@@ -364,7 +364,7 @@ IMPORTANT NOTICE: PLEASE READ THIS ACCEPTABLE USAGE POLICY AND TERMS OF SERVICE 
 6. SERVICE LISTING RULES
 6.1 Service Providers may only list services within the approved categories on the Platform: Air Conditioner, Refrigerator, Washing Machine, Kitchen Appliances, TV Repair, Water Purifier, Geyser, Plumber, Electrician, Water Tank Cleaning, and Movers and Packers. Listing services outside these categories is prohibited.
 6.2 Service listings must include accurate and complete information, including but not limited to: service title, detailed description, base price (in INR), estimated service duration, service area (city and radius), and availability schedule.
-6.3 Providers must not list services that they are not qualified, licensed, or legally permitted to perform. For example, only licensed electricians may list electrical services, and only certified HVAC technicians may list AC gas refilling services.
+6.3 Providers must not list services that they are not qualified, licensed, or legally permitted to perform. For example, only licensed electricians may list electrical services, and only certified technicians may list specialized repair services.
 6.4 Service descriptions must not contain misleading claims, guarantees of results, or pricing that does not reflect the actual cost. "Bait and switch" pricing tactics are strictly prohibited.
 6.5 Providers must set fair and reasonable prices. The Company reserves the right to delist services with prices that are demonstrably exploitative or significantly deviate from market rates without justification.
 6.6 Providers may mark prices as "Negotiable" if they are open to discussion with Clients. However, the base price must still represent a good-faith estimate of the service cost.

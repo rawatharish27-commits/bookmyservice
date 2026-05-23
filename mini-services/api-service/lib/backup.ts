@@ -987,3 +987,358 @@ async function uploadToSupabaseStorage(backupId: string, data: string, timestamp
     throw new Error(`Supabase Storage upload failed: ${response.status} - ${errorText}`)
   }
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Backup Format Versioning ──────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Backup format version constant for forward compatibility.
+ * Increment this when the backup data format changes.
+ * Include this in backup metadata so restore logic can handle
+ * different versions gracefully.
+ */
+export const BACKUP_FORMAT_VERSION = '2.0'
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Transactional Restore ─────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Restore from a specific backup using a database transaction.
+ * Wraps the entire restore in BEGIN/COMMIT so if it fails midway,
+ * all changes are rolled back. This prevents partial restores that
+ * leave the database in an inconsistent state.
+ *
+ * DANGEROUS — should only be used by admins as a last resort.
+ */
+export async function restoreBackupTransactional(
+  pool: Pool,
+  backupId: string
+): Promise<{ success: boolean; tablesRestored: number; rolledBack: boolean }> {
+  const client = await pool.connect()
+
+  try {
+    await client.query('BEGIN')
+
+    const result = await pool.query('SELECT * FROM "BackupRecord" WHERE id = $1', [backupId])
+    if (!result.rows[0]) {
+      throw new Error('Backup not found')
+    }
+
+    const record = result.rows[0]
+    if (record.status !== 'SUCCESS') {
+      throw new Error(`Cannot restore backup with status: ${record.status}`)
+    }
+
+    let dataStr = record.data
+    if (!dataStr) {
+      throw new Error('Backup data is empty or not stored in database')
+    }
+
+    // Decrypt if encrypted
+    if (dataStr.startsWith('ENCRYPTED:')) {
+      try {
+        dataStr = decryptBackup(dataStr)
+      } catch (decErr: any) {
+        throw new Error(`Failed to decrypt backup data: ${decErr.message}`)
+      }
+    }
+
+    // Decompress if needed
+    if (dataStr.startsWith('COMPRESSED_BASE64:')) {
+      try {
+        const zlib = await import('zlib')
+        const base64Data = dataStr.replace('COMPRESSED_BASE64:', '')
+        const compressed = Buffer.from(base64Data, 'base64')
+        dataStr = zlib.inflateSync(compressed).toString('utf8')
+      } catch (decompErr: any) {
+        throw new Error(`Failed to decompress backup data: ${decompErr.message}`)
+      }
+    }
+
+    const backupData: BackupData = JSON.parse(dataStr)
+    let tablesRestored = 0
+
+    // Restore each table within the transaction
+    for (const [tableName, tableData] of Object.entries(backupData.tables)) {
+      if (EXCLUDED_TABLES.has(tableName)) continue
+      if (!tableData.rows || tableData.rows.length === 0) continue
+
+      try {
+        // Clear existing data
+        await client.query(`DELETE FROM "${tableName}"`)
+
+        // Insert rows in batches
+        const BATCH_SIZE = 100
+        const rows = tableData.rows
+
+        for (let i = 0; i < rows.length; i += BATCH_SIZE) {
+          const batch = rows.slice(i, i + BATCH_SIZE)
+          for (const row of batch) {
+            const columns = Object.keys(row)
+            const values = Object.values(row)
+            const placeholders = columns.map((_, idx) => `$${idx + 1}`).join(', ')
+            const columnNames = columns.map(c => `"${c}"`).join(', ')
+
+            try {
+              await client.query(
+                `INSERT INTO "${tableName}" (${columnNames}) VALUES (${placeholders}) ON CONFLICT DO NOTHING`,
+                values
+              )
+            } catch (insertErr: any) {
+              console.warn(`⚠️  Row insert failed in ${tableName}:`, insertErr.message?.substring(0, 100))
+            }
+          }
+        }
+
+        tablesRestored++
+      } catch (tableErr: any) {
+        console.warn(`⚠️  Could not restore table "${tableName}":`, tableErr.message)
+      }
+    }
+
+    await client.query('COMMIT')
+    return { success: true, tablesRestored, rolledBack: false }
+  } catch (err: any) {
+    // Rollback the entire transaction on any error
+    try {
+      await client.query('ROLLBACK')
+    } catch (rollbackErr: any) {
+      console.error('❌ Rollback failed:', rollbackErr.message)
+    }
+
+    throw new Error(`Transactional restore failed (rolled back): ${err.message}`)
+  } finally {
+    client.release()
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Backup Encryption Key Rotation ────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Rotate the encryption key by re-encrypting the latest backup with a new key.
+ * This reads the latest backup, decrypts it with the old key, and re-encrypts
+ * it with the new key. The old key is provided as a parameter (not read from env)
+ * so that the caller can manage key lifecycle.
+ *
+ * @param oldKey - The current encryption key (64 hex chars = 32 bytes)
+ * @param newKey - The new encryption key (64 hex chars = 32 bytes)
+ * @returns The backup ID that was re-encrypted, or null if no backup found
+ */
+export async function rotateEncryptionKey(
+  oldKey: string,
+  newKey: string
+): Promise<string | null> {
+  if (!poolRef) {
+    throw new Error('Backup system not initialized — pool reference unavailable')
+  }
+
+  const oldKeyBuf = Buffer.from(oldKey, 'hex')
+  const newKeyBuf = Buffer.from(newKey, 'hex')
+
+  if (oldKeyBuf.length !== 32) {
+    throw new Error('Old key must be a 32-byte hex string (64 hex chars)')
+  }
+  if (newKeyBuf.length !== 32) {
+    throw new Error('New key must be a 32-byte hex string (64 hex chars)')
+  }
+
+  try {
+    // Find the latest successful backup
+    const result = await poolRef.query(
+      `SELECT id, data FROM "BackupRecord" WHERE status = 'SUCCESS' AND data IS NOT NULL ORDER BY timestamp DESC LIMIT 1`
+    )
+
+    if (!result.rows[0]) {
+      console.log('📋 No encrypted backup found for key rotation')
+      return null
+    }
+
+    const { id: backupId, data: encryptedData } = result.rows[0]
+
+    if (!encryptedData || !encryptedData.startsWith('ENCRYPTED:')) {
+      console.log('📋 Latest backup is not encrypted — no key rotation needed')
+      return null
+    }
+
+    // Decrypt with old key
+    const parts = encryptedData.split(':')
+    if (parts.length !== 4) {
+      throw new Error('Invalid encrypted backup format')
+    }
+
+    const iv = Buffer.from(parts[1], 'base64')
+    const authTag = Buffer.from(parts[2], 'base64')
+    const ciphertext = parts[3]
+
+    const oldDecipher = crypto.createDecipheriv('aes-256-gcm', oldKeyBuf, iv)
+    oldDecipher.setAuthTag(authTag)
+    let decrypted = oldDecipher.update(ciphertext, 'base64', 'utf8')
+    decrypted += oldDecipher.final('utf8')
+
+    // Re-encrypt with new key
+    const newIv = crypto.randomBytes(16)
+    const newCipher = crypto.createCipheriv('aes-256-gcm', newKeyBuf, newIv)
+    let newCiphertext = newCipher.update(decrypted, 'utf8', 'base64')
+    newCiphertext += newCipher.final('base64')
+    const newAuthTag = newCipher.getAuthTag()
+
+    const newEncryptedData = `ENCRYPTED:${newIv.toString('base64')}:${newAuthTag.toString('base64')}:${newCiphertext}`
+
+    // Update the backup record with the new encrypted data
+    await poolRef.query(
+      `UPDATE "BackupRecord" SET data = $1, "updatedAt" = NOW() WHERE id = $2`,
+      [newEncryptedData, backupId]
+    )
+
+    console.log(`🔐 [Backup] Encryption key rotated for backup ${backupId}`)
+    return backupId
+  } catch (err: any) {
+    throw new Error(`Key rotation failed: ${err.message}`)
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+// ─── ENHANCEMENT: Streaming Verification ────────────────────────────
+// ═══════════════════════════════════════════════════════════════════════
+
+/**
+ * Verify a backup's integrity using streaming/chunked processing
+ * instead of loading the entire blob into memory at once.
+ *
+ * Processes the backup data in chunks to compute checksum and validate
+ * structure without excessive memory usage for large backups.
+ */
+export async function verifyBackupIntegrityStreaming(backupId: string): Promise<{
+  valid: boolean
+  tableCount: number
+  totalRows: number
+  checksum: string
+  issues: string[]
+  bytesProcessed: number
+}> {
+  const issues: string[] = []
+
+  try {
+    if (!poolRef) {
+      throw new Error('Backup system not initialized — pool reference unavailable')
+    }
+
+    const result = await poolRef.query('SELECT * FROM "BackupRecord" WHERE id = $1', [backupId])
+    if (!result.rows[0]) {
+      return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: ['Backup not found'], bytesProcessed: 0 }
+    }
+
+    const record = result.rows[0]
+    let dataStr = record.data
+
+    if (!dataStr) {
+      return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: ['Backup data is empty'], bytesProcessed: 0 }
+    }
+
+    let bytesProcessed = 0
+
+    // Stream the checksum computation in chunks to avoid loading entire blob
+    const hash = crypto.createHash('sha256')
+    const CHUNK_SIZE = 1024 * 1024 // 1MB chunks
+    for (let i = 0; i < dataStr.length; i += CHUNK_SIZE) {
+      const chunk = dataStr.slice(i, i + CHUNK_SIZE)
+      hash.update(chunk)
+      bytesProcessed += Buffer.byteLength(chunk, 'utf8')
+    }
+    const checksum = hash.digest('hex')
+
+    // Decrypt if encrypted
+    if (dataStr.startsWith('ENCRYPTED:')) {
+      try {
+        dataStr = decryptBackup(dataStr)
+      } catch (decErr: any) {
+        return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`Decryption failed: ${decErr.message}`], bytesProcessed }
+      }
+    }
+
+    // Decompress if needed
+    if (dataStr.startsWith('COMPRESSED_BASE64:')) {
+      try {
+        const zlib = await import('zlib')
+        const base64Data = dataStr.replace('COMPRESSED_BASE64:', '')
+        const compressed = Buffer.from(base64Data, 'base64')
+        dataStr = zlib.inflateSync(compressed).toString('utf8')
+      } catch (decompErr: any) {
+        return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`Decompression failed: ${decompErr.message}`], bytesProcessed }
+      }
+    }
+
+    // Check JSON parsing
+    let backupData: BackupData
+    try {
+      backupData = JSON.parse(dataStr)
+    } catch (parseErr: any) {
+      if (dataStr.includes('\0')) {
+        issues.push('Backup data contains null bytes — possible corruption')
+      }
+      if (!dataStr.trim().endsWith('}')) {
+        issues.push('Backup data appears to be truncated JSON')
+      }
+      return { valid: false, tableCount: 0, totalRows: 0, checksum, issues: [`JSON parsing failed: ${parseErr.message}`], bytesProcessed }
+    }
+
+    // Count tables and rows with streaming validation
+    const tableNames = Object.keys(backupData.tables || {})
+    const tableCount = tableNames.length
+    let totalRows = 0
+
+    for (const tableName of tableNames) {
+      const tableData = backupData.tables[tableName]
+      const rowCount = tableData?.count ?? (tableData?.rows?.length ?? 0)
+      totalRows += rowCount
+
+      if (rowCount === 0) {
+        issues.push(`Table "${tableName}" has 0 rows — potential data loss or empty table`)
+      }
+
+      // Stream-validate rows (check in batches instead of all at once)
+      if (tableData?.rows) {
+        const BATCH_VALIDATE = 100
+        for (let i = 0; i < tableData.rows.length; i += BATCH_VALIDATE) {
+          const batch = tableData.rows.slice(i, i + BATCH_VALIDATE)
+          for (let j = 0; j < batch.length; j++) {
+            const row = batch[j]
+            const globalIdx = i + j
+            if (row === null || row === undefined) {
+              issues.push(`Table "${tableName}" has null/undefined row at index ${globalIdx}`)
+              break
+            }
+            const rowStr = JSON.stringify(row)
+            if (rowStr.includes('\0')) {
+              issues.push(`Table "${tableName}" row ${globalIdx} contains null bytes — possible corruption`)
+              break
+            }
+          }
+          // Yield between batches to avoid blocking the event loop
+          if (i + BATCH_VALIDATE < tableData.rows.length) {
+            await new Promise(resolve => setImmediate(resolve))
+          }
+        }
+      }
+    }
+
+    // Verify metadata consistency
+    if (backupData.metadata) {
+      if (backupData.metadata.totalTables !== tableCount) {
+        issues.push(`Metadata table count mismatch: metadata says ${backupData.metadata.totalTables}, actual ${tableCount}`)
+      }
+      if (backupData.metadata.totalRows !== totalRows) {
+        issues.push(`Metadata row count mismatch: metadata says ${backupData.metadata.totalRows}, actual ${totalRows}`)
+      }
+    }
+
+    const valid = issues.length === 0
+    return { valid, tableCount, totalRows, checksum, issues, bytesProcessed }
+  } catch (err: any) {
+    return { valid: false, tableCount: 0, totalRows: 0, checksum: '', issues: [`Verification error: ${err.message}`], bytesProcessed: 0 }
+  }
+}

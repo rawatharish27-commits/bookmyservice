@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect, useRef } from 'react';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { AuthProvider, useAuth, ROLE_IDS, ROLE_ID_MAP } from '@/contexts/auth-context';
+import { AuthProvider, useAuth, ROLE_ID_MAP } from '@/contexts/auth-context';
 import { AppProvider, useApp } from '@/contexts/app-context';
 import { Header } from '@/components/bys/header';
 import { Footer } from '@/components/bys/footer';
@@ -362,58 +362,39 @@ const PROTECTED_ROUTES = [
   'admin-dashboard',
 ];
 
+// ---------------------------------------------------------------------------
+// Main router component
+// ---------------------------------------------------------------------------
 function AppRouter() {
   const { nav, navigate } = useApp();
   const { user, token } = useAuth();
   const lastRedirectRef = useRef<string>('');
 
+  // Derive role ID from user object (mirrors the logic previously inline)
+  const userRoleId = user
+    ? (user.roleId ?? ROLE_ID_MAP[user.role ?? ''] ?? 0)
+    : undefined;
+
   // Route guard: check role-based access before rendering
   useEffect(() => {
     const page = nav.page;
+    const isAuthenticated = !!token;
+    const access = isRouteAccessible(page, userRoleId, isAuthenticated);
 
-    // Check if the page requires authentication
-    const isDashboardPage = DASHBOARD_PREFIXES.some(prefix => page.startsWith(prefix));
-    const isProtectedRoute = PROTECTED_ROUTES.includes(page);
+    if (!access.allowed && access.redirectTo) {
+      const redirectKey = access.reason === 'unauthenticated'
+        ? `auth:${page}`
+        : `role:${page}:${userRoleId}`;
 
-    // If not logged in and trying to access a protected page, redirect to login
-    if ((isDashboardPage || isProtectedRoute) && !token) {
-      const redirectKey = `auth:${page}`;
       if (lastRedirectRef.current !== redirectKey) {
         lastRedirectRef.current = redirectKey;
-        navigate('login');
+        navigate(access.redirectTo);
       }
-      return;
-    }
-
-    // If logged in, check role-based access
-    if (user && isDashboardPage) {
-      // Use shared ROLE_ID_MAP instead of duplicating (Old #28 fix)
-      const userRoleId = user.roleId ?? ROLE_ID_MAP[user.role ?? ''] ?? 0;
-
-      for (const [prefix, allowedRoles] of Object.entries(ROLE_ROUTE_PREFIX)) {
-        if (page.startsWith(prefix)) {
-          if (!allowedRoles.includes(userRoleId)) {
-            // User doesn't have the right role, redirect to their own dashboard
-            const dashboard = ROLE_DASHBOARD_MAP[userRoleId] || 'home';
-            const redirectKey = `role:${page}:${userRoleId}`;
-            if (lastRedirectRef.current !== redirectKey) {
-              lastRedirectRef.current = redirectKey;
-              navigate(dashboard as any);
-            }
-          } else {
-            // Valid access, reset redirect ref
-            lastRedirectRef.current = '';
-          }
-          break;
-        }
-      }
-    }
-
-    // Reset redirect ref for public pages (no redirect triggered)
-    if (!isDashboardPage && !isProtectedRoute) {
+    } else if (access.allowed) {
+      // Valid access, reset redirect ref
       lastRedirectRef.current = '';
     }
-  }, [nav.page, user, token, navigate]);
+  }, [nav.page, userRoleId, token, navigate]);
 
   const renderPage = () => {
     // All valid page names for 404 detection
@@ -446,253 +427,24 @@ function AppRouter() {
       'client-commissions',
     ]);
 
-    if (!validPages.has(nav.page)) {
-      return (
-        <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10">
-            <span className="text-4xl font-black text-[#1e3a5f]">404</span>
-          </div>
-          <h1 className="mt-6 text-2xl font-bold text-foreground">Page Not Found</h1>
-          <p className="mt-2 text-muted-foreground">The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
-          <button onClick={() => navigate('home')} className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            Go Home
-          </button>
-        </div>
-      );
+  // Resolve extra props from route config (e.g. `type` for LegalPage)
+  const routeProps = useMemo(() => {
+    const route = ROUTE_MAP.get(nav.page);
+    return route?.props ?? {};
+  }, [nav.page]);
+
+  function renderPage() {
+    // Invalid page → 404
+    if (!VALID_PAGES.has(nav.page) || !LazyComponent) {
+      return <NotFoundPage />;
     }
 
-    switch (nav.page) {
-      // Public pages
-      case 'home':
-        return <HomePage />;
-      case 'categories':
-        return <CategoriesPage />;
-      case 'category-detail':
-        return <CategoryDetailPage />;
-      case 'service-detail':
-        return <ServiceDetailPage />;
-      case 'search':
-        return <SearchPage />;
-      case 'about':
-        return <AboutPage />;
-      case 'how-it-works':
-        return <HowItWorksPage />;
-      case 'faq':
-        return <FaqPage />;
-      case 'contact':
-        return <ContactPage />;
-      case 'terms':
-        return <LegalPage type="terms" />;
-      case 'privacy':
-        return <LegalPage type="privacy" />;
-      case 'refund-policy':
-        return <LegalPage type="refund-policy" />;
-      case 'cookie-policy':
-        return <LegalPage type="cookie-policy" />;
-      case 'aup':
-        return <LegalPage type="aup" />;
-      case 'provider-agreement':
-        return <LegalPage type="provider-agreement" />;
-      case 'community-guidelines':
-        return <LegalPage type="community-guidelines" />;
-
-      // Auth pages
-      case 'login':
-        return <LoginPage />;
-      case 'admin-login':
-        return <AdminLoginPage />;
-      case 'register':
-        return <RegisterPage />;
-
-      // Client pages
-      case 'client-dashboard':
-        return <ClientDashboardPage />;
-      case 'client-bookings':
-        return <ClientBookingsPage />;
-      case 'client-booking-detail':
-        return <ClientBookingDetailPage />;
-      case 'client-profile':
-        return <ClientProfilePage />;
-      case 'client-reviews':
-        return <ClientReviewsPage />;
-      case 'client-favorites':
-        return <ClientFavoritesPage />;
-      case 'client-notifications':
-        return <ClientNotificationsPage />;
-
-      // Client enhanced pages
-      case 'client-wallet':
-        return <ClientWalletPage />;
-      case 'client-amc':
-        return <ClientAmcPage />;
-      case 'client-amc-detail':
-        return <ClientAmcDetailPage />;
-      case 'client-coupons':
-        return <ClientCouponsPage />;
-      case 'client-referrals':
-        return <ClientReferralsPage />;
-      case 'client-invoices':
-        return <ClientInvoicesPage />;
-      case 'client-invoice-detail':
-        return <ClientInvoiceDetailPage />;
-
-      // Booking pages
-      case 'booking':
-        return <BookingPage />;
-      case 'booking-confirmation':
-        return <BookingConfirmationPage />;
-
-      // Payment & Tracking pages
-      case 'client-payment':
-        return <PaymentPage />;
-      case 'booking-tracking':
-        return <BookingTrackingPage />;
-
-      // Emergency booking
-      case 'emergency-booking':
-        return <EmergencyBookingPage />;
-
-      // Provider pages
-      case 'provider-dashboard':
-        return <ProviderDashboardPage />;
-      case 'provider-services':
-        return <ProviderServicesPage />;
-      case 'provider-create-service':
-        return <ProviderCreateServicePage />;
-      case 'provider-bookings':
-        return <ProviderBookingsPage />;
-      case 'provider-booking-detail':
-        return <ProviderBookingDetailPage />;
-      case 'provider-earnings':
-        return <ProviderEarningsPage />;
-      case 'provider-reviews':
-        return <ProviderReviewsPage />;
-      case 'provider-profile':
-        return <ProviderProfilePage />;
-      case 'provider-kyc':
-        return <ProviderKycPage />;
-
-      // Provider enhanced pages
-      case 'provider-wallet':
-        return <ProviderWalletPage />;
-      case 'provider-payouts':
-        return <ProviderPayoutsPage />;
-      case 'provider-invoices':
-        return <ProviderInvoicesPage />;
-
-      // Technician pages
-      case 'technician-dashboard':
-        return <TechnicianDashboardPage />;
-      case 'technician-jobs':
-        return <TechnicianJobsPage />;
-      case 'technician-job-detail':
-        return <TechnicianJobDetailPage />;
-      case 'technician-earnings':
-        return <TechnicianEarningsPage />;
-      case 'technician-profile':
-        return <TechnicianProfilePage />;
-      case 'technician-availability':
-        return <TechnicianAvailabilityPage />;
-
-      // Admin pages
-      case 'admin-dashboard':
-        return <AdminDashboardPage />;
-      case 'admin-users':
-        return <AdminUsersPage />;
-      case 'admin-user-detail':
-        return <AdminUserDetailPage />;
-      case 'admin-services':
-        return <AdminServicesPage />;
-      case 'admin-bookings':
-        return <AdminBookingsPage />;
-      case 'admin-disputes':
-        return <AdminDisputesPage />;
-      case 'admin-categories':
-        return <AdminCategoriesPage />;
-      case 'admin-faq':
-        return <AdminFaqPage />;
-      case 'admin-revenue':
-        return <AdminRevenuePage />;
-      case 'admin-logs':
-        return <AdminLogsPage />;
-
-      // Admin enhanced pages
-      case 'admin-analytics':
-        return <AdminAnalyticsPage />;
-      case 'admin-analytics-dashboard':
-        return <AdminAnalyticsDashboardPage />;
-      case 'admin-franchises':
-        return <AdminFranchisesPage />;
-      case 'admin-franchise-detail':
-        return <AdminFranchiseDetailPage />;
-      case 'admin-crm':
-        return <AdminCrmPage />;
-      case 'admin-payouts':
-        return <AdminPayoutsPage />;
-      case 'admin-inventory':
-        return <AdminInventoryPage />;
-      case 'admin-coupons':
-        return <AdminCouponsPage />;
-      case 'admin-amc':
-        return <AdminAmcPage />;
-      case 'admin-b2b':
-        return <AdminB2bPage />;
-
-      // AI Recommendations
-      case 'recommendations':
-        return <RecommendationsPage />;
-
-      // Franchise pages
-      case 'franchise-dashboard':
-        return <FranchiseDashboardPage />;
-      case 'franchise-vendors':
-        return <FranchiseVendorsPage />;
-      case 'franchise-analytics':
-        return <FranchiseAnalyticsPage />;
-
-      // Vendor pages
-      case 'vendor-dashboard':
-        return <VendorDashboardPage />;
-      case 'vendor-bookings':
-        return <VendorBookingsPage />;
-      case 'vendor-services':
-        return <VendorServicesPage />;
-      case 'vendor-profile':
-        return <VendorProfilePage />;
-      case 'vendor-kyc':
-        return <VendorKycPage />;
-      case 'vendor-wallet':
-        return <VendorWalletPage />;
-      case 'vendor-payouts':
-        return <VendorPayoutsPage />;
-
-      // Area Manager pages
-      case 'area-manager-dashboard':
-        return <AreaManagerDashboardPage />;
-
-      // Client commissions page (Old #7, #30, #57 fix)
-      case 'client-commissions':
-        return <ClientReferralsPage />;
-
-      // Join pages
-      case 'join-manager':
-        return <JoinManagerPage />;
-      case 'join-local-admin':
-        return <JoinLocalAdminPage />;
-
-      // New Dashboard pages
-      case 'super-admin-dashboard':
-        return <SuperAdminDashboardPage />;
-      case 'manager-dashboard':
-        return <ManagerDashboardPage />;
-      case 'local-admin-dashboard':
-        return <LocalAdminDashboardPage />;
-
-      default:
-        return <HomePage />;
-    }
-  };
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <LazyComponent {...routeProps} />
+      </Suspense>
+    );
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -707,7 +459,9 @@ function AppRouter() {
   );
 }
 
-
+// ---------------------------------------------------------------------------
+// App root — providers, error boundary, toast notifications
+// ---------------------------------------------------------------------------
 export default function App() {
   return (
     <AuthProvider>

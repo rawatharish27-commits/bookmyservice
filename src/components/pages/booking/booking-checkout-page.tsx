@@ -1,0 +1,116 @@
+'use client'
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { MapPin, User, Tag, Zap, ChevronRight, ArrowRight, Loader2 } from 'lucide-react'
+import { useApp } from '@/lib/app-context'
+import { useMockApi } from '@/lib/use-api'
+import { useCallback } from 'react'
+
+const checkoutData = {
+  service: { name: 'Air Conditioner', desc: 'Complete AC diagnostic and repair service', price: 349 },
+  provider: { name: 'Amit Sharma', rating: '4.9', services: '500+', distance: '2 km' },
+  addresses: [
+    { id: '1', label: 'Home', address: '42, Rajouri Garden, New Delhi', selected: true },
+    { id: '2', label: 'Work', address: 'Cyber Hub, Gurugram', selected: false },
+  ],
+  pricing: { serviceCharge: 299, convenienceFee: 50, discount: 50, total: 299 },
+}
+
+export function BookingCheckoutPage() {
+  const { navigate } = useApp()
+
+  const checkoutLoader = useCallback(() => checkoutData, [])
+  const { data, loading, error } = useMockApi(checkoutData, 600)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading checkout">
+        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <span className="sr-only">Loading...</span>
+      </div>
+    )
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <p className="text-red-500 mb-4">Failed to load checkout details</p>
+          <Button variant="outline" onClick={() => navigate('service-detail')}>Go Back</Button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6">
+      <div className="mx-auto max-w-2xl space-y-6">
+        <h1 className="text-2xl font-bold text-slate-900">Checkout</h1>
+
+        <Card className="bg-white rounded-xl">
+          <CardContent className="p-5">
+            <div className="flex items-center gap-3">
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-slate-900">{data.service.name}</h3>
+                <p className="text-xs text-slate-400">{data.service.desc}</p>
+              </div>
+              <span className="text-lg font-bold text-slate-900">₹{data.service.price}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white rounded-xl">
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Service Provider</CardTitle></CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-3">
+              <Avatar><AvatarFallback className="bg-blue-600 text-white text-sm">AS</AvatarFallback></Avatar>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-slate-900">{data.provider.name}</p>
+                <p className="text-xs text-slate-400">{data.provider.rating} ★ • {data.provider.services} services • {data.provider.distance} away</p>
+              </div>
+              <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100">Verified</Badge>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white rounded-xl">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-semibold text-slate-900">Select Address</CardTitle>
+              <Button variant="ghost" size="sm" className="text-blue-600 text-xs">+ Add New</Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {data.addresses.map((addr) => (
+              <button key={addr.id} className={`flex w-full items-center gap-3 rounded-xl border p-3 transition-colors ${addr.selected ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:bg-slate-50'}`}>
+                <MapPin className={`size-4 ${addr.selected ? 'text-blue-600' : 'text-slate-400'}`} />
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium text-slate-900">{addr.label}</p>
+                  <p className="text-xs text-slate-400">{addr.address}</p>
+                </div>
+                {addr.selected && <div className="size-4 rounded-full bg-blue-600 flex items-center justify-center"><div className="size-2 rounded-full bg-white" /></div>}
+              </button>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card className="bg-white rounded-xl">
+          <CardContent className="p-5 space-y-2">
+            <div className="flex justify-between text-sm"><span className="text-slate-500">Service Charge</span><span className="text-slate-900">₹{data.pricing.serviceCharge}</span></div>
+            <div className="flex justify-between text-sm"><span className="text-slate-500">Convenience Fee</span><span className="text-slate-900">₹{data.pricing.convenienceFee}</span></div>
+            <div className="flex items-center gap-1 text-sm"><Tag className="size-3.5 text-emerald-500" /><span className="text-emerald-600">Coupon: FIRST50</span><span className="text-emerald-600 ml-auto">-₹{data.pricing.discount}</span></div>
+            <Separator />
+            <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Total</span><span className="text-blue-600">₹{data.pricing.total}</span></div>
+          </CardContent>
+        </Card>
+
+        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment <ArrowRight className="size-4" /></Button>
+      </div>
+    </div>
+  )
+}

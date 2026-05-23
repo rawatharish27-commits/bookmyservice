@@ -303,7 +303,7 @@ export async function startWorkers(): Promise<void> {
       },
       {
         connection: config.connection,
-        concurrency: 5,
+        concurrency: getNotificationConcurrency(),
       }
     )
 
@@ -316,6 +316,7 @@ export async function startWorkers(): Promise<void> {
     })
 
     // Booking processing worker
+    const bookingConcurrency = getBookingConcurrency()
     bookingWorker = new Worker<BookingProcessingJobData>(
       QUEUE_NAMES.BOOKING_PROCESSING,
       async (job: Job<BookingProcessingJobData>) => {
@@ -323,7 +324,7 @@ export async function startWorkers(): Promise<void> {
       },
       {
         connection: config.connection,
-        concurrency: 3,
+        concurrency: bookingConcurrency,
       }
     )
 
@@ -335,7 +336,7 @@ export async function startWorkers(): Promise<void> {
       console.warn(`📮 [BOOKING] Job ${job?.id} failed:`, err.message)
     })
 
-    console.log('📮 Workers started: notifications (concurrency: 5), bookings (concurrency: 3)')
+    console.log(`📮 Workers started: notifications (concurrency: ${getNotificationConcurrency()}), bookings (concurrency: ${getBookingConcurrency()})`)
   } catch (err: any) {
     console.warn('📮 Workers failed to start:', err.message)
   }
