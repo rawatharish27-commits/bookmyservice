@@ -9,6 +9,7 @@ import { initBackupSystem, cleanupOldBackups, stopBackupScheduler } from './lib/
 import { logger } from './lib/logger'
 import { validateEnv } from './lib/env'
 import { shutdownManager } from './lib/scaling'
+import bcrypt from 'bcryptjs'
 
 export async function bootstrap(): Promise<void> {
   // 0. Validate environment variables
@@ -89,6 +90,23 @@ export async function bootstrap(): Promise<void> {
       console.error('⚠️  Role seeding error (non-fatal):', seedError.message)
     }
 
+    // Seed Admin user if not exists
+    try {
+      const adminCheck = await pool.query('SELECT id FROM "User" WHERE "roleId" = 3 LIMIT 1')
+      if (adminCheck.rows.length === 0) {
+        console.log('🔧 Seeding admin user...')
+        const adminPasswordHash = await bcrypt.hash('admin@123', 10)
+        const adminId = 'usr_admin_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)
+        await pool.query(
+          'INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", city, state, country, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, true, true, $8, $9, $10, NOW(), NOW()) ON CONFLICT (email) DO NOTHING',
+          [adminId, 'admin@bookyourservice.co.in', '+919876543210', adminPasswordHash, 'Admin User', 3, 'ACTIVE', 'Mumbai', 'Maharashtra', 'India']
+        )
+        console.log('✅ Admin user seeded — email: admin@bookyourservice.co.in, password: admin@123')
+      }
+    } catch (adminSeedError: any) {
+      console.error('⚠️  Admin user seeding error (non-fatal):', adminSeedError.message)
+    }
+
     // Seed ServiceCategory table if empty (essential for the app to work)
     try {
       const catCount = await pool.query('SELECT COUNT(*) as count FROM "ServiceCategory"')
@@ -114,6 +132,36 @@ export async function bootstrap(): Promise<void> {
       }
     } catch (catSeedError: any) {
       console.error('⚠️  ServiceCategory seeding error (non-fatal):', catSeedError.message)
+    }
+
+    // Seed Legal Pages if empty
+    try {
+      const legalCount = await pool.query('SELECT COUNT(*) as count FROM "LegalPage"')
+      if (parseInt(legalCount.rows[0].count) === 0) {
+        console.log('🔧 Seeding legal pages...')
+        const legalPages = [
+          { pageType: 'TERMS', title: 'Terms of Service', content: 'Terms of Service for BookYourService platform. By using our platform, you agree to these terms and conditions.' },
+          { pageType: 'PRIVACY', title: 'Privacy Policy', content: 'Privacy Policy for BookYourService. We are committed to protecting your personal data and privacy.' },
+          { pageType: 'REFUND', title: 'Refund Policy', content: 'Refund Policy for BookYourService. Cancellations made 24+ hours before scheduled time are fully refundable.' },
+          { pageType: 'COOKIES', title: 'Cookie Policy', content: 'Cookie Policy for BookYourService. We use cookies to improve your experience on our platform.' },
+          { pageType: 'COMMUNITY_GUIDELINES', title: 'Community Guidelines', content: 'Community Guidelines for BookYourService. We expect all users to maintain respectful and professional conduct.' },
+        ]
+        for (const page of legalPages) {
+          const pageId = 'lp_' + crypto.randomUUID().replace(/-/g, '').slice(0, 18)
+          await pool.query(
+            'INSERT INTO "LegalPage" (id, "pageType", title, content, version, "effectiveDate", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) ON CONFLICT ("pageType") DO NOTHING',
+            [pageId, page.pageType, page.title, page.content, '1.0', '2025-01-01']
+          )
+        }
+        console.log('✅ Legal pages seeded successfully')
+      }
+    } catch (legalSeedError: any) {
+      console.error('⚠️  Legal pages seeding error (non-fatal):', legalSeedError.message)
+    }
+
+    // Apply performance indexes
+    try { await applyDatabaseIndexes(pool) } catch (idxError: any) {
+      console.error('⚠️  Index creation error (non-fatal):', idxError.message)
     }
 
     // Enable PostGIS FIRST (before indexes, since PostGIS adds the `location` column)

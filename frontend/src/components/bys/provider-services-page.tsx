@@ -53,7 +53,7 @@ function ApprovalBadge({ status }: { status: string }) {
 export function ProviderServicesPage() {
   const { user } = useAuth();
   const { navigate } = useApp();
-  const { data, loading, refetch } = useApi<ServicesResponse>('/api/services?limit=100');
+  const { data, loading, refetch } = useApi<ServicesResponse>('/api/provider/services?limit=100');
   const { mutate } = useApiMutation();
 
   const services = (data?.services || []).filter((s: Service) => true);

@@ -94,9 +94,10 @@ export function ClientReferralsPage() {
     referralHistory: [],
   };
 
+  const referralHistory = referral.referralHistory || [];
   const displayedHistory = showAllHistory
-    ? referral.referralHistory
-    : referral.referralHistory.slice(0, 5);
+    ? referralHistory
+    : referralHistory.slice(0, 5);
 
   const handleCopyCode = async () => {
     try {
@@ -449,9 +450,9 @@ export function ClientReferralsPage() {
           <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Referral History</CardTitle>
-              {referral.referralHistory.length > 0 && (
+              {referralHistory.length > 0 && (
                 <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
-                  {referral.referralHistory.length} Referrals
+                  {referralHistory.length} Referrals
                 </Badge>
               )}
             </div>
@@ -470,7 +471,7 @@ export function ClientReferralsPage() {
                   </div>
                 ))}
               </div>
-            ) : referral.referralHistory.length === 0 ? (
+            ) : referralHistory.length === 0 ? (
               <div className="py-12 text-center">
                 <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
                   <UserPlus className="size-8 text-emerald-300" />
@@ -542,7 +543,7 @@ export function ClientReferralsPage() {
                   </AnimatePresence>
                 </div>
 
-                {referral.referralHistory.length > 5 && (
+                {referralHistory.length > 5 && (
                   <div className="mt-3 flex justify-center">
                     <Button
                       variant="ghost"
@@ -556,7 +557,7 @@ export function ClientReferralsPage() {
                         </>
                       ) : (
                         <>
-                          Show All ({referral.referralHistory.length}) <ChevronDown className="ml-1 size-4" />
+                          Show All ({referralHistory.length}) <ChevronDown className="ml-1 size-4" />
                         </>
                       )}
                     </Button>

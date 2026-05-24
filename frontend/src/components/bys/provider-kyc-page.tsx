@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/contexts/app-context';
 import { useAuth } from '@/contexts/auth-context';
@@ -16,8 +16,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Shield, ArrowLeft, Upload, CheckCircle2, Clock, AlertCircle, RefreshCw } from 'lucide-react';
+import { Shield, ArrowLeft, Upload, CheckCircle2, Clock, AlertCircle, RefreshCw, Loader2 } from 'lucide-react';
 import { apiUrl } from '@/lib/api-url';
+import { toast } from 'sonner';
 
 interface KycStatus {
   status?: string;
@@ -47,10 +48,14 @@ export function ProviderKycPage() {
   const [loadingStatus, setLoadingStatus] = useState(true);
   const [docType, setDocType] = useState('');
   const [docNumber, setDocNumber] = useState('');
-  const [frontUrl, setFrontUrl] = useState('');
-  const [backUrl, setBackUrl] = useState('');
-  const [selfieUrl, setSelfieUrl] = useState('');
+  const [frontFile, setFrontFile] = useState<File | null>(null);
+  const [selfieFile, setSelfieFile] = useState<File | null>(null);
+  const [frontPreview, setFrontPreview] = useState<string>('');
+  const [selfiePreview, setSelfiePreview] = useState<string>('');
   const [message, setMessage] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const frontInputRef = useRef<HTMLInputElement>(null);
+  const selfieInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -71,26 +76,106 @@ export function ProviderKycPage() {
     fetchStatus();
   }, [token]);
 
-  const handleSubmit = async () => {
-    if (!docType || !docNumber || !frontUrl || !selfieUrl) {
-      setMessage('Please fill in all required fields');
+  const handleFileChange = (type: 'front' | 'selfie') => (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size must be under 5MB');
       return;
     }
+    if (!file.type.startsWith('image/')) {
+      toast.error('Please upload an image file');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (type === 'front') {
+        setFrontFile(file);
+        setFrontPreview(reader.result as string);
+      } else {
+        setSelfieFile(file);
+        setSelfiePreview(reader.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleSubmit = async () => {
+    if (!docType || !docNumber) {
+      setMessage('Please fill in document type and number');
+      return;
+    }
+    if (!frontFile && !frontPreview) {
+      setMessage('Please upload the front of your document');
+      return;
+    }
+    if (!selfieFile && !selfiePreview) {
+      setMessage('Please upload a selfie holding your document');
+      return;
+    }
+
+    setUploading(true);
     try {
-      const result = await mutate('/api/kyc/submit', {
+      // Convert files to base64 for upload
+      let documentFront = frontPreview;
+      let selfie = selfiePreview;
+
+      if (frontFile) {
+        documentFront = await fileToBase64(frontFile);
+      }
+      if (selfieFile) {
+        selfie = await fileToBase64(selfieFile);
+      }
+
+      // Upload KYC documents via the upload endpoint
+      const res = await fetch(apiUrl('/api/upload/kyc'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          documentFront,
+          selfie,
+          documentType: docType,
+          documentNumber: docNumber,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Upload failed');
+      }
+
+      // Also submit KYC status
+      await mutate('/api/kyc/submit', {
         method: 'POST',
         body: JSON.stringify({
           documentType: docType,
           documentNumber: docNumber,
-          documentFrontUrl: frontUrl,
-          documentBackUrl: backUrl || undefined,
-          selfieUrl,
+          documentFrontUrl: data.documentFrontUrl || '/uploaded',
+          selfieUrl: data.selfieUrl || '/uploaded',
         }),
       });
-      setKycStatus({ verificationStatus: 'PENDING', ...result });
-      setMessage('KYC submitted successfully');
+
+      setKycStatus({ verificationStatus: 'PENDING', ...data });
+      setMessage('KYC submitted successfully! Documents are under review.');
+      toast.success('KYC documents uploaded successfully!');
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : 'Submission failed');
+      const errorMsg = err instanceof Error ? err.message : 'Submission failed';
+      setMessage(errorMsg);
+      toast.error(errorMsg);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -252,39 +337,79 @@ export function ProviderKycPage() {
 
               <Separator />
 
+              {/* Document Front Image Upload */}
               <div className="space-y-2">
-                <Label>Document Front Image URL *</Label>
-                <Input placeholder="Paste image URL for front of document" value={frontUrl} onChange={(e) => setFrontUrl(e.target.value)} className="rounded-xl h-11" />
-                <p className="text-xs text-muted-foreground">Provide a URL to the front side of your document</p>
+                <Label>Document Front Image *</Label>
+                <input
+                  ref={frontInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange('front')}
+                />
+                {frontPreview ? (
+                  <div className="relative rounded-xl border-2 border-emerald-200 overflow-hidden">
+                    <img src={frontPreview} alt="Document front" className="w-full h-40 object-cover" />
+                    <button
+                      onClick={() => { setFrontFile(null); setFrontPreview(''); }}
+                      className="absolute top-2 right-2 rounded-lg bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => frontInputRef.current?.click()}
+                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 p-6 transition-all hover:border-emerald-400 hover:bg-emerald-50/50"
+                  >
+                    <Upload className="size-8 text-emerald-400" />
+                    <span className="text-sm font-medium text-emerald-700">Click to upload document front</span>
+                    <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
+                  </button>
+                )}
               </div>
 
+              {/* Selfie Upload */}
               <div className="space-y-2">
-                <Label>Document Back Image URL</Label>
-                <Input placeholder="Paste image URL for back of document (optional)" value={backUrl} onChange={(e) => setBackUrl(e.target.value)} className="rounded-xl h-11" />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Selfie URL *</Label>
-                <Input placeholder="Paste image URL for your selfie holding the document" value={selfieUrl} onChange={(e) => setSelfieUrl(e.target.value)} className="rounded-xl h-11" />
-                <p className="text-xs text-muted-foreground">A clear selfie holding your document</p>
-              </div>
-
-              <div className="rounded-xl border border-dashed bg-muted/30 p-4 text-center">
-                <Upload className="mx-auto size-6 text-muted-foreground/50" />
-                <p className="mt-2 text-sm text-muted-foreground">
-                  File upload will be available in a future update. For now, please provide image URLs.
-                </p>
+                <Label>Selfie Holding Document *</Label>
+                <input
+                  ref={selfieInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange('selfie')}
+                />
+                {selfiePreview ? (
+                  <div className="relative rounded-xl border-2 border-emerald-200 overflow-hidden">
+                    <img src={selfiePreview} alt="Selfie with document" className="w-full h-40 object-cover" />
+                    <button
+                      onClick={() => { setSelfieFile(null); setSelfiePreview(''); }}
+                      className="absolute top-2 right-2 rounded-lg bg-red-500 p-1.5 text-white shadow-md hover:bg-red-600 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => selfieInputRef.current?.click()}
+                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 p-6 transition-all hover:border-emerald-400 hover:bg-emerald-50/50"
+                  >
+                    <Upload className="size-8 text-emerald-400" />
+                    <span className="text-sm font-medium text-emerald-700">Click to upload selfie with document</span>
+                    <span className="text-xs text-muted-foreground">A clear selfie holding your document</span>
+                  </button>
+                )}
               </div>
 
               <Button
                 className="shimmer w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 h-11 rounded-xl"
                 onClick={handleSubmit}
-                disabled={loading}
+                disabled={uploading || loading}
               >
-                {loading ? (
+                {uploading || loading ? (
                   <>
-                    <RefreshCw className="mr-2 size-4 animate-spin" />
-                    Submitting...
+                    <Loader2 className="mr-2 size-4 animate-spin" />
+                    Uploading...
                   </>
                 ) : (
                   <>
