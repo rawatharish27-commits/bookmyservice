@@ -90,43 +90,48 @@ export async function bootstrap(): Promise<void> {
       console.error('⚠️  Role seeding error (non-fatal):', seedError.message)
     }
 
-    // Seed Admin user if not exists
+    // Seed Admin user if not exists (UPSERT to ensure admin always works)
     try {
-      const adminCheck = await pool.query('SELECT id FROM "User" WHERE "roleId" = 3 LIMIT 1')
-      if (adminCheck.rows.length === 0) {
-        console.log('🔧 Seeding admin user...')
-        const adminPasswordHash = await bcrypt.hash('admin@123', 10)
-        const adminId = 'usr_admin_' + crypto.randomUUID().replace(/-/g, '').slice(0, 12)
-        await pool.query(
-          'INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", city, state, country, "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, $7, true, true, $8, $9, $10, NOW(), NOW()) ON CONFLICT (email) DO NOTHING',
-          [adminId, 'admin@bookyourservice.co.in', '+919876543210', adminPasswordHash, 'Admin User', 3, 'ACTIVE', 'Mumbai', 'Maharashtra', 'India']
-        )
-        console.log('✅ Admin user seeded — email: admin@bookyourservice.co.in, password: admin@123')
-      }
+      console.log('🔧 Ensuring admin user exists...')
+      const adminPasswordHash = await bcrypt.hash('admin@123', 10)
+      await pool.query(
+        `INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", city, state, country, "createdAt", "updatedAt")
+         VALUES ($1, $2, $3, $4, $5, 3, 'ACTIVE', true, true, $6, $7, $8, NOW(), NOW())
+         ON CONFLICT (email) DO UPDATE SET "passwordHash" = EXCLUDED."passwordHash", "roleId" = 3, status = 'ACTIVE', "updatedAt" = NOW()`,
+        ['usr_admin_default', 'admin@bookyourservice.co.in', '+919876543210', adminPasswordHash, 'Admin User', 'Mumbai', 'Maharashtra', 'India']
+      )
+      console.log('✅ Admin user ensured — email: admin@bookyourservice.co.in, password: admin@123')
     } catch (adminSeedError: any) {
       console.error('⚠️  Admin user seeding error (non-fatal):', adminSeedError.message)
     }
 
     // Seed ServiceCategory table if empty (essential for the app to work)
+    // NOTE: The 'name' column uses ServiceCategoryName enum (AIR_CONDITIONER, REFRIGERATOR, etc.)
     try {
       const catCount = await pool.query('SELECT COUNT(*) as count FROM "ServiceCategory"')
       if (parseInt(catCount.rows[0].count) === 0) {
         console.log('🔧 Seeding ServiceCategory table...')
-        await pool.query(`
-          INSERT INTO "ServiceCategory" (id, name, slug, description, icon, "imageUrl", "isActive", "displayOrder", "isEmergency", "createdAt", "updatedAt") VALUES
-          (1, 'Air Conditioner', 'air-conditioner', 'Professional AC repair, installation, and maintenance services for your home', 'Wind', '/images/air-conditioner.jpg', true, 1, false, NOW(), NOW()),
-          (2, 'Refrigerator', 'refrigerator', 'Expert refrigerator repair and servicing for all brands and models', 'Snowflake', '/images/refrigerator.jpg', true, 2, false, NOW(), NOW()),
-          (3, 'Washing Machine', 'washing-machine', 'Professional washing machine repair, installation, and servicing', 'Droplets', '/images/washing-machine.jpg', true, 3, false, NOW(), NOW()),
-          (4, 'Kitchen Appliances', 'kitchen-appliances', 'Repair and servicing for kitchen appliances including microwave, chimney, dishwasher', 'UtensilsCrossed', '/images/kitchen-appliances.jpg', true, 4, false, NOW(), NOW()),
-          (5, 'TV Repair', 'tv-repair', 'Expert TV repair and installation services for LED, LCD, and Smart TVs', 'Tv', '/images/tv-repair.jpg', true, 5, false, NOW(), NOW()),
-          (6, 'Water Purifier', 'water-purifier', 'Water purifier installation, servicing, and filter replacement', 'GlassWater', '/images/water-purifier.jpg', true, 6, false, NOW(), NOW()),
-          (7, 'Geyser', 'geyser', 'Geyser installation, repair, and maintenance services', 'Flame', '/images/geyser.jpg', true, 7, false, NOW(), NOW()),
-          (8, 'Plumber', 'plumber', 'Professional plumbing services for leaks, pipes, taps, and drainage', 'Wrench', '/images/plumber.jpg', true, 8, true, NOW(), NOW()),
-          (9, 'Electrician', 'electrician', 'Certified electrician services for wiring, switches, MCB, and fans', 'Zap', '/images/electrician.jpg', true, 9, true, NOW(), NOW()),
-          (10, 'Water Tank Cleaning', 'water-tank-cleaning', 'Professional water tank cleaning and sanitization services', 'Container', '/images/water-tank-cleaning.jpg', true, 10, false, NOW(), NOW()),
-          (11, 'Movers and Packers', 'movers-and-packers', 'Safe and reliable packing, moving, and relocation services', 'Truck', '/images/movers-and-packers.jpg', true, 11, false, NOW(), NOW())
-          ON CONFLICT (id) DO NOTHING
-        `)
+        const categories = [
+          { name: 'AIR_CONDITIONER', slug: 'air-conditioner', description: 'Professional AC repair, installation, and maintenance services for your home', icon: 'Wind', imageUrl: '/images/air-conditioner.jpg', displayOrder: 1, isEmergency: false },
+          { name: 'REFRIGERATOR', slug: 'refrigerator', description: 'Expert refrigerator repair and servicing for all brands and models', icon: 'Snowflake', imageUrl: '/images/refrigerator.jpg', displayOrder: 2, isEmergency: false },
+          { name: 'WASHING_MACHINE', slug: 'washing-machine', description: 'Professional washing machine repair, installation, and servicing', icon: 'Droplets', imageUrl: '/images/washing-machine.jpg', displayOrder: 3, isEmergency: false },
+          { name: 'KITCHEN_APPLIANCES', slug: 'kitchen-appliances', description: 'Repair and servicing for kitchen appliances including microwave, chimney, dishwasher', icon: 'UtensilsCrossed', imageUrl: '/images/kitchen-appliances.jpg', displayOrder: 4, isEmergency: false },
+          { name: 'TV_REPAIR', slug: 'tv-repair', description: 'Expert TV repair and installation services for LED, LCD, and Smart TVs', icon: 'Tv', imageUrl: '/images/tv-repair.jpg', displayOrder: 5, isEmergency: false },
+          { name: 'WATER_PURIFIER', slug: 'water-purifier', description: 'Water purifier installation, servicing, and filter replacement', icon: 'GlassWater', imageUrl: '/images/water-purifier.jpg', displayOrder: 6, isEmergency: false },
+          { name: 'GEYSER', slug: 'geyser', description: 'Geyser installation, repair, and maintenance services', icon: 'Flame', imageUrl: '/images/geyser.jpg', displayOrder: 7, isEmergency: false },
+          { name: 'PLUMBER', slug: 'plumber', description: 'Professional plumbing services for leaks, pipes, taps, and drainage', icon: 'Wrench', imageUrl: '/images/plumber.jpg', displayOrder: 8, isEmergency: true },
+          { name: 'ELECTRICIAN', slug: 'electrician', description: 'Certified electrician services for wiring, switches, MCB, and fans', icon: 'Zap', imageUrl: '/images/electrician.jpg', displayOrder: 9, isEmergency: true },
+          { name: 'WATER_TANK_CLEANING', slug: 'water-tank-cleaning', description: 'Professional water tank cleaning and sanitization services', icon: 'Container', imageUrl: '/images/water-tank-cleaning.jpg', displayOrder: 10, isEmergency: false },
+          { name: 'MOVERS_AND_PACKERS', slug: 'movers-and-packers', description: 'Safe and reliable packing, moving, and relocation services', icon: 'Truck', imageUrl: '/images/movers-and-packers.jpg', displayOrder: 11, isEmergency: false },
+        ]
+        for (const cat of categories) {
+          await pool.query(
+            `INSERT INTO "ServiceCategory" (name, slug, description, icon, "imageUrl", "isActive", "displayOrder", "isEmergency", "createdAt", "updatedAt")
+             VALUES ($1, $2, $3, $4, $5, true, $6, $7, NOW(), NOW())
+             ON CONFLICT (slug) DO NOTHING`,
+            [cat.name, cat.slug, cat.description, cat.icon, cat.imageUrl, cat.displayOrder, cat.isEmergency]
+          )
+        }
         await pool.query(`SELECT setval('"ServiceCategory_id_seq"', (SELECT MAX(id) FROM "ServiceCategory"))`).catch(() => {})
         console.log('✅ ServiceCategory table seeded with 11 categories')
       }
@@ -135,6 +140,7 @@ export async function bootstrap(): Promise<void> {
     }
 
     // Seed Legal Pages if empty
+    // NOTE: id is autoincrement int, so we don't provide it
     try {
       const legalCount = await pool.query('SELECT COUNT(*) as count FROM "LegalPage"')
       if (parseInt(legalCount.rows[0].count) === 0) {
@@ -147,10 +153,9 @@ export async function bootstrap(): Promise<void> {
           { pageType: 'COMMUNITY_GUIDELINES', title: 'Community Guidelines', content: 'Community Guidelines for BookYourService. We expect all users to maintain respectful and professional conduct.' },
         ]
         for (const page of legalPages) {
-          const pageId = 'lp_' + crypto.randomUUID().replace(/-/g, '').slice(0, 18)
           await pool.query(
-            'INSERT INTO "LegalPage" (id, "pageType", title, content, version, "effectiveDate", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW()) ON CONFLICT ("pageType") DO NOTHING',
-            [pageId, page.pageType, page.title, page.content, '1.0', '2025-01-01']
+            'INSERT INTO "LegalPage" ("pageType", title, content, version, "effectiveDate", "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, NOW(), NOW()) ON CONFLICT ("pageType") DO NOTHING',
+            [page.pageType, page.title, page.content, '1.0', '2025-01-01']
           )
         }
         console.log('✅ Legal pages seeded successfully')
