@@ -31,11 +31,15 @@ export async function bootstrap(): Promise<void> {
   startMemoryMonitoring()
 
   // 2. Process crash protection
-  process.on('uncaughtException', (err) => {
+  process.on('uncaughtException', (err: any) => {
+    // Suppress ioredis EPIPE/ECONNRESET — these are non-fatal and auto-recovered
+    if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
     logger.error('Uncaught Exception (non-fatal)', { error: err.message, stack: err.stack })
     captureApiError(err, { method: 'process', path: 'uncaughtException' })
   })
-  process.on('unhandledRejection', (reason) => {
+  process.on('unhandledRejection', (reason: any) => {
+    // Suppress ioredis EPIPE/ECONNRESET rejections
+    if (reason?.code === 'EPIPE' || reason?.code === 'ECONNRESET') return
     logger.error('Unhandled Rejection (non-fatal)', { reason: String(reason) })
     captureApiError(reason instanceof Error ? reason : new Error(String(reason)), { method: 'process', path: 'unhandledRejection' })
   })

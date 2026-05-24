@@ -355,10 +355,14 @@ export const INDIAN_CITIES = [
 // CRASH PROTECTION
 // ═══════════════════════════════════════════════════════════════════════
 
-process.on('uncaughtException', (err) => {
+process.on('uncaughtException', (err: any) => {
+  // Suppress ioredis EPIPE/ECONNRESET — non-fatal, auto-recovered
+  if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
   console.error('⚠️  Uncaught Exception (non-fatal):', err.message || err)
 })
 
-process.on('unhandledRejection', (reason) => {
+process.on('unhandledRejection', (reason: any) => {
+  // Suppress ioredis EPIPE/ECONNRESET — non-fatal, auto-recovered
+  if (reason?.code === 'EPIPE' || reason?.code === 'ECONNRESET') return
   console.error('⚠️  Unhandled Rejection (non-fatal):', reason)
 })

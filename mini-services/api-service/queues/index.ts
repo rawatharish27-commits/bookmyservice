@@ -76,6 +76,18 @@ function getConnectionConfig() {
       port: redisConnection.port,
       password: redisConnection.password,
       db: redisConnection.db,
+      // ioredis resilience settings to prevent EPIPE/ECONNRESET
+      keepAlive: 30000,        // TCP keepalive every 30s
+      connectTimeout: 10000,   // 10s connection timeout
+      commandTimeout: 5000,    // 5s command timeout
+      maxRetriesPerRequest: 3, // Retry failed commands before giving up
+      enableReadyCheck: true,  // Wait for READY before accepting commands
+      enableOfflineQueue: true, // Queue commands while disconnected
+      retryStrategy: (times: number) => {
+        if (times > 50) return null // Stop retrying after 50 attempts
+        const delay = Math.min(times * 200, 5000) // Cap at 5s
+        return delay
+      },
     },
   }
 }
@@ -98,6 +110,18 @@ export async function initializeQueues(): Promise<void> {
 
     // Create dead letter queue
     deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, config)
+
+    // Suppress ioredis EPIPE/ECONNRESET errors (non-fatal, auto-reconnects)
+    for (const q of [notificationQueue, bookingQueue, deadLetterQueue]) {
+      q.on('error', (err: any) => {
+        // EPIPE and ECONNRESET are expected with remote Redis — ioredis auto-reconnects
+        if (err.code === 'EPIPE' || err.code === 'ECONNRESET') {
+          // Silently ignore — ioredis handles reconnection
+          return
+        }
+        console.warn('📮 Queue error:', err.message)
+      })
+    }
 
     isQueueSystemReady = true
     console.log('📮 Queue system: Connected to Redis — async processing enabled')
@@ -328,6 +352,12 @@ export async function startWorkers(): Promise<void> {
       console.warn(`📮 [NOTIFICATION] Job ${job?.id} failed:`, err.message)
     })
 
+    notificationWorker.on('error', (err: any) => {
+      // Suppress non-fatal Redis connection errors
+      if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+      console.warn('📮 [NOTIFICATION] Worker error:', err.message)
+    })
+
     // Booking processing worker
     const bookingConcurrency = getBookingConcurrency()
     bookingWorker = new Worker<BookingProcessingJobData>(
@@ -347,6 +377,12 @@ export async function startWorkers(): Promise<void> {
 
     bookingWorker.on('failed', (job, err) => {
       console.warn(`📮 [BOOKING] Job ${job?.id} failed:`, err.message)
+    })
+
+    bookingWorker.on('error', (err: any) => {
+      // Suppress non-fatal Redis connection errors
+      if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+      console.warn('📮 [BOOKING] Worker error:', err.message)
     })
 
     console.log(`📮 Workers started: notifications (concurrency: ${getNotificationConcurrency()}), bookings (concurrency: ${getBookingConcurrency()})`)
