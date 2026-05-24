@@ -781,3 +781,26 @@ Stage Summary:
 - Dialog warning suppressed with aria-describedby={undefined}
 - Category and legal page 404s fixed via auto-seeding
 - Frontend builds successfully with no new errors
+
+---
+Task ID: 1
+Agent: Main Agent
+Task: Fix critical production issues - admin login, DB seeding, Dialog warning, chunk loading
+
+Work Log:
+- Analyzed browser console errors and Render server logs to identify root causes
+- Fixed ServiceCategory seeding: used enum values (AIR_CONDITIONER etc.) instead of display names ("Air Conditioner") that caused enum validation error
+- Fixed LegalPage seeding: removed text ID parameter since id is autoincrement int, was causing "invalid input syntax for type integer" 
+- Fixed admin login: changed from INSERT ON CONFLICT DO NOTHING to UPSERT (ON CONFLICT DO UPDATE) ensuring admin always has correct roleId=3 and fresh password
+- Fixed Dialog Description warning: replaced aria-describedby={undefined} with visually hidden DialogPrimitive.Description inside DialogContent
+- Fixed chunk loading errors: ErrorBoundary now auto-detects "Failed to fetch dynamically imported module" errors and auto-reloads page with infinite loop protection
+- Verified all 404 API endpoints (categories/:slug, categories/:slug/services, services/search, legal/:type, newsletter/subscribe, kyc/status, auth/refresh, notifications) already exist in index.ts
+- Committed and pushed to main branch (f1bfbf5)
+
+Stage Summary:
+- All critical production fixes pushed
+- Categories will now seed properly (fixes /api/categories/refrigerator 404)
+- Legal pages will now seed properly (fixes /api/legal/privacy 404)
+- Admin login will now work (UPSERT ensures admin user exists with correct credentials)
+- Dialog warning should no longer appear in console
+- Chunk loading errors will auto-reload instead of showing broken page
