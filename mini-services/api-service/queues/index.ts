@@ -23,8 +23,8 @@ const redisConnection = REDIS_URL ? {
 
 // ─── Queue Names ───────────────────────────────────────────────────────
 export const QUEUE_NAMES = {
-  NOTIFICATION: 'bys:notifications',
-  BOOKING_PROCESSING: 'bys:booking-processing',
+  NOTIFICATION: 'bys-notifications',
+  BOOKING_PROCESSING: 'bys-booking-processing',
 } as const
 
 // ─── Job Types ─────────────────────────────────────────────────────────
@@ -357,7 +357,7 @@ export async function shutdownQueues(): Promise<void> {
 // ─── DEAD LETTER QUEUE ──────────────────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════
 
-export const DEAD_LETTER_QUEUE_NAME = 'bys:dead-letter'
+export const DEAD_LETTER_QUEUE_NAME = 'bys-dead-letter'
 
 export let deadLetterQueue: Queue | null = null
 

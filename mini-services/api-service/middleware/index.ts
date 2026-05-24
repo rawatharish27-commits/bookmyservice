@@ -51,6 +51,7 @@ const ALLOWED_ORIGINS = [
   'https://bookyourservice.co.in',
   'https://www.bookyourservice.co.in',
   'https://bookmyservice-eta.vercel.app',
+  'https://servicebooking-u2wa.onrender.com',
 ]
 
 // ─── Rate Limit Key Generator ──────────────────────────────────────────────

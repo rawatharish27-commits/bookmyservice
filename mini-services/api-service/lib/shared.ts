@@ -19,15 +19,26 @@ import bcrypt from 'bcryptjs'
 // DATABASE POOL
 // ═══════════════════════════════════════════════════════════════════════
 
-export const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false,
-  },
-  max: 3,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
-})
+// Fix SSL for Supabase and other hosted PostgreSQL providers:
+// pg-connection-string v3+ treats sslmode=require as verify-full (strict).
+// We strip sslmode from the URL and pass explicit SSL config to avoid this.
+function buildPoolConfig() {
+  let dbUrl = process.env.DATABASE_URL || ''
+  // Remove sslmode param from URL so pg doesn't override our SSL config
+  dbUrl = dbUrl.replace(/[?&]sslmode=[^&]+/i, '')
+  // Clean up dangling ? or &
+  dbUrl = dbUrl.replace(/[?&]$/, '')
+
+  return {
+    connectionString: dbUrl || undefined,
+    ssl: { rejectUnauthorized: false },
+    max: 3,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 10000,
+  }
+}
+
+export const pool = new Pool(buildPoolConfig())
 
 // Prevent idle client errors from crashing the process
 pool.on('error', (err) => {

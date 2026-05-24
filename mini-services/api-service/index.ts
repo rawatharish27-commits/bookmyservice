@@ -211,6 +211,7 @@ app.use('*', cors({
         'https://bookyourservice.co.in',
         'https://www.bookyourservice.co.in',
         'https://bookmyservice-eta.vercel.app',
+        'https://servicebooking-u2wa.onrender.com',
       ]
 
       // Append additional origins from CORS_ORIGINS env var

@@ -153,11 +153,11 @@ class RedisCache {
     }
 
     try {
-      this.client = createClient({
+      const redisConfig: any = {
         url: redisUrl,
         socket: {
           connectTimeout: 5000,
-          reconnectStrategy: (retries) => {
+          reconnectStrategy: (retries: number) => {
             if (retries > this.maxReconnectAttempts) {
               console.warn('📦 Redis: Max reconnection attempts reached, using memory fallback')
               return new Error('Max reconnection attempts reached')
@@ -168,7 +168,15 @@ class RedisCache {
             return delay
           },
         },
-      }) as RedisClientType
+      }
+
+      // Handle TLS for rediss:// connections (common with hosted Redis)
+      if (redisUrl.startsWith('rediss://')) {
+        redisConfig.socket.tls = true
+        redisConfig.socket.rejectUnauthorized = false
+      }
+
+      this.client = createClient(redisConfig) as RedisClientType
 
       this.client.on('connect', () => {
         console.log('📦 Redis: Connected')
