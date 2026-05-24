@@ -89,6 +89,33 @@ export async function bootstrap(): Promise<void> {
       console.error('⚠️  Role seeding error (non-fatal):', seedError.message)
     }
 
+    // Seed ServiceCategory table if empty (essential for the app to work)
+    try {
+      const catCount = await pool.query('SELECT COUNT(*) as count FROM "ServiceCategory"')
+      if (parseInt(catCount.rows[0].count) === 0) {
+        console.log('🔧 Seeding ServiceCategory table...')
+        await pool.query(`
+          INSERT INTO "ServiceCategory" (id, name, slug, description, icon, "imageUrl", "isActive", "displayOrder", "isEmergency", "createdAt", "updatedAt") VALUES
+          (1, 'Air Conditioner', 'air-conditioner', 'Professional AC repair, installation, and maintenance services for your home', 'Wind', '/images/air-conditioner.jpg', true, 1, false, NOW(), NOW()),
+          (2, 'Refrigerator', 'refrigerator', 'Expert refrigerator repair and servicing for all brands and models', 'Snowflake', '/images/refrigerator.jpg', true, 2, false, NOW(), NOW()),
+          (3, 'Washing Machine', 'washing-machine', 'Professional washing machine repair, installation, and servicing', 'Droplets', '/images/washing-machine.jpg', true, 3, false, NOW(), NOW()),
+          (4, 'Kitchen Appliances', 'kitchen-appliances', 'Repair and servicing for kitchen appliances including microwave, chimney, dishwasher', 'UtensilsCrossed', '/images/kitchen-appliances.jpg', true, 4, false, NOW(), NOW()),
+          (5, 'TV Repair', 'tv-repair', 'Expert TV repair and installation services for LED, LCD, and Smart TVs', 'Tv', '/images/tv-repair.jpg', true, 5, false, NOW(), NOW()),
+          (6, 'Water Purifier', 'water-purifier', 'Water purifier installation, servicing, and filter replacement', 'GlassWater', '/images/water-purifier.jpg', true, 6, false, NOW(), NOW()),
+          (7, 'Geyser', 'geyser', 'Geyser installation, repair, and maintenance services', 'Flame', '/images/geyser.jpg', true, 7, false, NOW(), NOW()),
+          (8, 'Plumber', 'plumber', 'Professional plumbing services for leaks, pipes, taps, and drainage', 'Wrench', '/images/plumber.jpg', true, 8, true, NOW(), NOW()),
+          (9, 'Electrician', 'electrician', 'Certified electrician services for wiring, switches, MCB, and fans', 'Zap', '/images/electrician.jpg', true, 9, true, NOW(), NOW()),
+          (10, 'Water Tank Cleaning', 'water-tank-cleaning', 'Professional water tank cleaning and sanitization services', 'Container', '/images/water-tank-cleaning.jpg', true, 10, false, NOW(), NOW()),
+          (11, 'Movers and Packers', 'movers-and-packers', 'Safe and reliable packing, moving, and relocation services', 'Truck', '/images/movers-and-packers.jpg', true, 11, false, NOW(), NOW())
+          ON CONFLICT (id) DO NOTHING
+        `)
+        await pool.query(`SELECT setval('"ServiceCategory_id_seq"', (SELECT MAX(id) FROM "ServiceCategory"))`).catch(() => {})
+        console.log('✅ ServiceCategory table seeded with 11 categories')
+      }
+    } catch (catSeedError: any) {
+      console.error('⚠️  ServiceCategory seeding error (non-fatal):', catSeedError.message)
+    }
+
     // Enable PostGIS FIRST (before indexes, since PostGIS adds the `location` column)
     try { await setupPostGIS(pool) } catch (pgErr: any) {
       console.error('⚠️  PostGIS setup error (non-fatal):', pgErr.message)
