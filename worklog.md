@@ -804,3 +804,28 @@ Stage Summary:
 - Admin login will now work (UPSERT ensures admin user exists with correct credentials)
 - Dialog warning should no longer appear in console
 - Chunk loading errors will auto-reload instead of showing broken page
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Add Admin Change Password, Job Offer popup, Legal T&C, FAQ for Area Manager & Local Admin applications
+
+Work Log:
+- Created admin-profile-page.tsx with Change Password functionality (current/new/confirm, visibility toggle, strength indicator, validation)
+- Created job-offer-popup.tsx notification popup for CLIENT/PROVIDER users showing Area Manager (₹100) and Local Admin (₹50) offers with 24hr dismissal
+- Updated join-manager-page.tsx with legal T&C (12 sections per Indian law), FAQ (10 questions), mandatory T&C checkbox, payment step
+- Updated join-local-admin-page.tsx with same legal T&C, FAQ, mandatory checkbox, payment step
+- Created admin-job-applications-page.tsx for admin to view/manage applications (stats, filters, approve/reject)
+- Added 6 backend API endpoints: POST/GET /api/job-applications, GET /stats, PATCH /:id/status, GET /legal/job-offer-terms, GET /faq
+- Legal terms cover: non-refundable fee, performance selection, independent contractor, limitation of liability, Mumbai jurisdiction, Arbitration Act 1996
+- Added admin-profile and admin-job-applications page types and routes
+- Added "Profile & Password" and "Job Applications" to admin header navigation and dropdown
+- Added JobOfferPopup to App.tsx
+- Committed and pushed to main (a4cab8f)
+
+Stage Summary:
+- Admin can now change password via Profile & Password page
+- Users see job offer popup (Area Manager/Local Admin) after 10 seconds, dismissible for 24 hours
+- Join pages have complete legal T&C compliant with Indian law and FAQ section
+- Admin can manage job applications from dedicated page
+- All changes pushed to main branch
