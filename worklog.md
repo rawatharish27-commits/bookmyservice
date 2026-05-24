@@ -773,3 +773,27 @@ Stage Summary:
 - Dialog warning: Fixed by adding aria-describedby={undefined} to DialogContent
 - 5 files changed, 127 insertions, 6 deletions
 - Changes pushed to main branch, will trigger Cloudflare Pages rebuild + Render deployment
+
+---
+Task ID: Pool-Import-Fix
+Agent: Main Agent
+Task: Fix ReferenceError: pool is not defined in index.ts, add /api/testimonials endpoint
+
+Work Log:
+- Analyzed Render deployment logs: `pool is not defined` errors at lines 849, 867, 971, 4890
+- Root cause: `index.ts` imports `Pool` type from `pg` but never creates a `pool` instance
+  - The `pool` instance lives in `lib/shared.ts` (exported as `export const pool = new Pool(...)`)
+  - `bootstrap.ts` correctly imports `pool` from `./lib/shared`
+  - But `index.ts` has 308 uses of `pool.query(...)` without importing it
+- Fix: Added `import { pool } from './lib/shared'` to index.ts
+- Removed unused `import { Pool } from 'pg'` (type-only import, never instantiated)
+- Added missing `GET /api/testimonials` endpoint (frontend home page was getting 404)
+  - Returns top-rated reviews (rating >= 4) with reviewer name, image, and service title
+  - Supports `?limit=N` query param (max 20, default 5)
+- Committed and pushed: `b3a5eb9`
+
+Stage Summary:
+- `pool is not defined`: Fixed by adding the missing import
+- `/api/testimonials` 404: Fixed by adding the endpoint
+- 1 file changed, 28 insertions, 1 deletion
+- Changes pushed to main, will trigger Render redeploy
