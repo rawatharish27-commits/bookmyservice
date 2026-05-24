@@ -19,7 +19,6 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import { SignJWT, jwtVerify } from 'jose'
 import { z } from 'zod'
@@ -48,6 +47,7 @@ import { generatePersonalizedRecommendations, generateSimilarServices, generateS
 import { createOrder, verifyPaymentSignature, verifyWebhookSignature, capturePayment, refundPayment, getPaymentDetails, mapRazorpayStatus, getRazorpayStatus, getRazorpayKeyId } from './lib/razorpay'
 import type { PaymentStatus, PaymentMethod } from './lib/razorpay'
 import { createHash } from 'crypto'
+import { pool } from './lib/shared'
 
 // ═══ OTP SECURITY: Rate limiting & lockout ══════════════════════════════
 const otpAttempts = new Map<string, { count: number; lockedUntil: number }>()
@@ -2010,6 +2010,33 @@ app.get('/api/reviews', async (c) => {
     const result = await pool.query(query, params).catch(() => ({ rows: [] }))
     return c.json({ reviews: result.rows.map(transformReviewRow), total: result.rows.length, limit, offset })
   } catch (e) { return c.json({ error: 'Failed to list reviews' }, 500) }
+})
+
+// GET /api/testimonials - Public testimonials for home page (top-rated reviews)
+app.get('/api/testimonials', async (c) => {
+  try {
+    const limit = Math.min(parseInt(c.req.query('limit') || '5'), 20)
+    const result = await pool.query(
+      `SELECT r.id, r.rating, r.comment, r."createdAt",
+        u.name as "reviewerName", u."profileImageUrl" as "reviewerImage",
+        s.title as "serviceTitle"
+       FROM "Review" r
+       LEFT JOIN "User" u ON r."reviewerId" = u.id
+       LEFT JOIN "Service" s ON r."serviceId" = s.id
+       WHERE r.rating >= 4
+       ORDER BY r.rating DESC, r."createdAt" DESC
+       LIMIT $1`,
+      [limit]
+    ).catch(() => ({ rows: [] }))
+    return c.json({ testimonials: result.rows.map((r: any) => ({
+      id: r.id,
+      rating: r.rating,
+      comment: r.comment,
+      createdAt: r.createdAt,
+      reviewer: { name: r.reviewerName, profileImageUrl: r.reviewerImage },
+      serviceTitle: r.serviceTitle,
+    })), total: result.rows.length })
+  } catch (e) { return c.json({ testimonials: [], total: 0 }) }
 })
 
 // ============================================================
