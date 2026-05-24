@@ -14,12 +14,6 @@ import { Queue, QueueEvents, Worker, Job } from 'bullmq'
 // If REDIS_URL is not set, jobs are processed synchronously (fallback).
 
 const REDIS_URL = process.env.REDIS_URL
-const redisConnection = REDIS_URL ? {
-  host: new URL(REDIS_URL).hostname,
-  port: parseInt(new URL(REDIS_URL).port || '6379'),
-  password: new URL(REDIS_URL).password || undefined,
-  db: parseInt(new URL(REDIS_URL).pathname.slice(1) || '0'),
-} : null
 
 // ─── Concurrency Helpers ──────────────────────────────────────────────
 function getNotificationConcurrency(): number {
@@ -28,6 +22,56 @@ function getNotificationConcurrency(): number {
 
 function getBookingConcurrency(): number {
   return parseInt(process.env.QUEUE_BOOKING_CONCURRENCY || '3', 10)
+}
+
+// ─── Shared Redis Connection ──────────────────────────────────────────
+// BullMQ creates multiple connections internally (one per Queue/Worker).
+// Free Redis plans limit concurrent connections (often to 1-5).
+// We create a single shared ioredis instance to minimize connections.
+
+import IORedis from 'ioredis'
+
+let sharedConnection: IORedis | null = null
+let connectionReady = false
+
+function getSharedConnection(): IORedis | null {
+  if (sharedConnection) return sharedConnection
+  if (!REDIS_URL) return null
+
+  try {
+    sharedConnection = new IORedis(REDIS_URL, {
+      maxRetriesPerRequest: null,  // REQUIRED by BullMQ — must be null
+      enableReadyCheck: true,
+      enableOfflineQueue: true,
+      keepAlive: 30000,
+      connectTimeout: 15000,
+      retryStrategy(times) {
+        if (times > 50) return null
+        return Math.min(times * 500, 10000)
+      },
+      lazyConnect: true,  // Don't connect until first command
+    })
+
+    sharedConnection.on('error', (err: any) => {
+      // EPIPE/ECONNRESET are non-fatal — ioredis auto-reconnects
+      if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+      if (err.message?.includes('max retries')) return
+      console.warn('📦 [ioredis] Connection error:', err.message)
+    })
+
+    sharedConnection.on('ready', () => {
+      connectionReady = true
+    })
+
+    sharedConnection.on('close', () => {
+      connectionReady = false
+    })
+
+    return sharedConnection
+  } catch (err: any) {
+    console.warn('📦 [ioredis] Failed to create connection:', err.message)
+    return null
+  }
 }
 
 // ─── Queue Names ───────────────────────────────────────────────────────
@@ -68,57 +112,33 @@ let isQueueSystemReady = false
 export const DEAD_LETTER_QUEUE_NAME = 'bys-dead-letter'
 export let deadLetterQueue: Queue | null = null
 
-function getConnectionConfig() {
-  if (!redisConnection) return null
-  return {
-    connection: {
-      host: redisConnection.host,
-      port: redisConnection.port,
-      password: redisConnection.password,
-      db: redisConnection.db,
-      // ioredis resilience settings to prevent EPIPE/ECONNRESET
-      keepAlive: 30000,        // TCP keepalive every 30s
-      connectTimeout: 10000,   // 10s connection timeout
-      commandTimeout: 5000,    // 5s command timeout
-      maxRetriesPerRequest: 3, // Retry failed commands before giving up
-      enableReadyCheck: true,  // Wait for READY before accepting commands
-      enableOfflineQueue: true, // Queue commands while disconnected
-      retryStrategy: (times: number) => {
-        if (times > 50) return null // Stop retrying after 50 attempts
-        const delay = Math.min(times * 200, 5000) // Cap at 5s
-        return delay
-      },
-    },
-  }
-}
-
 // ─── Initialize Queues ─────────────────────────────────────────────────
 export async function initializeQueues(): Promise<void> {
-  const config = getConnectionConfig()
-  if (!config) {
+  const connection = getSharedConnection()
+  if (!connection) {
     console.log('📮 Queue system: REDIS_URL not set — jobs will be processed synchronously (fallback)')
     isQueueSystemReady = false
     return
   }
 
   try {
-    // Create notification queue
-    notificationQueue = new Queue<NotificationJobData>(QUEUE_NAMES.NOTIFICATION, config)
+    // Connect if using lazyConnect
+    if (!connectionReady) {
+      await connection.connect().catch(() => {}) // lazyConnect needs explicit connect()
+    }
 
-    // Create booking processing queue
-    bookingQueue = new Queue<BookingProcessingJobData>(QUEUE_NAMES.BOOKING_PROCESSING, config)
+    // Create queues sharing the same connection
+    // BullMQ internally creates new connections from the shared one,
+    // but with lazyConnect it minimizes initial connection count
+    notificationQueue = new Queue<NotificationJobData>(QUEUE_NAMES.NOTIFICATION, connection)
+    bookingQueue = new Queue<BookingProcessingJobData>(QUEUE_NAMES.BOOKING_PROCESSING, connection)
+    deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, connection)
 
-    // Create dead letter queue
-    deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, config)
-
-    // Suppress ioredis EPIPE/ECONNRESET errors (non-fatal, auto-reconnects)
+    // Suppress non-fatal errors on all queues
     for (const q of [notificationQueue, bookingQueue, deadLetterQueue]) {
       q.on('error', (err: any) => {
-        // EPIPE and ECONNRESET are expected with remote Redis — ioredis auto-reconnects
-        if (err.code === 'EPIPE' || err.code === 'ECONNRESET') {
-          // Silently ignore — ioredis handles reconnection
-          return
-        }
+        if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+        if (err.message?.includes('max retries')) return
         console.warn('📮 Queue error:', err.message)
       })
     }
@@ -328,8 +348,8 @@ async function sendBookingConfirmation(bookingId: string, data: Record<string, a
 
 // ─── Start Workers (if Redis available) ────────────────────────────────
 export async function startWorkers(): Promise<void> {
-  const config = getConnectionConfig()
-  if (!config || !isQueueSystemReady) return
+  const connection = getSharedConnection()
+  if (!connection || !isQueueSystemReady) return
 
   try {
     // Notification worker
@@ -339,7 +359,7 @@ export async function startWorkers(): Promise<void> {
         await processNotificationJob(job.data)
       },
       {
-        connection: config.connection,
+        connection,
         concurrency: getNotificationConcurrency(),
       }
     )
@@ -355,6 +375,7 @@ export async function startWorkers(): Promise<void> {
     notificationWorker.on('error', (err: any) => {
       // Suppress non-fatal Redis connection errors
       if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+      if (err.message?.includes('max retries')) return
       console.warn('📮 [NOTIFICATION] Worker error:', err.message)
     })
 
@@ -366,7 +387,7 @@ export async function startWorkers(): Promise<void> {
         await processBookingJob(job.data)
       },
       {
-        connection: config.connection,
+        connection,
         concurrency: bookingConcurrency,
       }
     )
@@ -382,6 +403,7 @@ export async function startWorkers(): Promise<void> {
     bookingWorker.on('error', (err: any) => {
       // Suppress non-fatal Redis connection errors
       if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
+      if (err.message?.includes('max retries')) return
       console.warn('📮 [BOOKING] Worker error:', err.message)
     })
 
@@ -399,6 +421,10 @@ export async function shutdownQueues(): Promise<void> {
   await notificationQueue?.close()
   await bookingQueue?.close()
   await deadLetterQueue?.close()
+  if (sharedConnection) {
+    sharedConnection.disconnect()
+    sharedConnection = null
+  }
   console.log('📮 Queue system shut down')
 }
 
