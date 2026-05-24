@@ -204,18 +204,35 @@ app.use('*', httpLoggingMiddleware())
 
 app.use('*', cors({
   origin: (origin, c) => {
-    // Allow known production origins
-    const allowedOrigins = [
-      'https://bookmyservice.pages.dev',
-      'https://bookyourservice.co.in',
-      'https://www.bookyourservice.co.in',
-      'https://bookmyservice-eta.vercel.app',
-    ]
-    if (allowedOrigins.includes(origin)) return origin
-    // Allow localhost and sandbox origins
-    if (origin && (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'))) return origin
-    // Default fallback
-    return 'http://localhost:5173'
+    try {
+      // Hardcoded default production origins
+      const allowedOrigins = [
+        'https://bookmyservice.pages.dev',
+        'https://bookyourservice.co.in',
+        'https://www.bookyourservice.co.in',
+        'https://bookmyservice-eta.vercel.app',
+      ]
+
+      // Append additional origins from CORS_ORIGINS env var
+      const envOrigins = process.env.CORS_ORIGINS
+      if (envOrigins) {
+        for (const o of envOrigins.split(',')) {
+          const trimmed = o.trim()
+          if (trimmed) allowedOrigins.push(trimmed)
+        }
+      }
+
+      if (allowedOrigins.includes(origin)) return origin
+      // Allow localhost and sandbox origins
+      if (origin && (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:'))) return origin
+      // In production, reject unmatched origins instead of falling back to localhost
+      if (process.env.NODE_ENV === 'production') return ''
+      // Default fallback for development
+      return 'http://localhost:5173'
+    } catch {
+      if (process.env.NODE_ENV === 'production') return ''
+      return 'http://localhost:5173'
+    }
   },
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

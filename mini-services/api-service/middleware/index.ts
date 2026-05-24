@@ -187,28 +187,49 @@ export function applyGlobalErrorHandler(app: Hono): void {
 // ─── Apply CORS ────────────────────────────────────────────────────────────
 /**
  * Configures and applies CORS middleware.
- * Allows known production origins, localhost/127.0.0.1 for development,
- * and falls back to http://localhost:5173.
+ * Allows known production origins plus any from CORS_ORIGINS env var,
+ * localhost/127.0.0.1 for development, and in production rejects
+ * unmatched origins (returns empty string) instead of falling back to localhost.
  */
 function applyCORS(app: Hono): void {
   app.use(
     '*',
     cors({
       origin: (origin, _c) => {
-        // Allow known production origins
-        if (ALLOWED_ORIGINS.includes(origin)) return origin
+        try {
+          // Build the full list of allowed origins
+          const allAllowedOrigins = [...ALLOWED_ORIGINS]
 
-        // Allow localhost and sandbox origins
-        if (
-          origin &&
-          (origin.startsWith('http://localhost:') ||
-            origin.startsWith('http://127.0.0.1:'))
-        ) {
-          return origin
+          // Append additional origins from CORS_ORIGINS env var
+          const envOrigins = process.env.CORS_ORIGINS
+          if (envOrigins) {
+            for (const o of envOrigins.split(',')) {
+              const trimmed = o.trim()
+              if (trimmed) allAllowedOrigins.push(trimmed)
+            }
+          }
+
+          // Allow known production origins
+          if (allAllowedOrigins.includes(origin)) return origin
+
+          // Allow localhost and sandbox origins
+          if (
+            origin &&
+            (origin.startsWith('http://localhost:') ||
+              origin.startsWith('http://127.0.0.1:'))
+          ) {
+            return origin
+          }
+
+          // In production, reject unmatched origins instead of falling back to localhost
+          if (process.env.NODE_ENV === 'production') return ''
+
+          // Default fallback for development
+          return 'http://localhost:5173'
+        } catch {
+          if (process.env.NODE_ENV === 'production') return ''
+          return 'http://localhost:5173'
         }
-
-        // Default fallback
-        return 'http://localhost:5173'
       },
       allowHeaders: ['Content-Type', 'Authorization'],
       allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],

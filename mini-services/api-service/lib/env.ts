@@ -67,6 +67,9 @@ const ENV_SCHEMA: EnvVarSchema[] = [
   // Queue
   { name: 'QUEUE_NOTIFICATION_CONCURRENCY', required: false, type: 'number', default: 5, description: 'Notification worker concurrency' },
   { name: 'QUEUE_BOOKING_CONCURRENCY', required: false, type: 'number', default: 3, description: 'Booking worker concurrency' },
+
+  // CORS
+  { name: 'CORS_ORIGINS', required: false, type: 'string', description: 'Comma-separated list of allowed CORS origins' },
 ]
 
 // ─── Validation Result ─────────────────────────────────────────────────────

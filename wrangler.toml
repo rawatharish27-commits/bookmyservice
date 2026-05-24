@@ -6,15 +6,19 @@ pages_build_output_dir = "./frontend/dist"
 # Cloudflare Pages runs: npm ci && npm run build
 
 # Environment variables
+# VITE_API_URL is intentionally empty — the frontend uses relative URLs (/api/*)
+# which are proxied by Cloudflare Pages _redirects to the Render backend.
+# This avoids CORS issues entirely since requests appear same-origin to the browser.
+# In local dev, the Vite dev server proxy (vite.config.ts) handles /api/* routes.
 [vars]
-VITE_API_URL = "https://bookmyservice-api.onrender.com"
+VITE_API_URL = ""
 
 # Production environment
 [env.production]
 [env.production.vars]
-VITE_API_URL = "https://bookmyservice-api.onrender.com"
+VITE_API_URL = ""
 
 # Preview environment (deploy previews / PRs)
 [env.preview]
 [env.preview.vars]
-VITE_API_URL = "https://bookmyservice-api-staging.onrender.com"
+VITE_API_URL = ""
