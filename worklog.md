@@ -586,7 +586,55 @@ Work Log:
   - `PATCH /api/bookings/:id/reject`: Added booking existence check + ownership verification (user must be booking provider or admin)
   - `PATCH /api/bookings/:id/accept`: Added booking existence check + ownership verification (user must be booking provider or admin)
   - `PATCH /api/reviews/:id`: Added authentication check + reviewer ownership verification (was previously zero auth)
-- `index.ts`: Same ownership checks applied to all duplicate route handlers
+- `index.ts`: Same ownership checks applied to
+
+---
+Task ID: Production Fix Session
+Agent: Main Agent
+Task: Fix browser console errors: /api/auth/refresh 404, notifications 401, referrals page crash, dialog warning
+
+Work Log:
+1. **Added POST /api/auth/refresh endpoint** to index.ts (lines 823-933):
+   - Method 1: Reads `bys_refresh_token` HttpOnly cookie → validates against RefreshToken table → issues new access token → rotates refresh token (revokes old, creates new) → sets new cookie
+   - Method 2 (fallback): Accepts expired JWT in Authorization header with 7-day clock tolerance → verifies user still active → issues new access token + creates refresh token cookie
+   - Returns `{ accessToken, user }` on success, 401 with error codes on failure
+   - Added rate limiter: 10 requests per minute
+
+2. **Modified login/register/google endpoints** to set refresh token cookies:
+   - After successful authentication, creates a RefreshToken record in DB
+   - Sets `bys_refresh_token` HttpOnly cookie (Secure in production, SameSite=Lax, path=/api/auth, 7-day expiry)
+   - Login (line 493-501), Register (line 548-556), Google OAuth (line 680-688)
+
+3. **Updated imports** in index.ts: Added `getCookie`, `setCookie`, `tokenBlacklist` from `./lib/shared`
+
+4. **Fixed frontend auth-context.tsx** refreshAccessToken to send Authorization header:
+   - Now sends current (possibly expired) access token in Authorization header as fallback
+   - Backend can use this to re-authenticate when no refresh cookie is available
+
+5. **Fixed client-referrals-page.tsx** crash - TypeError: Cannot read properties of undefined (reading 'slice'):
+   - Changed `getInitials(name: string)` to `getInitials(name?: string | null)`
+   - Added early return `'??'` when name is undefined/null
+
+6. **Fixed header.tsx** notification fetch to handle 401 gracefully:
+   - Added `credentials: 'include'` to send refresh cookie
+   - Added explicit `res.status === 401` early return to prevent unnecessary error processing
+
+7. **Fixed /api/referrals endpoint** to return proper ReferralData structure:
+   - Was returning raw array, frontend expected `{ referralCode, referralLink, totalReferrals, totalEarned, pendingRewards, referralHistory }`
+   - Now queries user's referralCode and builds complete response with stats
+
+8. **Fixed Cloudflare Pages Function proxy** for Set-Cookie headers:
+   - Changed `responseHeaders.set()` to `responseHeaders.append()` to preserve multiple Set-Cookie headers
+   - Critical for refresh token cookies to be properly forwarded from backend through proxy
+
+Stage Summary:
+- /api/auth/refresh endpoint added with cookie + JWT fallback authentication
+- Refresh token cookies set on login, register, and Google OAuth
+- Frontend sends Authorization header in refresh requests for backward compatibility
+- Referrals page crash fixed with null-safe getInitials
+- Notifications 401 handled gracefully in header
+- Referrals API returns proper data structure matching frontend expectations
+- Cloudflare proxy preserves multiple Set-Cookie headers all duplicate route handlers
 
 ### Task 11: Fix OTP security
 - `routes/booking.routes.ts`:

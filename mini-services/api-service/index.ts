@@ -47,7 +47,7 @@ import { generatePersonalizedRecommendations, generateSimilarServices, generateS
 import { createOrder, verifyPaymentSignature, verifyWebhookSignature, capturePayment, refundPayment, getPaymentDetails, mapRazorpayStatus, getRazorpayStatus, getRazorpayKeyId } from './lib/razorpay'
 import type { PaymentStatus, PaymentMethod } from './lib/razorpay'
 import { createHash } from 'crypto'
-import { pool } from './lib/shared'
+import { pool, getCookie, setCookie, tokenBlacklist } from './lib/shared'
 
 // ═══ OTP SECURITY: Rate limiting & lockout ══════════════════════════════
 const otpAttempts = new Map<string, { count: number; lockedUntil: number }>()
@@ -317,6 +317,14 @@ app.use('/api/auth/google', rateLimiter({
   statusCode: 429,
 }))
 
+app.use('/api/auth/refresh', rateLimiter({
+  windowMs: 60_000,
+  limit: 10,
+  keyGenerator: rlKeyGenerator,
+  message: { error: 'Too many token refresh attempts. Please try again later.', code: 'RATE_LIMITED' },
+  statusCode: 429,
+}))
+
 app.use('/api/auth/forgot-password', rateLimiter({
   windowMs: 60_000,
   limit: 3,
@@ -482,6 +490,15 @@ app.post('/api/auth/login', async (c) => {
     const { passwordHash, roleName, ...safeUser } = user
     AuthEvents.successfulLogin(sanitizedEmail, c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown', user.roleName)
     setSentryUser({ id: user.id, email: user.email, role: user.roleName })
+    // Set refresh token cookie
+    try {
+      const rtId = 'rt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      const refreshToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+      const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || null
+      const userAgent = c.req.header('user-agent')?.slice(0, 200) || null
+      await pool.query('INSERT INTO "RefreshToken" (id, token, "userId", "expiresAt", "ipAddress", "deviceInfo", "createdAt") VALUES ($1, $2, $3, NOW() + INTERVAL \'7 days\', $4, $5, NOW())', [rtId, refreshToken, user.id, ip, userAgent])
+      setCookie(c, 'bys_refresh_token', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/api/auth', maxAge: 7 * 24 * 60 * 60 })
+    } catch (e) { /* non-critical */ }
     return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
   } catch (e) { console.error('Login error:', e); return c.json({ error: 'Login failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
@@ -528,6 +545,15 @@ app.post('/api/auth/register', async (c) => {
       priority: 4,
     }).catch(() => {})
     AuthEvents.registration(email, roleId === 2 ? 'PROVIDER' : roleId === 4 ? 'TECHNICIAN' : roleId === 5 ? 'VENDOR' : 'CLIENT', c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown')
+    // Set refresh token cookie
+    try {
+      const rtId = 'rt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      const refreshToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+      const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || null
+      const userAgent = c.req.header('user-agent')?.slice(0, 200) || null
+      await pool.query('INSERT INTO "RefreshToken" (id, token, "userId", "expiresAt", "ipAddress", "deviceInfo", "createdAt") VALUES ($1, $2, $3, NOW() + INTERVAL \'7 days\', $4, $5, NOW())', [rtId, refreshToken, user.id, ip, userAgent])
+      setCookie(c, 'bys_refresh_token', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/api/auth', maxAge: 7 * 24 * 60 * 60 })
+    } catch (e) { /* non-critical */ }
     return c.json({ message: 'Registration successful', user: { ...safeUser, role: user.roleName }, accessToken: token }, 201)
   } catch (e) { console.error('Register error:', e); return c.json({ error: 'Registration failed', detail: process.env.NODE_ENV === 'production' ? undefined : (e instanceof Error ? e.message : String(e)) }, 500) }
 })
@@ -651,6 +677,15 @@ app.post('/api/auth/google', async (c) => {
       .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
       .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
     const { passwordHash, roleName, ...safeUser } = user
+    // Set refresh token cookie
+    try {
+      const rtId = 'rt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+      const refreshToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+      const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || null
+      const userAgent = c.req.header('user-agent')?.slice(0, 200) || null
+      await pool.query('INSERT INTO "RefreshToken" (id, token, "userId", "expiresAt", "ipAddress", "deviceInfo", "createdAt") VALUES ($1, $2, $3, NOW() + INTERVAL \'7 days\', $4, $5, NOW())', [rtId, refreshToken, user.id, ip, userAgent])
+      setCookie(c, 'bys_refresh_token', refreshToken, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'Lax', path: '/api/auth', maxAge: 7 * 24 * 60 * 60 })
+    } catch (e) { /* non-critical */ }
     return c.json({ message: 'Login successful', user: { ...safeUser, role: roleName }, accessToken: token })
   } catch (e) {
     console.error('Google auth error:', e)
@@ -781,6 +816,119 @@ app.patch('/api/auth/profile', async (c) => {
       return c.json({ error: 'Token expired or invalid', code: 'TOKEN_EXPIRED' }, 401)
     }
     return c.json({ error: 'Failed to update profile' }, 500) 
+  }
+})
+
+// ─── Token Refresh ───────────────────────────────────────────────────────
+app.post('/api/auth/refresh', async (c) => {
+  try {
+    const secret = new TextEncoder().encode(JWT_SECRET)
+
+    // Method 1: Check for refresh token cookie
+    const refreshToken = getCookie(c, 'bys_refresh_token')
+    if (refreshToken) {
+      const rtResult = await pool.query(
+        'SELECT rt.*, u.email, u."roleId", r.name as "roleName" FROM "RefreshToken" rt JOIN "User" u ON u.id = rt."userId" JOIN "Role" r ON r.id = u."roleId" WHERE rt.token = $1 AND rt."isRevoked" = false AND rt."expiresAt" > NOW()',
+        [refreshToken]
+      )
+      if (rtResult.rows[0]) {
+        const row = rtResult.rows[0]
+        // Issue new access token
+        const newAccessToken = await new SignJWT({ sub: row.userId, email: row.email, role: row.roleName, roleId: row.roleId })
+          .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
+          .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
+
+        // Rotate refresh token (optional but recommended)
+        const newRefreshToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+        const newRtId = 'rt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+        const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || null
+        const userAgent = c.req.header('user-agent')?.slice(0, 200) || null
+
+        // Revoke old and create new
+        await pool.query('UPDATE "RefreshToken" SET "isRevoked" = true, "revokedAt" = NOW() WHERE id = $1', [row.id]).catch(() => {})
+        await pool.query(
+          'INSERT INTO "RefreshToken" (id, token, "userId", "expiresAt", "ipAddress", "deviceInfo", "createdAt") VALUES ($1, $2, $3, NOW() + INTERVAL \'7 days\', $4, $5, NOW())',
+          [newRtId, newRefreshToken, row.userId, ip, userAgent]
+        ).catch(() => {})
+
+        // Set new cookie
+        setCookie(c, 'bys_refresh_token', newRefreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'Lax',
+          path: '/api/auth',
+          maxAge: 7 * 24 * 60 * 60,
+        })
+
+        // Get user profile
+        const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [row.userId])
+        const user = userResult.rows[0]
+        if (user) {
+          const { passwordHash, roleName, ...safeUser } = user
+          return c.json({ accessToken: newAccessToken, user: { ...safeUser, role: roleName } })
+        }
+        return c.json({ accessToken: newAccessToken })
+      }
+    }
+
+    // Method 2: Fallback - try expired access token in Authorization header
+    const authHeader = c.req.header('authorization')
+    if (authHeader?.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1]
+      // Check blacklist
+      if (tokenBlacklist && tokenBlacklist.has(token)) {
+        return c.json({ error: 'Token revoked', code: 'TOKEN_REVOKED' }, 401)
+      }
+      try {
+        // Try with generous clock tolerance (7 days)
+        const { payload } = await jwtVerify(token, secret, {
+          issuer: 'bookyourservice',
+          audience: 'bookyourservice',
+          clockTolerance: 7 * 24 * 60 * 60 // 7 days grace for refresh
+        })
+
+        // Verify user still exists and is active
+        const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1 AND u.status = \'ACTIVE\'', [payload.sub])
+        if (!userResult.rows[0]) {
+          return c.json({ error: 'User not found or inactive', code: 'USER_INACTIVE' }, 401)
+        }
+
+        const user = userResult.rows[0]
+        const newAccessToken = await new SignJWT({ sub: user.id, email: user.email, role: user.roleName, roleId: user.roleId })
+          .setProtectedHeader({ alg: 'HS256' }).setIssuedAt().setExpirationTime('15m')
+          .setIssuer('bookyourservice').setAudience('bookyourservice').sign(secret)
+
+        // Also set a refresh token cookie for future refreshes
+        const newRefreshToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '')
+        const newRtId = 'rt_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+        const ip = c.req.header('x-forwarded-for')?.split(',')[0]?.trim() || null
+        const userAgent = c.req.header('user-agent')?.slice(0, 200) || null
+
+        await pool.query(
+          'INSERT INTO "RefreshToken" (id, token, "userId", "expiresAt", "ipAddress", "deviceInfo", "createdAt") VALUES ($1, $2, $3, NOW() + INTERVAL \'7 days\', $4, $5, NOW())',
+          [newRtId, newRefreshToken, user.id, ip, userAgent]
+        ).catch(() => {})
+
+        setCookie(c, 'bys_refresh_token', newRefreshToken, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'Lax',
+          path: '/api/auth',
+          maxAge: 7 * 24 * 60 * 60,
+        })
+
+        const { passwordHash, roleName, ...safeUser } = user
+        return c.json({ accessToken: newAccessToken, user: { ...safeUser, role: roleName } })
+      } catch (e: any) {
+        // Token is too old or invalid
+        return c.json({ error: 'Refresh token expired', code: 'REFRESH_EXPIRED' }, 401)
+      }
+    }
+
+    return c.json({ error: 'No refresh token provided', code: 'NO_TOKEN' }, 401)
+  } catch (e) {
+    console.error('Token refresh error:', e)
+    return c.json({ error: 'Token refresh failed' }, 401)
   }
 })
 
@@ -1662,18 +1810,41 @@ app.get('/api/location/reverse-geocode', async (c) => {
 // ADDITIONAL HYPERLOCAL ENDPOINTS for frontend pages
 // ============================================================
 
-// GET /api/referrals - Get referrals list
+// GET /api/referrals - Get referrals data (code, stats, history)
 app.get('/api/referrals', async (c) => {
   try {
     const auth = await getAuthUser(c)
     if (!auth) return c.json({ error: 'Authentication required' }, 401)
-    // Try DB
+
+    // Get user's referral code
+    const userResult = await pool.query('SELECT "referralCode" FROM "User" WHERE id = $1', [auth.id]).catch(() => ({ rows: [] }))
+    const referralCode = userResult.rows[0]?.referralCode || auth.id.slice(0, 8).toUpperCase()
+    const referralLink = `${c.req.header('origin') || c.req.header('x-forwarded-host') ? 'https://' + c.req.header('x-forwarded-host') : ''}/register?ref=${referralCode}`
+
+    let referralHistory: any[] = []
+    let totalReferrals = 0
+    let totalEarned = 0
+    let pendingRewards = 0
+
     try {
-      const result = await pool.query('SELECT r.*, u.name as "referredName" FROM "Referral" r LEFT JOIN "User" u ON u.id = r."refereeId" WHERE r."referrerId" = $1 ORDER BY r."createdAt" DESC', [auth.id])
-      if (result.rows.length > 0) return c.json(result.rows)
-    } catch (dbError) { /* DB table may not exist */ }
-    // Return empty if no data
-    return c.json([])
+      const result = await pool.query(
+        'SELECT r.id, r.status, r."rewardEarned", r."createdAt" as "referredAt", r."completedAt", u.name as "referredName", u.email as "referredEmail" FROM "Referral" r LEFT JOIN "User" u ON u.id = r."refereeId" WHERE r."referrerId" = $1 ORDER BY r."createdAt" DESC',
+        [auth.id]
+      )
+      referralHistory = result.rows
+      totalReferrals = referralHistory.length
+      totalEarned = referralHistory.filter(r => r.status === 'COMPLETED').reduce((sum, r) => sum + (parseFloat(r.rewardEarned) || 0), 0)
+      pendingRewards = referralHistory.filter(r => r.status === 'PENDING').reduce((sum, r) => sum + (parseFloat(r.rewardEarned) || 0), 0)
+    } catch (dbError) { /* Referral table may not exist */ }
+
+    return c.json({
+      referralCode,
+      referralLink,
+      totalReferrals,
+      totalEarned,
+      pendingRewards,
+      referralHistory,
+    })
   } catch (e) {
     return c.json({ error: 'Failed to get referrals' }, 500)
   }

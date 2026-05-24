@@ -177,10 +177,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isRefreshingRef.current = true;
     pendingRefreshPromiseRef.current = (async () => {
       try {
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        // Send current token as fallback for refresh (even if expired, backend accepts it with grace period)
+        const currentToken = tokenRef.current;
+        if (currentToken) {
+          headers['Authorization'] = `Bearer ${currentToken}`;
+        }
         const res = await fetch(apiUrl('/api/auth/refresh'), {
           method: 'POST',
           credentials: 'include', // Send HttpOnly cookie
-          headers: { 'Content-Type': 'application/json' },
+          headers,
         });
 
         if (!res.ok) {

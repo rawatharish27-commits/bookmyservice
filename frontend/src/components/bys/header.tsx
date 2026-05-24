@@ -468,7 +468,12 @@ export function Header() {
       try {
         const res = await fetch(apiUrl('/api/notifications'), {
           headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
         });
+        if (res.status === 401) {
+          // Token expired, will be refreshed by auth context
+          return;
+        }
         if (res.ok) {
           const data = await res.json();
           const notifications = data.notifications || data || [];

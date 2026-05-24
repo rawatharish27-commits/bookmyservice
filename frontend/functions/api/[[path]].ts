@@ -72,10 +72,11 @@ export async function onRequest(context: {
     })
 
     // Build response headers (skip hop-by-hop from backend)
+    // Use append() instead of set() to preserve multiple Set-Cookie headers
     const responseHeaders = new Headers()
     for (const [key, value] of backendResponse.headers.entries()) {
       if (!HOP_BY_HOP.has(key.toLowerCase())) {
-        responseHeaders.set(key, value)
+        responseHeaders.append(key, value)
       }
     }
 
