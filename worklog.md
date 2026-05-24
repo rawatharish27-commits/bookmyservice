@@ -797,3 +797,26 @@ Stage Summary:
 - `/api/testimonials` 404: Fixed by adding the endpoint
 - 1 file changed, 28 insertions, 1 deletion
 - Changes pushed to main, will trigger Render redeploy
+
+---
+Task ID: Dialog-Category-Fix
+Agent: Main Agent
+Task: Fix Dialog accessibility warnings, add category seeding, fix 404s
+
+Work Log:
+- Analyzed browser console: Dialog warning persists despite previous fix
+- Root cause: `aria-describedby={undefined}` was placed BEFORE `{...props}` spread,
+  so consumer props could override it. Moved it AFTER the spread to take precedence.
+- Applied same fix to AlertDialog component (alert-dialog.tsx)
+- Category 404 errors: `/api/categories/air-conditioner` returning 404 because
+  no categories exist in the Supabase database (seed.ts was never run)
+- Added ServiceCategory seeding to bootstrap.ts: 11 categories auto-seeded on startup
+  when table is empty, using same slugs as frontend (air-conditioner, refrigerator, etc.)
+- 401 on login is expected behavior — no users exist in DB yet, user needs to register first
+- Committed and pushed: `451ce78`
+
+Stage Summary:
+- Dialog/AlertDialog warning: Fixed by placing aria-describedby after spread
+- Category 404: Fixed by adding auto-seeding of 11 categories in bootstrap
+- Login 401: Expected — user must register before logging in
+- 3 files changed, 29 insertions, 1 deletion
