@@ -747,3 +747,29 @@ Stage Summary:
 - Revenue streams expanded from 15 to 39 entries covering all 11 categories
 - SEO metadata expanded from 8 to 15 entries covering all 11 categories
 - File grew from ~1512 lines to ~1643 lines
+
+---
+Task ID: API-Proxy-Fix
+Agent: Main Agent
+Task: Fix 405 Method Not Allowed on /api/auth/login and /api/auth/register, fix Dialog description warnings
+
+Work Log:
+- Analyzed browser console errors: POST /api/auth/login and /api/auth/register returning 405 Method Not Allowed
+- Root cause: Cloudflare Pages `_redirects` with 200 status only supports proxying GET/HEAD requests to external domains. POST/PUT/PATCH/DELETE return 405.
+- Created `frontend/functions/api/[[path]].ts` — Cloudflare Pages Function that acts as a proper API proxy supporting ALL HTTP methods
+  - Handles CORS preflight (OPTIONS) directly without calling backend
+  - Forwards all other methods to the Render backend
+  - Adds CORS headers to all responses
+  - Returns 502 with helpful JSON when backend is unreachable
+  - Supports `API_BACKEND_URL` env var to override the default Render URL
+- Created `frontend/functions/tsconfig.json` — Separate TypeScript config for Workers runtime (ES2022, no DOM types)
+- Updated `frontend/public/_redirects` — Removed the `/api/*` proxy rule (Function handles it now), kept SPA fallback
+- Updated `frontend/tsconfig.json` — Excluded `functions` directory from Vite type checking
+- Fixed Dialog accessibility warning: Added `aria-describedby={undefined}` to DialogContent in `frontend/src/components/ui/dialog.tsx`
+- Committed and pushed: `0e5d3ce` — "fix: replace _redirects proxy with Cloudflare Pages Function for API"
+
+Stage Summary:
+- 405 Method Not Allowed: Fixed by replacing _redirects proxy with Cloudflare Pages Function
+- Dialog warning: Fixed by adding aria-describedby={undefined} to DialogContent
+- 5 files changed, 127 insertions, 6 deletions
+- Changes pushed to main branch, will trigger Cloudflare Pages rebuild + Render deployment
