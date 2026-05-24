@@ -1,0 +1,37 @@
+import type { ComponentType } from 'react'
+
+type PageLoader = () => Promise<{ default: ComponentType }>
+
+export const loaders: Record<string, PageLoader> = {
+  'client-dashboard': () => import('@/components/pages/customer/client-dashboard-page').then(m => ({ default: m.ClientDashboardPage })),
+  'client-profile': () => import('@/components/pages/customer/client-profile-page').then(m => ({ default: m.ClientProfilePage })),
+  'client-edit-profile': () => import('@/components/pages/customer/client-edit-profile-page').then(m => ({ default: m.ClientEditProfilePage })),
+  'client-addresses': () => import('@/components/pages/customer/client-addresses-page').then(m => ({ default: m.ClientAddressesPage })),
+  'client-saved-addresses': () => import('@/components/pages/customer/client-saved-addresses-page').then(m => ({ default: m.ClientSavedAddressesPage })),
+  'client-bookings': () => import('@/components/pages/customer/client-bookings-page').then(m => ({ default: m.ClientBookingsPage })),
+  'client-booking-detail': () => import('@/components/pages/customer/client-booking-detail-page').then(m => ({ default: m.ClientBookingDetailPage })),
+  'client-upcoming': () => import('@/components/pages/customer/client-upcoming-page').then(m => ({ default: m.ClientUpcomingPage })),
+  'client-completed': () => import('@/components/pages/customer/client-completed-page').then(m => ({ default: m.ClientCompletedPage })),
+  'client-cancelled': () => import('@/components/pages/customer/client-cancelled-page').then(m => ({ default: m.ClientCancelledPage })),
+  'client-booking-tracking': () => import('@/components/pages/customer/client-booking-tracking-page').then(m => ({ default: m.ClientBookingTrackingPage })),
+  'client-rebook': () => import('@/components/pages/customer/client-rebook-page').then(m => ({ default: m.ClientRebookPage })),
+  'client-invoice': () => import('@/components/pages/customer/client-invoice-page').then(m => ({ default: m.ClientInvoicePage })),
+  'client-booking-review': () => import('@/components/pages/customer/client-booking-review-page').then(m => ({ default: m.ClientBookingReviewPage })),
+  'client-favorites': () => import('@/components/pages/customer/client-favorites-page').then(m => ({ default: m.ClientFavoritesPage })),
+  'client-wallet': () => import('@/components/pages/customer/client-wallet-page').then(m => ({ default: m.ClientWalletPage })),
+  'client-wallet-transactions': () => import('@/components/pages/customer/client-wallet-transactions-page').then(m => ({ default: m.ClientWalletTransactionsPage })),
+  'client-add-money': () => import('@/components/pages/customer/client-add-money-page').then(m => ({ default: m.ClientAddMoneyPage })),
+  'client-coupons': () => import('@/components/pages/customer/client-coupons-page').then(m => ({ default: m.ClientCouponsPage })),
+  'client-referral': () => import('@/components/pages/customer/client-referral-page').then(m => ({ default: m.ClientReferralPage })),
+  'client-amc': () => import('@/components/pages/customer/client-amc-page').then(m => ({ default: m.ClientAmcPage })),
+  'client-amc-detail': () => import('@/components/pages/customer/client-amc-detail-page').then(m => ({ default: m.ClientAmcDetailPage })),
+  'client-notifications': () => import('@/components/pages/customer/client-notifications-page').then(m => ({ default: m.ClientNotificationsPage })),
+  'client-notification-detail': () => import('@/components/pages/customer/client-notification-detail-page').then(m => ({ default: m.ClientNotificationDetailPage })),
+  'client-support': () => import('@/components/pages/customer/client-support-page').then(m => ({ default: m.ClientSupportPage })),
+  'client-support-detail': () => import('@/components/pages/customer/client-support-detail-page').then(m => ({ default: m.ClientSupportDetailPage })),
+  'client-chat': () => import('@/components/pages/customer/client-chat-page').then(m => ({ default: m.ClientChatPage })),
+  'client-settings': () => import('@/components/pages/customer/client-settings-page').then(m => ({ default: m.ClientSettingsPage })),
+  'client-privacy': () => import('@/components/pages/customer/client-privacy-page').then(m => ({ default: m.ClientPrivacyPage })),
+  'client-payment-methods': () => import('@/components/pages/customer/client-payment-methods-page').then(m => ({ default: m.ClientPaymentMethodsPage })),
+  'client-transactions': () => import('@/components/pages/customer/client-transactions-page').then(m => ({ default: m.ClientTransactionsPage })),
+}
