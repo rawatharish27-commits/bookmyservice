@@ -50,6 +50,17 @@ export async function bootstrap(): Promise<void> {
     
     // Seed Role table if empty
     try {
+      // First, ensure 'PROVIDER' exists in the UserRole enum (PostgreSQL)
+      // Prisma creates this enum without PROVIDER, but our app uses it
+      try {
+        await pool.query(`ALTER TYPE "UserRole" ADD VALUE IF NOT EXISTS 'PROVIDER'`)
+      } catch (enumErr: any) {
+        // "already exists" is fine, other errors are non-fatal
+        if (!enumErr.message?.includes('already exists')) {
+          console.warn('⚠️  UserRole enum update (non-fatal):', enumErr.message)
+        }
+      }
+      
       const roleCount = await pool.query('SELECT COUNT(*) as count FROM "Role"')
       if (parseInt(roleCount.rows[0].count) === 0) {
         console.log('🔧 Seeding Role table...')
@@ -74,14 +85,14 @@ export async function bootstrap(): Promise<void> {
       console.error('⚠️  Role seeding error (non-fatal):', seedError.message)
     }
 
-    // Apply performance indexes
-    try { await applyDatabaseIndexes(pool) } catch (idxError: any) {
-      console.error('⚠️  Index creation error (non-fatal):', idxError.message)
-    }
-
-    // Enable PostGIS
+    // Enable PostGIS FIRST (before indexes, since PostGIS adds the `location` column)
     try { await setupPostGIS(pool) } catch (pgErr: any) {
       console.error('⚠️  PostGIS setup error (non-fatal):', pgErr.message)
+    }
+
+    // Apply performance indexes (after PostGIS so location column exists for GIST index)
+    try { await applyDatabaseIndexes(pool) } catch (idxError: any) {
+      console.error('⚠️  Index creation error (non-fatal):', idxError.message)
     }
 
     // Create DeviceToken table
@@ -100,13 +111,49 @@ export async function bootstrap(): Promise<void> {
       console.log('✅ BackupRecord table ensured')
     } catch (brErr: any) { console.error('⚠️  BackupRecord table creation error (non-fatal):', brErr.message) }
 
-    // Create Payment table
+    // Create Payment table (or add missing columns to existing one)
     try {
-      await pool.query(`CREATE TABLE IF NOT EXISTS "Payment" (id TEXT PRIMARY KEY, "orderId" TEXT, "paymentId" TEXT, "bookingId" TEXT NOT NULL, "userId" TEXT NOT NULL REFERENCES "User"(id) ON DELETE CASCADE, amount DECIMAL(12,2) NOT NULL DEFAULT 0, currency TEXT DEFAULT 'INR', status TEXT NOT NULL DEFAULT 'PENDING', method TEXT, signature TEXT, "refundId" TEXT, "refundAmount" DECIMAL(12,2) DEFAULT 0, "refundStatus" TEXT, metadata JSONB DEFAULT '{}', "createdAt" TIMESTAMP DEFAULT NOW(), "updatedAt" TIMESTAMP DEFAULT NOW())`)
-      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_bookingId ON "Payment" ("bookingId")')
-      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_userId ON "Payment" ("userId")')
-      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_status ON "Payment" (status)')
-      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_orderId ON "Payment" ("orderId")')
+      // Create table if it doesn't exist (with core columns only)
+      await pool.query(`CREATE TABLE IF NOT EXISTS "Payment" (id TEXT PRIMARY KEY, "bookingId" TEXT, amount DECIMAL(12,2) NOT NULL DEFAULT 0, currency TEXT DEFAULT 'INR', status TEXT NOT NULL DEFAULT 'PENDING', method TEXT, metadata JSONB DEFAULT '{}', "createdAt" TIMESTAMP DEFAULT NOW(), "updatedAt" TIMESTAMP DEFAULT NOW())`)
+      
+      // Add missing columns if the table already exists from a migration
+      const addColumnIfNotExists = async (col: string, type: string) => {
+        try {
+          await pool.query(`ALTER TABLE "Payment" ADD COLUMN IF NOT EXISTS "${col}" ${type}`)
+        } catch { /* column already exists */ }
+      }
+      await addColumnIfNotExists('orderId', 'TEXT')
+      await addColumnIfNotExists('paymentId', 'TEXT')
+      await addColumnIfNotExists('userId', 'TEXT')
+      await addColumnIfNotExists('signature', 'TEXT')
+      await addColumnIfNotExists('refundId', 'TEXT')
+      await addColumnIfNotExists('refundAmount', 'DECIMAL(12,2) DEFAULT 0')
+      await addColumnIfNotExists('refundStatus', 'TEXT')
+      await addColumnIfNotExists('razorpayOrderId', 'TEXT')
+      await addColumnIfNotExists('razorpayPaymentId', 'TEXT')
+      await addColumnIfNotExists('razorpaySignature', 'TEXT')
+      await addColumnIfNotExists('providerId', 'TEXT')
+      await addColumnIfNotExists('platformFee', 'DECIMAL(10,2) DEFAULT 0')
+      await addColumnIfNotExists('gstAmount', 'DECIMAL(10,2) DEFAULT 0')
+      await addColumnIfNotExists('netAmount', 'DECIMAL(10,2) DEFAULT 0')
+
+      // Add foreign key for userId if not already present
+      try {
+        await pool.query(`ALTER TABLE "Payment" DROP CONSTRAINT IF EXISTS "Payment_userId_fkey"`)
+        await pool.query(`ALTER TABLE "Payment" ADD CONSTRAINT "Payment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE`)
+      } catch { /* FK already exists or userId doesn't exist */ }
+
+      // Add foreign key for bookingId if not already present
+      try {
+        await pool.query(`ALTER TABLE "Payment" DROP CONSTRAINT IF EXISTS "Payment_bookingId_fkey"`)
+        await pool.query(`ALTER TABLE "Payment" ADD CONSTRAINT "Payment_bookingId_fkey" FOREIGN KEY ("bookingId") REFERENCES "Booking"(id) ON DELETE SET NULL`)
+      } catch { /* FK already exists or Booking table doesn't exist */ }
+
+      // Create indexes (safe to re-run)
+      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_bookingId ON "Payment" ("bookingId")').catch(() => {})
+      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_userId ON "Payment" ("userId")').catch(() => {})
+      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_status ON "Payment" (status)').catch(() => {})
+      await pool.query('CREATE INDEX IF NOT EXISTS idx_payment_orderId ON "Payment" ("orderId")').catch(() => {})
       console.log('✅ Payment table ensured')
     } catch (payErr: any) { console.error('⚠️  Payment table creation error (non-fatal):', payErr.message) }
 

@@ -21,6 +21,15 @@ const redisConnection = REDIS_URL ? {
   db: parseInt(new URL(REDIS_URL).pathname.slice(1) || '0'),
 } : null
 
+// ─── Concurrency Helpers ──────────────────────────────────────────────
+function getNotificationConcurrency(): number {
+  return parseInt(process.env.QUEUE_NOTIFICATION_CONCURRENCY || '5', 10)
+}
+
+function getBookingConcurrency(): number {
+  return parseInt(process.env.QUEUE_BOOKING_CONCURRENCY || '3', 10)
+}
+
 // ─── Queue Names ───────────────────────────────────────────────────────
 export const QUEUE_NAMES = {
   NOTIFICATION: 'bys-notifications',
@@ -54,6 +63,10 @@ let bookingQueue: Queue<BookingProcessingJobData> | null = null
 let notificationWorker: Worker<NotificationJobData> | null = null
 let bookingWorker: Worker<BookingProcessingJobData> | null = null
 let isQueueSystemReady = false
+
+// ─── Dead Letter Queue ───────────────────────────────────────────────────
+export const DEAD_LETTER_QUEUE_NAME = 'bys-dead-letter'
+export let deadLetterQueue: Queue | null = null
 
 function getConnectionConfig() {
   if (!redisConnection) return null
@@ -354,12 +367,10 @@ export async function shutdownQueues(): Promise<void> {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-// ─── DEAD LETTER QUEUE ──────────────────────────────────────────────
+// ─── DEAD LETTER QUEUE OPERATIONS ───────────────────────────────────
 // ═══════════════════════════════════════════════════════════════════════
-
-export const DEAD_LETTER_QUEUE_NAME = 'bys-dead-letter'
-
-export let deadLetterQueue: Queue | null = null
+// (deadLetterQueue and DEAD_LETTER_QUEUE_NAME are declared above with the
+//  other queue instances, so they're accessible throughout the module.)
 
 /**
  * Processes DLQ entries, logs them, and optionally retries them.

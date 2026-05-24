@@ -133,7 +133,7 @@ class RedisCache {
   private memoryFallback = new MemoryCacheStore()
   private isConnected = false
   private reconnectAttempts = 0
-  private maxReconnectAttempts = 10
+  private maxReconnectAttempts = 50 // Increased from 10 to be more resilient
   private connectionPromise: Promise<void> | null = null
   private consecutiveFailures = 0
   private readonly autoRecoveryThreshold = 5
@@ -156,14 +156,16 @@ class RedisCache {
       const redisConfig: any = {
         url: redisUrl,
         socket: {
-          connectTimeout: 5000,
+          connectTimeout: 10000,
+          keepAlive: 30000, // Send keepalive every 30s to prevent disconnections
+          noDelay: true, // Disable Nagle's algorithm for lower latency
           reconnectStrategy: (retries: number) => {
             if (retries > this.maxReconnectAttempts) {
               console.warn('📦 Redis: Max reconnection attempts reached, using memory fallback')
               return new Error('Max reconnection attempts reached')
             }
-            // Exponential backoff: 100ms, 200ms, 400ms, etc.
-            const delay = Math.min(retries * 100, 3000)
+            // Cap backoff at 5 seconds — don't wait too long between retries
+            const delay = Math.min(retries * 100, 5000)
             console.log(`📦 Redis: Reconnecting in ${delay}ms (attempt ${retries})`)
             return delay
           },

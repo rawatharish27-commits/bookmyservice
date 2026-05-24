@@ -16,6 +16,7 @@ datasource db {
 
 enum UserRole {
   CLIENT
+  PROVIDER
   TECHNICIAN
   VENDOR
   FRANCHISE
