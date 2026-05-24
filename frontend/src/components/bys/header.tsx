@@ -272,6 +272,15 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
     ];
   }
 
+  // ADMIN / SUB_ADMIN
+  if (roleId === ROLE_IDS.ADMIN || roleId === ROLE_IDS.SUB_ADMIN) {
+    return [
+      { label: 'Profile & Password', page: 'admin-profile', icon: <User className="size-4" /> },
+      { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
+      { label: 'Job Applications', page: 'admin-job-applications', icon: <Briefcase className="size-4" /> },
+    ];
+  }
+
   // AREA_MANAGER
   if (roleId === ROLE_IDS.AREA_MANAGER) {
     return [
@@ -296,6 +305,7 @@ function getUserDropdownLinks(roleId: number | undefined): { label: string; page
       { label: 'Dashboard', page: 'admin-dashboard', icon: <LayoutDashboard className="size-4" /> },
       { label: 'Users', page: 'admin-users', icon: <Users className="size-4" /> },
       { label: 'Categories', page: 'admin-categories', icon: <Settings className="size-4" /> },
+      { label: 'Job Applications', page: 'admin-job-applications', icon: <Briefcase className="size-4" /> },
     ];
   }
 

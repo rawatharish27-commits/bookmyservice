@@ -577,6 +577,20 @@ export const ADMIN_ROUTES: RouteConfig[] = [
     isProtected: true,
     allowedRoles: [3, 7],
   },
+  {
+    page: 'admin-profile',
+    loader: () => import('@/components/bys/admin-profile-page').then(m => ({ default: m.AdminProfilePage })),
+    chunkName: 'admin-profile',
+    isProtected: true,
+    allowedRoles: [3, 7],
+  },
+  {
+    page: 'admin-job-applications',
+    loader: () => import('@/components/bys/admin-job-applications-page').then(m => ({ default: m.AdminJobApplicationsPage })),
+    chunkName: 'admin-job-applications',
+    isProtected: true,
+    allowedRoles: [3, 7],
+  },
 ];
 
 // ---------------------------------------------------------------------------

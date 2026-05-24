@@ -5333,6 +5333,311 @@ app.get('/api/provider/services', async (c) => {
   }
 })
 
+// ============================================================
+// JOB APPLICATIONS - Submit, List, Stats, Update Status
+// ============================================================
+
+// ─── Job Application Legal Terms (public) ──────────────────────────────
+const JOB_OFFER_TERMS = {
+  title: "Terms & Conditions — Area Manager & Local Admin Application",
+  lastUpdated: "2025-01-01",
+  sections: [
+    { title: "1. Application Fee", content: "An application fee of ₹100 (Indian Rupees One Hundred Only) is applicable for the Area Manager position and ₹50 (Indian Rupees Fifty Only) is applicable for the Local Admin position. The fee must be paid at the time of submitting the application." },
+    { title: "2. Non-Refundable Fee", content: "The application fee is non-refundable under all circumstances, including but not limited to: (a) non-selection of the applicant; (b) withdrawal of application by the applicant; (c) rejection of application due to incomplete or false information; (d) any other reason whatsoever. This is in accordance with the terms agreed upon at the time of application and does not constitute an unfair trade practice under the Consumer Protection Act, 2019, as the fee is for processing the application and not for guaranteeing selection." },
+    { title: "3. Selection Process", content: "Selection for the position of Area Manager or Local Admin shall be based solely on live tasks and performance evaluation conducted by the Company. The selection criteria may include but are not limited to: (a) completion of assigned tasks; (b) quality of performance; (c) communication skills; (d) local market knowledge; (e) leadership abilities. The Company reserves the right to modify the selection criteria at any time without prior notice." },
+    { title: "4. No Guarantee of Selection", content: "Payment of the application fee does not guarantee selection. The Company reserves the right to reject any application without assigning any reason whatsoever. The number of positions available may vary and is at the sole discretion of the Company." },
+    { title: "5. Independent Contractor Relationship", content: "The position of Area Manager or Local Admin does not constitute an employer-employee relationship. Selected candidates shall operate as independent contractors/business associates. The Company shall not be liable for any claims arising out of employment, including but not limited to claims under the Industrial Disputes Act, 1947, the Payment of Wages Act, 1936, or the Employees' Provident Fund and Miscellaneous Provisions Act, 1952." },
+    { title: "6. Limitation of Liability", content: "The Company's total liability arising from or related to the application process shall not exceed the application fee amount paid by the applicant. Under no circumstances shall the Company be liable for any indirect, incidental, consequential, or punitive damages." },
+    { title: "7. No Civil Court Jurisdiction", content: "The Company shall not be responsible for any civil court cases filed by applicants. Any disputes arising out of or in connection with the application process shall be resolved through arbitration in accordance with the Arbitration and Conciliation Act, 1996. The arbitration shall be conducted in Mumbai, India, and the proceedings shall be in English. The decision of the arbitrator shall be final and binding on both parties." },
+    { title: "8. Jurisdiction", content: "All disputes and legal proceedings shall be subject to the exclusive jurisdiction of the courts of Mumbai, Maharashtra, India. This is in accordance with Section 20 of the Code of Civil Procedure, 1908." },
+    { title: "9. Governing Law", content: "These terms and conditions shall be governed by and construed in accordance with the laws of India, including but not limited to the Indian Contract Act, 1872, the Consumer Protection Act, 2019, and the Information Technology Act, 2000." },
+    { title: "10. False Information", content: "If any information provided by the applicant is found to be false, misleading, or incomplete, the application shall be immediately rejected and the application fee shall be forfeited. The Company may also take legal action as deemed necessary." },
+    { title: "11. Changes to Terms", content: "The Company reserves the right to modify these terms and conditions at any time. Updated terms shall be effective upon posting on the platform. Continued use of the platform constitutes acceptance of the modified terms." },
+    { title: "12. Severability", content: "If any provision of these terms is found to be invalid or unenforceable by a court of competent jurisdiction, the remaining provisions shall continue in full force and effect." },
+  ],
+}
+
+// ─── Job Application FAQ (public) ──────────────────────────────────────
+const JOB_APPLICATION_FAQ = {
+  faqs: [
+    { question: "What is the Area Manager role?", answer: "An Area Manager oversees all service operations in a designated geographic area. They manage service providers, ensure quality standards, handle customer escalations, and earn commissions on bookings in their area." },
+    { question: "What is the Local Admin role?", answer: "A Local Admin assists the Area Manager in day-to-day operations within a specific locality. They handle provider onboarding, booking coordination, and customer support at the local level." },
+    { question: "How much is the application fee?", answer: "The application fee is ₹100 for Area Manager and ₹50 for Local Admin. The fee must be paid at the time of application submission." },
+    { question: "Is the application fee refundable?", answer: "No. The application fee is non-refundable under all circumstances, including if you are not selected. The fee covers the cost of processing and evaluating your application." },
+    { question: "What does the selection process involve?", answer: "Selection is based on live tasks and performance evaluation. You may be assigned real-world tasks to assess your capability, local market knowledge, communication skills, and leadership potential." },
+    { question: "How long does the selection process take?", answer: "The evaluation period typically ranges from 7 to 30 days, depending on the number of applications and the complexity of assigned tasks. You will be notified via email and phone." },
+    { question: "What if I'm not selected?", answer: "If not selected, your application fee will not be refunded. However, you may re-apply after 90 days with a new application and fee payment." },
+    { question: "Can I apply again if not selected?", answer: "Yes, you can re-apply after 90 days from the date of rejection. A new application fee will be applicable." },
+    { question: "Is this a full-time job?", answer: "No, this is not a traditional employment position. Area Managers and Local Admins operate as independent contractors. You have flexibility in your working hours while earning commissions and performance-based incentives." },
+    { question: "What are the earning opportunities?", answer: "Area Managers earn 3% commission on all bookings in their area. Local Admins earn 2% commission. Additional performance bonuses and incentives may apply based on targets achieved." },
+  ],
+}
+
+// GET /api/legal/job-offer-terms — Public: return legal terms for job applications
+app.get('/api/legal/job-offer-terms', (c) => {
+  return c.json(JOB_OFFER_TERMS)
+})
+
+// GET /api/job-applications/faq — Public: return FAQ for job applications
+app.get('/api/job-applications/faq', (c) => {
+  return c.json(JOB_APPLICATION_FAQ)
+})
+
+// POST /api/job-applications — Submit a job application (requires auth)
+app.post('/api/job-applications', async (c) => {
+  try {
+    const user = await getAuthUser(c)
+    if (!user) return c.json({ error: 'Authentication required' }, 401)
+
+    const body = await c.req.json()
+    const { name, email, phone, city, area, experience, position, agreedToTerms } = body
+
+    // Validate required fields
+    if (!name || !email || !phone || !city || !experience || !position) {
+      return c.json({ error: 'All fields are required: name, email, phone, city, experience, position' }, 400)
+    }
+
+    // Validate position value
+    if (position !== 'AREA_MANAGER' && position !== 'LOCAL_ADMIN') {
+      return c.json({ error: 'Position must be either AREA_MANAGER or LOCAL_ADMIN' }, 400)
+    }
+
+    // Check agreedToTerms
+    if (!agreedToTerms) {
+      return c.json({ error: 'You must agree to the terms and conditions to submit your application' }, 400)
+    }
+
+    // Validate input lengths
+    const lengthError = validateInputLengths({ email, phone, name })
+    if (lengthError) return c.json({ error: lengthError }, 400)
+
+    const subject = position === 'AREA_MANAGER' ? 'job-application-area-manager' : 'job-application-local-admin'
+
+    const applicationId = 'ja_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
+
+    // Store application data as JSON in the message field
+    const applicationData = JSON.stringify({
+      name: String(name).trim(),
+      email: String(email).trim().toLowerCase(),
+      phone: String(phone).trim(),
+      city: String(city).trim(),
+      area: area ? String(area).trim() : null,
+      experience: String(experience).trim(),
+      position,
+      agreedToTerms: Boolean(agreedToTerms),
+      status: 'PENDING',
+      userId: user.id,
+      submittedAt: new Date().toISOString(),
+    })
+
+    await pool.query(
+      'INSERT INTO "ContactMessage" (id, name, email, subject, message) VALUES ($1, $2, $3, $4, $5)',
+      [applicationId, String(name).trim(), String(email).trim().toLowerCase(), subject, applicationData]
+    )
+
+    return c.json({
+      message: 'Job application submitted successfully',
+      applicationId,
+      position,
+      status: 'PENDING',
+    }, 201)
+  } catch (e) {
+    console.error('Job application submit error:', e)
+    return c.json({ error: 'Failed to submit job application' }, 500)
+  }
+})
+
+// GET /api/job-applications/stats — Job application stats (admin only)
+app.get('/api/job-applications/stats', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+
+    // Fetch all job applications
+    const result = await pool.query(
+      'SELECT id, subject, message FROM "ContactMessage" WHERE subject LIKE $1 ORDER BY "createdAt" DESC',
+      ['job-application-%']
+    )
+
+    // Parse applications to compute stats
+    const applications = result.rows.map((row: any) => {
+      try {
+        const data = JSON.parse(row.message)
+        return { ...data, id: row.id, subject: row.subject }
+      } catch {
+        return { id: row.id, subject: row.subject, position: 'UNKNOWN', status: 'PENDING' }
+      }
+    })
+
+    // Count by position
+    const areaManagerTotal = applications.filter((a: any) => a.position === 'AREA_MANAGER').length
+    const localAdminTotal = applications.filter((a: any) => a.position === 'LOCAL_ADMIN').length
+
+    // Count by status
+    const pending = applications.filter((a: any) => a.status === 'PENDING').length
+    const underReview = applications.filter((a: any) => a.status === 'UNDER_REVIEW').length
+    const approved = applications.filter((a: any) => a.status === 'APPROVED').length
+    const rejected = applications.filter((a: any) => a.status === 'REJECTED').length
+
+    return c.json({
+      total: applications.length,
+      byPosition: {
+        AREA_MANAGER: areaManagerTotal,
+        LOCAL_ADMIN: localAdminTotal,
+      },
+      byStatus: {
+        PENDING,
+        UNDER_REVIEW,
+        APPROVED,
+        REJECTED,
+      },
+    })
+  } catch (e) {
+    console.error('Job application stats error:', e)
+    return c.json({ error: 'Failed to fetch job application stats' }, 500)
+  }
+})
+
+// GET /api/job-applications — List job applications (admin only)
+app.get('/api/job-applications', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+
+    const position = c.req.query('position') // 'AREA_MANAGER' or 'LOCAL_ADMIN'
+    const status = c.req.query('status') // 'PENDING', 'UNDER_REVIEW', 'APPROVED', 'REJECTED'
+    const page = Math.max(1, parseInt(c.req.query('page') || '1'))
+    const limit = Math.min(100, Math.max(1, parseInt(c.req.query('limit') || '20')))
+    const offset = (page - 1) * limit
+
+    // Build query conditions
+    const conditions: string[] = ['subject LIKE $1']
+    const values: any[] = ['job-application-%']
+    let paramIdx = 2
+
+    if (position) {
+      const subjectFilter = position === 'AREA_MANAGER' ? 'job-application-area-manager' : 'job-application-local-admin'
+      conditions.push(`subject = $${paramIdx}`)
+      values.push(subjectFilter)
+      paramIdx++
+    }
+
+    const whereClause = conditions.join(' AND ')
+
+    // Get total count
+    const countResult = await pool.query(
+      `SELECT COUNT(*) as total FROM "ContactMessage" WHERE ${whereClause}`,
+      values
+    )
+    const total = parseInt(countResult.rows[0].total)
+
+    // Get paginated results
+    const result = await pool.query(
+      `SELECT * FROM "ContactMessage" WHERE ${whereClause} ORDER BY "createdAt" DESC LIMIT $${paramIdx} OFFSET $${paramIdx + 1}`,
+      [...values, limit, offset]
+    )
+
+    // Parse applications and filter by status if needed
+    const applications = result.rows
+      .map((row: any) => {
+        let parsedData: any = {}
+        try {
+          parsedData = JSON.parse(row.message)
+        } catch {
+          parsedData = {}
+        }
+        return {
+          id: row.id,
+          name: row.name,
+          email: row.email,
+          subject: row.subject,
+          position: parsedData.position || (row.subject === 'job-application-area-manager' ? 'AREA_MANAGER' : 'LOCAL_ADMIN'),
+          phone: parsedData.phone || null,
+          city: parsedData.city || null,
+          area: parsedData.area || null,
+          experience: parsedData.experience || null,
+          agreedToTerms: parsedData.agreedToTerms || false,
+          status: parsedData.status || 'PENDING',
+          userId: parsedData.userId || null,
+          submittedAt: parsedData.submittedAt || row.createdAt,
+          isRead: row.isRead,
+          createdAt: row.createdAt,
+        }
+      })
+      .filter((app: any) => !status || app.status === status)
+
+    return c.json({
+      applications,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
+    })
+  } catch (e) {
+    console.error('Job applications list error:', e)
+    return c.json({ error: 'Failed to fetch job applications' }, 500)
+  }
+})
+
+// PATCH /api/job-applications/:id/status — Update application status (admin only)
+app.patch('/api/job-applications/:id/status', async (c) => {
+  try {
+    const admin = await requireAdmin(c)
+    if (!admin) return c.json({ error: 'Admin access required' }, 403)
+
+    const applicationId = c.req.param('id')
+    const { status } = await c.req.json()
+
+    // Validate status value
+    const validStatuses = ['APPROVED', 'REJECTED', 'UNDER_REVIEW']
+    if (!status || !validStatuses.includes(status)) {
+      return c.json({ error: 'Status must be one of: APPROVED, REJECTED, UNDER_REVIEW' }, 400)
+    }
+
+    // Fetch the existing application
+    const existing = await pool.query(
+      'SELECT * FROM "ContactMessage" WHERE id = $1 AND subject LIKE $2',
+      [applicationId, 'job-application-%']
+    )
+
+    if (!existing.rows[0]) {
+      return c.json({ error: 'Job application not found' }, 404)
+    }
+
+    const row = existing.rows[0]
+
+    // Parse existing message data and update status
+    let parsedData: any = {}
+    try {
+      parsedData = JSON.parse(row.message)
+    } catch {
+      parsedData = {}
+    }
+
+    parsedData.status = status
+    parsedData.updatedAt = new Date().toISOString()
+    parsedData.updatedBy = admin.id
+
+    // Update the message field with new status
+    await pool.query(
+      'UPDATE "ContactMessage" SET message = $1, "isRead" = $2 WHERE id = $3',
+      [JSON.stringify(parsedData), status !== 'PENDING', applicationId]
+    )
+
+    return c.json({
+      message: 'Application status updated successfully',
+      applicationId,
+      status,
+      updatedAt: parsedData.updatedAt,
+    })
+  } catch (e) {
+    console.error('Job application status update error:', e)
+    return c.json({ error: 'Failed to update application status' }, 500)
+  }
+})
+
 app.all('/api/*', (c) => {
   return c.json({ error: 'Endpoint not found', path: c.req.path }, 404)
 })

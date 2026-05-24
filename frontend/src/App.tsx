@@ -9,6 +9,7 @@ import { Toaster as SonnerToaster } from '@/components/ui/sonner';
 import { PageLoader } from '@/components/page-loader';
 import { ROUTE_MAP, VALID_PAGES } from '@/routes/route-registry';
 import { isRouteAccessible, ROLE_DASHBOARD_MAP } from '@/routes/access-control';
+import { JobOfferPopup } from '@/components/bys/job-offer-popup';
 import type { Page } from '@/routes/types';
 
 // ---------------------------------------------------------------------------
@@ -99,6 +100,7 @@ function AppRouter() {
         {renderPage()}
       </main>
       <Footer />
+      <JobOfferPopup />
     </div>
   );
 }

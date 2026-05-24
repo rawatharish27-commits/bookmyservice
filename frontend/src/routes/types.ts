@@ -89,6 +89,8 @@ export type Page =
   | 'admin-coupons'
   | 'admin-amc'
   | 'admin-b2b'
+  | 'admin-profile'
+  | 'admin-job-applications'
   // Franchise pages
   | 'franchise-dashboard'
   | 'franchise-vendors'
