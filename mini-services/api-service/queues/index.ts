@@ -24,53 +24,37 @@ function getBookingConcurrency(): number {
   return parseInt(process.env.QUEUE_BOOKING_CONCURRENCY || '3', 10)
 }
 
-// ─── Shared Redis Connection ──────────────────────────────────────────
-// BullMQ creates multiple connections internally (one per Queue/Worker).
-// Free Redis plans limit concurrent connections (often to 1-5).
-// We create a single shared ioredis instance to minimize connections.
-
-import IORedis from 'ioredis'
-
-let sharedConnection: IORedis | null = null
-let connectionReady = false
-
-function getSharedConnection(): IORedis | null {
-  if (sharedConnection) return sharedConnection
+// ─── BullMQ Redis Connection Config ─────────────────────────────────────
+// BullMQ uses ioredis internally. When you pass a plain config object,
+// BullMQ creates its own ioredis instances with the correct settings.
+// Passing an IORedis instance with lazyConnect caused BullMQ's internal
+// duplicate() calls to lose the URL and fall back to localhost:6379.
+//
+// Key requirement: maxRetriesPerRequest MUST be null for BullMQ.
+function getRedisConnectionConfig() {
   if (!REDIS_URL) return null
 
-  try {
-    sharedConnection = new IORedis(REDIS_URL, {
-      maxRetriesPerRequest: null,  // REQUIRED by BullMQ — must be null
-      enableReadyCheck: true,
-      enableOfflineQueue: true,
-      keepAlive: 30000,
-      connectTimeout: 15000,
-      retryStrategy(times) {
-        if (times > 50) return null
-        return Math.min(times * 500, 10000)
-      },
-      lazyConnect: true,  // Don't connect until first command
-    })
+  const url = new URL(REDIS_URL)
+  const isTLS = REDIS_URL.startsWith('rediss://')
 
-    sharedConnection.on('error', (err: any) => {
-      // EPIPE/ECONNRESET are non-fatal — ioredis auto-reconnects
-      if (err.code === 'EPIPE' || err.code === 'ECONNRESET') return
-      if (err.message?.includes('max retries')) return
-      console.warn('📦 [ioredis] Connection error:', err.message)
-    })
-
-    sharedConnection.on('ready', () => {
-      connectionReady = true
-    })
-
-    sharedConnection.on('close', () => {
-      connectionReady = false
-    })
-
-    return sharedConnection
-  } catch (err: any) {
-    console.warn('📦 [ioredis] Failed to create connection:', err.message)
-    return null
+  return {
+    host: url.hostname,
+    port: parseInt(url.port || '6379'),
+    password: url.password || undefined,
+    db: parseInt(url.pathname.slice(1) || '0'),
+    // BullMQ REQUIRES maxRetriesPerRequest: null
+    maxRetriesPerRequest: null,
+    // Connection resilience
+    keepAlive: 30000,
+    connectTimeout: 15000,
+    enableReadyCheck: true,
+    enableOfflineQueue: true,
+    // TLS support for rediss:// URLs
+    ...(isTLS ? { tls: { rejectUnauthorized: false } } : {}),
+    retryStrategy(times: number) {
+      if (times > 50) return null  // Stop retrying after 50 attempts
+      return Math.min(times * 500, 10000)  // Cap at 10s
+    },
   }
 }
 
@@ -114,7 +98,7 @@ export let deadLetterQueue: Queue | null = null
 
 // ─── Initialize Queues ─────────────────────────────────────────────────
 export async function initializeQueues(): Promise<void> {
-  const connection = getSharedConnection()
+  const connection = getRedisConnectionConfig()
   if (!connection) {
     console.log('📮 Queue system: REDIS_URL not set — jobs will be processed synchronously (fallback)')
     isQueueSystemReady = false
@@ -122,17 +106,11 @@ export async function initializeQueues(): Promise<void> {
   }
 
   try {
-    // Connect if using lazyConnect
-    if (!connectionReady) {
-      await connection.connect().catch(() => {}) // lazyConnect needs explicit connect()
-    }
-
-    // Create queues sharing the same connection
-    // BullMQ internally creates new connections from the shared one,
-    // but with lazyConnect it minimizes initial connection count
-    notificationQueue = new Queue<NotificationJobData>(QUEUE_NAMES.NOTIFICATION, connection)
-    bookingQueue = new Queue<BookingProcessingJobData>(QUEUE_NAMES.BOOKING_PROCESSING, connection)
-    deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, connection)
+    // Create queues with shared connection config
+    // BullMQ creates its own ioredis instances from this config
+    notificationQueue = new Queue<NotificationJobData>(QUEUE_NAMES.NOTIFICATION, { connection })
+    bookingQueue = new Queue<BookingProcessingJobData>(QUEUE_NAMES.BOOKING_PROCESSING, { connection })
+    deadLetterQueue = new Queue(DEAD_LETTER_QUEUE_NAME, { connection })
 
     // Suppress non-fatal errors on all queues
     for (const q of [notificationQueue, bookingQueue, deadLetterQueue]) {
@@ -348,7 +326,7 @@ async function sendBookingConfirmation(bookingId: string, data: Record<string, a
 
 // ─── Start Workers (if Redis available) ────────────────────────────────
 export async function startWorkers(): Promise<void> {
-  const connection = getSharedConnection()
+  const connection = getRedisConnectionConfig()
   if (!connection || !isQueueSystemReady) return
 
   try {
@@ -421,10 +399,6 @@ export async function shutdownQueues(): Promise<void> {
   await notificationQueue?.close()
   await bookingQueue?.close()
   await deadLetterQueue?.close()
-  if (sharedConnection) {
-    sharedConnection.disconnect()
-    sharedConnection = null
-  }
   console.log('📮 Queue system shut down')
 }
 
