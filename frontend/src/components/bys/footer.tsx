@@ -350,18 +350,18 @@ export function Footer() {
                   >
                     BookYourService Technologies Pvt. Ltd.
                     <br />
-                    12, Andheri West
+                    Parshuram Colony,
                     <br />
-                    Mumbai 400058, India
+                    Palwal 121102, India
                   </ContactPill>
                 </li>
                 <li>
                   <ContactPill
                     icon={<Phone className="size-4 text-blue-600" />}
                     gradient="from-blue-50 to-sky-50"
-                    href="tel:+919876543210"
+                    href="tel:+918901172507"
                   >
-                    +91 98765 43210
+                    +91 8901172507
                   </ContactPill>
                 </li>
                 <li>
