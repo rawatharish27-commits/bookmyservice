@@ -46,14 +46,14 @@ const b2bPlans = [
     price: 'Contact us',
     features: ['Up to 10 bookings/month', 'Email support', 'Basic analytics', 'Single location'],
     icon: Package,
-    color: 'from-sky-500 to-blue-600',
+    color: 'from-[#1D63FF] to-[#1D63FF]',
   },
   {
     name: 'Business',
     price: 'Contact us',
     features: ['Up to 50 bookings/month', 'Priority support', 'Advanced analytics', 'Multi-location', 'Dedicated account manager'],
     icon: Briefcase,
-    color: 'from-[#1e3a5f] to-[#2d5a8e]',
+    color: 'from-[#0D3B7A] to-[#1D63FF]',
   },
   {
     name: 'Enterprise',
@@ -80,10 +80,10 @@ export function AdminB2bPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">B2B Partnerships</h1>
+        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">B2B Partnerships</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage corporate accounts & business partnerships</p>
       </motion.div>
 
@@ -99,17 +99,17 @@ export function AdminB2bPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] p-6 sm:p-8"
+        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-6 sm:p-8"
       >
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Handshake className="size-5 text-sky-300" />
-              <span className="text-sm font-medium text-sky-200">B2B Program</span>
+              <Handshake className="size-5 text-[#FFCE32]" />
+              <span className="text-sm font-medium text-[#FFE066]">B2B Program</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">Corporate Partnerships</h2>
-            <p className="mt-1 text-sky-100/80">Empower businesses with reliable home services</p>
+            <p className="mt-1 text-[#FFE066]/80">Empower businesses with reliable home services</p>
           </div>
         </div>
       </motion.div>
@@ -117,27 +117,27 @@ export function AdminB2bPage() {
       {/* Stats Row — values computed from data source */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Card className="border-l-4 border-l-[#2d5a8e] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Active Partners</p>
                   <p className="mt-1 text-2xl font-bold">{activePartners}</p>
                 </div>
-                <div className="rounded-lg bg-[#0a1628]/10 p-2.5 text-[#2d5a8e]">
+                <div className="rounded-lg bg-[#0A2463]/10 p-2.5 text-[#1D63FF]">
                   <Building2 className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-emerald-500 transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Corporate Bookings</p>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">{totalBookings}</p>
+                  <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{totalBookings}</p>
                 </div>
-                <div className="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
+                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
                   <Briefcase className="size-5" />
                 </div>
               </div>
@@ -156,14 +156,14 @@ export function AdminB2bPage() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-teal-500 transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Total Partners</p>
-                  <p className="mt-1 text-2xl font-bold text-teal-700">{partners.length}</p>
+                  <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{partners.length}</p>
                 </div>
-                <div className="rounded-lg bg-teal-50 p-2.5 text-teal-600">
+                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
                   <TrendingUp className="size-5" />
                 </div>
               </div>
@@ -174,7 +174,7 @@ export function AdminB2bPage() {
 
       {/* B2B Plans */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mt-6">
-        <h3 className="mb-4 text-lg font-semibold text-[#0a1628]">Corporate Plans</h3>
+        <h3 className="mb-4 text-lg font-semibold text-[#0A2463]">Corporate Plans</h3>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           {b2bPlans.map((plan) => (
             <Card key={plan.name} className="overflow-hidden rounded-2xl border-0 shadow-sm transition-shadow hover:shadow-md">
@@ -185,7 +185,7 @@ export function AdminB2bPage() {
                   </div>
                   <div>
                     <CardTitle className="text-base font-bold">{plan.name}</CardTitle>
-                    <p className="text-sm font-semibold text-[#2d5a8e]">{plan.price}</p>
+                    <p className="text-sm font-semibold text-[#1D63FF]">{plan.price}</p>
                   </div>
                 </div>
               </CardHeader>
@@ -193,7 +193,7 @@ export function AdminB2bPage() {
                 <ul className="space-y-2">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <ShieldCheck className="size-3.5 shrink-0 text-emerald-500" />
+                      <ShieldCheck className="size-3.5 shrink-0 text-[#FFCE32]0" />
                       {feature}
                     </li>
                   ))}
@@ -207,9 +207,9 @@ export function AdminB2bPage() {
       {/* Corporate Partners List */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-              <Users className="size-5 text-sky-300" />
+              <Users className="size-5 text-[#FFCE32]" />
               Corporate Accounts
             </CardTitle>
           </CardHeader>
@@ -223,16 +223,16 @@ export function AdminB2bPage() {
               {partners.map((partner) => (
                 <div
                   key={partner.id}
-                  className="flex flex-col gap-3 rounded-xl border border-slate-100 p-4 transition-all hover:bg-sky-50/20 sm:flex-row sm:items-center sm:gap-4"
+                  className="flex flex-col gap-3 rounded-xl border border-slate-100 p-4 transition-all hover:bg-[#1D63FF]/5/20 sm:flex-row sm:items-center sm:gap-4"
                 >
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-md">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-md">
                     <Building2 className="size-5 text-white" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
                       <p className="truncate text-sm font-semibold">{partner.companyName}</p>
                       <StatusBadge status={partner.status} />
-                      <Badge variant="outline" className="bg-sky-50 text-sky-700 border-sky-200 text-xs">
+                      <Badge variant="outline" className="bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/20 text-xs">
                         {partner.plan}
                       </Badge>
                     </div>
@@ -255,7 +255,7 @@ export function AdminB2bPage() {
                     </div>
                     <div>
                       <p className="text-xs text-muted-foreground">Spent</p>
-                      <p className="text-sm font-bold text-emerald-700">₹{(partner.totalSpent / 1000).toFixed(0)}k</p>
+                      <p className="text-sm font-bold text-[#0D3B7A]">₹{(partner.totalSpent / 1000).toFixed(0)}k</p>
                     </div>
                   </div>
                 </div>
@@ -269,27 +269,27 @@ export function AdminB2bPage() {
       {/* Bulk Booking Info */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0a1628]/5 to-sky-50/50 pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0a1628]">
-              <Package className="size-5 text-[#2d5a8e]" />
+          <CardHeader className="bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
+              <Package className="size-5 text-[#1D63FF]" />
               Bulk Booking Program
             </CardTitle>
           </CardHeader>
           <CardContent className="p-6">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-              <div className="rounded-xl bg-sky-50 p-4">
+              <div className="rounded-xl bg-[#1D63FF]/5 p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <BarChart3 className="size-4 text-[#2d5a8e]" />
-                  <h4 className="text-sm font-semibold text-[#0a1628]">Volume Discounts</h4>
+                  <BarChart3 className="size-4 text-[#1D63FF]" />
+                  <h4 className="text-sm font-semibold text-[#0A2463]">Volume Discounts</h4>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Get up to 30% off on bulk bookings. Discounts apply automatically based on monthly volume.
                 </p>
               </div>
-              <div className="rounded-xl bg-emerald-50 p-4">
+              <div className="rounded-xl bg-[#FFCE32]/10 p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <Clock className="size-4 text-emerald-600" />
-                  <h4 className="text-sm font-semibold text-[#0a1628]">Priority Scheduling</h4>
+                  <Clock className="size-4 text-[#1D63FF]" />
+                  <h4 className="text-sm font-semibold text-[#0A2463]">Priority Scheduling</h4>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Corporate partners get priority access to service slots with guaranteed turnaround times.
@@ -298,7 +298,7 @@ export function AdminB2bPage() {
               <div className="rounded-xl bg-amber-50 p-4">
                 <div className="flex items-center gap-2 mb-2">
                   <FileText className="size-4 text-amber-600" />
-                  <h4 className="text-sm font-semibold text-[#0a1628]">Consolidated Billing</h4>
+                  <h4 className="text-sm font-semibold text-[#0A2463]">Consolidated Billing</h4>
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Single monthly invoice for all bookings. Simplified GST-compliant billing for businesses.

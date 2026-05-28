@@ -58,7 +58,7 @@ interface DisputesResponse {
 function DisputeStatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     OPEN: 'bg-red-100 text-red-800 border-red-200',
-    UNDER_REVIEW: 'bg-blue-100 text-blue-800 border-blue-200',
+    UNDER_REVIEW: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
     RESOLVED: 'bg-green-100 text-green-800 border-green-200',
     CLOSED: 'bg-gray-100 text-gray-800 border-gray-200',
   };
@@ -262,7 +262,7 @@ export function AdminDisputesPage() {
                   />
                 </div>
                 <Button
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
                   onClick={handleResolve}
                   disabled={resolving || !resolution}
                 >

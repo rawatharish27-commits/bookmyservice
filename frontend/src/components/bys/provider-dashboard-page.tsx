@@ -141,22 +141,22 @@ const stagger = {
 /* ------------------------------------------------------------------ */
 
 const earningsChartConfig: ChartConfig = {
-  earnings: { label: 'Earnings (₹)', color: '#10b981' },
+  earnings: { label: 'Earnings (₹)', color: '#1D63FF' },
 };
 
 const bookingsChartConfig: ChartConfig = {
-  bookings: { label: 'Bookings', color: '#06b6d4' },
+  bookings: { label: 'Bookings', color: '#FFCE32' },
 };
 
 const ratingDistConfig: ChartConfig = {
-  count: { label: 'Reviews', color: '#06b6d4' },
+  count: { label: 'Reviews', color: '#FFCE32' },
 };
 
-const PIE_COLORS = ['#10b981', '#06b6d4', '#f59e0b', '#8b5cf6', '#ec4899'];
+const PIE_COLORS = ['#1D63FF', '#FFCE32', '#f59e0b', '#8b5cf6', '#ec4899'];
 
 const categoryPerfConfig: ChartConfig = {
-  rating: { label: 'Avg Rating', color: '#10b981' },
-  bookings: { label: 'Bookings', color: '#06b6d4' },
+  rating: { label: 'Avg Rating', color: '#1D63FF' },
+  bookings: { label: 'Bookings', color: '#FFCE32' },
 };
 
 /* ------------------------------------------------------------------ */
@@ -165,10 +165,10 @@ const categoryPerfConfig: ChartConfig = {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    PENDING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#FFE066]' },
+    ACCEPTED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
+    IN_PROGRESS: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#4D8AFF]/30', dotColor: 'bg-[#7DB0FF]' },
+    COMPLETED: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
   const c = colors[status] || colors.PENDING;
@@ -189,7 +189,7 @@ function StarRating({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md
           key={i}
           className={`${cls} ${
             i < Math.round(rating)
-              ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
+              ? 'fill-[#FFE066] text-[#FFE066] drop-shadow-[0_0_3px_rgba(255,206,50,0.4)]'
               : 'text-gray-200'
           }`}
         />
@@ -432,10 +432,10 @@ export function ProviderDashboardPage() {
 
   /* ---- Quick actions ---- */
   const quickActions = [
-    { icon: Plus, label: 'Add Service', nav: 'provider-create-service' as Page, gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
-    { icon: CalendarCheck, label: 'View Bookings', nav: 'provider-bookings' as Page, gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
+    { icon: Plus, label: 'Add Service', nav: 'provider-create-service' as Page, gradient: 'from-[#4D8AFF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: CalendarCheck, label: 'View Bookings', nav: 'provider-bookings' as Page, gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
     { icon: DollarSign, label: 'Check Earnings', nav: 'provider-earnings' as Page, gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/25' },
-    { icon: Shield, label: 'Update KYC', nav: 'provider-kyc' as Page, gradient: 'from-cyan-500 to-sky-600', shadow: 'shadow-sky-500/25' },
+    { icon: Shield, label: 'Update KYC', nav: 'provider-kyc' as Page, gradient: 'from-[#FFCE32] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
   ];
 
   /* ---- Recent reviews (latest 3) ---- */
@@ -482,7 +482,7 @@ export function ProviderDashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8"
           >
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
             <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
@@ -490,18 +490,18 @@ export function ProviderDashboardPage() {
             <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <Sparkles className="size-5 text-emerald-200" />
-                  <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+                  <Sparkles className="size-5 text-[#7DB0FF]" />
+                  <span className="text-sm font-medium text-[#4D8AFF]">Welcome back</span>
                 </div>
                 <div className="mt-1 flex items-center gap-2">
                   <h2 className="text-2xl font-bold text-white sm:text-3xl">
                     {user?.name?.split(' ')[0] || 'Provider'}
                   </h2>
                   {user?.verifiedBadge && (
-                    <BadgeCheck className="size-6 text-emerald-200 drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]" />
+                    <BadgeCheck className="size-6 text-[#7DB0FF] drop-shadow-[0_0_6px_rgba(255,255,255,0.4)]" />
                   )}
                 </div>
-                <p className="mt-1 flex items-center gap-1.5 text-emerald-100/80 text-sm">
+                <p className="mt-1 flex items-center gap-1.5 text-[#4D8AFF]/80 text-sm">
                   <Calendar className="size-3.5" />
                   Member since {memberSince}
                   {user?.isVerified && (
@@ -515,7 +515,7 @@ export function ProviderDashboardPage() {
               </div>
               <div className="flex items-center gap-4">
                 <div className="glass-dark rounded-xl px-4 py-2 text-center">
-                  <p className="text-xs text-emerald-200">This Week</p>
+                  <p className="text-xs text-[#7DB0FF]">This Week</p>
                   <p className="text-lg font-bold text-white">₹{weekEarnings.toLocaleString()}</p>
                 </div>
               </div>
@@ -529,8 +529,8 @@ export function ProviderDashboardPage() {
                 title="Today's Bookings"
                 value={todayBookings.length}
                 icon={CalendarCheck}
-                gradient="from-emerald-400 to-teal-500"
-                bgGlow="bg-emerald-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/100/10"
               />
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -538,8 +538,8 @@ export function ProviderDashboardPage() {
                 title="Weekly Earnings"
                 value={`₹${weekEarnings.toLocaleString()}`}
                 icon={DollarSign}
-                gradient="from-sky-400 to-blue-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
               />
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -547,8 +547,8 @@ export function ProviderDashboardPage() {
                 title="Average Rating"
                 value={avgRating || '—'}
                 icon={Star}
-                gradient="from-cyan-400 to-blue-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#FFE066] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
                 subtitle={reviews.length ? `${reviews.length} reviews` : undefined}
               />
             </motion.div>
@@ -567,17 +567,17 @@ export function ProviderDashboardPage() {
             {/* Pending Booking Requests */}
             <motion.div className="lg:col-span-2" {...fadeUp}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="text-lg font-semibold">Pending Booking Requests</CardTitle>
-                  <Badge className="bg-gradient-to-r from-sky-500 to-blue-500 text-white border-0 shadow-sm">
+                  <Badge className="bg-gradient-to-r from-[#1D63FF] to-[#4D8AFF] text-white border-0 shadow-sm">
                     {pendingBookings.length} pending
                   </Badge>
                 </CardHeader>
                 <CardContent className="p-0">
                   {pendingBookings.length === 0 ? (
                     <div className="p-8 text-center">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-sky-50">
-                        <Clock className="size-8 text-sky-300" />
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
+                        <Clock className="size-8 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 text-muted-foreground">No pending requests</p>
                       <p className="text-xs text-muted-foreground/60">New booking requests will appear here</p>
@@ -590,7 +590,7 @@ export function ProviderDashboardPage() {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.05 }}
-                          className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30"
+                          className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/10/30"
                         >
                           <div className="min-w-0 flex-1">
                             <div className="flex items-center gap-2">
@@ -600,14 +600,14 @@ export function ProviderDashboardPage() {
                             <p className="mt-1 text-sm text-muted-foreground">
                               {booking.client?.name} &middot; {booking.scheduledDate} at {booking.scheduledTime}
                             </p>
-                            <p className="text-sm font-semibold text-emerald-600">
+                            <p className="text-sm font-semibold text-[#1D63FF]">
                               ₹{booking.finalPrice?.toLocaleString()}
                             </p>
                           </div>
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25"
+                              className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#1D63FF]/25"
                               onClick={() => handleBookingAction(booking.id, 'accept')}
                             >
                               <CheckCircle2 className="mr-1 size-3" />
@@ -660,25 +660,25 @@ export function ProviderDashboardPage() {
             {/* Today's Schedule */}
             <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm h-full">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
                   <CardTitle className="text-lg font-semibold">Today&apos;s Schedule</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/10">
                     View all <ArrowRight className="ml-1 size-3" />
                   </Button>
                 </CardHeader>
                 <CardContent className="p-0">
                   {todayBookings.length === 0 ? (
                     <div className="p-8 text-center">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                        <CalendarCheck className="size-8 text-emerald-300" />
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/10">
+                        <CalendarCheck className="size-8 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 text-muted-foreground">No bookings scheduled for today</p>
                     </div>
                   ) : (
                     <ScrollArea className="max-h-64">
                       {todayBookings.map((booking, i) => (
-                        <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30">
-                          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-sm">
+                        <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/10/30">
+                          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] text-sm font-bold text-white shadow-sm">
                             {i + 1}
                           </div>
                           <div className="min-w-0 flex-1">
@@ -699,27 +699,27 @@ export function ProviderDashboardPage() {
             {/* Recent Reviews */}
             <motion.div {...fadeUp} transition={{ delay: 0.25 }}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm h-full">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-cyan-50/80 to-sky-50/50 pb-3">
+                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('provider-reviews')} className="text-sky-600 hover:text-sky-700 hover:bg-sky-50">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('provider-reviews')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                     All reviews <ArrowRight className="ml-1 size-3" />
                   </Button>
                 </CardHeader>
                 <CardContent className="p-0">
                   {recentReviews.length === 0 ? (
                     <div className="p-8 text-center">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-sky-50">
-                        <MessageSquare className="size-8 text-sky-300" />
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
+                        <MessageSquare className="size-8 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 text-muted-foreground">No reviews yet</p>
                     </div>
                   ) : (
                     <ScrollArea className="max-h-64">
                       {recentReviews.map((review) => (
-                        <div key={review.id} className="border-b p-4 last:border-0 transition-colors hover:bg-sky-50/30">
+                        <div key={review.id} className="border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/5/30">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-400 to-sky-500 text-xs font-bold text-white">
+                              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] text-xs font-bold text-white">
                                 {review.reviewer?.name?.charAt(0) || 'C'}
                               </div>
                               <span className="text-sm font-medium">{review.reviewer?.name || 'Client'}</span>
@@ -801,8 +801,8 @@ export function ProviderDashboardPage() {
                 title="First Booking"
                 value={firstBookingDate ? new Date(firstBookingDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—'}
                 icon={Trophy}
-                gradient="from-cyan-400 to-sky-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#FFE066] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
                 subtitle={firstBookingDate ? new Date(firstBookingDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long' }) : 'No bookings yet'}
               />
             </motion.div>
@@ -811,8 +811,8 @@ export function ProviderDashboardPage() {
                 title="Total Services"
                 value={services.length}
                 icon={Briefcase}
-                gradient="from-emerald-400 to-teal-500"
-                bgGlow="bg-emerald-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/100/10"
                 subtitle={`${services.filter(s => s.isActive).length} active`}
               />
             </motion.div>
@@ -821,8 +821,8 @@ export function ProviderDashboardPage() {
                 title="Total Bookings"
                 value={bookings.length}
                 icon={CalendarCheck}
-                gradient="from-sky-400 to-blue-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
                 subtitle={`${completedBookings.length} completed`}
               />
             </motion.div>
@@ -832,9 +832,9 @@ export function ProviderDashboardPage() {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             <motion.div {...fadeUp}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <TrendingUp className="size-5 text-emerald-500" />
+                    <TrendingUp className="size-5 text-[#4D8AFF]" />
                     Monthly Earnings Trend
                   </CardTitle>
                 </CardHeader>
@@ -860,9 +860,9 @@ export function ProviderDashboardPage() {
 
             <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <BarChart3 className="size-5 text-sky-500" />
+                    <BarChart3 className="size-5 text-[#1D63FF]" />
                     Booking Volume Trend
                   </CardTitle>
                 </CardHeader>
@@ -917,8 +917,8 @@ export function ProviderDashboardPage() {
                       {topServices.map((svc, i) => (
                         <div key={i} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-violet-50/30">
                           <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-sm font-bold text-white shadow-sm ${
-                            i === 0 ? 'bg-gradient-to-br from-cyan-400 to-sky-500' :
-                            i === 1 ? 'bg-gradient-to-br from-emerald-400 to-teal-500' :
+                            i === 0 ? 'bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]' :
+                            i === 1 ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]' :
                             'bg-gradient-to-br from-violet-400 to-purple-500'
                           }`}>
                             {i + 1}
@@ -929,13 +929,13 @@ export function ProviderDashboardPage() {
                               <span className="text-xs text-muted-foreground">{svc.bookings} bookings</span>
                               {svc.rating > 0 && (
                                 <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                                  <Star className="size-3 fill-cyan-400 text-cyan-400" />
+                                  <Star className="size-3 fill-[#FFE066] text-[#FFE066]" />
                                   {svc.rating}
                                 </span>
                               )}
                             </div>
                           </div>
-                          <p className="text-sm font-semibold text-emerald-600">₹{svc.earnings.toLocaleString()}</p>
+                          <p className="text-sm font-semibold text-[#1D63FF]">₹{svc.earnings.toLocaleString()}</p>
                         </div>
                       ))}
                     </ScrollArea>
@@ -957,11 +957,11 @@ export function ProviderDashboardPage() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     {[
-                      { label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-600' },
-                      { label: 'Total Bookings', value: bookings.length, icon: CalendarCheck, color: 'text-sky-600' },
+                      { label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, icon: DollarSign, color: 'text-[#1D63FF]' },
+                      { label: 'Total Bookings', value: bookings.length, icon: CalendarCheck, color: 'text-[#1D63FF]' },
                       { label: 'Services Listed', value: services.length, icon: Briefcase, color: 'text-violet-600' },
-                      { label: 'Reviews Received', value: reviews.length, icon: MessageSquare, color: 'text-cyan-600' },
-                      { label: 'Avg. Rating', value: avgRating || '—', icon: Star, color: 'text-cyan-600' },
+                      { label: 'Reviews Received', value: reviews.length, icon: MessageSquare, color: 'text-[#E6B800]' },
+                      { label: 'Avg. Rating', value: avgRating || '—', icon: Star, color: 'text-[#E6B800]' },
                       { label: 'Days Active', value: daysOnPlatform, icon: Clock, color: 'text-fuchsia-600' },
                     ].map((item) => (
                       <div key={item.label} className="flex items-center justify-between">
@@ -979,7 +979,7 @@ export function ProviderDashboardPage() {
                     <div className="mt-2 flex items-center justify-center gap-1">
                       <StarRating rating={avgRating} size="lg" />
                     </div>
-                    <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-cyan-500 to-sky-500 bg-clip-text text-transparent">
+                    <p className="mt-1 text-2xl font-bold bg-gradient-to-r from-[#FFCE32] to-[#4D8AFF] bg-clip-text text-transparent">
                       {avgRating || '—'} / 5.0
                     </p>
                   </div>
@@ -997,30 +997,30 @@ export function ProviderDashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-600 via-sky-600 to-blue-600 p-6 sm:p-8"
+            className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#E6B800] via-[#1D63FF] to-[#1D63FF] p-6 sm:p-8"
           >
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
             <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
             <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="size-5 text-sky-200" />
-                  <span className="text-sm font-medium text-sky-100">Performance Metrics</span>
+                  <BarChart3 className="size-5 text-[#7DB0FF]" />
+                  <span className="text-sm font-medium text-[#4D8AFF]">Performance Metrics</span>
                 </div>
                 <h2 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
                   {completionRate}% Completion Rate
                 </h2>
-                <p className="mt-1 text-sky-100/80 text-sm">
+                <p className="mt-1 text-[#4D8AFF]/80 text-sm">
                   Track your service quality and efficiency
                 </p>
               </div>
               <div className="flex gap-3">
                 <div className="glass-dark rounded-xl px-4 py-2 text-center">
-                  <p className="text-xs text-sky-200">Rating</p>
+                  <p className="text-xs text-[#7DB0FF]">Rating</p>
                   <p className="text-lg font-bold text-white">{avgRating || '—'}</p>
                 </div>
                 <div className="glass-dark rounded-xl px-4 py-2 text-center">
-                  <p className="text-xs text-sky-200">On-Time</p>
+                  <p className="text-xs text-[#7DB0FF]">On-Time</p>
                   <p className="text-lg font-bold text-white">{onTimeRate !== null ? `${onTimeRate}%` : 'N/A'}</p>
                 </div>
               </div>
@@ -1034,8 +1034,8 @@ export function ProviderDashboardPage() {
                 title="Completion Rate"
                 value={`${completionRate}%`}
                 icon={Target}
-                gradient="from-emerald-400 to-teal-500"
-                bgGlow="bg-emerald-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/100/10"
               />
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -1043,8 +1043,8 @@ export function ProviderDashboardPage() {
                 title="On-Time Arrival"
                 value={onTimeRate !== null ? `${onTimeRate}%` : 'N/A'}
                 icon={Clock}
-                gradient="from-sky-400 to-blue-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#7DB0FF] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
               />
             </motion.div>
             <motion.div variants={fadeUp}>
@@ -1061,8 +1061,8 @@ export function ProviderDashboardPage() {
                 title="Avg Response Time"
                 value={avgResponseTime ?? 'N/A'}
                 icon={Timer}
-                gradient="from-cyan-400 to-sky-500"
-                bgGlow="bg-sky-500/10"
+                gradient="from-[#FFE066] to-[#4D8AFF]"
+                bgGlow="bg-[#1D63FF]/50/10"
               />
             </motion.div>
           </motion.div>
@@ -1071,9 +1071,9 @@ export function ProviderDashboardPage() {
             {/* Rating Distribution Chart */}
             <motion.div {...fadeUp}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm h-full">
-                <CardHeader className="bg-gradient-to-r from-cyan-50/80 to-sky-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <Star className="size-5 text-cyan-500" />
+                    <Star className="size-5 text-[#FFCE32]" />
                     Rating Distribution
                   </CardTitle>
                 </CardHeader>
@@ -1114,18 +1114,18 @@ export function ProviderDashboardPage() {
             {/* Response Time Stats */}
             <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm h-full">
-                <CardHeader className="bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <Timer className="size-5 text-sky-500" />
+                    <Timer className="size-5 text-[#1D63FF]" />
                     Response & Efficiency
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-5 p-5">
                   {[
-                    { label: 'Completion Rate', value: completionRate, color: 'bg-emerald-500', icon: Target },
-                    { label: 'On-Time Arrival', value: onTimeRate ?? 0, color: 'bg-sky-500', icon: Clock },
+                    { label: 'Completion Rate', value: completionRate, color: 'bg-[#1D63FF]/100', icon: Target },
+                    { label: 'On-Time Arrival', value: onTimeRate ?? 0, color: 'bg-[#1D63FF]/50', icon: Clock },
                     { label: 'Repeat Customer Rate', value: repeatCustomerRate, color: 'bg-violet-500', icon: Users },
-                    { label: 'Profile Strength', value: Math.min(100, Math.round((services.length * 15) + (reviews.length * 5) + (user?.isVerified ? 20 : 0))), color: 'bg-cyan-500', icon: Zap },
+                    { label: 'Profile Strength', value: Math.min(100, Math.round((services.length * 15) + (reviews.length * 5) + (user?.isVerified ? 20 : 0))), color: 'bg-[#FFCE32]/100', icon: Zap },
                   ].map((metric) => (
                     <div key={metric.label}>
                       <div className="flex items-center justify-between mb-1.5">
@@ -1192,12 +1192,12 @@ export function ProviderDashboardPage() {
                           <div className="grid grid-cols-2 gap-3">
                             <div>
                               <p className="text-[11px] text-muted-foreground">Earnings</p>
-                              <p className="text-sm font-bold text-emerald-600">₹{cat.earnings.toLocaleString()}</p>
+                              <p className="text-sm font-bold text-[#1D63FF]">₹{cat.earnings.toLocaleString()}</p>
                             </div>
                             <div>
                               <p className="text-[11px] text-muted-foreground">Avg Rating</p>
                               <div className="flex items-center gap-1">
-                                <Star className="size-3 fill-cyan-400 text-cyan-400" />
+                                <Star className="size-3 fill-[#FFE066] text-[#FFE066]" />
                                 <span className="text-sm font-bold">{cat.rating || '—'}</span>
                               </div>
                             </div>

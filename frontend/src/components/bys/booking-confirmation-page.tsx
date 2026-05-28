@@ -41,7 +41,7 @@ interface BookingData {
 
 // Confetti particles
 function ConfettiParticle({ delay, x, index }: { delay: number; x: number; index: number }) {
-  const colors = ['#10b981', '#14b8a6', '#06b6d4', '#06b6d4', '#ef4444', '#8b5cf6', '#ec4899'];
+  const colors = ['#1D63FF', '#4D8AFF', '#FFCE32', '#FFCE32', '#ef4444', '#8b5cf6', '#ec4899'];
   const color = colors[index % colors.length];
   // Deterministic pseudo-random values based on index to avoid hydration mismatch
   const seed = (index * 2654435761) >>> 0;
@@ -72,19 +72,19 @@ function SuccessCheckmark() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-20"
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] opacity-20"
       />
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1.5 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.1 }}
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-10"
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] opacity-10"
       />
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-xl shadow-emerald-500/30"
+        className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-xl shadow-[#4D8AFF]/30"
       >
         <motion.div
           initial={{ scale: 0, pathLength: 0 }}
@@ -152,7 +152,7 @@ export function BookingConfirmationPage() {
           </p>
           {booking?.bookingNumber && (
             <div className="mt-3">
-              <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 text-base px-4 py-1.5 shadow-lg shadow-emerald-500/25">
+              <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 text-base px-4 py-1.5 shadow-lg shadow-[#4D8AFF]/25">
                 <Sparkles className="mr-1.5 size-3.5" />
                 {booking.bookingNumber}
               </Badge>
@@ -170,15 +170,15 @@ export function BookingConfirmationPage() {
             transition={{ delay: 0.7 }}
           >
             <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Booking Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {[
-                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-emerald-400 to-teal-500' },
-                  { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-sky-400 to-blue-500' },
-                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-cyan-400 to-blue-500' },
+                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
+                  { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-[#4D8AFF] to-[#4D8AFF]' },
+                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-[#FFE066] to-[#4D8AFF]' },
                   { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-violet-400 to-purple-500' },
                   { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-pink-400 to-rose-500' },
                 ].map((item) => (
@@ -222,15 +222,15 @@ export function BookingConfirmationPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
           >
-            <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-sky-400">
+            <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-[#4D8AFF]">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-100">
-                    <PartyPopper className="size-5 text-sky-600" />
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#1D63FF]/10">
+                    <PartyPopper className="size-5 text-[#1D63FF]" />
                   </div>
                   <div>
-                    <p className="font-semibold text-sky-800">What&apos;s next?</p>
-                    <p className="mt-1 text-sm text-sky-700/80">
+                    <p className="font-semibold text-[#0A2463]">What&apos;s next?</p>
+                    <p className="mt-1 text-sm text-[#0D3B7A]/80">
                       The service provider will review and accept your booking.
                       You&apos;ll receive a notification once confirmed.
                     </p>
@@ -240,21 +240,21 @@ export function BookingConfirmationPage() {
             </Card>
 
             {/* Trust Badge */}
-            <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-emerald-50/50 p-3">
-              <Shield className="size-4 text-emerald-600" />
-              <span className="text-xs text-emerald-700 font-medium">Your booking is protected by our platform guarantee</span>
+            <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-[#1D63FF]/5 p-3">
+              <Shield className="size-4 text-[#1D63FF]" />
+              <span className="text-xs text-[#0D3B7A] font-medium">Your booking is protected by our platform guarantee</span>
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
-                className="flex-1 bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25 rounded-xl h-11"
+                className="flex-1 bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 rounded-xl h-11"
                 onClick={() => navigate('client-payment', { bookingId: bookingId || '' })}
               >
                 <CreditCard className="mr-2 size-4" /> Pay Now
               </Button>
               <Button
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11"
+                className="flex-1 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25 rounded-xl h-11"
                 onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
               >
                 View Booking <ArrowRight className="ml-2 size-4" />
@@ -272,7 +272,7 @@ export function BookingConfirmationPage() {
             <div className="mt-4 text-center">
               <Button
                 variant="ghost"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl"
+                className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5 rounded-xl"
                 onClick={() => navigate('categories')}
               >
                 Book Another Service

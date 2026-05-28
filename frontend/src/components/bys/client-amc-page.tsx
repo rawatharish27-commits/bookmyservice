@@ -78,19 +78,19 @@ interface AMCPlan {
 
 /* ---------- category config ---------- */
 const CATEGORY_ICONS: Record<string, { icon: typeof Wrench; gradient: string }> = {
-  AIR_CONDITIONER: { icon: Wind, gradient: 'from-teal-400 to-emerald-500' },
-  PLUMBING: { icon: Droplets, gradient: 'from-blue-400 to-cyan-500' },
-  ELECTRICAL: { icon: Zap, gradient: 'from-cyan-400 to-yellow-500' },
-  REFRIGERATOR: { icon: Wrench, gradient: 'from-sky-400 to-blue-500' },
+  AIR_CONDITIONER: { icon: Wind, gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
+  PLUMBING: { icon: Droplets, gradient: 'from-[#7DB0FF] to-[#FFCE32]' },
+  ELECTRICAL: { icon: Zap, gradient: 'from-[#FFE066] to-yellow-500' },
+  REFRIGERATOR: { icon: Wrench, gradient: 'from-[#4D8AFF] to-[#4D8AFF]' },
   WASHING_MACHINE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
   KITCHEN_APPLIANCES: { icon: Wrench, gradient: 'from-amber-400 to-orange-500' },
   TV_REPAIR: { icon: Wrench, gradient: 'from-rose-400 to-pink-500' },
-  WATER_PURIFIER: { icon: Droplets, gradient: 'from-cyan-400 to-teal-500' },
+  WATER_PURIFIER: { icon: Droplets, gradient: 'from-[#FFE066] to-[#4D8AFF]' },
   GEYSER: { icon: Wrench, gradient: 'from-red-400 to-orange-500' },
-  WATER_TANK_CLEANING: { icon: Droplets, gradient: 'from-blue-400 to-indigo-500' },
-  MOVERS_AND_PACKERS: { icon: Wrench, gradient: 'from-emerald-400 to-green-500' },
+  WATER_TANK_CLEANING: { icon: Droplets, gradient: 'from-[#7DB0FF] to-indigo-500' },
+  MOVERS_AND_PACKERS: { icon: Wrench, gradient: 'from-[#7DB0FF] to-green-500' },
   APPLIANCE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
-  GENERAL: { icon: Shield, gradient: 'from-emerald-400 to-teal-500' },
+  GENERAL: { icon: Shield, gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
 };
 
 function getCategoryIcon(category: string) {
@@ -99,10 +99,10 @@ function getCategoryIcon(category: string) {
 
 /* ---------- subscription status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; label: string }> = {
-  ACTIVE: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', label: 'Active' },
+  ACTIVE: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]', label: 'Active' },
   EXPIRED: { className: 'bg-gray-50 text-gray-600 border-gray-200', dotColor: 'bg-gray-400', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
-  PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', label: 'Pending' },
+  PENDING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]', label: 'Pending' },
 };
 
 /* ==================== MAIN COMPONENT ==================== */
@@ -157,7 +157,7 @@ export function ClientAmcPage() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.4 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D63FF] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
@@ -166,20 +166,20 @@ export function ClientAmcPage() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-emerald-200" />
-              <span className="text-sm font-medium text-emerald-100">Protect Your Home</span>
+              <ShieldCheck className="size-5 text-[#1D63FF]/20" />
+              <span className="text-sm font-medium text-[#1D63FF]/10">Protect Your Home</span>
             </div>
             <h2 className="mt-1 text-xl font-bold text-white sm:text-2xl">
               Annual Maintenance Contracts
             </h2>
-            <p className="mt-1 text-emerald-100/80">
+            <p className="mt-1 text-[#1D63FF]/10">
               Get unlimited service visits, priority support & exclusive discounts
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
               <span className="text-2xl font-bold text-white">{activeSubscriptions.length}</span>
-              <span className="text-xs text-emerald-200">Active Plans</span>
+              <span className="text-xs text-[#1D63FF]/20">Active Plans</span>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export function ClientAmcPage() {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Active Subscriptions</h2>
           {activeSubscriptions.length > 0 && (
-            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+            <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
               {activeSubscriptions.length} Active
             </Badge>
           )}
@@ -208,9 +208,9 @@ export function ClientAmcPage() {
             ))}
           </div>
         ) : activeSubscriptions.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 py-12 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-              <Shield className="size-8 text-emerald-300" />
+          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 py-12 text-center">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+              <Shield className="size-8 text-[#9DC2FF]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No Active Subscriptions</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">Subscribe to an AMC plan below for hassle-free maintenance</p>
@@ -242,8 +242,8 @@ export function ClientAmcPage() {
                             <p className="text-xs text-muted-foreground">{sub.category}</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="gap-1 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border-emerald-200">
-                          <span className="size-1.5 rounded-full bg-emerald-400" />
+                        <Badge variant="outline" className="gap-1 text-[10px] font-semibold bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20">
+                          <span className="size-1.5 rounded-full bg-[#7DB0FF]" />
                           Active
                         </Badge>
                       </div>
@@ -280,7 +280,7 @@ export function ClientAmcPage() {
                           </span>
                         </div>
                         {isExpiringSoon && (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-sky-200 bg-sky-50 text-sky-700">
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]">
                             <AlertTriangle className="size-2.5" />
                             {daysRemaining}d left
                           </Badge>
@@ -291,7 +291,7 @@ export function ClientAmcPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="mt-3 w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                        className="mt-3 w-full text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5"
                         onClick={() => navigate('client-amc-detail', { subscriptionId: sub.id })}
                       >
                         View Details <ChevronRight className="ml-1 size-4" />
@@ -353,7 +353,7 @@ export function ClientAmcPage() {
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Available Plans</h2>
-          <Badge className="bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100">
+          <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
             {plans.length} Plans
           </Badge>
         </div>
@@ -365,9 +365,9 @@ export function ClientAmcPage() {
             ))}
           </div>
         ) : plans.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-teal-200 bg-teal-50/30 py-12 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-100 to-cyan-50">
-              <Package className="size-8 text-teal-300" />
+          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 py-12 text-center">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#FFCE32]/5">
+              <Package className="size-8 text-[#9DC2FF]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No Plans Available</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">New AMC plans will be added soon. Stay tuned!</p>
@@ -380,12 +380,12 @@ export function ClientAmcPage() {
               return (
                 <motion.div key={plan.id} variants={fadeUp}>
                   <Card className={`group relative flex flex-col overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-lg ${
-                    plan.popular ? 'ring-2 ring-emerald-500' : ''
+                    plan.popular ? 'ring-2 ring-[#4D8AFF]' : ''
                   }`}>
                     {/* Popular badge */}
                     {plan.popular && (
                       <div className="absolute right-4 top-4 z-10">
-                        <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 shadow-md">
+                        <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 shadow-md">
                           <Sparkles className="mr-1 size-3" />
                           Popular
                         </Badge>
@@ -409,15 +409,15 @@ export function ClientAmcPage() {
 
                       {/* Price */}
                       <div className="mt-5 flex items-baseline gap-1">
-                        <IndianRupee className="size-5 text-emerald-600" />
-                        <span className="text-3xl font-bold text-emerald-600">{plan.price?.toLocaleString('en-IN')}</span>
+                        <IndianRupee className="size-5 text-[#1D63FF]" />
+                        <span className="text-3xl font-bold text-[#1D63FF]">{plan.price?.toLocaleString('en-IN')}</span>
                         <span className="text-sm text-muted-foreground">/{plan.durationUnit}</span>
                       </div>
 
                       {/* Visits included */}
-                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-emerald-50 p-2.5">
-                        <Wrench className="size-4 text-emerald-600" />
-                        <span className="text-sm font-medium text-emerald-700">
+                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#1D63FF]/5 p-2.5">
+                        <Wrench className="size-4 text-[#1D63FF]" />
+                        <span className="text-sm font-medium text-[#0D3B7A]">
                           {plan.totalVisits} service visits included
                         </span>
                       </div>
@@ -427,7 +427,7 @@ export function ClientAmcPage() {
                         <div className="mt-4 flex-1 space-y-2">
                           {plan.features.map((feature, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <CheckCircle className="mt-0.5 size-4 shrink-0 text-emerald-500" />
+                              <CheckCircle className="mt-0.5 size-4 shrink-0 text-[#4D8AFF]" />
                               <span className="text-sm text-muted-foreground">{feature}</span>
                             </div>
                           ))}
@@ -445,7 +445,7 @@ export function ClientAmcPage() {
                           className={`w-full rounded-xl shadow-lg ${
                             isAlreadySubscribed
                               ? 'bg-gray-100 text-gray-500 shadow-none hover:bg-gray-100 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30'
+                              : 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-[#4D8AFF]/25 hover:shadow-xl hover:shadow-[#4D8AFF]/30'
                           }`}
                           disabled={isAlreadySubscribed}
                           onClick={() => {
@@ -491,16 +491,16 @@ export function ClientAmcPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="flex size-20 items-center justify-center rounded-full bg-emerald-100"
+                className="flex size-20 items-center justify-center rounded-full bg-[#1D63FF]/10"
               >
-                <ShieldCheck className="size-10 text-emerald-600" />
+                <ShieldCheck className="size-10 text-[#1D63FF]" />
               </motion.div>
               <h3 className="mt-4 text-lg font-bold">Subscribed Successfully!</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 You&apos;re now enrolled in the <strong>{subscribeDialog?.name}</strong> plan. Enjoy {subscribeDialog?.totalVisits} service visits and priority support!
               </p>
               <Button
-                className="mt-6 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                className="mt-6 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
                 onClick={() => { setSubscribeDialog(null); setSubscribeSuccess(false); }}
               >
                 View My Plans
@@ -511,7 +511,7 @@ export function ClientAmcPage() {
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Shield className="size-5 text-emerald-600" />
+                  <Shield className="size-5 text-[#1D63FF]" />
                   Subscribe to Plan
                 </DialogTitle>
                 <DialogDescription>
@@ -522,7 +522,7 @@ export function ClientAmcPage() {
               {subscribeDialog && (
                 <div className="space-y-5 pt-2">
                   {/* Plan summary card */}
-                  <div className="rounded-xl border border-emerald-200 bg-emerald-50/30 p-5">
+                  <div className="rounded-xl border border-[#1D63FF]/20 bg-[#1D63FF]/5 p-5">
                     <div className="flex items-center gap-3">
                       {(() => {
                         const catConfig = getCategoryIcon(subscribeDialog.category);
@@ -543,7 +543,7 @@ export function ClientAmcPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Price</span>
-                        <span className="font-bold text-emerald-600">₹{subscribeDialog.price?.toLocaleString('en-IN')}</span>
+                        <span className="font-bold text-[#1D63FF]">₹{subscribeDialog.price?.toLocaleString('en-IN')}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Duration</span>
@@ -562,7 +562,7 @@ export function ClientAmcPage() {
                         <div className="space-y-2">
                           {subscribeDialog.features.slice(0, 4).map((feature, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-emerald-500" />
+                              <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-[#4D8AFF]" />
                               <span className="text-xs text-muted-foreground">{feature}</span>
                             </div>
                           ))}
@@ -575,9 +575,9 @@ export function ClientAmcPage() {
                   </div>
 
                   {/* Info note */}
-                  <div className="flex items-start gap-3 rounded-xl bg-sky-50 p-4">
-                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-sky-600" />
-                    <p className="text-xs text-sky-800">
+                  <div className="flex items-start gap-3 rounded-xl bg-[#1D63FF]/5 p-4">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-[#1D63FF]" />
+                    <p className="text-xs text-[#0D3B7A]">
                       The subscription amount will be deducted from your wallet balance. Make sure you have sufficient funds.
                     </p>
                   </div>
@@ -595,7 +595,7 @@ export function ClientAmcPage() {
                 <Button
                   onClick={handleSubscribe}
                   disabled={subscribing}
-                  className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                  className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
                 >
                   {subscribing ? (
                     <>

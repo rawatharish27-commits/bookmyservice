@@ -26,6 +26,7 @@ export type Page =
   | 'login'
   | 'admin-login'
   | 'register'
+  | 'reset-password'
   // Client pages
   | 'client-dashboard'
   | 'client-bookings'

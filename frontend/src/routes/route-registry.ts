@@ -145,6 +145,12 @@ export const AUTH_ROUTES: RouteConfig[] = [
     chunkName: 'auth-register',
     isProtected: false,
   },
+  {
+    page: 'reset-password',
+    loader: () => import('@/components/bys/reset-password-page').then(m => ({ default: m.ResetPasswordPage })),
+    chunkName: 'auth-reset-password',
+    isProtected: false,
+  },
 ];
 
 // ---------------------------------------------------------------------------

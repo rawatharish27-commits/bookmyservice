@@ -13,17 +13,17 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const specializations = [
-  { value: 'air-conditioner', label: 'Air Conditioner', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'AC repair & maintenance' },
-  { value: 'refrigerator', label: 'Refrigerator', Icon: Snowflake, color: 'from-sky-500 via-blue-500 to-cyan-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-sky-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Fridge repair & service' },
-  { value: 'washing-machine', label: 'Washing Machine', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Washer repair & service' },
+  { value: 'air-conditioner', label: 'Air Conditioner', Icon: Wind, color: 'from-[#FFCE32]/50 via-[#FFCE32]/50 to-[#FFCE32]', bgColor: 'bg-[#FFCE32]/5 border-[#1D63FF]/20', activeBg: 'bg-[#FFCE32]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]', textColor: 'text-[#0D3B7A]', desc: 'AC repair & maintenance' },
+  { value: 'refrigerator', label: 'Refrigerator', Icon: Snowflake, color: 'from-[#4D8AFF]/50 via-[#1D63FF]/50 to-[#FFCE32]', bgColor: 'bg-[#4D8AFF]/5 border-[#4D8AFF]/20', activeBg: 'bg-[#4D8AFF]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]', textColor: 'text-[#1D63FF]', desc: 'Fridge repair & service' },
+  { value: 'washing-machine', label: 'Washing Machine', Icon: Droplets, color: 'from-[#1D63FF] to-[#FFCE32]', bgColor: 'bg-[#1D63FF]/5 border-[#1D63FF]/20', activeBg: 'bg-[#1D63FF]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]', textColor: 'text-[#1D63FF]', desc: 'Washer repair & service' },
   { value: 'kitchen-appliances', label: 'Kitchen Appliances', Icon: CookingPot, color: 'from-amber-500 via-orange-500 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Chimney, hob, microwave' },
   { value: 'tv-repair', label: 'TV Repair', Icon: Tv, color: 'from-rose-500 via-pink-500 to-red-400', bgColor: 'bg-rose-50 border-rose-200', activeBg: 'bg-rose-100 border-rose-400 ring-2 ring-rose-300', textColor: 'text-rose-700', desc: 'LED, LCD, OLED repair' },
-  { value: 'water-purifier', label: 'Water Purifier', Icon: Droplet, color: 'from-cyan-500 via-teal-500 to-emerald-400', bgColor: 'bg-cyan-50 border-cyan-200', activeBg: 'bg-cyan-100 border-cyan-400 ring-2 ring-cyan-300', textColor: 'text-cyan-700', desc: 'RO, UV filter service' },
+  { value: 'water-purifier', label: 'Water Purifier', Icon: Droplet, color: 'from-[#FFCE32]/50 via-[#FFCE32]/50 to-[#7DB0FF]', bgColor: 'bg-[#FFCE32]/5 border-[#FFCE32]/20', activeBg: 'bg-[#FFCE32]/10 border-[#FFCE32] ring-2 ring-[#FFE066]', textColor: 'text-[#E6B800]', desc: 'RO, UV filter service' },
   { value: 'geyser', label: 'Geyser', Icon: Flame, color: 'from-red-500 via-orange-500 to-amber-400', bgColor: 'bg-red-50 border-red-200', activeBg: 'bg-red-100 border-red-400 ring-2 ring-red-300', textColor: 'text-red-700', desc: 'Water heater service' },
-  { value: 'plumber', label: 'Plumber', Icon: Droplets, color: 'from-blue-600 via-blue-500 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
-  { value: 'electrician', label: 'Electrician', Icon: Zap, color: 'from-sky-500 via-blue-500 to-yellow-400', bgColor: 'bg-sky-50 border-sky-200', activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300', textColor: 'text-sky-700', desc: 'Wiring, switches, fixtures' },
-  { value: 'water-tank-cleaning', label: 'Water Tank Cleaning', Icon: Droplet, color: 'from-blue-500 via-indigo-500 to-violet-400', bgColor: 'bg-indigo-50 border-indigo-200', activeBg: 'bg-indigo-100 border-indigo-400 ring-2 ring-indigo-300', textColor: 'text-indigo-700', desc: 'Tank cleaning & sanitation' },
-  { value: 'movers-and-packers', label: 'Movers and Packers', Icon: Truck, color: 'from-emerald-500 via-green-500 to-teal-400', bgColor: 'bg-emerald-50 border-emerald-200', activeBg: 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-300', textColor: 'text-emerald-700', desc: 'Relocation & packing' },
+  { value: 'plumber', label: 'Plumber', Icon: Droplets, color: 'from-[#1D63FF] via-[#1D63FF]/50 to-[#FFCE32]', bgColor: 'bg-[#1D63FF]/5 border-[#1D63FF]/20', activeBg: 'bg-[#1D63FF]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]', textColor: 'text-[#1D63FF]', desc: 'Pipes, leaks, installations' },
+  { value: 'electrician', label: 'Electrician', Icon: Zap, color: 'from-[#4D8AFF]/50 via-[#1D63FF]/50 to-yellow-400', bgColor: 'bg-[#4D8AFF]/5 border-[#4D8AFF]/20', activeBg: 'bg-[#4D8AFF]/10 border-[#FFCE32] ring-2 ring-[#7DB0FF]', textColor: 'text-[#1D63FF]', desc: 'Wiring, switches, fixtures' },
+  { value: 'water-tank-cleaning', label: 'Water Tank Cleaning', Icon: Droplet, color: 'from-[#1D63FF]/50 via-indigo-500 to-violet-400', bgColor: 'bg-indigo-50 border-indigo-200', activeBg: 'bg-indigo-100 border-indigo-400 ring-2 ring-indigo-300', textColor: 'text-indigo-700', desc: 'Tank cleaning & sanitation' },
+  { value: 'movers-and-packers', label: 'Movers and Packers', Icon: Truck, color: 'from-[#FFCE32]/50 via-green-500 to-[#7DB0FF]', bgColor: 'bg-[#FFCE32]/5 border-[#1D63FF]/20', activeBg: 'bg-[#FFCE32]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]', textColor: 'text-[#0D3B7A]', desc: 'Relocation & packing' },
 ];
 
 const roleOptions = [
@@ -33,10 +33,10 @@ const roleOptions = [
     roleName: 'CLIENT',
     label: 'Client',
     Icon: User,
-    gradient: 'from-emerald-600 via-teal-500 to-cyan-500',
-    bgColor: 'bg-emerald-50 border-emerald-200',
-    activeBg: 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-300',
-    textColor: 'text-emerald-700',
+    gradient: 'from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50',
+    bgColor: 'bg-[#FFCE32]/5 border-[#1D63FF]/20',
+    activeBg: 'bg-[#FFCE32]/10 border-[#7DB0FF] ring-2 ring-[#7DB0FF]',
+    textColor: 'text-[#0D3B7A]',
     desc: 'Book home services',
     banner: 'Book trusted professionals for Plumbing, Electrical & AC services',
     dashboard: 'client-dashboard' as Page,
@@ -47,10 +47,10 @@ const roleOptions = [
     roleName: 'PROVIDER',
     label: 'Service Provider',
     Icon: Briefcase,
-    gradient: 'from-sky-500 via-blue-500 to-rose-500',
-    bgColor: 'bg-sky-50 border-sky-200',
-    activeBg: 'bg-sky-100 border-cyan-400 ring-2 ring-sky-300',
-    textColor: 'text-sky-700',
+    gradient: 'from-[#4D8AFF]/50 via-[#1D63FF]/50 to-rose-500',
+    bgColor: 'bg-[#4D8AFF]/5 border-[#4D8AFF]/20',
+    activeBg: 'bg-[#4D8AFF]/10 border-[#FFCE32] ring-2 ring-[#7DB0FF]',
+    textColor: 'text-[#1D63FF]',
     desc: 'List & manage services',
     banner: 'Reach thousands of customers, grow your business',
     dashboard: 'provider-dashboard' as Page,
@@ -81,10 +81,10 @@ function getPasswordStrength(password: string): { label: string; color: string; 
   if (/[^A-Za-z0-9]/.test(password)) score++;
 
   if (score <= 1) return { label: 'Very Weak', color: 'bg-gradient-to-r from-red-500 to-red-600', width: 'w-1/5', emoji: '😩', score };
-  if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-blue-500 to-sky-500', width: 'w-2/5', emoji: '😕', score };
-  if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-cyan-400', width: 'w-3/5', emoji: '😐', score };
-  if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-emerald-500 to-teal-400', width: 'w-4/5', emoji: '😊', score };
-  return { label: 'Very Strong', color: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500', width: 'w-full', emoji: '💪', score };
+  if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-[#1D63FF]/50 to-[#4D8AFF]/50', width: 'w-2/5', emoji: '😕', score };
+  if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-[#FFCE32]', width: 'w-3/5', emoji: '😐', score };
+  if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-[#FFCE32]/50 to-[#7DB0FF]', width: 'w-4/5', emoji: '😊', score };
+  return { label: 'Very Strong', color: 'bg-gradient-to-r from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50', width: 'w-full', emoji: '💪', score };
 }
 
 export function RegisterPage() {
@@ -181,7 +181,7 @@ export function RegisterPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#0A2463]">
         {/* Mesh gradient overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(16,185,129,0.55),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(6,182,212,0.4),transparent_50%)]" />
@@ -232,10 +232,10 @@ export function RegisterPage() {
 
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
               Join India&apos;s<br />
-              <span className="bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent">Trusted Platform.</span>
+              <span className="bg-gradient-to-r from-[#1D63FF]/20 via-[#1D63FF]/20 to-[#FFCE32]/20 bg-clip-text text-transparent">Trusted Platform.</span>
             </h2>
 
-            <p className="text-emerald-100/80 text-lg mb-10 max-w-md leading-relaxed">
+            <p className="text-[#1D63FF]/10 text-lg mb-10 max-w-md leading-relaxed">
               Whether you need home services or want to offer them, we&apos;ve got you covered with a seamless experience.
             </p>
 
@@ -290,7 +290,7 @@ export function RegisterPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             onClick={() => navigate('home')}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-emerald-700 mb-6 transition-colors group"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#0D3B7A] mb-6 transition-colors group"
           >
             <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
@@ -301,7 +301,7 @@ export function RegisterPage() {
             {/* Subtle border glow */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-200/30 pointer-events-none" />
             {/* Gradient top accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7DB0FF] via-[#7DB0FF] to-[#FFCE32]" />
 
             {/* Header */}
             <div className="text-center pt-8 pb-2 px-6">
@@ -309,7 +309,7 @@ export function RegisterPage() {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30"
+                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 text-white shadow-lg shadow-[#4D8AFF]/30"
               >
                 <Wrench className="size-8" />
               </motion.div>
@@ -334,15 +334,15 @@ export function RegisterPage() {
             {/* Step Indicator */}
             <div className="px-6 pt-3">
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-emerald-100 overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-[#FFCE32]/10 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400"
+                    className="h-full rounded-full bg-gradient-to-r from-[#FFCE32]/50 to-[#FFCE32]"
                     initial={{ width: 0 }}
                     animate={{ width: `${(filledSteps / totalSteps) * 100}%` }}
                     transition={{ type: 'spring', stiffness: 120, damping: 18 }}
                   />
                 </div>
-                <span className="text-xs font-medium text-emerald-600 whitespace-nowrap">
+                <span className="text-xs font-medium text-[#1D63FF] whitespace-nowrap">
                   {filledSteps}/{totalSteps}
                 </span>
               </div>
@@ -375,7 +375,7 @@ export function RegisterPage() {
                         {isSelected && (
                           <motion.div
                             layoutId="role-check"
-                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-[#FFCE32]/50 flex items-center justify-center shadow-sm"
                             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                           >
                             <CheckCircle2 className="size-2.5 text-white" />
@@ -397,14 +397,14 @@ export function RegisterPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3 }}
-                    className="relative rounded-xl overflow-hidden p-4 border border-emerald-100/70"
+                    className="relative rounded-xl overflow-hidden p-4 border border-[#1D63FF]/15"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FFCE32]/5 via-[#FFCE32]/5 to-[#FFCE32]/5 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
                     <div className="relative">
-                      <p className="text-sm font-semibold text-emerald-800">
+                      <p className="text-sm font-semibold text-[#0D3B7A]">
                         {currentRole.banner}
                       </p>
-                      <p className="text-xs text-emerald-600 mt-1">
+                      <p className="text-xs text-[#1D63FF] mt-1">
                         Sign up as a {currentRole.label} to get started
                       </p>
                     </div>
@@ -433,14 +433,14 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-name" className="text-sm font-medium text-foreground/80">Full Name</Label>
                   <div className="relative group">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="reg-name"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -449,7 +449,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="reg-email"
                       type="email"
@@ -458,7 +458,7 @@ export function RegisterPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -473,7 +473,7 @@ export function RegisterPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    className="h-11 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
                   />
                 </div>
 
@@ -513,7 +513,7 @@ export function RegisterPage() {
                               {isActive && (
                                 <motion.div
                                   layoutId="specialization-check"
-                                  className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                                  className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-[#FFCE32]/50 flex items-center justify-center shadow-sm"
                                 >
                                   <CheckCircle2 className="size-3 text-white" />
                                 </motion.div>
@@ -530,7 +530,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-password" className="text-sm font-medium text-foreground/80">Password</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="reg-password"
                       type={showPassword ? 'text' : 'password'}
@@ -539,7 +539,7 @@ export function RegisterPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="new-password"
-                      className="pl-10 pr-11 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 pr-11 h-11 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                     <button
                       type="button"
@@ -581,7 +581,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-confirm" className="text-sm font-medium text-foreground/80">Confirm Password</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="reg-confirm"
                       type="password"
@@ -590,7 +590,7 @@ export function RegisterPage() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       autoComplete="new-password"
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                   <AnimatePresence>
@@ -612,7 +612,7 @@ export function RegisterPage() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="text-xs text-emerald-600 flex items-center gap-1"
+                        className="text-xs text-[#1D63FF] flex items-center gap-1"
                       >
                         <CheckCircle2 className="size-3.5" />
                         Passwords match
@@ -629,15 +629,15 @@ export function RegisterPage() {
                     id="reg-terms"
                     checked={termsAccepted}
                     onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                    className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
+                    className="mt-0.5 size-5 data-[state=checked]:bg-[#1D63FF] data-[state=checked]:border-[#1D63FF] cursor-pointer"
                   />
                   <Label htmlFor="reg-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                     I agree to the{' '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-[#1D63FF] hover:text-[#0D3B7A] font-medium underline underline-offset-2">Terms of Service</button>
                     {', '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-[#1D63FF] hover:text-[#0D3B7A] font-medium underline underline-offset-2">AUP</button>
                     {' '}and{' '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-[#1D63FF] hover:text-[#0D3B7A] font-medium underline underline-offset-2">Privacy Policy</button>
                   </Label>
                 </div>
               </div>
@@ -647,7 +647,7 @@ export function RegisterPage() {
                 {/* Submit button */}
                 <Button
                   type="submit"
-                  className="w-full shimmer bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                  className="w-full shimmer bg-gradient-to-r from-[#1D63FF] via-[#1D63FF] to-[#FFCE32]/50 hover:from-[#0D3B7A] hover:via-[#0D3B7A] hover:to-[#E6B800] shadow-lg shadow-[#1D63FF]/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                   disabled={loading}
                 >
                   {loading ? (
@@ -668,7 +668,7 @@ export function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => navigate('login')}
-                    className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
+                    className="font-semibold text-[#1D63FF] hover:text-[#0D3B7A] transition-colors underline underline-offset-2"
                   >
                     Log in
                   </button>

@@ -174,7 +174,7 @@ function ProfileForm({
           <p className="text-sm text-muted-foreground">Manage your technician profile and preferences</p>
         </div>
         <Button
-          className="self-start rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+          className="self-start rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
           onClick={handleSave}
           disabled={saving}
         >
@@ -192,22 +192,22 @@ function ProfileForm({
       {/* Profile Overview Card */}
       <motion.div {...fadeUp} transition={{ duration: 0.4 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm mb-6">
-          <div className="h-2 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+          <div className="h-2 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
-                <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/25">
+                <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-lg shadow-[#4D8AFF]/25">
                   <User className="size-8 text-white" />
                 </div>
                 <div>
                   <h2 className="text-lg font-bold">{user?.name || 'Technician'}</h2>
                   <p className="text-sm text-muted-foreground">{user?.email}</p>
                   <div className="mt-1 flex items-center gap-2">
-                    <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700 text-xs">
+                    <Badge variant="outline" className="border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] text-xs">
                       {data?.specialization || 'Technician'}
                     </Badge>
                     {data?.rating ? (
-                      <Badge variant="outline" className="border-sky-200 bg-sky-50 text-sky-700 text-xs gap-1">
+                      <Badge variant="outline" className="border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] text-xs gap-1">
                         ⭐ {data.rating.toFixed(1)}
                       </Badge>
                     ) : null}
@@ -217,37 +217,37 @@ function ProfileForm({
               {/* Availability Toggle */}
               <div className="flex items-center gap-3 rounded-xl bg-muted/30 p-3">
                 <div className={`flex size-8 items-center justify-center rounded-lg ${
-                  isAvailable ? 'bg-emerald-100 text-emerald-600' : 'bg-gray-100 text-gray-400'
+                  isAvailable ? 'bg-[#1D63FF]/10 text-[#1D63FF]' : 'bg-gray-100 text-gray-400'
                 }`}>
                   <Clock className="size-4" />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xs text-muted-foreground">Availability</span>
-                  <span className={`text-sm font-semibold ${isAvailable ? 'text-emerald-600' : 'text-gray-500'}`}>
+                  <span className={`text-sm font-semibold ${isAvailable ? 'text-[#1D63FF]' : 'text-gray-500'}`}>
                     {isAvailable ? 'Available' : 'Offline'}
                   </span>
                 </div>
                 <Switch
                   checked={isAvailable}
                   onCheckedChange={setIsAvailable}
-                  className="data-[state=checked]:bg-emerald-500"
+                  className="data-[state=checked]:bg-[#4D8AFF]"
                 />
               </div>
             </div>
 
             {/* Quick Stats */}
             <div className="mt-4 grid grid-cols-3 gap-3">
-              <div className="rounded-xl bg-emerald-50/80 p-3 text-center">
+              <div className="rounded-xl bg-[#1D63FF]/5 p-3 text-center">
                 <p className="text-xs text-muted-foreground">Experience</p>
-                <p className="mt-1 text-lg font-bold text-emerald-700">{data?.experienceYears || 0} yrs</p>
+                <p className="mt-1 text-lg font-bold text-[#0D3B7A]">{data?.experienceYears || 0} yrs</p>
               </div>
-              <div className="rounded-xl bg-teal-50/80 p-3 text-center">
+              <div className="rounded-xl bg-[#1D63FF]/5 p-3 text-center">
                 <p className="text-xs text-muted-foreground">Jobs Done</p>
-                <p className="mt-1 text-lg font-bold text-teal-700">{data?.completedJobs || 0}</p>
+                <p className="mt-1 text-lg font-bold text-[#0D3B7A]">{data?.completedJobs || 0}</p>
               </div>
-              <div className="rounded-xl bg-cyan-50/80 p-3 text-center">
+              <div className="rounded-xl bg-[#FFCE32]/5 p-3 text-center">
                 <p className="text-xs text-muted-foreground">Service Radius</p>
-                <p className="mt-1 text-lg font-bold text-cyan-700">{serviceAreaRadius} km</p>
+                <p className="mt-1 text-lg font-bold text-[#E6B800]">{serviceAreaRadius} km</p>
               </div>
             </div>
           </CardContent>
@@ -259,18 +259,18 @@ function ProfileForm({
         {/* Skills Section */}
         <motion.div variants={fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Wrench className="size-5 text-emerald-600" />
+                <Wrench className="size-5 text-[#1D63FF]" />
                 Skills & Specializations
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <div className="flex flex-wrap gap-2 mb-4">
                 {skills.map((skill) => (
-                  <Badge key={skill} className="bg-emerald-50 text-emerald-700 border-emerald-200 gap-1.5 px-3 py-1.5 text-sm">
+                  <Badge key={skill} className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 gap-1.5 px-3 py-1.5 text-sm">
                     {skill}
-                    <button onClick={() => removeSkill(skill)} className="ml-1 rounded-full p-0.5 hover:bg-emerald-200 transition-colors">
+                    <button onClick={() => removeSkill(skill)} className="ml-1 rounded-full p-0.5 hover:bg-[#1D63FF]/20 transition-colors">
                       <X className="size-3" />
                     </button>
                   </Badge>
@@ -285,7 +285,7 @@ function ProfileForm({
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
                   className="rounded-xl flex-1"
                 />
-                <Button variant="outline" onClick={addSkill} disabled={!newSkill.trim()} className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                <Button variant="outline" onClick={addSkill} disabled={!newSkill.trim()} className="rounded-xl border-[#1D63FF]/20 text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                   <Plus className="size-4" />
                 </Button>
               </div>
@@ -296,9 +296,9 @@ function ProfileForm({
         {/* Service Area Section */}
         <motion.div variants={fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <MapPin className="size-5 text-emerald-600" />
+                <MapPin className="size-5 text-[#1D63FF]" />
                 Service Area
               </CardTitle>
             </CardHeader>
@@ -315,19 +315,19 @@ function ProfileForm({
                 <Label className="text-sm font-medium">Current Location</Label>
                 <div className="flex items-center gap-3">
                   {data?.currentLocation ? (
-                    <div className="flex-1 rounded-xl bg-emerald-50 p-3">
-                      <p className="text-sm text-emerald-700 font-medium">
+                    <div className="flex-1 rounded-xl bg-[#1D63FF]/5 p-3">
+                      <p className="text-sm text-[#0D3B7A] font-medium">
                         📍 {data.currentLocation.lat.toFixed(4)}, {data.currentLocation.lng.toFixed(4)}
                       </p>
-                      <p className="text-xs text-emerald-600/70 mt-0.5">Location is active</p>
+                      <p className="text-xs text-[#1D63FF]/70 mt-0.5">Location is active</p>
                     </div>
                   ) : (
-                    <div className="flex-1 rounded-xl bg-sky-50 p-3">
-                      <p className="text-sm text-sky-700 font-medium">Location not set</p>
-                      <p className="text-xs text-sky-600/70 mt-0.5">Update your location to receive nearby jobs</p>
+                    <div className="flex-1 rounded-xl bg-[#1D63FF]/5 p-3">
+                      <p className="text-sm text-[#0D3B7A] font-medium">Location not set</p>
+                      <p className="text-xs text-[#1D63FF]/70 mt-0.5">Update your location to receive nearby jobs</p>
                     </div>
                   )}
-                  <Button variant="outline" onClick={handleUpdateLocation} disabled={updatingLocation} className="rounded-xl shrink-0 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                  <Button variant="outline" onClick={handleUpdateLocation} disabled={updatingLocation} className="rounded-xl shrink-0 border-[#1D63FF]/20 text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                     {updatingLocation ? <Loader2 className="mr-2 size-4 animate-spin" /> : <Navigation className="mr-2 size-4" />}
                     {updatingLocation ? 'Updating...' : 'Update'}
                   </Button>
@@ -344,7 +344,7 @@ function ProfileForm({
                     onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addPincode())}
                     className="rounded-xl max-w-40"
                   />
-                  <Button variant="outline" onClick={addPincode} disabled={!/^\d{6}$/.test(newPincode)} className="rounded-xl border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+                  <Button variant="outline" onClick={addPincode} disabled={!/^\d{6}$/.test(newPincode)} className="rounded-xl border-[#1D63FF]/20 text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                     <Plus className="size-4" />
                   </Button>
                 </div>
@@ -359,7 +359,7 @@ function ProfileForm({
                 {pincodes && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     {pincodes.split(',').map((p) => p.trim()).filter(Boolean).map((pin, idx) => (
-                      <Badge key={idx} variant="outline" className="border-emerald-200 bg-emerald-50/50 text-emerald-700 text-xs">
+                      <Badge key={idx} variant="outline" className="border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] text-xs">
                         <MapPin className="size-3 mr-1" />{pin}
                       </Badge>
                     ))}
@@ -373,9 +373,9 @@ function ProfileForm({
         {/* Bank Details Section */}
         <motion.div variants={fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Building2 className="size-5 text-emerald-600" />
+                <Building2 className="size-5 text-[#1D63FF]" />
                 Bank Details
               </CardTitle>
             </CardHeader>
@@ -405,9 +405,9 @@ function ProfileForm({
         {/* UPI Section */}
         <motion.div variants={fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Smartphone className="size-5 text-emerald-600" />
+                <Smartphone className="size-5 text-[#1D63FF]" />
                 UPI Details
               </CardTitle>
             </CardHeader>
@@ -424,9 +424,9 @@ function ProfileForm({
         {/* Contact Info (Read-only) */}
         <motion.div variants={fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
               <CardTitle className="flex items-center gap-2 text-base font-semibold">
-                <Phone className="size-5 text-emerald-600" />
+                <Phone className="size-5 text-[#1D63FF]" />
                 Contact Information
               </CardTitle>
             </CardHeader>
@@ -455,7 +455,7 @@ function ProfileForm({
       {/* Save Button (Bottom) */}
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mt-6 flex justify-end gap-3">
         <Button variant="outline" onClick={onRefetch} className="rounded-xl">Reset</Button>
-        <Button className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25" onClick={handleSave} disabled={saving}>
+        <Button className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25" onClick={handleSave} disabled={saving}>
           {saving ? <Loader2 className="mr-2 size-4 animate-spin" /> : saveSuccess ? <CheckCircle2 className="mr-2 size-4" /> : <Save className="mr-2 size-4" />}
           {saveSuccess ? 'Saved!' : saving ? 'Saving...' : 'Save All Changes'}
         </Button>

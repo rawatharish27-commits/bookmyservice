@@ -65,18 +65,18 @@ interface ValidationResult {
 
 /* ---------- applicable type config ---------- */
 const TYPE_CONFIG: Record<string, { gradient: string; bg: string; label: string }> = {
-  ALL: { gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'All Services' },
-  AIR_CONDITIONER: { gradient: 'from-teal-400 to-emerald-500', bg: 'bg-teal-50 text-teal-700 border-teal-200', label: 'Air Conditioner' },
-  PLUMBING: { gradient: 'from-blue-400 to-cyan-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Plumbing' },
-  ELECTRICAL: { gradient: 'from-cyan-400 to-yellow-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Electrical' },
-  REFRIGERATOR: { gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-50 text-sky-700 border-sky-200', label: 'Refrigerator' },
+  ALL: { gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bg: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', label: 'All Services' },
+  AIR_CONDITIONER: { gradient: 'from-[#4D8AFF] to-[#7DB0FF]', bg: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', label: 'Air Conditioner' },
+  PLUMBING: { gradient: 'from-[#7DB0FF] to-[#FFCE32]', bg: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', label: 'Plumbing' },
+  ELECTRICAL: { gradient: 'from-[#FFE066] to-[#FFCE32]', bg: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', label: 'Electrical' },
+  REFRIGERATOR: { gradient: 'from-[#4D8AFF] to-[#1D63FF]', bg: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', label: 'Refrigerator' },
   WASHING_MACHINE: { gradient: 'from-violet-400 to-purple-500', bg: 'bg-violet-50 text-violet-700 border-violet-200', label: 'Washing Machine' },
   KITCHEN_APPLIANCES: { gradient: 'from-amber-400 to-orange-500', bg: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Kitchen Appliances' },
   TV_REPAIR: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'TV Repair' },
-  WATER_PURIFIER: { gradient: 'from-cyan-400 to-teal-500', bg: 'bg-cyan-50 text-cyan-700 border-cyan-200', label: 'Water Purifier' },
+  WATER_PURIFIER: { gradient: 'from-[#FFE066] to-[#4D8AFF]', bg: 'bg-[#FFCE32]/10 text-[#E6B800] border-[#FFCE32]/30', label: 'Water Purifier' },
   GEYSER: { gradient: 'from-red-400 to-orange-500', bg: 'bg-red-50 text-red-700 border-red-200', label: 'Geyser' },
-  WATER_TANK_CLEANING: { gradient: 'from-blue-400 to-indigo-500', bg: 'bg-blue-50 text-blue-700 border-blue-200', label: 'Water Tank Cleaning' },
-  MOVERS_AND_PACKERS: { gradient: 'from-emerald-400 to-green-500', bg: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Movers and Packers' },
+  WATER_TANK_CLEANING: { gradient: 'from-[#7DB0FF] to-[#0D3B7A]', bg: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', label: 'Water Tank Cleaning' },
+  MOVERS_AND_PACKERS: { gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bg: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', label: 'Movers and Packers' },
   APPLIANCE: { gradient: 'from-rose-400 to-pink-500', bg: 'bg-rose-50 text-rose-700 border-rose-200', label: 'Appliance' },
 };
 
@@ -152,7 +152,7 @@ export function ClientCouponsPage() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.4 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8 shadow-xl shadow-emerald-500/20"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8 shadow-xl shadow-[#1D63FF]/20"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl" />
@@ -160,21 +160,21 @@ export function ClientCouponsPage() {
 
         <div className="relative flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="flex items-center gap-2 text-emerald-100">
+            <div className="flex items-center gap-2 text-[#FFCE32]/80">
               <Sparkles className="size-5" />
               <span className="text-sm font-medium">Exclusive Savings</span>
             </div>
             <h2 className="mt-1 text-xl font-bold text-white sm:text-2xl">
               Save More on Every Booking
             </h2>
-            <p className="mt-1 text-emerald-100/80">
+            <p className="mt-1 text-[#FFCE32]/80">
               Apply coupons at checkout and enjoy instant discounts on your favorite services
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
               <span className="text-2xl font-bold text-white">{coupons.length}</span>
-              <span className="text-xs text-emerald-200">Coupons</span>
+              <span className="text-xs text-[#FFCE32]/70">Coupons</span>
             </div>
           </div>
         </div>
@@ -190,7 +190,7 @@ export function ClientCouponsPage() {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Available Coupons</h2>
           {coupons.length > 0 && (
-            <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+            <Badge className="bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30 hover:bg-[#FFCE32]/20">
               {coupons.length} Available
             </Badge>
           )}
@@ -203,9 +203,9 @@ export function ClientCouponsPage() {
             ))}
           </div>
         ) : coupons.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-emerald-200 bg-emerald-50/30 py-12 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-              <Ticket className="size-8 text-emerald-300" />
+          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#FFCE32]/30 bg-[#FFCE32]/5 py-12 text-center">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
+              <Ticket className="size-8 text-[#7DB0FF]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No Coupons Available</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">
@@ -256,22 +256,22 @@ export function ClientCouponsPage() {
                       <div className="mt-4">
                         {coupon.discountType === 'PERCENTAGE' ? (
                           <div className="flex items-baseline gap-1">
-                            <span className="text-3xl font-bold text-emerald-600">{coupon.discountValue}</span>
-                            <span className="text-lg font-semibold text-emerald-600">% OFF</span>
+                            <span className="text-3xl font-bold text-[#1D63FF]">{coupon.discountValue}</span>
+                            <span className="text-lg font-semibold text-[#1D63FF]">% OFF</span>
                           </div>
                         ) : (
                           <div className="flex items-baseline gap-1">
-                            <IndianRupee className="size-5 text-emerald-600" />
-                            <span className="text-3xl font-bold text-emerald-600">{coupon.discountValue}</span>
-                            <span className="text-lg font-semibold text-emerald-600">OFF</span>
+                            <IndianRupee className="size-5 text-[#1D63FF]" />
+                            <span className="text-3xl font-bold text-[#1D63FF]">{coupon.discountValue}</span>
+                            <span className="text-lg font-semibold text-[#1D63FF]">OFF</span>
                           </div>
                         )}
                       </div>
 
                       {/* Coupon code */}
                       <div className="mt-3 flex items-center gap-2">
-                        <div className="flex-1 rounded-lg border-2 border-dashed border-emerald-300 bg-emerald-50/60 px-3 py-2">
-                          <p className="text-center font-mono text-sm font-bold tracking-wider text-emerald-700">
+                        <div className="flex-1 rounded-lg border-2 border-dashed border-[#FFCE32]/40 bg-[#FFCE32]/5 px-3 py-2">
+                          <p className="text-center font-mono text-sm font-bold tracking-wider text-[#0D3B7A]">
                             {coupon.code}
                           </p>
                         </div>
@@ -280,8 +280,8 @@ export function ClientCouponsPage() {
                           size="icon"
                           className={`shrink-0 rounded-lg size-9 transition-all ${
                             isCopied
-                              ? 'border-emerald-400 bg-emerald-50 text-emerald-600'
-                              : 'hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-600'
+                              ? 'border-[#4D8AFF] bg-[#FFCE32]/10 text-[#1D63FF]'
+                              : 'hover:border-[#FFCE32]/40 hover:bg-[#FFCE32]/5 hover:text-[#1D63FF]'
                           }`}
                           onClick={() => handleCopyCode(coupon.code)}
                         >
@@ -323,13 +323,13 @@ export function ClientCouponsPage() {
                             Expired
                           </Badge>
                         ) : upcoming ? (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-sky-200 bg-sky-50 text-sky-700">
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-[#1D63FF]/30 bg-[#1D63FF]/10 text-[#1D63FF]">
                             <Clock className="size-2.5" />
                             Upcoming
                           </Badge>
                         ) : (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-emerald-200 bg-emerald-50 text-emerald-700">
-                            <span className="size-1.5 rounded-full bg-emerald-400" />
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-[#FFCE32]/30 bg-[#FFCE32]/10 text-[#0D3B7A]">
+                            <span className="size-1.5 rounded-full bg-[#4D8AFF]" />
                             Active
                           </Badge>
                         )}
@@ -340,7 +340,7 @@ export function ClientCouponsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="mt-3 w-full text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                          className="mt-3 w-full text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#FFCE32]/10"
                           onClick={() => handleApplyFromCard(coupon.code)}
                         >
                           <Tag className="mr-1.5 size-3.5" />
@@ -364,9 +364,9 @@ export function ClientCouponsPage() {
         transition={{ delay: 0.2 }}
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 p-5">
+          <div className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg">
                 <Ticket className="size-5 text-white" />
               </div>
               <div>
@@ -397,7 +397,7 @@ export function ClientCouponsPage() {
               <Button
                 onClick={handleValidateCoupon}
                 disabled={!couponCode.trim() || validating}
-                className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 px-6"
+                className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 px-6"
               >
                 {validating ? (
                   <>
@@ -424,45 +424,45 @@ export function ClientCouponsPage() {
                   transition={{ duration: 0.3 }}
                   className="mt-4"
                 >
-                  <div className="rounded-xl border-2 border-emerald-200 bg-emerald-50/50 p-5">
+                  <div className="rounded-xl border-2 border-[#FFCE32]/30 bg-[#FFCE32]/5 p-5">
                     <div className="flex items-start gap-3">
                       <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-emerald-100"
+                        className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#FFCE32]/10"
                       >
-                        <CheckCircle2 className="size-5 text-emerald-600" />
+                        <CheckCircle2 className="size-5 text-[#1D63FF]" />
                       </motion.div>
                       <div className="flex-1">
-                        <h4 className="font-bold text-emerald-800">Coupon Applied Successfully!</h4>
-                        <p className="mt-1 text-sm text-emerald-700">{validationResult.message}</p>
+                        <h4 className="font-bold text-[#0A2463]">Coupon Applied Successfully!</h4>
+                        <p className="mt-1 text-sm text-[#0D3B7A]">{validationResult.message}</p>
 
                         <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-3">
                           <div className="rounded-lg bg-white/60 p-3">
-                            <p className="text-xs text-emerald-600/70">Coupon Code</p>
-                            <p className="mt-0.5 font-mono text-sm font-bold text-emerald-800">
+                            <p className="text-xs text-[#1D63FF]/70">Coupon Code</p>
+                            <p className="mt-0.5 font-mono text-sm font-bold text-[#0A2463]">
                               {validationResult.couponCode}
                             </p>
                           </div>
                           <div className="rounded-lg bg-white/60 p-3">
-                            <p className="text-xs text-emerald-600/70">Discount</p>
-                            <p className="mt-0.5 text-sm font-bold text-emerald-800">
+                            <p className="text-xs text-[#1D63FF]/70">Discount</p>
+                            <p className="mt-0.5 text-sm font-bold text-[#0A2463]">
                               {validationResult.discountType === 'PERCENTAGE'
                                 ? `${validationResult.discountValue}% OFF`
                                 : `₹${validationResult.discountValue} OFF`}
                             </p>
                           </div>
                           <div className="col-span-2 rounded-lg bg-white/60 p-3 sm:col-span-1">
-                            <p className="text-xs text-emerald-600/70">You Save</p>
-                            <p className="mt-0.5 text-lg font-bold text-emerald-800">
+                            <p className="text-xs text-[#1D63FF]/70">You Save</p>
+                            <p className="mt-0.5 text-lg font-bold text-[#0A2463]">
                               ₹{validationResult.discountAmount?.toLocaleString('en-IN')}
                             </p>
                           </div>
                         </div>
 
                         {validationResult.minOrderAmount && validationResult.minOrderAmount > 0 && (
-                          <p className="mt-2 text-xs text-emerald-600/70">
+                          <p className="mt-2 text-xs text-[#1D63FF]/70">
                             * Minimum order amount: ₹{validationResult.minOrderAmount.toLocaleString('en-IN')}
                           </p>
                         )}

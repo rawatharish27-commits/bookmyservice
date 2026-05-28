@@ -45,7 +45,7 @@ function ServiceCard({
 
   return (
     <Card
-      className="group cursor-pointer border border-gray-100 transition-all duration-300 hover:border-[#1e3a5f]/20 hover:shadow-lg hover:shadow-[#1e3a5f]/5"
+      className="group cursor-pointer border border-gray-100 transition-all duration-300 hover:border-[#0D3B7A]/20 hover:shadow-lg hover:shadow-[#0D3B7A]/5"
       onClick={onClick}
     >
       <CardContent className="p-4">
@@ -56,7 +56,7 @@ function ServiceCard({
                 {service.title}
               </h3>
               {isTrending && (service as TrendingService).growthRate > 0 && (
-                <Badge variant="secondary" className="shrink-0 bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0.5">
+                <Badge variant="secondary" className="shrink-0 bg-[#FFCE32]/10 text-[#0D3B7A] text-[10px] px-1.5 py-0.5">
                   <TrendingUp className="mr-0.5 size-3" />
                   +{(service as TrendingService).growthRate.toFixed(0)}%
                 </Badge>
@@ -69,7 +69,7 @@ function ServiceCard({
             )}
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-sm font-bold text-[#1e3a5f]">
+            <p className="text-sm font-bold text-[#0D3B7A]">
               ₹{service.basePrice?.toLocaleString()}
             </p>
           </div>
@@ -93,9 +93,9 @@ function ServiceCard({
         </div>
 
         {showReason && 'reason' in service && service.reason && (
-          <div className="mt-2 flex items-start gap-1.5 rounded-md bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5 px-2.5 py-1.5">
-            <Sparkles className="mt-0.5 size-3 shrink-0 text-[#2d5a8e]" />
-            <p className="text-[11px] leading-relaxed text-[#1e3a5f]/80">
+          <div className="mt-2 flex items-start gap-1.5 rounded-md bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 px-2.5 py-1.5">
+            <Sparkles className="mt-0.5 size-3 shrink-0 text-[#1D63FF]" />
+            <p className="text-[11px] leading-relaxed text-[#0D3B7A]/80">
               {service.reason}
             </p>
           </div>
@@ -115,16 +115,16 @@ function ServiceCard({
 
 function InsightCard({ insight }: { insight: { type: string; title: string; description: string; value?: string | number; trend?: string } }) {
   const iconMap: Record<string, React.ReactNode> = {
-    spending: <Wallet className="size-5 text-emerald-600" />,
-    frequency: <Clock className="size-5 text-blue-600" />,
+    spending: <Wallet className="size-5 text-[#1D63FF]" />,
+    frequency: <Clock className="size-5 text-[#1D63FF]" />,
     timing: <Clock className="size-5 text-violet-600" />,
     category: <Heart className="size-5 text-rose-600" />,
-    savings: <IndianRupee className="size-5 text-teal-600" />,
+    savings: <IndianRupee className="size-5 text-[#1D63FF]" />,
     preference: <Star className="size-5 text-amber-600" />,
   };
 
   const trendIcon = insight.trend === 'up'
-    ? <ArrowUpRight className="size-3 text-emerald-600" />
+    ? <ArrowUpRight className="size-3 text-[#1D63FF]" />
     : insight.trend === 'down'
       ? <ArrowDownRight className="size-3 text-red-500" />
       : <Minus className="size-3 text-yellow-600" />;
@@ -133,8 +133,8 @@ function InsightCard({ insight }: { insight: { type: string; title: string; desc
     <Card className="border border-gray-100 transition-shadow hover:shadow-md">
       <CardContent className="p-4">
         <div className="flex items-start gap-3">
-          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0a1628]/5 to-[#2d5a8e]/5">
-            {iconMap[insight.type] || <Lightbulb className="size-5 text-[#2d5a8e]" />}
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A2463]/5 to-[#1D63FF]/5">
+            {iconMap[insight.type] || <Lightbulb className="size-5 text-[#1D63FF]" />}
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-2">
@@ -145,7 +145,7 @@ function InsightCard({ insight }: { insight: { type: string; title: string; desc
               {insight.description}
             </p>
             {insight.value !== undefined && (
-              <p className="mt-1.5 text-base font-bold text-[#1e3a5f]">
+              <p className="mt-1.5 text-base font-bold text-[#0D3B7A]">
                 {typeof insight.value === 'number' ? `₹${insight.value.toLocaleString()}` : insight.value}
               </p>
             )}
@@ -252,7 +252,7 @@ export function RecommendationsPage() {
             <ChevronLeft className="size-5" />
           </Button>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] shadow-md shadow-[#1e3a5f]/20">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] to-[#1D63FF] shadow-md shadow-[#0D3B7A]/20">
               <Sparkles className="size-5 text-white" />
             </div>
             <div>
@@ -294,7 +294,7 @@ export function RecommendationsPage() {
             {!personalized.loading && personalized.data && personalized.data.length > 0 && (
               <div>
                 <div className="mb-4 flex items-center gap-2">
-                  <Badge variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f]">
+                  <Badge variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A]">
                     <Sparkles className="mr-1 size-3" /> AI-Powered
                   </Badge>
                   <span className="text-sm text-muted-foreground">
@@ -322,7 +322,7 @@ export function RecommendationsPage() {
                   Book some services first to get personalized AI recommendations tailored to your preferences.
                 </p>
                 <Button
-                  className="mt-6 bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] text-white"
+                  className="mt-6 bg-gradient-to-r from-[#0A2463] to-[#1D63FF] text-white"
                   onClick={() => navigate('categories' as Page)}
                 >
                   Browse Services <ArrowRight className="ml-2 size-4" />
@@ -387,38 +387,38 @@ export function RecommendationsPage() {
                 {insights.data.spendingPatterns && (
                   <div className="mb-8">
                     <div className="mb-4 flex items-center gap-2">
-                      <Wallet className="size-4 text-emerald-600" />
+                      <Wallet className="size-4 text-[#1D63FF]" />
                       <h3 className="text-base font-semibold">Spending Patterns</h3>
                     </div>
                     <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-                      <Card className="border-l-4 border-l-emerald-500">
+                      <Card className="border-l-4 border-l-[#1D63FF]">
                         <CardContent className="p-4">
                           <p className="text-xs font-medium text-muted-foreground">Total Spent</p>
-                          <p className="mt-1 text-xl font-bold text-emerald-700">
+                          <p className="mt-1 text-xl font-bold text-[#0D3B7A]">
                             ₹{insights.data.spendingPatterns.totalSpent?.toLocaleString() || 0}
                           </p>
                         </CardContent>
                       </Card>
-                      <Card className="border-l-4 border-l-teal-500">
+                      <Card className="border-l-4 border-l-[#1D63FF]">
                         <CardContent className="p-4">
                           <p className="text-xs font-medium text-muted-foreground">Avg. Booking</p>
-                          <p className="mt-1 text-xl font-bold text-teal-700">
+                          <p className="mt-1 text-xl font-bold text-[#0D3B7A]">
                             ₹{insights.data.spendingPatterns.averageBookingValue?.toLocaleString() || 0}
                           </p>
                         </CardContent>
                       </Card>
-                      <Card className="border-l-4 border-l-cyan-500">
+                      <Card className="border-l-4 border-l-[#FFCE32]">
                         <CardContent className="p-4">
                           <p className="text-xs font-medium text-muted-foreground">Top Category</p>
-                          <p className="mt-1 text-lg font-bold text-cyan-700 truncate">
+                          <p className="mt-1 text-lg font-bold text-[#E6B800] truncate">
                             {insights.data.spendingPatterns.topCategory || 'N/A'}
                           </p>
                         </CardContent>
                       </Card>
-                      <Card className="border-l-4 border-l-sky-500">
+                      <Card className="border-l-4 border-l-[#1D63FF]">
                         <CardContent className="p-4">
                           <p className="text-xs font-medium text-muted-foreground">Monthly Avg.</p>
-                          <p className="mt-1 text-xl font-bold text-sky-700">
+                          <p className="mt-1 text-xl font-bold text-[#1D63FF]">
                             ₹{insights.data.spendingPatterns.monthlyAverage?.toLocaleString() || 0}
                           </p>
                         </CardContent>
@@ -456,7 +456,7 @@ export function RecommendationsPage() {
                       <Card className="border border-gray-100">
                         <CardContent className="p-4">
                           <div className="flex items-center gap-2 mb-2">
-                            <BarChart3 className="size-4 text-blue-600" />
+                            <BarChart3 className="size-4 text-[#1D63FF]" />
                             <p className="text-xs font-medium text-muted-foreground">Booking Frequency</p>
                           </div>
                           <p className="text-sm font-semibold">{insights.data.preferences.bookingFrequency || 'N/A'}</p>
@@ -472,7 +472,7 @@ export function RecommendationsPage() {
                     <div className="mb-4 flex items-center gap-2">
                       <Lightbulb className="size-4 text-amber-600" />
                       <h3 className="text-base font-semibold">AI Insights</h3>
-                      <Badge variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f] text-[10px]">
+                      <Badge variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A] text-[10px]">
                         AI
                       </Badge>
                     </div>

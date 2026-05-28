@@ -193,11 +193,11 @@ function StatusBadge({ status }: { status: ApplicationStatus }) {
     },
     UNDER_REVIEW: {
       label: 'Under Review',
-      className: 'bg-sky-100 text-sky-800 border-sky-200',
+      className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
     },
     APPROVED: {
       label: 'Approved',
-      className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30',
     },
     REJECTED: {
       label: 'Rejected',
@@ -219,7 +219,7 @@ function PositionBadge({ position }: { position: 'area-manager' | 'local-admin' 
       Area Manager
     </Badge>
   ) : (
-    <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200 font-medium">
+    <Badge variant="outline" className="bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30 font-medium">
       <Briefcase className="mr-1 size-3" />
       Local Admin
     </Badge>
@@ -368,7 +368,7 @@ export function AdminJobApplicationsPage() {
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]">
             <Briefcase className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -380,7 +380,7 @@ export function AdminJobApplicationsPage() {
         </div>
         <Button
           variant="outline"
-          className="gap-2 border-[#2d5a8e] text-[#1e3a5f] hover:bg-sky-50"
+          className="gap-2 border-[#1D63FF] text-[#0D3B7A] hover:bg-[#1D63FF]/5"
           onClick={handleRefresh}
         >
           <RefreshCw className="size-4" />
@@ -400,9 +400,9 @@ export function AdminJobApplicationsPage() {
             label: 'Total Applications',
             value: stats?.total ?? 0,
             icon: Users,
-            bgLight: 'bg-sky-50',
-            textColor: 'text-sky-700',
-            borderColor: 'border-l-sky-500',
+            bgLight: 'bg-[#1D63FF]/5',
+            textColor: 'text-[#1D63FF]',
+            borderColor: 'border-l-[#1D63FF]',
           },
           {
             label: 'Area Manager',
@@ -416,9 +416,9 @@ export function AdminJobApplicationsPage() {
             label: 'Local Admin',
             value: stats?.localAdmin.total ?? 0,
             icon: Briefcase,
-            bgLight: 'bg-teal-50',
-            textColor: 'text-teal-700',
-            borderColor: 'border-l-teal-500',
+            bgLight: 'bg-[#FFCE32]/10',
+            textColor: 'text-[#0D3B7A]',
+            borderColor: 'border-l-[#1D63FF]',
           },
           {
             label: 'Pending',
@@ -432,9 +432,9 @@ export function AdminJobApplicationsPage() {
             label: 'Approved',
             value: approvedCount,
             icon: CheckCircle2,
-            bgLight: 'bg-emerald-50',
-            textColor: 'text-emerald-700',
-            borderColor: 'border-l-emerald-500',
+            bgLight: 'bg-[#FFCE32]/10',
+            textColor: 'text-[#0D3B7A]',
+            borderColor: 'border-l-[#1D63FF]',
           },
         ].map((card) => {
           const Icon = card.icon;
@@ -476,7 +476,7 @@ export function AdminJobApplicationsPage() {
         className="mt-8"
       >
         <Card className="overflow-hidden">
-          <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
           <CardContent className="p-0">
             <Tabs
               value={positionFilter}
@@ -571,7 +571,7 @@ export function AdminJobApplicationsPage() {
                             >
                               <TableCell>
                                 <div className="flex items-center gap-3">
-                                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0a1628] to-[#1e3a5f] text-white text-sm font-bold">
+                                  <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] text-white text-sm font-bold">
                                     {app.name?.charAt(0)?.toUpperCase() || '?'}
                                   </div>
                                   <div className="min-w-0">
@@ -615,7 +615,7 @@ export function AdminJobApplicationsPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="size-8 p-0 text-sky-600 hover:bg-sky-50 hover:text-sky-700"
+                                      className="size-8 p-0 text-[#1D63FF] hover:bg-[#1D63FF]/5 hover:text-[#1D63FF]"
                                       title="Mark as Under Review"
                                       disabled={actionLoading === app.id}
                                       onClick={() =>
@@ -630,7 +630,7 @@ export function AdminJobApplicationsPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="size-8 p-0 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                      className="size-8 p-0 text-[#1D63FF] hover:bg-[#FFCE32]/10 hover:text-[#0D3B7A]"
                                       title="Approve"
                                       disabled={actionLoading === app.id}
                                       onClick={() =>
@@ -715,8 +715,8 @@ export function AdminJobApplicationsPage() {
             >
               {/* Drawer header */}
               <div className="relative overflow-hidden">
-                <div className="h-2 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
-                <div className="bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] px-6 pb-6 pt-8 text-white">
+                <div className="h-2 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
+                <div className="bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] px-6 pb-6 pt-8 text-white">
                   <button
                     onClick={() => setDetailApp(null)}
                     className="absolute right-4 top-4 rounded-lg bg-white/10 p-1.5 text-white/80 transition-colors hover:bg-white/20 hover:text-white"
@@ -731,7 +731,7 @@ export function AdminJobApplicationsPage() {
                       <h2 className="truncate text-lg font-bold">
                         {detailApp.name || 'Unknown'}
                       </h2>
-                      <p className="truncate text-sm text-sky-200">{detailApp.email}</p>
+                      <p className="truncate text-sm text-[#FFE066]">{detailApp.email}</p>
                       <div className="mt-2">
                         <StatusBadge status={detailApp.status} />
                       </div>
@@ -805,7 +805,7 @@ export function AdminJobApplicationsPage() {
                 <div className="flex flex-wrap gap-2">
                   {detailApp.status === 'PENDING' && (
                     <Button
-                      className="flex-1 gap-2 bg-sky-600 text-white hover:bg-sky-700"
+                      className="flex-1 gap-2 bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
                       disabled={actionLoading === detailApp.id}
                       onClick={() =>
                         handleStatusUpdate(detailApp.id, 'UNDER_REVIEW')
@@ -817,7 +817,7 @@ export function AdminJobApplicationsPage() {
                   )}
                   {detailApp.status !== 'APPROVED' && (
                     <Button
-                      className="flex-1 gap-2 bg-emerald-600 text-white hover:bg-emerald-700"
+                      className="flex-1 gap-2 bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
                       disabled={actionLoading === detailApp.id}
                       onClick={() =>
                         handleStatusUpdate(detailApp.id, 'APPROVED')

@@ -70,8 +70,8 @@ interface CouponsResponse {
 
 /* ---------- discount type config ---------- */
 const DISCOUNT_TYPE_CONFIG: Record<string, { icon: typeof Percent; gradient: string; label: string }> = {
-  PERCENTAGE: { icon: Percent, gradient: 'from-emerald-400 to-teal-500', label: 'Percentage' },
-  FIXED: { icon: IndianRupee, gradient: 'from-sky-400 to-blue-500', label: 'Fixed Amount' },
+  PERCENTAGE: { icon: Percent, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', label: 'Percentage' },
+  FIXED: { icon: IndianRupee, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', label: 'Fixed Amount' },
 };
 
 /* ---------- animation ---------- */
@@ -173,10 +173,10 @@ export function AdminCouponsPage() {
   };
 
   const STATUS_STYLES: Record<string, { className: string; dotColor: string; icon: typeof CheckCircle2; label: string }> = {
-    ACTIVE: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', icon: CheckCircle2, label: 'Active' },
+    ACTIVE: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]', icon: CheckCircle2, label: 'Active' },
     INACTIVE: { className: 'bg-gray-50 text-gray-600 border-gray-200', dotColor: 'bg-gray-400', icon: XCircle, label: 'Inactive' },
-    EXPIRED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', icon: Clock, label: 'Expired' },
-    UPCOMING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400', icon: Clock, label: 'Upcoming' },
+    EXPIRED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]', icon: Clock, label: 'Expired' },
+    UPCOMING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#4D8AFF]', icon: Clock, label: 'Upcoming' },
   };
 
   return (
@@ -198,11 +198,11 @@ export function AdminCouponsPage() {
               placeholder="Search coupons..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-emerald-400"
+              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#7DB0FF]"
             />
           </div>
           <Button
-            className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+            className="shrink-0 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
             onClick={() => setCreateOpen(true)}
           >
             <Plus className="mr-2 size-4" />
@@ -219,9 +219,9 @@ export function AdminCouponsPage() {
         className="grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {[
-          { label: 'Total Coupons', value: coupons.length, icon: Tag, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
-          { label: 'Active', value: activeCoupons, icon: CheckCircle2, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'Expired', value: expiredCoupons, icon: Clock, gradient: 'from-cyan-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
+          { label: 'Total Coupons', value: coupons.length, icon: Tag, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bgGlow: 'bg-[#4D8AFF]/10' },
+          { label: 'Active', value: activeCoupons, icon: CheckCircle2, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
+          { label: 'Expired', value: expiredCoupons, icon: Clock, gradient: 'from-[#FFE066] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
           { label: 'Total Usage', value: totalUsage, icon: BarChart3, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -257,15 +257,15 @@ export function AdminCouponsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mt-8 flex flex-col items-center py-16 text-center"
           >
-            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-              <Gift className="size-10 text-emerald-300" />
+            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+              <Gift className="size-10 text-[#9DC2FF]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No coupons found</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">
               {searchQuery ? 'Try a different search term' : 'Create your first coupon to attract customers'}
             </p>
             <Button
-              className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+              className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
               onClick={() => setCreateOpen(true)}
             >
               <Plus className="mr-2 size-4" />
@@ -311,11 +311,11 @@ export function AdminCouponsPage() {
                               <p className="text-sm font-bold font-mono tracking-wider">{coupon.code}</p>
                               <button
                                 onClick={() => copyCode(coupon.code)}
-                                className="rounded-md p-1 hover:bg-emerald-50 transition-colors"
+                                className="rounded-md p-1 hover:bg-[#1D63FF]/5 transition-colors"
                                 title="Copy code"
                               >
                                 {copiedCode === coupon.code ? (
-                                  <CheckCircle2 className="size-4 text-emerald-500" />
+                                  <CheckCircle2 className="size-4 text-[#4D8AFF]" />
                                 ) : (
                                   <Copy className="size-4 text-muted-foreground" />
                                 )}
@@ -335,7 +335,7 @@ export function AdminCouponsPage() {
                         <div className="flex items-center gap-4 sm:gap-6 shrink-0">
                           <div className="text-center">
                             <p className="text-xs text-muted-foreground">Discount</p>
-                            <p className="text-lg font-bold text-emerald-600">
+                            <p className="text-lg font-bold text-[#1D63FF]">
                               {coupon.discountType === 'PERCENTAGE'
                                 ? `${coupon.discountValue}%`
                                 : `₹${coupon.discountValue?.toLocaleString('en-IN')}`}
@@ -361,7 +361,7 @@ export function AdminCouponsPage() {
                             <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                               <div
                                 className={`h-full rounded-full transition-all ${
-                                  usagePercent > 80 ? 'bg-red-400' : usagePercent > 50 ? 'bg-cyan-400' : 'bg-emerald-400'
+                                  usagePercent > 80 ? 'bg-red-400' : usagePercent > 50 ? 'bg-[#FFE066]' : 'bg-[#7DB0FF]'
                                 }`}
                                 style={{ width: `${Math.min(usagePercent, 100)}%` }}
                               />
@@ -385,7 +385,7 @@ export function AdminCouponsPage() {
 
                           {/* Actions */}
                           <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-emerald-50">
+                            <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-[#1D63FF]/5">
                               <Settings className="size-4 text-muted-foreground" />
                             </Button>
                             <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-red-50">
@@ -408,7 +408,7 @@ export function AdminCouponsPage() {
         <DialogContent className="rounded-2xl sm:max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Gift className="size-5 text-emerald-600" />
+              <Gift className="size-5 text-[#1D63FF]" />
               Create New Coupon
             </DialogTitle>
             <DialogDescription>
@@ -546,9 +546,9 @@ export function AdminCouponsPage() {
               <motion.div
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4"
+                className="rounded-xl border border-[#1D63FF]/20 bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 p-4"
               >
-                <p className="text-xs font-medium text-emerald-700 mb-2">Coupon Preview</p>
+                <p className="text-xs font-medium text-[#0D3B7A] mb-2">Coupon Preview</p>
                 <div className="flex items-center gap-3">
                   <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${DISCOUNT_TYPE_CONFIG[formDiscountType].gradient} shadow-md`}>
                     {formDiscountType === 'PERCENTAGE' ? (
@@ -559,7 +559,7 @@ export function AdminCouponsPage() {
                   </div>
                   <div>
                     <p className="font-bold font-mono">{formCode}</p>
-                    <p className="text-sm text-emerald-700">
+                    <p className="text-sm text-[#0D3B7A]">
                       {formDiscountType === 'PERCENTAGE'
                         ? `${formDiscountValue}% off`
                         : `₹${formDiscountValue} off`}
@@ -584,7 +584,7 @@ export function AdminCouponsPage() {
             <Button
               onClick={handleCreate}
               disabled={creating || !formCode || !formDiscountValue || !formValidUntil}
-              className="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+              className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
             >
               {creating ? (
                 <Loader2 className="mr-2 size-4 animate-spin" />

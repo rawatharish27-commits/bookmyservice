@@ -63,14 +63,14 @@ interface ReferralEntry {
 /* ---------- status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; icon: typeof Clock; label: string }> = {
   PENDING: {
-    className: 'bg-sky-50 text-sky-700 border-sky-200',
-    dotColor: 'bg-cyan-400',
+    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
+    dotColor: 'bg-[#FFE066]',
     icon: Clock,
     label: 'Pending',
   },
   COMPLETED: {
-    className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    dotColor: 'bg-emerald-400',
+    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
+    dotColor: 'bg-[#7DB0FF]',
     icon: CheckCircle2,
     label: 'Completed',
   },
@@ -168,14 +168,14 @@ export function ClientReferralsPage() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.4 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8 shadow-xl shadow-emerald-500/20"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1D63FF] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8 shadow-xl shadow-[#4D8AFF]/20"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
         <div className="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-white/5 blur-3xl" />
 
         <div className="relative">
-          <div className="flex items-center gap-2 text-emerald-100">
+          <div className="flex items-center gap-2 text-[#1D63FF]/10">
             <Gift className="size-5" />
             <span className="text-sm font-medium">Your Referral Code</span>
           </div>
@@ -204,7 +204,7 @@ export function ClientReferralsPage() {
                     {copiedCode ? <Check className="size-5" /> : <Copy className="size-5" />}
                   </Button>
                 </div>
-                <p className="mt-2 text-sm text-emerald-100/80">
+                <p className="mt-2 text-sm text-[#1D63FF]/10">
                   Share this code with friends — they get ₹50 off, you earn ₹50 cashback!
                 </p>
               </div>
@@ -213,7 +213,7 @@ export function ClientReferralsPage() {
               <div className="hidden sm:flex items-center gap-4">
                 <div className="flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
                   <span className="text-2xl font-bold text-white">{referral.totalReferrals}</span>
-                  <span className="text-xs text-emerald-200">Referrals</span>
+                  <span className="text-xs text-[#1D63FF]/20">Referrals</span>
                 </div>
               </div>
             </div>
@@ -229,9 +229,9 @@ export function ClientReferralsPage() {
         className="mb-8"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 p-5">
+          <div className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg">
                 <Share2 className="size-5 text-white" />
               </div>
               <div>
@@ -257,8 +257,8 @@ export function ClientReferralsPage() {
                 onClick={handleCopyLink}
                 className={`shrink-0 rounded-xl px-4 transition-all ${
                   copiedLink
-                    ? 'border-emerald-400 bg-emerald-50 text-emerald-600'
-                    : 'hover:border-emerald-300 hover:bg-emerald-50 hover:text-emerald-600'
+                    ? 'border-[#7DB0FF] bg-[#1D63FF]/5 text-[#1D63FF]'
+                    : 'hover:border-[#9DC2FF] hover:bg-[#1D63FF]/5 hover:text-[#1D63FF]'
                 }`}
               >
                 {copiedLink ? (
@@ -279,32 +279,32 @@ export function ClientReferralsPage() {
             <div className="mt-4 grid grid-cols-3 gap-3">
               <button
                 onClick={() => handleShare('whatsapp')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-emerald-200 bg-emerald-50/50 p-4 transition-all hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#1D63FF]/20 bg-[#1D63FF]/5 p-4 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-md transition-transform group-hover:scale-110">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-[#1D63FF] shadow-md transition-transform group-hover:scale-110">
                   <MessageSquare className="size-5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-emerald-700">WhatsApp</span>
+                <span className="text-xs font-medium text-[#0D3B7A]">WhatsApp</span>
               </button>
 
               <button
                 onClick={() => handleShare('email')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-teal-200 bg-teal-50/50 p-4 transition-all hover:border-teal-400 hover:bg-teal-50 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#1D63FF]/20 bg-[#1D63FF]/5 p-4 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-600 shadow-md transition-transform group-hover:scale-110">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#FFCE32] shadow-md transition-transform group-hover:scale-110">
                   <Mail className="size-5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-teal-700">Email</span>
+                <span className="text-xs font-medium text-[#0D3B7A]">Email</span>
               </button>
 
               <button
                 onClick={() => handleShare('sms')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-cyan-200 bg-cyan-50/50 p-4 transition-all hover:border-cyan-400 hover:bg-cyan-50 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#FFCE32]/20 bg-[#FFCE32]/5 p-4 transition-all hover:border-[#FFE066] hover:bg-[#FFCE32]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 shadow-md transition-transform group-hover:scale-110">
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFCE32] to-[#1D63FF] shadow-md transition-transform group-hover:scale-110">
                   <Send className="size-5 text-white" />
                 </div>
-                <span className="text-xs font-medium text-cyan-700">SMS</span>
+                <span className="text-xs font-medium text-[#E6B800]">SMS</span>
               </button>
             </div>
           </CardContent>
@@ -327,10 +327,10 @@ export function ClientReferralsPage() {
                   {referralLoading ? (
                     <Skeleton className="mt-1 h-8 w-16" />
                   ) : (
-                    <p className="mt-1 text-3xl font-bold text-emerald-600">{referral.totalReferrals}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#1D63FF]">{referral.totalReferrals}</p>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-lg">
                   <Users className="size-6 text-white" />
                 </div>
               </div>
@@ -349,14 +349,14 @@ export function ClientReferralsPage() {
                     <Skeleton className="mt-1 h-8 w-24" />
                   ) : (
                     <div className="mt-1 flex items-baseline gap-1">
-                      <IndianRupee className="size-5 text-emerald-600" />
-                      <span className="text-3xl font-bold text-emerald-600">
+                      <IndianRupee className="size-5 text-[#1D63FF]" />
+                      <span className="text-3xl font-bold text-[#1D63FF]">
                         {referral.totalEarned?.toLocaleString('en-IN') || '0'}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] shadow-lg">
                   <Trophy className="size-6 text-white" />
                 </div>
               </div>
@@ -375,14 +375,14 @@ export function ClientReferralsPage() {
                     <Skeleton className="mt-1 h-8 w-20" />
                   ) : (
                     <div className="mt-1 flex items-baseline gap-1">
-                      <IndianRupee className="size-5 text-sky-600" />
-                      <span className="text-3xl font-bold text-sky-600">
+                      <IndianRupee className="size-5 text-[#1D63FF]" />
+                      <span className="text-3xl font-bold text-[#1D63FF]">
                         {referral.pendingRewards?.toLocaleString('en-IN') || '0'}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-yellow-500 shadow-lg">
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFE066] to-yellow-500 shadow-lg">
                   <Star className="size-6 text-white" />
                 </div>
               </div>
@@ -400,16 +400,16 @@ export function ClientReferralsPage() {
         className="mb-8"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 p-5">
+          <div className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 p-5">
             <div className="flex items-center gap-2">
-              <Sparkles className="size-5 text-emerald-600" />
+              <Sparkles className="size-5 text-[#1D63FF]" />
               <h2 className="text-lg font-semibold">How It Works</h2>
             </div>
           </div>
           <CardContent className="p-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
                   1
                 </div>
                 <div>
@@ -418,7 +418,7 @@ export function ClientReferralsPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
                   2
                 </div>
                 <div>
@@ -427,7 +427,7 @@ export function ClientReferralsPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
                   3
                 </div>
                 <div>
@@ -447,11 +447,11 @@ export function ClientReferralsPage() {
         transition={{ delay: 0.2 }}
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Referral History</CardTitle>
               {referralHistory.length > 0 && (
-                <Badge className="bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100">
+                <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
                   {referralHistory.length} Referrals
                 </Badge>
               )}
@@ -473,15 +473,15 @@ export function ClientReferralsPage() {
               </div>
             ) : referralHistory.length === 0 ? (
               <div className="py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                  <UserPlus className="size-8 text-emerald-300" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
+                  <UserPlus className="size-8 text-[#9DC2FF]" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No Referrals Yet</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">
                   Start sharing your referral code to earn rewards!
                 </p>
                 <Button
-                  className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                  className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
                   size="sm"
                   onClick={handleCopyCode}
                 >
@@ -508,8 +508,8 @@ export function ClientReferralsPage() {
                           {/* Avatar */}
                           <div className={`flex size-11 shrink-0 items-center justify-center rounded-full font-semibold text-white shadow-md ${
                             isCompleted
-                              ? 'bg-gradient-to-br from-emerald-400 to-teal-500'
-                              : 'bg-gradient-to-br from-cyan-400 to-blue-500'
+                              ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]'
+                              : 'bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]'
                           }`}>
                             {getInitials(entry.referredName)}
                           </div>
@@ -529,7 +529,7 @@ export function ClientReferralsPage() {
 
                           {/* Reward & status */}
                           <div className="shrink-0 text-right">
-                            <p className={`text-sm font-bold ${isCompleted ? 'text-emerald-600' : 'text-sky-600'}`}>
+                            <p className={`text-sm font-bold ${isCompleted ? 'text-[#1D63FF]' : 'text-[#1D63FF]'}`}>
                               {isCompleted ? '+' : ''}₹{entry.rewardEarned?.toLocaleString('en-IN')}
                             </p>
                             <Badge variant="outline" className={`mt-0.5 gap-1 text-[10px] font-semibold ${statusConf.className}`}>
@@ -549,7 +549,7 @@ export function ClientReferralsPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowAllHistory(!showAllHistory)}
-                      className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                      className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5"
                     >
                       {showAllHistory ? (
                         <>

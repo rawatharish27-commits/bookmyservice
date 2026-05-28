@@ -76,13 +76,13 @@ export function AdminProfilePage() {
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.4 }}
         >
-          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] text-white shadow-lg">
+          <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A2463] to-[#1D63FF] text-white shadow-lg">
             <Shield className="size-8" />
           </div>
-          <h2 className="text-2xl font-bold text-[#0a1628]">Access Restricted</h2>
+          <h2 className="text-2xl font-bold text-[#0A2463]">Access Restricted</h2>
           <p className="mt-2 text-muted-foreground">Please log in to view the admin profile</p>
           <Button
-            className="mt-6 rounded-xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25"
+            className="mt-6 rounded-xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25"
             onClick={() => navigate('login')}
           >
             Log In
@@ -147,7 +147,7 @@ export function AdminProfilePage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] p-10 sm:p-14"
+        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-10 sm:p-14"
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -169,7 +169,7 @@ export function AdminProfilePage() {
             className="mb-4 sm:mb-0 sm:mr-6"
           >
             <div className="rounded-full bg-white/15 p-[3px] backdrop-blur-sm">
-              <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#0a1628] to-[#1e3a5f] ring-2 ring-white/20 sm:size-24">
+              <div className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] ring-2 ring-white/20 sm:size-24">
                 {user.profileImageUrl ? (
                   <img
                     src={user.profileImageUrl}
@@ -192,14 +192,14 @@ export function AdminProfilePage() {
             >
               <div className="mb-2 flex items-center justify-center gap-2 sm:justify-start">
                 <div className="flex size-7 items-center justify-center rounded-lg bg-white/15">
-                  <Shield className="size-4 text-sky-300" />
+                  <Shield className="size-4 text-[#7DB0FF]" />
                 </div>
-                <span className="rounded-full bg-white/15 px-3 py-0.5 text-xs font-medium uppercase tracking-wider text-sky-200 backdrop-blur-sm">
+                <span className="rounded-full bg-white/15 px-3 py-0.5 text-xs font-medium uppercase tracking-wider text-[#7DB0FF] backdrop-blur-sm">
                   {user.role}
                 </span>
               </div>
               <h1 className="text-3xl font-bold text-white sm:text-4xl">{user.name}</h1>
-              <p className="mt-1 text-sky-100">{user.email}</p>
+              <p className="mt-1 text-[#4D8AFF]">{user.email}</p>
             </motion.div>
           </div>
         </div>
@@ -215,11 +215,11 @@ export function AdminProfilePage() {
           className="lg:col-span-2"
         >
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#1e3a5f] text-white shadow-md">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] text-white shadow-md">
                     <User className="size-4" />
                   </div>
                   Profile Details
@@ -232,16 +232,16 @@ export function AdminProfilePage() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 + index * 0.08, duration: 0.3 }}
-                    className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-sky-50/60"
+                    className="group flex items-center gap-3 rounded-xl p-3 transition-colors hover:bg-[#1D63FF]/5"
                   >
-                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-50 to-sky-100 text-[#2d5a8e] group-hover:from-[#2d5a8e]/10 group-hover:to-[#1e3a5f]/10">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#1D63FF]/5 to-[#1D63FF]/10 text-[#1D63FF] group-hover:from-[#1D63FF]/10 group-hover:to-[#0D3B7A]/10">
                       <item.icon className="size-4" />
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                         {item.label}
                       </p>
-                      <p className="truncate text-sm font-semibold text-[#0a1628]">
+                      <p className="truncate text-sm font-semibold text-[#0A2463]">
                         {item.value}
                       </p>
                     </div>
@@ -260,7 +260,7 @@ export function AdminProfilePage() {
                   <div
                     className={`flex size-9 shrink-0 items-center justify-center rounded-lg ${
                       user.status === 'ACTIVE'
-                        ? 'bg-emerald-50 text-emerald-600'
+                        ? 'bg-[#1D63FF]/10 text-[#1D63FF]'
                         : 'bg-amber-50 text-amber-600'
                     }`}
                   >
@@ -270,11 +270,11 @@ export function AdminProfilePage() {
                     <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
                       Account Status
                     </p>
-                    <p className="text-sm font-semibold text-[#0a1628]">{user.status}</p>
+                    <p className="text-sm font-semibold text-[#0A2463]">{user.status}</p>
                   </div>
                   <span
                     className={`size-2.5 rounded-full ${
-                      user.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-amber-400'
+                      user.status === 'ACTIVE' ? 'bg-[#7DB0FF]' : 'bg-amber-400'
                     }`}
                   />
                 </motion.div>
@@ -291,11 +291,11 @@ export function AdminProfilePage() {
           className="lg:col-span-3"
         >
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
             <Card className="border-0 shadow-none">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white shadow-md">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-md">
                     <Lock className="size-4" />
                   </div>
                   Change Password
@@ -315,7 +315,7 @@ export function AdminProfilePage() {
                         initial={{ opacity: 0, scale: 0.95, y: -5 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -5 }}
-                        className="flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700"
+                        className="flex items-center gap-2 rounded-xl border border-[#1D63FF]/30 bg-[#1D63FF]/10 px-4 py-3 text-sm text-[#0D3B7A]"
                       >
                         <CheckCircle2 className="size-4 shrink-0" />
                         Password changed successfully!
@@ -355,12 +355,12 @@ export function AdminProfilePage() {
                           if (passwordError) setPasswordError(null);
                         }}
                         autoComplete="current-password"
-                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                       />
                       <button
                         type="button"
                         onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#2d5a8e]"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#1D63FF]"
                         tabIndex={-1}
                         aria-label={showCurrentPassword ? 'Hide current password' : 'Show current password'}
                       >
@@ -386,12 +386,12 @@ export function AdminProfilePage() {
                           if (passwordError) setPasswordError(null);
                         }}
                         autoComplete="new-password"
-                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                       />
                       <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#2d5a8e]"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#1D63FF]"
                         tabIndex={-1}
                         aria-label={showNewPassword ? 'Hide new password' : 'Show new password'}
                       >
@@ -416,8 +416,8 @@ export function AdminProfilePage() {
                                     : level <= 2
                                     ? 'bg-amber-400'
                                     : level <= 3
-                                    ? 'bg-sky-400'
-                                    : 'bg-emerald-400'
+                                    ? 'bg-[#7DB0FF]'
+                                    : 'bg-[#7DB0FF]'
                                   : 'bg-gray-200'
                               }`}
                             />
@@ -453,12 +453,12 @@ export function AdminProfilePage() {
                           if (passwordError) setPasswordError(null);
                         }}
                         autoComplete="new-password"
-                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 pr-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                       />
                       <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#2d5a8e]"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-[#1D63FF]"
                         tabIndex={-1}
                         aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                       >
@@ -474,8 +474,8 @@ export function AdminProfilePage() {
                       >
                         {newPassword === confirmPassword ? (
                           <>
-                            <CheckCircle2 className="size-3.5 text-emerald-500" />
-                            <span className="text-xs font-medium text-emerald-600">Passwords match</span>
+                            <CheckCircle2 className="size-3.5 text-[#4D8AFF]" />
+                            <span className="text-xs font-medium text-[#1D63FF]">Passwords match</span>
                           </>
                         ) : (
                           <>
@@ -493,7 +493,7 @@ export function AdminProfilePage() {
                   <Button
                     type="submit"
                     disabled={loading}
-                    className="h-12 w-full rounded-xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-base font-medium text-white shadow-lg shadow-[#1e3a5f]/25 hover:from-[#0a1628] hover:via-[#1e3a5f] hover:to-[#2d5a8e] disabled:opacity-60"
+                    className="h-12 w-full rounded-xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] text-base font-medium text-white shadow-lg shadow-[#0D3B7A]/25 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] disabled:opacity-60"
                   >
                     {loading ? (
                       <span className="flex items-center gap-2">
@@ -525,8 +525,8 @@ export function AdminProfilePage() {
           >
             <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
               <div className="bg-white p-6">
-                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#0a1628]">
-                  <Shield className="size-4 text-[#2d5a8e]" />
+                <h3 className="mb-4 flex items-center gap-2 text-sm font-bold text-[#0A2463]">
+                  <Shield className="size-4 text-[#1D63FF]" />
                   Security Best Practices
                 </h3>
                 <ul className="space-y-3">
@@ -537,7 +537,7 @@ export function AdminProfilePage() {
                     'Change your password periodically for better security',
                   ].map((tip) => (
                     <li key={tip} className="flex items-start gap-2">
-                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#2d5a8e]" />
+                      <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#1D63FF]" />
                       <span className="text-sm text-muted-foreground">{tip}</span>
                     </li>
                   ))}

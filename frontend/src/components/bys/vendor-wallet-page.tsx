@@ -66,10 +66,10 @@ interface Transaction {
 }
 
 const CATEGORY_CONFIG: Record<string, { icon: typeof Wallet; gradient: string; label: string }> = {
-  TOP_UP: { icon: Plus, gradient: 'from-emerald-400 to-teal-500', label: 'Top Up' },
-  BOOKING: { icon: CreditCard, gradient: 'from-sky-400 to-blue-500', label: 'Booking' },
-  EARNING: { icon: TrendingUp, gradient: 'from-emerald-400 to-green-500', label: 'Earning' },
-  CASHBACK: { icon: Gift, gradient: 'from-cyan-400 to-blue-500', label: 'Cashback' },
+  TOP_UP: { icon: Plus, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', label: 'Top Up' },
+  BOOKING: { icon: CreditCard, gradient: 'from-[#4D8AFF] to-[#1D63FF]', label: 'Booking' },
+  EARNING: { icon: TrendingUp, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', label: 'Earning' },
+  CASHBACK: { icon: Gift, gradient: 'from-[#FFCE32] to-[#1D63FF]', label: 'Cashback' },
   REFUND: { icon: ArrowDownLeft, gradient: 'from-violet-400 to-purple-500', label: 'Refund' },
   WITHDRAWAL: { icon: Banknote, gradient: 'from-rose-400 to-pink-500', label: 'Withdrawal' },
   PAYOUT: { icon: Banknote, gradient: 'from-amber-400 to-orange-500', label: 'Payout' },
@@ -224,7 +224,7 @@ export function VendorWalletPage() {
         </button>
         <button
           onClick={() => navigate('vendor-payouts')}
-          className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 p-5 text-white shadow-lg shadow-sky-500/25 transition-shadow hover:shadow-xl"
+          className="group flex w-full flex-col items-center gap-3 rounded-2xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] p-5 text-white shadow-lg shadow-[#1D63FF]/25 transition-shadow hover:shadow-xl"
         >
           <History className="size-6" />
           <span className="text-sm font-semibold">Payouts</span>
@@ -302,7 +302,7 @@ export function VendorWalletPage() {
                             <div className="flex items-center gap-2">
                               <p className="truncate text-sm font-semibold">{tx.description || catConfig.label}</p>
                               <Badge variant="outline" className={`shrink-0 gap-1 text-[10px] font-semibold ${
-                                isCredit ? 'border-emerald-200 bg-emerald-50 text-emerald-700' : 'border-rose-200 bg-rose-50 text-rose-700'
+                                isCredit ? 'border-[#FFCE32]/30 bg-[#FFCE32]/10 text-[#0D3B7A]' : 'border-rose-200 bg-rose-50 text-rose-700'
                               }`}>
                                 {isCredit ? <ArrowDownLeft className="size-2.5" /> : <ArrowUpRight className="size-2.5" />}
                                 {tx.type}
@@ -316,7 +316,7 @@ export function VendorWalletPage() {
                             </div>
                           </div>
                           <div className="shrink-0 text-right">
-                            <p className={`text-sm font-bold ${isCredit ? 'text-emerald-600' : 'text-rose-600'}`}>
+                            <p className={`text-sm font-bold ${isCredit ? 'text-[#1D63FF]' : 'text-rose-600'}`}>
                               {isCredit ? '+' : '-'}₹{tx.amount?.toLocaleString('en-IN')}
                             </p>
                             {tx.status && <p className="mt-0.5 text-[10px] text-muted-foreground">{tx.status}</p>}
@@ -349,8 +349,8 @@ export function VendorWalletPage() {
                 <DialogDescription>Your withdrawal request has been submitted</DialogDescription>
               </DialogHeader>
               <div className="flex flex-col items-center py-8 text-center">
-                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="flex size-20 items-center justify-center rounded-full bg-emerald-100">
-                  <CheckCircle2 className="size-10 text-emerald-600" />
+                <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', stiffness: 200, damping: 15 }} className="flex size-20 items-center justify-center rounded-full bg-[#FFCE32]/10">
+                  <CheckCircle2 className="size-10 text-[#1D63FF]" />
                 </motion.div>
                 <h3 className="mt-4 text-lg font-bold">Withdrawal Requested!</h3>
                 <p className="mt-2 text-sm text-muted-foreground">

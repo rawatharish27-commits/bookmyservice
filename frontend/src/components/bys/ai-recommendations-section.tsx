@@ -33,7 +33,7 @@ function RecommendationCard({
 
   return (
     <Card
-      className="group cursor-pointer border border-gray-100 transition-all duration-300 hover:border-[#1e3a5f]/20 hover:shadow-lg hover:shadow-[#1e3a5f]/5"
+      className="group cursor-pointer border border-gray-100 transition-all duration-300 hover:border-[#0D3B7A]/20 hover:shadow-lg hover:shadow-[#0D3B7A]/5"
       onClick={onClick}
     >
       <CardContent className="p-4">
@@ -44,7 +44,7 @@ function RecommendationCard({
                 {service.title}
               </h3>
               {isTrending && (service as TrendingService).growthRate > 0 && (
-                <Badge variant="secondary" className="shrink-0 bg-emerald-50 text-emerald-700 text-[10px] px-1.5 py-0.5">
+                <Badge variant="secondary" className="shrink-0 bg-[#FFCE32]/10 text-[#0D3B7A] text-[10px] px-1.5 py-0.5">
                   <TrendingUp className="mr-0.5 size-3" />
                   +{(service as TrendingService).growthRate.toFixed(0)}%
                 </Badge>
@@ -57,7 +57,7 @@ function RecommendationCard({
             )}
           </div>
           <div className="shrink-0 text-right">
-            <p className="text-sm font-bold text-[#1e3a5f]">
+            <p className="text-sm font-bold text-[#0D3B7A]">
               ₹{service.basePrice?.toLocaleString()}
             </p>
           </div>
@@ -81,9 +81,9 @@ function RecommendationCard({
         </div>
 
         {'reason' in service && service.reason && (
-          <div className="mt-2 flex items-start gap-1.5 rounded-md bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5 px-2.5 py-1.5">
-            <Sparkles className="mt-0.5 size-3 shrink-0 text-[#2d5a8e]" />
-            <p className="text-[11px] leading-relaxed text-[#1e3a5f]/80">
+          <div className="mt-2 flex items-start gap-1.5 rounded-md bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 px-2.5 py-1.5">
+            <Sparkles className="mt-0.5 size-3 shrink-0 text-[#1D63FF]" />
+            <p className="text-[11px] leading-relaxed text-[#0D3B7A]/80">
               {service.reason}
             </p>
           </div>
@@ -167,7 +167,7 @@ export function AiRecommendationsSection() {
           className="mb-8 flex items-center justify-between"
         >
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#2d5a8e] shadow-md shadow-[#1e3a5f]/20">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] to-[#1D63FF] shadow-md shadow-[#0D3B7A]/20">
               <Sparkles className="size-5 text-white" />
             </div>
             <div>
@@ -183,7 +183,7 @@ export function AiRecommendationsSection() {
           </div>
           <Button
             variant="ghost"
-            className="hidden items-center gap-1 text-sm font-medium text-[#1e3a5f] sm:flex"
+            className="hidden items-center gap-1 text-sm font-medium text-[#0D3B7A] sm:flex"
             onClick={() => navigate('recommendations' as Page)}
           >
             See All <ChevronRight className="size-4" />
@@ -196,7 +196,7 @@ export function AiRecommendationsSection() {
             <div className="mb-4 flex items-center gap-2">
               <Crown className="size-4 text-amber-500" />
               <h3 className="text-base font-semibold text-foreground">Recommended for You</h3>
-              <Badge variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f] text-[10px]">
+              <Badge variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A] text-[10px]">
                 AI
               </Badge>
             </div>
@@ -218,7 +218,7 @@ export function AiRecommendationsSection() {
             <div className="mb-4 flex items-center gap-2">
               <Crown className="size-4 text-amber-500" />
               <h3 className="text-base font-semibold text-foreground">Recommended for You</h3>
-              <Badge variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f] text-[10px]">
+              <Badge variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A] text-[10px]">
                 AI
               </Badge>
             </div>

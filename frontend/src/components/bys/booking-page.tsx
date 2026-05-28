@@ -450,7 +450,7 @@ export function BookingPage() {
             <p className="mt-2 text-sm text-muted-foreground">Please log in to book a service</p>
             <div className="mt-6 flex justify-center gap-3">
               <Button variant="outline" onClick={goBack} className="rounded-xl">Go Back</Button>
-              <Button className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg rounded-xl" onClick={() => navigate('login')}>
+              <Button className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg rounded-xl" onClick={() => navigate('login')}>
                 Log In
               </Button>
             </div>
@@ -508,7 +508,7 @@ export function BookingPage() {
 
       {/* ---- Progress Bar ---- */}
       <div className="mb-6">
-        <Progress value={progressPercent} className="h-2 rounded-full bg-slate-200 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-[#1e3a5f] [&>[data-slot=progress-indicator]]:to-[#2d5a8e]" />
+        <Progress value={progressPercent} className="h-2 rounded-full bg-slate-200 [&>[data-slot=progress-indicator]]:bg-gradient-to-r [&>[data-slot=progress-indicator]]:from-[#0D3B7A] [&>[data-slot=progress-indicator]]:to-[#1D63FF]" />
         <div className="mt-3 flex items-center justify-between">
           {STEPS.map((s, i) => {
             const isCompleted = step > s.number;
@@ -521,15 +521,15 @@ export function BookingPage() {
                     animate={{ scale: isCurrent ? 1.1 : 1 }}
                     className={`flex size-9 items-center justify-center rounded-xl border-2 text-xs font-medium transition-all sm:size-10 ${
                       isCompleted
-                        ? 'border-[#1e3a5f] bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg'
+                        ? 'border-[#0D3B7A] bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg'
                         : isCurrent
-                        ? 'border-[#2d5a8e] bg-[#1e3a5f]/10 text-[#1e3a5f] ring-2 ring-[#2d5a8e]/30'
+                        ? 'border-[#1D63FF] bg-[#0D3B7A]/10 text-[#0D3B7A] ring-2 ring-[#1D63FF]/30'
                         : 'border-slate-200 bg-white text-slate-400'
                     }`}
                   >
                     {isCompleted ? <Check className="size-4" /> : <Icon className="size-4" />}
                   </motion.div>
-                  <span className={`mt-1.5 hidden text-[10px] font-medium sm:block ${isCurrent ? 'text-[#1e3a5f]' : isCompleted ? 'text-[#2d5a8e]' : 'text-slate-400'}`}>
+                  <span className={`mt-1.5 hidden text-[10px] font-medium sm:block ${isCurrent ? 'text-[#0D3B7A]' : isCompleted ? 'text-[#1D63FF]' : 'text-slate-400'}`}>
                     {s.label}
                   </span>
                 </div>
@@ -540,7 +540,7 @@ export function BookingPage() {
                         initial={{ width: '0%' }}
                         animate={{ width: step > s.number ? '100%' : '0%' }}
                         transition={{ duration: 0.3 }}
-                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e]"
+                        className="absolute inset-y-0 left-0 rounded-full bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF]"
                       />
                     </div>
                   </div>
@@ -564,10 +564,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <Briefcase className="size-4 text-white" />
                   </div>
                   Service Details
@@ -575,9 +575,9 @@ export function BookingPage() {
               </CardHeader>
               <CardContent className="space-y-5">
                 {/* Service card */}
-                <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5">
+                <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5">
                   <div className="flex items-center gap-4 p-4">
-                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-lg">
+                    <div className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-lg">
                       <Briefcase className="size-7 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -597,7 +597,7 @@ export function BookingPage() {
                   </div>
                   <div className="rounded-xl border border-slate-100 bg-white p-3">
                     <p className="text-xs text-muted-foreground">Base Price</p>
-                    <p className="mt-0.5 text-lg font-bold text-[#1e3a5f]">₹{basePrice.toLocaleString()}</p>
+                    <p className="mt-0.5 text-lg font-bold text-[#0D3B7A]">₹{basePrice.toLocaleString()}</p>
                   </div>
                   <div className="rounded-xl border border-slate-100 bg-white p-3">
                     <p className="text-xs text-muted-foreground">Provider</p>
@@ -618,17 +618,17 @@ export function BookingPage() {
                 )}
 
                 {service.priceNegotiable && (
-                  <Badge className="bg-sky-100 text-sky-700 border-sky-200">Price Negotiable</Badge>
+                  <Badge className="bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/20">Price Negotiable</Badge>
                 )}
 
-                <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
-                  <Shield className="size-4 text-[#1e3a5f]" />
-                  <span className="text-xs font-medium text-[#1e3a5f]">Secure booking with {COMPANY_INFO.name} protection</span>
+                <div className="flex items-center gap-2 rounded-xl bg-[#0D3B7A]/5 p-3">
+                  <Shield className="size-4 text-[#0D3B7A]" />
+                  <span className="text-xs font-medium text-[#0D3B7A]">Secure booking with {COMPANY_INFO.name} protection</span>
                 </div>
               </CardContent>
               <CardFooter className="justify-end p-4">
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl"
                   onClick={goNext}
                 >
                   Next <ArrowRight className="ml-2 size-4" />
@@ -649,10 +649,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <MapPin className="size-4 text-white" />
                   </div>
                   Service Address
@@ -663,11 +663,11 @@ export function BookingPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {geoLoading ? (
-                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-blue-50 text-blue-700 border border-blue-200">
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-[#1D63FF]/10 text-[#1D63FF] border border-[#1D63FF]/20">
                         <Loader2 className="size-3 animate-spin" /> Detecting location...
                       </Badge>
                     ) : detectedCity && !geoError ? (
-                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-[#FFCE32]/10 text-[#0D3B7A] border border-[#FFCE32]/30">
                         <Navigation className="size-3" /> Location Detected
                       </Badge>
                     ) : (
@@ -679,7 +679,7 @@ export function BookingPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-[#1e3a5f]"
+                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-[#0D3B7A]"
                     onClick={refreshLocation}
                     disabled={geoLoading}
                   >
@@ -740,7 +740,7 @@ export function BookingPage() {
                 {/* Use current location button */}
                 <Button
                   variant="outline"
-                  className="w-full rounded-xl gap-2 border-dashed border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                  className="w-full rounded-xl gap-2 border-dashed border-[#0D3B7A]/30 text-[#0D3B7A] hover:bg-[#0D3B7A]/5"
                   onClick={refreshLocation}
                   disabled={geoLoading}
                 >
@@ -753,7 +753,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl"
                   onClick={goNext}
                 >
                   Next <ArrowRight className="ml-2 size-4" />
@@ -774,10 +774,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <CalendarDays className="size-4 text-white" />
                   </div>
                   Select Date & Time
@@ -793,7 +793,7 @@ export function BookingPage() {
                 {/* Available days badges */}
                 <div className="flex flex-wrap gap-2">
                   {Array.from(availableDayIndices).sort().map((d) => (
-                    <Badge key={d} variant="secondary" className="bg-[#1e3a5f]/10 text-[#1e3a5f] rounded-lg">
+                    <Badge key={d} variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A] rounded-lg">
                       {DAY_NAMES[d]}
                     </Badge>
                   ))}
@@ -825,11 +825,11 @@ export function BookingPage() {
                           onClick={() => { setSelectedTime(time); setDateError(''); }}
                           className={`rounded-xl border-2 p-3 text-center text-sm font-medium transition-all ${
                             selectedTime === time
-                              ? 'border-[#1e3a5f] bg-gradient-to-br from-[#0a1628]/10 to-[#2d5a8e]/10 text-[#1e3a5f] shadow-md shadow-[#1e3a5f]/10'
-                              : 'border-slate-100 bg-white text-slate-600 hover:border-[#2d5a8e]/40 hover:bg-[#2d5a8e]/5'
+                              ? 'border-[#0D3B7A] bg-gradient-to-br from-[#0A2463]/10 to-[#1D63FF]/10 text-[#0D3B7A] shadow-md shadow-[#0D3B7A]/10'
+                              : 'border-slate-100 bg-white text-slate-600 hover:border-[#1D63FF]/40 hover:bg-[#1D63FF]/5'
                           }`}
                         >
-                          <Clock className={`mx-auto mb-1 size-3.5 ${selectedTime === time ? 'text-[#1e3a5f]' : 'opacity-50'}`} />
+                          <Clock className={`mx-auto mb-1 size-3.5 ${selectedTime === time ? 'text-[#0D3B7A]' : 'opacity-50'}`} />
                           {formatTime(time)}
                         </motion.button>
                       ))}
@@ -849,7 +849,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl"
                   onClick={goNext}
                 >
                   Next <ArrowRight className="ml-2 size-4" />
@@ -870,10 +870,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <Search className="size-4 text-white" />
                   </div>
                   Nearby Provider Match
@@ -882,7 +882,7 @@ export function BookingPage() {
               <CardContent className="space-y-4">
                 {providersLoading ? (
                   <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
+                    <Loader2 className="size-8 animate-spin text-[#0D3B7A]" />
                     <p className="mt-3 text-sm text-muted-foreground">Searching nearby providers...</p>
                   </div>
                 ) : providersError ? (
@@ -899,9 +899,9 @@ export function BookingPage() {
                 ) : (
                   <>
                     {/* Best match auto-selected badge */}
-                    <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
-                      <Award className="size-4 text-[#1e3a5f]" />
-                      <span className="text-xs font-medium text-[#1e3a5f]">Best match auto-selected based on rating & proximity</span>
+                    <div className="flex items-center gap-2 rounded-xl bg-[#0D3B7A]/5 p-3">
+                      <Award className="size-4 text-[#0D3B7A]" />
+                      <span className="text-xs font-medium text-[#0D3B7A]">Best match auto-selected based on rating & proximity</span>
                     </div>
 
                     {/* Provider list */}
@@ -915,12 +915,12 @@ export function BookingPage() {
                             whileHover={{ scale: 1.01 }}
                             className={`flex cursor-pointer items-center gap-4 rounded-xl border-2 p-4 transition-all ${
                               selectedProviderId === provider.id
-                                ? 'border-[#1e3a5f] bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5 shadow-sm'
+                                ? 'border-[#0D3B7A] bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 shadow-sm'
                                 : 'border-slate-100 bg-white hover:border-slate-200'
                             }`}
                           >
                             <RadioGroupItem value={provider.id} id={`provider-${provider.id}`} />
-                            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                               {provider.profileImageUrl ? (
                                 <img src={provider.profileImageUrl} alt={provider.name} className="size-11 rounded-full object-cover" />
                               ) : (
@@ -939,7 +939,7 @@ export function BookingPage() {
                               </div>
                             </div>
                             <div className="text-right">
-                              <p className="text-sm font-bold text-[#1e3a5f]">₹{provider.price.toLocaleString()}</p>
+                              <p className="text-sm font-bold text-[#0D3B7A]">₹{provider.price.toLocaleString()}</p>
                               <p className="text-xs text-muted-foreground">{provider.distance} km</p>
                             </div>
                           </motion.label>
@@ -950,7 +950,7 @@ export function BookingPage() {
                     {providers.length > 2 && (
                       <Button
                         variant="ghost"
-                        className="w-full gap-1 text-sm text-[#2d5a8e]"
+                        className="w-full gap-1 text-sm text-[#1D63FF]"
                         onClick={() => setShowAllProviders(!showAllProviders)}
                       >
                         {showAllProviders ? (
@@ -968,7 +968,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl"
                   disabled={!selectedProviderId}
                   onClick={goNext}
                 >
@@ -990,10 +990,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <Wrench className="size-4 text-white" />
                   </div>
                   Technician Assignment
@@ -1002,7 +1002,7 @@ export function BookingPage() {
               <CardContent className="space-y-5">
                 {technicianLoading ? (
                   <div className="flex flex-col items-center justify-center py-12">
-                    <Loader2 className="size-8 animate-spin text-[#1e3a5f]" />
+                    <Loader2 className="size-8 animate-spin text-[#0D3B7A]" />
                     <p className="mt-3 text-sm text-muted-foreground">Assigning best technician...</p>
                   </div>
                 ) : technicianError ? (
@@ -1014,9 +1014,9 @@ export function BookingPage() {
                 ) : technician ? (
                   <>
                     {/* Technician card */}
-                    <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5">
+                    <div className="overflow-hidden rounded-xl border border-slate-100 bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5">
                       <div className="flex items-center gap-4 p-4">
-                        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-lg">
+                        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-lg">
                           {technician.profileImageUrl ? (
                             <img src={technician.profileImageUrl} alt={technician.name} className="size-16 rounded-full object-cover" />
                           ) : (
@@ -1046,7 +1046,7 @@ export function BookingPage() {
                       <div className="rounded-xl border border-slate-100 bg-white p-3">
                         <p className="text-xs text-muted-foreground">Phone</p>
                         <p className="mt-0.5 flex items-center gap-1 font-semibold">
-                          <Phone className="size-3 text-[#1e3a5f]" />
+                          <Phone className="size-3 text-[#0D3B7A]" />
                           {technician.phone}
                         </p>
                       </div>
@@ -1058,7 +1058,7 @@ export function BookingPage() {
                         <Label className="text-sm font-semibold">Certifications</Label>
                         <div className="flex flex-wrap gap-2">
                           {technician.certifications.map((cert, idx) => (
-                            <Badge key={idx} variant="secondary" className="gap-1 rounded-lg bg-[#1e3a5f]/10 text-[#1e3a5f]">
+                            <Badge key={idx} variant="secondary" className="gap-1 rounded-lg bg-[#0D3B7A]/10 text-[#0D3B7A]">
                               <Award className="size-3" />
                               {cert}
                             </Badge>
@@ -1070,12 +1070,12 @@ export function BookingPage() {
                     <Separator />
 
                     {/* OTP section */}
-                    <div className="rounded-xl border-2 border-dashed border-[#1e3a5f]/30 bg-[#1e3a5f]/5 p-4 text-center">
+                    <div className="rounded-xl border-2 border-dashed border-[#0D3B7A]/30 bg-[#0D3B7A]/5 p-4 text-center">
                       <p className="text-sm font-medium text-muted-foreground">Verification OTP</p>
                       <p className="mt-1 text-xs text-muted-foreground">Share this OTP with the technician on arrival</p>
                       <div className="mt-3 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 shadow-sm border border-slate-100">
-                        <Eye className="size-4 text-[#1e3a5f]" />
-                        <span className="text-2xl font-bold tracking-[0.3em] text-[#1e3a5f]">{verificationOtp}</span>
+                        <Eye className="size-4 text-[#0D3B7A]" />
+                        <span className="text-2xl font-bold tracking-[0.3em] text-[#0D3B7A]">{verificationOtp}</span>
                       </div>
                     </div>
                   </>
@@ -1090,7 +1090,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl"
                   onClick={goNext}
                   disabled={!technician}
                 >
@@ -1112,10 +1112,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e]">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF]">
                     <CreditCard className="size-4 text-white" />
                   </div>
                   Payment Summary
@@ -1155,13 +1155,13 @@ export function BookingPage() {
                     {couponApplied && couponDiscount > 0 && (
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Coupon Discount</span>
-                        <span className="text-emerald-600">-₹{couponDiscount.toLocaleString()}</span>
+                        <span className="text-[#1D63FF]">-₹{couponDiscount.toLocaleString()}</span>
                       </div>
                     )}
                     <Separator />
                     <div className="flex justify-between font-bold text-lg">
                       <span>Total</span>
-                      <span className="text-[#1e3a5f]">₹{totalPrice.toLocaleString()}</span>
+                      <span className="text-[#0D3B7A]">₹{totalPrice.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -1181,7 +1181,7 @@ export function BookingPage() {
                     />
                     <Button
                       variant="outline"
-                      className="rounded-xl px-4 border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                      className="rounded-xl px-4 border-[#0D3B7A]/30 text-[#0D3B7A] hover:bg-[#0D3B7A]/5"
                       onClick={applyCoupon}
                       disabled={!couponCode.trim() || couponLoading || couponApplied}
                     >
@@ -1190,7 +1190,7 @@ export function BookingPage() {
                   </div>
                   {couponError && <p className="text-xs text-red-500">{couponError}</p>}
                   {couponApplied && (
-                    <p className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
+                    <p className="flex items-center gap-1 text-xs text-[#1D63FF] font-medium">
                       <Check className="size-3" /> Coupon applied! You save ₹{couponDiscount.toLocaleString()}
                     </p>
                   )}
@@ -1212,13 +1212,13 @@ export function BookingPage() {
                           whileTap={{ scale: 0.98 }}
                           className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-3 transition-all ${
                             paymentMethod === method.value
-                              ? 'border-[#1e3a5f] bg-gradient-to-r from-[#0a1628]/5 to-[#2d5a8e]/5'
+                              ? 'border-[#0D3B7A] bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5'
                               : 'border-slate-100 bg-white hover:border-slate-200'
                           }`}
                         >
                           <RadioGroupItem value={method.value} id={`pay-${method.value}`} />
-                          <Icon className={`size-4 ${paymentMethod === method.value ? 'text-[#1e3a5f]' : 'text-slate-400'}`} />
-                          <span className={`text-sm font-medium ${paymentMethod === method.value ? 'text-[#1e3a5f]' : 'text-slate-600'}`}>
+                          <Icon className={`size-4 ${paymentMethod === method.value ? 'text-[#0D3B7A]' : 'text-slate-400'}`} />
+                          <span className={`text-sm font-medium ${paymentMethod === method.value ? 'text-[#0D3B7A]' : 'text-slate-600'}`}>
                             {method.label}
                           </span>
                         </motion.label>
@@ -1227,9 +1227,9 @@ export function BookingPage() {
                   </RadioGroup>
                 </div>
 
-                <div className="flex items-center gap-2 rounded-xl bg-[#1e3a5f]/5 p-3">
-                  <Shield className="size-4 text-[#1e3a5f]" />
-                  <span className="text-xs font-medium text-[#1e3a5f]">Secure payment powered by {COMPANY_INFO.name}</span>
+                <div className="flex items-center gap-2 rounded-xl bg-[#0D3B7A]/5 p-3">
+                  <Shield className="size-4 text-[#0D3B7A]" />
+                  <span className="text-xs font-medium text-[#0D3B7A]">Secure payment powered by {COMPANY_INFO.name}</span>
                 </div>
               </CardContent>
               <CardFooter className="justify-between p-4">
@@ -1237,7 +1237,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl h-11 px-8"
+                  className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl h-11 px-8"
                   onClick={handleConfirmBooking}
                   disabled={creating}
                 >
@@ -1268,7 +1268,7 @@ export function BookingPage() {
             exit={{ opacity: 0, scale: 0.95 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
 
               {/* Success animation area */}
               <div className="flex flex-col items-center py-8 px-6">
@@ -1276,7 +1276,7 @@ export function BookingPage() {
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.1 }}
-                  className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-xl shadow-[#1e3a5f]/30"
+                  className="flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-xl shadow-[#0D3B7A]/30"
                 >
                   <CircleCheckBig className="size-10 text-white" />
                 </motion.div>
@@ -1284,7 +1284,7 @@ export function BookingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
-                  className="mt-4 text-2xl font-bold text-[#1e3a5f]"
+                  className="mt-4 text-2xl font-bold text-[#0D3B7A]"
                 >
                   Booking Confirmed!
                 </motion.h2>
@@ -1304,10 +1304,10 @@ export function BookingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="rounded-xl border-2 border-dashed border-[#1e3a5f]/20 bg-[#1e3a5f]/5 p-4 text-center"
+                  className="rounded-xl border-2 border-dashed border-[#0D3B7A]/20 bg-[#0D3B7A]/5 p-4 text-center"
                 >
                   <p className="text-xs text-muted-foreground">Booking ID</p>
-                  <p className="mt-1 text-lg font-bold tracking-wider text-[#1e3a5f]">
+                  <p className="mt-1 text-lg font-bold tracking-wider text-[#0D3B7A]">
                     {bookingId || 'BYS-PENDING'}
                   </p>
                 </motion.div>
@@ -1323,29 +1323,29 @@ export function BookingPage() {
                     {
                       label: 'Service',
                       value: service.title,
-                      icon: <Briefcase className="size-3.5 text-[#1e3a5f]" />,
+                      icon: <Briefcase className="size-3.5 text-[#0D3B7A]" />,
                     },
                     {
                       label: 'Date & Time',
                       value: selectedDate
                         ? `${selectedDate.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} at ${formatTime(selectedTime)}`
                         : 'N/A',
-                      icon: <CalendarDays className="size-3.5 text-[#1e3a5f]" />,
+                      icon: <CalendarDays className="size-3.5 text-[#0D3B7A]" />,
                     },
                     {
                       label: 'Provider',
                       value: providers.find((p) => p.id === selectedProviderId)?.name || service.provider?.name || 'Assigned Provider',
-                      icon: <Users className="size-3.5 text-[#1e3a5f]" />,
+                      icon: <Users className="size-3.5 text-[#0D3B7A]" />,
                     },
                     {
                       label: 'Technician',
                       value: technician?.name || 'Assigned Technician',
-                      icon: <Wrench className="size-3.5 text-[#1e3a5f]" />,
+                      icon: <Wrench className="size-3.5 text-[#0D3B7A]" />,
                     },
                     {
                       label: 'Address',
                       value: address,
-                      icon: <MapPin className="size-3.5 text-[#1e3a5f]" />,
+                      icon: <MapPin className="size-3.5 text-[#0D3B7A]" />,
                     },
                   ].map((item) => (
                     <div key={item.label} className="flex items-start gap-3">
@@ -1365,7 +1365,7 @@ export function BookingPage() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 }}
-                  className="flex items-center justify-between rounded-xl bg-gradient-to-r from-[#0a1628] to-[#2d5a8e] p-4 text-white"
+                  className="flex items-center justify-between rounded-xl bg-gradient-to-r from-[#0A2463] to-[#1D63FF] p-4 text-white"
                 >
                   <span className="text-sm font-medium opacity-90">Amount Paid</span>
                   <span className="text-2xl font-bold">₹{totalPrice.toLocaleString()}</span>
@@ -1391,14 +1391,14 @@ export function BookingPage() {
                   className="flex flex-col gap-3 pt-2 sm:flex-row"
                 >
                   <Button
-                    className="flex-1 bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 rounded-xl h-11"
+                    className="flex-1 bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#0D3B7A]/25 rounded-xl h-11"
                     onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
                   >
                     <MapPinned className="mr-2 size-4" /> Track Booking
                   </Button>
                   <Button
                     variant="outline"
-                    className="flex-1 rounded-xl h-11 border-[#1e3a5f]/30 text-[#1e3a5f] hover:bg-[#1e3a5f]/5"
+                    className="flex-1 rounded-xl h-11 border-[#0D3B7A]/30 text-[#0D3B7A] hover:bg-[#0D3B7A]/5"
                     onClick={() => navigate('home')}
                   >
                     <Home className="mr-2 size-4" /> Back to Home

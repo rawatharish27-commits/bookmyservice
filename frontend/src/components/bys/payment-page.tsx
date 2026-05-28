@@ -108,8 +108,8 @@ export function PaymentPage() {
   if (!booking) {
     return (
       <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-          <Receipt className="size-8 text-emerald-400" />
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+          <Receipt className="size-8 text-[#7DB0FF]" />
         </div>
         <p className="text-lg font-semibold text-muted-foreground">Booking not found</p>
         <Button variant="outline" className="mt-4 rounded-xl" onClick={goBack}>
@@ -148,19 +148,19 @@ export function PaymentPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mb-6 text-center"
           >
-            <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-xl shadow-emerald-500/30">
+            <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-xl shadow-[#4D8AFF]/30">
               <CheckCircle2 className="size-10 text-white" />
             </div>
             <h2 className="text-2xl font-bold">Payment Successful</h2>
             <p className="mt-2 text-muted-foreground">
               Your payment has been processed successfully
             </p>
-            <Badge className="mt-3 bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 px-4 py-1.5">
+            <Badge className="mt-3 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 px-4 py-1.5">
               {booking.bookingNumber}
             </Badge>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Button
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11"
+                className="flex-1 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25 rounded-xl h-11"
                 onClick={handleViewBooking}
               >
                 View Booking
@@ -187,10 +187,10 @@ export function PaymentPage() {
             transition={{ delay: 0.1 }}
           >
             <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
                     <Receipt className="size-4 text-white" />
                   </div>
                   Booking Summary
@@ -198,9 +198,9 @@ export function PaymentPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {[
-                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-emerald-400 to-teal-500' },
-                  { icon: User, label: 'Provider', value: provider?.name || 'Provider', gradient: 'from-sky-400 to-blue-500' },
-                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-cyan-400 to-blue-500' },
+                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
+                  { icon: User, label: 'Provider', value: provider?.name || 'Provider', gradient: 'from-[#4D8AFF] to-[#4D8AFF]' },
+                  { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-[#FFE066] to-[#4D8AFF]' },
                   { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-violet-400 to-purple-500' },
                   { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-pink-400 to-rose-500' },
                 ].map((item) => (
@@ -243,15 +243,15 @@ export function PaymentPage() {
             <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF]">
                     <CreditCard className="size-4 text-white" />
                   </div>
                   Payment Method
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-center gap-3 rounded-xl border border-sky-200 bg-sky-50/50 p-4">
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-md shadow-sky-500/25">
+                <div className="flex items-center gap-3 rounded-xl border border-[#1D63FF]/20 bg-[#1D63FF]/5 p-4">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] shadow-md shadow-[#1D63FF]/25">
                     <Banknote className="size-5 text-white" />
                   </div>
                   <div className="flex-1">
@@ -260,7 +260,7 @@ export function PaymentPage() {
                       Pay with UPI, Cards, Net Banking, or Wallets
                     </p>
                   </div>
-                  <Lock className="size-4 text-sky-500" />
+                  <Lock className="size-4 text-[#1D63FF]" />
                 </div>
               </CardContent>
             </Card>
@@ -275,11 +275,11 @@ export function PaymentPage() {
                 exit={{ opacity: 0, y: -10 }}
                 className="mb-6"
               >
-                <Card className="overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-sky-400">
+                <Card className="overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-[#4D8AFF]">
                   <CardContent className="flex flex-col items-center gap-3 p-6">
-                    <Loader2 className="size-8 animate-spin text-sky-500" />
-                    <p className="font-semibold text-sky-800">Processing Payment</p>
-                    <p className="text-sm text-sky-600 text-center">
+                    <Loader2 className="size-8 animate-spin text-[#1D63FF]" />
+                    <p className="font-semibold text-[#0A2463]">Processing Payment</p>
+                    <p className="text-sm text-[#1D63FF] text-center">
                       Please complete the payment in the Razorpay checkout window.
                       Do not close this page or press back.
                     </p>
@@ -331,10 +331,10 @@ export function PaymentPage() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-emerald-50/50 p-3"
+            className="mb-4 flex items-center justify-center gap-2 rounded-xl bg-[#1D63FF]/5 p-3"
           >
-            <Shield className="size-4 text-emerald-600" />
-            <span className="text-xs text-emerald-700 font-medium">
+            <Shield className="size-4 text-[#1D63FF]" />
+            <span className="text-xs text-[#0D3B7A] font-medium">
               Your payment is secured with 256-bit SSL encryption
             </span>
           </motion.div>
@@ -346,7 +346,7 @@ export function PaymentPage() {
             transition={{ delay: 0.35 }}
           >
             <Button
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-12 text-base font-semibold"
+              className="w-full bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25 rounded-xl h-12 text-base font-semibold"
               onClick={handlePayNow}
               disabled={isProcessing || !isScriptLoaded || effectiveStep === 'processing'}
             >

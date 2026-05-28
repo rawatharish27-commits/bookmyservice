@@ -96,7 +96,7 @@ export function JobOfferPopup() {
     <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) handleClose(); }}>
       <DialogContent
         showCloseButton={false}
-        className="sm:max-w-2xl p-0 overflow-hidden border-0 bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-white"
+        className="sm:max-w-2xl p-0 overflow-hidden border-0 bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] text-white"
       >
         {/* Header section */}
         <div className="relative px-6 pt-6 pb-4">
@@ -130,7 +130,7 @@ export function JobOfferPopup() {
               🚀 Job Offer: Become an Area Manager or Local Admin in Your Area!
             </DialogTitle>
 
-            <DialogDescription className="text-sm sm:text-base text-blue-100/80 mt-1">
+            <DialogDescription className="text-sm sm:text-base text-[#FFE066]/80 mt-1">
               Be a part of a growing business and earn money. Lead your city's service marketplace.
             </DialogDescription>
           </DialogHeader>
@@ -158,20 +158,20 @@ export function JobOfferPopup() {
                   </div>
 
                   <h3 className="text-lg font-bold text-white mb-1">Area Manager</h3>
-                  <p className="text-xs text-blue-100/70 mb-4">
+                  <p className="text-xs text-[#FFE066]/70 mb-4">
                     Manage multiple cities and oversee operations across your region.
                   </p>
 
                   <div className="space-y-2 mb-5">
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
                       <MapPin className="w-3.5 h-3.5 text-yellow-300/70 flex-shrink-0" />
                       <span>Manage your entire area</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
                       <Users className="w-3.5 h-3.5 text-yellow-300/70 flex-shrink-0" />
                       <span>Lead local admins & providers</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
                       <DollarSign className="w-3.5 h-3.5 text-yellow-300/70 flex-shrink-0" />
                       <span>Higher earning potential</span>
                     </div>
@@ -179,7 +179,7 @@ export function JobOfferPopup() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs text-blue-100/50">Registration Fee</span>
+                      <span className="text-xs text-[#FFE066]/50">Registration Fee</span>
                       <p className="text-lg font-bold text-yellow-300">₹100</p>
                     </div>
                     <Button
@@ -201,46 +201,46 @@ export function JobOfferPopup() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25, duration: 0.4 }}
             >
-              <Card className="bg-white/10 backdrop-blur-sm border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 group cursor-pointer">
+              <Card className="bg-white/10 backdrop-blur-sm border border-white/20 hover:border-white/40 transition-all duration-300 hover:shadow-lg hover:shadow-[#1D63FF]/10 group cursor-pointer">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-400/20 to-teal-400/20 border border-emerald-400/30">
-                      <Users className="w-6 h-6 text-emerald-300" />
+                    <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-[#7DB0FF]/20 to-[#7DB0FF]/20 border border-[#7DB0FF]/30">
+                      <Users className="w-6 h-6 text-[#7DB0FF]" />
                     </div>
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-400/20 border border-emerald-400/30 text-emerald-200 text-xs font-semibold">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#7DB0FF]/20 border border-[#7DB0FF]/30 text-[#7DB0FF] text-xs font-semibold">
                       <Briefcase className="w-3 h-3" />
                       Popular
                     </span>
                   </div>
 
                   <h3 className="text-lg font-bold text-white mb-1">Local Admin</h3>
-                  <p className="text-xs text-blue-100/70 mb-4">
+                  <p className="text-xs text-[#FFE066]/70 mb-4">
                     Administer your city's service marketplace and support local providers.
                   </p>
 
                   <div className="space-y-2 mb-5">
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
-                      <MapPin className="w-3.5 h-3.5 text-emerald-300/70 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
+                      <MapPin className="w-3.5 h-3.5 text-[#7DB0FF]/70 flex-shrink-0" />
                       <span>Manage your city operations</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
-                      <Users className="w-3.5 h-3.5 text-emerald-300/70 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
+                      <Users className="w-3.5 h-3.5 text-[#7DB0FF]/70 flex-shrink-0" />
                       <span>Coordinate local providers</span>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-blue-100/90">
-                      <DollarSign className="w-3.5 h-3.5 text-emerald-300/70 flex-shrink-0" />
+                    <div className="flex items-center gap-2 text-sm text-[#FFE066]/90">
+                      <DollarSign className="w-3.5 h-3.5 text-[#7DB0FF]/70 flex-shrink-0" />
                       <span>Steady income stream</span>
                     </div>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs text-blue-100/50">Registration Fee</span>
-                      <p className="text-lg font-bold text-emerald-300">₹50</p>
+                      <span className="text-xs text-[#FFE066]/50">Registration Fee</span>
+                      <p className="text-lg font-bold text-[#7DB0FF]">₹50</p>
                     </div>
                     <Button
                       onClick={handleApplyLocalAdmin}
-                      className="bg-gradient-to-r from-emerald-400 to-teal-400 hover:from-emerald-500 hover:to-teal-500 text-black font-semibold gap-1.5 shadow-lg shadow-emerald-500/25 transition-all duration-200 group-hover:shadow-emerald-500/40"
+                      className="bg-gradient-to-r from-[#7DB0FF] to-[#7DB0FF] hover:from-[#4D8AFF] hover:to-[#1D63FF] text-black font-semibold gap-1.5 shadow-lg shadow-[#1D63FF]/25 transition-all duration-200 group-hover:shadow-[#1D63FF]/40"
                       size="sm"
                     >
                       Apply Now
@@ -262,7 +262,7 @@ export function JobOfferPopup() {
             <Button
               variant="ghost"
               onClick={handleClose}
-              className="text-blue-100/60 hover:text-white hover:bg-white/10 transition-colors"
+              className="text-[#FFE066]/60 hover:text-white hover:bg-white/10 transition-colors"
             >
               Maybe Later
             </Button>

@@ -67,8 +67,8 @@ interface SubscriptionsResponse {
 
 /* ---------- subscription status config ---------- */
 const SUB_STATUS_CONFIG: Record<string, { className: string; dotColor: string; label: string }> = {
-  ACTIVE: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', label: 'Active' },
-  EXPIRED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400', label: 'Expired' },
+  ACTIVE: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]', label: 'Active' },
+  EXPIRED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
 };
 
@@ -135,10 +135,10 @@ export function AdminAmcPage() {
               placeholder="Search plans or subscriptions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-emerald-400"
+              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#7DB0FF]"
             />
           </div>
-          <Button className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25">
+          <Button className="shrink-0 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25">
             <Plus className="mr-2 size-4" />
             New Plan
           </Button>
@@ -153,9 +153,9 @@ export function AdminAmcPage() {
         className="grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {[
-          { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-emerald-400 to-teal-500', bgGlow: 'bg-emerald-500/10' },
-          { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-sky-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
-          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-cyan-400 to-blue-500', bgGlow: 'bg-sky-500/10' },
+          { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bgGlow: 'bg-[#4D8AFF]/10' },
+          { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
+          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-[#FFE066] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
           { label: 'Revenue (Active)', value: `₹${totalRevenue.toLocaleString('en-IN')}`, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -180,11 +180,11 @@ export function AdminAmcPage() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="bg-muted/50 rounded-xl p-1">
-          <TabsTrigger value="plans" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="plans" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4D8AFF] data-[state=active]:to-[#1D63FF] data-[state=active]:text-white">
             <Shield className="mr-2 size-4" />
             Plans ({plans.length})
           </TabsTrigger>
-          <TabsTrigger value="subscriptions" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-600 data-[state=active]:text-white">
+          <TabsTrigger value="subscriptions" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4D8AFF] data-[state=active]:to-[#1D63FF] data-[state=active]:text-white">
             <Repeat className="mr-2 size-4" />
             Subscriptions ({subscriptions.length})
           </TabsTrigger>
@@ -205,8 +205,8 @@ export function AdminAmcPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-16 text-center mt-4"
               >
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-                  <Shield className="size-10 text-emerald-300" />
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+                  <Shield className="size-10 text-[#9DC2FF]" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No AMC plans found</h3>
                 <p className="mt-1 text-sm text-muted-foreground/70">
@@ -228,13 +228,13 @@ export function AdminAmcPage() {
                     transition={{ delay: idx * 0.05 }}
                   >
                     <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md h-full">
-                      <div className={`h-2 ${plan.isActive ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-gray-300 to-gray-400'}`} />
+                      <div className={`h-2 ${plan.isActive ? 'bg-gradient-to-r from-[#7DB0FF] to-[#4D8AFF]' : 'bg-gradient-to-r from-gray-300 to-gray-400'}`} />
                       <CardContent className="p-5 flex flex-col h-full">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <div className={`flex size-10 items-center justify-center rounded-xl ${
                               plan.isActive
-                                ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md'
+                                ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md'
                                 : 'bg-gradient-to-br from-gray-300 to-gray-400'
                             }`}>
                               <Shield className="size-5 text-white" />
@@ -242,7 +242,7 @@ export function AdminAmcPage() {
                             <div>
                               <h3 className="text-sm font-bold">{plan.name}</h3>
                               {plan.category && (
-                                <Badge variant="outline" className="text-[10px] border-emerald-200 bg-emerald-50 text-emerald-700 mt-0.5">
+                                <Badge variant="outline" className="text-[10px] border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] mt-0.5">
                                   <Tag className="size-2.5 mr-0.5" />
                                   {plan.category}
                                 </Badge>
@@ -253,7 +253,7 @@ export function AdminAmcPage() {
                             variant="outline"
                             className={`shrink-0 gap-1 text-[10px] font-semibold ${
                               plan.isActive
-                                ? 'border-emerald-200 bg-emerald-50 text-emerald-700'
+                                ? 'border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]'
                                 : 'border-gray-200 bg-gray-50 text-gray-500'
                             }`}
                           >
@@ -267,19 +267,19 @@ export function AdminAmcPage() {
                         )}
 
                         <div className="grid grid-cols-3 gap-2 mt-auto mb-3">
-                          <div className="rounded-lg bg-emerald-50/80 p-2 text-center">
-                            <IndianRupeeIcon className="size-3.5 text-emerald-600 mx-auto" />
-                            <p className="text-sm font-bold text-emerald-700">₹{plan.price?.toLocaleString('en-IN')}</p>
+                          <div className="rounded-lg bg-[#1D63FF]/5 p-2 text-center">
+                            <IndianRupeeIcon className="size-3.5 text-[#1D63FF] mx-auto" />
+                            <p className="text-sm font-bold text-[#0D3B7A]">₹{plan.price?.toLocaleString('en-IN')}</p>
                             <p className="text-[10px] text-muted-foreground">Price</p>
                           </div>
-                          <div className="rounded-lg bg-teal-50/80 p-2 text-center">
-                            <Calendar className="size-3.5 text-teal-600 mx-auto" />
-                            <p className="text-sm font-bold text-teal-700">{plan.duration}mo</p>
+                          <div className="rounded-lg bg-[#1D63FF]/5 p-2 text-center">
+                            <Calendar className="size-3.5 text-[#1D63FF] mx-auto" />
+                            <p className="text-sm font-bold text-[#0D3B7A]">{plan.duration}mo</p>
                             <p className="text-[10px] text-muted-foreground">Duration</p>
                           </div>
-                          <div className="rounded-lg bg-cyan-50/80 p-2 text-center">
-                            <Wrench className="size-3.5 text-cyan-600 mx-auto" />
-                            <p className="text-sm font-bold text-cyan-700">{plan.visitsPerYear}</p>
+                          <div className="rounded-lg bg-[#FFCE32]/5 p-2 text-center">
+                            <Wrench className="size-3.5 text-[#FFCE32] mx-auto" />
+                            <p className="text-sm font-bold text-[#E6B800]">{plan.visitsPerYear}</p>
                             <p className="text-[10px] text-muted-foreground">Visits/yr</p>
                           </div>
                         </div>
@@ -305,7 +305,7 @@ export function AdminAmcPage() {
                             className={`flex-1 rounded-lg text-xs ${
                               plan.isActive
                                 ? 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200'
-                                : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200'
+                                : 'bg-[#1D63FF]/5 text-[#1D63FF] hover:bg-[#1D63FF]/10 hover:text-[#0D3B7A] border border-[#1D63FF]/20'
                             }`}
                             variant="outline"
                           >
@@ -336,8 +336,8 @@ export function AdminAmcPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-16 text-center mt-4"
               >
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-                  <Repeat className="size-10 text-emerald-300" />
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+                  <Repeat className="size-10 text-[#9DC2FF]" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No subscriptions found</h3>
                 <p className="mt-1 text-sm text-muted-foreground/70">
@@ -352,9 +352,9 @@ export function AdminAmcPage() {
                 className="mt-4"
               >
                 <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                     <CardTitle className="text-base font-semibold flex items-center gap-2">
-                      <Repeat className="size-4 text-emerald-600" />
+                      <Repeat className="size-4 text-[#1D63FF]" />
                       Active Subscriptions ({filteredSubs.length})
                     </CardTitle>
                   </CardHeader>
@@ -370,12 +370,12 @@ export function AdminAmcPage() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.04 }}
-                            className="group flex flex-col gap-3 border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30 sm:flex-row sm:items-center sm:gap-6"
+                            className="group flex flex-col gap-3 border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/5 sm:flex-row sm:items-center sm:gap-6"
                           >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                               <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
                                 sub.status === 'ACTIVE'
-                                  ? 'bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md'
+                                  ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md'
                                   : 'bg-gradient-to-br from-gray-300 to-gray-400'
                               }`}>
                                 <Repeat className="size-5 text-white" />
@@ -406,7 +406,7 @@ export function AdminAmcPage() {
                                 <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                                   <div
                                     className={`h-full rounded-full transition-all ${
-                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-cyan-400' : 'bg-emerald-400'
+                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-[#FFE066]' : 'bg-[#7DB0FF]'
                                     }`}
                                     style={{ width: `${Math.min(progress, 100)}%` }}
                                   />
@@ -426,7 +426,7 @@ export function AdminAmcPage() {
                                 </div>
                               </div>
 
-                              <Button variant="ghost" size="sm" className="shrink-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                              <Button variant="ghost" size="sm" className="shrink-0 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                                 <ArrowRight className="size-4" />
                               </Button>
                             </div>

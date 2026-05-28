@@ -156,7 +156,7 @@ export function AdminFaqPage() {
           <h1 className="text-2xl font-bold">FAQ Management</h1>
           <p className="mt-1 text-sm text-muted-foreground">Manage frequently asked questions</p>
         </div>
-        <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={openAdd}>
+        <Button className="bg-[#1D63FF] text-white hover:bg-[#0D3B7A]" onClick={openAdd}>
           <Plus className="mr-2 size-4" /> Add FAQ
         </Button>
       </div>
@@ -181,7 +181,7 @@ export function AdminFaqPage() {
             <Card key={category}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-base flex items-center gap-2">
-                  <HelpCircle className="size-4 text-emerald-600" />
+                  <HelpCircle className="size-4 text-[#1D63FF]" />
                   {category}
                   <Badge variant="secondary" className="text-xs">{categoryFaqs.length}</Badge>
                 </CardTitle>
@@ -248,7 +248,7 @@ export function AdminFaqPage() {
                 <Label>Active</Label>
               </div>
             </div>
-            <Button className="bg-emerald-600 text-white hover:bg-emerald-700 w-full" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#1D63FF] text-white hover:bg-[#0D3B7A] w-full" onClick={handleSave} disabled={saving}>
               <Save className="mr-2 size-4" />
               {saving ? 'Saving...' : editingFaq ? 'Update FAQ' : 'Create FAQ'}
             </Button>

@@ -42,15 +42,15 @@ interface InvoicesResponse {
 /* ---------- status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; gradient: string; label: string }> = {
   PAID: {
-    className: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    dotColor: 'bg-emerald-400',
-    gradient: 'from-emerald-400 to-teal-500',
+    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
+    dotColor: 'bg-[#7DB0FF]',
+    gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
     label: 'Paid',
   },
   PENDING: {
-    className: 'bg-sky-50 text-sky-700 border-sky-200',
-    dotColor: 'bg-cyan-400',
-    gradient: 'from-cyan-400 to-blue-500',
+    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
+    dotColor: 'bg-[#FFE066]',
+    gradient: 'from-[#FFE066] to-[#4D8AFF]',
     label: 'Pending',
   },
   OVERDUE: {
@@ -145,7 +145,7 @@ export function ClientInvoicesPage() {
               placeholder="Search invoices..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-emerald-400"
+              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#7DB0FF]"
             />
           </div>
           <Button
@@ -167,37 +167,37 @@ export function ClientInvoicesPage() {
         className="grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         <motion.div variants={fadeUp}>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 p-4 text-white shadow-lg shadow-emerald-500/20">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] p-4 text-white shadow-lg shadow-[#4D8AFF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Receipt className="size-5 text-emerald-200" />
+            <Receipt className="size-5 text-[#1D63FF]/20" />
             <p className="mt-2 text-2xl font-bold">{invoices.length}</p>
-            <p className="text-xs text-emerald-100">Total Invoices</p>
+            <p className="text-xs text-[#1D63FF]/10">Total Invoices</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 p-4 text-white shadow-lg shadow-emerald-400/20">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#7DB0FF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <IndianRupee className="size-5 text-emerald-200" />
+            <IndianRupee className="size-5 text-[#1D63FF]/20" />
             <p className="mt-2 text-2xl font-bold">₹{totalPaid.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-emerald-100">Total Paid</p>
+            <p className="text-xs text-[#1D63FF]/10">Total Paid</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 p-4 text-white shadow-lg shadow-cyan-400/20">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#FFE066]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Clock className="size-5 text-sky-200" />
+            <Clock className="size-5 text-[#1D63FF]/20" />
             <p className="mt-2 text-2xl font-bold">₹{totalPending.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-sky-100">Pending</p>
+            <p className="text-xs text-[#1D63FF]/10">Pending</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-sky-400 to-blue-500 p-4 text-white shadow-lg shadow-sky-400/20">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#4D8AFF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Download className="size-5 text-sky-200" />
+            <Download className="size-5 text-[#1D63FF]/20" />
             <p className="mt-2 text-2xl font-bold">
               {invoices.filter((i) => i.status === 'PAID').length}
             </p>
-            <p className="text-xs text-sky-100">Downloadable</p>
+            <p className="text-xs text-[#1D63FF]/10">Downloadable</p>
           </div>
         </motion.div>
       </motion.div>
@@ -214,7 +214,7 @@ export function ClientInvoicesPage() {
               onClick={() => setActiveFilter(tab.key)}
               className={`flex shrink-0 items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
                 isActive
-                  ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg'
+                  ? 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg'
                   : 'bg-muted/50 text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
             >
@@ -244,15 +244,15 @@ export function ClientInvoicesPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="mt-8 flex flex-col items-center py-16 text-center"
           >
-            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-              <FileText className="size-10 text-emerald-300" />
+            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+              <FileText className="size-10 text-[#9DC2FF]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No invoices found</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">
               {searchQuery ? 'Try a different search term' : 'Your invoices will appear here after bookings'}
             </p>
             <Button
-              className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+              className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
               onClick={() => navigate('client-bookings')}
             >
               View Bookings <ArrowRight className="ml-2 size-4" />
@@ -311,7 +311,7 @@ export function ClientInvoicesPage() {
                           </div>
                         </div>
                         <div className="flex shrink-0 flex-col items-end gap-1">
-                          <p className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-lg font-bold text-transparent">
+                          <p className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] bg-clip-text text-lg font-bold text-transparent">
                             ₹{invoice.total?.toLocaleString('en-IN')}
                           </p>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -334,7 +334,7 @@ export function ClientInvoicesPage() {
         <div className="mt-6 flex justify-center">
           <Button
             variant="outline"
-            className="rounded-xl text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+            className="rounded-xl text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5"
           >
             <ChevronDown className="mr-2 size-4" />
             Load More Invoices

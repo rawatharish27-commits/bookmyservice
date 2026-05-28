@@ -83,8 +83,8 @@ const itemVariants = {
 
 function FranchiseStatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    PENDING: 'bg-sky-100 text-sky-800 border-sky-200',
-    ACTIVE: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+    PENDING: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
+    ACTIVE: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
     SUSPENDED: 'bg-rose-100 text-rose-800 border-rose-200',
   };
   return (
@@ -166,33 +166,33 @@ export function AdminFranchisesPage() {
       label: 'Total Franchises',
       value: franchises.length.toString(),
       icon: Building2,
-      bgLight: 'bg-emerald-50',
-      textColor: 'text-emerald-700',
-      borderColor: 'border-l-emerald-500',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#4D8AFF]',
     },
     {
       label: 'Active',
       value: activeCount.toString(),
       icon: TrendingUp,
-      bgLight: 'bg-teal-50',
-      textColor: 'text-teal-700',
-      borderColor: 'border-l-teal-500',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#4D8AFF]',
     },
     {
       label: 'Pending',
       value: pendingCount.toString(),
       icon: Users,
-      bgLight: 'bg-sky-50',
-      textColor: 'text-sky-700',
-      borderColor: 'border-l-sky-500',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#1D63FF]',
     },
     {
       label: 'Total Revenue',
       value: formatCurrency(totalRevenue),
       icon: DollarSign,
-      bgLight: 'bg-emerald-50',
-      textColor: 'text-emerald-700',
-      borderColor: 'border-l-emerald-500',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#4D8AFF]',
     },
   ];
 
@@ -206,7 +206,7 @@ export function AdminFranchisesPage() {
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
             <Building2 className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -217,7 +217,7 @@ export function AdminFranchisesPage() {
           </div>
         </div>
         <Button
-          className="bg-emerald-600 text-white hover:bg-emerald-700"
+          className="bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
           onClick={() => {
             resetForm();
             setShowCreate(true);
@@ -346,8 +346,8 @@ export function AdminFranchisesPage() {
                       >
                         <TableCell>
                           <div className="flex items-center gap-3">
-                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-100 to-teal-100">
-                              <Building2 className="size-4 text-emerald-700" />
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/10">
+                              <Building2 className="size-4 text-[#0D3B7A]" />
                             </div>
                             <div>
                               <p className="font-medium text-sm">{franchise.name}</p>
@@ -385,7 +385,7 @@ export function AdminFranchisesPage() {
                           </div>
                         </TableCell>
                         <TableCell className="hidden xl:table-cell text-sm">
-                          <Badge variant="secondary" className="bg-emerald-50 text-emerald-700">
+                          <Badge variant="secondary" className="bg-[#1D63FF]/5 text-[#0D3B7A]">
                             {franchise.commissionRate}%
                           </Badge>
                         </TableCell>
@@ -441,7 +441,7 @@ export function AdminFranchisesPage() {
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-600">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
                 <Building2 className="size-4 text-white" />
               </div>
               Create Franchise
@@ -497,7 +497,7 @@ export function AdminFranchisesPage() {
               />
             </div>
             <Button
-              className="w-full bg-emerald-600 text-white hover:bg-emerald-700"
+              className="w-full bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
               onClick={handleCreate}
               disabled={creating || !formName || !formCity || !formOwnerName || !formOwnerEmail}
             >

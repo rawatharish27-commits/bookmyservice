@@ -266,7 +266,7 @@ export function JoinManagerPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage className="font-semibold text-[#2d5a8e]">Join as Area Manager</BreadcrumbPage>
+              <BreadcrumbPage className="font-semibold text-[#1D63FF]">Join as Area Manager</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -277,7 +277,7 @@ export function JoinManagerPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] p-10 sm:p-14"
+        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-10 sm:p-14"
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -297,9 +297,9 @@ export function JoinManagerPage() {
             <Shield className="size-7 text-white" />
           </motion.div>
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
-            Join as <span className="text-sky-300">Area Manager</span>
+            Join as <span className="text-[#7DB0FF]">Area Manager</span>
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-sky-100">
+          <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/10">
             Lead your city&apos;s service marketplace. Manage providers, drive growth, and earn commissions on every booking in your area.
           </p>
         </div>
@@ -344,18 +344,18 @@ export function JoinManagerPage() {
         transition={{ duration: 0.5, delay: 0.2 }}
         className="mb-8 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm"
       >
-        <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+        <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
         <div className="p-5 sm:p-6">
           <div
             className="flex cursor-pointer items-center justify-between"
             onClick={() => setTermsExpanded(!termsExpanded)}
           >
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#1e3a5f] text-white shadow-md">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] text-white shadow-md">
                 <Scale className="size-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#0a1628]">Terms & Conditions</h3>
+                <h3 className="text-base font-bold text-[#0A2463]">Terms & Conditions</h3>
                 <p className="text-xs text-muted-foreground">Application terms as per Indian Contract Act 1872 & Consumer Protection Act 2019</p>
               </div>
             </div>
@@ -388,14 +388,14 @@ export function JoinManagerPage() {
 
                   {LEGAL_SECTIONS.map((section) => (
                     <div key={section.title} className="space-y-2">
-                      <h4 className="flex items-center gap-2 text-sm font-bold text-[#0a1628]">
-                        <ChevronRight className="size-4 text-[#2d5a8e]" />
+                      <h4 className="flex items-center gap-2 text-sm font-bold text-[#0A2463]">
+                        <ChevronRight className="size-4 text-[#1D63FF]" />
                         {section.title}
                       </h4>
                       <ul className="ml-6 space-y-1.5">
                         {section.content.map((item, idx) => (
                           <li key={idx} className="flex items-start gap-2 text-sm text-muted-foreground">
-                            <div className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#2d5a8e]" />
+                            <div className="mt-1.5 size-1.5 shrink-0 rounded-full bg-[#1D63FF]" />
                             <span>{item}</span>
                           </li>
                         ))}
@@ -428,7 +428,7 @@ export function JoinManagerPage() {
           className="lg:col-span-2"
         >
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
             <div className="bg-white p-6 sm:p-8">
               <AnimatePresence mode="wait">
                 {step === 'success' ? (
@@ -439,16 +439,16 @@ export function JoinManagerPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="py-12 text-center"
                   >
-                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg">
                       <CheckCircle2 className="size-8" />
                     </div>
-                    <h3 className="text-2xl font-bold text-[#0a1628]">Application Submitted!</h3>
+                    <h3 className="text-2xl font-bold text-[#0A2463]">Application Submitted!</h3>
                     <p className="mt-2 text-muted-foreground">
                       Thank you for applying to be an Area Manager. Your application fee of ₹{APPLICATION_FEE} has been received. We&apos;ll review your application and get back to you within 7-14 business days.
                     </p>
                     <Button
                       variant="outline"
-                      className="mt-6 rounded-xl border-[#2d5a8e] text-[#1e3a5f] hover:bg-sky-50"
+                      className="mt-6 rounded-xl border-[#1D63FF] text-[#0D3B7A] hover:bg-[#4D8AFF]/5"
                       onClick={() => {
                         setStep('form');
                         setForm({ name: '', email: '', phone: '', city: '', area: '', experience: '' });
@@ -468,41 +468,41 @@ export function JoinManagerPage() {
                     className="py-8"
                   >
                     <div className="mb-8 text-center">
-                      <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg">
+                      <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg">
                         <CreditCard className="size-7" />
                       </div>
-                      <h2 className="text-xl font-bold text-[#0a1628]">Pay Application Fee</h2>
+                      <h2 className="text-xl font-bold text-[#0A2463]">Pay Application Fee</h2>
                       <p className="mt-1 text-sm text-muted-foreground">Complete the payment to submit your Area Manager application</p>
                     </div>
 
                     {/* Application Summary */}
                     <div className="mb-6 rounded-xl border border-gray-200 bg-gray-50/50 p-5">
-                      <h4 className="mb-3 text-sm font-bold text-[#0a1628]">Application Summary</h4>
+                      <h4 className="mb-3 text-sm font-bold text-[#0A2463]">Application Summary</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Name</span>
-                          <span className="font-medium text-[#0a1628]">{form.name}</span>
+                          <span className="font-medium text-[#0A2463]">{form.name}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Email</span>
-                          <span className="font-medium text-[#0a1628]">{form.email}</span>
+                          <span className="font-medium text-[#0A2463]">{form.email}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Phone</span>
-                          <span className="font-medium text-[#0a1628]">{form.phone}</span>
+                          <span className="font-medium text-[#0A2463]">{form.phone}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">City</span>
-                          <span className="font-medium text-[#0a1628]">{form.city}</span>
+                          <span className="font-medium text-[#0A2463]">{form.city}</span>
                         </div>
                         <div className="h-px bg-gray-200 my-2" />
                         <div className="flex justify-between">
                           <span className="text-muted-foreground">Position</span>
-                          <span className="font-medium text-[#0a1628]">Area Manager</span>
+                          <span className="font-medium text-[#0A2463]">Area Manager</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="font-bold text-[#0a1628]">Application Fee</span>
-                          <span className="text-lg font-bold text-[#2d5a8e]">₹{APPLICATION_FEE}</span>
+                          <span className="font-bold text-[#0A2463]">Application Fee</span>
+                          <span className="text-lg font-bold text-[#1D63FF]">₹{APPLICATION_FEE}</span>
                         </div>
                       </div>
                     </div>
@@ -543,7 +543,7 @@ export function JoinManagerPage() {
                       <Button
                         type="button"
                         variant="outline"
-                        className="h-12 flex-1 rounded-xl border-[#2d5a8e] text-[#1e3a5f] hover:bg-sky-50"
+                        className="h-12 flex-1 rounded-xl border-[#1D63FF] text-[#0D3B7A] hover:bg-[#4D8AFF]/5"
                         onClick={() => {
                           setStep('form');
                           setFormError(null);
@@ -555,7 +555,7 @@ export function JoinManagerPage() {
                         type="button"
                         disabled={isPaymentProcessing}
                         onClick={handlePayment}
-                        className="h-12 flex-1 rounded-xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-base font-medium text-white shadow-lg shadow-[#1e3a5f]/25 hover:from-[#0a1628] hover:via-[#1e3a5f] hover:to-[#2d5a8e]"
+                        className="h-12 flex-1 rounded-xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] text-base font-medium text-white shadow-lg shadow-[#0D3B7A]/25 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF]"
                       >
                         {isPaymentProcessing ? 'Processing...' : `Pay ₹${APPLICATION_FEE}`}
                         <CreditCard className="ml-2 size-4" />
@@ -576,14 +576,14 @@ export function JoinManagerPage() {
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="text-[#2d5a8e] hover:bg-sky-50 hover:text-[#1e3a5f]"
+                        className="text-[#1D63FF] hover:bg-[#4D8AFF]/5 hover:text-[#0D3B7A]"
                         onClick={() => navigate('home')}
                       >
                         <ArrowLeft className="mr-1 size-4" /> Back
                       </Button>
                     </div>
 
-                    <h2 className="text-xl font-bold text-[#0a1628]">Area Manager Application</h2>
+                    <h2 className="text-xl font-bold text-[#0A2463]">Area Manager Application</h2>
                     <p className="text-sm text-muted-foreground">Fill out the form below to apply for the Area Manager position</p>
 
                     {/* Full Name & Email */}
@@ -597,7 +597,7 @@ export function JoinManagerPage() {
                             placeholder="Your full name"
                             value={form.name}
                             onChange={(e) => handleChange('name', e.target.value)}
-                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                           />
                         </div>
                       </div>
@@ -611,7 +611,7 @@ export function JoinManagerPage() {
                             placeholder="you@example.com"
                             value={form.email}
                             onChange={(e) => handleChange('email', e.target.value)}
-                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                           />
                         </div>
                       </div>
@@ -629,14 +629,14 @@ export function JoinManagerPage() {
                             placeholder="+91 89011 72507"
                             value={form.phone}
                             onChange={(e) => handleChange('phone', e.target.value)}
-                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">City</Label>
                         <Select value={form.city} onValueChange={(v) => handleChange('city', v)}>
-                          <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#2d5a8e] focus:ring-[#2d5a8e]/30">
+                          <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:ring-[#1D63FF]/30">
                             <MapPin className="mr-2 size-4 text-muted-foreground" />
                             <SelectValue placeholder="Select city" />
                           </SelectTrigger>
@@ -660,14 +660,14 @@ export function JoinManagerPage() {
                             placeholder="e.g. Palwal, 121102"
                             value={form.area}
                             onChange={(e) => handleChange('area', e.target.value)}
-                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
+                            className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
                           />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <Label className="text-sm font-medium">Experience</Label>
                         <Select value={form.experience} onValueChange={(v) => handleChange('experience', v)}>
-                          <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#2d5a8e] focus:ring-[#2d5a8e]/30">
+                          <SelectTrigger className="h-11 w-full rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:ring-[#1D63FF]/30">
                             <Briefcase className="mr-2 size-4 text-muted-foreground" />
                             <SelectValue placeholder="Select experience" />
                           </SelectTrigger>
@@ -683,7 +683,7 @@ export function JoinManagerPage() {
                     {/* Document Upload */}
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Upload Resume / Documents</Label>
-                      <div className="relative flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-8 transition-colors hover:border-[#2d5a8e]/50 hover:bg-sky-50/30">
+                      <div className="relative flex items-center justify-center rounded-xl border-2 border-dashed border-gray-200 bg-gray-50/50 p-8 transition-colors hover:border-[#1D63FF]/50 hover:bg-[#4D8AFF]/5/30">
                         <input
                           type="file"
                           accept=".pdf,.doc,.docx,.jpg,.png"
@@ -691,8 +691,8 @@ export function JoinManagerPage() {
                           className="absolute inset-0 cursor-pointer opacity-0"
                         />
                         <div className="text-center">
-                          <Upload className="mx-auto size-8 text-[#2d5a8e]/60" />
-                          <p className="mt-2 text-sm font-medium text-[#0a1628]">
+                          <Upload className="mx-auto size-8 text-[#1D63FF]/60" />
+                          <p className="mt-2 text-sm font-medium text-[#0A2463]">
                             {resumeFile ? resumeFile.name : 'Click to upload or drag and drop'}
                           </p>
                           <p className="mt-1 text-xs text-muted-foreground">PDF, DOC, JPG up to 5MB</p>
@@ -710,10 +710,10 @@ export function JoinManagerPage() {
                             setAgreedToTerms(checked === true);
                             if (formError) setFormError(null);
                           }}
-                          className="mt-0.5 data-[state=checked]:bg-[#2d5a8e] data-[state=checked]:border-[#2d5a8e]"
+                          className="mt-0.5 data-[state=checked]:bg-[#1D63FF] data-[state=checked]:border-[#1D63FF]"
                         />
                         <div className="space-y-1">
-                          <Label htmlFor="terms-agree" className="cursor-pointer text-sm font-medium leading-snug text-[#0a1628]">
+                          <Label htmlFor="terms-agree" className="cursor-pointer text-sm font-medium leading-snug text-[#0A2463]">
                             I agree to the Terms & Conditions and understand the application fee of ₹{APPLICATION_FEE} is non-refundable
                           </Label>
                           <p className="text-xs text-muted-foreground">
@@ -737,7 +737,7 @@ export function JoinManagerPage() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="h-12 w-full rounded-xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] text-base font-medium text-white shadow-lg shadow-[#1e3a5f]/25 hover:from-[#0a1628] hover:via-[#1e3a5f] hover:to-[#2d5a8e]"
+                      className="h-12 w-full rounded-xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] text-base font-medium text-white shadow-lg shadow-[#0D3B7A]/25 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF]"
                     >
                       {loading ? 'Processing...' : 'Proceed to Payment'}
                       <CreditCard className="ml-2 size-4" />
@@ -758,22 +758,22 @@ export function JoinManagerPage() {
         >
           {/* Benefits Card */}
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
             <div className="bg-white p-6">
-              <h3 className="mb-5 text-lg font-bold text-[#0a1628]">Why Become an Area Manager?</h3>
+              <h3 className="mb-5 text-lg font-bold text-[#0A2463]">Why Become an Area Manager?</h3>
               <div className="space-y-4">
                 {[
-                  { icon: <Shield className="size-5" />, title: 'Lead Your City', desc: 'Manage all service operations in your designated area', gradient: 'from-[#0a1628] to-[#1e3a5f]' },
-                  { icon: <Briefcase className="size-5" />, title: 'Earn Commissions', desc: '3% commission on every booking in your area', gradient: 'from-[#1e3a5f] to-[#2d5a8e]' },
-                  { icon: <User className="size-5" />, title: 'Build Your Team', desc: 'Recruit and manage service providers', gradient: 'from-[#2d5a8e] to-sky-500' },
-                  { icon: <FileText className="size-5" />, title: 'Flexible Hours', desc: 'Work on your own schedule with full support', gradient: 'from-sky-500 to-sky-400' },
+                  { icon: <Shield className="size-5" />, title: 'Lead Your City', desc: 'Manage all service operations in your designated area', gradient: 'from-[#0A2463] to-[#0D3B7A]' },
+                  { icon: <Briefcase className="size-5" />, title: 'Earn Commissions', desc: '3% commission on every booking in your area', gradient: 'from-[#0D3B7A] to-[#1D63FF]' },
+                  { icon: <User className="size-5" />, title: 'Build Your Team', desc: 'Recruit and manage service providers', gradient: 'from-[#1D63FF] to-[#4D8AFF]' },
+                  { icon: <FileText className="size-5" />, title: 'Flexible Hours', desc: 'Work on your own schedule with full support', gradient: 'from-[#4D8AFF] to-[#7DB0FF]' },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-3">
                     <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${item.gradient} text-white shadow-md`}>
                       {item.icon}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-[#0a1628]">{item.title}</p>
+                      <p className="text-sm font-semibold text-[#0A2463]">{item.title}</p>
                       <p className="text-xs text-muted-foreground">{item.desc}</p>
                     </div>
                   </div>
@@ -785,7 +785,7 @@ export function JoinManagerPage() {
           {/* Requirements Card */}
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
             <div className="bg-white p-6">
-              <h3 className="mb-4 text-lg font-bold text-[#0a1628]">Requirements</h3>
+              <h3 className="mb-4 text-lg font-bold text-[#0A2463]">Requirements</h3>
               <ul className="space-y-3">
                 {[
                   'Must be 21+ years old',
@@ -795,7 +795,7 @@ export function JoinManagerPage() {
                   'Passionate about service quality',
                 ].map((req) => (
                   <li key={req} className="flex items-start gap-2">
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#2d5a8e]" />
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#1D63FF]" />
                     <span className="text-sm text-muted-foreground">{req}</span>
                   </li>
                 ))}
@@ -806,7 +806,7 @@ export function JoinManagerPage() {
           {/* Application Process Card */}
           <div className="overflow-hidden rounded-2xl border-0 shadow-lg">
             <div className="bg-white p-6">
-              <h3 className="mb-4 text-lg font-bold text-[#0a1628]">Application Process</h3>
+              <h3 className="mb-4 text-lg font-bold text-[#0A2463]">Application Process</h3>
               <div className="space-y-3">
                 {[
                   { step: '1', label: 'Fill the application form', icon: <FileText className="size-4" /> },
@@ -815,7 +815,7 @@ export function JoinManagerPage() {
                   { step: '4', label: 'Selection & onboarding', icon: <CheckCircle2 className="size-4" /> },
                 ].map((item) => (
                   <div key={item.step} className="flex items-center gap-3">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#2d5a8e]/10 text-[#2d5a8e]">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#1D63FF]/10 text-[#1D63FF]">
                       {item.icon}
                     </div>
                     <span className="text-sm text-muted-foreground">{item.label}</span>
@@ -835,14 +835,14 @@ export function JoinManagerPage() {
         className="mt-12"
       >
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          <div className="h-1.5 bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
           <div className="p-6 sm:p-8">
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0a1628] to-[#1e3a5f] text-white shadow-md">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] text-white shadow-md">
                 <HelpCircle className="size-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-[#0a1628]">Frequently Asked Questions</h3>
+                <h3 className="text-lg font-bold text-[#0A2463]">Frequently Asked Questions</h3>
                 <p className="text-sm text-muted-foreground">Find answers to common questions about the Area Manager role</p>
               </div>
             </div>
@@ -850,7 +850,7 @@ export function JoinManagerPage() {
             <Accordion type="single" collapsible className="w-full">
               {FAQ_ITEMS.map((faq, index) => (
                 <AccordionItem key={index} value={`faq-${index}`}>
-                  <AccordionTrigger className="text-sm font-semibold text-[#0a1628] hover:text-[#2d5a8e] hover:no-underline text-left">
+                  <AccordionTrigger className="text-sm font-semibold text-[#0A2463] hover:text-[#1D63FF] hover:no-underline text-left">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-muted-foreground leading-relaxed">

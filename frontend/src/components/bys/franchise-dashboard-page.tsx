@@ -61,8 +61,8 @@ const fadeUp = {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string }> = {
     PENDING: { className: 'bg-yellow-50 text-yellow-700 border-yellow-200' },
-    CONFIRMED: { className: 'bg-blue-50 text-blue-700 border-blue-200' },
-    IN_PROGRESS: { className: 'bg-sky-50 text-sky-700 border-sky-200' },
+    CONFIRMED: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/20' },
+    IN_PROGRESS: { className: 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/20' },
     COMPLETED: { className: 'bg-green-50 text-green-700 border-green-200' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200' },
     ACTIVE: { className: 'bg-green-50 text-green-700 border-green-200' },
@@ -127,10 +127,10 @@ export function FranchiseDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Franchise Dashboard</h1>
+        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">Franchise Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your franchise operations & track performance</p>
       </motion.div>
 
@@ -139,19 +139,19 @@ export function FranchiseDashboardPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] p-6 sm:p-8"
+        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-6 sm:p-8"
       >
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Building2 className="size-5 text-sky-300" />
-              <span className="text-sm font-medium text-sky-200">Franchise Owner</span>
+              <Building2 className="size-5 text-[#FFCE32]" />
+              <span className="text-sm font-medium text-[#FFE066]">Franchise Owner</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">
               {user?.name?.split(' ')[0] || 'Franchise'} 👋
             </h2>
-            <p className="mt-1 text-sky-100/80">Your franchise at a glance</p>
+            <p className="mt-1 text-[#FFE066]/80">Your franchise at a glance</p>
           </div>
         </div>
       </motion.div>
@@ -159,7 +159,7 @@ export function FranchiseDashboardPage() {
       {/* Stats Cards */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <Card className="border-l-4 border-l-[#2d5a8e] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -168,28 +168,28 @@ export function FranchiseDashboardPage() {
                     {statsLoading ? <Skeleton className="h-7 w-12" /> : stats.totalVendors}
                   </p>
                 </div>
-                <div className="rounded-lg bg-[#0a1628]/10 p-2.5 text-[#2d5a8e]">
+                <div className="rounded-lg bg-[#0A2463]/10 p-2.5 text-[#1D63FF]">
                   <Users className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-emerald-500 transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-muted-foreground">Active Vendors</p>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">
+                  <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">
                     {statsLoading ? <Skeleton className="h-7 w-12" /> : stats.activeVendors}
                   </p>
                 </div>
-                <div className="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
+                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
                   <Activity className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-[#1e3a5f] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#0D3B7A] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
@@ -198,22 +198,22 @@ export function FranchiseDashboardPage() {
                     {statsLoading ? <Skeleton className="h-7 w-12" /> : stats.totalBookings}
                   </p>
                 </div>
-                <div className="rounded-lg bg-[#0a1628]/10 p-2.5 text-[#1e3a5f]">
+                <div className="rounded-lg bg-[#0A2463]/10 p-2.5 text-[#0D3B7A]">
                   <CalendarCheck className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-emerald-500 transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-muted-foreground">Total Revenue</p>
-                  <p className="mt-1 text-2xl font-bold text-emerald-700">
+                  <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">
                     {statsLoading ? <Skeleton className="h-7 w-16" /> : `₹${stats.totalRevenue.toLocaleString()}`}
                   </p>
                 </div>
-                <div className="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
+                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
                   <IndianRupee className="size-5" />
                 </div>
               </div>
@@ -234,16 +234,16 @@ export function FranchiseDashboardPage() {
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-teal-500 transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-xs font-medium text-muted-foreground">Completed</p>
-                  <p className="mt-1 text-2xl font-bold text-teal-700">
+                  <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">
                     {statsLoading ? <Skeleton className="h-7 w-8" /> : stats.completedBookings}
                   </p>
                 </div>
-                <div className="rounded-lg bg-teal-50 p-2.5 text-teal-600">
+                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
                   <TrendingUp className="size-5" />
                 </div>
               </div>
@@ -257,9 +257,9 @@ export function FranchiseDashboardPage() {
         {/* Recent Vendors */}
         <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-                <Users className="size-5 text-sky-300" />
+                <Users className="size-5 text-[#FFCE32]" />
                 Recent Vendors
               </CardTitle>
             </CardHeader>
@@ -280,9 +280,9 @@ export function FranchiseDashboardPage() {
                   {recentVendors.map((vendor) => (
                     <div
                       key={vendor.id}
-                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-sky-50/30"
+                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-[#1D63FF]/5/30"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-md">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-md">
                         <Wrench className="size-4 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -309,9 +309,9 @@ export function FranchiseDashboardPage() {
         {/* Recent Bookings */}
         <motion.div {...fadeUp} transition={{ delay: 0.25 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0a1628]/5 to-sky-50/50 pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0a1628]">
-                <CalendarCheck className="size-5 text-[#2d5a8e]" />
+            <CardHeader className="bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
+                <CalendarCheck className="size-5 text-[#1D63FF]" />
                 Recent Bookings
               </CardTitle>
             </CardHeader>
@@ -332,9 +332,9 @@ export function FranchiseDashboardPage() {
                   {recentBookings.map((booking) => (
                     <div
                       key={booking.id}
-                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-sky-50/30"
+                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-[#1D63FF]/5/30"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-md">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-md">
                         <CalendarCheck className="size-4 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -345,7 +345,7 @@ export function FranchiseDashboardPage() {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         <StatusBadge status={booking.status} />
-                        <span className="text-xs font-semibold text-[#2d5a8e]">₹{booking.amount.toLocaleString()}</span>
+                        <span className="text-xs font-semibold text-[#1D63FF]">₹{booking.amount.toLocaleString()}</span>
                       </div>
                     </div>
                   ))}
@@ -360,19 +360,19 @@ export function FranchiseDashboardPage() {
       <div className="mt-6">
         <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0a1628]/5 to-sky-50/50 pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0a1628]">
-                <MapPin className="size-5 text-[#2d5a8e]" />
+            <CardHeader className="bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
+                <MapPin className="size-5 text-[#1D63FF]" />
                 Franchise Coverage
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-xl bg-sky-50 p-4 text-center">
+                <div className="rounded-xl bg-[#1D63FF]/5 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Franchise Zone</p>
-                  <p className="mt-1 text-lg font-bold text-[#0a1628]">{user?.city || 'Not Assigned'}</p>
+                  <p className="mt-1 text-lg font-bold text-[#0A2463]">{user?.city || 'Not Assigned'}</p>
                 </div>
-                <div className="rounded-xl bg-emerald-50 p-4 text-center">
+                <div className="rounded-xl bg-[#FFCE32]/10 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Active Status</p>
                   <Badge variant="outline" className="mt-1 bg-green-50 text-green-700 border-green-200">{stats.status || 'Active'}</Badge>
                 </div>

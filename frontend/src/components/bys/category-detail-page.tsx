@@ -117,49 +117,49 @@ const CATEGORY_STYLES: Record<string, {
   cardAccent: string;
 }> = {
   plumbing: {
-    gradient: 'from-blue-500 to-cyan-500',
-    headerGradient: 'from-blue-600 via-blue-500 to-cyan-400',
-    lightBg: 'bg-blue-50',
-    lightText: 'text-blue-700',
+    gradient: 'from-[#4D8AFF] to-[#FFCE32]',
+    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#FFCE32]',
+    lightBg: 'bg-[#4D8AFF]/5',
+    lightText: 'text-[#1D63FF]',
     borderColor: 'border-l-blue-500',
     hoverBorder: 'hover:border-l-blue-400',
-    glow: 'shadow-blue-500/20',
-    accentBadge: 'bg-blue-100 text-blue-700',
-    iconBg: 'bg-blue-100',
-    pillBg: 'bg-blue-50',
-    pillText: 'text-blue-700',
-    heroAccent: 'from-blue-400/30 to-cyan-400/20',
-    cardAccent: 'ring-blue-200/50',
+    glow: 'shadow-[#4D8AFF]/20',
+    accentBadge: 'bg-[#4D8AFF]/10 text-[#1D63FF]',
+    iconBg: 'bg-[#4D8AFF]/10',
+    pillBg: 'bg-[#4D8AFF]/5',
+    pillText: 'text-[#1D63FF]',
+    heroAccent: 'from-[#7DB0FF]/30 to-[#FFCE32]/20',
+    cardAccent: 'ring-[#4D8AFF]/30/50',
   },
   electrical: {
-    gradient: 'from-sky-500 to-yellow-500',
-    headerGradient: 'from-sky-600 via-sky-500 to-yellow-400',
-    lightBg: 'bg-sky-50',
-    lightText: 'text-sky-700',
-    borderColor: 'border-l-sky-500',
-    hoverBorder: 'hover:border-l-cyan-400',
-    glow: 'shadow-sky-500/20',
-    accentBadge: 'bg-sky-100 text-sky-700',
-    iconBg: 'bg-sky-100',
-    pillBg: 'bg-sky-50',
-    pillText: 'text-sky-700',
-    heroAccent: 'from-cyan-400/30 to-yellow-400/20',
-    cardAccent: 'ring-sky-200/50',
+    gradient: 'from-[#4D8AFF] to-[#FFCE32]',
+    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#FFCE32]',
+    lightBg: 'bg-[#4D8AFF]/5',
+    lightText: 'text-[#1D63FF]',
+    borderColor: 'border-l-[#1D63FF]',
+    hoverBorder: 'hover:border-l-[#FFCE32]',
+    glow: 'shadow-[#4D8AFF]/20',
+    accentBadge: 'bg-[#4D8AFF]/10 text-[#1D63FF]',
+    iconBg: 'bg-[#4D8AFF]/10',
+    pillBg: 'bg-[#4D8AFF]/5',
+    pillText: 'text-[#1D63FF]',
+    heroAccent: 'from-[#FFCE32]/30 to-[#FFCE32]/20',
+    cardAccent: 'ring-[#4D8AFF]/30/50',
   },
   'air-conditioner': {
-    gradient: 'from-teal-500 to-emerald-500',
-    headerGradient: 'from-teal-600 via-teal-500 to-emerald-400',
-    lightBg: 'bg-teal-50',
-    lightText: 'text-teal-700',
-    borderColor: 'border-l-teal-500',
-    hoverBorder: 'hover:border-l-teal-400',
-    glow: 'shadow-teal-500/20',
-    accentBadge: 'bg-teal-100 text-teal-700',
-    iconBg: 'bg-teal-100',
-    pillBg: 'bg-teal-50',
-    pillText: 'text-teal-700',
-    heroAccent: 'from-teal-400/30 to-emerald-400/20',
-    cardAccent: 'ring-teal-200/50',
+    gradient: 'from-[#4D8AFF] to-[#4D8AFF]',
+    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#7DB0FF]',
+    lightBg: 'bg-[#FFCE32]/5',
+    lightText: 'text-[#0D3B7A]',
+    borderColor: 'border-l-[#4D8AFF]',
+    hoverBorder: 'hover:border-l-[#7DB0FF]',
+    glow: 'shadow-[#4D8AFF]/20',
+    accentBadge: 'bg-[#FFCE32]/5 text-[#0D3B7A]',
+    iconBg: 'bg-[#FFCE32]/5',
+    pillBg: 'bg-[#FFCE32]/5',
+    pillText: 'text-[#0D3B7A]',
+    heroAccent: 'from-[#7DB0FF]/30 to-[#7DB0FF]/20',
+    cardAccent: 'ring-[#1D63FF]/30/50',
   },
 };
 
@@ -170,19 +170,19 @@ const CATEGORY_IMAGE_MAP: Record<string, string> = {
 };
 
 const DEFAULT_STYLE = {
-  gradient: 'from-emerald-500 to-teal-500',
-  headerGradient: 'from-emerald-600 via-emerald-500 to-teal-400',
-  lightBg: 'bg-emerald-50',
-  lightText: 'text-emerald-700',
-  borderColor: 'border-l-emerald-500',
-  hoverBorder: 'hover:border-l-emerald-400',
-  glow: 'shadow-emerald-500/20',
-  accentBadge: 'bg-emerald-100 text-emerald-700',
-  iconBg: 'bg-emerald-100',
-  pillBg: 'bg-emerald-50',
-  pillText: 'text-emerald-700',
-  heroAccent: 'from-emerald-400/30 to-teal-400/20',
-  cardAccent: 'ring-emerald-200/50',
+  gradient: 'from-[#4D8AFF] to-[#4D8AFF]',
+  headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#7DB0FF]',
+  lightBg: 'bg-[#FFCE32]/5',
+  lightText: 'text-[#0D3B7A]',
+  borderColor: 'border-l-[#1D63FF]',
+  hoverBorder: 'hover:border-l-[#7DB0FF]',
+  glow: 'shadow-[#1D63FF]/20',
+  accentBadge: 'bg-[#FFCE32]/5 text-[#0D3B7A]',
+  iconBg: 'bg-[#FFCE32]/5',
+  pillBg: 'bg-[#FFCE32]/5',
+  pillText: 'text-[#0D3B7A]',
+  heroAccent: 'from-[#7DB0FF]/30 to-[#7DB0FF]/20',
+  cardAccent: 'ring-[#1D63FF]/30/50',
 };
 
 // ─── Subcategory Icon Helper ───────────────────────────────────────────────────
@@ -229,9 +229,9 @@ function StarRating({ rating, totalReviews }: { rating: number; totalReviews: nu
             key={i}
             className={`size-3.5 ${
               i < fullStars
-                ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
+                ? 'fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
                 : i === fullStars && hasHalf
-                  ? 'fill-sky-200 text-cyan-400'
+                  ? 'fill-[#FFE066] text-[#FFCE32]'
                   : 'fill-gray-200 text-gray-200'
             }`}
           />
@@ -528,7 +528,7 @@ export function CategoryDetailPage() {
                           <p className="line-clamp-1 text-xs text-muted-foreground">{sub.description}</p>
                         )}
                       </div>
-                      <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-emerald-600" />
+                      <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#1D63FF]" />
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -566,20 +566,20 @@ export function CategoryDetailPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Sort by:</span>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[170px] rounded-xl border-emerald-200 bg-white shadow-sm focus:ring-emerald-500/20">
+                <SelectTrigger className="w-[170px] rounded-xl border-[#1D63FF]/30 bg-white shadow-sm focus:ring-[#1D63FF]/20">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="newest" className="focus:bg-emerald-50 focus:text-emerald-700">
+                  <SelectItem value="newest" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
                     Newest First
                   </SelectItem>
-                  <SelectItem value="rating" className="focus:bg-emerald-50 focus:text-emerald-700">
+                  <SelectItem value="rating" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
                     Highest Rated
                   </SelectItem>
-                  <SelectItem value="price_low" className="focus:bg-emerald-50 focus:text-emerald-700">
+                  <SelectItem value="price_low" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
                     Price: Low → High
                   </SelectItem>
-                  <SelectItem value="price_high" className="focus:bg-emerald-50 focus:text-emerald-700">
+                  <SelectItem value="price_high" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
                     Price: High → Low
                   </SelectItem>
                 </SelectContent>
@@ -599,7 +599,7 @@ export function CategoryDetailPage() {
               </div>
               <p className="text-xl font-bold text-foreground">Failed to load services</p>
               <p className="mt-2 text-muted-foreground">Something went wrong. Please try again.</p>
-              <Button variant="outline" size="lg" onClick={refetchSrv} className="mt-6 border-emerald-200 text-emerald-700 hover:bg-emerald-50">
+              <Button variant="outline" size="lg" onClick={refetchSrv} className="mt-6 border-[#1D63FF]/30 text-[#0D3B7A] hover:bg-[#FFCE32]/5">
                 Retry
               </Button>
             </motion.div>
@@ -630,7 +630,7 @@ export function CategoryDetailPage() {
                         onClick={() => navigate('service-detail', { serviceId: service.id })}
                       >
                         {/* Image section */}
-                        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
+                        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5">
                           {service.images ? (
                             <img
                               src={(() => { try { const arr = JSON.parse(service.images); return Array.isArray(arr) ? arr[0] || '' : ''; } catch { return ''; } })()}
@@ -639,7 +639,7 @@ export function CategoryDetailPage() {
                             />
                           ) : (
                             <div className="flex size-full items-center justify-center">
-                              <Wrench className="size-12 text-emerald-300" />
+                              <Wrench className="size-12 text-[#7DB0FF]" />
                             </div>
                           )}
 
@@ -655,7 +655,7 @@ export function CategoryDetailPage() {
 
                           {/* Negotiable badge */}
                           {service.priceNegotiable && (
-                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-sky-100/90 px-2.5 py-0.5 text-xs font-semibold text-sky-700 backdrop-blur-sm">
+                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-[#4D8AFF]/10/90 px-2.5 py-0.5 text-xs font-semibold text-[#1D63FF] backdrop-blur-sm">
                               Negotiable
                             </Badge>
                           )}
@@ -664,7 +664,7 @@ export function CategoryDetailPage() {
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                             <Button
                               size="sm"
-                              className="shimmer rounded-full bg-white/90 px-6 text-emerald-700 shadow-xl hover:bg-white"
+                              className="shimmer rounded-full bg-white/90 px-6 text-[#0D3B7A] shadow-xl hover:bg-white"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 navigate('service-detail', { serviceId: service.id });
@@ -683,7 +683,7 @@ export function CategoryDetailPage() {
                         </div>
 
                         <CardContent className="p-5">
-                          <h3 className="text-base font-bold leading-tight line-clamp-1 group-hover:text-emerald-700 transition-colors">
+                          <h3 className="text-base font-bold leading-tight line-clamp-1 group-hover:text-[#0D3B7A] transition-colors">
                             {service.title}
                           </h3>
 
@@ -714,7 +714,7 @@ export function CategoryDetailPage() {
                           {service.totalBookings > 0 && (
                             <div className="mt-2 flex items-center justify-between">
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <CheckCircle2 className="size-3 text-emerald-500" />
+                                <CheckCircle2 className="size-3 text-[#4D8AFF]" />
                                 <span>{service.totalBookings} bookings completed</span>
                               </div>
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -740,30 +740,30 @@ export function CategoryDetailPage() {
               {/* Illustration-style empty state */}
               <div className="relative mx-auto mb-6 size-36">
                 {/* Outer rings */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-50 to-teal-50" />
-                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-emerald-100/60 to-teal-100/40" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5" />
+                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-[#FFCE32]/10/60 to-[#1D63FF]/4" />
                 <div className="absolute inset-6 rounded-full bg-white/80" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <motion.div
                     animate={{ y: [0, -8, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   >
-                    <Search className="size-14 text-emerald-300" />
+                    <Search className="size-14 text-[#7DB0FF]" />
                   </motion.div>
                 </div>
                 {/* Decorative dots */}
-                <div className="absolute -right-2 top-2 size-3 rounded-full bg-sky-300" />
-                <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-blue-300" />
-                <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-teal-300" />
+                <div className="absolute -right-2 top-2 size-3 rounded-full bg-[#7DB0FF]" />
+                <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-[#7DB0FF]" />
+                <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-[#FFCE32]/20" />
                 <div className="absolute -top-1 left-1/2 size-2 rounded-full bg-rose-300" />
                 {/* Animated circles */}
                 <motion.div
-                  className="absolute -right-4 bottom-0 size-4 rounded-full bg-emerald-200/50"
+                  className="absolute -right-4 bottom-0 size-4 rounded-full bg-[#FFCE32]/10/50"
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                  className="absolute left-0 -top-3 size-3 rounded-full bg-sky-200/50"
+                  className="absolute left-0 -top-3 size-3 rounded-full bg-[#7DB0FF]/30"
                   animate={{ scale: [1, 1.4, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 />
@@ -774,14 +774,14 @@ export function CategoryDetailPage() {
               </p>
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:from-emerald-700 hover:to-teal-700"
+                  className="shimmer bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 hover:from-[#0D3B7A] hover:to-[#0D3B7A]"
                   onClick={() => navigate('categories')}
                 >
                   <ArrowLeft className="mr-1 size-4" /> Browse Other Categories
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+                  className="border-[#1D63FF]/30 text-[#0D3B7A] hover:bg-[#FFCE32]/5"
                   onClick={() => navigate('home')}
                 >
                   Back to Home
@@ -832,7 +832,7 @@ export function CategoryDetailPage() {
                 <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                   <Button
                     size="lg"
-                    className="shimmer bg-white px-8 text-emerald-700 shadow-xl hover:bg-emerald-50"
+                    className="shimmer bg-white px-8 text-[#0D3B7A] shadow-xl hover:bg-[#FFCE32]/5"
                     onClick={() => navigate('home')}
                   >
                     Book Now <ArrowRight className="ml-2 size-4" />

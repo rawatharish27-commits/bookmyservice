@@ -155,10 +155,10 @@ interface Coupon {
    ================================================================ */
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    PENDING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#FFE066]' },
+    ACCEPTED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
+    IN_PROGRESS: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#4D8AFF]/30', dotColor: 'bg-[#7DB0FF]' },
+    COMPLETED: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
   };
@@ -173,7 +173,7 @@ function StatusBadge({ status }: { status: string }) {
 
 function VerifiedBadge({ verified }: { verified: boolean }) {
   return verified ? (
-    <Badge className="gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs">
+    <Badge className="gap-1 bg-[#1D63FF]/10 text-[#0D3B7A] border border-[#1D63FF]/30 font-semibold text-xs">
       <ShieldCheck className="size-3.5" />
       Verified
     </Badge>
@@ -207,29 +207,29 @@ function formatDate(date: string, opts?: Intl.DateTimeFormatOptions) {
    CHART CONFIG
    ================================================================ */
 const pieChartConfig: ChartConfig = {
-  COMPLETED: { label: 'Completed', color: '#10b981' },
+  COMPLETED: { label: 'Completed', color: '#4D8AFF' },
   CANCELLED: { label: 'Cancelled', color: '#f43f5e' },
-  PENDING: { label: 'Pending', color: '#06b6d4' },
-  ACCEPTED: { label: 'Accepted', color: '#0ea5e9' },
-  IN_PROGRESS: { label: 'In Progress', color: '#3b82f6' },
+  PENDING: { label: 'Pending', color: '#FFCE32' },
+  ACCEPTED: { label: 'Accepted', color: '#FFCE32' },
+  IN_PROGRESS: { label: 'In Progress', color: '#4D8AFF' },
   REFUNDED: { label: 'Refunded', color: '#6b7280' },
 };
 
 const PIE_COLORS: Record<string, string> = {
-  COMPLETED: '#10b981',
+  COMPLETED: '#1D63FF',
   CANCELLED: '#f43f5e',
-  PENDING: '#06b6d4',
-  ACCEPTED: '#0ea5e9',
-  IN_PROGRESS: '#3b82f6',
+  PENDING: '#FFCE32',
+  ACCEPTED: '#FFCE32',
+  IN_PROGRESS: '#4D8AFF',
   REFUNDED: '#6b7280',
 };
 
 const spendingChartConfig: ChartConfig = {
-  amount: { label: 'Spent', color: '#14b8a6' },
+  amount: { label: 'Spent', color: '#4D8AFF' },
 };
 
 const frequencyChartConfig: ChartConfig = {
-  bookings: { label: 'Bookings', color: '#0ea5e9' },
+  bookings: { label: 'Bookings', color: '#FFCE32' },
 };
 
 /* ================================================================
@@ -375,11 +375,11 @@ export function ClientDashboardPage() {
 
     bookings.slice(0, 5).forEach((b) => {
       const iconMap: Record<string, { icon: typeof Activity; bg: string }> = {
-        COMPLETED: { icon: CheckCircle2, bg: 'from-emerald-400 to-teal-500' },
+        COMPLETED: { icon: CheckCircle2, bg: 'from-[#7DB0FF] to-[#4D8AFF]' },
         CANCELLED: { icon: Receipt, bg: 'from-red-400 to-rose-500' },
-        PENDING: { icon: Clock, bg: 'from-sky-400 to-blue-500' },
-        ACCEPTED: { icon: CheckCircle2, bg: 'from-sky-400 to-blue-500' },
-        IN_PROGRESS: { icon: Timer, bg: 'from-cyan-400 to-blue-500' },
+        PENDING: { icon: Clock, bg: 'from-[#7DB0FF] to-[#4D8AFF]' },
+        ACCEPTED: { icon: CheckCircle2, bg: 'from-[#7DB0FF] to-[#4D8AFF]' },
+        IN_PROGRESS: { icon: Timer, bg: 'from-[#FFE066] to-[#4D8AFF]' },
       };
       const cfg = iconMap[b.status] || iconMap.PENDING;
       items.push({
@@ -398,7 +398,7 @@ export function ClientDashboardPage() {
         id: `review-${r.id}`,
         type: 'review',
         icon: MessageSquare,
-        iconBg: 'from-cyan-400 to-blue-500',
+        iconBg: 'from-[#FFE066] to-[#4D8AFF]',
         title: `Rated ${r.rating} ★ for ${r.service?.title || 'Service'}`,
         subtitle: r.comment ? r.comment.slice(0, 60) : 'No comment',
         date: r.createdAt,
@@ -411,7 +411,7 @@ export function ClientDashboardPage() {
         id: `tx-${tx.id}`,
         type: 'payment',
         icon: isCredit ? ArrowDownLeft : ArrowUpRight,
-        iconBg: isCredit ? 'from-emerald-400 to-teal-500' : 'from-rose-400 to-pink-500',
+        iconBg: isCredit ? 'from-[#7DB0FF] to-[#4D8AFF]' : 'from-rose-400 to-pink-500',
         title: `${isCredit ? 'Received' : 'Spent'} ${formatCurrency(tx.amount)}`,
         subtitle: tx.description || tx.category,
         date: tx.createdAt,
@@ -428,36 +428,36 @@ export function ClientDashboardPage() {
       title: 'Upcoming Bookings',
       value: upcomingBookings.length,
       icon: CalendarCheck,
-      gradient: 'from-sky-400 to-blue-500',
-      bgGlow: 'bg-sky-500/10',
+      gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+      bgGlow: 'bg-[#1D63FF]/10',
     },
     {
       title: 'Completed Services',
       value: completedCount,
       icon: CheckCircle2,
-      gradient: 'from-emerald-400 to-teal-500',
-      bgGlow: 'bg-emerald-500/10',
+      gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+      bgGlow: 'bg-[#1D63FF]/100/10',
     },
     {
       title: 'Total Spent',
       value: formatCurrency(totalSpent),
       icon: DollarSign,
-      gradient: 'from-cyan-400 to-blue-500',
-      bgGlow: 'bg-sky-500/10',
+      gradient: 'from-[#FFE066] to-[#4D8AFF]',
+      bgGlow: 'bg-[#1D63FF]/10',
     },
     {
       title: 'Wallet Balance',
       value: formatCurrency(wallet.balance || 0),
       icon: Wallet,
-      gradient: 'from-teal-400 to-emerald-500',
-      bgGlow: 'bg-teal-500/10',
+      gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+      bgGlow: 'bg-[#1D63FF]/10',
     },
     {
       title: 'Active AMC Plans',
       value: activeAmcCount,
       icon: Shield,
-      gradient: 'from-cyan-400 to-teal-500',
-      bgGlow: 'bg-cyan-500/10',
+      gradient: 'from-[#FFE066] to-[#4D8AFF]',
+      bgGlow: 'bg-[#FFCE32]/10',
     },
     {
       title: 'Available Coupons',
@@ -469,16 +469,16 @@ export function ClientDashboardPage() {
   ];
 
   const quickActions = [
-    { icon: Briefcase, label: 'Book Service', nav: 'categories', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
-    { icon: CalendarCheck, label: 'View Bookings', nav: 'client-bookings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: Wallet, label: 'Add Money', nav: 'client-wallet', gradient: 'from-teal-500 to-cyan-600', shadow: 'shadow-teal-500/25' },
+    { icon: Briefcase, label: 'Book Service', nav: 'categories', gradient: 'from-[#4D8AFF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: CalendarCheck, label: 'View Bookings', nav: 'client-bookings', gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: Wallet, label: 'Add Money', nav: 'client-wallet', gradient: 'from-[#4D8AFF] to-[#E6B800]', shadow: 'shadow-[#1D63FF]/25' },
     { icon: Ticket, label: 'Apply Coupon', nav: 'client-coupons', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
   ];
 
   const SERVICE_ICONS = [
-    { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumbing' },
-    { icon: Zap, color: 'from-cyan-400 to-yellow-400', label: 'Electrical' },
-    { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'Air Conditioner' },
+    { icon: Droplets, color: 'from-[#7DB0FF] to-[#FFE066]', label: 'Plumbing' },
+    { icon: Zap, color: 'from-[#FFE066] to-[#FFCE32]', label: 'Electrical' },
+    { icon: Wind, color: 'from-[#7DB0FF] to-[#7DB0FF]', label: 'Air Conditioner' },
   ];
 
   /* ================================================================
@@ -491,7 +491,7 @@ export function ClientDashboardPage() {
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/20">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg shadow-[#1D63FF]/20">
                 <BarChart3 className="size-5 text-white" />
               </div>
               <div>
@@ -524,7 +524,7 @@ export function ClientDashboardPage() {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+            className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8"
           >
             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
             <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
@@ -539,15 +539,15 @@ export function ClientDashboardPage() {
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <Sparkles className="size-4 text-emerald-200" />
-                    <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+                    <Sparkles className="size-4 text-[#7DB0FF]" />
+                    <span className="text-sm font-medium text-[#4D8AFF]">Welcome back</span>
                   </div>
                   <h1 className="mt-0.5 text-2xl font-bold text-white sm:text-3xl">
                     {user?.name?.split(' ')[0] || 'Client'}
                   </h1>
                   <div className="mt-1.5 flex flex-wrap items-center gap-2">
                     <VerifiedBadge verified={!!user?.isVerified} />
-                    <span className="text-xs text-emerald-200/80">
+                    <span className="text-xs text-[#7DB0FF]/80">
                       Member since {formatDate(memberSince, { month: 'long', year: 'numeric' })}
                     </span>
                   </div>
@@ -601,9 +601,9 @@ export function ClientDashboardPage() {
             {/* Upcoming Bookings */}
             <motion.div className="lg:col-span-2" {...fadeUp}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
                   <CardTitle className="text-lg font-semibold">Upcoming Bookings</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/10">
                     View All <ArrowRight className="ml-1 size-4" />
                   </Button>
                 </CardHeader>
@@ -616,13 +616,13 @@ export function ClientDashboardPage() {
                     </div>
                   ) : upcomingBookings.length === 0 ? (
                     <div className="py-10 text-center">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                        <CalendarDays className="size-8 text-emerald-300" />
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/10">
+                        <CalendarDays className="size-8 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 font-medium text-muted-foreground">No upcoming bookings</p>
                       <p className="mt-1 text-sm text-muted-foreground/70">Book a service to get started</p>
                       <Button
-                        className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                        className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
                         size="sm"
                         onClick={() => navigate('categories')}
                       >
@@ -638,9 +638,9 @@ export function ClientDashboardPage() {
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.08 }}
                           onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
-                          className="group flex w-full items-center gap-4 rounded-xl border border-transparent p-4 text-left transition-all hover:border-emerald-100 hover:bg-emerald-50/50 hover:shadow-sm"
+                          className="group flex w-full items-center gap-4 rounded-xl border border-transparent p-4 text-left transition-all hover:border-[#1D63FF]/20 hover:bg-[#1D63FF]/10/50 hover:shadow-sm"
                         >
-                          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md shadow-emerald-500/20">
+                          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md shadow-[#1D63FF]/20">
                             <Briefcase className="size-5 text-white" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -658,7 +658,7 @@ export function ClientDashboardPage() {
                           </div>
                           <div className="flex shrink-0 flex-col items-end gap-1">
                             <StatusBadge status={booking.status} />
-                            <span className="text-xs font-semibold text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+                            <span className="text-xs font-semibold text-[#1D63FF]">₹{booking.finalPrice?.toLocaleString()}</span>
                           </div>
                         </motion.button>
                       ))}
@@ -671,9 +671,9 @@ export function ClientDashboardPage() {
             {/* Recent Reviews */}
             <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+                <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
-                  <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-sky-600 hover:text-sky-700 hover:bg-sky-50">
+                  <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
                     View All
                   </Button>
                 </CardHeader>
@@ -686,21 +686,21 @@ export function ClientDashboardPage() {
                     </div>
                   ) : recentReviews.length === 0 ? (
                     <div className="py-8 text-center">
-                      <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-sky-50">
-                        <Star className="size-7 text-sky-300" />
+                      <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
+                        <Star className="size-7 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 text-sm text-muted-foreground">No reviews yet</p>
                     </div>
                   ) : (
                     <div className="space-y-3">
                       {recentReviews.map((review) => (
-                        <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-sky-100 hover:bg-sky-50/30">
+                        <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-[#1D63FF]/10 hover:bg-[#1D63FF]/5/30">
                           <div className="flex items-center gap-2">
                             <div className="flex">
                               {Array.from({ length: 5 }).map((_, i) => (
                                 <Star
                                   key={i}
-                                  className={`size-3.5 ${i < review.rating ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]' : 'text-gray-200'}`}
+                                  className={`size-3.5 ${i < review.rating ? 'fill-[#FFE066] text-[#FFE066] drop-shadow-[0_0_3px_rgba(255,206,50,0.4)]' : 'text-gray-200'}`}
                                 />
                               ))}
                             </div>
@@ -757,7 +757,7 @@ export function ClientDashboardPage() {
           >
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-lg font-semibold">Explore Services</h2>
-              <Button variant="ghost" size="sm" onClick={() => navigate('categories')} className="text-emerald-600 hover:text-emerald-700">
+              <Button variant="ghost" size="sm" onClick={() => navigate('categories')} className="text-[#1D63FF] hover:text-[#0D3B7A]">
                 See All <ArrowRight className="ml-1 size-4" />
               </Button>
             </div>
@@ -771,13 +771,13 @@ export function ClientDashboardPage() {
                   whileHover={{ y: -4 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => navigate('categories')}
-                  className="group flex min-w-[180px] flex-col items-center gap-3 rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-all hover:border-emerald-100 hover:shadow-md"
+                  className="group flex min-w-[180px] flex-col items-center gap-3 rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-all hover:border-[#1D63FF]/20 hover:shadow-md"
                 >
                   <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${svc.color} shadow-lg transition-transform group-hover:scale-110`}>
                     <svc.icon className="size-7 text-white" />
                   </div>
                   <span className="font-semibold text-sm">{svc.label}</span>
-                  <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium group-hover:gap-2 transition-all">
+                  <span className="flex items-center gap-1 text-xs text-[#1D63FF] font-medium group-hover:gap-2 transition-all">
                     Explore <ArrowRight className="size-3" />
                   </span>
                 </motion.button>
@@ -795,20 +795,20 @@ export function ClientDashboardPage() {
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
-              className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-teal-600 via-cyan-600 to-sky-600 p-6 sm:p-8"
+              className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D63FF] via-[#E6B800] to-[#1D63FF] p-6 sm:p-8"
             >
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
               <div className="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl" />
               <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-white/5 blur-3xl" />
               <div className="relative">
-                <div className="flex items-center gap-2 text-teal-100">
+                <div className="flex items-center gap-2 text-[#4D8AFF]">
                   <Flame className="size-5" />
                   <span className="text-sm font-medium">Your Service Journey</span>
                 </div>
                 <h2 className="mt-2 text-2xl font-bold text-white sm:text-3xl">
                   {daysOnPlatform} Days on BookYourService
                 </h2>
-                <p className="mt-1 text-teal-100/80">
+                <p className="mt-1 text-[#4D8AFF]/80">
                   Since {formatDate(memberSince, { month: 'long', day: 'numeric', year: 'numeric' })}
                 </p>
               </div>
@@ -826,29 +826,29 @@ export function ClientDashboardPage() {
                   icon: CalendarDays,
                   label: 'Account Created',
                   value: formatDate(memberSince, { month: 'short', year: 'numeric' }),
-                  gradient: 'from-teal-400 to-cyan-500',
-                  bgGlow: 'bg-teal-500/10',
+                  gradient: 'from-[#7DB0FF] to-[#FFCE32]',
+                  bgGlow: 'bg-[#1D63FF]/10',
                 },
                 {
                   icon: Clock,
                   label: 'Days on Platform',
                   value: daysOnPlatform,
-                  gradient: 'from-cyan-400 to-sky-500',
-                  bgGlow: 'bg-cyan-500/10',
+                  gradient: 'from-[#FFE066] to-[#4D8AFF]',
+                  bgGlow: 'bg-[#FFCE32]/10',
                 },
                 {
                   icon: CalendarCheck,
                   label: 'First Booking',
                   value: firstBookingDate ? formatDate(firstBookingDate, { month: 'short', year: 'numeric' }) : 'N/A',
-                  gradient: 'from-sky-400 to-blue-500',
-                  bgGlow: 'bg-sky-500/10',
+                  gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+                  bgGlow: 'bg-[#1D63FF]/10',
                 },
                 {
                   icon: Briefcase,
                   label: 'Total Bookings',
                   value: bookings.length,
-                  gradient: 'from-emerald-400 to-teal-500',
-                  bgGlow: 'bg-emerald-500/10',
+                  gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+                  bgGlow: 'bg-[#1D63FF]/100/10',
                 },
               ].map((stat) => (
                 <motion.div key={stat.label} variants={fadeUp}>
@@ -873,15 +873,15 @@ export function ClientDashboardPage() {
               {/* Service Insights */}
               <motion.div {...fadeUp}>
                 <Card className="h-full rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-teal-50/80 to-cyan-50/50 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                      <Award className="size-5 text-teal-600" />
+                      <Award className="size-5 text-[#1D63FF]" />
                       Service Insights
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-5 space-y-4">
-                    <div className="flex items-center gap-4 rounded-xl bg-teal-50/50 p-4">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 shadow-md">
+                    <div className="flex items-center gap-4 rounded-xl bg-[#FFCE32]/5 p-4">
+                      <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#FFCE32] shadow-md">
                         <TrendingUp className="size-5 text-white" />
                       </div>
                       <div>
@@ -891,25 +891,25 @@ export function ClientDashboardPage() {
                     </div>
                     <Separator />
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="rounded-xl bg-sky-50/50 p-4 text-center">
-                        <p className="text-2xl font-bold text-emerald-600">{formatCurrency(totalSpent)}</p>
+                      <div className="rounded-xl bg-[#1D63FF]/5/50 p-4 text-center">
+                        <p className="text-2xl font-bold text-[#1D63FF]">{formatCurrency(totalSpent)}</p>
                         <p className="mt-1 text-xs text-muted-foreground">Total Amount Spent</p>
                       </div>
-                      <div className="rounded-xl bg-cyan-50/50 p-4 text-center">
+                      <div className="rounded-xl bg-[#FFCE32]/5 p-4 text-center">
                         <div className="flex items-center justify-center gap-1">
-                          <Star className="size-4 fill-cyan-400 text-cyan-400" />
-                          <span className="text-2xl font-bold text-cyan-600">{reviewSummary.avg.toFixed(1)}</span>
+                          <Star className="size-4 fill-[#FFE066] text-[#FFE066]" />
+                          <span className="text-2xl font-bold text-[#E6B800]">{reviewSummary.avg.toFixed(1)}</span>
                         </div>
                         <p className="mt-1 text-xs text-muted-foreground">Avg Rating Given</p>
                       </div>
                     </div>
                     <Separator />
-                    <div className="flex items-center justify-between rounded-xl bg-sky-50/50 p-4">
+                    <div className="flex items-center justify-between rounded-xl bg-[#1D63FF]/5/50 p-4">
                       <div className="flex items-center gap-2">
-                        <MessageSquare className="size-4 text-sky-600" />
+                        <MessageSquare className="size-4 text-[#1D63FF]" />
                         <span className="text-sm font-medium">Reviews Written</span>
                       </div>
-                      <span className="text-lg font-bold text-sky-600">{reviewSummary.total}</span>
+                      <span className="text-lg font-bold text-[#1D63FF]">{reviewSummary.total}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -918,17 +918,17 @@ export function ClientDashboardPage() {
               {/* Favorite Providers */}
               <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
                 <Card className="h-full rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-cyan-50/80 to-sky-50/50 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#1D63FF]/5 pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                      <Users className="size-5 text-cyan-600" />
+                      <Users className="size-5 text-[#E6B800]" />
                       Favorite Providers
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="p-5">
                     {favoriteProviders.length === 0 ? (
                       <div className="flex flex-col items-center justify-center py-8 text-center">
-                        <div className="flex size-14 items-center justify-center rounded-2xl bg-cyan-50">
-                          <Heart className="size-7 text-cyan-300" />
+                        <div className="flex size-14 items-center justify-center rounded-2xl bg-[#FFCE32]/10">
+                          <Heart className="size-7 text-[#FFE066]" />
                         </div>
                         <p className="mt-3 text-sm text-muted-foreground">No favorite providers yet</p>
                         <p className="mt-1 text-xs text-muted-foreground/70">Book more services to discover favorites</p>
@@ -941,16 +941,16 @@ export function ClientDashboardPage() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.08 }}
-                            className="flex items-center gap-4 rounded-xl border border-transparent p-3 transition-all hover:border-cyan-100 hover:bg-cyan-50/30"
+                            className="flex items-center gap-4 rounded-xl border border-transparent p-3 transition-all hover:border-[#FFCE32]/20 hover:bg-[#FFCE32]/10/30"
                           >
-                            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-cyan-400 to-sky-500 shadow-md text-white font-bold">
+                            <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] shadow-md text-white font-bold">
                               {prov.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0 flex-1">
                               <p className="text-sm font-semibold">{prov.name}</p>
                               <p className="text-xs text-muted-foreground">{prov.count} booking{prov.count > 1 ? 's' : ''}</p>
                             </div>
-                            <Badge variant="secondary" className="bg-cyan-50 text-cyan-700 text-xs">
+                            <Badge variant="secondary" className="bg-[#FFCE32]/10 text-[#E6B800] text-xs">
                               #{idx + 1}
                             </Badge>
                           </motion.div>
@@ -965,9 +965,9 @@ export function ClientDashboardPage() {
             {/* Booking Frequency Trend */}
             <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
               <Card className="rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <BarChart3 className="size-5 text-sky-600" />
+                    <BarChart3 className="size-5 text-[#1D63FF]" />
                     Booking Frequency Trend
                   </CardTitle>
                 </CardHeader>
@@ -1002,9 +1002,9 @@ export function ClientDashboardPage() {
             {/* Activity Feed */}
             <motion.div {...fadeUp}>
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                    <Activity className="size-5 text-emerald-600" />
+                    <Activity className="size-5 text-[#1D63FF]" />
                     Recent Activity
                   </CardTitle>
                 </CardHeader>
@@ -1024,13 +1024,13 @@ export function ClientDashboardPage() {
                     </div>
                   ) : activityFeed.length === 0 ? (
                     <div className="py-12 text-center">
-                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                        <Activity className="size-8 text-emerald-300" />
+                      <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/10">
+                        <Activity className="size-8 text-[#7DB0FF]" />
                       </div>
                       <p className="mt-3 font-medium text-muted-foreground">No activity yet</p>
                       <p className="mt-1 text-sm text-muted-foreground/70">Your recent activity will show here</p>
                       <Button
-                        className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                        className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
                         size="sm"
                         onClick={() => navigate('categories')}
                       >
@@ -1077,9 +1077,9 @@ export function ClientDashboardPage() {
               {/* Booking Status Breakdown */}
               <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
                 <Card className="h-full rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-cyan-50/80 to-sky-50/50 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#1D63FF]/5 pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                      <CircleDot className="size-5 text-cyan-600" />
+                      <CircleDot className="size-5 text-[#E6B800]" />
                       Booking Status Breakdown
                     </CardTitle>
                   </CardHeader>
@@ -1122,9 +1122,9 @@ export function ClientDashboardPage() {
               {/* Monthly Spending Chart */}
               <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
                 <Card className="h-full rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-teal-50/80 to-emerald-50/50 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#1D63FF]/5 pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                      <IndianRupee className="size-5 text-teal-600" />
+                      <IndianRupee className="size-5 text-[#1D63FF]" />
                       Monthly Spending
                     </CardTitle>
                   </CardHeader>

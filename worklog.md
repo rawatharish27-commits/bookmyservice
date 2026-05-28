@@ -829,3 +829,515 @@ Stage Summary:
 - Join pages have complete legal T&C compliant with Indian law and FAQ section
 - Admin can manage job applications from dedicated page
 - All changes pushed to main branch
+
+---
+Task ID: 7c
+Agent: Color Update Agent (Batch 3)
+Task: Update colors batch 3 - Other pages (10 files)
+
+Work Log:
+
+### Files Updated (10 total):
+
+1. **categories-page.tsx** — Updated CATEGORY_GRADIENTS color maps (plumbing, electrical, air-conditioner) and DEFAULT_GRADIENT. Replaced all emerald/teal/cyan/blue/sky Tailwind classes with new brand color arbitrary values. Hero section: `from-emerald-950 via-emerald-900 to-teal-700` → `from-[#0A2463] via-[#0A2463] to-[#0D3B7A]`. Trust badges: emerald/blue/sky gradients → new blue/yellow brand colors. CTA section: emerald-teal gradient border → Prussian Blue/yellow. All bg/text/border/shadow/ring/hover/focus classes updated.
+
+2. **category-detail-page.tsx** — Updated CATEGORY_STYLES color maps (plumbing, electrical, air-conditioner) and DEFAULT_STYLE. Replaced all emerald/teal/cyan/blue/sky gradient, text, bg, border, ring, shadow classes. Star rating: `fill-cyan-400` → `fill-[#FFCE32]`. Subcategory chevron: `hover:text-emerald-600` → `hover:text-[#1D63FF]`. Sort select: `border-emerald-200 focus:ring-emerald-500` → new brand colors. Empty state gradients updated.
+
+3. **service-detail-page.tsx** — Updated star rating: `fill-cyan-400 text-cyan-400` → `fill-[#FFCE32] text-[#FFCE32]`. Replaced all emerald/teal/cyan/blue/sky bg/text/gradient/ring/shadow/hover classes. Image gallery: `from-emerald-50 to-teal-50` → `from-[#FFCE32]/5 to-[#FFCE32]/5`. Sidebar: `from-emerald-500 via-teal-500 to-cyan-500` → `from-[#4D8AFF] via-[#4D8AFF] to-[#FFCE32]`. Book button: `from-emerald-600 to-teal-600` → `from-[#1D63FF] to-[#1D63FF]`. Inline style `#059669` → `#1D63FF`.
+
+4. **search-page.tsx** — Updated hero gradient: `from-emerald-600 via-teal-600 to-cyan-700` → `from-[#1D63FF] via-[#1D63FF] to-[#E6B800]`. Search input: emerald focus rings → `[#1D63FF]`. Category pills: sky/teal colors → new brand colors. Filter panel: emerald focus states → Prussian Blue. Results cards: emerald gradients → new brand. Empty/initial state gradients: emerald-teal → yellow tint.
+
+5. **about-page.tsx** — Updated hero gradient: `from-emerald-950 via-teal-800 to-cyan-700` → `from-[#0A2463] via-[#0D3B7A] to-[#E6B800]`. Team avatars: emerald ring → `[#1D63FF]/30`. Values section: emerald/sky/blue gradients → new brand gradients. Stats section: emerald gradient → `from-[#0A2463]`. CTA buttons: emerald gradients → Prussian Blue.
+
+6. **contact-page.tsx** — Updated hero gradient: `from-emerald-950 via-teal-800 to-cyan-700` → `from-[#0A2463] via-[#0D3B7A] to-[#E6B800]`. Form: emerald focus states → `[#1D63FF]`. Top gradient bar: emerald-teal-cyan → `from-[#4D8AFF] via-[#4D8AFF] to-[#FFCE32]`. Contact card gradients: emerald/teal/cyan → new brand colors. Map placeholder: `#059669` → `#1D63FF`.
+
+7. **faq-page.tsx** — Updated hero gradient: `from-emerald-950 via-teal-800 to-cyan-700` → `from-[#0A2463] via-[#0D3B7A] to-[#E6B800]`. Search input: emerald focus → Prussian Blue. Category tabs: emerald gradients → `from-[#1D63FF] to-[#1D63FF]`. FAQ accordion: emerald border/ring states → new brand. CTA section: same hero gradient pattern.
+
+8. **how-it-works-page.tsx** — Updated hero gradient: `from-emerald-950 via-teal-800 to-cyan-700` → `from-[#0A2463] via-[#0D3B7A] to-[#E6B800]`. Timeline steps: emerald/teal/cyan/blue gradients → new brand color progression. Vertical line: `from-emerald-500 via-teal-500 to-cyan-500` → `from-[#4D8AFF] via-[#4D8AFF] to-[#FFCE32]`. Step number badge: emerald ring → `[#1D63FF]/30`. Tab switcher: emerald gradient → `from-[#1D63FF] to-[#1D63FF]`. Benefits: emerald gradient → Prussian Blue. CTA buttons updated.
+
+9. **join-manager-page.tsx** — Updated hex color values: `#0a1628` → `#0A2463`, `#1e3a5f` → `#0D3B7A`, `#2d5a8e` → `#1D63FF`. Hero gradient: `from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]` → `from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]`. Sidebar benefit gradients updated. `text-sky-300` → `text-[#7DB0FF]`, `text-sky-100` → `text-[#4D8AFF]/10`. Form focus states: `[#2d5a8e]` → `[#1D63FF]`.
+
+10. **join-local-admin-page.tsx** — Same hex color replacements as join-manager-page.tsx. `#0a1628` → `#0A2463`, `#1e3a5f` → `#0D3B7A`, `#2d5a8e` → `#1D63FF`. All gradient bars, hero sections, form inputs, buttons, and sidebar benefit gradients updated to new brand colors.
+
+### Color Mapping Applied:
+- `#0a1628`/`#0f2b4c`/`#0f2440` → `#0A2463` (deeper blue)
+- `#1e3a5f` → `#0D3B7A` (dark blue)
+- `#2d5a8e` → `#1D63FF` (Prussian Blue primary)
+- `#06b6d4`/`#0ea5e9` → `#FFCE32` (yellow accent)
+- `#0891b2` → `#E6B800` (darker yellow)
+- `#38bdf8` → `#FFE066` (light yellow)
+- `#059669` → `#1D63FF`
+- emerald-600/teal-600 → `[#1D63FF]`, emerald-700 → `[#0D3B7A]`, emerald-500/teal-500 → `[#4D8AFF]`
+- emerald-50/teal-50 → `[#FFCE32]/5`, emerald-100 → `[#FFCE32]/10`
+- cyan-400/500 → `[#FFCE32]`, sky-500 → `[#4D8AFF]`, sky-600/700 → `[#1D63FF]`
+- blue-600/700 → `[#1D63FF]`, blue-500 → `[#4D8AFF]`, blue-400 → `[#7DB0FF]`
+
+### Verification:
+- Zero remaining `emerald-*`, `teal-*`, `cyan-*`, `sky-*` Tailwind color classes (excluding `glass-emerald` custom CSS class)
+- Zero remaining old hex values (`#1e3a5f`, `#0a1628`, `#2d5a8e`, etc.)
+- Vite build: ✅ successful (1.04s, 215 precache entries)
+- TypeScript: pre-existing errors in admin-analytics-dashboard only (unrelated to color changes)
+- No functionality changes — only color updates
+
+---
+Task ID: 7b
+Agent: Color Update Agent (Batch 2 - Dashboards)
+Task: Update colors in dashboard and profile pages to new brand scheme (Prussian Blue #1D63FF, Yellow #FFCE32)
+
+Work Log:
+
+### File 1: admin-profile-page.tsx
+- Replaced hex values: `#0a1628` → `#0A2463`, `#1e3a5f` → `#0D3B7A`, `#2d5a8e` → `#1D63FF` (partially pre-updated)
+- Replaced `sky-100/200/300` → `[#1D63FF]/10/30/[#7DB0FF]`
+- Replaced `emerald-50/400/500/600` → `[#1D63FF]/10/[#7DB0FF]/[#4D8AFF]/[#1D63FF]`
+- Updated gradient bars, avatar rings, buttons to new brand colors
+- Updated focus states: `focus:border-[#2d5a8e]` → `focus:border-[#1D63FF]`
+- Updated hover states: `hover:text-[#2d5a8e]` → `hover:text-[#1D63FF]`
+- Updated password strength indicator: `bg-sky-400`/`bg-emerald-400` → `bg-[#7DB0FF]`
+- Updated security tips icons: `text-[#2d5a8e]` → `text-[#1D63FF]`
+
+### File 2: client-profile-page.tsx
+- Replaced all `emerald-*` gradient bars and icon backgrounds: `from-emerald-400 via-teal-500 to-cyan-500` → `from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]`
+- Replaced avatar border: `from-emerald-400 via-teal-500 to-cyan-500` → `from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]`
+- Replaced camera button: `from-emerald-500 to-teal-600` → `from-[#4D8AFF] to-[#1D63FF]`
+- Replaced role badges: `from-emerald-500 to-teal-600` → `from-[#4D8AFF] to-[#1D63FF]`
+- Replaced status badges: `bg-emerald-50 text-emerald-700` → `bg-[#1D63FF]/10 text-[#0D3B7A]`
+- Replaced security icon: `from-cyan-400 to-blue-500` → `from-[#FFE066] to-[#4D8AFF]`
+- Replaced save button: `shadow-emerald-500/25` → `shadow-[#1D63FF]/25`
+- Replaced login button gradient
+
+### File 3: provider-profile-page.tsx
+- Same avatar/camera button gradient updates as client profile
+- Replaced Provider badge: `from-sky-500 to-blue-600` → `from-[#1D63FF] to-[#1D63FF]`
+- Replaced KYC status icons: `bg-emerald-100`/`bg-sky-100` → `bg-[#1D63FF]/10`, `text-emerald-500`/`text-sky-500` → `text-[#4D8AFF]`/`text-[#1D63FF]`
+- Replaced Service Areas icon: `from-sky-400 to-blue-500` → `from-[#7DB0FF] to-[#4D8AFF]`
+- Replaced success message border: `border-emerald-200` → `border-[#1D63FF]/30`
+
+### File 4: client-dashboard-page.tsx
+- Replaced all Tailwind color classes: `emerald-*`, `teal-*`, `cyan-*`, `sky-*`, `blue-*` → new brand equivalents
+- Replaced hex values in chart configs: `#10b981` → `#1D63FF`, `#06b6d4` → `#FFCE32`, `#0ea5e9` → `#FFCE32`, `#3b82f6` → `#4D8AFF`, `#14b8a6` → `#4D8AFF`
+- Replaced gradient banners: `from-emerald-600 via-teal-600 to-cyan-600` → `from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32]`
+- Replaced journey header: `from-teal-600 via-cyan-600 to-sky-600` → `from-[#1D63FF] via-[#E6B800] to-[#1D63FF]`
+- Replaced all card header gradients: `from-emerald-50/80 to-teal-50/50` → `from-[#FFCE32]/10 to-[#FFCE32]/5`
+- Replaced star rating glow: `drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]` → `drop-shadow-[0_0_3px_rgba(255,206,50,0.4)]`
+- Replaced quick action gradients and shadows
+- Replaced service icon gradients: `from-blue-400 to-cyan-400` → `from-[#7DB0FF] to-[#FFE066]`
+
+### File 5: provider-dashboard-page.tsx
+- Replaced all Tailwind color classes matching the same patterns
+- Replaced hex values in chart configs: `#10b981` → `#1D63FF`, `#06b6d4` → `#FFCE32`
+- Replaced welcome banner gradient: `from-emerald-600 via-teal-600 to-cyan-600` → `from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32]`
+- Replaced performance hero: `from-cyan-600 via-sky-600 to-blue-600` → `from-[#E6B800] via-[#1D63FF] to-[#1D63FF]`
+- Replaced pending bookings badge: `from-sky-500 to-blue-500` → `from-[#1D63FF] to-[#4D8AFF]`
+- Replaced quick action gradients and KYC action: `from-cyan-500 to-sky-600` → `from-[#FFCE32] to-[#1D63FF]`
+
+### File 6: admin-dashboard-page.tsx
+- Replaced `text-emerald-600` → `text-[#1D63FF]` (in MetricCard defaults, health score, trend indicators)
+- Replaced `text-blue-600` → `text-[#1D63FF]` (in metric cards, quick action buttons)
+- Replaced `border-l-emerald-500` → `border-l-[#1D63FF]`, `border-l-blue-500` → `border-l-[#1D63FF]`
+- Replaced `bg-emerald-100` → `bg-[#1D63FF]/10`, `bg-blue-100` → `bg-[#1D63FF]/10`
+- Replaced `bg-green-100`/`text-green-600` → `bg-[#1D63FF]/10`/`text-[#1D63FF]`
+- Replaced status badge colors: `text-blue-800` → `text-[#0D3B7A]`, `border-blue-200` → `border-[#4D8AFF]/30`
+- Replaced admin action type badge: `text-emerald-700` → `text-[#0D3B7A]`
+
+Stage Summary:
+- All 6 files updated: admin-profile, client-profile, provider-profile, client-dashboard, provider-dashboard, admin-dashboard
+- Zero remaining old color references in all 6 target files
+- New brand colors applied: Prussian Blue (#1D63FF) primary, Yellow (#FFCE32) accent, Dark Blue (#0D3B7A, #0A2463)
+- Gradients use cohesive dark-blue → primary → yellow accent progression
+- Chart configs updated with new hex values
+- TypeScript: 0 new errors introduced (only pre-existing admin-analytics errors remain)
+- No functionality changes — only color updates
+
+
+---
+Task ID: 7a
+Agent: Color Scheme Update Agent
+Task: Update Batch 1 (Core Layout & Auth) colors to new brand scheme — Prussian Blue #1D63FF + Yellow #FFCE32
+
+Work Log:
+
+### Files Updated (5 of 6 — admin-login-page.tsx uses amber/orange theme, no changes needed)
+
+**1. header.tsx** — Extensive color updates across all sections:
+- Logo gradients: `from-blue-900 via-blue-700 to-sky-400` → `from-[#0A2463] via-[#1D63FF] to-[#7DB0FF]`
+- Navigation: `text-blue-600` → `text-[#1D63FF]`, `bg-blue-50` → `bg-[#1D63FF]/5`
+- Role badge gradients: `from-emerald-600 to-teal-500` → `from-[#1D63FF] to-[#4D8AFF]`, `from-teal-500 to-cyan-500` → `from-[#4D8AFF] to-[#FFCE32]`
+- Active indicator: `from-blue-900 via-blue-600 to-sky-400` → `from-[#0A2463] via-[#1D63FF] to-[#7DB0FF]`
+- Notification badge: `from-blue-800 via-blue-600 to-sky-500` → `from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF]`
+- Avatar rings: `from-blue-800 via-blue-600 to-sky-400` → `from-[#0D3B7A] via-[#1D63FF] to-[#7DB0FF]`
+- Dropdown menus: `focus:bg-blue-50` → `focus:bg-[#1D63FF]/5`, `focus:text-blue-700` → `focus:text-[#1D63FF]`
+- Sign up button: `from-blue-900 via-blue-700 to-sky-500` → `from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]`
+- Mobile sheet: border/background colors updated to new brand palette
+
+**2. footer.tsx** — All color references updated:
+- Top gradient bar: `from-blue-900 via-blue-700 to-sky-400` → `from-[#0A2463] via-[#1D63FF] to-[#7DB0FF]`
+- Logo: same gradient update
+- Link hover: `hover:text-blue-600` → `hover:text-[#1D63FF]`
+- Underline gradient: `from-blue-800 to-sky-500` → `from-[#0D3B7A] to-[#4D8AFF]`
+- Service icon backgrounds: `from-blue-50 to-sky-50` → `from-[#1D63FF]/5 to-[#4D8AFF]/5`
+- Newsletter input: `border-blue-200/60` → `border-[#1D63FF]/15`, `bg-blue-50/30` → `bg-[#1D63FF]/5`
+- Subscribe button: `from-blue-900 via-blue-700 to-sky-500` → `from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]`
+- Contact icons: `text-blue-600` → `text-[#1D63FF]`, `text-sky-600` → `text-[#4D8AFF]`
+- Section dots: all updated with `from-[#0A2463]`, `to-[#7DB0FF]` etc.
+- Divider: `via-blue-400/40` → `via-[#7DB0FF]/40`
+
+**3. home-page.tsx** — Massive update (~90 color references):
+- All hex colors: `#1e3a5f` → `#0D3B7A`, `#0a1628` → `#0A2463`, `#2d5a8e` → `#1D63FF`
+- Inline style gradients: `linear-gradient(135deg, #0a1628 0%, #1e3a5f 50%, #2d5a8e 100%)` → same with new hex values
+- RotatingText gradient: `from-sky-300 via-blue-200 to-cyan-300` → `from-[#7DB0FF] via-[#1D63FF]/20 to-[#FFCE32]`
+- Hero section: all gradient stops updated with new brand colors
+- Service cards: borders, shadows, badges all updated
+- Testimonial carousel: all `[#1e3a5f]` → `[#0D3B7A]`, `[#0a1628]` → `[#0A2463]`, `[#2d5a8e]` → `[#1D63FF]`
+- Star ratings: `fill-cyan-400 text-cyan-400` → `fill-[#FFCE32] text-[#FFCE32]`
+- How It Works section: all gradients updated
+- CTA section: `from-cyan-400 to-sky-300` → `from-[#FFCE32] to-[#7DB0FF]`
+- Area launch popup: all brand color references updated
+
+**4. login-page.tsx** — Color theme updated from emerald/teal/cyan to Prussian Blue/yellow:
+- Left panel: `from-emerald-950 via-teal-800 to-cyan-900` → `from-[#0A2463] via-[#0D3B7A] to-[#0A2463]`
+- Floating icons: `from-emerald-400 to-cyan-400` → `from-[#7DB0FF] to-[#FFCE32]`
+- Trust badges: `from-emerald-100 to-cyan-100` → `from-[#FFCE32]/10 to-[#FFCE32]/10`
+- Tab gradients: `from-emerald-600 via-teal-500 to-cyan-500` → `from-[#1D63FF] via-[#1D63FF] to-[#FFCE32]`
+- Login button: same gradient update
+- Forgot password dialog: `from-emerald-600 via-teal-500 to-cyan-500` → new brand colors
+- Input focus states: `focus:border-emerald-400 focus:ring-emerald-400/20` → `focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20`
+
+**5. admin-login-page.tsx** — No changes needed (uses amber/orange theme for admin)
+
+**6. register-page.tsx** — Color theme updated from emerald/teal/cyan to Prussian Blue/yellow:
+- Left panel: `from-emerald-900 via-teal-800 to-cyan-900` → `from-[#0A2463] via-[#0D3B7A] to-[#0A2463]`
+- Specialization cards: all `emerald-*` and `teal-*` references → brand blue/yellow equivalents
+- Role options: `from-emerald-600 via-teal-500 to-cyan-500` → `from-[#1D63FF] via-[#1D63FF] to-[#FFCE32]`
+- Password strength: `from-emerald-500 to-teal-400` → `from-[#4D8AFF] to-[#7DB0FF]`
+- Step indicator: `from-emerald-500 to-cyan-400` → `from-[#4D8AFF] to-[#FFCE32]`
+- Submit button: `from-emerald-600 via-teal-600 to-cyan-500` → `from-[#1D63FF] via-[#1D63FF] to-[#FFCE32]`
+- All input focus states updated
+- Checkbox: `data-[state=checked]:bg-emerald-500` → `data-[state=checked]:bg-[#1D63FF]`
+- Terms links: `text-emerald-600` → `text-[#1D63FF]`
+
+### Color Mapping Applied
+- Hex: `#1e3a5f`→`#0D3B7A`, `#0a1628`→`#0A2463`, `#2d5a8e`→`#1D63FF`
+- Tailwind: `blue-{900,800,700,600,500,400,300,200,100,50}` → `[#0A2463],[#0D3B7A],[#1D63FF],[#1D63FF],[#4D8AFF],[#7DB0FF],[#7DB0FF],[#1D63FF]/20,[#1D63FF]/10,[#1D63FF]/5`
+- Tailwind: `sky-*` → same mapping as blue
+- Tailwind: `emerald-{600,500,400,100,50}` → `[#1D63FF],[#4D8AFF],[#7DB0FF],[#FFCE32]/10,[#FFCE32]/5`
+- Tailwind: `teal-*` → same as emerald mapping
+- Tailwind: `cyan-{500,400,300}` → `[#FFCE32],[#FFCE32],[#FFE066]`
+
+### Verification
+- Zero remaining old color patterns (blue-*, sky-*, emerald-*, teal-*, cyan-*) in any updated file
+- Zero double-opacity issues (e.g., `[#hex]/5/60`) — all resolved
+- TypeScript: No new errors in modified files (pre-existing admin-analytics-dashboard error remains)
+- Vite build: Successful ✓ (1.04s, 215 precache entries)
+
+Stage Summary:
+- 5 files updated with new brand colors (Prussian Blue #1D63FF + Yellow #FFCE32)
+- admin-login-page.tsx: No changes (amber/orange admin theme)
+- All hex color codes, Tailwind utility classes, gradients, shadows, borders, and focus states updated
+- Zero functionality changes — only visual colors modified
+- Build passes cleanly
+
+
+---
+Task ID: 7d
+Agent: Color Scheme Update Agent (Batch 4)
+Task: Update 13 remaining dashboard/page files to new brand colors (Prussian Blue #1D63FF, Yellow #FFCE32)
+
+Work Log:
+- Updated 13 files in `/home/z/my-project/frontend/src/components/bys/`:
+  1. job-offer-popup.tsx
+  2. franchise-dashboard-page.tsx
+  3. super-admin-dashboard-page.tsx
+  4. admin-analytics-dashboard-page.tsx
+  5. client-commissions-page.tsx
+  6. booking-page.tsx
+  7. area-manager-dashboard-page.tsx
+  8. recommendations-page.tsx
+  9. ai-recommendations-section.tsx
+  10. admin-job-applications-page.tsx
+  11. local-admin-dashboard-page.tsx
+  12. manager-dashboard-page.tsx
+  13. admin-b2b-page.tsx
+
+**Hex color replacements applied:**
+- `#0a1628` → `#0A2463` (deeper blue)
+- `#1e3a5f` → `#0D3B7A` (dark blue)
+- `#2d5a8e` → `#1D63FF` (Prussian Blue)
+- `#3b82f6` → `#4D8AFF` (light blue)
+- `#4a90c4` → `#4D8AFF`
+- `#7bb3d9` → `#7DB0FF`
+- `#a8d1e8` → `#A8C8FF`
+- `#cce4f2` → `#CCE0FF`
+- `#e8f1f8` → `#E8F0FF`
+
+**Tailwind class replacements applied:**
+- emerald-600/700 → `[#1D63FF]`/`[#0D3B7A]`
+- emerald-500/400/300/200 → `[#4D8AFF]`/`[#7DB0FF]`
+- emerald-50/100 (bg) → `[#FFCE32]/10`
+- emerald-200 (border) → `[#FFCE32]/30`
+- teal-* → same mapping as emerald
+- cyan-600/500 → `[#FFCE32]`, cyan-400 → `[#FFE066]`, cyan-700 → `[#E6B800]`
+- sky-600/500 → `[#1D63FF]`, sky-400 → `[#4D8AFF]`, sky-300 → `[#FFCE32]`, sky-200 → `[#FFE066]`
+- sky-50/100 (bg) → `[#1D63FF]/5`/`[#1D63FF]/10`
+- blue-700/600 → `[#1D63FF]`, blue-500 → `[#4D8AFF]`, blue-100 text → `[#FFE066]`
+- Gradient stops: `from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]`
+- Dark banner accents: `text-[#FFCE32]` for sky-300, `text-[#FFE066]` for sky-200/100
+
+**Quality checks:**
+- TypeScript compilation: 2 pre-existing errors (unrelated `userGrowth`/`dailyBookings` props in AnalyticsData interface)
+- Vite build: ✅ successful (985ms, 215 precache entries)
+- No old hex colors (`#0a1628`, `#1e3a5f`, `#2d5a8e`) remain
+- No old Tailwind classes (`emerald-*`, `teal-*`, `cyan-*`, `sky-*`, `blue-*`) remain
+- Fixed double-replacement artifact `bg-[#FFCE32]/100/10` → `bg-[#FFCE32]/10` in client-commissions-page.tsx
+- All layout, spacing, and structural CSS preserved — only colors changed
+
+Stage Summary:
+- 13 files updated with new brand color scheme
+- Primary: #1D63FF (Prussian Blue), Accent: #FFCE32 (Yellow)
+- Dark: #0A2463, #0D3B7A, Light: #4D8AFF, #7DB0FF, #FFE066
+- Vite build passes cleanly
+- Zero functional changes — only visual color updates
+
+---
+Task ID: 7e
+Agent: Color Update Agent (Batch 5)
+Task: Update colors for Provider & Client Subpages (Batch 5)
+
+Work Log:
+Updated 12 files to use new brand colors (Prussian Blue #1D63FF primary, Yellow #FFCE32 accent):
+
+1. **provider-earnings-page.tsx**
+   - Summary card gradients: from-emerald-400/teal-500 → from-[#7DB0FF]/[#4D8AFF], from-sky-400/sky-500 → from-[#4D8AFF]/[#1D63FF]
+   - Background glows: bg-emerald-500/10 → bg-[#1D63FF]/10
+   - Section header: from-emerald-50/80/to-teal-50/50 → from-[#FFCE32]/10/to-[#FFCE32]/5
+   - Empty state: bg-emerald-50 → bg-[#FFCE32]/10, text-emerald-300 → text-[#7DB0FF]
+   - Earnings text: text-emerald-600 → text-[#1D63FF], hover:bg-emerald-50/30 → hover:bg-[#FFCE32]/5
+
+2. **client-coupons-page.tsx**
+   - TYPE_CONFIG: Updated ALL, AIR_CONDITIONER, PLUMBING, ELECTRICAL, REFRIGERATOR, WATER_PURIFIER, MOVERS_AND_PACKERS, WATER_TANK_CLEANING gradient/bg mappings
+   - Hero banner: from-emerald-600/via-teal-600/to-cyan-600 → from-[#0D3B7A]/via-[#1D63FF]/to-[#FFCE32]
+   - Text colors: text-emerald-100 → text-[#FFCE32]/80, text-emerald-200 → text-[#FFCE32]/70
+   - Badge: bg-emerald-50/text-emerald-700/border-emerald-200 → bg-[#FFCE32]/10/text-[#0D3B7A]/border-[#FFCE32]/30
+   - Discount values: text-emerald-600 → text-[#1D63FF]
+   - Coupon code box: border-emerald-300/bg-emerald-50/60 → border-[#FFCE32]/40/bg-[#FFCE32]/5
+   - Status badges: emerald → [#FFCE32] for active, sky → [#1D63FF] for upcoming
+   - Apply button: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - Validation result: all emerald text/bg → brand color mappings
+   - Apply section header: from-emerald-50/80/to-teal-50/50 → from-[#FFCE32]/10/to-[#FFCE32]/5
+
+3. **provider-booking-detail-page.tsx**
+   - StatusBadge: PENDING/ASSIGNED → bg-[#1D63FF]/10, COMPLETED → bg-[#FFCE32]/10, IN_PROGRESS → bg-[#1D63FF]/10
+   - Timeline connectors: bg-emerald-400 → bg-[#4D8AFF]
+   - Icon circles: from-emerald-400/to-teal-500 → from-[#7DB0FF]/to-[#4D8AFF], from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - CURRENT badge: bg-emerald-100/text-emerald-700 → bg-[#FFCE32]/10/text-[#0D3B7A]
+   - OTP button: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - Tracking header gradient: from-emerald-400/via-teal-500/to-cyan-500 → from-[#7DB0FF]/via-[#4D8AFF]/to-[#FFCE32]
+   - Client info icons: bg-emerald-100 → bg-[#FFCE32]/10, text-emerald-600 → text-[#1D63FF]
+   - Contact section: border-emerald-200/bg-emerald-50 → border-[#FFCE32]/30/bg-[#FFCE32]/10
+   - Contact shared badge: border-sky-200/bg-sky-50 → border-[#1D63FF]/30/bg-[#1D63FF]/10
+   - Price earnings: text-emerald-600 → text-[#1D63FF]
+   - Action border: border-l-emerald-400 → border-l-[#4D8AFF]
+   - All action buttons: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+
+4. **technician-dashboard-page.tsx**
+   - StatusBadge: PENDING/ASSIGNED → bg-[#1D63FF]/10, ON_THE_WAY → bg-[#FFCE32]/10, ARRIVED → bg-[#FFCE32]/10, COMPLETED → bg-[#FFCE32]/10
+   - Star rating: fill-cyan-400 → fill-[#FFCE32]
+   - Job action buttons: all emerald/teal/cyan gradients → brand color gradients
+   - Stats: emerald/teal/sky/cyan gradients → brand gradient mappings
+   - Welcome banner: from-emerald-600/via-teal-600/to-cyan-600 → from-[#0D3B7A]/via-[#1D63FF]/to-[#FFCE32]
+   - Banner text: text-emerald-100/200/300 → text-[#FFCE32] variations
+   - Availability toggle: data-[state=checked]:bg-emerald-400 → bg-[#4D8AFF]
+   - Progress indicators: bg-emerald-500/400 → bg-[#4D8AFF]/bg-[#7DB0FF]
+   - Card headers: from-emerald-50/teal-50 → from-[#FFCE32]/10
+   - Quick actions: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - OTP dialog: border-emerald-200 → border-[#FFCE32]/30
+
+5. **provider-services-page.tsx**
+   - Create button: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - Empty state: bg-emerald-100/to-teal-50 → bg-[#FFCE32]/10/to-[#FFCE32]/5
+   - Status bars: from-emerald-400/to-teal-500 → from-[#7DB0FF]/to-[#4D8AFF], from-cyan-400/to-blue-500 → from-[#FFCE32]/to-[#1D63FF]
+   - Star: fill-cyan-400/text-cyan-400 → fill-[#FFCE32]/text-[#FFCE32]
+   - Badge: bg-emerald-50/text-emerald-700/border-emerald-200 → bg-[#FFCE32]/10/text-[#0D3B7A]/border-[#FFCE32]/30
+   - All shadow-emerald → shadow-[#1D63FF]
+
+6. **provider-reviews-page.tsx**
+   - Summary card gradient: from-cyan-400/via-blue-500/to-rose-500 → from-[#FFCE32]/via-[#1D63FF]/to-rose-500
+   - Rating distribution bars: fill-cyan-400/text-cyan-400 → fill-[#FFCE32]/text-[#FFCE32], from-cyan-400/to-sky-400 → from-[#FFCE32]/to-[#4D8AFF]
+   - Response card: from-emerald-400/to-teal-500 → from-[#7DB0FF]/to-[#4D8AFF]
+   - Reviewer avatar: from-emerald-400/to-teal-500 → from-[#7DB0FF]/to-[#4D8AFF]
+   - Verified badge: bg-emerald-50/text-emerald-700/border-emerald-200 → bg-[#FFCE32]/10/text-[#0D3B7A]/border-[#FFCE32]/30
+   - Empty state: from-sky-100/to-blue-50 → from-[#1D63FF]/10/to-[#1D63FF]/5
+
+7. **vendor-wallet-page.tsx**
+   - Transaction category configs: emerald/teal/cyan/sky gradients → brand color gradients
+   - Credit badges: border-emerald-200/bg-emerald-50/text-emerald-700 → border-[#FFCE32]/30/bg-[#FFCE32]/10/text-[#0D3B7A]
+   - Credit amounts: text-emerald-600 → text-[#1D63FF]
+
+8. **provider-create-service-page.tsx**
+   - Submit button: bg-emerald-600/hover:bg-emerald-700 → bg-[#1D63FF]/hover:bg-[#0D3B7A]
+   - Focus border: focus:border-emerald-400 → focus:border-[#4D8AFF]
+
+9. **booking-tracking-page.tsx**
+   - Status badges: sky → [#1D63FF], teal → [#FFCE32], emerald → [#FFCE32]/[#0D3B7A]
+   - Map placeholder: from-emerald-50/via-sky-50/to-teal-50 → from-[#FFCE32]/10/via-[#1D63FF]/5
+   - Map grid lines: bg-emerald-400 → bg-[#7DB0FF]
+   - Map label: text-emerald-700 → text-[#0D3B7A]
+   - Provider dot: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - Location data: text-emerald-400/500/600/700/800 → brand color mappings
+   - Timeline: from-emerald-400/via-teal-500/to-cyan-500 → from-[#7DB0FF]/via-[#4D8AFF]/to-[#FFCE32]
+   - Connection status: bg-emerald-50/text-emerald-700 → bg-[#FFCE32]/10/text-[#0D3B7A]
+   - Provider card: from-emerald-400/to-teal-500 → from-[#7DB0FF]/to-[#4D8AFF]
+   - View booking button: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+   - Live updates: sky colors → brand blues
+
+10. **provider-wallet-page.tsx**
+    - Wallet banner: from-emerald-600/via-teal-600/to-cyan-600 → from-[#0D3B7A]/via-[#1D63FF]/to-[#FFCE32]
+    - Banner text: text-emerald-100/200 → text-[#FFCE32]/80/70
+    - Quick action buttons: emerald/teal/sky gradients → brand color gradients
+    - Transaction history header: from-emerald-50/80/to-teal-50/50 → from-[#FFCE32]/10/to-[#FFCE32]/5
+    - Filter tabs: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+    - Credit badges: border-emerald-200/bg-emerald-50/text-emerald-700 → brand colors
+    - Credit amounts: text-emerald-600 → text-[#1D63FF]
+    - Withdrawal dialog: emerald border/bg/text → brand color mappings
+    - Success icon: bg-emerald-100 → bg-[#FFCE32]/10, text-emerald-600 → text-[#1D63FF]
+    - Method selector: border-emerald-500 → border-[#4D8AFF]
+    - Fixed missing closing quote on line 184 (sed artifact)
+
+11. **client-bookings-page.tsx**
+    - Status badge configs: sky → [#1D63FF], emerald → [#FFCE32]/[#0D3B7A]
+    - Tab configs: sky/emerald gradients → brand gradients
+    - Search: focus:border-emerald-400 → focus:border-[#4D8AFF]
+    - Empty state: from-emerald-100/to-teal-50 → from-[#FFCE32]/10/to-[#FFCE32]/5
+    - Browse button: from-emerald-500/to-teal-600 → from-[#4D8AFF]/to-[#1D63FF]
+
+12. **client-notifications-page.tsx**
+    - Notification type configs: sky → [#4D8AFF]/[#1D63FF], emerald → brand colors
+    - Unread indicator: bg-emerald-500 → bg-[#1D63FF]
+    - Unread notification border: border-emerald-100/bg-emerald-50 → border-[#FFCE32]/20/bg-[#FFCE32]/10
+    - Mark read button: text-emerald-600 → text-[#1D63FF]
+    - Empty state: from-emerald-100/to-teal-50 → from-[#FFCE32]/10/to-[#FFCE32]/5
+
+Stage Summary:
+- All 12 Provider & Client Subpage files updated with new brand colors
+- Zero references to old emerald/teal/cyan/sky/blue Tailwind colors remain
+- TypeScript compilation: Clean (0 errors in modified files)
+- Zero functional changes — only visual color updates
+- New brand palette applied consistently:
+  - Primary: #1D63FF (Prussian Blue)
+  - Dark: #0D3B7A, #0A2463
+  - Light: #4D8AFF, #7DB0FF
+  - Accent: #FFCE32, #FFE066, #E6B800
+
+## Task 7f — Update Colors Batch 6 (Client & Admin Subpages)
+**Date:** 2025-03-05
+**Status:** ✅ Complete
+
+### Files Updated (14 files)
+1. `client-booking-detail-page.tsx` — Status badges, timeline, tracking, contact, price breakdown, payment, invoice, review sections
+2. `client-amc-page.tsx` — Category icons, subscription status, banner, plan cards, subscribe dialog
+3. `client-invoices-page.tsx` — Status config, summary cards, filter tabs, invoice cards, load more
+4. `client-invoice-detail-page.tsx` — Status config, header, invoice card, line items table, totals
+5. `client-reviews-page.tsx` — Empty state, star ratings (fill/text/drop-shadow), edit dialog
+6. `client-favorites-page.tsx` — Empty state, favorite cards, star ratings, view details button
+7. `client-wallet-page.tsx` — Category config, balance card, quick actions, transaction history, withdrawal dialog
+8. `client-referrals-page.tsx` — Hero card, share options, referral stats, how it works, referral history
+9. `admin-franchises-page.tsx` — Status badge, stat cards, header icon, table rows, create dialog
+10. `admin-faq-page.tsx` — Category header icon, add/edit buttons
+11. `admin-amc-page.tsx` — Subscription status config, stats cards, plan cards, tabs, subscription list
+12. `admin-coupons-page.tsx` — Status styles, stats cards, coupon list, create dialog, preview
+13. `admin-disputes-page.tsx` — Status badge (UNDER_REVIEW), resolve dialog button
+14. `admin-user-detail-page.tsx` — Profile summary icons (bookings, services)
+
+### Color Mapping Applied
+- **emerald → Prussian Blue:** 600→[#1D63FF], 700→[#0D3B7A], 500→[#4D8AFF], 400→[#7DB0FF], 300→[#9DC2FF], 200→[#1D63FF]/20, 100→[#1D63FF]/10, 50→[#1D63FF]/5, 800→[#0D3B7A], 900→[#0A2463]
+- **teal → Prussian Blue:** Same mapping as emerald
+- **cyan → Yellow:** 600→[#FFCE32], 500→[#FFCE32], 400→[#FFE066], 300→[#FFE88A], 700→[#E6B800], 200→[#FFCE32]/20, 100→[#FFCE32]/10, 50→[#FFCE32]/5
+- **sky → Prussian Blue:** 600→[#1D63FF], 500→[#1D63FF], 400→[#4D8AFF], 200→[#1D63FF]/20, 100→[#1D63FF]/10, 50→[#1D63FF]/5, 700→[#0D3B7A], 800→[#0D3B7A]
+- **blue → Prussian Blue:** 900→[#0A2463], 800→[#0D3B7A], 700→[#1D63FF], 600→[#1D63FF], 500→[#4D8AFF], 400→[#7DB0FF], 200→[#1D63FF]/20, 100→[#1D63FF]/10, 50→[#1D63FF]/5
+- **Inline hex:** rgba(6,182,212,0.4)→rgba(255,206,50,0.4)
+
+### Special Handling
+- Opacity-modified light shades (e.g., `emerald-50/80`, `emerald-50/30`) → mapped to base `[#1D63FF]/5` (dropping extra opacity since /5 already provides light tint)
+- Shadow opacity modifiers preserved: `shadow-emerald-500/25` → `shadow-[#4D8AFF]/25`
+- Text opacity modifiers preserved: `text-emerald-600/70` → `text-[#1D63FF]/70`
+- rgba() color in drop-shadow filter updated: `rgba(6,182,212,0.4)` → `rgba(255,206,50,0.4)`
+- Colors NOT in scope (red, rose, pink, violet, purple, indigo, amber, orange, green, gray, yellow) left unchanged
+
+### Verification
+- Grep confirmed zero remaining old color references (emerald/teal/cyan/sky/blue-*) across all 14 files
+- Spot-checked key sections (status configs, gradients, badges, dialogs) for correct Tailwind arbitrary value syntax
+
+## Task 7g - Batch 7 Color Scheme Update (Provider, Technician & Booking subpages)
+
+**Date**: 2025-03-04
+**Status**: ✅ Complete
+
+### Files Updated (12 files):
+1. `provider-kyc-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+2. `provider-bookings-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+3. `technician-profile-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+4. `technician-earnings-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+5. `payment-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+6. `booking-confirmation-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors (incl. confetti hex colors #10b981→#1D63FF, #14b8a6→#4D8AFF, #06b6d4→#FFCE32)
+7. `legal-page.tsx` - emerald/teal/cyan/sky/blue → new brand colors
+8. `admin-revenue-page.tsx` - emerald/teal/cyan/sky/blue/green → new brand colors
+9. `admin-payouts-page.tsx` - emerald/teal/cyan/sky/blue/green → new brand colors
+10. `admin-crm-page.tsx` - emerald/teal/cyan/sky/blue/green → new brand colors
+11. `admin-analytics-page.tsx` - emerald/teal/cyan/sky/blue/green → new brand colors
+12. `admin-categories-page.tsx` - emerald/teal → new brand colors
+
+### Color Mapping Applied:
+| Old Color | New Color |
+|-----------|-----------|
+| emerald-800 | [#0A2463] |
+| emerald-700 | [#0D3B7A] |
+| emerald-600 | [#1D63FF] |
+| emerald-500 | [#4D8AFF] |
+| emerald-400 | [#7DB0FF] |
+| emerald-300 | [#9DC2FF] |
+| emerald-200 | [#1D63FF]/20 |
+| emerald-100 | [#1D63FF]/10 |
+| emerald-50 | [#1D63FF]/5 |
+| teal-* | same as emerald mapping |
+| cyan-700 | [#E6B800] |
+| cyan-600/500 | [#FFCE32] |
+| cyan-400 | [#FFE066] |
+| cyan-300 | [#FFE88A] |
+| cyan-100 | [#FFCE32]/10 |
+| sky-600/500 | [#1D63FF] |
+| sky-400 | [#4D8AFF] |
+| sky-100 | [#1D63FF]/10 |
+| blue-800 | [#0D3B7A] |
+| blue-700/600 | [#1D63FF] |
+| blue-500 | [#4D8AFF] |
+| green-800 | [#0A2463] |
+| green-600 | [#1D63FF] |
+| green-100 | [#1D63FF]/10 |
+
+### Manual Fix:
+- Fixed invalid Tailwind syntax `to-[#1D63FF]/20/60` → `to-[#1D63FF]/12` in technician-earnings-page.tsx (compound opacity from teal-200/60)
+
+### Verification:
+- Zero remaining old color references (emerald-*, teal-*, cyan-*, sky-*, blue-*, green-*) in all 12 files
+- No invalid Tailwind class syntax
+---
+Task ID: 7a-7f (Color Scheme + Password Features)
+Agent: Main Agent + Sub-agents
+Task: Add Forgot/Change Password features and change entire project color scheme to Yellow (#FFCE32) + Prussian Blue (#1D63FF)
+
+Work Log:
+- Updated globals.css with new brand colors: Prussian Blue #1D63FF (primary), Yellow #FFCE32 (accent)
+- Created Reset Password page (reset-password-page.tsx) with route registration
+- Created reusable Change Password Dialog component (change-password-dialog.tsx)
+- Verified Client/Provider/Admin profile pages already have Change Password UI
+- Updated 60+ page components with new color scheme across 7 parallel batches
+- Replaced all emerald-*, teal-*, cyan-*, sky-* Tailwind classes with brand colors
+- Replaced all hardcoded hex colors (#1e3a5f, #0a1628, #2d5a8e, #06b6d4, etc.)
+- Fixed remaining references in faq, contact, about, how-it-works, search, category-detail pages
+
+Stage Summary:
+- Reset Password page created and registered at /reset-password route
+- Change Password already exists in all 3 dashboard profile pages (client, provider, admin)
+- Full color scheme migration: Yellow (#FFCE32) + Prussian Blue (#1D63FF) applied across entire project
+- Zero remaining old color references (emerald-*, teal-*, cyan-*, sky-*, #1e3a5f, #0a1628, #2d5a8e)
+- Dev server running and responding HTTP 200

@@ -90,11 +90,11 @@ const itemVariants = {
 function PayoutStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; icon: React.ReactNode }> = {
     PENDING: {
-      className: 'bg-sky-100 text-sky-800 border-sky-200',
+      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
       icon: <Clock className="mr-1 size-3" />,
     },
     APPROVED: {
-      className: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
       icon: <CheckCircle2 className="mr-1 size-3" />,
     },
     REJECTED: {
@@ -102,11 +102,11 @@ function PayoutStatusBadge({ status }: { status: string }) {
       icon: <XCircle className="mr-1 size-3" />,
     },
     PROCESSING: {
-      className: 'bg-cyan-100 text-cyan-800 border-cyan-200',
+      className: 'bg-[#FFCE32]/10 text-[#B89E00] border-[#FFCE32]/20',
       icon: <Loader2 className="mr-1 size-3 animate-spin" />,
     },
     COMPLETED: {
-      className: 'bg-green-100 text-green-800 border-green-200',
+      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
       icon: <CheckCircle2 className="mr-1 size-3" />,
     },
   };
@@ -184,19 +184,19 @@ export function AdminPayoutsPage() {
       label: 'Pending Amount',
       value: formatCurrency(stats.totalPendingAmount),
       icon: Clock,
-      bgLight: 'bg-sky-50',
-      textColor: 'text-sky-700',
-      borderColor: 'border-l-sky-500',
-      gradient: 'from-sky-500 to-blue-500',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#1D63FF]',
+      gradient: 'from-[#1D63FF] to-[#4D8AFF]',
     },
     {
       label: 'Approved Amount',
       value: formatCurrency(stats.totalApprovedAmount),
       icon: CheckCircle2,
-      bgLight: 'bg-emerald-50',
-      textColor: 'text-emerald-700',
-      borderColor: 'border-l-emerald-500',
-      gradient: 'from-emerald-500 to-teal-600',
+      bgLight: 'bg-[#1D63FF]/5',
+      textColor: 'text-[#0D3B7A]',
+      borderColor: 'border-l-[#4D8AFF]',
+      gradient: 'from-[#4D8AFF] to-[#1D63FF]',
     },
     {
       label: 'Rejected Amount',
@@ -219,7 +219,7 @@ export function AdminPayoutsPage() {
         className="mb-8"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
             <Wallet className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -290,7 +290,7 @@ export function AdminPayoutsPage() {
                   size="sm"
                   className={
                     statusFilter === filter.value
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700 shrink-0'
+                      ? 'bg-[#1D63FF] text-white hover:bg-[#0D3B7A] shrink-0'
                       : 'shrink-0'
                   }
                   onClick={() => {
@@ -356,8 +356,8 @@ export function AdminPayoutsPage() {
                         >
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-100 to-teal-100">
-                                <span className="text-sm font-bold text-emerald-700">
+                              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/10">
+                                <span className="text-sm font-bold text-[#0D3B7A]">
                                   {payout.user?.name?.charAt(0)?.toUpperCase() || '?'}
                                 </span>
                               </div>
@@ -394,7 +394,7 @@ export function AdminPayoutsPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="size-8 text-emerald-600 hover:bg-emerald-50 hover:text-emerald-700"
+                                  className="size-8 text-[#1D63FF] hover:bg-[#1D63FF]/5 hover:text-[#0D3B7A]"
                                   onClick={() => openActionDialog(payout, 'APPROVED')}
                                   title="Approve"
                                 >
@@ -464,7 +464,7 @@ export function AdminPayoutsPage() {
           <DialogHeader>
             <DialogTitle
               className={`flex items-center gap-2 ${
-                actionType === 'APPROVED' ? 'text-emerald-700' : 'text-rose-700'
+                actionType === 'APPROVED' ? 'text-[#0D3B7A]' : 'text-rose-700'
               }`}
             >
               {actionType === 'APPROVED' ? (
@@ -557,7 +557,7 @@ export function AdminPayoutsPage() {
                 <Button
                   className={`flex-1 ${
                     actionType === 'APPROVED'
-                      ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                      ? 'bg-[#1D63FF] text-white hover:bg-[#0D3B7A]'
                       : 'bg-rose-600 text-white hover:bg-rose-700'
                   }`}
                   onClick={handleAction}

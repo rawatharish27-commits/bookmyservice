@@ -64,13 +64,13 @@ const STATUS_STEPS = [
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-cyan-400' },
-    ASSIGNED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    ACCEPTED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
+    PENDING: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#FFCE32]' },
+    ASSIGNED: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
+    ACCEPTED: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
     ARRIVED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    IN_PROGRESS: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
+    COMPLETED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#4D8AFF]' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REJECTED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
@@ -127,7 +127,7 @@ function LiveTrackingTimeline({ status, statusHistory }: { status: string; statu
             {i < STATUS_STEPS.length - 1 && (
               <div
                 className={`absolute left-[17px] top-[36px] h-[calc(100%-28px)] w-0.5 transition-colors duration-500 ${
-                  isCompleted ? 'bg-emerald-400' : isCurrent ? 'bg-gradient-to-b from-emerald-400 to-gray-200' : 'bg-gray-200'
+                  isCompleted ? 'bg-[#4D8AFF]' : isCurrent ? 'bg-gradient-to-b from-[#4D8AFF] to-gray-200' : 'bg-gray-200'
                 }`}
               />
             )}
@@ -135,13 +135,13 @@ function LiveTrackingTimeline({ status, statusHistory }: { status: string; statu
             {/* Icon circle */}
             <div className="relative z-10 shrink-0">
               {isCompleted ? (
-                <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md shadow-emerald-500/25">
+                <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md shadow-[#1D63FF]/25">
                   <Check className="size-4 text-white" />
                 </div>
               ) : isCurrent ? (
                 <div className="relative">
-                  <div className="absolute inset-0 animate-ping rounded-full bg-emerald-400 opacity-30" />
-                  <div className="relative flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 shadow-lg shadow-emerald-500/30">
+                  <div className="absolute inset-0 animate-ping rounded-full bg-[#4D8AFF] opacity-30" />
+                  <div className="relative flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg shadow-[#1D63FF]/30">
                     <step.icon className="size-4 text-white" />
                   </div>
                 </div>
@@ -155,11 +155,11 @@ function LiveTrackingTimeline({ status, statusHistory }: { status: string; statu
             {/* Content */}
             <div className="min-w-0 flex-1 pt-1">
               <div className="flex items-center gap-2">
-                <p className={`text-sm font-semibold ${isCompleted ? 'text-emerald-700' : isCurrent ? 'text-emerald-600' : 'text-gray-400'}`}>
+                <p className={`text-sm font-semibold ${isCompleted ? 'text-[#0D3B7A]' : isCurrent ? 'text-[#1D63FF]' : 'text-gray-400'}`}>
                   {step.label}
                 </p>
                 {isCurrent && (
-                  <span className="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+                  <span className="inline-flex items-center rounded-full bg-[#FFCE32]/10 px-2 py-0.5 text-[10px] font-bold text-[#0D3B7A]">
                     CURRENT
                   </span>
                 )}
@@ -168,7 +168,7 @@ function LiveTrackingTimeline({ status, statusHistory }: { status: string; statu
                 {step.description}
               </p>
               {timestamp && (
-                <p className="mt-0.5 text-[11px] font-medium text-emerald-600/70">
+                <p className="mt-0.5 text-[11px] font-medium text-[#1D63FF]/70">
                   {new Date(timestamp).toLocaleString('en-IN', {
                     day: 'numeric',
                     month: 'short',
@@ -246,7 +246,7 @@ function OTPVerification({
           </InputOTPGroup>
         </InputOTP>
         <Button
-          className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 sm:w-auto"
+          className="w-full rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 sm:w-auto"
           onClick={() => onVerify(otpValue)}
           disabled={!isComplete || loading}
         >
@@ -328,8 +328,8 @@ export function ProviderBookingDetailPage() {
   if (!booking) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-          <AlertTriangle className="size-8 text-emerald-400" />
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
+          <AlertTriangle className="size-8 text-[#7DB0FF]" />
         </div>
         <p className="text-lg font-semibold text-muted-foreground">Booking not found</p>
         <Button variant="outline" className="mt-4 rounded-xl" onClick={() => navigate('provider-bookings')}>
@@ -349,7 +349,7 @@ export function ProviderBookingDetailPage() {
         return (
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button
-              className="flex-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+              className="flex-1 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
               onClick={() => handleAction('accept')}
               disabled={actionLoading}
             >
@@ -380,7 +380,7 @@ export function ProviderBookingDetailPage() {
       case 'ON_THE_WAY':
         return (
           <Button
-            className="w-full rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 text-white shadow-lg shadow-sky-500/25 sm:w-auto"
+            className="w-full rounded-xl bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 sm:w-auto"
             onClick={() => handleAction('arrived')}
             disabled={actionLoading}
           >
@@ -391,7 +391,7 @@ export function ProviderBookingDetailPage() {
       case 'ARRIVED':
         return (
           <Button
-            className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-sky-600 text-white shadow-lg shadow-blue-500/25 sm:w-auto"
+            className="w-full rounded-xl bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 sm:w-auto"
             onClick={() => handleAction('start')}
             disabled={actionLoading}
           >
@@ -404,7 +404,7 @@ export function ProviderBookingDetailPage() {
           <div className="space-y-4">
             {!otpMode ? (
               <Button
-                className="w-full rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 sm:w-auto"
+                className="w-full rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 sm:w-auto"
                 onClick={() => setOtpMode(true)}
               >
                 <CheckCircle2 className="mr-2 size-4" /> Complete Service
@@ -446,7 +446,7 @@ export function ProviderBookingDetailPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-blue-50 p-4"
+          className="mb-6 flex items-center gap-3 rounded-2xl border border-red-200 bg-gradient-to-r from-red-50 to-[#1D63FF]/10 p-4"
         >
           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-red-100">
             <Zap className="size-5 text-red-500" />
@@ -465,10 +465,10 @@ export function ProviderBookingDetailPage() {
         transition={{ delay: 0.1 }}
       >
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+          <div className="h-1.5 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
                 <Navigation className="size-4 text-white" />
               </div>
               Live Tracking
@@ -489,7 +489,7 @@ export function ProviderBookingDetailPage() {
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
                 <User className="size-4 text-white" />
               </div>
               Client Information
@@ -497,8 +497,8 @@ export function ProviderBookingDetailPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-emerald-100">
-                <User className="size-6 text-emerald-600" />
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FFCE32]/10">
+                <User className="size-6 text-[#1D63FF]" />
               </div>
               <div className="min-w-0">
                 <p className="font-semibold">{booking.client?.name}</p>
@@ -532,20 +532,20 @@ export function ProviderBookingDetailPage() {
         transition={{ delay: 0.2 }}
       >
         {contactShared && booking.client?.phone ? (
-          <div className="mb-6 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-teal-50 p-4">
+          <div className="mb-6 rounded-2xl border border-[#FFCE32]/30 bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 shadow-md shadow-emerald-500/25">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-md shadow-[#1D63FF]/25">
                 <Phone className="size-5 text-white" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-xs font-medium text-emerald-600">Client Contact</p>
-                <a href={`tel:${booking.client?.phone}`} className="text-lg font-bold text-emerald-900 hover:underline">
+                <p className="text-xs font-medium text-[#1D63FF]">Client Contact</p>
+                <a href={`tel:${booking.client?.phone}`} className="text-lg font-bold text-[#0A2463] hover:underline">
                   {booking.client?.phone}
                 </a>
               </div>
               <Button
                 size="sm"
-                className="shrink-0 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                className="shrink-0 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
                 asChild
               >
                 <a href={`tel:${booking.client?.phone}`}>
@@ -555,14 +555,14 @@ export function ProviderBookingDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="mb-6 rounded-2xl border border-sky-200 bg-sky-50 p-4">
+          <div className="mb-6 rounded-2xl border border-[#1D63FF]/30 bg-[#1D63FF]/10 p-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-sky-100">
-                <Shield className="size-5 text-sky-500" />
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#1D63FF]/10">
+                <Shield className="size-5 text-[#1D63FF]" />
               </div>
               <div>
-                <p className="text-sm font-medium text-sky-700">Client contact will be available after you accept the booking</p>
-                <p className="text-xs text-sky-600">Accept the booking to view client details</p>
+                <p className="text-sm font-medium text-[#1D63FF]">Client contact will be available after you accept the booking</p>
+                <p className="text-xs text-[#1D63FF]">Accept the booking to view client details</p>
               </div>
             </div>
           </div>
@@ -578,7 +578,7 @@ export function ProviderBookingDetailPage() {
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
                 <Briefcase className="size-4 text-white" />
               </div>
               Service Details
@@ -586,7 +586,7 @@ export function ProviderBookingDetailPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center gap-2">
-              <Briefcase className="size-4 text-emerald-600" />
+              <Briefcase className="size-4 text-[#1D63FF]" />
               <span className="font-semibold">{booking.service?.title}</span>
             </div>
             <Separator />
@@ -625,7 +625,7 @@ export function ProviderBookingDetailPage() {
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
                 <Banknote className="size-4 text-white" />
               </div>
               Price Breakdown
@@ -674,7 +674,7 @@ export function ProviderBookingDetailPage() {
                 <span>Total</span>
                 <span className="text-gradient">₹{booking.finalPrice?.toLocaleString()}</span>
               </div>
-              <div className="flex items-center justify-between text-sm text-emerald-600">
+              <div className="flex items-center justify-between text-sm text-[#1D63FF]">
                 <span className="flex items-center gap-2 font-medium">
                   <Banknote className="size-4" /> Your Earnings
                 </span>
@@ -694,7 +694,7 @@ export function ProviderBookingDetailPage() {
             exit={{ opacity: 0, y: -10 }}
             transition={{ delay: 0.35 }}
           >
-            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-emerald-400">
+            <Card className="overflow-hidden rounded-2xl border-0 shadow-sm border-l-4 border-l-[#4D8AFF]">
               <CardContent className="p-5">
                 <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">Actions</p>
                 {getActionButtons()}

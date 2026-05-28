@@ -144,7 +144,7 @@ function GradientStars({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 
           <Star
             className={`${sizeClass} ${
               i < Math.round(rating)
-                ? 'fill-cyan-400 text-cyan-400 drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
+                ? 'fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
                 : 'fill-gray-200 text-gray-200'
             }`}
           />
@@ -242,7 +242,7 @@ export function ServiceDetailPage() {
           <Button
             variant="outline"
             onClick={refetch}
-            className="mt-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+            className="mt-4 border-[#1D63FF]/30 text-[#0D3B7A] hover:bg-[#FFCE32]/5"
           >
             Try Again
           </Button>
@@ -284,12 +284,12 @@ export function ServiceDetailPage() {
         <div
           className="absolute inset-0 opacity-[0.015]"
           style={{
-            backgroundImage: 'radial-gradient(circle, #059669 1px, transparent 1px)',
+            backgroundImage: 'radial-gradient(circle, #1D63FF 1px, transparent 1px)',
             backgroundSize: '32px 32px',
           }}
         />
-        <div className="absolute -left-40 top-20 size-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
-        <div className="absolute -right-40 bottom-20 size-[400px] rounded-full bg-teal-100/20 blur-3xl" />
+        <div className="absolute -left-40 top-20 size-[500px] rounded-full bg-[#FFCE32]/5/30 blur-3xl" />
+        <div className="absolute -right-40 bottom-20 size-[400px] rounded-full bg-[#FFCE32]/5/20 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -304,7 +304,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => navigate('home')}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#1D63FF]"
                 >
                   Home
                 </BreadcrumbLink>
@@ -313,7 +313,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => navigate('categories')}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#1D63FF]"
                 >
                   Categories
                 </BreadcrumbLink>
@@ -322,7 +322,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#1D63FF]"
                 >
                   {service.category?.name || 'Category'}
                 </BreadcrumbLink>
@@ -347,7 +347,7 @@ export function ServiceDetailPage() {
             variant="ghost"
             size="sm"
             onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
-            className="group mb-5 gap-2 text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50"
+            className="group mb-5 gap-2 text-muted-foreground hover:text-[#0D3B7A] hover:bg-[#FFCE32]/5"
           >
             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /> Back to{' '}
             {service.category?.name || 'Category'}
@@ -364,7 +364,7 @@ export function ServiceDetailPage() {
               variants={fadeUp}
               custom={0}
             >
-              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 shadow-lg ring-1 ring-emerald-100/50">
+              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5 shadow-lg ring-1 ring-[#1D63FF]/20/50">
                 {/* Main Image with Crossfade */}
                 <div className="relative aspect-video overflow-hidden">
                   {images.length > 0 ? (
@@ -419,10 +419,10 @@ export function ServiceDetailPage() {
                       )}
                     </>
                   ) : (
-                    <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+                    <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-[#FFCE32]/5 via-[#FFCE32]/5 to-[#FFCE32]/5">
                       <div className="text-center">
-                        <Wrench className="mx-auto size-20 text-emerald-300" />
-                        <p className="mt-2 text-sm text-emerald-400">No images available</p>
+                        <Wrench className="mx-auto size-20 text-[#7DB0FF]" />
+                        <p className="mt-2 text-sm text-[#7DB0FF]">No images available</p>
                       </div>
                     </div>
                   )}
@@ -439,7 +439,7 @@ export function ServiceDetailPage() {
                         onClick={() => setCurrentImage(i)}
                         className={`relative shrink-0 size-20 overflow-hidden rounded-xl transition-all duration-300 ${
                           i === currentImage
-                            ? 'ring-2 ring-emerald-500 ring-offset-2 shadow-md shadow-emerald-500/20'
+                            ? 'ring-2 ring-[#1D63FF] ring-offset-2 shadow-md shadow-[#1D63FF]/20'
                             : 'ring-1 ring-gray-200 opacity-60 hover:opacity-100'
                         }`}
                       >
@@ -449,7 +449,7 @@ export function ServiceDetailPage() {
                           className="size-full object-cover"
                         />
                         {i === currentImage && (
-                          <div className="absolute inset-0 bg-emerald-500/10" />
+                          <div className="absolute inset-0 bg-[#4D8AFF]/10" />
                         )}
                       </motion.button>
                     ))}
@@ -472,17 +472,17 @@ export function ServiceDetailPage() {
                     {service.title}
                   </h1>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
+                    <Badge className="border-[#1D63FF]/30 bg-[#FFCE32]/5 text-[#0D3B7A] hover:bg-[#FFCE32]/5">
                       {service.category?.name || 'Category'}
                     </Badge>
                     {service.subcategory && (
-                      <Badge variant="outline" className="border-teal-200 text-teal-700">
+                      <Badge variant="outline" className="border-[#1D63FF]/30 text-[#0D3B7A]">
                         {service.subcategory?.name || 'Subcategory'}
                       </Badge>
                     )}
                     {service.city && (
                       <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="size-3.5 text-emerald-500" /> {service.city}
+                        <MapPin className="size-3.5 text-[#4D8AFF]" /> {service.city}
                         {service.state && `, ${service.state}`}
                       </span>
                     )}
@@ -521,15 +521,15 @@ export function ServiceDetailPage() {
                   <span className="text-sm text-muted-foreground">({service.totalReviews} reviews)</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-50">
-                    <Users className="size-3.5 text-emerald-600" />
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-[#FFCE32]/5">
+                    <Users className="size-3.5 text-[#1D63FF]" />
                   </div>
                   <span className="font-medium">{service.totalBookings}</span> bookings
                 </div>
                 {service.serviceDurationMinutes && (
                   <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                    <div className="flex size-7 items-center justify-center rounded-lg bg-sky-50">
-                      <Clock className="size-3.5 text-sky-600" />
+                    <div className="flex size-7 items-center justify-center rounded-lg bg-[#4D8AFF]/5">
+                      <Clock className="size-3.5 text-[#1D63FF]" />
                     </div>
                     <span className="font-medium">{service.serviceDurationMinutes} min</span>
                   </div>
@@ -546,9 +546,9 @@ export function ServiceDetailPage() {
               className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
             >
               {[
-                { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-emerald-500 to-teal-500' },
-                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-sky-500 to-blue-500' },
-                { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-blue-500 to-cyan-500' },
+                { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-[#4D8AFF] to-[#4D8AFF]' },
+                { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-[#4D8AFF] to-[#4D8AFF]' },
+                { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-[#4D8AFF] to-[#FFCE32]' },
                 { icon: <TrendingUp className="size-4" />, label: 'Popularity', value: service.totalBookings > 20 ? 'High' : service.totalBookings > 5 ? 'Growing' : 'New', color: 'from-purple-500 to-pink-500' },
               ].map((item, idx) => (
                 <motion.div
@@ -577,12 +577,12 @@ export function ServiceDetailPage() {
               custom={0}
             >
               <div className="flex items-center gap-2">
-                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF] text-white shadow-sm">
                   <Wrench className="size-4" />
                 </div>
                 <h2 className="text-lg font-bold">About This Service</h2>
               </div>
-              <div className="mt-4 rounded-2xl bg-gradient-to-br from-emerald-50/50 to-teal-50/50 p-5 ring-1 ring-emerald-100/50">
+              <div className="mt-4 rounded-2xl bg-gradient-to-br from-[#FFCE32]/5 to-[#1D63FF]/5 p-5 ring-1 ring-[#1D63FF]/20/50">
                 <p className="whitespace-pre-line leading-relaxed text-foreground/80">{service.description}</p>
               </div>
             </motion.div>
@@ -599,7 +599,7 @@ export function ServiceDetailPage() {
                 custom={0}
               >
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF] text-white shadow-sm">
                     <Calendar className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Availability</h2>
@@ -612,13 +612,13 @@ export function ServiceDetailPage() {
                         key={slot.id}
                         variants={scaleIn}
                         custom={idx}
-                        className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-200"
+                        className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#1D63FF]/30"
                       >
                         {/* Gradient active indicator */}
-                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-500 rounded-r-full transition-all duration-300 group-hover:w-1.5" />
+                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#7DB0FF] to-[#4D8AFF] rounded-r-full transition-all duration-300 group-hover:w-1.5" />
                         <div className="ml-3 flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-sm font-bold text-emerald-700">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-[#FFCE32]/5 text-sm font-bold text-[#0D3B7A]">
                               {DAY_SHORT[slot.dayOfWeek]}
                             </div>
                             <div>
@@ -628,8 +628,8 @@ export function ServiceDetailPage() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex size-6 items-center justify-center rounded-full bg-emerald-50">
-                            <CheckCircle2 className="size-3.5 text-emerald-500" />
+                          <div className="flex size-6 items-center justify-center rounded-full bg-[#FFCE32]/5">
+                            <CheckCircle2 className="size-3.5 text-[#4D8AFF]" />
                           </div>
                         </div>
                       </motion.div>
@@ -649,12 +649,12 @@ export function ServiceDetailPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-yellow-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#FFCE32] text-white shadow-sm">
                     <Star className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Reviews</h2>
                 </div>
-                <span className="rounded-full bg-sky-50 px-3 py-1 text-sm font-medium text-sky-700">
+                <span className="rounded-full bg-[#4D8AFF]/5 px-3 py-1 text-sm font-medium text-[#1D63FF]">
                   {service.totalReviews} total
                 </span>
               </div>
@@ -666,17 +666,17 @@ export function ServiceDetailPage() {
                       key={review.id}
                       variants={scaleIn}
                       custom={idx}
-                      className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-100"
+                      className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#1D63FF]/20"
                     >
                       <div className="flex items-start gap-3">
                         {/* Avatar with gradient ring */}
                         <div className="relative shrink-0">
-                          <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2px]">
+                          <div className="rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] p-[2px]">
                             <Avatar className="size-10 ring-2 ring-white">
                               {review.reviewer?.profileImageUrl && (
                                 <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer?.name || 'Reviewer'} />
                               )}
-                              <AvatarFallback className="bg-emerald-50 text-xs font-bold text-emerald-700">
+                              <AvatarFallback className="bg-[#FFCE32]/5 text-xs font-bold text-[#0D3B7A]">
                                 {getInitials(review.reviewer?.name || 'R')}
                               </AvatarFallback>
                             </Avatar>
@@ -691,7 +691,7 @@ export function ServiceDetailPage() {
                           </div>
                           <div className="mt-1 flex items-center gap-2">
                             <GradientStars rating={review.rating} size="sm" />
-                            <span className="text-xs font-semibold text-sky-600">{review.rating}.0</span>
+                            <span className="text-xs font-semibold text-[#1D63FF]">{review.rating}.0</span>
                           </div>
                           {review.comment && (
                             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -709,8 +709,8 @@ export function ServiceDetailPage() {
                   animate={{ opacity: 1 }}
                   className="mt-5 flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50/50 p-10 text-center"
                 >
-                  <div className="flex size-16 items-center justify-center rounded-2xl bg-sky-50">
-                    <MessageSquare className="size-8 text-cyan-400" />
+                  <div className="flex size-16 items-center justify-center rounded-2xl bg-[#4D8AFF]/5">
+                    <MessageSquare className="size-8 text-[#FFCE32]" />
                   </div>
                   <p className="mt-3 font-semibold text-foreground">No reviews yet</p>
                   <p className="mt-1 text-sm text-muted-foreground">Be the first to share your experience</p>
@@ -729,9 +729,9 @@ export function ServiceDetailPage() {
               custom={1}
               className="sticky top-24"
             >
-              <div className="glass overflow-hidden rounded-2xl shadow-xl ring-1 ring-emerald-100/50">
+              <div className="glass overflow-hidden rounded-2xl shadow-xl ring-1 ring-[#1D63FF]/20/50">
                 {/* Gradient top accent */}
-                <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+                <div className="h-1.5 bg-gradient-to-r from-[#4D8AFF] via-[#4D8AFF] to-[#FFCE32]" />
 
                 <div className="p-6">
                   {/* Price Display */}
@@ -741,7 +741,7 @@ export function ServiceDetailPage() {
                       <span className="text-sm text-muted-foreground">/service</span>
                     </div>
                     {service.priceNegotiable && (
-                      <Badge className="mt-2 border-sky-200 bg-gradient-to-r from-sky-50 to-blue-50 text-sky-700 hover:from-sky-100 hover:to-sky-100">
+                      <Badge className="mt-2 border-[#4D8AFF]/30 bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 text-[#1D63FF] hover:from-[#1D63FF]/10 hover:to-[#1D63FF]/10">
                         <Zap className="mr-1 size-3" /> Price Negotiable
                       </Badge>
                     )}
@@ -749,7 +749,7 @@ export function ServiceDetailPage() {
 
                   {/* Book Now Button with Shimmer */}
                   <Button
-                    className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 py-6 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-500/30"
+                    className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] py-6 text-base font-bold text-white shadow-lg shadow-[#1D63FF]/25 transition-all hover:from-[#0D3B7A] hover:to-[#0D3B7A] hover:shadow-xl hover:shadow-[#1D63FF]/30"
                     size="lg"
                     onClick={() => {
                       if (!user) {
@@ -766,7 +766,7 @@ export function ServiceDetailPage() {
                   {service.priceNegotiable && (
                     <Button
                       variant="outline"
-                      className="mt-3 w-full border-emerald-200 py-5 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
+                      className="mt-3 w-full border-[#1D63FF]/30 py-5 text-[#0D3B7A] hover:bg-[#FFCE32]/5 hover:border-[#7DB0FF]"
                       onClick={() => {
                         if (!user) {
                           navigate('login', { redirectTo: 'booking', serviceId: service.id });
@@ -787,53 +787,53 @@ export function ServiceDetailPage() {
                       Service Provider
                     </h3>
                     <div
-                      className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-emerald-50/50"
+                      className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-[#FFCE32]/5/50"
                       onClick={() => service.category ? navigate('category-detail', { categoryId: String(service.category.id) }) : navigate('categories')}
                     >
                       {/* Avatar with Gradient Ring */}
                       <div className="relative shrink-0">
-                        <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2.5px] shadow-md shadow-emerald-500/20">
+                        <div className="rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] p-[2.5px] shadow-md shadow-[#1D63FF]/20">
                           <Avatar className="size-12 ring-2 ring-white">
                             {service.provider?.profileImageUrl && (
                               <AvatarImage src={service.provider?.profileImageUrl || ''} alt={service.provider?.name || 'Provider'} />
                             )}
-                            <AvatarFallback className="bg-emerald-50 text-sm font-bold text-emerald-700">
+                            <AvatarFallback className="bg-[#FFCE32]/5 text-sm font-bold text-[#0D3B7A]">
                               {getInitials(service.provider?.name || 'P')}
                             </AvatarFallback>
                           </Avatar>
                         </div>
                         {/* Verified Badge with Glow */}
-                        <div className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-emerald-500 shadow-md shadow-emerald-500/30 ring-2 ring-white">
+                        <div className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-[#4D8AFF] shadow-md shadow-[#1D63FF]/30 ring-2 ring-white">
                           <ShieldCheck className="size-3 text-white" />
                         </div>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                        <p className="truncate font-semibold text-foreground group-hover:text-[#0D3B7A] transition-colors">
                           {service.provider?.name || 'Provider'}
                         </p>
                         <div className="flex items-center gap-1">
-                          <Award className="size-3 text-emerald-500" />
-                          <span className="text-xs font-medium text-emerald-600">Verified Provider</span>
+                          <Award className="size-3 text-[#4D8AFF]" />
+                          <span className="text-xs font-medium text-[#1D63FF]">Verified Provider</span>
                         </div>
                       </div>
-                      <ArrowRight className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                      <ArrowRight className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-[#1D63FF]" />
                     </div>
 
                     {/* Provider Stats */}
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       {service.totalBookings > 0 && (
-                        <div className="rounded-xl bg-emerald-50/50 p-2.5 text-center ring-1 ring-emerald-100/50">
-                          <p className="text-lg font-bold text-emerald-700">{service.totalBookings}</p>
-                          <p className="text-xs text-emerald-600">Bookings</p>
+                        <div className="rounded-xl bg-[#FFCE32]/5/50 p-2.5 text-center ring-1 ring-[#1D63FF]/20/50">
+                          <p className="text-lg font-bold text-[#0D3B7A]">{service.totalBookings}</p>
+                          <p className="text-xs text-[#1D63FF]">Bookings</p>
                         </div>
                       )}
                       {service.averageRating > 0 && (
-                        <div className="rounded-xl bg-sky-50/50 p-2.5 text-center ring-1 ring-sky-100/50">
+                        <div className="rounded-xl bg-[#4D8AFF]/5/50 p-2.5 text-center ring-1 ring-[#1D63FF]/10">
                           <div className="flex items-center justify-center gap-1">
-                            <Star className="size-4 fill-cyan-400 text-cyan-400" />
-                            <p className="text-lg font-bold text-sky-700">{service.averageRating.toFixed(1)}</p>
+                            <Star className="size-4 fill-[#FFCE32] text-[#FFCE32]" />
+                            <p className="text-lg font-bold text-[#1D63FF]">{service.averageRating.toFixed(1)}</p>
                           </div>
-                          <p className="text-xs text-sky-600">Rating</p>
+                          <p className="text-xs text-[#1D63FF]">Rating</p>
                         </div>
                       )}
                     </div>
@@ -845,8 +845,8 @@ export function ServiceDetailPage() {
                   <div className="space-y-3">
                     {service.address && (
                       <div className="flex items-start gap-3 rounded-xl bg-gray-50/50 p-3 ring-1 ring-gray-100">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
-                          <MapPin className="size-4 text-emerald-600" />
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFCE32]/5">
+                          <MapPin className="size-4 text-[#1D63FF]" />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-muted-foreground">Location</p>
@@ -856,8 +856,8 @@ export function ServiceDetailPage() {
                     )}
                     {service.serviceAreaRadiusKm && (
                       <div className="flex items-start gap-3 rounded-xl bg-gray-50/50 p-3 ring-1 ring-gray-100">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                          <CheckCircle2 className="size-4 text-blue-600" />
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#4D8AFF]/5">
+                          <CheckCircle2 className="size-4 text-[#1D63FF]" />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-muted-foreground">Service Area</p>
@@ -882,7 +882,7 @@ export function ServiceDetailPage() {
                 custom={0}
               >
                 <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF] text-white">
                     <Wrench className="size-3.5" />
                   </div>
                   Similar Services
@@ -901,9 +901,9 @@ export function ServiceDetailPage() {
                           window.scrollTo(0, 0);
                         }}
                       >
-                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1">
+                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#1D63FF]/30 hover:-translate-y-1">
                           {/* Service Image */}
-                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5">
                             {sImages[0] ? (
                               <img
                                 src={sImages[0]}
@@ -912,24 +912,24 @@ export function ServiceDetailPage() {
                               />
                             ) : (
                               <div className="flex size-full items-center justify-center">
-                                <Wrench className="size-10 text-emerald-200" />
+                                <Wrench className="size-10 text-[#4D8AFF]/70" />
                               </div>
                             )}
                             {/* Gradient overlay on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0A2463]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                             {/* Price badge */}
                             <div className="absolute right-2 top-2 rounded-lg bg-white/90 px-2 py-1 text-sm font-bold text-gradient backdrop-blur-sm shadow-sm">
                               ₹{s.basePrice}
                             </div>
                           </div>
                           <div className="p-3">
-                            <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                            <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-[#0D3B7A] transition-colors">
                               {s.title}
                             </p>
                             <p className="mt-0.5 text-xs text-muted-foreground">{s.provider?.name || 'Provider'}</p>
                             <div className="mt-2 flex items-center justify-between">
                               <div className="flex items-center gap-1">
-                                <Star className="size-3 fill-cyan-400 text-cyan-400" />
+                                <Star className="size-3 fill-[#FFCE32] text-[#FFCE32]" />
                                 <span className="text-xs font-semibold">{s.averageRating.toFixed(1)}</span>
                                 <span className="text-xs text-muted-foreground">({s.totalReviews})</span>
                               </div>
