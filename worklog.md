@@ -1341,3 +1341,112 @@ Stage Summary:
 - Full color scheme migration: Yellow (#FFCE32) + Prussian Blue (#1D63FF) applied across entire project
 - Zero remaining old color references (emerald-*, teal-*, cyan-*, sky-*, #1e3a5f, #0a1628, #2d5a8e)
 - Dev server running and responding HTTP 200
+
+---
+Task ID: 5
+Agent: footer-and-pages-recolor-agent
+Task: Change footer and other pages colors from generic blue to brand blue/yellow
+
+Work Log:
+- Verified footer.tsx was already fully converted to brand colors (no generic blue/sky classes remain)
+- Fixed about-page.tsx: replaced `to-blue-600` with `to-[#1D63FF]` in Quality First value gradient
+- Fixed contact-page.tsx: replaced 2 instances of `from-[#E6B800] to-blue-600` with `from-[#E6B800] to-[#1D63FF]` (contact cards and sidebar)
+- Fixed faq-page.tsx: replaced `from-[#1D63FF] to-blue-600` with `from-[#1D63FF] to-[#1D63FF]` in Payment category gradient
+- Fixed how-it-works-page.tsx: replaced 4 instances of `to-blue-600` in clientSteps (Compare Providers, Make Secure Payment) and providerSteps (List Your Services, Receive Bookings) with brand colors
+- Fixed admin-users-page.tsx: replaced `text-blue-600` with `text-[#1D63FF]` on Ban button icon
+- Fixed admin-bookings-page.tsx: replaced `bg-blue-100 text-blue-800 border-blue-200` with `bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20` for ACCEPTED status badge
+- Fixed shared/status-badge.tsx: replaced `bg-blue-100 text-blue-800` with `bg-[#1D63FF]/10 text-[#0D3B7A]` for CONFIRMED and ACCEPTED; replaced `bg-indigo-100 text-indigo-800` with `bg-[#4D8AFF]/10 text-[#0D3B7A]` for IN_PROGRESS
+- Fixed shared/priority-badge.tsx: replaced `bg-blue-100 text-blue-800` with `bg-[#1D63FF]/10 text-[#0D3B7A]` for LOW priority
+- Also fixed categories-page.tsx: replaced `ring-blue-500/30` with `ring-[#1D63FF]/30` (found during sweep)
+- Verified zero remaining generic blue/sky Tailwind classes in entire bys/ directory via grep
+
+Stage Summary:
+- 9 files modified with 13 color replacements total
+- Footer was already fully converted (no changes needed)
+- All generic `blue-` and `sky-` Tailwind utility classes replaced with brand hex colors (#1D63FF, #0D3B7A, #4D8AFF, #FFCE32)
+- Zero generic blue/sky classes remain in the bys/ component directory
+- Lint passes (pre-existing errors unrelated to color changes)
+
+---
+Task ID: 2
+Agent: password-features-agent
+Task: Add Forgot Password to Admin Login + Change Password to header dropdown
+
+Work Log:
+- Added Forgot Password dialog to admin-login-page.tsx:
+  - Imported Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle from @/components/ui/dialog
+  - Imported useApiMutation from @/hooks/use-api
+  - Added state variables: forgotDialogOpen, forgotEmail, forgotLoading, forgotSuccess
+  - Added forgotMutation hook: `const forgotMutation = useApiMutation()`
+  - Added handleForgotPassword function (calls /api/auth/forgot-password, shows success even on error for security)
+  - Added openForgotDialog function (resets state and opens dialog)
+  - Added "Forgot password?" button between Password label and password input (brand blue color #1D63FF)
+  - Added Forgot Password Dialog component at bottom of JSX with brand colors (#1D63FF blue, #FFCE32 yellow)
+  - Dialog has success state with mail icon and "Back to Login" button
+  - Dialog has form state with email input, Cancel and "Send Reset Link" buttons
+
+- Added "Change Password" option to header.tsx dropdown:
+  - Imported ChangePasswordDialog from @/components/bys/change-password-dialog
+  - Imported KeyRound icon from lucide-react
+  - Added state: `const [changePasswordOpen, setChangePasswordOpen] = useState(false)`
+  - Added DropdownMenuItem for "Change Password" with KeyRound icon BEFORE the "Log out" item
+  - Separated by DropdownMenuSeparator above and below
+  - Menu item opens the ChangePasswordDialog when clicked
+  - Added `<ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />` at bottom of Header component's return
+  - The "Change Password" item appears for ALL logged-in users (all roles)
+
+- Verified: No new TypeScript errors in modified files, no new lint errors introduced
+
+Stage Summary:
+- Admin login page now has "Forgot password?" link and dialog (brand blue/yellow colors)
+- All logged-in users can access "Change Password" from the header user dropdown menu
+- ChangePasswordDialog already existed as a reusable component - just needed to be wired into the header
+
+
+---
+Task ID: 4
+Agent: admin-login-recolor-agent
+Task: Change admin login page colors from orange to brand blue/yellow
+
+Work Log:
+- Read worklog.md to understand prior agent work and context
+- Read admin-login-page.tsx (495 lines) — found that some colors had already been partially converted by a prior agent (left panel gradient, mesh overlays, floating icons, Shield icon, "Control Center" gradient text, background orbs, forgot password dialog)
+- Identified 16 remaining orange/amber/yellow color references that needed conversion
+- Applied color replacements using MultiEdit:
+  - "Back to Home" button: `hover:text-orange-700` → `hover:text-[#0D3B7A]`
+  - Gradient top accent bar: `from-orange-500 via-amber-500 to-yellow-500` → `from-[#1D63FF] via-[#FFCE32] to-[#FFE066]`
+  - Admin icon gradient: `from-orange-600 via-amber-500 to-yellow-500` → `from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32]`; `shadow-orange-500/30` → `shadow-[#1D63FF]/30`
+  - Restricted Access notice: `from-orange-50/80 to-amber-50/60` → `from-[#1D63FF]/5 to-[#FFCE32]/5`; `border-orange-100/70` → `border-[#1D63FF]/20`; `text-orange-600` → `text-[#1D63FF]`; `text-orange-800` → `text-[#0A2463]`; `text-orange-700/80` → `text-[#0D3B7A]/80`
+  - Email/Password input icons: `group-focus-within:text-orange-600` → `group-focus-within:text-[#1D63FF]` (×2)
+  - Email/Password input borders: `border-orange-100/50` → `border-[#1D63FF]/15`; `focus:border-orange-400` → `focus:border-[#1D63FF]`; `focus:ring-orange-400/20` → `focus:ring-[#1D63FF]/20` (×2)
+  - Submit button: `from-orange-600 via-amber-500 to-yellow-500` → `from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32]`; `hover:from-orange-700 hover:via-amber-600 hover:to-yellow-600` → `hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800]`; `shadow-orange-500/30` → `shadow-[#1D63FF]/30`
+  - Security notice: `border-amber-200/60` → `border-[#FFCE32]/30`; `from-amber-50/50 to-yellow-50/30` → `from-[#FFCE32]/5 to-[#FFE066]/5`; `text-amber-600` → `text-[#1D63FF]`; `text-amber-800` → `text-[#0A2463]`
+  - "Not an admin?" link: `text-orange-600 hover:text-orange-700` → `text-[#1D63FF] hover:text-[#0D3B7A]`
+  - Trust badges: `from-orange-100 to-amber-100` → `from-[#1D63FF]/10 to-[#4D8AFF]/10`; `text-orange-700` → `text-[#1D63FF]`; `border-orange-200/80` → `border-[#1D63FF]/20`; `shadow-orange-200/50` → `shadow-[#1D63FF]/20`; `from-amber-100 to-yellow-100` → `from-[#FFCE32]/10 to-[#FFE066]/10`; `text-amber-700` → `text-[#E6B800]`; `border-amber-200/80` → `border-[#FFCE32]/20`; `shadow-amber-200/50` → `shadow-[#FFCE32]/20`; `from-yellow-100 to-orange-100` → `from-[#FFE066]/10 to-[#1D63FF]/10`; `text-yellow-700` → `text-[#0D3B7A]`; `border-yellow-200/80` → `border-[#FFCE32]/20`; `shadow-yellow-200/50` → `shadow-[#FFCE32]/20`
+  - Comment: "Gradient top accent — orange for admin" → "Gradient top accent — brand blue/yellow for admin"
+- Verified zero remaining orange/amber color references using grep — only "blue/yellow" in the updated comment
+
+Stage Summary:
+- All 50+ orange/amber/yellow color references replaced with brand colors (#1D63FF, #0D3B7A, #0A2463, #4D8AFF, #FFCE32, #FFE066, #E6B800)
+- Zero orange/amber/yellow Tailwind utility classes remain in the file
+- Admin login page now uses consistent brand Blue (#1D63FF) and Yellow (#FFCE32) color scheme
+- Error message styling (red-*) intentionally preserved as standard error UI pattern
+
+---
+Task ID: 3
+Agent: dashboard-password-agent
+Task: Add Change Password option to client, provider, and admin dashboards
+
+Work Log:
+- Modified client-dashboard-page.tsx: Added useState import, ChangePasswordDialog import, KeyRound import, changePasswordOpen state, "Change Password" entry in quickActions array with onClick handler, updated onClick handler to check for action.onClick, added ChangePasswordDialog component at bottom of return
+- Modified provider-dashboard-page.tsx: Added useState import, ChangePasswordDialog import, KeyRound import, changePasswordOpen state, "Change Password" entry in quickActions array with onClick handler, updated onClick handler to check for action.onClick, added ChangePasswordDialog component at bottom of return
+- Modified admin-dashboard-page.tsx: Added KeyRound import, ChangePasswordDialog import, changePasswordOpen state in AdminDashboardPage, added onChangePassword to TabData interface, passed onChangePassword callback via tabData, added "Change Password" button in OperationsTab Quick Actions section, added ChangePasswordDialog component at bottom of AdminDashboardPage return
+
+Stage Summary:
+- All 3 dashboard pages (client, provider, admin) now have "Change Password" option
+- Client dashboard: Change Password appears as a quick action card with gradient styling
+- Provider dashboard: Change Password appears as a quick action button with gradient styling
+- Admin dashboard: Change Password appears as an outline button in the Operations Quick Actions card
+- All use the reusable ChangePasswordDialog component from change-password-dialog.tsx
+- TypeScript compilation: No new errors introduced (pre-existing errors in admin-analytics-dashboard-page.tsx remain)
+

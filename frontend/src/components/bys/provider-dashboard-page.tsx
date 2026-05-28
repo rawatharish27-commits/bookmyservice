@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import {
   BarChart,
@@ -16,6 +16,7 @@ import {
 import { useAuth } from '@/contexts/auth-context';
 import { useApp, type Page } from '@/contexts/app-context';
 import { useApi, useApiMutation } from '@/hooks/use-api';
+import { ChangePasswordDialog } from '@/components/bys/change-password-dialog';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -59,6 +60,7 @@ import {
   Trophy,
   MapPin,
   MessageSquare,
+  KeyRound,
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------ */
@@ -237,6 +239,7 @@ function StatCard({
 export function ProviderDashboardPage() {
   const { user } = useAuth();
   const { navigate } = useApp();
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   /* ---- Data fetching ---- */
   const { data: bookingData, loading: bookingsLoading, refetch } = useApi<BookingResponse>('/api/bookings?limit=200');
@@ -436,6 +439,7 @@ export function ProviderDashboardPage() {
     { icon: CalendarCheck, label: 'View Bookings', nav: 'provider-bookings' as Page, gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
     { icon: DollarSign, label: 'Check Earnings', nav: 'provider-earnings' as Page, gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/25' },
     { icon: Shield, label: 'Update KYC', nav: 'provider-kyc' as Page, gradient: 'from-[#FFCE32] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: KeyRound, label: 'Change Password', nav: 'provider-profile' as Page, gradient: 'from-[#FFCE32] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25', onClick: () => setChangePasswordOpen(true) },
   ];
 
   /* ---- Recent reviews (latest 3) ---- */
@@ -643,7 +647,7 @@ export function ProviderDashboardPage() {
                       key={action.label}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      onClick={() => navigate(action.nav)}
+                      onClick={() => action.onClick ? action.onClick() : navigate(action.nav)}
                       className={`flex w-full items-center gap-3 rounded-xl bg-gradient-to-r ${action.gradient} p-3.5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
                     >
                       <action.icon className="size-5" />
@@ -1216,6 +1220,7 @@ export function ProviderDashboardPage() {
           </motion.div>
         </TabsContent>
       </Tabs>
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </div>
   );
 }

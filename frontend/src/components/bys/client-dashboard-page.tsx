@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 import { useApp, type Page } from '@/contexts/app-context';
@@ -22,6 +22,7 @@ import {
   ChartLegendContent,
   type ChartConfig,
 } from '@/components/ui/chart';
+import { ChangePasswordDialog } from '@/components/bys/change-password-dialog';
 import {
   PieChart,
   Pie,
@@ -72,6 +73,7 @@ import {
   Receipt,
   MessageSquare,
   Banknote,
+  KeyRound,
 } from 'lucide-react';
 
 /* ================================================================
@@ -238,6 +240,7 @@ const frequencyChartConfig: ChartConfig = {
 export function ClientDashboardPage() {
   const { user } = useAuth();
   const { navigate } = useApp();
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   // Data fetching
   const { data: bookingsData, loading: bookingsLoading } = useApi<{ bookings: Booking[] }>('/api/bookings');
@@ -469,10 +472,11 @@ export function ClientDashboardPage() {
   ];
 
   const quickActions = [
-    { icon: Briefcase, label: 'Book Service', nav: 'categories', gradient: 'from-[#4D8AFF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: CalendarCheck, label: 'View Bookings', nav: 'client-bookings', gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: Wallet, label: 'Add Money', nav: 'client-wallet', gradient: 'from-[#4D8AFF] to-[#E6B800]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: Ticket, label: 'Apply Coupon', nav: 'client-coupons', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
+    { icon: Briefcase, label: 'Book Service', nav: 'categories' as Page, gradient: 'from-[#4D8AFF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: CalendarCheck, label: 'View Bookings', nav: 'client-bookings' as Page, gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: Wallet, label: 'Add Money', nav: 'client-wallet' as Page, gradient: 'from-[#4D8AFF] to-[#E6B800]', shadow: 'shadow-[#1D63FF]/25' },
+    { icon: Ticket, label: 'Apply Coupon', nav: 'client-coupons' as Page, gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
+    { icon: KeyRound, label: 'Change Password', nav: 'client-profile' as Page, gradient: 'from-[#FFCE32] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25', onClick: () => setChangePasswordOpen(true) },
   ];
 
   const SERVICE_ICONS = [
@@ -738,7 +742,7 @@ export function ClientDashboardPage() {
                   key={action.label}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate(action.nav as Page)}
+                  onClick={() => action.onClick ? action.onClick() : navigate(action.nav as Page)}
                   className={`flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br ${action.gradient} p-5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
                 >
                   <action.icon className="size-6" />
@@ -1170,6 +1174,7 @@ export function ClientDashboardPage() {
           </div>
         </TabsContent>
       </Tabs>
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </div>
   );
 }

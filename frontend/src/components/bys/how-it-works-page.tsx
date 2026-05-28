@@ -58,7 +58,7 @@ const clientSteps = [
     title: 'Compare Providers',
     description: 'View detailed profiles, read reviews, compare prices, and check availability to find the best match.',
     icon: <Users className="size-6" />,
-    gradient: 'from-[#E6B800] to-blue-600',
+    gradient: 'from-[#E6B800] to-[#1D63FF]',
     illustration: '⚖️',
   },
   {
@@ -74,7 +74,7 @@ const clientSteps = [
     title: 'Make Secure Payment',
     description: 'Pay securely through our platform. Your payment is held in escrow until the service is completed.',
     icon: <CreditCard className="size-6" />,
-    gradient: 'from-[#1D63FF] to-blue-600',
+    gradient: 'from-[#1D63FF] to-[#1D63FF]',
     illustration: '💳',
   },
   {
@@ -117,7 +117,7 @@ const providerSteps = [
     title: 'List Your Services',
     description: 'Create detailed service listings with pricing, availability, and service areas. Add photos to attract customers.',
     icon: <Briefcase className="size-6" />,
-    gradient: 'from-[#E6B800] to-blue-600',
+    gradient: 'from-[#E6B800] to-[#1D63FF]',
     illustration: '📋',
   },
   {
@@ -133,7 +133,7 @@ const providerSteps = [
     title: 'Receive Bookings',
     description: 'Get notified of new booking requests. Accept or reject based on your availability and preferences.',
     icon: <ClipboardList className="size-6" />,
-    gradient: 'from-[#1D63FF] to-blue-600',
+    gradient: 'from-[#1D63FF] to-[#1D63FF]',
     illustration: '📩',
   },
   {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth, ROLE_IDS } from '@/contexts/auth-context';
 import { useApp, type Page } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
+import { ChangePasswordDialog } from '@/components/bys/change-password-dialog';
 import {
   Sheet,
   SheetContent,
@@ -61,6 +62,7 @@ import {
   CheckCircle2,
   ScrollText,
   Tag,
+  KeyRound,
 } from 'lucide-react';
 
 interface NavLink {
@@ -453,6 +455,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const navRef = useRef<HTMLDivElement>(null);
 
   const roleId = user?.roleId;
@@ -775,6 +778,14 @@ export function Header() {
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator className="my-1 bg-[#1D63FF]/5" />
                   <DropdownMenuItem
+                    onClick={() => setChangePasswordOpen(true)}
+                    className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#1D63FF]/5 focus:text-[#1D63FF]"
+                  >
+                    <KeyRound className="mr-2.5 size-4" />
+                    Change Password
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="my-1 bg-[#1D63FF]/5" />
+                  <DropdownMenuItem
                     onClick={logout}
                     className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition-all duration-200 focus:bg-red-50 focus:text-destructive"
                   >
@@ -986,6 +997,7 @@ export function Header() {
           </Sheet>
         </div>
       </div>
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </header>
   );
 }

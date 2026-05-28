@@ -4,6 +4,15 @@ import { useApp } from '@/contexts/app-context';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { useApiMutation } from '@/hooks/use-api';
 import { ROLE_DASHBOARD_MAP } from '@/routes/access-control';
 import type { Page } from '@/contexts/app-context';
 import { toast } from 'sonner';
@@ -21,6 +30,34 @@ export function AdminLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [forgotDialogOpen, setForgotDialogOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotSuccess, setForgotSuccess] = useState(false);
+  const forgotMutation = useApiMutation();
+
+  const handleForgotPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    try {
+      await forgotMutation.mutate('/api/auth/forgot-password', {
+        method: 'POST',
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      setForgotSuccess(true);
+    } catch {
+      // Still show success message for security (don't reveal if email exists)
+      setForgotSuccess(true);
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const openForgotDialog = () => {
+    setForgotEmail('');
+    setForgotSuccess(false);
+    setForgotDialogOpen(true);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,11 +92,11 @@ export function AdminLoginPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-slate-900 via-gray-900 to-zinc-900">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#0A2463]">
         {/* Mesh gradient overlays */}
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(249,115,22,0.35),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(234,88,12,0.25),transparent_50%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_80%,rgba(251,146,60,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(29,99,255,0.35),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(77,138,255,0.25),transparent_50%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_80%,rgba(255,206,50,0.15),transparent_50%)]" />
 
         {/* Dot pattern overlay */}
         <div className="absolute inset-0 opacity-[0.07]" style={{
@@ -69,10 +106,10 @@ export function AdminLoginPage() {
 
         {/* Floating admin icons */}
         {[
-          { Icon: Shield, color: 'from-orange-500 to-amber-500', x: '15%', y: '20%', delay: 0, size: 48 },
-          { Icon: LockKeyhole, color: 'from-amber-500 to-yellow-500', x: '70%', y: '15%', delay: 0.5, size: 44 },
-          { Icon: Fingerprint, color: 'from-orange-600 to-red-500', x: '50%', y: '65%', delay: 1, size: 46 },
-          { Icon: CheckCircle2, color: 'from-amber-400 to-orange-400', x: '25%', y: '75%', delay: 1.5, size: 40 },
+          { Icon: Shield, color: 'from-[#1D63FF] to-[#4D8AFF]', x: '15%', y: '20%', delay: 0, size: 48 },
+          { Icon: LockKeyhole, color: 'from-[#FFCE32] to-[#FFE066]', x: '70%', y: '15%', delay: 0.5, size: 44 },
+          { Icon: Fingerprint, color: 'from-[#0D3B7A] to-[#1D63FF]', x: '50%', y: '65%', delay: 1, size: 46 },
+          { Icon: CheckCircle2, color: 'from-[#FFCE32] to-[#E6B800]', x: '25%', y: '75%', delay: 1.5, size: 40 },
         ].map(({ Icon, color, x, y, delay, size }, i) => (
           <motion.div
             key={i}
@@ -102,14 +139,14 @@ export function AdminLoginPage() {
           >
             <div className="flex items-center gap-3 mb-8">
               <div className="flex size-12 items-center justify-center rounded-xl bg-white/20 backdrop-blur-md shadow-lg shadow-black/10 border border-white/10">
-                <Shield className="size-6 text-orange-400" />
+                <Shield className="size-6 text-[#FFCE32]" />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">BookYourService</span>
             </div>
 
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
               Admin<br />
-              <span className="bg-gradient-to-r from-orange-300 via-amber-300 to-yellow-300 bg-clip-text text-transparent">Control Center.</span>
+              <span className="bg-gradient-to-r from-[#FFCE32] via-[#FFE066] to-[#4D8AFF] bg-clip-text text-transparent">Control Center.</span>
             </h2>
 
             <p className="text-gray-300/80 text-lg mb-10 max-w-md leading-relaxed">
@@ -150,9 +187,9 @@ export function AdminLoginPage() {
       {/* ========== RIGHT FORM PANEL ========== */}
       <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-white via-gray-50/30 to-white">
         {/* Subtle background orbs */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-orange-50/40 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-amber-50/30 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-orange-50/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#1D63FF]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#FFCE32]/5 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#1D63FF]/3 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -166,7 +203,7 @@ export function AdminLoginPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             onClick={() => navigate('home')}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-orange-700 mb-6 transition-colors group"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#0D3B7A] mb-6 transition-colors group"
           >
             <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
@@ -176,8 +213,8 @@ export function AdminLoginPage() {
           <div className="rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-200/50 relative overflow-hidden bg-white/70 backdrop-blur-xl">
             {/* Subtle inner ring */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/40 pointer-events-none" />
-            {/* Gradient top accent — orange for admin */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500" />
+            {/* Gradient top accent — brand blue/yellow for admin */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#1D63FF] via-[#FFCE32] to-[#FFE066]" />
 
             {/* Header */}
             <div className="relative pointer-events-auto text-center pt-8 pb-4 px-6">
@@ -185,7 +222,7 @@ export function AdminLoginPage() {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-orange-600 via-amber-500 to-yellow-500 text-white shadow-lg shadow-orange-500/30"
+                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] text-white shadow-lg shadow-[#1D63FF]/30"
               >
                 <Shield className="size-8" />
               </motion.div>
@@ -215,13 +252,13 @@ export function AdminLoginPage() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
-                  className="rounded-xl bg-gradient-to-r from-orange-50/80 to-amber-50/60 border border-orange-100/70 p-4"
+                  className="rounded-xl bg-gradient-to-r from-[#1D63FF]/5 to-[#FFCE32]/5 border border-[#1D63FF]/20 p-4"
                 >
                   <div className="flex items-center gap-2 mb-2">
-                    <LockKeyhole className="size-4 text-orange-600" />
-                    <span className="text-sm font-semibold text-orange-800">Restricted Access</span>
+                    <LockKeyhole className="size-4 text-[#1D63FF]" />
+                    <span className="text-sm font-semibold text-[#0A2463]">Restricted Access</span>
                   </div>
-                  <p className="text-xs text-orange-700/80 leading-relaxed">
+                  <p className="text-xs text-[#0D3B7A]/80 leading-relaxed">
                     This portal is exclusively for platform administrators and sub-admins. Unauthorized access attempts are logged.
                   </p>
                 </motion.div>
@@ -249,7 +286,7 @@ export function AdminLoginPage() {
                     Admin Email
                   </Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-orange-600 transition-colors" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="admin-email"
                       type="email"
@@ -258,18 +295,27 @@ export function AdminLoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-12 bg-white/60 border-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-12 bg-white/60 border-[#1D63FF]/15 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
 
                 {/* Password field */}
                 <div className="space-y-2">
-                  <Label htmlFor="admin-password" className="text-sm font-medium text-foreground/80">
-                    Password
-                  </Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="admin-password" className="text-sm font-medium text-foreground/80">
+                      Password
+                    </Label>
+                    <button
+                      type="button"
+                      onClick={openForgotDialog}
+                      className="text-xs font-medium text-[#1D63FF] hover:text-[#0D3B7A] transition-colors"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                   <div className="relative group">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-orange-600 transition-colors" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
                     <Input
                       id="admin-password"
                       type={showPassword ? 'text' : 'password'}
@@ -278,7 +324,7 @@ export function AdminLoginPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="current-password"
-                      className="pl-10 pr-11 h-12 bg-white/60 border-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 pr-11 h-12 bg-white/60 border-[#1D63FF]/15 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                     <button
                       type="button"
@@ -297,7 +343,7 @@ export function AdminLoginPage() {
                 {/* Submit button */}
                 <Button
                   type="submit"
-                  className="w-full shimmer bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 hover:from-orange-700 hover:via-amber-600 hover:to-yellow-600 shadow-lg shadow-orange-500/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                  className="w-full shimmer bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800] shadow-lg shadow-[#1D63FF]/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                   disabled={loading}
                 >
                   {loading ? (
@@ -314,10 +360,10 @@ export function AdminLoginPage() {
                 </Button>
 
                 {/* Security notice */}
-                <div className="rounded-xl border border-amber-200/60 bg-gradient-to-r from-amber-50/50 to-yellow-50/30 p-3">
+                <div className="rounded-xl border border-[#FFCE32]/30 bg-gradient-to-r from-[#FFCE32]/5 to-[#FFE066]/5 p-3">
                   <div className="flex items-center gap-2">
-                    <Fingerprint className="size-4 text-amber-600" />
-                    <span className="text-xs font-medium text-amber-800">All login attempts are monitored and logged</span>
+                    <Fingerprint className="size-4 text-[#1D63FF]" />
+                    <span className="text-xs font-medium text-[#0A2463]">All login attempts are monitored and logged</span>
                   </div>
                 </div>
 
@@ -326,7 +372,7 @@ export function AdminLoginPage() {
                   <button
                     type="button"
                     onClick={() => navigate('login')}
-                    className="font-semibold text-orange-600 hover:text-orange-700 transition-colors underline underline-offset-2 cursor-pointer"
+                    className="font-semibold text-[#1D63FF] hover:text-[#0D3B7A] transition-colors underline underline-offset-2 cursor-pointer"
                   >
                     User Login
                   </button>
@@ -343,9 +389,9 @@ export function AdminLoginPage() {
             className="flex items-center justify-center gap-6 mt-6"
           >
             {[
-              { icon: Shield, label: 'Encrypted', gradient: 'from-orange-100 to-amber-100', iconColor: 'text-orange-700', border: 'border-orange-200/80', shadow: 'shadow-orange-200/50' },
-              { icon: LockKeyhole, label: 'Secured', gradient: 'from-amber-100 to-yellow-100', iconColor: 'text-amber-700', border: 'border-amber-200/80', shadow: 'shadow-amber-200/50' },
-              { icon: CheckCircle2, label: 'Verified', gradient: 'from-yellow-100 to-orange-100', iconColor: 'text-yellow-700', border: 'border-yellow-200/80', shadow: 'shadow-yellow-200/50' },
+              { icon: Shield, label: 'Encrypted', gradient: 'from-[#1D63FF]/10 to-[#4D8AFF]/10', iconColor: 'text-[#1D63FF]', border: 'border-[#1D63FF]/20', shadow: 'shadow-[#1D63FF]/20' },
+              { icon: LockKeyhole, label: 'Secured', gradient: 'from-[#FFCE32]/10 to-[#FFE066]/10', iconColor: 'text-[#E6B800]', border: 'border-[#FFCE32]/20', shadow: 'shadow-[#FFCE32]/20' },
+              { icon: CheckCircle2, label: 'Verified', gradient: 'from-[#FFE066]/10 to-[#1D63FF]/10', iconColor: 'text-[#0D3B7A]', border: 'border-[#FFCE32]/20', shadow: 'shadow-[#FFCE32]/20' },
             ].map(({ icon: Icon, label, gradient, iconColor, border, shadow }) => (
               <div key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <div className={`flex size-6 items-center justify-center rounded-full bg-gradient-to-br ${gradient} border ${border} shadow-sm ${shadow}`}>
@@ -368,6 +414,81 @@ export function AdminLoginPage() {
           </motion.p>
         </motion.div>
       </div>
+
+      {/* Forgot Password Dialog */}
+      <Dialog open={forgotDialogOpen} onOpenChange={setForgotDialogOpen}>
+        <DialogContent className="sm:max-w-md border-gray-200/60 shadow-xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Reset your password</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Enter your admin email address and we&apos;ll send you a link to reset your password.
+            </DialogDescription>
+          </DialogHeader>
+          {forgotSuccess ? (
+            <div className="flex flex-col items-center gap-3 py-4">
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#FFCE32]/10 border border-[#1D63FF]/20 shadow-md shadow-[#1D63FF]/15">
+                <Mail className="size-6 text-[#1D63FF]" />
+              </div>
+              <p className="text-sm text-center text-muted-foreground max-w-xs leading-relaxed">
+                If an account with that email exists, a reset link has been sent to your inbox.
+              </p>
+              <Button
+                type="button"
+                onClick={() => setForgotDialogOpen(false)}
+                className="mt-2 bg-gradient-to-r from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800] shadow-lg shadow-[#1D63FF]/20 rounded-xl h-11 px-6"
+              >
+                Back to Login
+              </Button>
+            </div>
+          ) : (
+            <form onSubmit={handleForgotPassword}>
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="admin-forgot-email" className="text-sm font-medium text-foreground/80">Admin Email</Label>
+                  <div className="relative group">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
+                    <Input
+                      id="admin-forgot-email"
+                      type="email"
+                      placeholder="admin@bookyourservice.co.in"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      required
+                      autoComplete="email"
+                      className="pl-10 h-12 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
+                    />
+                  </div>
+                </div>
+              </div>
+              <DialogFooter className="mt-6 gap-2 sm:gap-0">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setForgotDialogOpen(false)}
+                  disabled={forgotLoading}
+                  className="rounded-xl h-11 border-gray-200 hover:bg-gray-50"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={forgotLoading}
+                  className="bg-gradient-to-r from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800] shadow-lg shadow-[#1D63FF]/20 rounded-xl h-11"
+                >
+                  {forgotLoading ? (
+                    <>
+                      <Loader2 className="mr-2 size-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    'Send Reset Link'
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -56,7 +56,7 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 const CATEGORY_GRADIENTS: Record<string, string> = {
   General: 'from-[#1D63FF] to-[#1D63FF]',
   Booking: 'from-[#1D63FF] to-[#FFCE32]',
-  Payment: 'from-[#1D63FF] to-blue-600',
+  Payment: 'from-[#1D63FF] to-[#1D63FF]',
   Provider: 'from-violet-600 to-purple-600',
   Cancellation: 'from-rose-600 to-pink-600',
 };

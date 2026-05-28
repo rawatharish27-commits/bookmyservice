@@ -87,7 +87,7 @@ const CATEGORY_GRADIENTS: Record<string, {
     badgeBg: 'bg-[#4D8AFF]/10/80',
     badgeText: 'text-[#1D63FF]',
     hoverBg: 'hover:bg-[#4D8AFF]/5',
-    ringColor: 'ring-blue-500/30',
+    ringColor: 'ring-[#1D63FF]/30',
     shadowGlow: 'shadow-[#4D8AFF]/15',
     heroGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#FFCE32]',
   },

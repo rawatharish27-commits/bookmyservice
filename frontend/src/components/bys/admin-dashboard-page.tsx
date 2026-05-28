@@ -60,6 +60,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Minus,
+  KeyRound,
 } from 'lucide-react';
 import {
   AreaChart,
@@ -70,6 +71,7 @@ import {
   YAxis,
   CartesianGrid,
 } from 'recharts';
+import { ChangePasswordDialog } from '@/components/bys/change-password-dialog';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -200,6 +202,7 @@ interface TabData {
   operations: OperationsData;
   security: SecurityData;
   navigate: (page: any) => void;
+  onChangePassword: () => void;
 }
 
 // ─── Empty Trend Data (zero-valued scaffolding for charts) ────────────────────
@@ -892,6 +895,9 @@ function OperationsTab({ d }: { d: TabData }) {
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-logs')}>
               <Clock className="mr-2 size-4 text-gray-600" /> Activity Logs
             </Button>
+            <Button variant="outline" className="w-full justify-start" onClick={() => d.onChangePassword()}>
+              <KeyRound className="mr-2 size-4 text-[#1D63FF]" /> Change Password
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -1013,6 +1019,7 @@ export function AdminDashboardPage() {
   const { navigate } = useApp();
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
 
   // Real API data
@@ -1189,6 +1196,7 @@ export function AdminDashboardPage() {
     operations,
     security,
     navigate,
+    onChangePassword: () => setChangePasswordOpen(true),
   };
 
   // ─── Loading State ──────────────────────────────────────────────────────────
@@ -1284,6 +1292,7 @@ export function AdminDashboardPage() {
           <SecurityTab d={tabData} />
         </TabsContent>
       </Tabs>
+      <ChangePasswordDialog open={changePasswordOpen} onOpenChange={setChangePasswordOpen} />
     </div>
   );
 }

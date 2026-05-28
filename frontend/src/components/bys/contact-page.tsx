@@ -147,7 +147,7 @@ export function ContactPage() {
             icon: <Mail className="size-6" />,
             title: 'Email Us',
             detail: COMPANY_INFO.email,
-            gradient: 'from-[#E6B800] to-blue-600',
+            gradient: 'from-[#E6B800] to-[#1D63FF]',
             action: `mailto:${COMPANY_INFO.email}`,
           },
           {
@@ -343,7 +343,7 @@ export function ContactPage() {
                     label: 'Email',
                     value: COMPANY_INFO.email,
                     href: `mailto:${COMPANY_INFO.email}`,
-                    gradient: 'from-[#E6B800] to-blue-600',
+                    gradient: 'from-[#E6B800] to-[#1D63FF]',
                   },
                   {
                     icon: <Clock className="size-5" />,
