@@ -469,7 +469,7 @@ export function RegisterPage() {
                   <Input
                     id="reg-phone"
                     type="tel"
-                    placeholder="+91 9876543210"
+                    placeholder="+91 8901172507"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required

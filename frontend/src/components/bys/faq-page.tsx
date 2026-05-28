@@ -377,10 +377,10 @@ export function FaqPage() {
                 <Mail className="mr-2 size-4" /> Contact Us
               </Button>
               <a
-                href="tel:+919876543210"
+                href="tel:+918901172507"
                 className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-2.5 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
               >
-                <Phone className="size-4" /> +91 98765 43210
+                <Phone className="size-4" /> +91 89011 72507
               </a>
             </div>
           </div>

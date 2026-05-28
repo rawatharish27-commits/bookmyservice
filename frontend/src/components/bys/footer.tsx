@@ -348,7 +348,7 @@ export function Footer() {
                     icon={<MapPin className="size-4 text-blue-600" />}
                     gradient="from-blue-50 to-sky-50"
                   >
-                    BookYourService Technologies Pvt. Ltd.
+                    Palwal, Haryana
                     <br />
                     Parshuram Colony,
                     <br />
@@ -387,7 +387,7 @@ export function Footer() {
           <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-gray-50 via-blue-50/20 to-gray-50 px-6 py-4 sm:flex-row">
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()}{' '}
-              <span className="font-bold text-foreground">BookYourService</span>
+              <span className="font-bold text-foreground">Harish Rawat</span>
               . Made with{' '}
               <Heart className="inline size-3.5 fill-blue-600 text-blue-600 drop-shadow-sm" />{' '}
               in India. All rights reserved.

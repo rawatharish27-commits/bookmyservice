@@ -158,8 +158,8 @@ const LEGAL_SECTIONS = [
     title: '6. Governing Law & Jurisdiction',
     content: [
       'This application and the terms herein are governed by and construed in accordance with the laws of India, including the Indian Contract Act, 1872 and the Consumer Protection Act, 2019.',
-      'All disputes arising out of or in connection with this application shall be subject to the exclusive jurisdiction of the courts of Mumbai, Maharashtra, India.',
-      'The applicant hereby expressly consents to the jurisdiction of Mumbai courts for any legal proceedings.',
+      'All disputes arising out of or in connection with this application shall be subject to the exclusive jurisdiction of the courts of Palwal, Haryana, India.',
+      'The applicant hereby expressly consents to the jurisdiction of Palwal, Haryana courts for any legal proceedings.',
     ],
   },
   {
@@ -407,7 +407,7 @@ export function JoinManagerPage() {
                     <p className="flex items-start gap-2 text-sm font-semibold text-red-800">
                       <AlertTriangle className="mt-0.5 size-4 shrink-0" />
                       <span>
-                        Jurisdiction: All disputes are subject to Mumbai jurisdiction only. The company shall NOT be responsible for any civil court cases filed by applicants. Company liability is limited to the fee amount (₹{APPLICATION_FEE}) only.
+                        Jurisdiction: All disputes are subject to Palwal, Haryana jurisdiction only. The company shall NOT be responsible for any civil court cases filed by applicants. Company liability is limited to the fee amount (₹{APPLICATION_FEE}) only.
                       </span>
                     </p>
                   </div>
@@ -626,7 +626,7 @@ export function JoinManagerPage() {
                           <Input
                             id="phone"
                             type="tel"
-                            placeholder="+91 98765 43210"
+                            placeholder="+91 89011 72507"
                             value={form.phone}
                             onChange={(e) => handleChange('phone', e.target.value)}
                             className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
@@ -657,7 +657,7 @@ export function JoinManagerPage() {
                           <MapPin className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                           <Input
                             id="area"
-                            placeholder="e.g. Andheri West, 400053"
+                            placeholder="e.g. Palwal, 121102"
                             value={form.area}
                             onChange={(e) => handleChange('area', e.target.value)}
                             className="h-11 rounded-xl border-gray-200 bg-gray-50/50 pl-10 focus:border-[#2d5a8e] focus:bg-white focus:ring-[#2d5a8e]/30"
@@ -717,7 +717,7 @@ export function JoinManagerPage() {
                             I agree to the Terms & Conditions and understand the application fee of ₹{APPLICATION_FEE} is non-refundable
                           </Label>
                           <p className="text-xs text-muted-foreground">
-                            By checking this box, you confirm that you have read and agree to our Terms & Conditions, including that the application fee is non-refundable under all circumstances, as governed by the Indian Contract Act 1872 and Consumer Protection Act 2019, and disputes are subject to Mumbai jurisdiction.
+                            By checking this box, you confirm that you have read and agree to our Terms & Conditions, including that the application fee is non-refundable under all circumstances, as governed by the Indian Contract Act 1872 and Consumer Protection Act 2019, and disputes are subject to Palwal, Haryana jurisdiction.
                           </p>
                         </div>
                       </div>

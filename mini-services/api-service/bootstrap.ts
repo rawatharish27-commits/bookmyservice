@@ -98,7 +98,7 @@ export async function bootstrap(): Promise<void> {
         `INSERT INTO "User" (id, email, phone, "passwordHash", name, "roleId", status, "emailVerified", "phoneVerified", city, state, country, "createdAt", "updatedAt")
          VALUES ($1, $2, $3, $4, $5, 3, 'ACTIVE', true, true, $6, $7, $8, NOW(), NOW())
          ON CONFLICT (email) DO UPDATE SET "passwordHash" = EXCLUDED."passwordHash", "roleId" = 3, status = 'ACTIVE', "updatedAt" = NOW()`,
-        ['usr_admin_default', 'admin@bookyourservice.co.in', '+919876543210', adminPasswordHash, 'Admin User', 'Mumbai', 'Maharashtra', 'India']
+        ['usr_admin_default', 'admin@bookyourservice.co.in', '+918901172507', adminPasswordHash, 'Admin User', 'Palwal', 'Haryana', 'India']
       )
       console.log('✅ Admin user ensured — email: admin@bookyourservice.co.in, password: admin@123')
     } catch (adminSeedError: any) {

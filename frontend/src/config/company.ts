@@ -1,7 +1,7 @@
 export const COMPANY_INFO = {
   name: 'BookYourService',
   address: 'BookYourService Technologies Pvt. Ltd., Palwal 121102, Haryana, India',
-  phone: '+91 8901172507', // Placeholder — replace with actual support phone number
+  phone: '+91 8901172507',
   email: 'support@bookyourservice.co.in',
   website: 'https://bookyourservice.co.in',
   supportHours: 'Mon-Sat: 9:00 AM - 7:00 PM',
