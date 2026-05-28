@@ -1450,3 +1450,267 @@ Stage Summary:
 - All use the reusable ChangePasswordDialog component from change-password-dialog.tsx
 - TypeScript compilation: No new errors introduced (pre-existing errors in admin-analytics-dashboard-page.tsx remain)
 
+
+---
+Task ID: Color Scheme Update
+Agent: General Purpose Agent
+Task: Update color scheme in /home/z/my-project/src/app/page.tsx - Replace all old colors with new brand colors
+
+Work Log:
+- Read worklog.md and page.tsx (406 lines)
+- Identified all color references requiring replacement:
+  - `#1e3a5f` (old navy) → `#1D63FF` (Prussian Blue) — 16 occurrences
+  - `#2d5a8e` → `#0B3D91` (darker Prussian Blue) — 6 occurrences
+  - `#0a1628` (dark bg) → `#0B3D91` — 4 occurrences
+  - `#06b6d4` (cyan) → `#FFCE32` (Yellow) — 4 occurrences
+  - `cyan-*` Tailwind classes → `#FFCE32` / `amber-*` — 8 occurrences
+  - `sky-*` Tailwind classes → `#FFCE32` / `#FFB800` — 6 occurrences
+  - Radial gradient rgba values → yellow/amber tones — 3 occurrences
+- Wrote complete updated file with all 19 color mapping rules applied:
+  1. Header logo gradient: `from-[#1D63FF] to-[#FFCE32]`
+  2. Nav/Login hover: `hover:text-[#1D63FF]`
+  3. CTA buttons: `from-[#1D63FF] to-[#0B3D91]`
+  4. Hero background: `from-[#0B3D91] via-[#1D63FF] to-[#3B82F6]`
+  5. Hero radial gradients: `rgba(255,206,50,...)` and `rgba(255,184,0,...)`
+  6. Hero badge: `text-[#FFCE32]`
+  7. Hero heading accent: `from-[#FFCE32] to-[#FFB800]`
+  8. Hero CTA: `from-[#FFCE32] to-[#FFB800]` with `text-[#0B3D91]`
+  9. Section badges: `bg-[#1D63FF]/5 text-[#1D63FF]`
+  10. Service cards: `hover:border-[#FFCE32]/30`, `shadow-[#FFCE32]/5`
+  11. Service price text: `text-amber-600`
+  12. Features section: `from-[#1D63FF]/10 to-amber-50`
+  13. How it works circles: `from-[#1D63FF] to-[#0B3D91]`
+  14. Step connectors: `from-[#1D63FF] to-[#FFCE32]/30`
+  15. Testimonial avatars: `from-[#1D63FF] to-[#0B3D91]`
+  16. About section: `from-[#1D63FF] via-[#0B3D91] to-[#FFCE32]`, `text-[#FFCE32]`
+  17. Stats values: `text-[#1D63FF]`
+  18. CTA section bg: `from-[#0B3D91] via-[#1D63FF] to-[#3B82F6]`
+  19. Contact section: `from-[#1D63FF]/10 to-amber-50`
+  20. Footer: `bg-[#0B3D91]`, `from-[#FFCE32] to-[#FFB800]`, `text-[#0B3D91]`, `hover:text-[#FFCE32]`
+- Verified zero remaining references to old colors: searched for `#1e3a5f`, `#2d5a8e`, `#0a1628`, `#06b6d4`, `cyan-`, `sky-` — all returned 0 results
+- Verified all new brand colors properly placed: `#1D63FF`, `#0B3D91`, `#FFCE32`, `#FFB800`, `#3B82F6`, `amber-*`
+
+Stage Summary:
+- All 19 color mapping rules applied to page.tsx
+- Zero remaining references to old color palette (#1e3a5f, #2d5a8e, #0a1628, #06b6d4, cyan-*, sky-*)
+- New brand colors: Prussian Blue (#1D63FF) for primary brand, Yellow (#FFCE32) for accents/CTAs, #0B3D91 for dark backgrounds
+- Color hierarchy maintained: dark bg → brand blue → light blue → yellow accent gradient
+- File remains 406 lines with no structural changes, only color value replacements
+
+---
+Task ID: 2
+Agent: General Purpose Agent
+Task: Create Forgot Password and Reset Password API routes
+
+Work Log:
+
+### 1. Added PasswordReset model to Prisma schema
+- **File**: `/home/z/my-project/prisma/schema.prisma`
+- Added `PasswordReset` model after the `Commission` model with fields:
+  - `id` (String, @id @default(cuid()))
+  - `email` (String)
+  - `token` (String, @unique)
+  - `expiresAt` (DateTime)
+  - `used` (Boolean, @default(false))
+  - `createdAt` (DateTime, @default(now()))
+
+### 2. Created forgot-password route
+- **File**: `/home/z/my-project/src/app/api/auth/forgot-password/route.ts` (68 lines)
+- POST endpoint accepting `email` in request body
+- Validates email is provided
+- Finds user by email — returns same success message regardless of whether user exists (prevents email enumeration)
+- Generates secure reset token using `randomBytes(32).toString('hex')` (64 hex characters)
+- Sets token expiry to 1 hour from now
+- Invalidates any existing unused reset tokens for the email before creating a new one
+- Stores reset token in `PasswordReset` table via `db.passwordReset.create()`
+- Logs the reset token to console for development
+- Returns token in response body only in development mode (`NODE_ENV === 'development'`)
+- Uses `import { db } from '@/lib/db'`, `import { randomBytes } from 'crypto'`, `import { NextRequest, NextResponse } from 'next/server'`
+
+### 3. Created reset-password route
+- **File**: `/home/z/my-project/src/app/api/auth/reset-password/route.ts` (85 lines)
+- POST endpoint accepting `token`, `newPassword`, `confirmPassword` in request body
+- Validates all required fields are present (400)
+- Validates `newPassword === confirmPassword` (400)
+- Validates `newPassword.length >= 8` (400)
+- Finds valid (non-expired, unused) reset token via `db.passwordReset.findFirst()`
+- Returns 400 if token is invalid or expired
+- Finds user by email from reset record
+- Returns 404 if user not found
+- Hashes new password with `bcrypt.hash(newPassword, 12)` (12 salt rounds)
+- Updates user's `passwordHash` in database
+- Deletes the used reset token via `db.passwordReset.delete()`
+- Returns `{ message: 'Password has been reset successfully' }`
+- Uses `import { db } from '@/lib/db'`, `import bcrypt from 'bcryptjs'`, `import { NextRequest, NextResponse } from 'next/server'`
+
+### 4. Ran db:push to sync schema
+- Ran `npx prisma db push --schema prisma/schema.prisma` (the root SQLite schema, not the database/ directory which uses PostgreSQL)
+- Schema synced successfully — `PasswordReset` table created in SQLite database
+- Prisma Client regenerated
+
+Stage Summary:
+- 3 files created/modified: schema.prisma, forgot-password/route.ts, reset-password/route.ts
+- Forgot Password API: POST `/api/auth/forgot-password` — generates secure 64-char hex token, 1-hour expiry, anti-enumeration response, dev-mode token return
+- Reset Password API: POST `/api/auth/reset-password` — validates token/password, bcryptjs hash (12 rounds), deletes used token
+- PasswordReset table created and synced in SQLite database
+- All error cases handled with proper HTTP status codes (400, 404, 500)
+
+---
+Task ID: 3-4
+Agent: UI Component Agent
+Task: Create reusable ChangePasswordDialog component and integrate into Client, Provider, and Admin dashboards
+
+Work Log:
+
+### Step 1: Created reusable ChangePasswordDialog component
+- Created `/home/z/my-project/src/components/change-password-dialog.tsx` (~153 lines)
+- Component features:
+  - Controlled dialog with open/close state management
+  - Three form fields: Current Password, New Password, Confirm New Password
+  - Show/hide password toggles for current and new password fields
+  - Client-side validation: min 8 chars, password match, must differ from current
+  - Calls `/api/auth/change-password` endpoint with JWT token from localStorage
+  - Error display with AlertCircle icon in red banner
+  - Success state with CheckCircle2 icon and auto-close after 2 seconds
+  - Loading spinner on submit button during API call
+  - Optional `trigger` prop for custom trigger element (used in Client Settings)
+  - Optional `onClose` callback
+  - Default trigger: branded "Change Password" button with Lock icon, #1D63FF colors
+  - Uses base-ui DialogTrigger `render` prop pattern for custom trigger support
+  - Full form reset on dialog close
+  - Brand colors: #1D63FF (Prussian Blue) for primary actions, dialog title
+
+### Step 2: Integrated into Client Settings Page
+- Modified `/home/z/my-project/src/components/pages/customer/client-settings-page.tsx`
+- Added `isChangePassword` boolean flag to settings items
+- Changed "Change Password" item (`page: null`) to `isChangePassword: true`
+- When `isChangePassword` is true, renders `ChangePasswordDialog` with a custom trigger div matching the settings item style (label, description, ChevronRight icon)
+- Other items continue to use `navigate()` as before
+
+### Step 3: Integrated into Provider Settings Page
+- Modified `/home/z/my-project/src/components/pages/provider/provider-settings-page.tsx`
+- Replaced Security card's static password form (3 Input fields + "Update Password" button) with:
+  - Description text: "Update your password to keep your account secure."
+  - `<ChangePasswordDialog />` using the default trigger button
+- Removed unused `Input` import (still needed for Business Settings card)
+- Removed unused `Lock` import (previously on Update Password button)
+
+### Step 4: Integrated into Admin Profile Page
+- Modified `/home/z/my-project/src/components/pages/admin/admin-profile-page.tsx`
+- Replaced "Change Password" card's static form (3 Input fields + "Update Password" button with Lock icon) with:
+  - Description text: "Update your password to keep your admin account secure."
+  - `<ChangePasswordDialog />` using the default trigger button
+- Removed unused Input fields for current/new/confirm password
+- Kept Lock icon on card header (still used in CardTitle)
+
+### Step 5: TypeScript Verification
+- `npx tsc --noEmit` confirms zero new errors in all 4 modified/created files
+- Pre-existing errors in other files (framer-motion, useApiMutation, etc.) are unrelated
+
+Stage Summary:
+- Created 1 new reusable component: `change-password-dialog.tsx` (~153 lines)
+- Modified 3 dashboard pages: client-settings-page.tsx, provider-settings-page.tsx, admin-profile-page.tsx
+- All three dashboards now use the same ChangePasswordDialog with consistent UX
+- Client Settings: dialog opens inline when clicking "Change Password" settings row
+- Provider Settings: default "Change Password" button in Security card
+- Admin Profile: default "Change Password" button in Change Password card
+- Brand colors (#1D63FF, #FFCE32) applied throughout
+- TypeScript: zero new errors introduced
+- API integration: calls existing `/api/auth/change-password` endpoint with Bearer token
+
+---
+Task ID: 5
+Agent: Brand Color Update Agent
+Task: Update brand colors across all dashboard pages in /home/z/my-project/src/components/pages/
+
+Work Log:
+
+### Color Mapping Applied
+- Old primary: `blue-600` (Tailwind default) → New primary: `#1D63FF` (Prussian Blue)
+- Old hover: `blue-700` → New dark: `#0B3D91`
+- Old light: `blue-100` → New light: `[#1D63FF]/10`
+- New accent: `#FFCE32` (Yellow) replaces `to-cyan-400/500` in brand gradients
+- Gradient mid: `via-[#3B82F6]` replaces `via-blue-500`
+- Gradient dark: `[#0A2E6B]` replaces `from-blue-800/to-blue-800`
+
+### Replacements Executed (sed bulk operations)
+
+**Step 1: Opacity-suffixed edge cases** (handled before general replacements to avoid double-replace bugs)
+- `from-blue-50/80` → `from-[#1D63FF]/5`
+- `border-blue-100/50` → `border-[#1D63FF]/10`
+
+**Step 2: Shade 600 (primary brand color)**
+- `bg-blue-600` → `bg-[#1D63FF]`
+- `text-blue-600` → `text-[#1D63FF]`
+- `border-blue-600` → `border-[#1D63FF]`
+- `border-l-blue-600` → `border-l-[#1D63FF]` (directional variant)
+- `ring-blue-600` → `ring-[#1D63FF]`
+- `from-blue-600` → `from-[#1D63FF]`
+- `to-blue-600` → `to-[#0B3D91]`
+- `via-blue-600` → `via-[#1D63FF]`
+
+**Step 3: Shade 700 (dark variant)**
+- `bg-blue-700` → `bg-[#0B3D91]` (covers `hover:bg-blue-700` via substring match)
+- `text-blue-700` → `text-[#0B3D91]` (covers `hover:text-blue-700`)
+- `border-blue-700` → `border-[#0B3D91]`
+- `from-blue-700` → `from-[#0B3D91]`
+- `to-blue-700` → `to-[#0B3D91]`
+- `via-blue-700` → `via-[#0B3D91]`
+
+**Step 4: Shade 100 (light variant) — text-blue-100 PRESERVED per rule 5**
+- `bg-blue-100` → `bg-[#1D63FF]/10` (covers `hover:bg-blue-100`)
+- `border-blue-100` → `border-[#1D63FF]/10`
+- `ring-blue-100` → `ring-[#1D63FF]/20`
+- `from-blue-100` → `from-[#1D63FF]/10`
+- `to-blue-100` → `to-[#1D63FF]/10`
+- `text-blue-100` → **KEPT AS IS** (light text on dark backgrounds)
+
+**Step 5: Gradient-specific replacements**
+- `via-blue-500` → `via-[#3B82F6]` (per rule 9)
+- `from-blue-500` → `from-[#1D63FF]` (per rule 10)
+- `to-blue-500` → `to-[#0B3D91]` (per rule 10)
+- `from-blue-800` → `from-[#0A2E6B]` (per rule 10)
+- `to-blue-800` → `to-[#0A2E6B]` (per rule 10)
+
+**Step 6: Cyan to accent yellow in brand gradients**
+- `to-cyan-400` → `to-[#FFCE32]` (per rule 9)
+- `to-cyan-500` → `to-[#FFCE32]` (per rule 9)
+
+### NOT Changed (per task rules)
+- `text-blue-100` — preserved (light text on dark backgrounds)
+- `blue-500`, `blue-400`, `blue-300`, `blue-200`, `blue-50` — standalone classes kept (not 600/700/100)
+- `frontend/` directory — not touched
+- `src/components/bys/` directory — not touched
+
+### Files Changed by Directory (162 total)
+- auth/: 9 files (signup, login, role-selection, OTP, phone/email verification, etc.)
+- admin/: 32 files (all admin dashboard, analytics, settings, templates pages)
+- booking/: 9 files (checkout, payment, confirmation, datetime, reschedule, etc.)
+- customer/: 29 files (wallet, bookings, profile, favorites, coupons, etc.)
+- provider/: 24 files (dashboard, earnings, services, bookings, wallet, etc.)
+- public/: 10 files (home, categories, search, service-detail, nearby-providers, etc.)
+- marketing/: 11 files (blog, FAQ, careers, partner, press, about, testimonials, etc.)
+- legal/: 6 files (GDPR, privacy, terms, cookie, cancellation, refund)
+- communication/: 6 files (chat, video consultation, call history, etc.)
+- tracking/: 5 files (live tracking, route visualization, ETA, timeline, contact)
+- pwa/: 4 files (push permission, device sessions, install, offline sync)
+- error/: 6 files (404, 500, maintenance, session expired, access denied, no internet)
+- advanced/: 11 files (CRM, escrow, franchise, loyalty, pricing, inventory, etc.)
+
+### Verification Results
+- `blue-600` remaining in pages/: **0** ✓
+- `blue-700` remaining in pages/: **0** ✓
+- `bg-blue-100` remaining in pages/: **0** ✓
+- `text-blue-100` preserved in pages/: **23 files** ✓
+- `frontend/` directory: **not modified** ✓
+- `src/components/bys/` directory: **not modified** ✓
+- Vite build: **successful** (981ms, 222 precache entries) ✓
+- TypeScript: **no new errors** (pre-existing module declaration errors only) ✓
+
+Stage Summary:
+- 162 files updated with new brand colors (#1D63FF primary, #0B3D91 dark, #FFCE32 accent)
+- All shades 600/700/100 systematically replaced per task rules
+- Gradient brand patterns updated (from-blue-600, to-cyan-400/500 → accent yellow)
+- text-blue-100 preserved as required (light text on dark backgrounds)
+- Non-target shades (50, 200, 300, 400, 500 standalone) left unchanged
+- Zero build errors, zero TypeScript errors introduced

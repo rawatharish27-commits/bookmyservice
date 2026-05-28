@@ -94,7 +94,7 @@ const suggestions: Suggestion[] = [
 
 const categoryConfig: Record<SuggestionCategory, { label: string; color: string; icon: React.ReactNode }> = {
   'pricing': { label: 'Pricing', color: 'bg-amber-50 text-amber-700', icon: <DollarSign className="size-3.5" /> },
-  'expansion': { label: 'Service Expansion', color: 'bg-blue-50 text-blue-700', icon: <Layers className="size-3.5" /> },
+  'expansion': { label: 'Service Expansion', color: 'bg-blue-50 text-[#0B3D91]', icon: <Layers className="size-3.5" /> },
   'allocation': { label: 'Provider Allocation', color: 'bg-purple-50 text-purple-700', icon: <Users className="size-3.5" /> },
   'optimization': { label: 'Optimization', color: 'bg-emerald-50 text-emerald-700', icon: <Zap className="size-3.5" /> },
 }
@@ -136,7 +136,7 @@ export function AISuggestionsPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><RefreshCw className="size-4" /> Refresh</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-blue-600 hover:bg-blue-700"><Brain className="size-4" /> Analyze</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]"><Brain className="size-4" /> Analyze</Button>
           </div>
         </div>
 
@@ -145,7 +145,7 @@ export function AISuggestionsPage() {
           <Card className="bg-white rounded-xl">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-[#1D63FF]/10 text-[#1D63FF]">
                   <Lightbulb className="size-5" />
                 </div>
                 <div>
@@ -201,7 +201,7 @@ export function AISuggestionsPage() {
           <Button
             variant={filterCategory === 'all' ? 'default' : 'outline'}
             size="sm"
-            className={`rounded-xl ${filterCategory === 'all' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+            className={`rounded-xl ${filterCategory === 'all' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
             onClick={() => setFilterCategory('all')}
           >
             All
@@ -211,7 +211,7 @@ export function AISuggestionsPage() {
               key={cat}
               variant={filterCategory === cat ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl gap-1 ${filterCategory === cat ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+              className={`rounded-xl gap-1 ${filterCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
               onClick={() => setFilterCategory(cat)}
             >
               {categoryConfig[cat].icon} {categoryConfig[cat].label}
@@ -271,18 +271,18 @@ export function AISuggestionsPage() {
                   <div className="flex items-center gap-2 mb-3 px-3 py-2 rounded-lg bg-slate-50">
                     <span className="text-xs text-slate-500">Key Metric:</span>
                     <span className="text-xs font-medium text-slate-800">{suggestion.metric}</span>
-                    <span className={`text-xs font-bold ${suggestion.metricDirection === 'up' ? 'text-emerald-600' : 'text-blue-600'}`}>
+                    <span className={`text-xs font-bold ${suggestion.metricDirection === 'up' ? 'text-emerald-600' : 'text-[#1D63FF]'}`}>
                       {suggestion.metricDirection === 'up' ? '↑' : '↓'} {suggestion.metricChange}
                     </span>
                   </div>
 
                   {/* Expandable Details */}
                   {expandedId === suggestion.id && (
-                    <div className="mb-3 p-3 rounded-lg bg-blue-50/50 border border-blue-100">
+                    <div className="mb-3 p-3 rounded-lg bg-blue-50/50 border border-[#1D63FF]/10">
                       <p className="text-xs font-medium text-blue-800 mb-2">Supporting Data:</p>
                       <ul className="space-y-1">
                         {suggestion.details.map((detail, i) => (
-                          <li key={i} className="text-xs text-blue-700 flex items-center gap-1.5">
+                          <li key={i} className="text-xs text-[#0B3D91] flex items-center gap-1.5">
                             <ChevronRight className="size-3 text-blue-400" />
                             {detail}
                           </li>
@@ -296,7 +296,7 @@ export function AISuggestionsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-xs text-blue-600"
+                      className="h-7 text-xs text-[#1D63FF]"
                       onClick={() => setExpandedId(expandedId === suggestion.id ? null : suggestion.id)}
                     >
                       {expandedId === suggestion.id ? 'Hide Details' : 'View Details'}
@@ -330,7 +330,7 @@ export function AISuggestionsPage() {
           <Card className="bg-white rounded-xl h-fit">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <Activity className="size-4 text-blue-600" />
+                <Activity className="size-4 text-[#1D63FF]" />
                 <CardTitle className="text-sm font-semibold text-slate-900">Insights Timeline</CardTitle>
               </div>
             </CardHeader>

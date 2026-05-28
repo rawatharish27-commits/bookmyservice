@@ -27,7 +27,7 @@ export function AdminChatMonitoringPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><MessageSquare className="size-5 text-blue-600 mx-auto mb-1" /><p className="text-lg font-bold text-blue-600">{activeConversations.length}</p><p className="text-xs text-slate-500">Active Chats</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><MessageSquare className="size-5 text-[#1D63FF] mx-auto mb-1" /><p className="text-lg font-bold text-[#1D63FF]">{activeConversations.length}</p><p className="text-xs text-slate-500">Active Chats</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><AlertTriangle className="size-5 text-amber-600 mx-auto mb-1" /><p className="text-lg font-bold text-amber-600">{flaggedMessages.length}</p><p className="text-xs text-slate-500">Flagged</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Clock className="size-5 text-purple-600 mx-auto mb-1" /><p className="text-lg font-bold text-purple-600">156</p><p className="text-xs text-slate-500">Total Today</p></CardContent></Card>
         </div>
@@ -56,7 +56,7 @@ export function AdminChatMonitoringPage() {
             {activeConversations.map((conv, i) => (
               <div key={conv.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50"><MessageSquare className="size-5 text-blue-600" /></div>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50"><MessageSquare className="size-5 text-[#1D63FF]" /></div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
                       <p className="text-sm font-medium text-slate-900">{conv.topic}</p>

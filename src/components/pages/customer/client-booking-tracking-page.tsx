@@ -34,7 +34,7 @@ export function ClientBookingTrackingPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading tracking data">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -62,7 +62,7 @@ export function ClientBookingTrackingPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Track Booking</h1>
-          <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">{tracking.status}</Badge>
+          <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">{tracking.status}</Badge>
         </div>
 
         <Card className="bg-white rounded-xl overflow-hidden">
@@ -72,7 +72,7 @@ export function ClientBookingTrackingPage() {
               <span className="text-sm">Live Map</span>
             </div>
             <div className="absolute bottom-3 left-3 rounded-lg bg-white/90 px-3 py-1.5 backdrop-blur-sm">
-              <div className="flex items-center gap-1.5 text-xs font-medium text-blue-600">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-[#1D63FF]">
                 <Truck className="size-3.5" /> Provider is on the way
               </div>
             </div>
@@ -86,7 +86,7 @@ export function ClientBookingTrackingPage() {
                 <Clock className="size-4 text-blue-500" />
                 <span className="text-sm font-medium text-slate-900">Estimated Arrival</span>
               </div>
-              <span className="text-lg font-bold text-blue-600">{tracking.eta}</span>
+              <span className="text-lg font-bold text-[#1D63FF]">{tracking.eta}</span>
             </div>
             <div className="flex items-center gap-4 text-sm text-slate-500">
               <div className="flex items-center gap-1.5"><Navigation className="size-3.5" />{tracking.distance}</div>
@@ -106,13 +106,13 @@ export function ClientBookingTrackingPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <Avatar><AvatarFallback className="bg-blue-600 text-white text-sm">{tracking.provider.initials}</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-sm">{tracking.provider.initials}</AvatarFallback></Avatar>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-slate-900">{tracking.provider.name}</p>
                 <p className="text-xs text-slate-400">Your service provider</p>
               </div>
               <Button variant="outline" size="sm" className="gap-1 border-slate-200 rounded-lg" aria-label={`Call ${tracking.provider.name}`}><Phone className="size-3.5" /> Call</Button>
-              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg" onClick={() => navigate('client-chat')} aria-label="Chat with provider"><MessageSquare className="size-3.5" /> Chat</Button>
+              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-[#1D63FF] hover:bg-blue-50 rounded-lg" onClick={() => navigate('client-chat')} aria-label="Chat with provider"><MessageSquare className="size-3.5" /> Chat</Button>
             </div>
           </CardContent>
         </Card>

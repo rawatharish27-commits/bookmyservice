@@ -52,7 +52,7 @@ const faqItems = [
 ]
 
 const refundTimeline = [
-  { step: 1, title: 'Raise Refund Request', desc: 'Submit through app or website within 48 hours', time: 'Immediate', color: 'bg-blue-600' },
+  { step: 1, title: 'Raise Refund Request', desc: 'Submit through app or website within 48 hours', time: 'Immediate', color: 'bg-[#1D63FF]' },
   { step: 2, title: 'Review & Verification', desc: 'Our team reviews the request and contacts provider', time: '24-48 hours', color: 'bg-blue-500' },
   { step: 3, title: 'Decision Made', desc: 'Refund approved, partially approved, or denied', time: '1-3 business days', color: 'bg-blue-400' },
   { step: 4, title: 'Refund Initiated', desc: 'Amount transferred to original payment method', time: 'Same day as approval', color: 'bg-green-500' },
@@ -68,7 +68,7 @@ export function RefundPolicyPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-blue-600">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
               <RotateCcw className="size-5 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Refund Policy</h1>
@@ -96,7 +96,7 @@ export function RefundPolicyPage() {
           <Card className="bg-white rounded-xl">
             <CardContent className="p-4 text-center">
               <div className="flex items-center justify-center size-12 rounded-full bg-blue-50 mx-auto mb-2">
-                <Timer className="size-6 text-blue-600" />
+                <Timer className="size-6 text-[#1D63FF]" />
               </div>
               <p className="text-2xl font-bold text-slate-900">48 hrs</p>
               <p className="text-xs text-slate-500">Window to raise refund</p>
@@ -126,7 +126,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <ArrowRight className="size-5 text-blue-600" />
+              <ArrowRight className="size-5 text-[#1D63FF]" />
               Refund Process Timeline
             </CardTitle>
           </CardHeader>
@@ -164,7 +164,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <FileCheck className="size-5 text-blue-600" />
+              <FileCheck className="size-5 text-[#1D63FF]" />
               Refund Eligibility Criteria
             </CardTitle>
           </CardHeader>
@@ -225,7 +225,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <IndianRupee className="size-5 text-blue-600" />
+              <IndianRupee className="size-5 text-[#1D63FF]" />
               Partial Refund Structure
             </CardTitle>
           </CardHeader>
@@ -270,7 +270,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <CalendarClock className="size-5 text-blue-600" />
+              <CalendarClock className="size-5 text-[#1D63FF]" />
               Service-Specific Refund Policies
             </CardTitle>
           </CardHeader>
@@ -302,7 +302,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Wallet className="size-5 text-blue-600" />
+              <Wallet className="size-5 text-[#1D63FF]" />
               Refund by Payment Method
             </CardTitle>
           </CardHeader>
@@ -348,10 +348,10 @@ export function RefundPolicyPage() {
 
             <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 mt-4">
               <div className="flex items-center gap-2 mb-1">
-                <Info className="size-4 text-blue-600" />
+                <Info className="size-4 text-[#1D63FF]" />
                 <span className="text-sm font-semibold text-blue-900">Wallet Refund Option</span>
               </div>
-              <p className="text-xs text-blue-700">
+              <p className="text-xs text-[#0B3D91]">
                 You can choose to receive refunds in your BookMyService Wallet for instant processing. Wallet balance can be used for future bookings and never expires.
               </p>
             </div>
@@ -362,7 +362,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Shield className="size-5 text-blue-600" />
+              <Shield className="size-5 text-[#1D63FF]" />
               Important Notes
             </CardTitle>
           </CardHeader>
@@ -377,7 +377,7 @@ export function RefundPolicyPage() {
               'If a service provider disputes a refund claim, an independent assessment may be conducted within 7 business days.',
             ].map((note, i) => (
               <div key={i} className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" />
+                <CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" />
                 <p className="text-sm text-slate-600">{note}</p>
               </div>
             ))}
@@ -388,7 +388,7 @@ export function RefundPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <HelpCircle className="size-5 text-blue-600" />
+              <HelpCircle className="size-5 text-[#1D63FF]" />
               Frequently Asked Questions
             </CardTitle>
           </CardHeader>
@@ -423,7 +423,7 @@ export function RefundPolicyPage() {
             <h3 className="text-lg font-bold text-slate-900 mb-2">Need Help with a Refund?</h3>
             <p className="text-sm text-slate-500 mb-4">Our support team is available 24/7 to assist you with any refund-related queries.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="gap-2 bg-blue-600 hover:bg-blue-700 rounded-xl">
+              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
                 <RotateCcw className="size-4" />
                 Raise Refund Request
               </Button>

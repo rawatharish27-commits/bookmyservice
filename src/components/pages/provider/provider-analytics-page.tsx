@@ -76,7 +76,7 @@ export function ProviderAnalyticsPage() {
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Comparison Period</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 rounded-lg bg-blue-50"><p className="text-xs text-blue-600 font-medium">This Month</p><p className="text-lg font-bold text-slate-900">67 bookings</p><p className="text-xs text-emerald-600">+12% vs last month</p></div>
+              <div className="p-3 rounded-lg bg-blue-50"><p className="text-xs text-[#1D63FF] font-medium">This Month</p><p className="text-lg font-bold text-slate-900">67 bookings</p><p className="text-xs text-emerald-600">+12% vs last month</p></div>
               <div className="p-3 rounded-lg bg-slate-50"><p className="text-xs text-slate-500 font-medium">Last Month</p><p className="text-lg font-bold text-slate-700">60 bookings</p><p className="text-xs text-slate-400">Baseline</p></div>
             </div>
           </CardContent>

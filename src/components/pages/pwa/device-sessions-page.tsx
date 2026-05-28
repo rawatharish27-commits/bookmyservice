@@ -149,7 +149,7 @@ function getDeviceIcon(type: DeviceSession['deviceType']) {
 
 function getDeviceColor(type: DeviceSession['deviceType']) {
   switch (type) {
-    case 'mobile': return { icon: 'text-blue-600', bg: 'bg-blue-50' }
+    case 'mobile': return { icon: 'text-[#1D63FF]', bg: 'bg-blue-50' }
     case 'desktop': return { icon: 'text-emerald-600', bg: 'bg-emerald-50' }
     case 'tablet': return { icon: 'text-purple-600', bg: 'bg-purple-50' }
   }
@@ -224,7 +224,7 @@ export function DeviceSessionsPage() {
                     </div>
                   </div>
                 </div>
-                <Badge className="bg-blue-50 text-blue-700 border-0 text-[10px]">
+                <Badge className="bg-blue-50 text-[#0B3D91] border-0 text-[10px]">
                   <Wifi className="w-3 h-3 mr-1" /> Active
                 </Badge>
               </div>
@@ -435,7 +435,7 @@ export function DeviceSessionsPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-blue-600" />
+              <Shield className="w-4 h-4 text-[#1D63FF]" />
               <CardTitle className="text-base">Security Notice</CardTitle>
             </div>
           </CardHeader>

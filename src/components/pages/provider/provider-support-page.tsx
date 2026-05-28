@@ -21,7 +21,7 @@ const faqs = [
 
 const statusColors: Record<string, string> = {
   Open: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100',
-  'In Progress': 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100',
+  'In Progress': 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10',
   Resolved: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
 }
 
@@ -31,7 +31,7 @@ export function ProviderSupportPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Support</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> New Ticket</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Ticket</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -40,7 +40,7 @@ export function ProviderSupportPage() {
             {tickets.map((t, i) => (
               <div key={t.id}>
                 <div className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 -mx-2 px-2 rounded-lg">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><MessageSquare className="size-4 text-blue-600" /></div>
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><MessageSquare className="size-4 text-[#1D63FF]" /></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{t.subject}</p>
                     <p className="text-xs text-slate-400">{t.id} • {t.date}</p>

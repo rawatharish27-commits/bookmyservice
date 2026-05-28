@@ -57,7 +57,7 @@ export default function Home() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#06b6d4] flex items-center justify-center text-white font-bold text-sm shadow-lg">B</div>
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#1D63FF] to-[#FFCE32] flex items-center justify-center text-white font-bold text-sm shadow-lg">B</div>
               <span className="font-bold text-lg text-slate-900 tracking-tight">BookMyService</span>
             </div>
 
@@ -71,7 +71,7 @@ export default function Home() {
                     setActiveSection(sectionId)
                     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="text-sm font-medium text-slate-600 hover:text-[#1e3a5f] transition-colors"
+                  className="text-sm font-medium text-slate-600 hover:text-[#1D63FF] transition-colors"
                 >
                   {item}
                 </button>
@@ -80,10 +80,10 @@ export default function Home() {
 
             {/* CTA */}
             <div className="hidden md:flex items-center gap-3">
-              <button className="text-sm font-medium text-slate-600 hover:text-[#1e3a5f] px-4 py-2 transition-colors">
+              <button className="text-sm font-medium text-slate-600 hover:text-[#1D63FF] px-4 py-2 transition-colors">
                 Login
               </button>
-              <button className="text-sm font-semibold text-white bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] hover:from-[#0f2440] hover:to-[#1e3a5f] px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg">
+              <button className="text-sm font-semibold text-white bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] hover:from-[#0B3D91] hover:to-[#1D63FF] px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg">
                 Book Now
               </button>
             </div>
@@ -106,14 +106,14 @@ export default function Home() {
                     setMobileMenuOpen(false)
                     document.getElementById(item.toLowerCase().replace(/\s/g, '-'))?.scrollIntoView({ behavior: 'smooth' })
                   }}
-                  className="block w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#1e3a5f] hover:bg-slate-50 rounded-lg"
+                  className="block w-full text-left px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#1D63FF] hover:bg-slate-50 rounded-lg"
                 >
                   {item}
                 </button>
               ))}
               <div className="pt-2 flex gap-2">
                 <button className="flex-1 text-sm font-medium text-slate-600 px-4 py-2.5 border border-slate-200 rounded-xl">Login</button>
-                <button className="flex-1 text-sm font-semibold text-white bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] px-4 py-2.5 rounded-xl">Book Now</button>
+                <button className="flex-1 text-sm font-semibold text-white bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] px-4 py-2.5 rounded-xl">Book Now</button>
               </div>
             </div>
           </div>
@@ -123,23 +123,23 @@ export default function Home() {
       {/* ─── Hero Section ────────────────────────────────────────────────── */}
       <section id="home" className="relative overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(6,182,212,0.15),transparent_60%),radial-gradient(ellipse_at_80%_20%,rgba(14,165,233,0.2),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B3D91] via-[#1D63FF] to-[#3B82F6]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_20%_50%,rgba(255,206,50,0.15),transparent_60%),radial-gradient(ellipse_at_80%_20%,rgba(255,184,0,0.2),transparent_50%)]" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-cyan-300 text-xs font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/20 text-[#FFCE32] text-xs font-medium mb-6">
               <Zap className="size-3.5" /> Trusted by 10,000+ customers across India
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-[1.1] tracking-tight mb-6">
               Expert Home Services,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-sky-400">Booked in Minutes</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFCE32] to-[#FFB800]">Booked in Minutes</span>
             </h1>
             <p className="text-lg sm:text-xl text-slate-300 leading-relaxed mb-8 max-w-2xl">
               From AC repair to plumbing, get verified professionals at your doorstep. Starting from just ₹99 with our satisfaction guarantee.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-400 text-[#0a1628] font-bold text-base hover:from-cyan-300 hover:to-sky-300 transition-all shadow-xl shadow-cyan-500/25 hover:shadow-cyan-400/40">
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FFCE32] to-[#FFB800] text-[#0B3D91] font-bold text-base hover:from-[#FFCE32] hover:to-[#FFB800] transition-all shadow-xl shadow-[#FFCE32]/25 hover:shadow-[#FFCE32]/40">
                 Book a Service <ArrowRight className="size-5" />
               </button>
               <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 border border-white/20 text-white font-semibold text-base hover:bg-white/20 transition-all">
@@ -154,7 +154,7 @@ export default function Home() {
       <section id="services" className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">OUR SERVICES</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">OUR SERVICES</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
               11 Verified Home Services
             </h2>
@@ -167,12 +167,12 @@ export default function Home() {
             {services.map((service) => (
               <button
                 key={service.slug}
-                className="group relative p-5 sm:p-6 rounded-2xl bg-white border border-slate-100 hover:border-[#06b6d4]/30 hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 text-left card-hover-lift"
+                className="group relative p-5 sm:p-6 rounded-2xl bg-white border border-slate-100 hover:border-[#FFCE32]/30 hover:shadow-xl hover:shadow-[#FFCE32]/5 transition-all duration-300 text-left card-hover-lift"
               >
                 <div className="text-3xl mb-3">{service.icon}</div>
-                <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1 group-hover:text-[#1e3a5f] transition-colors">{service.name}</h3>
-                <p className="text-xs sm:text-sm text-cyan-600 font-semibold">Starting {service.price}</p>
-                <ArrowRight className="absolute top-5 right-5 size-4 text-slate-300 group-hover:text-[#06b6d4] group-hover:translate-x-1 transition-all" />
+                <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1 group-hover:text-[#1D63FF] transition-colors">{service.name}</h3>
+                <p className="text-xs sm:text-sm text-amber-600 font-semibold">Starting {service.price}</p>
+                <ArrowRight className="absolute top-5 right-5 size-4 text-slate-300 group-hover:text-[#FFCE32] group-hover:translate-x-1 transition-all" />
               </button>
             ))}
           </div>
@@ -183,7 +183,7 @@ export default function Home() {
       <section className="py-20 sm:py-28 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">WHY CHOOSE US</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">WHY CHOOSE US</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
               The BookMyService Difference
             </h2>
@@ -191,9 +191,9 @@ export default function Home() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
             {features.map((feature) => (
-              <div key={feature.title} className="text-center p-6 rounded-2xl bg-white border border-slate-100 hover:border-[#06b6d4]/20 hover:shadow-lg transition-all duration-300">
-                <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-gradient-to-br from-[#1e3a5f]/10 to-cyan-50 mb-4">
-                  <feature.icon className="size-7 text-[#1e3a5f]" />
+              <div key={feature.title} className="text-center p-6 rounded-2xl bg-white border border-slate-100 hover:border-[#FFCE32]/20 hover:shadow-lg transition-all duration-300">
+                <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-amber-50 mb-4">
+                  <feature.icon className="size-7 text-[#1D63FF]" />
                 </div>
                 <h3 className="font-bold text-slate-900 mb-2">{feature.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{feature.desc}</p>
@@ -207,7 +207,7 @@ export default function Home() {
       <section id="how-it-works" className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">HOW IT WORKS</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">HOW IT WORKS</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
               Book in 3 Simple Steps
             </h2>
@@ -216,11 +216,11 @@ export default function Home() {
           <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
             {howItWorks.map((item, idx) => (
               <div key={item.step} className="text-center relative">
-                <div className="inline-flex items-center justify-center size-16 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] text-white font-bold text-2xl mb-5 shadow-lg shadow-[#1e3a5f]/20">
+                <div className="inline-flex items-center justify-center size-16 rounded-full bg-gradient-to-br from-[#1D63FF] to-[#0B3D91] text-white font-bold text-2xl mb-5 shadow-lg shadow-[#1D63FF]/20">
                   {item.step}
                 </div>
                 {idx < 2 && (
-                  <div className="hidden sm:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-gradient-to-r from-[#1e3a5f] to-[#06b6d4]/30" />
+                  <div className="hidden sm:block absolute top-8 left-[calc(50%+40px)] w-[calc(100%-80px)] h-0.5 bg-gradient-to-r from-[#1D63FF] to-[#FFCE32]/30" />
                 )}
                 <h3 className="font-bold text-slate-900 text-lg mb-2">{item.title}</h3>
                 <p className="text-sm text-slate-500">{item.desc}</p>
@@ -234,7 +234,7 @@ export default function Home() {
       <section className="py-20 sm:py-28 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">TESTIMONIALS</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">TESTIMONIALS</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
               What Our Customers Say
             </h2>
@@ -250,7 +250,7 @@ export default function Home() {
                 </div>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">"{t.text}"</p>
                 <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] flex items-center justify-center text-white font-bold text-sm">
+                  <div className="size-10 rounded-full bg-gradient-to-br from-[#1D63FF] to-[#0B3D91] flex items-center justify-center text-white font-bold text-sm">
                     {t.name[0]}
                   </div>
                   <div>
@@ -269,7 +269,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             <div>
-              <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">ABOUT US</span>
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">ABOUT US</span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-6">
                 India&apos;s Trusted Hyperlocal Service Marketplace
               </h2>
@@ -283,18 +283,18 @@ export default function Home() {
                   { value: '11', label: 'Service Categories' },
                 ].map(stat => (
                   <div key={stat.label} className="text-center p-4 rounded-xl bg-slate-50">
-                    <p className="text-2xl font-extrabold text-[#1e3a5f]">{stat.value}</p>
+                    <p className="text-2xl font-extrabold text-[#1D63FF]">{stat.value}</p>
                     <p className="text-xs text-slate-400 mt-1">{stat.label}</p>
                   </div>
                 ))}
               </div>
             </div>
             <div className="relative">
-              <div className="aspect-square rounded-3xl bg-gradient-to-br from-[#1e3a5f] via-[#2d5a8e] to-[#06b6d4] p-8 flex items-center justify-center">
+              <div className="aspect-square rounded-3xl bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#FFCE32] p-8 flex items-center justify-center">
                 <div className="text-center text-white space-y-6">
                   <div className="text-7xl">🏠</div>
                   <h3 className="text-2xl font-bold">Your Home, Our Priority</h3>
-                  <p className="text-cyan-200 text-sm max-w-xs mx-auto">
+                  <p className="text-[#FFCE32] text-sm max-w-xs mx-auto">
                     Professional services delivered to your doorstep with care and precision.
                   </p>
                 </div>
@@ -305,8 +305,8 @@ export default function Home() {
       </section>
 
       {/* ─── CTA Section ─────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 bg-gradient-to-br from-[#0a1628] via-[#1e3a5f] to-[#2d5a8e] relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(6,182,212,0.1),transparent_70%)]" />
+      <section className="py-20 sm:py-28 bg-gradient-to-br from-[#0B3D91] via-[#1D63FF] to-[#3B82F6] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(255,206,50,0.1),transparent_70%)]" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
             Ready to Book Your Service?
@@ -315,7 +315,7 @@ export default function Home() {
             Join thousands of satisfied customers. Get expert home services starting from just ₹99.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-400 to-sky-400 text-[#0a1628] font-bold text-lg hover:from-cyan-300 hover:to-sky-300 transition-all shadow-xl shadow-cyan-500/25">
+            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FFCE32] to-[#FFB800] text-[#0B3D91] font-bold text-lg hover:from-[#FFCE32] hover:to-[#FFB800] transition-all shadow-xl shadow-[#FFCE32]/25">
               Book Now <ArrowRight className="size-5" />
             </button>
             <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-white/10 border border-white/20 text-white font-semibold text-lg hover:bg-white/20 transition-all">
@@ -329,7 +329,7 @@ export default function Home() {
       <section id="contact" className="py-20 sm:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1e3a5f]/5 text-[#1e3a5f] text-xs font-semibold mb-4">CONTACT US</span>
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#1D63FF]/5 text-[#1D63FF] text-xs font-semibold mb-4">CONTACT US</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
               Get in Touch
             </h2>
@@ -341,12 +341,12 @@ export default function Home() {
               { icon: Mail, title: 'Email Us', detail: 'support@bookmyservice.in', sub: 'We reply within 2 hours' },
               { icon: MessageSquare, title: 'Live Chat', detail: 'Chat with us', sub: 'Available 24/7' },
             ].map(item => (
-              <div key={item.title} className="text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#06b6d4]/20 hover:shadow-md transition-all">
-                <div className="inline-flex items-center justify-center size-12 rounded-xl bg-gradient-to-br from-[#1e3a5f]/10 to-cyan-50 mb-4">
-                  <item.icon className="size-6 text-[#1e3a5f]" />
+              <div key={item.title} className="text-center p-6 rounded-2xl bg-slate-50 border border-slate-100 hover:border-[#FFCE32]/20 hover:shadow-md transition-all">
+                <div className="inline-flex items-center justify-center size-12 rounded-xl bg-gradient-to-br from-[#1D63FF]/10 to-amber-50 mb-4">
+                  <item.icon className="size-6 text-[#1D63FF]" />
                 </div>
                 <h3 className="font-bold text-slate-900 mb-1">{item.title}</h3>
-                <p className="text-sm text-[#1e3a5f] font-semibold">{item.detail}</p>
+                <p className="text-sm text-[#1D63FF] font-semibold">{item.detail}</p>
                 <p className="text-xs text-slate-400 mt-1">{item.sub}</p>
               </div>
             ))}
@@ -355,12 +355,12 @@ export default function Home() {
       </section>
 
       {/* ─── Footer ──────────────────────────────────────────────────────── */}
-      <footer className="bg-[#0a1628] text-white mt-auto">
+      <footer className="bg-[#0B3D91] text-white mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             <div>
               <div className="flex items-center gap-2.5 mb-4">
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 to-sky-400 flex items-center justify-center text-[#0a1628] font-bold text-sm">B</div>
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFCE32] to-[#FFB800] flex items-center justify-center text-[#0B3D91] font-bold text-sm">B</div>
                 <span className="font-bold text-lg">BookMyService</span>
               </div>
               <p className="text-slate-400 text-sm leading-relaxed">
@@ -371,7 +371,7 @@ export default function Home() {
               <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Services</h4>
               <ul className="space-y-2">
                 {services.slice(0, 6).map(s => (
-                  <li key={s.slug}><span className="text-sm text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer">{s.name}</span></li>
+                  <li key={s.slug}><span className="text-sm text-slate-400 hover:text-[#FFCE32] transition-colors cursor-pointer">{s.name}</span></li>
                 ))}
               </ul>
             </div>
@@ -379,7 +379,7 @@ export default function Home() {
               <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Company</h4>
               <ul className="space-y-2">
                 {['About Us', 'Careers', 'Blog', 'Press'].map(item => (
-                  <li key={item}><span className="text-sm text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer">{item}</span></li>
+                  <li key={item}><span className="text-sm text-slate-400 hover:text-[#FFCE32] transition-colors cursor-pointer">{item}</span></li>
                 ))}
               </ul>
             </div>
@@ -387,7 +387,7 @@ export default function Home() {
               <h4 className="font-semibold text-sm uppercase tracking-wider text-slate-300 mb-4">Legal</h4>
               <ul className="space-y-2">
                 {['Privacy Policy', 'Terms of Service', 'Refund Policy', 'Cancellation Policy'].map(item => (
-                  <li key={item}><span className="text-sm text-slate-400 hover:text-cyan-300 transition-colors cursor-pointer">{item}</span></li>
+                  <li key={item}><span className="text-sm text-slate-400 hover:text-[#FFCE32] transition-colors cursor-pointer">{item}</span></li>
                 ))}
               </ul>
             </div>

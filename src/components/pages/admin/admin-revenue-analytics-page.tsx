@@ -38,7 +38,7 @@ export function AdminRevenueAnalyticsPage() {
 
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">₹43,00,000</p><p className="text-xs text-slate-500">Total Revenue</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-blue-600">₹8,90,000</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">₹8,90,000</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><div className="flex items-center justify-center gap-1"><TrendingUp className="size-4 text-emerald-500" /><p className="text-2xl font-bold text-emerald-600">+8.5%</p></div><p className="text-xs text-slate-500">MoM Growth</p></CardContent></Card>
         </div>
 

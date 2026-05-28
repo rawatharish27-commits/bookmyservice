@@ -36,7 +36,7 @@ export function SearchPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Search Hero */}
-      <section className="bg-gradient-to-br from-blue-600 to-purple-600 text-white py-10">
+      <section className="bg-gradient-to-br from-[#1D63FF] to-purple-600 text-white py-10">
         <div className="max-w-3xl mx-auto px-4 text-center">
           <h1 className="text-2xl sm:text-3xl font-bold mb-2">Find Any Service</h1>
           <p className="text-blue-200 mb-6">Search from professional home services</p>
@@ -84,7 +84,7 @@ export function SearchPage() {
           </div>
           <div className="flex flex-wrap gap-2">
             {recentSearchesData.map((s) => (
-              <button key={s} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-sm text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors"
+              <button key={s} className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-sm text-slate-600 hover:border-blue-300 hover:text-[#1D63FF] transition-colors"
                 onClick={() => setQuery(s)}>
                 <History className="size-3" /> {s}
               </button>
@@ -115,7 +115,7 @@ export function SearchPage() {
           </h2>
           {loading ? (
             <div className="flex items-center justify-center py-10" role="status" aria-label="Loading popular services">
-              <Loader2 className="size-6 text-blue-600 animate-spin" />
+              <Loader2 className="size-6 text-[#1D63FF] animate-spin" />
               <span className="sr-only">Loading...</span>
             </div>
           ) : popularServices && popularServices.length > 0 ? (

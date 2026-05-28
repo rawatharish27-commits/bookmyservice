@@ -28,7 +28,7 @@ interface FAQ {
 }
 
 const categories: { key: FAQCategory; icon: React.ElementType; color: string; bg: string }[] = [
-  { key: 'General', icon: HelpCircle, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { key: 'General', icon: HelpCircle, color: 'text-[#1D63FF]', bg: 'bg-blue-50' },
   { key: 'Booking', icon: CalendarCheck, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { key: 'Payment', icon: CreditCard, color: 'text-purple-600', bg: 'bg-purple-50' },
   { key: 'Services', icon: Wrench, color: 'text-orange-600', bg: 'bg-orange-50' },
@@ -87,7 +87,7 @@ export function FaqPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
           <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">FAQs</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Frequently Asked Questions</h1>
@@ -111,7 +111,7 @@ export function FaqPage() {
         <div className="flex flex-wrap gap-2 justify-center">
           <Button
             variant={activeCategory === 'All' ? 'default' : 'outline'}
-            className={activeCategory === 'All' ? 'bg-blue-600 hover:bg-blue-700' : ''}
+            className={activeCategory === 'All' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
             onClick={() => setActiveCategory('All')}
           >
             All
@@ -120,7 +120,7 @@ export function FaqPage() {
             <Button
               key={cat.key}
               variant={activeCategory === cat.key ? 'default' : 'outline'}
-              className={activeCategory === cat.key ? 'bg-blue-600 hover:bg-blue-700' : ''}
+              className={activeCategory === cat.key ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
               onClick={() => setActiveCategory(cat.key)}
             >
               <cat.icon className="size-4 mr-1.5" />
@@ -189,7 +189,7 @@ export function FaqPage() {
           ].map((stat) => (
             <Card key={stat.label} className="shadow-sm border-0 text-center">
               <CardContent className="py-5">
-                <p className="text-2xl font-bold text-blue-600">{stat.value}</p>
+                <p className="text-2xl font-bold text-[#1D63FF]">{stat.value}</p>
                 <p className="text-xs text-slate-500 mt-1">{stat.label}</p>
               </CardContent>
             </Card>
@@ -198,7 +198,7 @@ export function FaqPage() {
       </section>
 
       {/* Still have questions CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <MessageCircle className="size-12 mx-auto mb-4 text-blue-200" />
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Still Have Questions?</h2>

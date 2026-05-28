@@ -46,7 +46,7 @@ export function ClientBookingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading bookings">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -77,7 +77,7 @@ export function ClientBookingsPage() {
         <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Booking status filter">
           {tabs.map((tab) => (
             <Button key={tab} onClick={() => setActiveTab(tab)} variant={activeTab === tab ? 'default' : 'outline'}
-              className={`rounded-xl whitespace-nowrap ${activeTab === tab ? 'bg-blue-600 hover:bg-blue-700' : 'border-slate-200'}`}
+              className={`rounded-xl whitespace-nowrap ${activeTab === tab ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}
               role="tab" aria-selected={activeTab === tab}>
               {tab}
             </Button>
@@ -96,7 +96,7 @@ export function ClientBookingsPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center gap-3">
                     <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                      <Calendar className="size-5 text-blue-600" />
+                      <Calendar className="size-5 text-[#1D63FF]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-slate-900">{booking.service}</p>

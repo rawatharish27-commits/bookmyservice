@@ -54,13 +54,13 @@ export function BlogDetailPage() {
           {/* Main Content */}
           <div className="lg:col-span-2">
             {/* Hero Image Placeholder */}
-            <div className="h-56 sm:h-72 rounded-xl bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center mb-6">
+            <div className="h-56 sm:h-72 rounded-xl bg-gradient-to-br from-[#1D63FF]/10 to-blue-200 flex items-center justify-center mb-6">
               <BookOpen className="size-16 text-blue-400" />
             </div>
 
             {/* Category & Meta */}
             <div className="flex flex-wrap items-center gap-3 mb-4">
-              <Badge className="bg-blue-50 text-blue-700">Home Maintenance</Badge>
+              <Badge className="bg-blue-50 text-[#0B3D91]">Home Maintenance</Badge>
               <span className="text-xs text-slate-400 flex items-center gap-1"><Calendar className="size-3" /> 28 Feb 2025</span>
               <span className="text-xs text-slate-400 flex items-center gap-1"><Clock className="size-3" /> 8 min read</span>
               <span className="text-xs text-slate-400 flex items-center gap-1"><Eye className="size-3" /> 12.5K views</span>
@@ -75,7 +75,7 @@ export function BlogDetailPage() {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-3">
                 <Avatar className="size-11">
-                  <AvatarFallback className="bg-blue-600 text-white font-semibold">PS</AvatarFallback>
+                  <AvatarFallback className="bg-[#1D63FF] text-white font-semibold">PS</AvatarFallback>
                 </Avatar>
                 <div>
                   <p className="font-semibold text-slate-900 text-sm">Priya Sharma</p>
@@ -118,12 +118,12 @@ export function BlogDetailPage() {
               </p>
               <div className="bg-blue-50 rounded-xl p-5 mb-6">
                 <ul className="space-y-2 text-sm text-slate-700">
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Check all faucets and pipes for leaks</li>
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Test smoke detectors and fire extinguishers</li>
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Clean AC filters and check for unusual sounds</li>
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Inspect electrical switches and wiring for damage</li>
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Clean kitchen and bathroom drains</li>
-                  <li className="flex items-start gap-2"><span className="text-blue-600 font-bold">•</span> Check water heater for leaks and efficiency</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Check all faucets and pipes for leaks</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Test smoke detectors and fire extinguishers</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Clean AC filters and check for unusual sounds</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Inspect electrical switches and wiring for damage</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Clean kitchen and bathroom drains</li>
+                  <li className="flex items-start gap-2"><span className="text-[#1D63FF] font-bold">•</span> Check water heater for leaks and efficiency</li>
                 </ul>
               </div>
 
@@ -218,7 +218,7 @@ export function BlogDetailPage() {
             <Card className="shadow-sm border-0">
               <CardContent className="p-5 text-center">
                 <Avatar className="size-16 mx-auto mb-3">
-                  <AvatarFallback className="bg-blue-600 text-white text-lg font-semibold">PS</AvatarFallback>
+                  <AvatarFallback className="bg-[#1D63FF] text-white text-lg font-semibold">PS</AvatarFallback>
                 </Avatar>
                 <h3 className="font-semibold text-slate-900">Priya Sharma</h3>
                 <p className="text-xs text-slate-400 mb-3">Home Maintenance Expert</p>
@@ -241,7 +241,7 @@ export function BlogDetailPage() {
                       <BookOpen className="size-5 text-slate-300 group-hover:text-blue-400 transition-colors" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-medium text-slate-900 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
+                      <h4 className="text-sm font-medium text-slate-900 line-clamp-2 group-hover:text-[#1D63FF] transition-colors leading-snug">
                         {post.title}
                       </h4>
                       <div className="flex items-center gap-2 mt-1">
@@ -255,7 +255,7 @@ export function BlogDetailPage() {
             </Card>
 
             {/* Newsletter */}
-            <Card className="shadow-sm border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+            <Card className="shadow-sm border-0 bg-gradient-to-br from-[#1D63FF] to-[#0B3D91] text-white">
               <CardContent className="p-5">
                 <h3 className="font-semibold mb-2">Weekly Newsletter</h3>
                 <p className="text-sm text-blue-100 mb-4">Get the latest tips & updates delivered to your inbox.</p>

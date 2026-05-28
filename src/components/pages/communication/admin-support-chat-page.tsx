@@ -62,7 +62,7 @@ const supportTickets: SupportTicket[] = [
     ticketId: 'SUP-2024-452',
     customerName: 'Rahul Sharma',
     customerInitials: 'RS',
-    avatarColor: 'bg-blue-600',
+    avatarColor: 'bg-[#1D63FF]',
     subject: 'Refund not received for cancelled booking',
     priority: 'high',
     status: 'open',
@@ -185,7 +185,7 @@ const priorityConfig = {
 }
 
 const statusConfig = {
-  open: { color: 'bg-blue-100 text-blue-700', label: 'Open' },
+  open: { color: 'bg-[#1D63FF]/10 text-[#0B3D91]', label: 'Open' },
   'in-progress': { color: 'bg-amber-100 text-amber-700', label: 'In Progress' },
   waiting: { color: 'bg-slate-100 text-slate-600', label: 'Waiting' },
 }
@@ -228,7 +228,7 @@ export function AdminSupportChatPage() {
                 <AlertTriangle className="size-3 mr-1" />
                 {highPriorityCount} High
               </Badge>
-              <Badge className="bg-blue-100 text-blue-700 border border-blue-200">
+              <Badge className="bg-[#1D63FF]/10 text-[#0B3D91] border border-blue-200">
                 {openCount} Open
               </Badge>
             </div>
@@ -238,7 +238,7 @@ export function AdminSupportChatPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             <Card className="bg-white rounded-xl shadow-sm border-0">
               <CardContent className="p-3 text-center">
-                <MessageSquare className="size-4 text-blue-600 mx-auto mb-1" />
+                <MessageSquare className="size-4 text-[#1D63FF] mx-auto mb-1" />
                 <p className="text-lg font-bold text-slate-900">{supportTickets.length}</p>
                 <p className="text-[10px] text-slate-500">Total Tickets</p>
               </CardContent>
@@ -283,7 +283,7 @@ export function AdminSupportChatPage() {
                 placeholder="Search tickets..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-200 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-blue-100"
+                className="w-full pl-9 pr-4 py-2 text-xs rounded-lg border border-slate-200 focus:border-blue-400 focus:outline-none focus:ring-1 focus:ring-[#1D63FF]/20"
               />
             </div>
           </div>
@@ -298,7 +298,7 @@ export function AdminSupportChatPage() {
                     <button
                       onClick={() => handleTicketSelect(ticket)}
                       className={`w-full text-left p-3 hover:bg-slate-50 transition-colors ${
-                        selectedTicket.id === ticket.id ? 'bg-blue-50 border-l-2 border-l-blue-600' : ''
+                        selectedTicket.id === ticket.id ? 'bg-blue-50 border-l-2 border-l-[#1D63FF]' : ''
                       }`}
                     >
                       <div className="flex items-start gap-2.5">
@@ -333,7 +333,7 @@ export function AdminSupportChatPage() {
                               {statusConfig[ticket.status].label}
                             </Badge>
                             {ticket.unread > 0 && (
-                              <span className="ml-auto bg-blue-600 text-white text-[9px] size-4 rounded-full flex items-center justify-center">
+                              <span className="ml-auto bg-[#1D63FF] text-white text-[9px] size-4 rounded-full flex items-center justify-center">
                                 {ticket.unread}
                               </span>
                             )}
@@ -422,7 +422,7 @@ export function AdminSupportChatPage() {
                     >
                       <div className="p-3">
                         {!isAgent && (
-                          <p className="text-[10px] font-semibold text-blue-600 mb-1">
+                          <p className="text-[10px] font-semibold text-[#1D63FF] mb-1">
                             {msg.senderName}
                           </p>
                         )}

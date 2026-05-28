@@ -20,11 +20,11 @@ export function AdminBackupPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Backup</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> Create Backup</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Create Backup</Button>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Database className="size-5 text-blue-600 mx-auto mb-1" /><p className="text-lg font-bold text-slate-900">245 MB</p><p className="text-xs text-slate-500">Latest Backup Size</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Database className="size-5 text-[#1D63FF] mx-auto mb-1" /><p className="text-lg font-bold text-slate-900">245 MB</p><p className="text-xs text-slate-500">Latest Backup Size</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Clock className="size-5 text-emerald-600 mx-auto mb-1" /><p className="text-lg font-bold text-emerald-600">Daily 3 AM</p><p className="text-xs text-slate-500">Auto Schedule</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><HardDrive className="size-5 text-purple-600 mx-auto mb-1" /><p className="text-lg font-bold text-slate-900">2.4 GB</p><p className="text-xs text-slate-500">Total Storage Used</p></CardContent></Card>
         </div>
@@ -35,9 +35,9 @@ export function AdminBackupPage() {
             {backups.map((backup, i) => (
               <div key={backup.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50"><HardDrive className="size-5 text-blue-600" /></div>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50"><HardDrive className="size-5 text-[#1D63FF]" /></div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{backup.name}</p><Badge variant="secondary" className={backup.type === 'Auto' ? 'bg-blue-100 text-blue-700 border-blue-200' : 'bg-purple-100 text-purple-700 border-purple-200'}>{backup.type}</Badge></div>
+                    <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{backup.name}</p><Badge variant="secondary" className={backup.type === 'Auto' ? 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200' : 'bg-purple-100 text-purple-700 border-purple-200'}>{backup.type}</Badge></div>
                     <p className="text-xs text-slate-400">{backup.date} • {backup.size}</p>
                   </div>
                   <Badge variant="secondary" className={backup.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-red-100 text-red-700 border-red-200'}>{backup.status}</Badge>

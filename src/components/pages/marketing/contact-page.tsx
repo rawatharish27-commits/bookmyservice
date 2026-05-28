@@ -25,7 +25,7 @@ const contactInfo = [
     title: 'Phone',
     details: ['+91 1800-123-4567 (Toll-Free)', '+91 80-4567-8900'],
     subtitle: 'Available 24/7 for support',
-    color: 'text-blue-600',
+    color: 'text-[#1D63FF]',
     bg: 'bg-blue-50',
   },
   {
@@ -62,9 +62,9 @@ const offices = [
 ]
 
 const socialLinks = [
-  { icon: Globe, label: 'Facebook', handle: '@bookmyservice', color: 'bg-blue-600' },
+  { icon: Globe, label: 'Facebook', handle: '@bookmyservice', color: 'bg-[#1D63FF]' },
   { icon: Share2, label: 'Twitter', handle: '@bookmyservice_in', color: 'bg-sky-500' },
-  { icon: ExternalLink, label: 'LinkedIn', handle: '/company/bookmyservice', color: 'bg-blue-700' },
+  { icon: ExternalLink, label: 'LinkedIn', handle: '/company/bookmyservice', color: 'bg-[#0B3D91]' },
   { icon: MessageCircle, label: 'Instagram', handle: '@bookmyservice_india', color: 'bg-pink-600' },
   { icon: Globe, label: 'YouTube', handle: 'BookMyService India', color: 'bg-red-600' },
 ]
@@ -87,7 +87,7 @@ export function ContactPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
           <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Contact Us</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">We&apos;re Here to Help</h1>
@@ -185,7 +185,7 @@ export function ContactPage() {
                         required
                       />
                     </div>
-                    <Button type="submit" size="lg" className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto">
+                    <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] w-full sm:w-auto">
                       <Send className="size-4 mr-2" /> Send Message
                     </Button>
                   </form>
@@ -204,7 +204,7 @@ export function ContactPage() {
                     <div className="w-full h-full" style={{ backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 20px, #e2e8f0 20px, #e2e8f0 21px), repeating-linear-gradient(90deg, transparent, transparent 20px, #e2e8f0 20px, #e2e8f0 21px)' }} />
                   </div>
                   <div className="text-center z-10">
-                    <MapPin className="size-10 text-blue-600 mx-auto mb-2" />
+                    <MapPin className="size-10 text-[#1D63FF] mx-auto mb-2" />
                     <p className="text-sm font-medium text-slate-600">Bengaluru, India</p>
                     <p className="text-xs text-slate-400">KR Puram, Karnataka 560036</p>
                   </div>
@@ -222,7 +222,7 @@ export function ContactPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 <Button variant="outline" className="w-full justify-start gap-3 h-12">
-                  <MessageCircle className="size-4 text-blue-600" /> Live Chat Support
+                  <MessageCircle className="size-4 text-[#1D63FF]" /> Live Chat Support
                 </Button>
                 <Button variant="outline" className="w-full justify-start gap-3 h-12">
                   <Phone className="size-4 text-emerald-600" /> Call Us: 1800-123-4567
@@ -244,7 +244,7 @@ export function ContactPage() {
             <Card key={office.city} className="shadow-sm border-0">
               <CardContent className="p-5">
                 <div className="flex items-center gap-2 mb-3">
-                  <MapPin className="size-4 text-blue-600" />
+                  <MapPin className="size-4 text-[#1D63FF]" />
                   <h3 className="font-semibold text-slate-900">{office.city}</h3>
                   <Badge variant="secondary" className="text-[10px]">{office.type}</Badge>
                 </div>
@@ -283,7 +283,7 @@ export function ContactPage() {
       </section>
 
       {/* FAQ CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 text-center">
           <Globe className="size-10 mx-auto mb-4 text-blue-200" />
           <h2 className="text-2xl font-bold mb-3">Have Common Questions?</h2>

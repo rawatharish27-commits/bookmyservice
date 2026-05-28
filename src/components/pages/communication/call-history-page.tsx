@@ -49,7 +49,7 @@ const callHistory: CallRecord[] = [
     id: 1,
     name: 'Amit Sharma',
     initials: 'AS',
-    avatarColor: 'bg-blue-600',
+    avatarColor: 'bg-[#1D63FF]',
     type: 'video',
     direction: 'outgoing',
     status: 'completed',
@@ -249,7 +249,7 @@ export function CallHistoryPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-slate-400 ${showFilters ? 'bg-blue-50 text-blue-600' : ''}`}
+                className={`text-slate-400 ${showFilters ? 'bg-blue-50 text-[#1D63FF]' : ''}`}
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="size-5" />
@@ -268,7 +268,7 @@ export function CallHistoryPage() {
               placeholder="Search by name, service, or booking ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF]/20"
             />
             {searchQuery && (
               <Button
@@ -324,7 +324,7 @@ export function CallHistoryPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <Card className="bg-white rounded-xl shadow-sm">
             <CardContent className="p-3 sm:p-4 text-center">
-              <PhoneCall className="size-5 text-blue-600 mx-auto mb-1" />
+              <PhoneCall className="size-5 text-[#1D63FF] mx-auto mb-1" />
               <p className="text-lg font-bold text-slate-900">{totalCalls}</p>
               <p className="text-[10px] sm:text-xs text-slate-500">Total Calls</p>
             </CardContent>
@@ -460,7 +460,7 @@ export function CallHistoryPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-9 rounded-full text-blue-600 hover:bg-blue-50 hidden sm:flex"
+                              className="size-9 rounded-full text-[#1D63FF] hover:bg-blue-50 hidden sm:flex"
                             >
                               <MessageSquare className="size-4" />
                             </Button>
@@ -477,7 +477,7 @@ export function CallHistoryPage() {
         )}
 
         {/* Summary Footer */}
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-sm mt-6">
+        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl shadow-sm mt-6">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -491,7 +491,7 @@ export function CallHistoryPage() {
                   <Phone className="size-4 mr-2" />
                   Audio
                 </Button>
-                <Button className="bg-white text-blue-700 hover:bg-blue-50 rounded-xl">
+                <Button className="bg-white text-[#0B3D91] hover:bg-blue-50 rounded-xl">
                   <Video className="size-4 mr-2" />
                   Video
                 </Button>

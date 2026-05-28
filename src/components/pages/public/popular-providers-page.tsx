@@ -27,7 +27,7 @@ export function PopularProvidersPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Header */}
-      <section className="bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500 text-white py-10">
+      <section className="bg-gradient-to-r from-emerald-600 via-teal-500 to-[#FFCE32] text-white py-10">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="flex items-center justify-center gap-2 mb-2">
             <Award className="size-6" />
@@ -41,7 +41,7 @@ export function PopularProvidersPage() {
       <div className="max-w-7xl mx-auto px-4 py-10">
         {loading ? (
           <div className="flex items-center justify-center py-20" role="status" aria-label="Loading providers">
-            <Loader2 className="size-8 text-blue-600 animate-spin" />
+            <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
             <span className="sr-only">Loading...</span>
           </div>
         ) : error ? (

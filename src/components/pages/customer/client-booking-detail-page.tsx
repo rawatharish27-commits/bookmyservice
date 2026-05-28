@@ -39,7 +39,7 @@ export function ClientBookingDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading booking details">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -99,7 +99,7 @@ export function ClientBookingDetailPage() {
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Provider</CardTitle></CardHeader>
           <CardContent>
             <div className="flex items-center gap-3">
-              <Avatar><AvatarFallback className="bg-blue-600 text-white text-sm">{booking.provider.initials}</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-sm">{booking.provider.initials}</AvatarFallback></Avatar>
               <div className="flex-1"><p className="text-sm font-semibold text-slate-900">{booking.provider.name}</p><p className="text-xs text-slate-400">{booking.provider.rating} &bull; {booking.provider.services}</p></div>
               <Button variant="outline" size="sm" className="gap-1 border-slate-200 rounded-lg" aria-label={`Call ${booking.provider.name}`}><Phone className="size-3.5" /> Call</Button>
             </div>
@@ -119,7 +119,7 @@ export function ClientBookingDetailPage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 border-red-200 text-red-600 hover:bg-red-50 rounded-xl" aria-label="Cancel booking">Cancel Booking</Button>
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 rounded-xl gap-1" onClick={() => navigate('client-invoice', { id: booking.id })} aria-label="View invoice"><Receipt className="size-4" /> View Invoice</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl gap-1" onClick={() => navigate('client-invoice', { id: booking.id })} aria-label="View invoice"><Receipt className="size-4" /> View Invoice</Button>
         </div>
       </div>
     </div>

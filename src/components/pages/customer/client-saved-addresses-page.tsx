@@ -19,7 +19,7 @@ interface SavedAddress {
 const iconMap = { Home, Work, Other: MapPinned }
 
 const tagColors: Record<string, string> = {
-  primary: 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100',
+  primary: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10',
   secondary: 'bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-100',
   other: 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100',
 }
@@ -34,7 +34,7 @@ export function ClientSavedAddressesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading saved addresses">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )

@@ -30,18 +30,18 @@ export function NotFoundPage() {
   const [searchQuery, setSearchQuery] = useState('')
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50/80 to-[#f8fafc] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#1D63FF]/5 to-[#f8fafc] flex items-center justify-center p-4">
       <div className="w-full max-w-lg space-y-6">
         {/* Main 404 Card */}
         <Card className="bg-white rounded-2xl shadow-sm border-slate-100 overflow-hidden">
           {/* Top decorative band */}
-          <div className="h-2 bg-gradient-to-r from-blue-400 via-blue-600 to-cyan-400" />
+          <div className="h-2 bg-gradient-to-r from-blue-400 via-[#1D63FF] to-[#FFCE32]" />
 
           <CardContent className="p-8 text-center space-y-6">
             {/* Large 404 illustration */}
             <div className="relative">
-              <div className="mx-auto flex size-28 items-center justify-center rounded-full bg-blue-50 ring-4 ring-blue-100">
-                <Compass className="size-14 text-blue-600" strokeWidth={1.5} />
+              <div className="mx-auto flex size-28 items-center justify-center rounded-full bg-blue-50 ring-4 ring-[#1D63FF]/20">
+                <Compass className="size-14 text-[#1D63FF]" strokeWidth={1.5} />
               </div>
               <div className="absolute -top-1 -right-1 left-1/2 ml-6">
                 <span className="flex size-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 text-lg font-bold">
@@ -53,7 +53,7 @@ export function NotFoundPage() {
             {/* Heading */}
             <div className="space-y-2">
               <h1 className="text-5xl font-extrabold text-slate-900 tracking-tight">
-                4<span className="text-blue-600">0</span>4
+                4<span className="text-[#1D63FF]">0</span>4
               </h1>
               <h2 className="text-xl font-semibold text-slate-800">
                 Page Not Found
@@ -78,7 +78,7 @@ export function NotFoundPage() {
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                className="flex-1 bg-blue-600 hover:bg-blue-700 gap-2 rounded-xl py-5"
+                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-2 rounded-xl py-5"
                 onClick={() => (window.location.href = '/')}
               >
                 <Home className="size-4" /> Go Home
@@ -108,8 +108,8 @@ export function NotFoundPage() {
                   onClick={() => (window.location.href = page.href)}
                   className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50/60 transition-colors group text-left"
                 >
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50 group-hover:bg-blue-100 transition-colors">
-                    <page.icon className="size-4 text-blue-600" />
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50 group-hover:bg-[#1D63FF]/10 transition-colors">
+                    <page.icon className="size-4 text-[#1D63FF]" />
                   </div>
                   <span className="text-sm font-medium text-slate-700 flex-1">
                     {page.label}
@@ -117,7 +117,7 @@ export function NotFoundPage() {
                   {page.tag && (
                     <Badge
                       variant="secondary"
-                      className="text-xs bg-blue-50 text-blue-600 hover:bg-blue-100"
+                      className="text-xs bg-blue-50 text-[#1D63FF] hover:bg-[#1D63FF]/10"
                     >
                       {page.tag}
                     </Badge>

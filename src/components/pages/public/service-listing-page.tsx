@@ -73,7 +73,7 @@ export function ServiceListingPage() {
               <CardContent className="p-5">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-slate-900">Filters</h3>
-                  <Button variant="ghost" size="sm" className="text-xs text-blue-600" onClick={() => setActiveCategory('All')}>Clear All</Button>
+                  <Button variant="ghost" size="sm" className="text-xs text-[#1D63FF]" onClick={() => setActiveCategory('All')}>Clear All</Button>
                 </div>
                 <Separator className="mb-4" />
                 <div className="mb-5">
@@ -81,7 +81,7 @@ export function ServiceListingPage() {
                   <div className="flex flex-col gap-1.5">
                     {filterOptions.categories.map((c) => (
                       <button key={c} onClick={() => setActiveCategory(c)}
-                        className={`text-sm px-3 py-1.5 rounded-lg text-left transition-colors ${activeCategory === c ? 'bg-blue-50 text-blue-600 font-medium' : 'text-slate-600 hover:bg-slate-50'}`}>
+                        className={`text-sm px-3 py-1.5 rounded-lg text-left transition-colors ${activeCategory === c ? 'bg-blue-50 text-[#1D63FF] font-medium' : 'text-slate-600 hover:bg-slate-50'}`}>
                         {c}
                       </button>
                     ))}
@@ -115,7 +115,7 @@ export function ServiceListingPage() {
           <div className="flex-1">
             {loading ? (
               <div className="flex items-center justify-center py-20" role="status" aria-label="Loading services">
-                <Loader2 className="size-8 text-blue-600 animate-spin" />
+                <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
                 <span className="sr-only">Loading...</span>
               </div>
             ) : error ? (
@@ -144,7 +144,7 @@ export function ServiceListingPage() {
                               <Button variant="ghost" size="icon-xs" aria-label="Add to favorites"><Heart className="size-4 text-slate-400" /></Button>
                             </div>
                           </div>
-                          <h3 className="font-bold text-slate-900 group-hover:text-blue-600 transition-colors">{svc.name}</h3>
+                          <h3 className="font-bold text-slate-900 group-hover:text-[#1D63FF] transition-colors">{svc.name}</h3>
                           <p className="text-sm text-slate-500 mt-1">{svc.provider}</p>
                           <div className="flex items-center gap-1 mt-2">
                             <Star className="size-4 fill-amber-400 text-amber-400" />
@@ -158,7 +158,7 @@ export function ServiceListingPage() {
                           <Separator className="my-3" />
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-slate-900">₹{svc.price}</span>
-                            <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
+                            <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
                           </div>
                         </CardContent>
                       </Card>

@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { TrendingUp, Users, UserPlus, UserCheck, Download } from 'lucide-react'
 
 const userMetrics = [
-  { label: 'Total Users', value: '12,456', change: '+1,234', icon: Users, color: 'bg-blue-100 text-blue-600' },
+  { label: 'Total Users', value: '12,456', change: '+1,234', icon: Users, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { label: 'New Users (May)', value: '1,234', change: '+18%', icon: UserPlus, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Active Users', value: '8,432', change: '+12%', icon: UserCheck, color: 'bg-purple-100 text-purple-600' },
 ]

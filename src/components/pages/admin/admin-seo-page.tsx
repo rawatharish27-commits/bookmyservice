@@ -20,12 +20,12 @@ export function AdminSeoPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">SEO Settings</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Save className="size-4" /> Save All</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Save className="size-4" /> Save All</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Search className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Meta Tags</CardTitle></div>
+            <div className="flex items-center gap-2"><Search className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Meta Tags</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             {metaTags.map((meta, i) => (
@@ -44,10 +44,10 @@ export function AdminSeoPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Globe className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Sitemap</CardTitle></div>
+            <div className="flex items-center gap-2"><Globe className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Sitemap</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-3">
-            <div className="flex items-center justify-between"><div><p className="text-sm text-slate-700">Sitemap URL</p><p className="text-xs text-blue-600">https://bookmyservice.com/sitemap.xml</p></div><Button variant="outline" size="sm" className="text-xs rounded-lg">Regenerate</Button></div>
+            <div className="flex items-center justify-between"><div><p className="text-sm text-slate-700">Sitemap URL</p><p className="text-xs text-[#1D63FF]">https://bookmyservice.com/sitemap.xml</p></div><Button variant="outline" size="sm" className="text-xs rounded-lg">Regenerate</Button></div>
             <Separator className="bg-slate-100" />
             <div className="flex items-center justify-between"><div><p className="text-sm text-slate-700">Last Generated</p><p className="text-xs text-slate-400">22 May 2024 at 10:00 AM</p></div><Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200">Auto</Badge></div>
           </CardContent>
@@ -55,7 +55,7 @@ export function AdminSeoPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Code className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">robots.txt</CardTitle></div>
+            <div className="flex items-center gap-2"><Code className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">robots.txt</CardTitle></div>
           </CardHeader>
           <CardContent>
             <Textarea defaultValue={`User-agent: *\nAllow: /\nDisallow: /admin/\nDisallow: /api/\n\nSitemap: https://bookmyservice.com/sitemap.xml`} rows={6} className="font-mono text-xs" />
@@ -64,7 +64,7 @@ export function AdminSeoPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><BarChart3 className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Analytics Code</CardTitle></div>
+            <div className="flex items-center gap-2"><BarChart3 className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Analytics Code</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-3">
             <div><label className="text-xs font-medium text-slate-500 mb-1 block">Google Analytics ID</label><Input defaultValue="G-XXXXXXXXXX" /></div>

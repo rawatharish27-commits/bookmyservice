@@ -29,7 +29,7 @@ export function RouteVisualizationPage() {
             </div>
             <div className="absolute bottom-3 left-3 flex items-center gap-4 rounded-lg bg-white/90 px-4 py-2 backdrop-blur-sm shadow-sm">
               <div className="flex items-center gap-1.5">
-                <div className="size-3 rounded-full bg-blue-600" />
+                <div className="size-3 rounded-full bg-[#1D63FF]" />
                 <span className="text-xs text-slate-600">Provider</span>
               </div>
               <div className="flex items-center gap-1.5">
@@ -42,7 +42,7 @@ export function RouteVisualizationPage() {
 
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Total Distance', value: '2.5 km', color: 'text-blue-600 bg-blue-50' },
+            { label: 'Total Distance', value: '2.5 km', color: 'text-[#1D63FF] bg-blue-50' },
             { label: 'Est. Time', value: '12 min', color: 'text-emerald-600 bg-emerald-50' },
             { label: 'Turns', value: '4', color: 'text-purple-600 bg-purple-50' },
           ].map((stat) => (
@@ -62,13 +62,13 @@ export function RouteVisualizationPage() {
               <div key={i}>
                 <div className="flex items-center gap-3 py-3">
                   <div className="flex size-8 items-center justify-center rounded-lg bg-slate-50">
-                    <d.icon className={`size-4 ${d.icon === Flag ? 'text-emerald-600' : 'text-blue-600'}`} />
+                    <d.icon className={`size-4 ${d.icon === Flag ? 'text-emerald-600' : 'text-[#1D63FF]'}`} />
                   </div>
                   <div className="flex-1">
                     <p className="text-sm font-medium text-slate-900">{d.instruction}</p>
                     {d.distance && <p className="text-xs text-slate-400">{d.distance}</p>}
                   </div>
-                  {i === 0 && <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100 text-[10px]">Next</Badge>}
+                  {i === 0 && <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10 text-[10px]">Next</Badge>}
                 </div>
                 {i < directions.length - 1 && <Separator className="bg-slate-100" />}
               </div>

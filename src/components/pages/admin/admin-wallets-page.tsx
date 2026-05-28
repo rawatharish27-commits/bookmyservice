@@ -30,7 +30,7 @@ export function AdminWalletsPage() {
         <h1 className="text-2xl font-bold text-slate-900">Wallets</h1>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-blue-600">{walletOverview.totalBalance}</p><p className="text-xs text-slate-500">Total Balance</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-[#1D63FF]">{walletOverview.totalBalance}</p><p className="text-xs text-slate-500">Total Balance</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-emerald-600">{walletOverview.totalDeposits}</p><p className="text-xs text-slate-500">Total Deposits</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-red-600">{walletOverview.totalWithdrawals}</p><p className="text-xs text-slate-500">Total Withdrawals</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-amber-600">{walletOverview.pendingWithdrawals}</p><p className="text-xs text-slate-500">Pending</p></CardContent></Card>
@@ -47,7 +47,7 @@ export function AdminWalletsPage() {
             {userWallets.map((w, i) => (
               <div key={w.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-10 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-600">{w.name.charAt(0)}</div>
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#1D63FF]/10 text-sm font-bold text-[#1D63FF]">{w.name.charAt(0)}</div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{w.name}</p>
                     <p className="text-xs text-slate-400">{w.role} • {w.transactions} transactions</p>

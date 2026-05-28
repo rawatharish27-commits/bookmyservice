@@ -28,7 +28,7 @@ export function AdminReferralsPage() {
         <h1 className="text-2xl font-bold text-slate-900">Referrals</h1>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Users className="size-5 text-blue-600 mx-auto mb-1" /><p className="text-lg font-bold text-blue-600">{referralStats.totalReferrals}</p><p className="text-xs text-slate-500">Total Referrals</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Users className="size-5 text-[#1D63FF] mx-auto mb-1" /><p className="text-lg font-bold text-[#1D63FF]">{referralStats.totalReferrals}</p><p className="text-xs text-slate-500">Total Referrals</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Gift className="size-5 text-emerald-600 mx-auto mb-1" /><p className="text-lg font-bold text-emerald-600">{referralStats.rewardsGiven}</p><p className="text-xs text-slate-500">Rewards Given</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><TrendingUp className="size-5 text-purple-600 mx-auto mb-1" /><p className="text-lg font-bold text-purple-600">{referralStats.activeReferrers}</p><p className="text-xs text-slate-500">Active Referrers</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-amber-600">{referralStats.conversionRate}</p><p className="text-xs text-slate-500">Conversion Rate</p></CardContent></Card>
@@ -40,7 +40,7 @@ export function AdminReferralsPage() {
             {topReferrers.map((r, i) => (
               <div key={r.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <span className="flex size-7 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600">{i + 1}</span>
+                  <span className="flex size-7 items-center justify-center rounded-full bg-[#1D63FF]/10 text-xs font-bold text-[#1D63FF]">{i + 1}</span>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{r.name}</p>
                     <div className="flex items-center gap-1 mt-0.5"><code className="text-xs bg-slate-100 px-1.5 py-0.5 rounded">{r.code}</code><button><Copy className="size-3 text-slate-400" /></button></div>
@@ -59,7 +59,7 @@ export function AdminReferralsPage() {
             {referralTree.map((node) => (
               <div key={node.referrer} className="ml-${(node.level - 1) * 24}">
                 <div className="flex items-center gap-2 py-1.5" style={{ marginLeft: `${(node.level - 1) * 24}px` }}>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">L{node.level}</Badge>
+                  <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200">L{node.level}</Badge>
                   <span className="text-sm font-medium text-slate-900">{node.referrer}</span>
                   <span className="text-xs text-slate-400">→ {node.referred.join(', ')}</span>
                 </div>

@@ -87,7 +87,7 @@ export function VideoConsultationPage() {
           {/* Simulated remote video */}
           <div className="text-center">
             <Avatar className="size-24 mx-auto mb-4">
-              <AvatarFallback className="bg-blue-600 text-white text-3xl font-bold">
+              <AvatarFallback className="bg-[#1D63FF] text-white text-3xl font-bold">
                 AS
               </AvatarFallback>
             </Avatar>
@@ -191,7 +191,7 @@ export function VideoConsultationPage() {
                   <div
                     className={`max-w-[85%] rounded-xl p-2.5 ${
                       msg.from === 'self'
-                        ? 'bg-blue-600 text-white rounded-br-sm'
+                        ? 'bg-[#1D63FF] text-white rounded-br-sm'
                         : 'bg-slate-700 text-slate-200 rounded-bl-sm'
                     }`}
                   >
@@ -225,7 +225,7 @@ export function VideoConsultationPage() {
               />
               <Button
                 size="icon"
-                className="bg-blue-600 hover:bg-blue-700 size-8 rounded-lg shrink-0"
+                className="bg-[#1D63FF] hover:bg-[#0B3D91] size-8 rounded-lg shrink-0"
                 onClick={sendMessage}
               >
                 <Send className="size-3.5" />
@@ -288,7 +288,7 @@ export function VideoConsultationPage() {
                 <p className="text-xs text-slate-400 mb-2">Service Provider</p>
                 <div className="flex items-center gap-3 bg-slate-700/50 rounded-xl p-3">
                   <Avatar className="size-10">
-                    <AvatarFallback className="bg-blue-600 text-white text-sm font-semibold">
+                    <AvatarFallback className="bg-[#1D63FF] text-white text-sm font-semibold">
                       AS
                     </AvatarFallback>
                   </Avatar>
@@ -378,7 +378,7 @@ export function VideoConsultationPage() {
             size="icon"
             className={`size-12 rounded-full ${
               isScreenSharing
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-[#1D63FF] text-white hover:bg-[#0B3D91]'
                 : 'bg-slate-700 text-white hover:bg-slate-600'
             }`}
             onClick={() => setIsScreenSharing(!isScreenSharing)}
@@ -391,7 +391,7 @@ export function VideoConsultationPage() {
             size="icon"
             className={`size-12 rounded-full ${
               showChat
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
+                ? 'bg-[#1D63FF] text-white hover:bg-[#0B3D91]'
                 : 'bg-slate-700 text-white hover:bg-slate-600'
             }`}
             onClick={() => setShowChat(!showChat)}

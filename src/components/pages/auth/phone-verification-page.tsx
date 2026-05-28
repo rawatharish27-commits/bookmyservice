@@ -54,8 +54,8 @@ export function PhoneVerificationPage() {
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
       <Card className="w-full max-w-md bg-white rounded-xl shadow-sm border-slate-100">
         <CardContent className="p-8">
-          <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-6">
-            <Smartphone className="size-8 text-blue-600" />
+          <div className="w-16 h-16 rounded-2xl bg-[#1D63FF]/10 flex items-center justify-center mx-auto mb-6">
+            <Smartphone className="size-8 text-[#1D63FF]" />
           </div>
 
           <div className="text-center mb-6">
@@ -78,17 +78,17 @@ export function PhoneVerificationPage() {
             ))}
           </div>
 
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 py-5 rounded-xl gap-2" onClick={handleVerify} disabled={loading}>
+          <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl gap-2" onClick={handleVerify} disabled={loading}>
             {loading ? <Loader2 className="size-4 animate-spin" /> : <Shield className="size-4" />} {loading ? 'Verifying...' : 'Verify Number'}
           </Button>
 
           <div className="text-center mt-4">
             {timer > 0 ? (
               <p className="text-sm text-slate-500">
-                Resend code in <span className="font-bold text-blue-600">{timer}s</span>
+                Resend code in <span className="font-bold text-[#1D63FF]">{timer}s</span>
               </p>
             ) : (
-              <button onClick={() => setTimer(30)} className="text-sm text-blue-600 font-semibold hover:underline flex items-center justify-center gap-1 mx-auto">
+              <button onClick={() => setTimer(30)} className="text-sm text-[#1D63FF] font-semibold hover:underline flex items-center justify-center gap-1 mx-auto">
                 <RotateCcw className="size-3" /> Resend Code
               </button>
             )}
@@ -97,7 +97,7 @@ export function PhoneVerificationPage() {
           <Separator className="my-6" />
 
           <p className="text-center text-xs text-slate-400">
-            By verifying, you agree to our <button className="text-blue-600 hover:underline">Terms</button> and <button className="text-blue-600 hover:underline">Privacy Policy</button>
+            By verifying, you agree to our <button className="text-[#1D63FF] hover:underline">Terms</button> and <button className="text-[#1D63FF] hover:underline">Privacy Policy</button>
           </p>
         </CardContent>
       </Card>

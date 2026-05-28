@@ -40,7 +40,7 @@ export function ClientAmcPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading AMC plans">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -91,7 +91,7 @@ export function ClientAmcPage() {
               <Card key={plan.id} className={`rounded-xl ${plan.color}`}>
                 <CardContent className="p-5 space-y-3">
                   <h3 className="text-sm font-bold text-slate-900">{plan.name}</h3>
-                  <p className="text-xl font-bold text-blue-600">{plan.price}</p>
+                  <p className="text-xl font-bold text-[#1D63FF]">{plan.price}</p>
                   <p className="text-xs text-slate-500">{plan.visits} service visits/year</p>
                   <Separator />
                   <div className="space-y-1.5">
@@ -99,7 +99,7 @@ export function ClientAmcPage() {
                       <div key={b} className="flex items-center gap-1.5 text-xs text-slate-600"><Check className="size-3 text-emerald-500" />{b}</div>
                     ))}
                   </div>
-                  <Button className="w-full gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl text-xs" aria-label={`Buy ${plan.name} plan`}><Zap className="size-3" />Buy Now</Button>
+                  <Button className="w-full gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl text-xs" aria-label={`Buy ${plan.name} plan`}><Zap className="size-3" />Buy Now</Button>
                 </CardContent>
               </Card>
             ))}

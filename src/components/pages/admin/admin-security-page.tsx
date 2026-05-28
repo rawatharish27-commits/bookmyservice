@@ -45,13 +45,13 @@ export function AdminSecurityPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Shield className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Two-Factor Authentication</CardTitle></div>
+            <div className="flex items-center gap-2"><Shield className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Two-Factor Authentication</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {['Super Admin', 'Rakesh Verma', 'Sneha Reddy'].map((user, i) => (
               <div key={user}>
                 <div className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3"><div className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600">{user.charAt(0)}</div><span className="text-sm font-medium text-slate-900">{user}</span></div>
+                  <div className="flex items-center gap-3"><div className="flex size-8 items-center justify-center rounded-full bg-[#1D63FF]/10 text-xs font-bold text-[#1D63FF]">{user.charAt(0)}</div><span className="text-sm font-medium text-slate-900">{user}</span></div>
                   <ToggleRight className="size-6 text-emerald-500" />
                 </div>
                 {i < 2 && <Separator className="bg-slate-100" />}
@@ -63,7 +63,7 @@ export function AdminSecurityPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Globe className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">IP Whitelist</CardTitle></div>
+            <div className="flex items-center gap-2"><Globe className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">IP Whitelist</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {ipWhitelist.map((ip, i) => (
@@ -81,7 +81,7 @@ export function AdminSecurityPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Smartphone className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Active Sessions</CardTitle></div>
+            <div className="flex items-center gap-2"><Smartphone className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Active Sessions</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {activeSessions.map((session, i) => (

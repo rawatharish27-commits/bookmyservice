@@ -29,7 +29,7 @@ export function BookingCheckoutPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading checkout">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -54,7 +54,7 @@ export function BookingCheckoutPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-[#1D63FF]" /></div>
               <div className="flex-1">
                 <h3 className="text-sm font-semibold text-slate-900">{data.service.name}</h3>
                 <p className="text-xs text-slate-400">{data.service.desc}</p>
@@ -68,7 +68,7 @@ export function BookingCheckoutPage() {
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Service Provider</CardTitle></CardHeader>
           <CardContent>
             <div className="flex items-center gap-3">
-              <Avatar><AvatarFallback className="bg-blue-600 text-white text-sm">AS</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-sm">AS</AvatarFallback></Avatar>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-slate-900">{data.provider.name}</p>
                 <p className="text-xs text-slate-400">{data.provider.rating} ★ • {data.provider.services} services • {data.provider.distance} away</p>
@@ -82,18 +82,18 @@ export function BookingCheckoutPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-slate-900">Select Address</CardTitle>
-              <Button variant="ghost" size="sm" className="text-blue-600 text-xs">+ Add New</Button>
+              <Button variant="ghost" size="sm" className="text-[#1D63FF] text-xs">+ Add New</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-2">
             {data.addresses.map((addr) => (
               <button key={addr.id} className={`flex w-full items-center gap-3 rounded-xl border p-3 transition-colors ${addr.selected ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:bg-slate-50'}`}>
-                <MapPin className={`size-4 ${addr.selected ? 'text-blue-600' : 'text-slate-400'}`} />
+                <MapPin className={`size-4 ${addr.selected ? 'text-[#1D63FF]' : 'text-slate-400'}`} />
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium text-slate-900">{addr.label}</p>
                   <p className="text-xs text-slate-400">{addr.address}</p>
                 </div>
-                {addr.selected && <div className="size-4 rounded-full bg-blue-600 flex items-center justify-center"><div className="size-2 rounded-full bg-white" /></div>}
+                {addr.selected && <div className="size-4 rounded-full bg-[#1D63FF] flex items-center justify-center"><div className="size-2 rounded-full bg-white" /></div>}
               </button>
             ))}
           </CardContent>
@@ -105,11 +105,11 @@ export function BookingCheckoutPage() {
             <div className="flex justify-between text-sm"><span className="text-slate-500">Convenience Fee</span><span className="text-slate-900">₹{data.pricing.convenienceFee}</span></div>
             <div className="flex items-center gap-1 text-sm"><Tag className="size-3.5 text-emerald-500" /><span className="text-emerald-600">Coupon: FIRST50</span><span className="text-emerald-600 ml-auto">-₹{data.pricing.discount}</span></div>
             <Separator />
-            <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Total</span><span className="text-blue-600">₹{data.pricing.total}</span></div>
+            <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Total</span><span className="text-[#1D63FF]">₹{data.pricing.total}</span></div>
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment <ArrowRight className="size-4" /></Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment <ArrowRight className="size-4" /></Button>
       </div>
     </div>
   )

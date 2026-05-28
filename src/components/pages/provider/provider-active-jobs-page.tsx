@@ -25,13 +25,13 @@ export function ProviderActiveJobsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold text-slate-900">{job.service}</CardTitle>
-                <Badge className={job.status === 'In Progress' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-blue-100 text-blue-700 border-blue-200'}>{job.status}</Badge>
+                <Badge className={job.status === 'In Progress' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200'}>{job.status}</Badge>
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50">
-                <div className="flex items-center gap-2"><Timer className="size-4 text-blue-600" /><span className="text-xs text-blue-600 font-medium">Time Elapsed</span></div>
-                <span className="text-lg font-bold text-blue-600">{job.elapsed}</span>
+                <div className="flex items-center gap-2"><Timer className="size-4 text-[#1D63FF]" /><span className="text-xs text-[#1D63FF] font-medium">Time Elapsed</span></div>
+                <span className="text-lg font-bold text-[#1D63FF]">{job.elapsed}</span>
               </div>
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div><span className="text-xs text-slate-400">Customer</span><p className="font-medium text-slate-700">{job.customer}</p></div>

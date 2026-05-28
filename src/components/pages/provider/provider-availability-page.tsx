@@ -22,7 +22,7 @@ export function ProviderAvailabilityPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Availability</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> Add Slot</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Add Slot</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -37,7 +37,7 @@ export function ProviderAvailabilityPage() {
                   <div className="flex-1 flex flex-wrap gap-2">
                     {day.enabled && day.slots.length > 0 ? (
                       day.slots.map((slot) => (
-                        <span key={slot} className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                        <span key={slot} className="inline-flex items-center gap-1 rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-medium text-[#0B3D91]">
                           <Clock className="size-3" /> {slot}
                         </span>
                       ))

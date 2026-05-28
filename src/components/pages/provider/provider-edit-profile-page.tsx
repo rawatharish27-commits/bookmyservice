@@ -23,7 +23,7 @@ export function ProviderEditProfilePage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Edit Profile</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Save className="size-4" /> Save Changes</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Save className="size-4" /> Save Changes</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -31,8 +31,8 @@ export function ProviderEditProfilePage() {
           <CardContent className="space-y-4">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <div className="size-20 rounded-xl bg-blue-100 flex items-center justify-center text-2xl font-bold text-blue-600">CC</div>
-                <button className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full bg-blue-600 text-white"><Camera className="size-3.5" /></button>
+                <div className="size-20 rounded-xl bg-[#1D63FF]/10 flex items-center justify-center text-2xl font-bold text-[#1D63FF]">CC</div>
+                <button className="absolute -bottom-1 -right-1 flex size-7 items-center justify-center rounded-full bg-[#1D63FF] text-white"><Camera className="size-3.5" /></button>
               </div>
               <div className="text-sm text-slate-500">Upload your business logo</div>
             </div>
@@ -47,7 +47,7 @@ export function ProviderEditProfilePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Clock className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Business Hours</CardTitle></div>
+            <div className="flex items-center gap-2"><Clock className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Business Hours</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {businessHours.map((h, i) => (
@@ -72,7 +72,7 @@ export function ProviderEditProfilePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Camera className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Gallery Images</CardTitle></div>
+            <div className="flex items-center gap-2"><Camera className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Gallery Images</CardTitle></div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-3">

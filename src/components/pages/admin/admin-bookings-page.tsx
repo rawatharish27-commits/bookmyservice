@@ -16,7 +16,7 @@ const bookings = [
 ]
 
 const statusColors: Record<string, string> = {
-  Confirmed: 'bg-blue-100 text-blue-700 border-blue-200',
+  Confirmed: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
   Completed: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   Cancelled: 'bg-red-100 text-red-700 border-red-200',
   'In Progress': 'bg-amber-100 text-amber-700 border-amber-200',
@@ -56,7 +56,7 @@ export function AdminBookingsPage() {
                 <tbody>
                   {bookings.map((b) => (
                     <tr key={b.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                      <td className="px-4 py-3 text-sm font-medium text-blue-600">{b.id}</td>
+                      <td className="px-4 py-3 text-sm font-medium text-[#1D63FF]">{b.id}</td>
                       <td className="px-4 py-3"><p className="text-sm font-medium text-slate-700">{b.service}</p><p className="text-xs text-slate-400">{b.customer}</p></td>
                       <td className="px-4 py-3 text-sm text-slate-700 hidden sm:table-cell">{b.provider}</td>
                       <td className="px-4 py-3 text-sm text-slate-500 hidden md:table-cell">{b.date}</td>

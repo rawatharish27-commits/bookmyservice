@@ -64,7 +64,7 @@ export function PressPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
           <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Press & Media</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Press Room</h1>
@@ -85,7 +85,7 @@ export function PressPage() {
           ].map((stat) => (
             <Card key={stat.label} className="shadow-md border-0 text-center">
               <CardContent className="py-5">
-                <stat.icon className="size-5 text-blue-600 mx-auto mb-2" />
+                <stat.icon className="size-5 text-[#1D63FF] mx-auto mb-2" />
                 <p className="text-xl sm:text-2xl font-bold text-slate-900">{stat.value}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{stat.label}</p>
               </CardContent>
@@ -150,7 +150,7 @@ export function PressPage() {
                 <div className="flex items-center justify-between p-4 sm:p-5 hover:bg-slate-50 transition-colors cursor-pointer">
                   <div className="flex-1 min-w-0 mr-4">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-semibold text-blue-600">{article.source}</span>
+                      <span className="text-xs font-semibold text-[#1D63FF]">{article.source}</span>
                       <span className="text-[10px] text-slate-400">{article.date}</span>
                     </div>
                     <p className="text-sm font-medium text-slate-900 truncate">{article.title}</p>
@@ -176,14 +176,14 @@ export function PressPage() {
               <CardContent className="p-5">
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center shrink-0">
-                    <item.icon className="size-5 text-blue-600" />
+                    <item.icon className="size-5 text-[#1D63FF]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-slate-900 text-sm mb-1">{item.title}</h3>
                     <p className="text-xs text-slate-500 leading-relaxed mb-2">{item.description}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] text-slate-400">{item.format}</span>
-                      <Button variant="ghost" size="sm" className="text-blue-600 gap-1 h-auto p-0 text-xs">
+                      <Button variant="ghost" size="sm" className="text-[#1D63FF] gap-1 h-auto p-0 text-xs">
                         <Download className="size-3" /> Download
                       </Button>
                     </div>
@@ -196,7 +196,7 @@ export function PressPage() {
       </section>
 
       {/* Media Contact */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Media Inquiries</h2>
           <p className="text-blue-100 mb-8 max-w-lg mx-auto">

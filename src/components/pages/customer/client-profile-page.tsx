@@ -37,7 +37,7 @@ export function ClientProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading profile">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading profile...</span>
       </div>
     )
@@ -69,7 +69,7 @@ export function ClientProfilePage() {
           <CardContent className="p-6">
             <div className="flex items-start gap-4">
               <Avatar className="size-20">
-                <AvatarFallback className="bg-blue-600 text-white text-xl">{profile.initials}</AvatarFallback>
+                <AvatarFallback className="bg-[#1D63FF] text-white text-xl">{profile.initials}</AvatarFallback>
               </Avatar>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
@@ -92,7 +92,7 @@ export function ClientProfilePage() {
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {[
-            { icon: Calendar, label: 'Total Bookings', value: String(profile.stats.totalBookings), color: 'text-blue-600 bg-blue-50' },
+            { icon: Calendar, label: 'Total Bookings', value: String(profile.stats.totalBookings), color: 'text-[#1D63FF] bg-blue-50' },
             { icon: Star, label: 'Avg Rating', value: String(profile.stats.avgRating), color: 'text-amber-600 bg-amber-50' },
             { icon: Wallet, label: 'Wallet Balance', value: `₹${profile.stats.walletBalance.toLocaleString()}`, color: 'text-emerald-600 bg-emerald-50' },
             { icon: Shield, label: 'Active AMC', value: String(profile.stats.activeAmc), color: 'text-purple-600 bg-purple-50' },

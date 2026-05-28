@@ -64,7 +64,7 @@ export function NearbyProvidersPage() {
           <div className="lg:col-span-2 order-2 lg:order-1">
             {loading ? (
               <div className="flex items-center justify-center py-20" role="status" aria-label="Loading providers">
-                <Loader2 className="size-8 text-blue-600 animate-spin" />
+                <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
                 <span className="sr-only">Loading...</span>
               </div>
             ) : error ? (
@@ -97,7 +97,7 @@ export function NearbyProvidersPage() {
                         </div>
                       </div>
                       <div className="flex gap-2 mt-3">
-                        <Button size="sm" className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
+                        <Button size="sm" className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
                         <Button variant="outline" size="sm" className="gap-1" aria-label={`Call ${p.name}`}><Phone className="size-3" /> Call</Button>
                       </div>
                     </CardContent>

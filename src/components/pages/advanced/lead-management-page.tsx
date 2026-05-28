@@ -41,7 +41,7 @@ interface Lead {
 }
 
 const stages: { name: LeadStage; color: string; bgColor: string }[] = [
-  { name: 'New', color: 'text-blue-600', bgColor: 'bg-blue-50' },
+  { name: 'New', color: 'text-[#1D63FF]', bgColor: 'bg-blue-50' },
   { name: 'Contacted', color: 'text-purple-600', bgColor: 'bg-purple-50' },
   { name: 'Qualified', color: 'text-amber-600', bgColor: 'bg-amber-50' },
   { name: 'Converted', color: 'text-emerald-600', bgColor: 'bg-emerald-50' },
@@ -97,7 +97,7 @@ export function LeadManagementPage() {
             <h1 className="text-2xl font-bold text-slate-900">Lead Management</h1>
             <p className="text-sm text-slate-500 mt-1">Track and manage sales pipeline</p>
           </div>
-          <Button size="sm" className="gap-1 rounded-xl bg-blue-600 hover:bg-blue-700">
+          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">
             <Plus className="size-4" /> Add Lead
           </Button>
         </div>
@@ -174,8 +174,8 @@ export function LeadManagementPage() {
 
                         {/* Contact */}
                         <div className="flex items-center gap-3 mb-2">
-                          <a href="#" className="text-slate-400 hover:text-blue-600"><Phone className="size-3" /></a>
-                          <a href="#" className="text-slate-400 hover:text-blue-600"><Mail className="size-3" /></a>
+                          <a href="#" className="text-slate-400 hover:text-[#1D63FF]"><Phone className="size-3" /></a>
+                          <a href="#" className="text-slate-400 hover:text-[#1D63FF]"><Mail className="size-3" /></a>
                         </div>
 
                         {/* Follow up + Actions */}

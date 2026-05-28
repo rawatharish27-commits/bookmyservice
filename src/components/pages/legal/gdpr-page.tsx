@@ -38,7 +38,7 @@ const dataProtectionPrinciples = [
     principle: 'Lawfulness, Fairness & Transparency',
     desc: 'We process your data lawfully, fairly, and in a transparent manner. You are always informed about how and why your data is being used.',
     icon: Scale,
-    color: 'text-blue-600',
+    color: 'text-[#1D63FF]',
     bg: 'bg-blue-50',
   },
   {
@@ -160,7 +160,7 @@ export function GDPRPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-blue-600">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
               <Shield className="size-5 text-white" />
             </div>
             <div>
@@ -176,7 +176,7 @@ export function GDPRPage() {
               <Clock className="size-3 mr-1" />
               Last Updated: February 15, 2025
             </Badge>
-            <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs">
+            <Badge className="bg-[#1D63FF]/10 text-[#0B3D91] hover:bg-[#1D63FF]/10 text-xs">
               <CheckCircle2 className="size-3 mr-1" />
               GDPR Compliant
             </Badge>
@@ -191,7 +191,7 @@ export function GDPRPage() {
       {/* Content */}
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-8 space-y-6">
         {/* DPO Contact Card */}
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl text-white">
+        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl text-white">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
               <div className="flex items-center justify-center size-14 rounded-full bg-white/20 shrink-0">
@@ -223,7 +223,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Fingerprint className="size-5 text-blue-600" />
+              <Fingerprint className="size-5 text-[#1D63FF]" />
               Data Protection Principles
             </CardTitle>
           </CardHeader>
@@ -253,7 +253,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Scale className="size-5 text-blue-600" />
+              <Scale className="size-5 text-[#1D63FF]" />
               Your Data Protection Rights
             </CardTitle>
           </CardHeader>
@@ -269,7 +269,7 @@ export function GDPRPage() {
                   <div key={item.right} className="rounded-lg border border-slate-200 p-4">
                     <div className="flex items-start gap-3">
                       <div className="flex items-center justify-center size-9 rounded-lg bg-blue-50 shrink-0">
-                        <Icon className="size-5 text-blue-600" />
+                        <Icon className="size-5 text-[#1D63FF]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
@@ -294,7 +294,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <ClipboardList className="size-5 text-blue-600" />
+              <ClipboardList className="size-5 text-[#1D63FF]" />
               Data Processing Activities
             </CardTitle>
           </CardHeader>
@@ -330,10 +330,10 @@ export function GDPRPage() {
 
             <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 mt-4">
               <div className="flex items-center gap-2 mb-1">
-                <Info className="size-4 text-blue-600" />
+                <Info className="size-4 text-[#1D63FF]" />
                 <span className="text-sm font-semibold text-blue-900">Legal Basis Definitions</span>
               </div>
-              <div className="grid sm:grid-cols-2 gap-2 text-xs text-blue-700">
+              <div className="grid sm:grid-cols-2 gap-2 text-xs text-[#0B3D91]">
                 <p><strong>Contract:</strong> Processing necessary to perform our contract with you</p>
                 <p><strong>Consent:</strong> Processing based on your explicit opt-in consent</p>
                 <p><strong>Legal obligation:</strong> Processing required by law (e.g., tax records)</p>
@@ -347,7 +347,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Globe className="size-5 text-blue-600" />
+              <Globe className="size-5 text-[#1D63FF]" />
               Cross-Border Data Transfers
             </CardTitle>
           </CardHeader>
@@ -360,7 +360,7 @@ export function GDPRPage() {
               {crossBorderTransfers.map((item) => (
                 <div key={item.destination} className="rounded-lg border border-slate-200 p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Globe className="size-4 text-blue-600" />
+                    <Globe className="size-4 text-[#1D63FF]" />
                     <h4 className="text-sm font-semibold text-slate-900">{item.destination}</h4>
                   </div>
                   <div className="space-y-1.5 text-xs text-slate-600">
@@ -389,7 +389,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <FileText className="size-5 text-blue-600" />
+              <FileText className="size-5 text-[#1D63FF]" />
               Submit a Rights Request
             </CardTitle>
           </CardHeader>
@@ -462,7 +462,7 @@ export function GDPRPage() {
                           onClick={() => setFormData({ ...formData, rightType: item.value })}
                           className={`flex items-center gap-2 p-3 rounded-lg border text-left text-xs transition-colors ${
                             formData.rightType === item.value
-                              ? 'border-blue-600 bg-blue-50 text-blue-700'
+                              ? 'border-[#1D63FF] bg-blue-50 text-[#0B3D91]'
                               : 'border-slate-200 text-slate-600 hover:border-slate-300'
                           }`}
                         >
@@ -480,7 +480,7 @@ export function GDPRPage() {
                     placeholder="Please provide any additional information that may help us process your request..."
                     value={formData.details}
                     onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-                    className="w-full min-h-[100px] rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none"
+                    className="w-full min-h-[100px] rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF] focus:border-transparent resize-none"
                   />
                 </div>
 
@@ -493,7 +493,7 @@ export function GDPRPage() {
                   </div>
                 </div>
 
-                <Button type="submit" className="gap-2 bg-blue-600 hover:bg-blue-700 rounded-xl w-full sm:w-auto">
+                <Button type="submit" className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl w-full sm:w-auto">
                   <Send className="size-4" />
                   Submit Request
                 </Button>
@@ -506,7 +506,7 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Building2 className="size-5 text-blue-600" />
+              <Building2 className="size-5 text-[#1D63FF]" />
               Supervisory Authority
             </CardTitle>
           </CardHeader>
@@ -544,14 +544,14 @@ export function GDPRPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Server className="size-5 text-blue-600" />
+              <Server className="size-5 text-[#1D63FF]" />
               Data Retention Periods
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {[
-                { category: 'Account Data', period: 'Account lifetime + 1 year', color: 'bg-blue-50 text-blue-700' },
+                { category: 'Account Data', period: 'Account lifetime + 1 year', color: 'bg-blue-50 text-[#0B3D91]' },
                 { category: 'Booking Records', period: '3 years', color: 'bg-green-50 text-green-700' },
                 { category: 'Payment Records', period: '7 years (tax law)', color: 'bg-amber-50 text-amber-700' },
                 { category: 'Support Tickets', period: '2 years after resolution', color: 'bg-purple-50 text-purple-700' },

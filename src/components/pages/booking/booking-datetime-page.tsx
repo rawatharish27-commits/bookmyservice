@@ -41,7 +41,7 @@ export function BookingDatetimePage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-blue-600" />May 2025</CardTitle>
+              <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-[#1D63FF]" />May 2025</CardTitle>
               <div className="flex gap-1">
                 <Button variant="ghost" size="icon" className="size-7"><ChevronLeft className="size-4" /></Button>
                 <Button variant="ghost" size="icon" className="size-7"><ChevronRight className="size-4" /></Button>
@@ -52,7 +52,7 @@ export function BookingDatetimePage() {
             <div className="grid grid-cols-7 gap-2">
               {dates.map((d) => (
                 <button key={d.date} disabled={!d.available} onClick={() => d.available && setSelectedDate(d.date)}
-                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${!d.available ? 'opacity-30 cursor-not-allowed' : selectedDate === d.date ? 'bg-blue-600 text-white' : 'hover:bg-slate-50'}`}>
+                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${!d.available ? 'opacity-30 cursor-not-allowed' : selectedDate === d.date ? 'bg-[#1D63FF] text-white' : 'hover:bg-slate-50'}`}>
                   <span className="text-[10px] font-medium opacity-70">{d.day}</span>
                   <span className="text-sm font-bold">{d.date}</span>
                 </button>
@@ -62,14 +62,14 @@ export function BookingDatetimePage() {
         </Card>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-blue-600" />Available Time Slots</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-[#1D63FF]" />Available Time Slots</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-2">
               {timeSlots.map((slot) => (
                 <Button key={slot.time} disabled={!slot.available}
                   onClick={() => slot.available && setSelectedTime(slot.time)}
                   variant={selectedTime === slot.time ? 'default' : 'outline'}
-                  className={`rounded-xl text-xs ${selectedTime === slot.time ? 'bg-blue-600 hover:bg-blue-700' : !slot.available ? 'opacity-30' : 'border-slate-200'}`}>
+                  className={`rounded-xl text-xs ${selectedTime === slot.time ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : !slot.available ? 'opacity-30' : 'border-slate-200'}`}>
                   {slot.time}
                 </Button>
               ))}
@@ -77,9 +77,9 @@ export function BookingDatetimePage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-blue-50 border-blue-100 rounded-xl">
+        <Card className="bg-blue-50 border-[#1D63FF]/10 rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
-            <Calendar className="size-5 text-blue-600" />
+            <Calendar className="size-5 text-[#1D63FF]" />
             <div className="flex-1">
               <p className="text-sm font-semibold text-slate-900">Selected: 20 May 2025 at {selectedTime}</p>
               <p className="text-xs text-slate-500">Estimated duration: 1 hour</p>
@@ -87,7 +87,7 @@ export function BookingDatetimePage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5">Confirm Date & Time</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5">Confirm Date & Time</Button>
       </div>
     </div>
   )

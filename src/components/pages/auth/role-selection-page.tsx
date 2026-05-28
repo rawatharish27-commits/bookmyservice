@@ -14,7 +14,7 @@ const roles = [
     desc: 'Book and manage home services, track bookings, make payments, and review providers.',
     features: ['Book services instantly', 'Track real-time progress', 'Secure payments', 'Rate & review'],
     color: 'bg-blue-50 border-blue-200 hover:border-blue-400',
-    iconBg: 'bg-blue-100 text-blue-600',
+    iconBg: 'bg-[#1D63FF]/10 text-[#1D63FF]',
   },
   {
     key: 'provider',
@@ -59,7 +59,7 @@ export function RoleSelectionPage() {
                     <role.icon className="size-6" />
                   </div>
                   {selected === role.key && (
-                    <CheckCircle className="size-6 text-blue-600" />
+                    <CheckCircle className="size-6 text-[#1D63FF]" />
                   )}
                 </div>
                 <h3 className="font-bold text-slate-900 text-lg mb-1">{role.label}</h3>
@@ -78,7 +78,7 @@ export function RoleSelectionPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <Button className="bg-blue-600 hover:bg-blue-700 px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
+          <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
             Get Started <ArrowRight className="size-5" />
           </Button>
           <p className="text-xs text-slate-400 mt-3">You can change your role later in settings</p>

@@ -25,7 +25,7 @@ const plans = [
     description: 'Grow your business faster',
     features: ['Up to 10 services', 'Advanced analytics', 'Priority support', '3% commission', 'Featured listing', 'Custom schedule'],
     current: false,
-    color: 'bg-blue-600',
+    color: 'bg-[#1D63FF]',
     textColor: 'text-white',
     icon: Zap,
     popular: true,
@@ -57,7 +57,7 @@ export function ProviderSubscriptionPage() {
             const Icon = plan.icon
             return (
               <Card key={plan.name} className={`bg-white rounded-xl relative ${plan.popular ? 'border-2 border-blue-500' : ''}`}>
-                {plan.popular && <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-blue-600 text-white border-0">Most Popular</Badge>}
+                {plan.popular && <Badge className="absolute -top-2 left-1/2 -translate-x-1/2 bg-[#1D63FF] text-white border-0">Most Popular</Badge>}
                 <CardContent className="p-5">
                   <div className={`flex size-10 items-center justify-center rounded-lg ${plan.color} ${plan.textColor} mb-3`}>
                     <Icon className="size-5" />
@@ -76,7 +76,7 @@ export function ProviderSubscriptionPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button className={`w-full mt-4 rounded-xl ${plan.current ? 'bg-slate-100 text-slate-500' : plan.name === 'Pro' ? 'bg-blue-600 hover:bg-blue-700' : plan.name === 'Premium' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-200 text-slate-700'}`} disabled={plan.current}>
+                  <Button className={`w-full mt-4 rounded-xl ${plan.current ? 'bg-slate-100 text-slate-500' : plan.name === 'Pro' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : plan.name === 'Premium' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-200 text-slate-700'}`} disabled={plan.current}>
                     {plan.current ? 'Current Plan' : 'Upgrade'}
                   </Button>
                 </CardContent>

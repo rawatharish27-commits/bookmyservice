@@ -29,7 +29,7 @@ import {
 } from 'lucide-react'
 
 const escrowSummary = [
-  { label: 'Total Escrow Balance', value: '₹24,56,000', change: '+18.4%', icon: Wallet, color: 'bg-blue-100 text-blue-600' },
+  { label: 'Total Escrow Balance', value: '₹24,56,000', change: '+18.4%', icon: Wallet, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { label: 'Active Escrows', value: '142', change: '+12', icon: Lock, color: 'bg-amber-100 text-amber-600' },
   { label: 'Released This Month', value: '₹18,34,000', change: '+22%', icon: Unlock, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Pending Release', value: '₹6,22,000', change: '-5.2%', icon: Clock, color: 'bg-purple-100 text-purple-600' },
@@ -78,7 +78,7 @@ const disputedEscrows = [
 ]
 
 const statusConfig: Record<EscrowStatus, { badge: string; icon: React.ReactNode }> = {
-  'Active': { badge: 'bg-blue-50 text-blue-700 border-blue-200', icon: <Lock className="size-3" /> },
+  'Active': { badge: 'bg-blue-50 text-[#0B3D91] border-blue-200', icon: <Lock className="size-3" /> },
   'Released': { badge: 'bg-emerald-50 text-emerald-700 border-emerald-200', icon: <CheckCircle2 className="size-3" /> },
   'Pending': { badge: 'bg-amber-50 text-amber-700 border-amber-200', icon: <Clock className="size-3" /> },
   'Disputed': { badge: 'bg-red-50 text-red-700 border-red-200', icon: <AlertTriangle className="size-3" /> },
@@ -134,7 +134,7 @@ export function EscrowManagementPage() {
         </div>
 
         {/* Escrow Balance Card */}
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl text-white">
+        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl text-white">
           <CardContent className="p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div>
@@ -191,7 +191,7 @@ export function EscrowManagementPage() {
                     <tbody>
                       {escrows.map((escrow) => (
                         <tr key={escrow.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                          <td className="py-3 px-4 font-mono text-xs text-blue-600">{escrow.id}</td>
+                          <td className="py-3 px-4 font-mono text-xs text-[#1D63FF]">{escrow.id}</td>
                           <td className="py-3 px-4 text-slate-600">{escrow.booking}</td>
                           <td className="py-3 px-4">
                             <div className="flex items-center gap-1.5">
@@ -225,7 +225,7 @@ export function EscrowManagementPage() {
                 <Card key={escrow.id} className="bg-white rounded-xl">
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="font-mono text-xs text-blue-600">{escrow.id}</span>
+                      <span className="font-mono text-xs text-[#1D63FF]">{escrow.id}</span>
                       <Badge variant="secondary" className={`text-[10px] gap-1 ${statusConfig[escrow.status].badge}`}>
                         {statusConfig[escrow.status].icon} {escrow.status}
                       </Badge>
@@ -289,7 +289,7 @@ export function EscrowManagementPage() {
                     <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center gap-2">
                         <Gavel className="size-4 text-red-500" />
-                        <span className="font-mono text-xs text-blue-600">{dispute.id}</span>
+                        <span className="font-mono text-xs text-[#1D63FF]">{dispute.id}</span>
                         <Badge variant="secondary" className={`text-[10px] ${
                           dispute.status === 'Under Review' ? 'bg-amber-50 text-amber-700' : 'bg-purple-50 text-purple-700'
                         }`}>
@@ -308,7 +308,7 @@ export function EscrowManagementPage() {
                       <div><span className="text-slate-400">Filed:</span> <span className="text-slate-700">{dispute.filedDate}</span></div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="h-7 text-xs rounded-lg bg-blue-600 hover:bg-blue-700">Resolve</Button>
+                      <Button size="sm" className="h-7 text-xs rounded-lg bg-[#1D63FF] hover:bg-[#0B3D91]">Resolve</Button>
                       <Button variant="outline" size="sm" className="h-7 text-xs rounded-lg">View Chat</Button>
                     </div>
                   </CardContent>

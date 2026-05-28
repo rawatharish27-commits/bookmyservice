@@ -57,7 +57,7 @@ const initialCategories: NotificationCategory[] = [
     title: 'Booking Updates',
     description: 'Confirmations, cancellations, rescheduling, and status changes',
     icon: CalendarCheck,
-    color: 'text-blue-600',
+    color: 'text-[#1D63FF]',
     bgColor: 'bg-blue-50',
     enabled: true,
     count: 12,
@@ -122,7 +122,7 @@ const notificationPreviews: NotificationPreview[] = [
     body: 'Your Water Tank Cleaning service is confirmed for tomorrow, 10 AM. Provider: Rajesh K.',
     time: 'Just now',
     icon: CalendarCheck,
-    color: 'text-blue-600',
+    color: 'text-[#1D63FF]',
   },
   {
     id: '2',
@@ -229,7 +229,7 @@ export function PushPermissionPage() {
           <CardContent className="p-6">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
-                <Bell className="w-7 h-7 text-blue-600" />
+                <Bell className="w-7 h-7 text-[#1D63FF]" />
               </div>
               <div className="flex-1">
                 <p className="text-2xl font-bold text-slate-900">{enabledCount}/{categories.length}</p>
@@ -403,7 +403,7 @@ export function PushPermissionPage() {
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Eye className="w-4.5 h-4.5 text-blue-600" />
+                    <Eye className="w-4.5 h-4.5 text-[#1D63FF]" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">Show Previews</p>
@@ -470,7 +470,7 @@ export function PushPermissionPage() {
 
         {/* Save Button */}
         <div className="pb-6">
-          <Button className="w-full h-11 bg-blue-600 hover:bg-blue-700 font-semibold rounded-xl">
+          <Button className="w-full h-11 bg-[#1D63FF] hover:bg-[#0B3D91] font-semibold rounded-xl">
             <CheckCircle2 className="w-4 h-4 mr-2" />
             Save Preferences
           </Button>

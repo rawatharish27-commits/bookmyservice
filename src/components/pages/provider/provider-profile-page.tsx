@@ -36,11 +36,11 @@ export function ProviderProfilePage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">My Profile</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Edit2 className="size-4" /> Edit Profile</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Edit2 className="size-4" /> Edit Profile</Button>
         </div>
 
         <Card className="bg-white rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-6 text-white">
+          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] p-6 text-white">
             <div className="flex items-center gap-4">
               <div className="flex size-16 items-center justify-center rounded-full bg-white/20 text-2xl font-bold">AK</div>
               <div>
@@ -64,7 +64,7 @@ export function ProviderProfilePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><ShieldCheck className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Verification Status</CardTitle></div>
+            <div className="flex items-center gap-2"><ShieldCheck className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Verification Status</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {verifications.map((v, i) => (
@@ -83,7 +83,7 @@ export function ProviderProfilePage() {
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Quick Stats</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-4">
-              <div className="text-center p-3 rounded-lg bg-blue-50"><p className="text-2xl font-bold text-blue-600">{profileData.completedJobs}</p><p className="text-xs text-slate-500">Completed Jobs</p></div>
+              <div className="text-center p-3 rounded-lg bg-blue-50"><p className="text-2xl font-bold text-[#1D63FF]">{profileData.completedJobs}</p><p className="text-xs text-slate-500">Completed Jobs</p></div>
               <div className="text-center p-3 rounded-lg bg-emerald-50"><p className="text-2xl font-bold text-emerald-600">{profileData.rating}</p><p className="text-xs text-slate-500">Rating</p></div>
               <div className="text-center p-3 rounded-lg bg-amber-50"><p className="text-2xl font-bold text-amber-600">{profileData.reviews}</p><p className="text-xs text-slate-500">Reviews</p></div>
             </div>

@@ -25,7 +25,7 @@ export function BookingConfirmationPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-[#1D63FF]" /></div>
               <div className="flex-1">
                 <h3 className="text-sm font-semibold text-slate-900">Air Conditioner</h3>
                 <p className="text-xs text-slate-400">Booking ID: BK001</p>
@@ -44,19 +44,19 @@ export function BookingConfirmationPage() {
           <CardContent className="p-5">
             <p className="text-sm font-semibold text-slate-900 mb-3">Your Provider</p>
             <div className="flex items-center gap-3">
-              <Avatar><AvatarFallback className="bg-blue-600 text-white text-sm">AS</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-sm">AS</AvatarFallback></Avatar>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-slate-900">Amit Sharma</p>
                 <p className="text-xs text-slate-400">4.9 ★ • 500+ services</p>
               </div>
               <Button variant="outline" size="sm" className="gap-1 border-slate-200 rounded-lg" aria-label="Call provider"><Phone className="size-3.5" /> Call</Button>
-              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-blue-600 hover:bg-blue-50 rounded-lg" aria-label="Chat with provider"><MessageSquare className="size-3.5" /> Chat</Button>
+              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-[#1D63FF] hover:bg-blue-50 rounded-lg" aria-label="Chat with provider"><MessageSquare className="size-3.5" /> Chat</Button>
             </div>
           </CardContent>
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" onClick={() => navigate('live-tracking')}><MapPin className="size-4" /> Track Booking</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={() => navigate('live-tracking')}><MapPin className="size-4" /> Track Booking</Button>
           <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl" aria-label="Share booking details"><Share2 className="size-4" /> Share Details</Button>
         </div>
       </div>

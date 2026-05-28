@@ -94,7 +94,7 @@ export function FranchiseManagementPage() {
             <h1 className="text-2xl font-bold text-slate-900">Franchise Management</h1>
             <p className="text-sm text-slate-500 mt-1">Manage and monitor all franchise branches</p>
           </div>
-          <Button size="sm" className="gap-1 rounded-xl bg-blue-600 hover:bg-blue-700">
+          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">
             <Plus className="size-4" /> Add Branch
           </Button>
         </div>
@@ -137,7 +137,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'all' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl ${statusFilter === 'all' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+              className={`rounded-xl ${statusFilter === 'all' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
               onClick={() => setStatusFilter('all')}
             >
               All
@@ -145,7 +145,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'active' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl gap-1 ${statusFilter === 'active' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+              className={`rounded-xl gap-1 ${statusFilter === 'active' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
               onClick={() => setStatusFilter('active')}
             >
               <CheckCircle2 className="size-3" /> Active
@@ -153,7 +153,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'inactive' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl gap-1 ${statusFilter === 'inactive' ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+              className={`rounded-xl gap-1 ${statusFilter === 'inactive' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
               onClick={() => setStatusFilter('inactive')}
             >
               <XCircle className="size-3" /> Inactive
@@ -168,8 +168,8 @@ export function FranchiseManagementPage() {
               <CardContent className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100">
-                      <Building2 className="size-5 text-blue-600" />
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-[#1D63FF]/10">
+                      <Building2 className="size-5 text-[#1D63FF]" />
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-slate-900">{branch.name}</p>
@@ -241,7 +241,7 @@ export function FranchiseManagementPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <Plus className="size-4 text-blue-600" />
+              <Plus className="size-4 text-[#1D63FF]" />
               <CardTitle className="text-sm font-semibold text-slate-900">Add New Branch</CardTitle>
             </div>
           </CardHeader>
@@ -273,7 +273,7 @@ export function FranchiseManagementPage() {
               </div>
             </div>
             <div className="flex gap-3 mt-4">
-              <Button size="sm" className="rounded-xl bg-blue-600 hover:bg-blue-700">Create Branch</Button>
+              <Button size="sm" className="rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">Create Branch</Button>
               <Button variant="outline" size="sm" className="rounded-xl">Cancel</Button>
             </div>
           </CardContent>

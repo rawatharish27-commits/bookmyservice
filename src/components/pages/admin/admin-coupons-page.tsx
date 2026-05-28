@@ -21,7 +21,7 @@ export function AdminCouponsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Coupons</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> Create Coupon</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Create Coupon</Button>
         </div>
 
         <div className="relative">
@@ -44,7 +44,7 @@ export function AdminCouponsPage() {
                 <tbody>
                   {coupons.map((c) => (
                     <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                      <td className="px-4 py-3"><div className="flex items-center gap-2"><Tag className="size-4 text-blue-600" /><span className="text-sm font-mono font-semibold text-slate-700">{c.code}</span></div></td>
+                      <td className="px-4 py-3"><div className="flex items-center gap-2"><Tag className="size-4 text-[#1D63FF]" /><span className="text-sm font-mono font-semibold text-slate-700">{c.code}</span></div></td>
                       <td className="px-4 py-3 text-sm text-slate-700">{c.discount} <span className="text-xs text-slate-400">({c.type})</span></td>
                       <td className="px-4 py-3 text-sm text-slate-700 hidden sm:table-cell">{c.usage}</td>
                       <td className="px-4 py-3 text-sm text-slate-500 hidden md:table-cell">{c.expires}</td>

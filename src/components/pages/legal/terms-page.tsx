@@ -53,7 +53,7 @@ export function TermsPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-blue-600">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
               <FileText className="size-5 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Terms of Service</h1>
@@ -66,7 +66,7 @@ export function TermsPage() {
               <Clock className="size-3 mr-1" />
               Effective: January 1, 2025
             </Badge>
-            <Badge variant="outline" className="text-xs text-blue-600 border-blue-200 bg-blue-50">
+            <Badge variant="outline" className="text-xs text-[#1D63FF] border-blue-200 bg-blue-50">
               <CheckCircle2 className="size-3 mr-1" />
               Version 3.2
             </Badge>
@@ -96,7 +96,7 @@ export function TermsPage() {
                             onClick={() => scrollToSection(item.id)}
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
                               isActive
-                                ? 'bg-blue-50 text-blue-600 font-medium'
+                                ? 'bg-blue-50 text-[#1D63FF] font-medium'
                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                             }`}
                           >
@@ -114,7 +114,7 @@ export function TermsPage() {
               <Card className="bg-white rounded-xl mt-4">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Info className="size-4 text-blue-600" />
+                    <Info className="size-4 text-[#1D63FF]" />
                     <span className="text-sm font-semibold text-slate-900">Key Highlights</span>
                   </div>
                   <ul className="space-y-2 text-xs text-slate-500">
@@ -146,7 +146,7 @@ export function TermsPage() {
             <Card id="acceptance" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <FileText className="size-5 text-blue-600" />
+                  <FileText className="size-5 text-[#1D63FF]" />
                   1. Acceptance of Terms
                 </CardTitle>
               </CardHeader>
@@ -156,7 +156,7 @@ export function TermsPage() {
                 </p>
                 <div className="rounded-lg bg-blue-50 border border-blue-200 p-4">
                   <h4 className="text-sm font-semibold text-blue-900 mb-2">Important Acknowledgments</h4>
-                  <ul className="space-y-1.5 text-xs text-blue-700">
+                  <ul className="space-y-1.5 text-xs text-[#0B3D91]">
                     <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-500 mt-0.5 shrink-0" /> You have read and understood these Terms in their entirety</li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-500 mt-0.5 shrink-0" /> You are at least 18 years of age</li>
                     <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-500 mt-0.5 shrink-0" /> You have the legal capacity to enter into a binding agreement</li>
@@ -173,7 +173,7 @@ export function TermsPage() {
             <Card id="account-registration" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <UserPlus className="size-5 text-blue-600" />
+                  <UserPlus className="size-5 text-[#1D63FF]" />
                   2. Account Registration
                 </CardTitle>
               </CardHeader>
@@ -220,7 +220,7 @@ export function TermsPage() {
             <Card id="service-booking" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <CalendarCheck className="size-5 text-blue-600" />
+                  <CalendarCheck className="size-5 text-[#1D63FF]" />
                   3. Service Booking
                 </CardTitle>
               </CardHeader>
@@ -235,7 +235,7 @@ export function TermsPage() {
                     <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
                       {['Select Service', 'Choose Provider', 'Pick Date/Time', 'Confirm & Pay', 'Service Delivered'].map((step, i) => (
                         <div key={step} className="flex items-center gap-2">
-                          <div className="flex items-center justify-center size-6 rounded-full bg-blue-600 text-white text-xs font-bold">{i + 1}</div>
+                          <div className="flex items-center justify-center size-6 rounded-full bg-[#1D63FF] text-white text-xs font-bold">{i + 1}</div>
                           <span className="text-xs text-slate-600">{step}</span>
                           {i < 4 && <ChevronRight className="size-3 text-slate-300 hidden sm:block" />}
                         </div>
@@ -246,11 +246,11 @@ export function TermsPage() {
                   <div className="rounded-lg border border-slate-200 p-4">
                     <h4 className="text-sm font-semibold text-slate-900 mb-2">Booking Terms</h4>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" /> Service prices are inclusive of all applicable taxes (GST)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" /> Estimated service duration may vary based on actual work required</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" /> Additional charges may apply for extra work not included in the original booking</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" /> You must ensure access to the service location at the scheduled time</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" /> Service providers carry valid ID that must be verified before granting access</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Service prices are inclusive of all applicable taxes (GST)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Estimated service duration may vary based on actual work required</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Additional charges may apply for extra work not included in the original booking</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> You must ensure access to the service location at the scheduled time</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Service providers carry valid ID that must be verified before granting access</li>
                     </ul>
                   </div>
                 </div>
@@ -261,7 +261,7 @@ export function TermsPage() {
             <Card id="payment-terms" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <CreditCard className="size-5 text-blue-600" />
+                  <CreditCard className="size-5 text-[#1D63FF]" />
                   4. Payment Terms
                 </CardTitle>
               </CardHeader>
@@ -312,11 +312,11 @@ export function TermsPage() {
                 <div className="rounded-lg border border-slate-200 p-4">
                   <h4 className="text-sm font-semibold text-slate-900 mb-2">Important Payment Notes</h4>
                   <ul className="space-y-1.5 text-xs text-slate-600">
-                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-blue-600 mt-0.5 shrink-0" /> All prices include 18% GST unless otherwise stated</li>
-                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-blue-600 mt-0.5 shrink-0" /> Payment is authorized at booking and captured upon service completion</li>
-                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-blue-600 mt-0.5 shrink-0" /> Platform commission of 15-20% is deducted from provider payout</li>
-                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-blue-600 mt-0.5 shrink-0" /> Invoices are auto-generated and available in your account</li>
-                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-blue-600 mt-0.5 shrink-0" /> Cash payments are not accepted for safety and transparency</li>
+                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-[#1D63FF] mt-0.5 shrink-0" /> All prices include 18% GST unless otherwise stated</li>
+                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-[#1D63FF] mt-0.5 shrink-0" /> Payment is authorized at booking and captured upon service completion</li>
+                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-[#1D63FF] mt-0.5 shrink-0" /> Platform commission of 15-20% is deducted from provider payout</li>
+                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-[#1D63FF] mt-0.5 shrink-0" /> Invoices are auto-generated and available in your account</li>
+                    <li className="flex items-start gap-2"><IndianRupee className="size-3 text-[#1D63FF] mt-0.5 shrink-0" /> Cash payments are not accepted for safety and transparency</li>
                   </ul>
                 </div>
               </CardContent>
@@ -326,7 +326,7 @@ export function TermsPage() {
             <Card id="cancellation-refund" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <RotateCcw className="size-5 text-blue-600" />
+                  <RotateCcw className="size-5 text-[#1D63FF]" />
                   5. Cancellation & Refund
                 </CardTitle>
               </CardHeader>
@@ -379,7 +379,7 @@ export function TermsPage() {
             <Card id="provider-terms" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Wrench className="size-5 text-blue-600" />
+                  <Wrench className="size-5 text-[#1D63FF]" />
                   6. Service Provider Terms
                 </CardTitle>
               </CardHeader>
@@ -409,7 +409,7 @@ export function TermsPage() {
             <Card id="intellectual-property" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Copyright className="size-5 text-blue-600" />
+                  <Copyright className="size-5 text-[#1D63FF]" />
                   7. Intellectual Property
                 </CardTitle>
               </CardHeader>
@@ -445,7 +445,7 @@ export function TermsPage() {
             <Card id="limitation-liability" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <ShieldAlert className="size-5 text-blue-600" />
+                  <ShieldAlert className="size-5 text-[#1D63FF]" />
                   8. Limitation of Liability
                 </CardTitle>
               </CardHeader>
@@ -487,7 +487,7 @@ export function TermsPage() {
             <Card id="dispute-resolution" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Scale className="size-5 text-blue-600" />
+                  <Scale className="size-5 text-[#1D63FF]" />
                   9. Dispute Resolution
                 </CardTitle>
               </CardHeader>
@@ -504,7 +504,7 @@ export function TermsPage() {
                     { step: '4', title: 'Arbitration', desc: 'Unresolved disputes shall be referred to arbitration under the Arbitration and Conciliation Act, 1996. The arbitration shall be conducted in English.' },
                   ].map((item) => (
                     <div key={item.step} className="flex gap-3">
-                      <div className="flex items-center justify-center size-8 rounded-full bg-blue-600 text-white text-sm font-bold shrink-0">{item.step}</div>
+                      <div className="flex items-center justify-center size-8 rounded-full bg-[#1D63FF] text-white text-sm font-bold shrink-0">{item.step}</div>
                       <div>
                         <h4 className="text-sm font-semibold text-slate-900">{item.title}</h4>
                         <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
@@ -519,7 +519,7 @@ export function TermsPage() {
             <Card id="governing-law" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Landmark className="size-5 text-blue-600" />
+                  <Landmark className="size-5 text-[#1D63FF]" />
                   10. Governing Law & Jurisdiction
                 </CardTitle>
               </CardHeader>
@@ -554,7 +554,7 @@ export function TermsPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                  <Button className="gap-2 bg-blue-600 hover:bg-blue-700 rounded-xl">
+                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
                     <FileText className="size-4" />
                     Download Full Terms (PDF)
                   </Button>

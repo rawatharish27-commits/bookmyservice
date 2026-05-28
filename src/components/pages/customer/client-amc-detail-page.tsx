@@ -39,7 +39,7 @@ export function ClientAmcDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading AMC details">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -73,7 +73,7 @@ export function ClientAmcDetailPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Shield className="size-6 text-blue-600" /></div>
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Shield className="size-6 text-[#1D63FF]" /></div>
               <div>
                 <h2 className="text-base font-bold text-slate-900">{detail.planName}</h2>
                 <p className="text-xs text-slate-400">Plan ID: {detail.planId}</p>
@@ -101,7 +101,7 @@ export function ClientAmcDetailPage() {
                       <p className="text-sm font-medium text-slate-900">{v.service}</p>
                       <div className="flex items-center gap-1 text-xs text-slate-400"><Calendar className="size-3" />{v.date}</div>
                     </div>
-                    <Badge variant="secondary" className={v.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : v.status === 'Scheduled' ? 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100'}>{v.status}</Badge>
+                    <Badge variant="secondary" className={v.status === 'Completed' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : v.status === 'Scheduled' ? 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10' : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-100'}>{v.status}</Badge>
                   </div>
                   {i < detail.visits.length - 1 && <Separator className="bg-slate-100" />}
                 </div>
@@ -123,7 +123,7 @@ export function ClientAmcDetailPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" aria-label="Renew AMC plan"><RotateCcw className="size-4" /> Renew Plan</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" aria-label="Renew AMC plan"><RotateCcw className="size-4" /> Renew Plan</Button>
       </div>
     </div>
   )

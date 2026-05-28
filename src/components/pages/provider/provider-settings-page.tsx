@@ -2,10 +2,10 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { Settings, Bell, Shield, Globe, Save } from 'lucide-react'
+import { Settings, Bell, Shield, Save } from 'lucide-react'
+import { ChangePasswordDialog } from '@/components/change-password-dialog'
 
 export function ProviderSettingsPage() {
   return (
@@ -13,12 +13,12 @@ export function ProviderSettingsPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Save className="size-4" /> Save All</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Save className="size-4" /> Save All</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Settings className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Business Settings</CardTitle></div>
+            <div className="flex items-center gap-2"><Settings className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Business Settings</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -32,7 +32,7 @@ export function ProviderSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Bell className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Notification Preferences</CardTitle></div>
+            <div className="flex items-center gap-2"><Bell className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Notification Preferences</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {[
@@ -45,7 +45,7 @@ export function ProviderSettingsPage() {
               <div key={pref.label}>
                 <div className="flex items-center justify-between py-3">
                   <div><p className="text-sm font-medium text-slate-900">{pref.label}</p><p className="text-xs text-slate-400">{pref.desc}</p></div>
-                  <div className={`size-10 rounded-full flex items-center justify-center cursor-pointer ${pref.enabled ? 'bg-blue-600' : 'bg-slate-200'}`}>
+                  <div className={`size-10 rounded-full flex items-center justify-center cursor-pointer ${pref.enabled ? 'bg-[#1D63FF]' : 'bg-slate-200'}`}>
                     <div className={`size-4 rounded-full bg-white transition-transform ${pref.enabled ? 'translate-x-2' : '-translate-x-2'}`} />
                   </div>
                 </div>
@@ -57,15 +57,11 @@ export function ProviderSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Shield className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Security</CardTitle></div>
+            <div className="flex items-center gap-2"><Shield className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Security</CardTitle></div>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div><label className="text-xs font-medium text-slate-500 mb-1 block">Current Password</label><Input type="password" placeholder="Enter current password" /></div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div><label className="text-xs font-medium text-slate-500 mb-1 block">New Password</label><Input type="password" placeholder="Enter new password" /></div>
-              <div><label className="text-xs font-medium text-slate-500 mb-1 block">Confirm Password</label><Input type="password" placeholder="Confirm new password" /></div>
-            </div>
-            <Button variant="outline" className="gap-1 rounded-xl">Update Password</Button>
+          <CardContent>
+            <p className="text-sm text-slate-500 mb-4">Update your password to keep your account secure.</p>
+            <ChangePasswordDialog />
           </CardContent>
         </Card>
       </div>

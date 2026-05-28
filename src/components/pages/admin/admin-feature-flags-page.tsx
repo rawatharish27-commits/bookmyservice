@@ -21,12 +21,12 @@ export function AdminFeatureFlagsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Feature Flags</h1>
-          <Badge className="bg-blue-100 text-blue-700 border-blue-200">{featureFlags.filter(f => f.enabled).length}/{featureFlags.length} Enabled</Badge>
+          <Badge className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200">{featureFlags.filter(f => f.enabled).length}/{featureFlags.length} Enabled</Badge>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Zap className="size-5 text-emerald-600 mx-auto mb-1" /><p className="text-lg font-bold text-emerald-600">{featureFlags.filter(f => f.enabled).length}</p><p className="text-xs text-slate-500">Active Flags</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Users className="size-5 text-blue-600 mx-auto mb-1" /><p className="text-lg font-bold text-blue-600">{featureFlags.filter(f => f.rollout === 100).length}</p><p className="text-xs text-slate-500">Full Rollout</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Users className="size-5 text-[#1D63FF] mx-auto mb-1" /><p className="text-lg font-bold text-[#1D63FF]">{featureFlags.filter(f => f.rollout === 100).length}</p><p className="text-xs text-slate-500">Full Rollout</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-lg font-bold text-amber-600">{featureFlags.filter(f => f.enabled && f.rollout < 100).length}</p><p className="text-xs text-slate-500">Partial Rollout</p></CardContent></Card>
         </div>
 

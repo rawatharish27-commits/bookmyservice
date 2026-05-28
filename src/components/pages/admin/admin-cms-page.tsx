@@ -32,12 +32,12 @@ export function AdminCmsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">CMS</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> New Page</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Page</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><FileEdit className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Pages</CardTitle></div>
+            <div className="flex items-center gap-2"><FileEdit className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Pages</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {pages.map((page, i) => (
@@ -57,7 +57,7 @@ export function AdminCmsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Image className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Banners</CardTitle></div>
+            <div className="flex items-center gap-2"><Image className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Banners</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {banners.map((banner, i) => (
@@ -74,7 +74,7 @@ export function AdminCmsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Layout className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Content Blocks</CardTitle></div>
+            <div className="flex items-center gap-2"><Layout className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Content Blocks</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {contentBlocks.map((block, i) => (

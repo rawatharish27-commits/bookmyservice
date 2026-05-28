@@ -27,8 +27,8 @@ export function AdminApiSettingsPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2"><Key className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">API Keys</CardTitle></div>
-              <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> New Key</Button>
+              <div className="flex items-center gap-2"><Key className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">API Keys</CardTitle></div>
+              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Key</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">
@@ -51,8 +51,8 @@ export function AdminApiSettingsPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2"><Webhook className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Webhooks</CardTitle></div>
-              <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> Add Webhook</Button>
+              <div className="flex items-center gap-2"><Webhook className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Webhooks</CardTitle></div>
+              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Add Webhook</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">
@@ -70,7 +70,7 @@ export function AdminApiSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Activity className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Rate Limits</CardTitle></div>
+            <div className="flex items-center gap-2"><Activity className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Rate Limits</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">

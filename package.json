@@ -32,6 +32,7 @@
     "postcss": "^8.5.15",
     "prisma": "6.6.0",
     "tailwindcss": "4",
+    "tailwindcss-animate": "^1.0.7",
     "typescript": "6.0.3"
   }
 }

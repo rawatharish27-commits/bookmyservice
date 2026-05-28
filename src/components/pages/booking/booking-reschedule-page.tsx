@@ -40,14 +40,14 @@ export function BookingReschedulePage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <h1 className="text-2xl font-bold text-slate-900">Reschedule Booking</h1>
 
-        <Card className="bg-blue-50 border-blue-100 rounded-xl">
+        <Card className="bg-blue-50 border-[#1D63FF]/10 rounded-xl">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
               <AlertCircle className="size-5 text-blue-500 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-blue-800">Current Schedule</p>
-                <p className="text-xs text-blue-700">20 May 2025 at 10:00 AM</p>
-                <p className="text-xs text-blue-600 mt-1">Free reschedule available (first change)</p>
+                <p className="text-xs text-[#0B3D91]">20 May 2025 at 10:00 AM</p>
+                <p className="text-xs text-[#1D63FF] mt-1">Free reschedule available (first change)</p>
               </div>
             </div>
           </CardContent>
@@ -55,13 +55,13 @@ export function BookingReschedulePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-blue-600" />New Date</CardTitle>
+            <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-[#1D63FF]" />New Date</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 gap-2">
               {dates.map((d) => (
                 <button key={d.date} onClick={() => setSelectedDate(d.date)}
-                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${selectedDate === d.date ? 'bg-blue-600 text-white' : 'hover:bg-slate-50'}`}>
+                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${selectedDate === d.date ? 'bg-[#1D63FF] text-white' : 'hover:bg-slate-50'}`}>
                   <span className="text-[10px] font-medium opacity-70">{d.day}</span>
                   <span className="text-sm font-bold">{d.date}</span>
                 </button>
@@ -71,12 +71,12 @@ export function BookingReschedulePage() {
         </Card>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-blue-600" />New Time</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-[#1D63FF]" />New Time</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-2">
               {timeSlots.map((t) => (
                 <Button key={t} onClick={() => setSelectedTime(t)} variant={selectedTime === t ? 'default' : 'outline'}
-                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-blue-600 hover:bg-blue-700' : 'border-slate-200'}`}>{t}</Button>
+                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}>{t}</Button>
               ))}
             </div>
           </CardContent>
@@ -97,7 +97,7 @@ export function BookingReschedulePage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => navigate('booking-confirmation')}>Cancel</Button>
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
             <RefreshCw className="size-4" /> {loading ? 'Rescheduling...' : 'Confirm Reschedule'}
           </Button>
         </div>

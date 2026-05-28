@@ -9,7 +9,7 @@ import { User, Wrench, ArrowRight, ArrowLeft, CheckCircle, Mail, Phone, Lock, Ey
 import { useApp } from '@/lib/app-context'
 
 const roles = [
-  { key: 'customer', icon: User, label: 'Customer', desc: 'Book and manage home services', color: 'bg-blue-100 text-blue-600 border-blue-300' },
+  { key: 'customer', icon: User, label: 'Customer', desc: 'Book and manage home services', color: 'bg-[#1D63FF]/10 text-[#1D63FF] border-blue-300' },
   { key: 'provider', icon: Wrench, label: 'Service Provider', desc: 'Offer your professional services', color: 'bg-green-100 text-green-600 border-green-300' },
 ]
 
@@ -39,10 +39,10 @@ export function SignupPage() {
           <div className="flex items-center gap-2 mb-6" aria-label="Signup progress">
             {[1, 2, 3].map((s) => (
               <div key={s} className="flex items-center gap-2 flex-1">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= s ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-400'}`}>
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${step >= s ? 'bg-[#1D63FF] text-white' : 'bg-slate-100 text-slate-400'}`}>
                   {step > s ? <CheckCircle className="size-4" /> : s}
                 </div>
-                {s < 3 && <div className={`flex-1 h-0.5 ${step > s ? 'bg-blue-600' : 'bg-slate-200'}`} />}
+                {s < 3 && <div className={`flex-1 h-0.5 ${step > s ? 'bg-[#1D63FF]' : 'bg-slate-200'}`} />}
               </div>
             ))}
           </div>
@@ -74,7 +74,7 @@ export function SignupPage() {
                   {selectedRole === role.key && <CheckCircle className="size-5 ml-auto text-current" />}
                 </button>
               ))}
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 py-5 rounded-xl mt-4" disabled={!selectedRole}
+              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl mt-4" disabled={!selectedRole}
                 onClick={() => setStep(2)}>Continue <ArrowRight className="size-4 ml-1" /></Button>
             </div>
           )}
@@ -96,7 +96,7 @@ export function SignupPage() {
               </div>
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="rounded-xl flex-1" onClick={() => setStep(1)}><ArrowLeft className="size-4 mr-1" /> Back</Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-xl flex-1">Continue <ArrowRight className="size-4 ml-1" /></Button>
+                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl flex-1">Continue <ArrowRight className="size-4 ml-1" /></Button>
               </div>
             </form>
           )}
@@ -123,17 +123,17 @@ export function SignupPage() {
               </div>
               <label className="flex items-start gap-2 text-sm text-slate-600">
                 <input type="checkbox" className="mt-1 rounded border-slate-300" required />
-                I agree to the <button type="button" className="text-blue-600 hover:underline">Terms of Service</button> and <button type="button" className="text-blue-600 hover:underline">Privacy Policy</button>
+                I agree to the <button type="button" className="text-[#1D63FF] hover:underline">Terms of Service</button> and <button type="button" className="text-[#1D63FF] hover:underline">Privacy Policy</button>
               </label>
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="rounded-xl flex-1" onClick={() => setStep(2)}><ArrowLeft className="size-4 mr-1" /> Back</Button>
-                <Button type="submit" className="bg-blue-600 hover:bg-blue-700 rounded-xl flex-1" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
+                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl flex-1" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
               </div>
             </form>
           )}
 
           <p className="text-center text-sm text-slate-500 mt-6">
-            Already have an account? <button className="text-blue-600 font-semibold hover:underline" onClick={() => navigate('login')}>Sign In</button>
+            Already have an account? <button className="text-[#1D63FF] font-semibold hover:underline" onClick={() => navigate('login')}>Sign In</button>
           </p>
         </CardContent>
       </Card>

@@ -24,7 +24,7 @@ export function BookingTimelinePage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-[#1D63FF]" /></div>
               <div className="flex-1">
                 <h3 className="text-sm font-semibold text-slate-900">Air Conditioner</h3>
                 <div className="flex flex-wrap gap-3 text-xs text-slate-400 mt-1">
@@ -33,7 +33,7 @@ export function BookingTimelinePage() {
                   <span className="flex items-center gap-1"><CreditCard className="size-3" />₹499</span>
                 </div>
               </div>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">In Progress</Badge>
+              <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">In Progress</Badge>
             </div>
           </CardContent>
         </Card>
@@ -50,7 +50,7 @@ export function BookingTimelinePage() {
                         <CheckCircle2 className="size-4 text-emerald-600" />
                       </div>
                     ) : step.status === 'current' ? (
-                      <div className="flex size-7 items-center justify-center rounded-full bg-blue-600">
+                      <div className="flex size-7 items-center justify-center rounded-full bg-[#1D63FF]">
                         <Circle className="size-3 fill-white text-white" />
                       </div>
                     ) : (
@@ -65,7 +65,7 @@ export function BookingTimelinePage() {
                   <div className="pb-6 flex-1">
                     <div className="flex items-center gap-2">
                       <p className={`text-sm font-semibold ${step.status === 'upcoming' ? 'text-slate-400' : 'text-slate-900'}`}>{step.title}</p>
-                      {step.status === 'current' && <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100 text-[10px]">Now</Badge>}
+                      {step.status === 'current' && <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10 text-[10px]">Now</Badge>}
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5">{step.desc}</p>
                     <p className="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1"><Clock className="size-2.5" />{step.time}</p>

@@ -26,7 +26,7 @@ export function ClientReferralPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading referral info">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -47,15 +47,15 @@ export function ClientReferralPage() {
         <h1 className="text-2xl font-bold text-slate-900">Refer & Earn</h1>
 
         <Card className="rounded-xl overflow-hidden border-0">
-          <div className="bg-gradient-to-br from-blue-600 to-blue-500 p-6 text-white text-center">
+          <div className="bg-gradient-to-br from-[#1D63FF] to-[#0B3D91] p-6 text-white text-center">
             <Gift className="size-12 mx-auto mb-3" />
             <h2 className="text-xl font-bold">Earn ₹{referral?.reward ?? '100'} per referral</h2>
             <p className="text-sm text-blue-100 mt-1">Your friend gets ₹{referral?.friendReward ?? '50'} off on their first booking</p>
           </div>
           <div className="bg-white p-5 space-y-4">
             <div className="flex items-center gap-2 rounded-xl border border-dashed border-blue-300 bg-blue-50 p-3">
-              <span className="flex-1 font-mono text-sm font-bold text-blue-700 tracking-widest">{referral?.code ?? '—'}</span>
-              <Button size="sm" variant="outline" className="gap-1 border-blue-200 text-blue-600 rounded-lg" aria-label="Copy referral code"><Copy className="size-3" /> Copy</Button>
+              <span className="flex-1 font-mono text-sm font-bold text-[#0B3D91] tracking-widest">{referral?.code ?? '—'}</span>
+              <Button size="sm" variant="outline" className="gap-1 border-blue-200 text-[#1D63FF] rounded-lg" aria-label="Copy referral code"><Copy className="size-3" /> Copy</Button>
             </div>
             <div className="flex gap-3">
               <Button className="flex-1 gap-1 bg-emerald-600 hover:bg-emerald-700 rounded-xl" aria-label="Share on WhatsApp"><Share2 className="size-4" /> WhatsApp</Button>
@@ -67,7 +67,7 @@ export function ClientReferralPage() {
         <div className="grid grid-cols-2 gap-4">
           <Card className="bg-white rounded-xl">
             <CardContent className="p-4 text-center">
-              <Users className="size-6 text-blue-600 mx-auto mb-2" />
+              <Users className="size-6 text-[#1D63FF] mx-auto mb-2" />
               <p className="text-2xl font-bold text-slate-900">{referral?.totalReferrals ?? 0}</p>
               <p className="text-xs text-slate-500">Total Referrals</p>
             </CardContent>
@@ -88,7 +88,7 @@ export function ClientReferralPage() {
               {referral.history.map((r, i) => (
                 <div key={i}>
                   <div className="flex items-center gap-3 py-3">
-                    <div className="flex size-8 items-center justify-center rounded-full bg-blue-50 text-blue-600 text-xs font-bold">{r.name.charAt(0)}</div>
+                    <div className="flex size-8 items-center justify-center rounded-full bg-blue-50 text-[#1D63FF] text-xs font-bold">{r.name.charAt(0)}</div>
                     <div className="flex-1"><p className="text-sm font-medium text-slate-900">{r.name}</p><p className="text-xs text-slate-400">{r.date}</p></div>
                     <span className="text-sm font-semibold text-emerald-600">{r.reward}</span>
                     <Badge variant="secondary" className={r.status === 'Earned' ? 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' : 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100'}>{r.status}</Badge>

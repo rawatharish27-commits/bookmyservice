@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 
 const stats = [
-  { label: 'Happy Customers', value: '25 Lakh+', icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+  { label: 'Happy Customers', value: '25 Lakh+', icon: Users, color: 'text-[#1D63FF]', bg: 'bg-blue-50' },
   { label: 'Service Providers', value: '50,000+', icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { label: 'Cities Covered', value: '120+', icon: MapPin, color: 'text-purple-600', bg: 'bg-purple-50' },
   { label: 'Bookings Completed', value: '1 Crore+', icon: CalendarCheck, color: 'text-orange-600', bg: 'bg-orange-50' },
@@ -40,7 +40,7 @@ const values = [
 ]
 
 const team = [
-  { name: 'Rajesh Sharma', role: 'Founder & CEO', initials: 'RS', color: 'bg-blue-600' },
+  { name: 'Rajesh Sharma', role: 'Founder & CEO', initials: 'RS', color: 'bg-[#1D63FF]' },
   { name: 'Priya Patel', role: 'Co-Founder & COO', initials: 'PP', color: 'bg-emerald-600' },
   { name: 'Arun Kumar', role: 'Chief Technology Officer', initials: 'AK', color: 'bg-purple-600' },
   { name: 'Sneha Reddy', role: 'VP of Operations', initials: 'SR', color: 'bg-orange-600' },
@@ -65,7 +65,7 @@ export function AboutPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="max-w-3xl">
             <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">About Us</Badge>
@@ -88,7 +88,7 @@ export function AboutPage() {
           <Card className="shadow-md border-0">
             <CardHeader>
               <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-2">
-                <Target className="size-6 text-blue-600" />
+                <Target className="size-6 text-[#1D63FF]" />
               </div>
               <CardTitle className="text-xl">Our Mission</CardTitle>
             </CardHeader>
@@ -171,7 +171,7 @@ export function AboutPage() {
           <div className="space-y-6">
             {milestones.map((milestone, idx) => (
               <div key={milestone.year} className={`relative flex items-start gap-4 ${idx % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}>
-                <div className="absolute left-4 sm:left-1/2 w-3 h-3 rounded-full bg-blue-600 border-2 border-white shadow -translate-x-1.5 sm:-translate-x-1.5 mt-1.5" />
+                <div className="absolute left-4 sm:left-1/2 w-3 h-3 rounded-full bg-[#1D63FF] border-2 border-white shadow -translate-x-1.5 sm:-translate-x-1.5 mt-1.5" />
                 <div className={`ml-10 sm:ml-0 sm:w-1/2 ${idx % 2 === 0 ? 'sm:pr-12 sm:text-right' : 'sm:pl-12'}`}>
                   <Card className="shadow-sm border-0 inline-block">
                     <CardContent className="p-4">
@@ -197,7 +197,7 @@ export function AboutPage() {
             <Card key={value.title} className="shadow-sm border-0 hover:shadow-md transition-shadow">
               <CardContent className="p-6">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                  <value.icon className="size-6 text-blue-600" />
+                  <value.icon className="size-6 text-[#1D63FF]" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-2">{value.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{value.description}</p>
@@ -239,7 +239,7 @@ export function AboutPage() {
           Whether you&apos;re a customer looking for reliable services or a professional seeking new opportunities, we&apos;d love to have you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700">
+          <Button size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
             <Phone className="size-4 mr-2" /> Book a Service
           </Button>
           <Button size="lg" variant="outline">

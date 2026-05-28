@@ -48,7 +48,7 @@ export function AdminCustomersPage() {
                     <tr key={c.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex size-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600">{c.name.charAt(0)}</div>
+                          <div className="flex size-8 items-center justify-center rounded-full bg-[#1D63FF]/10 text-xs font-bold text-[#1D63FF]">{c.name.charAt(0)}</div>
                           <div><p className="text-sm font-medium text-slate-700">{c.name}</p><p className="text-xs text-slate-400">{c.email}</p></div>
                         </div>
                       </td>
@@ -68,7 +68,7 @@ export function AdminCustomersPage() {
           <span className="text-xs text-slate-500">Showing 1-5 of 1,234</span>
           <div className="flex gap-1">
             <Button variant="outline" size="sm" className="h-8 w-8 p-0"><ChevronLeft className="size-4" /></Button>
-            <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-blue-600 text-white border-blue-600">1</Button>
+            <Button variant="outline" size="sm" className="h-8 w-8 p-0 bg-[#1D63FF] text-white border-[#1D63FF]">1</Button>
             <Button variant="outline" size="sm" className="h-8 w-8 p-0">2</Button>
             <Button variant="outline" size="sm" className="h-8 w-8 p-0">3</Button>
             <Button variant="outline" size="sm" className="h-8 w-8 p-0"><ChevronRight className="size-4" /></Button>

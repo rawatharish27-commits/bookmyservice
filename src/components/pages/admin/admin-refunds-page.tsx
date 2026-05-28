@@ -18,7 +18,7 @@ const refunds = [
 const statusColors: Record<string, string> = {
   Processed: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   Pending: 'bg-amber-100 text-amber-700 border-amber-200',
-  Approved: 'bg-blue-100 text-blue-700 border-blue-200',
+  Approved: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
   Rejected: 'bg-red-100 text-red-700 border-red-200',
 }
 
@@ -41,8 +41,8 @@ export function AdminRefundsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <RotateCcw className="size-4 text-blue-600" />
-                  <span className="text-sm font-semibold text-blue-600">{refund.id}</span>
+                  <RotateCcw className="size-4 text-[#1D63FF]" />
+                  <span className="text-sm font-semibold text-[#1D63FF]">{refund.id}</span>
                   <Badge variant="secondary" className={statusColors[refund.status]}>{refund.status}</Badge>
                 </div>
                 <span className="text-lg font-bold text-slate-900">{refund.amount}</span>
@@ -56,7 +56,7 @@ export function AdminRefundsPage() {
                 </div>
               )}
               {refund.status === 'Approved' && (
-                <Button size="sm" className="h-7 bg-blue-600 hover:bg-blue-700 gap-1 text-xs rounded-lg mt-3"><RotateCcw className="size-3" /> Process Refund</Button>
+                <Button size="sm" className="h-7 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 text-xs rounded-lg mt-3"><RotateCcw className="size-3" /> Process Refund</Button>
               )}
             </CardContent>
           </Card>

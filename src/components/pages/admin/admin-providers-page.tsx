@@ -33,7 +33,7 @@ export function AdminProvidersPage() {
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-blue-600">1,234</p><p className="text-xs text-slate-500">Total Providers</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">1,234</p><p className="text-xs text-slate-500">Total Providers</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">945</p><p className="text-xs text-slate-500">KYC Verified</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-amber-600">156</p><p className="text-xs text-slate-500">Pending KYC</p></CardContent></Card>
         </div>

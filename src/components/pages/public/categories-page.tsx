@@ -14,13 +14,13 @@ import { useCallback } from 'react'
 
 const PERMITTED_CATEGORIES = [
   { icon: Wind, name: 'Air Conditioner', desc: 'AC install, repair, service', color: 'bg-cyan-100 text-cyan-600' },
-  { icon: Refrigerator, name: 'Refrigerator', desc: 'Fridge repair, gas refill', color: 'bg-blue-100 text-blue-600' },
+  { icon: Refrigerator, name: 'Refrigerator', desc: 'Fridge repair, gas refill', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { icon: WashingMachine, name: 'Washing Machine', desc: 'Washer repair, service', color: 'bg-indigo-100 text-indigo-600' },
   { icon: Flame, name: 'Kitchen Appliances', desc: 'Mixer, chimney, stove repair', color: 'bg-orange-100 text-orange-600' },
   { icon: Tv, name: 'TV Repair', desc: 'LED, LCD, smart TV fix', color: 'bg-purple-100 text-purple-600' },
   { icon: Droplets, name: 'Water Purifier', desc: 'RO install, service, filter', color: 'bg-teal-100 text-teal-600' },
   { icon: Flame, name: 'Geyser', desc: 'Installation, repair, service', color: 'bg-red-100 text-red-600' },
-  { icon: Wrench, name: 'Plumber', desc: 'Pipes, leaks, installations', color: 'bg-blue-100 text-blue-600' },
+  { icon: Wrench, name: 'Plumber', desc: 'Pipes, leaks, installations', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { icon: Zap, name: 'Electrician', desc: 'Wiring, switches, fans', color: 'bg-amber-100 text-amber-600' },
   { icon: Droplets, name: 'Water Tank Cleaning', desc: 'Tank cleaning, sanitize', color: 'bg-emerald-100 text-emerald-600' },
   { icon: Truck, name: 'Movers and Packers', desc: 'House shifting, packing', color: 'bg-slate-100 text-slate-600' },
@@ -35,7 +35,7 @@ export function CategoriesPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Header */}
-      <section className="bg-gradient-to-r from-blue-600 to-cyan-500 text-white py-12">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#FFCE32] text-white py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">All Service Categories</h1>
           <p className="text-blue-100 mb-6">Explore our range of professional home services</p>
@@ -66,7 +66,7 @@ export function CategoriesPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20" role="status" aria-label="Loading categories">
-            <Loader2 className="size-8 text-blue-600 animate-spin" />
+            <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
             <span className="sr-only">Loading...</span>
           </div>
         ) : error ? (
@@ -94,7 +94,7 @@ export function CategoriesPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold text-slate-900">{cat.name}</h3>
-                        <ArrowRight className="size-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                        <ArrowRight className="size-4 text-slate-400 group-hover:text-[#1D63FF] transition-colors" />
                       </div>
                       <p className="text-sm text-slate-500 mt-1">{cat.desc}</p>
                       <div className="flex items-center gap-2 mt-2">
@@ -117,11 +117,11 @@ export function CategoriesPage() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-4 pb-12">
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-2xl border-0">
+        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white rounded-2xl border-0">
           <CardContent className="p-8 sm:p-10 text-center">
             <h2 className="text-2xl font-bold mb-2">Can&apos;t find what you need?</h2>
             <p className="text-blue-200 mb-5">Tell us your requirement and we&apos;ll connect you with the right professional.</p>
-            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('search')}>Search Services</Button>
+            <Button className="bg-white text-[#1D63FF] hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('search')}>Search Services</Button>
           </CardContent>
         </Card>
       </section>

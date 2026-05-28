@@ -42,7 +42,7 @@ export function ProviderEditServicePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><DollarSign className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Pricing</CardTitle></div>
+            <div className="flex items-center gap-2"><DollarSign className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Pricing</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -61,7 +61,7 @@ export function ProviderEditServicePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Clock className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Duration</CardTitle></div>
+            <div className="flex items-center gap-2"><Clock className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Duration</CardTitle></div>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -72,7 +72,7 @@ export function ProviderEditServicePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl"><Save className="size-4" /> Update Service</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><Save className="size-4" /> Update Service</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

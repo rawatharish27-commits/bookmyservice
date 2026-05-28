@@ -46,10 +46,10 @@ const cookieCategories = [
     id: 'functional',
     title: 'Functional Cookies',
     icon: Settings,
-    color: 'text-blue-600',
+    color: 'text-[#1D63FF]',
     bgColor: 'bg-blue-50',
     borderColor: 'border-blue-200',
-    badgeColor: 'bg-blue-100 text-blue-700',
+    badgeColor: 'bg-[#1D63FF]/10 text-[#0B3D91]',
     required: false,
     description: 'These cookies enable enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages.',
     cookies: [
@@ -113,7 +113,7 @@ export function CookiePolicyPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-blue-600">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
               <Cookie className="size-5 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Cookie Policy</h1>
@@ -140,7 +140,7 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Cookie className="size-5 text-blue-600" />
+              <Cookie className="size-5 text-[#1D63FF]" />
               What Are Cookies?
             </CardTitle>
           </CardHeader>
@@ -151,7 +151,7 @@ export function CookiePolicyPage() {
 
             <div className="grid sm:grid-cols-3 gap-3">
               <div className="rounded-lg border border-slate-200 p-4 text-center">
-                <Monitor className="size-8 text-blue-600 mx-auto mb-2" />
+                <Monitor className="size-8 text-[#1D63FF] mx-auto mb-2" />
                 <h4 className="text-sm font-semibold text-slate-900">First-Party Cookies</h4>
                 <p className="text-xs text-slate-500 mt-1">Set by BookMyService directly. Used for session management, preferences, and security.</p>
               </div>
@@ -173,7 +173,7 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Eye className="size-5 text-blue-600" />
+              <Eye className="size-5 text-[#1D63FF]" />
               Cookie Categories
             </CardTitle>
           </CardHeader>
@@ -251,7 +251,7 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Globe className="size-5 text-blue-600" />
+              <Globe className="size-5 text-[#1D63FF]" />
               Third-Party Services
             </CardTitle>
           </CardHeader>
@@ -269,7 +269,7 @@ export function CookiePolicyPage() {
                       href={service.privacyUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1"
+                      className="text-xs text-[#1D63FF] hover:text-[#0B3D91] flex items-center gap-1"
                     >
                       Privacy <ExternalLink className="size-3" />
                     </a>
@@ -290,7 +290,7 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Settings className="size-5 text-blue-600" />
+              <Settings className="size-5 text-[#1D63FF]" />
               How to Manage Your Cookies
             </CardTitle>
           </CardHeader>
@@ -302,20 +302,20 @@ export function CookiePolicyPage() {
             <div className="space-y-3">
               <div className="rounded-lg border border-slate-200 p-4">
                 <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                  <Lock className="size-4 text-blue-600" />
+                  <Lock className="size-4 text-[#1D63FF]" />
                   In-App Cookie Preferences
                 </h4>
                 <p className="text-xs text-slate-600 mb-3">
                   Access cookie settings directly from the BookMyService app: Settings → Privacy → Cookie Preferences. You can enable or disable each non-essential category.
                 </p>
-                <Button size="sm" className="bg-blue-600 hover:bg-blue-700 rounded-xl">
+                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
                   Open Cookie Settings
                 </Button>
               </div>
 
               <div className="rounded-lg border border-slate-200 p-4">
                 <h4 className="text-sm font-semibold text-slate-900 mb-2 flex items-center gap-2">
-                  <Monitor className="size-4 text-blue-600" />
+                  <Monitor className="size-4 text-[#1D63FF]" />
                   Browser Settings
                 </h4>
                 <p className="text-xs text-slate-600 mb-3">
@@ -372,7 +372,7 @@ export function CookiePolicyPage() {
                     <td className="py-2 px-3 text-xs">Cannot be disabled. Platform will not function without these cookies.</td>
                   </tr>
                   <tr className="border-b border-slate-100">
-                    <td className="py-2 px-3"><Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 text-xs">Functional</Badge></td>
+                    <td className="py-2 px-3"><Badge className="bg-[#1D63FF]/10 text-[#0B3D91] hover:bg-[#1D63FF]/10 text-xs">Functional</Badge></td>
                     <td className="py-2 px-3 text-xs">Preferences won&apos;t be saved. You&apos;ll need to re-enter addresses and filters each visit.</td>
                   </tr>
                   <tr className="border-b border-slate-100">
@@ -393,7 +393,7 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <CheckCircle2 className="size-5 text-blue-600" />
+              <CheckCircle2 className="size-5 text-[#1D63FF]" />
               Your Consent
             </CardTitle>
           </CardHeader>
@@ -411,14 +411,14 @@ export function CookiePolicyPage() {
                 'Cookie consent is stored for 12 months, after which you will be prompted again.',
               ].map((item, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <CheckCircle2 className="size-4 text-blue-600 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" />
                   <p className="text-sm text-slate-600">{item}</p>
                 </div>
               ))}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
-              <Button className="gap-2 bg-blue-600 hover:bg-blue-700 rounded-xl">
+              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
                 <Settings className="size-4" />
                 Manage Cookie Preferences
               </Button>
@@ -434,14 +434,14 @@ export function CookiePolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-6">
             <div className="flex items-center gap-2 mb-3">
-              <Info className="size-5 text-blue-600" />
+              <Info className="size-5 text-[#1D63FF]" />
               <h3 className="text-lg font-bold text-slate-900">Changes to This Policy</h3>
             </div>
             <p className="text-sm text-slate-600 mb-4">
               We may update this Cookie Policy from time to time. The &quot;Last Updated&quot; date at the top of this page indicates when the policy was last revised. If we make material changes, we will notify you through the platform or by email.
             </p>
             <p className="text-sm text-slate-600">
-              For questions about our cookie practices, contact us at <span className="text-blue-600 font-medium">privacy@bookmyservice.in</span>
+              For questions about our cookie practices, contact us at <span className="text-[#1D63FF] font-medium">privacy@bookmyservice.in</span>
             </p>
           </CardContent>
         </Card>

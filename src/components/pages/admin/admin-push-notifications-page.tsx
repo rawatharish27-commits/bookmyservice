@@ -16,7 +16,7 @@ const campaigns = [
 
 const statusColors: Record<string, string> = {
   Completed: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  Scheduled: 'bg-blue-100 text-blue-700 border-blue-200',
+  Scheduled: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
   Draft: 'bg-slate-100 text-slate-500 border-slate-200',
   Sending: 'bg-amber-100 text-amber-700 border-amber-200',
 }
@@ -27,7 +27,7 @@ export function AdminPushNotificationsPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Push Notifications</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><BellRing className="size-4" /> New Campaign</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><BellRing className="size-4" /> New Campaign</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -42,7 +42,7 @@ export function AdminPushNotificationsPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="text-xs rounded-lg">Save Draft</Button>
-              <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-1 text-xs rounded-xl"><Send className="size-3" /> Send Now</Button>
+              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 text-xs rounded-xl"><Send className="size-3" /> Send Now</Button>
               <Button variant="outline" size="sm" className="gap-1 text-xs rounded-lg"><Calendar className="size-3" /> Schedule</Button>
             </div>
           </CardContent>
@@ -54,7 +54,7 @@ export function AdminPushNotificationsPage() {
             {campaigns.map((c, i) => (
               <div key={c.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><BellRing className="size-4 text-blue-600" /></div>
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><BellRing className="size-4 text-[#1D63FF]" /></div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{c.name}</p><Badge variant="secondary" className={statusColors[c.status]}>{c.status}</Badge></div>
                     <p className="text-xs text-slate-400 mt-0.5"><Users className="size-3 inline mr-0.5" />{c.segment} • {c.date}</p>

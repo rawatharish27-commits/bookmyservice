@@ -28,7 +28,7 @@ export function AdminRolesPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Roles & Permissions</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl"><Plus className="size-4" /> Add Role</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Add Role</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -46,7 +46,7 @@ export function AdminRolesPage() {
                     <tr key={role.id} className="border-b border-slate-50 hover:bg-slate-50/50">
                       <td className="px-4 py-3"><p className="text-sm font-medium text-slate-700">{role.name}</p><p className="text-xs text-slate-400">{role.description}</p></td>
                       <td className="px-4 py-3 text-sm text-slate-700 hidden sm:table-cell">{role.users}</td>
-                      <td className="px-4 py-3 hidden md:table-cell"><Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200">{role.permissions} permissions</Badge></td>
+                      <td className="px-4 py-3 hidden md:table-cell"><Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200">{role.permissions} permissions</Badge></td>
                       <td className="px-4 py-3 text-right">
                         <div className="flex justify-end gap-1">
                           <Button variant="ghost" size="sm" className="h-7"><Edit2 className="size-3" /></Button>
@@ -63,7 +63,7 @@ export function AdminRolesPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Shield className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Permissions Matrix</CardTitle></div>
+            <div className="flex items-center gap-2"><Shield className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Permissions Matrix</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {permissionCategories.map((cat, i) => (

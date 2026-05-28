@@ -17,7 +17,7 @@ const auditLogs = [
 ]
 
 const severityColors: Record<string, string> = {
-  Info: 'bg-blue-100 text-blue-700 border-blue-200',
+  Info: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
   Warning: 'bg-amber-100 text-amber-700 border-amber-200',
   Critical: 'bg-red-100 text-red-700 border-red-200',
 }

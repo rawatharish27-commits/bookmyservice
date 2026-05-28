@@ -22,7 +22,7 @@ const severityColors: Record<string, string> = {
   Critical: 'bg-red-100 text-red-700 border-red-200',
   High: 'bg-orange-100 text-orange-700 border-orange-200',
   Medium: 'bg-amber-100 text-amber-700 border-amber-200',
-  Low: 'bg-blue-100 text-blue-700 border-blue-200',
+  Low: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
 }
 
 const statusColors: Record<string, string> = {
@@ -42,7 +42,7 @@ export function AdminFraudPage() {
 
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><AlertTriangle className="size-5 text-red-500 mx-auto mb-1" /><p className="text-lg font-bold text-red-600">{fraudAlerts.filter(a => a.status !== 'Resolved').length}</p><p className="text-xs text-slate-500">Active Alerts</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Shield className="size-5 text-blue-600 mx-auto mb-1" /><p className="text-lg font-bold text-blue-600">12</p><p className="text-xs text-slate-500">Cases This Month</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><Shield className="size-5 text-[#1D63FF] mx-auto mb-1" /><p className="text-lg font-bold text-[#1D63FF]">12</p><p className="text-xs text-slate-500">Cases This Month</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><UserX className="size-5 text-purple-600 mx-auto mb-1" /><p className="text-lg font-bold text-purple-600">{blockedUsers.length}</p><p className="text-xs text-slate-500">Blocked Users</p></CardContent></Card>
         </div>
 

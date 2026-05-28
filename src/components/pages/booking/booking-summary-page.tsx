@@ -29,7 +29,7 @@ export function BookingSummaryPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading booking summary">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -45,7 +45,7 @@ export function BookingSummaryPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5 space-y-4">
             <div className="flex items-center gap-3">
-              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-blue-600" /></div>
+              <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-6 text-[#1D63FF]" /></div>
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">{data.service.name}</h3>
                 <p className="text-xs text-slate-400">{data.service.desc}</p>
@@ -69,7 +69,7 @@ export function BookingSummaryPage() {
             <Separator />
             <div className="flex items-center gap-2 text-sm"><Tag className="size-3.5 text-emerald-500" /><span className="text-emerald-600">FIRST50 Applied</span><span className="text-emerald-600 ml-auto">-₹{data.pricing.discount}</span></div>
             <Separator />
-            <div className="flex justify-between text-lg font-bold"><span className="text-slate-900">Total</span><span className="text-blue-600">₹{data.pricing.total}</span></div>
+            <div className="flex justify-between text-lg font-bold"><span className="text-slate-900">Total</span><span className="text-[#1D63FF]">₹{data.pricing.total}</span></div>
           </CardContent>
         </Card>
 
@@ -83,7 +83,7 @@ export function BookingSummaryPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment</Button>
       </div>
     </div>
   )

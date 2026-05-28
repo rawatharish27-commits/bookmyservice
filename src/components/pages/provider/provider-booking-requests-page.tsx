@@ -18,7 +18,7 @@ export function ProviderBookingRequestsPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Booking Requests</h1>
-          <Badge className="bg-blue-100 text-blue-700 border-blue-200">{requests.length} New</Badge>
+          <Badge className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200">{requests.length} New</Badge>
         </div>
 
         {requests.map((req) => (

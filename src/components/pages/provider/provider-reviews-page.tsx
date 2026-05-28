@@ -40,7 +40,7 @@ export function ProviderReviewsPage() {
               <div className="flex gap-2 flex-wrap">
                 {starFilters.map(star => (
                   <button key={star} onClick={() => setFilterStar(filterStar === star ? null : star)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStar === star ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStar === star ? 'bg-[#1D63FF] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                     {star} ★
                   </button>
                 ))}

@@ -16,7 +16,7 @@ const tickets = [
 const priorityColors: Record<string, string> = {
   High: 'bg-red-100 text-red-700 border-red-200',
   Medium: 'bg-amber-100 text-amber-700 border-amber-200',
-  Low: 'bg-blue-100 text-blue-700 border-blue-200',
+  Low: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
 }
 
 const statusColors: Record<string, string> = {

@@ -19,7 +19,7 @@ export function LiveTrackingPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Live Tracking</h1>
-          <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">
+          <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">
             <Radio className="size-3 mr-1 animate-pulse" /> Live
           </Badge>
         </div>
@@ -32,12 +32,12 @@ export function LiveTrackingPage() {
             </div>
             <div className="absolute top-3 left-3 rounded-lg bg-white/90 px-3 py-2 backdrop-blur-sm shadow-sm">
               <div className="flex items-center gap-2">
-                <Truck className="size-4 text-blue-600" />
-                <span className="text-xs font-medium text-blue-600">Amit is on the way</span>
+                <Truck className="size-4 text-[#1D63FF]" />
+                <span className="text-xs font-medium text-[#1D63FF]">Amit is on the way</span>
               </div>
             </div>
             <div className="absolute bottom-3 right-3 flex size-10 items-center justify-center rounded-lg bg-white/90 backdrop-blur-sm shadow-sm">
-              <Navigation className="size-5 text-blue-600" />
+              <Navigation className="size-5 text-[#1D63FF]" />
             </div>
           </div>
         </Card>
@@ -47,7 +47,7 @@ export function LiveTrackingPage() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-xs text-slate-500">Estimated Arrival</p>
-                <p className="text-2xl font-bold text-blue-600">12 min</p>
+                <p className="text-2xl font-bold text-[#1D63FF]">12 min</p>
               </div>
               <div className="text-right">
                 <p className="text-xs text-slate-500">Distance</p>
@@ -55,13 +55,13 @@ export function LiveTrackingPage() {
               </div>
             </div>
             <div className="flex items-center gap-3 p-3 rounded-xl bg-blue-50">
-              <Avatar><AvatarFallback className="bg-blue-600 text-white text-xs">AS</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-xs">AS</AvatarFallback></Avatar>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-slate-900">Amit Sharma</p>
                 <p className="text-xs text-slate-400">Your technician</p>
               </div>
               <Button variant="outline" size="sm" className="gap-1 border-slate-200 rounded-lg"><Phone className="size-3" /> Call</Button>
-              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-blue-600 rounded-lg"><MessageSquare className="size-3" /> Chat</Button>
+              <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-[#1D63FF] rounded-lg"><MessageSquare className="size-3" /> Chat</Button>
             </div>
           </CardContent>
         </Card>

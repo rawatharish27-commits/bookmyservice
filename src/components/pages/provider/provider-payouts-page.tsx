@@ -22,21 +22,21 @@ export function ProviderPayoutsPage() {
         <h1 className="text-2xl font-bold text-slate-900">Payouts</h1>
 
         <Card className="bg-white rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-blue-600 to-blue-500 p-5 text-white">
+          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] p-5 text-white">
             <p className="text-sm font-medium text-blue-100">Next Payout</p>
             <p className="text-3xl font-bold mt-1">₹7,650</p>
             <p className="text-xs text-blue-200 mt-1">Scheduled for 27 May 2024</p>
           </div>
           <CardContent className="p-4">
             <div className="flex gap-3">
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw Now</Button>
+              <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw Now</Button>
             </div>
           </CardContent>
         </Card>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Building2 className="size-4 text-blue-600" /><CardTitle className="text-sm font-semibold text-slate-900">Bank Details</CardTitle></div>
+            <div className="flex items-center gap-2"><Building2 className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Bank Details</CardTitle></div>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-3 text-sm">

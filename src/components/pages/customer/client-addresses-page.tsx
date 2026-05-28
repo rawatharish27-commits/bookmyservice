@@ -29,7 +29,7 @@ export function ClientAddressesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading addresses">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -49,7 +49,7 @@ export function ClientAddressesPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">My Addresses</h1>
-          <Button size="sm" className="gap-1 bg-blue-600 hover:bg-blue-700 rounded-xl" aria-label="Add new address">
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl" aria-label="Add new address">
             <Plus className="size-4" /> Add Address
           </Button>
         </div>
@@ -58,7 +58,7 @@ export function ClientAddressesPage() {
           <div className="text-center py-12">
             <MapPin className="size-12 text-slate-300 mx-auto mb-3" />
             <p className="text-slate-500">No addresses saved yet</p>
-            <Button className="mt-4 bg-blue-600 hover:bg-blue-700 gap-1" aria-label="Add your first address">
+            <Button className="mt-4 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1" aria-label="Add your first address">
               <Plus className="size-4" /> Add Address
             </Button>
           </div>
@@ -71,7 +71,7 @@ export function ClientAddressesPage() {
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3">
                       <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                        <IconComponent className="size-5 text-blue-600" />
+                        <IconComponent className="size-5 text-[#1D63FF]" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
@@ -81,7 +81,7 @@ export function ClientAddressesPage() {
                         <p className="text-sm text-slate-500">{addr.full}</p>
                       </div>
                       <div className="flex gap-1">
-                        <Button variant="ghost" size="icon" className="size-8 text-slate-400 hover:text-blue-600" aria-label={`Edit ${addr.label} address`}><Edit className="size-4" /></Button>
+                        <Button variant="ghost" size="icon" className="size-8 text-slate-400 hover:text-[#1D63FF]" aria-label={`Edit ${addr.label} address`}><Edit className="size-4" /></Button>
                         <Button variant="ghost" size="icon" className="size-8 text-slate-400 hover:text-red-600" aria-label={`Delete ${addr.label} address`}><Trash2 className="size-4" /></Button>
                       </div>
                     </div>

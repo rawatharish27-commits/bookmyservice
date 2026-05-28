@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 
 const crmMetrics = [
-  { label: 'Total Customers', value: '24,567', change: '+1,234', icon: Users, color: 'bg-blue-100 text-blue-600' },
+  { label: 'Total Customers', value: '24,567', change: '+1,234', icon: Users, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { label: 'New This Month', value: '1,234', change: '+18.5%', icon: UserPlus, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Retention Rate', value: '78.4%', change: '+3.2%', icon: Heart, color: 'bg-pink-100 text-pink-600' },
   { label: 'Avg LTV', value: '₹8,450', change: '+12.3%', icon: IndianRupee, color: 'bg-amber-100 text-amber-600' },
@@ -110,7 +110,7 @@ export function CRMDashboardPage() {
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <Target className="size-4 text-blue-600" />
+                <Target className="size-4 text-[#1D63FF]" />
                 <CardTitle className="text-sm font-semibold text-slate-900">Customer Acquisition Funnel</CardTitle>
               </div>
             </CardHeader>
@@ -230,7 +230,7 @@ export function CRMDashboardPage() {
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <MessageSquare className="size-4 text-blue-600" />
+                <MessageSquare className="size-4 text-[#1D63FF]" />
                 <CardTitle className="text-sm font-semibold text-slate-900">Recent Interactions</CardTitle>
               </div>
             </CardHeader>
@@ -239,13 +239,13 @@ export function CRMDashboardPage() {
                 <div key={i}>
                   <div className="flex items-center gap-3 py-3">
                     <div className={`flex size-8 items-center justify-center rounded-full ${
-                      interaction.type === 'booking' ? 'bg-blue-100' :
+                      interaction.type === 'booking' ? 'bg-[#1D63FF]/10' :
                       interaction.type === 'review' ? 'bg-amber-100' :
                       interaction.type === 'inquiry' ? 'bg-purple-100' :
                       interaction.type === 'support' ? 'bg-red-100' :
                       'bg-emerald-100'
                     }`}>
-                      {interaction.type === 'booking' ? <CalendarIcon className="size-4 text-blue-600" /> :
+                      {interaction.type === 'booking' ? <CalendarIcon className="size-4 text-[#1D63FF]" /> :
                        interaction.type === 'review' ? <Star className="size-4 text-amber-600" /> :
                        interaction.type === 'inquiry' ? <MessageSquare className="size-4 text-purple-600" /> :
                        interaction.type === 'support' ? <Phone className="size-4 text-red-600" /> :

@@ -29,7 +29,7 @@ export function LoginPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc] flex">
       {/* Left Gradient Panel */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-white relative overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-[#1D63FF] via-[#3B82F6] to-[#FFCE32] text-white relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
         <div className="relative z-10 flex flex-col justify-center px-12">
           <h1 className="text-4xl font-bold mb-4">Welcome Back!</h1>
@@ -56,11 +56,11 @@ export function LoginPage() {
             {/* Method Toggle */}
             <div className="flex bg-slate-100 rounded-xl p-1 mb-6" role="tablist" aria-label="Login method">
               <button onClick={() => setLoginMethod('email')} role="tab" aria-selected={loginMethod === 'email'}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${loginMethod === 'email' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${loginMethod === 'email' ? 'bg-white text-[#1D63FF] shadow-sm' : 'text-slate-500'}`}>
                 <Mail className="size-4 inline mr-1" /> Email
               </button>
               <button onClick={() => setLoginMethod('phone')} role="tab" aria-selected={loginMethod === 'phone'}
-                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${loginMethod === 'phone' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500'}`}>
+                className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${loginMethod === 'phone' ? 'bg-white text-[#1D63FF] shadow-sm' : 'text-slate-500'}`}>
                 <Phone className="size-4 inline mr-1" /> Phone
               </button>
             </div>
@@ -93,10 +93,10 @@ export function LoginPage() {
                 <label className="flex items-center gap-2 text-slate-600">
                   <input type="checkbox" className="rounded border-slate-300" /> Remember me
                 </label>
-                <button type="button" className="text-blue-600 hover:underline" onClick={() => navigate('forgot-password')}>Forgot password?</button>
+                <button type="button" className="text-[#1D63FF] hover:underline" onClick={() => navigate('forgot-password')}>Forgot password?</button>
               </div>
 
-              <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 py-5 rounded-xl" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'} <ArrowRight className="size-4 ml-1" />
               </Button>
             </form>
@@ -111,7 +111,7 @@ export function LoginPage() {
             </div>
 
             <p className="text-center text-sm text-slate-500 mt-6">
-              Don&apos;t have an account? <button className="text-blue-600 font-semibold hover:underline" onClick={() => navigate('signup')}>Sign Up</button>
+              Don&apos;t have an account? <button className="text-[#1D63FF] font-semibold hover:underline" onClick={() => navigate('signup')}>Sign Up</button>
             </p>
           </CardContent>
         </Card>

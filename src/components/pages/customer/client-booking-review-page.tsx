@@ -30,7 +30,7 @@ export function ClientBookingReviewPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading review data">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -72,7 +72,7 @@ export function ClientBookingReviewPage() {
             <CardContent className="p-5">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex size-12 items-center justify-center rounded-xl bg-blue-50">
-                  <Zap className="size-6 text-blue-600" />
+                  <Zap className="size-6 text-[#1D63FF]" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">{bookingInfo.service}</h3>
@@ -104,7 +104,7 @@ export function ClientBookingReviewPage() {
 
             <div>
               <label htmlFor="review-text" className="mb-2 text-sm font-medium text-slate-700">Write a review</label>
-              <textarea id="review-text" rows={4} placeholder="Share your experience..." className="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100 resize-none" />
+              <textarea id="review-text" rows={4} placeholder="Share your experience..." className="w-full rounded-xl border border-slate-200 p-3 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF]/20 resize-none" />
             </div>
 
             <div>
@@ -116,7 +116,7 @@ export function ClientBookingReviewPage() {
               </div>
             </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" disabled={rating === 0 || submitting} onClick={handleSubmit} aria-label="Submit review">
+            <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" disabled={rating === 0 || submitting} onClick={handleSubmit} aria-label="Submit review">
               {submitting ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Submit Review
             </Button>
           </CardContent>

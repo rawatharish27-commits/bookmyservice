@@ -16,7 +16,7 @@ const notifications = [
 ]
 
 const typeIcons: Record<string, { icon: React.ComponentType<{ className?: string }>; bg: string }> = {
-  booking: { icon: Calendar, bg: 'bg-blue-100' },
+  booking: { icon: Calendar, bg: 'bg-[#1D63FF]/10' },
   payment: { icon: IndianRupee, bg: 'bg-emerald-100' },
   system: { icon: Settings, bg: 'bg-purple-100' },
 }
@@ -44,7 +44,7 @@ export function ProviderNotificationsPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-900">{notif.title}</p>
-                        {!notif.read && <span className="size-2 rounded-full bg-blue-600" />}
+                        {!notif.read && <span className="size-2 rounded-full bg-[#1D63FF]" />}
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">{notif.message}</p>
                       <p className="text-xs text-slate-400 mt-1">{notif.time}</p>

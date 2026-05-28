@@ -15,13 +15,13 @@ import { useCallback } from 'react'
 
 const PERMITTED_CATEGORIES = [
   { icon: Wind, name: 'Air Conditioner', color: 'bg-cyan-100 text-cyan-600' },
-  { icon: Refrigerator, name: 'Refrigerator', color: 'bg-blue-100 text-blue-600' },
+  { icon: Refrigerator, name: 'Refrigerator', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { icon: WashingMachine, name: 'Washing Machine', color: 'bg-indigo-100 text-indigo-600' },
   { icon: Flame, name: 'Kitchen Appliances', color: 'bg-orange-100 text-orange-600' },
   { icon: Tv, name: 'TV Repair', color: 'bg-purple-100 text-purple-600' },
   { icon: Droplets, name: 'Water Purifier', color: 'bg-teal-100 text-teal-600' },
   { icon: Flame, name: 'Geyser', color: 'bg-red-100 text-red-600' },
-  { icon: Wrench, name: 'Plumber', color: 'bg-blue-100 text-blue-600' },
+  { icon: Wrench, name: 'Plumber', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
   { icon: Zap, name: 'Electrician', color: 'bg-amber-100 text-amber-600' },
   { icon: Droplets, name: 'Water Tank Cleaning', color: 'bg-emerald-100 text-emerald-600' },
   { icon: Truck, name: 'Movers and Packers', color: 'bg-slate-100 text-slate-600' },
@@ -43,7 +43,7 @@ const testimonialData = [
 function LoadingSkeleton() {
   return (
     <div className="flex items-center justify-center py-20" role="status" aria-label="Loading content">
-      <Loader2 className="size-8 text-blue-600 animate-spin" />
+      <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
       <span className="sr-only">Loading...</span>
     </div>
   )
@@ -63,7 +63,7 @@ export function HomePage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-[#1D63FF] via-[#3B82F6] to-[#FFCE32] text-white overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-40" />
         <div className="max-w-7xl mx-auto px-4 py-16 sm:py-24 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
@@ -83,7 +83,7 @@ export function HomePage() {
                 onKeyDown={(e) => { if (e.key === 'Enter') navigate('search') }}
               />
               <Button
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-6 bg-blue-600 hover:bg-blue-700"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl px-6 bg-[#1D63FF] hover:bg-[#0B3D91]"
                 onClick={() => navigate('search')}
                 aria-label="Search services"
               >
@@ -158,7 +158,7 @@ export function HomePage() {
                   <Separator className="my-3" />
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">₹{svc.price}</span>
-                    <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => navigate('service-detail', { service: svc.name })}>Book Now</Button>
+                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={() => navigate('service-detail', { service: svc.name })}>Book Now</Button>
                   </div>
                 </CardContent>
               </Card>
@@ -183,10 +183,10 @@ export function HomePage() {
               { step: '3', icon: CheckCircle, title: 'Get It Done', desc: 'Sit back and relax while our verified expert takes care of everything.' },
             ].map((item) => (
               <div key={item.step} className="text-center">
-                <div className="w-16 h-16 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 rounded-2xl bg-[#1D63FF]/10 text-[#1D63FF] flex items-center justify-center mx-auto mb-4">
                   <item.icon className="size-8" />
                 </div>
-                <div className="text-xs font-bold text-blue-600 mb-1">STEP {item.step}</div>
+                <div className="text-xs font-bold text-[#1D63FF] mb-1">STEP {item.step}</div>
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{item.title}</h3>
                 <p className="text-slate-500 text-sm">{item.desc}</p>
               </div>
@@ -212,7 +212,7 @@ export function HomePage() {
                   </div>
                   <p className="text-slate-600 text-sm mb-4">&quot;{t.text}&quot;</p>
                   <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold" aria-hidden="true">
+                    <div className="w-8 h-8 rounded-full bg-[#1D63FF]/10 text-[#1D63FF] flex items-center justify-center text-xs font-bold" aria-hidden="true">
                       {t.name.charAt(0)}
                     </div>
                     <span className="font-semibold text-sm text-slate-900">{t.name}</span>
@@ -226,11 +226,11 @@ export function HomePage() {
 
       {/* CTA Banner */}
       <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="bg-gradient-to-r from-blue-600 to-cyan-500 rounded-2xl p-8 sm:p-12 text-white text-center">
+        <div className="bg-gradient-to-r from-[#1D63FF] to-[#FFCE32] rounded-2xl p-8 sm:p-12 text-white text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Ready to Get Started?</h2>
           <p className="text-blue-100 mb-6 max-w-xl mx-auto">Join thousands of satisfied customers who trust us for their home service needs.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Button className="bg-white text-blue-600 hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('categories')}>
+            <Button className="bg-white text-[#1D63FF] hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('categories')}>
               Book a Service <ArrowRight className="size-4 ml-1" />
             </Button>
             <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8" onClick={() => navigate('role-selection')}>

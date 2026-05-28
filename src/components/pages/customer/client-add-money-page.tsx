@@ -34,7 +34,7 @@ export function ClientAddMoneyPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading wallet info">
-        <Loader2 className="size-8 text-blue-600 animate-spin" />
+        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -73,7 +73,7 @@ export function ClientAddMoneyPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <h1 className="text-2xl font-bold text-slate-900">Add Money</h1>
 
-        <Card className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl border-0 text-white">
+        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl border-0 text-white">
           <CardContent className="p-5">
             <p className="text-xs text-blue-100">Current Balance</p>
             <p className="text-2xl font-bold">₹{(wallet?.balance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
@@ -87,7 +87,7 @@ export function ClientAddMoneyPage() {
               {presets.map((p) => (
                 <Button key={p} variant={amount === String(p) ? 'default' : 'outline'}
                   onClick={() => setAmount(String(p))}
-                  className={`rounded-xl py-6 text-lg font-bold ${amount === String(p) ? 'bg-blue-600 hover:bg-blue-700' : 'border-slate-200 text-slate-900'}`}
+                  className={`rounded-xl py-6 text-lg font-bold ${amount === String(p) ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200 text-slate-900'}`}
                   aria-pressed={amount === String(p)}>
                   ₹{p}
                 </Button>
@@ -107,18 +107,18 @@ export function ClientAddMoneyPage() {
               <button key={m.id} onClick={() => setSelectedMethod(m.id)}
                 className={`flex w-full items-center gap-3 rounded-xl border p-3 transition-colors ${selectedMethod === m.id ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:bg-slate-50'}`}
                 aria-pressed={selectedMethod === m.id}>
-                <m.icon className={`size-5 ${selectedMethod === m.id ? 'text-blue-600' : 'text-slate-400'}`} />
+                <m.icon className={`size-5 ${selectedMethod === m.id ? 'text-[#1D63FF]' : 'text-slate-400'}`} />
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium text-slate-900">{m.label}</p>
                   <p className="text-xs text-slate-400">{m.desc}</p>
                 </div>
-                {selectedMethod === m.id && <Check className="size-5 text-blue-600" />}
+                {selectedMethod === m.id && <Check className="size-5 text-[#1D63FF]" />}
               </button>
             ))}
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-1 rounded-xl py-5" disabled={!amount || submitting} onClick={handleAddMoney} aria-label={`Add ₹${amount || '0'} to wallet`}>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" disabled={!amount || submitting} onClick={handleAddMoney} aria-label={`Add ₹${amount || '0'} to wallet`}>
           {submitting ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />} Add ₹{amount || '0'} to Wallet
         </Button>
       </div>

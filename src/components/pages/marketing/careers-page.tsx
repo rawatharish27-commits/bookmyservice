@@ -79,7 +79,7 @@ export function CareersPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="max-w-3xl">
             <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Careers</Badge>
@@ -113,7 +113,7 @@ export function CareersPage() {
             <Card key={value.title} className="shadow-sm border-0 hover:shadow-md transition-shadow">
               <CardContent className="p-6 text-center">
                 <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="size-6 text-blue-600" />
+                  <value.icon className="size-6 text-[#1D63FF]" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-2">{value.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{value.description}</p>
@@ -169,7 +169,7 @@ export function CareersPage() {
                 key={dept}
                 variant={selectedDept === dept ? 'default' : 'outline'}
                 size="sm"
-                className={selectedDept === dept ? 'bg-blue-600 hover:bg-blue-700' : ''}
+                className={selectedDept === dept ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
                 onClick={() => setSelectedDept(dept)}
               >
                 {dept}
@@ -210,7 +210,7 @@ export function CareersPage() {
                         <p className="font-semibold text-emerald-600 text-sm">{job.salary}</p>
                         <p className="text-[10px] text-slate-400">{job.posted}</p>
                       </div>
-                      <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                      <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
                         Apply <ChevronRight className="size-3 ml-1" />
                       </Button>
                     </div>
@@ -223,7 +223,7 @@ export function CareersPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Don&apos;t See the Right Role?</h2>
           <p className="text-blue-100 mb-8 max-w-lg mx-auto">

@@ -28,7 +28,7 @@ const featuredPost = {
   excerpt: 'From monsoon prep to annual Water Tank Cleaning, learn the essential home maintenance schedule that will keep your home in top shape year-round. Expert tips from our top service providers.',
   author: 'Priya Sharma',
   authorInitials: 'PS',
-  authorColor: 'bg-blue-600',
+  authorColor: 'bg-[#1D63FF]',
   date: '28 Feb 2025',
   readTime: '8 min read',
   category: 'Home Maintenance',
@@ -108,7 +108,7 @@ const blogPosts = [
     excerpt: 'We\'re excited to announce our expansion to 30 new tier-3 cities across India, bringing professional home services to millions more households.',
     author: 'Marketing Team',
     authorInitials: 'MT',
-    authorColor: 'bg-blue-600',
+    authorColor: 'bg-[#1D63FF]',
     date: '12 Feb 2025',
     readTime: '3 min read',
     category: 'Company News',
@@ -157,7 +157,7 @@ export function BlogPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
           <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Blog</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Insights & Tips</h1>
@@ -184,7 +184,7 @@ export function BlogPage() {
               key={cat}
               variant={selectedCategory === cat ? 'default' : 'outline'}
               size="sm"
-              className={selectedCategory === cat ? 'bg-blue-600 hover:bg-blue-700' : 'bg-white shadow-sm'}
+              className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white shadow-sm'}
               onClick={() => setSelectedCategory(cat)}
             >
               {cat}
@@ -198,11 +198,11 @@ export function BlogPage() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <Card className="shadow-sm border-0 overflow-hidden">
             <div className="grid lg:grid-cols-2">
-              <div className="h-48 lg:h-auto bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center">
+              <div className="h-48 lg:h-auto bg-gradient-to-br from-[#1D63FF]/10 to-blue-200 flex items-center justify-center">
                 <BookOpen className="size-16 text-blue-400" />
               </div>
               <CardContent className="p-6 sm:p-8">
-                <Badge className="bg-blue-50 text-blue-700 mb-3">{featuredPost.category}</Badge>
+                <Badge className="bg-blue-50 text-[#0B3D91] mb-3">{featuredPost.category}</Badge>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-3 leading-tight">{featuredPost.title}</h2>
                 <p className="text-slate-500 text-sm leading-relaxed mb-4">{featuredPost.excerpt}</p>
                 <div className="flex items-center justify-between">
@@ -215,7 +215,7 @@ export function BlogPage() {
                       <p className="text-[10px] text-slate-400">{featuredPost.date} • {featuredPost.readTime}</p>
                     </div>
                   </div>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                  <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
                     Read More <ArrowRight className="size-3 ml-1" />
                   </Button>
                 </div>
@@ -255,7 +255,7 @@ export function BlogPage() {
                 </div>
                 <CardContent className="p-4 sm:p-5">
                   <Badge variant="secondary" className="text-[10px] mb-2">{post.category}</Badge>
-                  <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+                  <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2 leading-snug group-hover:text-[#1D63FF] transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2">{post.excerpt}</p>
@@ -284,7 +284,7 @@ export function BlogPage() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <BookOpen className="size-10 mx-auto mb-4 text-blue-200" />
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Stay Updated</h2>
