@@ -185,7 +185,7 @@ export function ContactPage() {
                         required
                       />
                     </div>
-                    <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] w-full sm:w-auto">
+                    <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white w-full sm:w-auto">
                       <Send className="size-4 mr-2" /> Send Message
                     </Button>
                   </form>

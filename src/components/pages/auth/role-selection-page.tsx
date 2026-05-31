@@ -78,7 +78,7 @@ export function RoleSelectionPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
+          <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
             Get Started <ArrowRight className="size-5" />
           </Button>
           <p className="text-xs text-slate-400 mt-3">You can change your role later in settings</p>

@@ -56,7 +56,7 @@ export function BookingConfirmationPage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={() => navigate('live-tracking')}><MapPin className="size-4" /> Track Booking</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={() => navigate('live-tracking')}><MapPin className="size-4" /> Track Booking</Button>
           <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl" aria-label="Share booking details"><Share2 className="size-4" /> Share Details</Button>
         </div>
       </div>

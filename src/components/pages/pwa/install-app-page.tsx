@@ -118,7 +118,7 @@ export function InstallAppPage() {
             <p className="text-sm text-slate-500 mb-4">
               Get the best experience with our app — faster, offline-ready, and with push notifications.
             </p>
-            <Button onClick={() => setDismissed(false)} className="w-full bg-[#1D63FF] hover:bg-[#0B3D91]">
+            <Button onClick={() => setDismissed(false)} className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
               Show Install Prompt
             </Button>
           </CardContent>

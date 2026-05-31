@@ -243,7 +243,7 @@ export function ClientDashboard() {
                 placeholder="Search for services..."
                 className="h-9 w-full rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
               />
-              <Button className="h-9 rounded-l-none rounded-r-lg bg-blue-600 px-4 hover:bg-blue-700">
+              <Button className="h-9 rounded-l-none rounded-r-lg bg-blue-600 text-white px-4 hover:bg-blue-700">
                 Search
               </Button>
             </div>
@@ -377,7 +377,7 @@ export function ClientDashboard() {
                 </div>
                 <div className="flex items-center justify-between border-t border-slate-100 pt-3">
                   <span className="text-lg font-bold text-slate-900">{upcomingBooking.amount}</span>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-1">
+                  <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700 gap-1">
                     View Details
                     <ChevronRight className="size-3.5" />
                   </Button>
@@ -466,7 +466,7 @@ export function ClientDashboard() {
                   <CardTitle className="text-base font-semibold text-slate-900">
                     Wallet Overview
                   </CardTitle>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-1">
+                  <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700 gap-1">
                     <Plus className="size-3.5" />
                     Add Money
                   </Button>

@@ -76,7 +76,7 @@ export function ProviderSubscriptionPage() {
                       </li>
                     ))}
                   </ul>
-                  <Button className={`w-full mt-4 rounded-xl ${plan.current ? 'bg-slate-100 text-slate-500' : plan.name === 'Pro' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : plan.name === 'Premium' ? 'bg-purple-600 hover:bg-purple-700' : 'bg-slate-200 text-slate-700'}`} disabled={plan.current}>
+                  <Button className={`w-full mt-4 rounded-xl ${plan.current ? 'bg-slate-100 text-slate-500' : plan.name === 'Pro' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : plan.name === 'Premium' ? 'bg-purple-600 hover:bg-purple-700 text-white' : 'bg-slate-200 text-slate-700'}`} disabled={plan.current}>
                     {plan.current ? 'Current Plan' : 'Upgrade'}
                   </Button>
                 </CardContent>

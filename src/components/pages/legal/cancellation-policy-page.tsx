@@ -435,7 +435,7 @@ export function CancellationPolicyPage() {
             <h3 className="text-lg font-bold text-slate-900 mb-2">Need to Cancel a Booking?</h3>
             <p className="text-sm text-slate-500 mb-4">Cancel through the app for the fastest processing, or contact our support team for assistance.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                 <XCircle className="size-4" />
                 Cancel a Booking
               </Button>

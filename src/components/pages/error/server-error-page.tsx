@@ -78,7 +78,7 @@ export function ServerErrorPage() {
             {/* Action buttons */}
             <div className="space-y-3">
               <Button
-                className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-2 rounded-xl py-5"
+                className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
                 onClick={handleRetry}
                 disabled={retrying}
               >

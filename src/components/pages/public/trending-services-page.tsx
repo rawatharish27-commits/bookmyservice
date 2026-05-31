@@ -81,7 +81,7 @@ export function TrendingServicesPage() {
                       </span>
                       <p className="text-xs text-slate-400">vs last week</p>
                     </div>
-                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 shrink-0" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
+                    <Button size="sm" className="bg-purple-600 hover:bg-purple-700 text-white shrink-0" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
                   </div>
                 </CardContent>
               </Card>

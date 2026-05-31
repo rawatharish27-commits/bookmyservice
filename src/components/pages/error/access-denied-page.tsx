@@ -101,7 +101,7 @@ export function AccessDeniedPage() {
                 <ArrowLeft className="size-4" /> Go Back
               </Button>
               <Button
-                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-2 rounded-xl py-5"
+                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
                 onClick={() => setShowRequestForm(!showRequestForm)}
               >
                 <KeyRound className="size-4" /> Request Access
@@ -142,7 +142,7 @@ export function AccessDeniedPage() {
                   className="w-full min-h-[80px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
                 />
                 <Button
-                  className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl py-5"
+                  className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl py-5"
                   onClick={handleSubmitRequest}
                 >
                   Submit Request

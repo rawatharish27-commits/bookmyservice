@@ -63,7 +63,7 @@ export function ForgotPasswordPage() {
                 <p className="font-semibold text-emerald-700">Reset link sent!</p>
                 <p className="text-sm text-slate-500">Check your email inbox for the password reset link.</p>
               </div>
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
+              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
                 Back to Login
               </Button>
             </div>
@@ -85,7 +85,7 @@ export function ForgotPasswordPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl gap-2" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl gap-2" disabled={loading}>
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>

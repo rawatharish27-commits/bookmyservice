@@ -308,7 +308,7 @@ export function CookiePolicyPage() {
                 <p className="text-xs text-slate-600 mb-3">
                   Access cookie settings directly from the BookMyService app: Settings → Privacy → Cookie Preferences. You can enable or disable each non-essential category.
                 </p>
-                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                   Open Cookie Settings
                 </Button>
               </div>
@@ -418,7 +418,7 @@ export function CookiePolicyPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
-              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                 <Settings className="size-4" />
                 Manage Cookie Preferences
               </Button>

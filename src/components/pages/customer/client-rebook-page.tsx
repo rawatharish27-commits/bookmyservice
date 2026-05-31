@@ -102,7 +102,7 @@ export function ClientRebookPage() {
                   <div className="grid grid-cols-3 gap-2" role="group" aria-label="Select preferred time">
                     {['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'].map((t) => (
                       <Button key={t} variant={time === t ? 'default' : 'outline'} onClick={() => setTime(t)}
-                        className={`rounded-lg text-xs ${time === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}
+                        className={`rounded-lg text-xs ${time === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}
                         aria-pressed={time === t}>{t}</Button>
                     ))}
                   </div>
@@ -114,7 +114,7 @@ export function ClientRebookPage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={goBack}>Cancel</Button>
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={handleConfirm} disabled={submitting || !date || !time} aria-label="Confirm rebook">
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleConfirm} disabled={submitting || !date || !time} aria-label="Confirm rebook">
             {submitting ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />} Confirm Rebook
           </Button>
         </div>

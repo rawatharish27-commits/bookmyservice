@@ -136,7 +136,7 @@ export function ServiceDetailPage() {
                         </div>
                         <div className="text-right">
                           <span className="text-xl font-bold text-slate-900">₹{p.price}</span>
-                          <Button size="sm" className="ml-3 bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={() => navigate('booking-checkout')}>Select</Button>
+                          <Button size="sm" className="ml-3 bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('booking-checkout')}>Select</Button>
                         </div>
                       </div>
                     </div>
@@ -225,7 +225,7 @@ export function ServiceDetailPage() {
                   <div className="flex justify-between text-sm"><span className="text-slate-500">Discount</span><span className="text-green-600">-₹50</span></div>
                   <Separator />
                   <div className="flex justify-between font-bold"><span>Total</span><span>₹299</span></div>
-                  <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5" onClick={() => navigate('booking-checkout')}>Book Now</Button>
+                  <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5" onClick={() => navigate('booking-checkout')}>Book Now</Button>
                   <p className="text-xs text-center text-slate-400">Free cancellation up to 2 hours before</p>
                 </div>
               </CardContent>

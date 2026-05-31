@@ -30,7 +30,7 @@ export function AdminProfilePage() {
               <div><label className="text-xs font-medium text-slate-500 mb-1 block">Phone</label><Input defaultValue="+91 98765 00000" /></div>
               <div><label className="text-xs font-medium text-slate-500 mb-1 block">Department</label><Input defaultValue="Administration" /></div>
             </div>
-            <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><Save className="size-4" /> Update Profile</Button>
+            <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Save className="size-4" /> Update Profile</Button>
           </CardContent>
         </Card>
 

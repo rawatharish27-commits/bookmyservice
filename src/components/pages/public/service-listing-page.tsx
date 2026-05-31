@@ -158,7 +158,7 @@ export function ServiceListingPage() {
                           <Separator className="my-3" />
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-slate-900">₹{svc.price}</span>
-                            <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
+                            <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
                           </div>
                         </CardContent>
                       </Card>

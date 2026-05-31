@@ -119,7 +119,7 @@ export function ClientBookingDetailPage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 border-red-200 text-red-600 hover:bg-red-50 rounded-xl" aria-label="Cancel booking">Cancel Booking</Button>
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl gap-1" onClick={() => navigate('client-invoice', { id: booking.id })} aria-label="View invoice"><Receipt className="size-4" /> View Invoice</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl gap-1" onClick={() => navigate('client-invoice', { id: booking.id })} aria-label="View invoice"><Receipt className="size-4" /> View Invoice</Button>
         </div>
       </div>
     </div>

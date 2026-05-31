@@ -94,7 +94,7 @@ export function FranchiseManagementPage() {
             <h1 className="text-2xl font-bold text-slate-900">Franchise Management</h1>
             <p className="text-sm text-slate-500 mt-1">Manage and monitor all franchise branches</p>
           </div>
-          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">
+          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
             <Plus className="size-4" /> Add Branch
           </Button>
         </div>
@@ -137,7 +137,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'all' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl ${statusFilter === 'all' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
+              className={`rounded-xl ${statusFilter === 'all' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}`}
               onClick={() => setStatusFilter('all')}
             >
               All
@@ -145,7 +145,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'active' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl gap-1 ${statusFilter === 'active' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
+              className={`rounded-xl gap-1 ${statusFilter === 'active' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}`}
               onClick={() => setStatusFilter('active')}
             >
               <CheckCircle2 className="size-3" /> Active
@@ -153,7 +153,7 @@ export function FranchiseManagementPage() {
             <Button
               variant={statusFilter === 'inactive' ? 'default' : 'outline'}
               size="sm"
-              className={`rounded-xl gap-1 ${statusFilter === 'inactive' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`}
+              className={`rounded-xl gap-1 ${statusFilter === 'inactive' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}`}
               onClick={() => setStatusFilter('inactive')}
             >
               <XCircle className="size-3" /> Inactive
@@ -273,7 +273,7 @@ export function FranchiseManagementPage() {
               </div>
             </div>
             <div className="flex gap-3 mt-4">
-              <Button size="sm" className="rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">Create Branch</Button>
+              <Button size="sm" className="rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white">Create Branch</Button>
               <Button variant="outline" size="sm" className="rounded-xl">Cancel</Button>
             </div>
           </CardContent>

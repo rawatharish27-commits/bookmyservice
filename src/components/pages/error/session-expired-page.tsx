@@ -124,7 +124,7 @@ export function SessionExpiredPage() {
 
             {/* Login button */}
             <Button
-              className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-2 rounded-xl py-5"
+              className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
               onClick={handleLogin}
               disabled={redirecting}
             >

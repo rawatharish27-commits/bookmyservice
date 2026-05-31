@@ -111,7 +111,7 @@ export function FaqPage() {
         <div className="flex flex-wrap gap-2 justify-center">
           <Button
             variant={activeCategory === 'All' ? 'default' : 'outline'}
-            className={activeCategory === 'All' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
+            className={activeCategory === 'All' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}
             onClick={() => setActiveCategory('All')}
           >
             All
@@ -120,7 +120,7 @@ export function FaqPage() {
             <Button
               key={cat.key}
               variant={activeCategory === cat.key ? 'default' : 'outline'}
-              className={activeCategory === cat.key ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
+              className={activeCategory === cat.key ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}
               onClick={() => setActiveCategory(cat.key)}
             >
               <cat.icon className="size-4 mr-1.5" />

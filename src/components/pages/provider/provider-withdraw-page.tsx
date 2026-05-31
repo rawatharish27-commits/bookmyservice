@@ -60,7 +60,7 @@ export function ProviderWithdrawPage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

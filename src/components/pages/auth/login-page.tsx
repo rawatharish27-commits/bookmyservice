@@ -96,7 +96,7 @@ export function LoginPage() {
                 <button type="button" className="text-[#1D63FF] hover:underline" onClick={() => navigate('forgot-password')}>Forgot password?</button>
               </div>
 
-              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'} <ArrowRight className="size-4 ml-1" />
               </Button>
             </form>

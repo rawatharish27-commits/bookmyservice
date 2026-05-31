@@ -77,7 +77,7 @@ export function ClientBookingsPage() {
         <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Booking status filter">
           {tabs.map((tab) => (
             <Button key={tab} onClick={() => setActiveTab(tab)} variant={activeTab === tab ? 'default' : 'outline'}
-              className={`rounded-xl whitespace-nowrap ${activeTab === tab ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}
+              className={`rounded-xl whitespace-nowrap ${activeTab === tab ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}
               role="tab" aria-selected={activeTab === tab}>
               {tab}
             </Button>

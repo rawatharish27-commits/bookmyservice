@@ -490,7 +490,7 @@ export function PrivacyPolicyPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                     <Mail className="size-4" />
                     Email Privacy Team
                   </Button>

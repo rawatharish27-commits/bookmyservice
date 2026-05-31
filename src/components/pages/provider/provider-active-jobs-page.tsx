@@ -45,7 +45,7 @@ export function ProviderActiveJobsPage() {
                 <Button variant="outline" className="flex-1 gap-1 rounded-xl"><Navigation className="size-4" /> Directions</Button>
                 <Button variant="outline" className="flex-1 gap-1 rounded-xl"><MessageSquare className="size-4" /> Chat</Button>
               </div>
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 gap-1 rounded-xl"><CheckCircle className="size-4" /> Mark Complete</Button>
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-1 rounded-xl"><CheckCircle className="size-4" /> Mark Complete</Button>
             </CardContent>
           </Card>
         ))}

@@ -92,7 +92,7 @@ export function InventoryManagementPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]"><Plus className="size-4" /> Add Item</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Plus className="size-4" /> Add Item</Button>
           </div>
         </div>
 

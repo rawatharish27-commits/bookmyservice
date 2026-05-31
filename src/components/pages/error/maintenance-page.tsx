@@ -158,7 +158,7 @@ export function MaintenancePage() {
                     />
                   </div>
                   <Button
-                    className="bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl px-4"
+                    className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl px-4"
                     onClick={handleSubscribe}
                   >
                     Notify Me <ArrowRight className="size-3" />

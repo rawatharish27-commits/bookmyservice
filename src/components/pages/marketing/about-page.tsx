@@ -239,7 +239,7 @@ export function AboutPage() {
           Whether you&apos;re a customer looking for reliable services or a professional seeking new opportunities, we&apos;d love to have you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
+          <Button size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
             <Phone className="size-4 mr-2" /> Book a Service
           </Button>
           <Button size="lg" variant="outline">

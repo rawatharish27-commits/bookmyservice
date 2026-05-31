@@ -192,7 +192,7 @@ export function PartnerProgramPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className={`w-full ${tier.tier === 'Growth' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}`} variant={tier.tier === 'Growth' ? 'default' : 'outline'}>
+                <Button className={`w-full ${tier.tier === 'Growth' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}`} variant={tier.tier === 'Growth' ? 'default' : 'outline'}>
                   Choose {tier.tier}
                 </Button>
               </CardContent>
@@ -271,7 +271,7 @@ export function PartnerProgramPage() {
                     <Input placeholder="Brief description" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
                   </div>
                 </div>
-                <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] w-full sm:w-auto">
+                <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white w-full sm:w-auto">
                   Submit Application <ArrowRight className="size-4 ml-2" />
                 </Button>
               </form>

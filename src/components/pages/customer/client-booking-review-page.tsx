@@ -116,7 +116,7 @@ export function ClientBookingReviewPage() {
               </div>
             </div>
 
-            <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" disabled={rating === 0 || submitting} onClick={handleSubmit} aria-label="Submit review">
+            <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5" disabled={rating === 0 || submitting} onClick={handleSubmit} aria-label="Submit review">
               {submitting ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} Submit Review
             </Button>
           </CardContent>

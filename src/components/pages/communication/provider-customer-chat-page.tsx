@@ -432,7 +432,7 @@ export function ProviderCustomerChatPage() {
             </Button>
             <Button
               size="icon"
-              className="shrink-0 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"
+              className="shrink-0 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"
               onClick={() => sendMessage(inputText)}
             >
               <Send className="size-4" />

@@ -28,7 +28,7 @@ export function AdminApiSettingsPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2"><Key className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">API Keys</CardTitle></div>
-              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Key</Button>
+              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> New Key</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">
@@ -52,7 +52,7 @@ export function AdminApiSettingsPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2"><Webhook className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Webhooks</CardTitle></div>
-              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> Add Webhook</Button>
+              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Add Webhook</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">

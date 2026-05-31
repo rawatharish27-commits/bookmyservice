@@ -493,7 +493,7 @@ export function GDPRPage() {
                   </div>
                 </div>
 
-                <Button type="submit" className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl w-full sm:w-auto">
+                <Button type="submit" className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl w-full sm:w-auto">
                   <Send className="size-4" />
                   Submit Request
                 </Button>

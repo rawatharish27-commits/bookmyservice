@@ -95,7 +95,7 @@ export function FeaturedServicesPage() {
                     <div>
                       <span className="font-bold text-lg text-slate-900">₹{svc.price}</span>
                     </div>
-                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={() => navigate('service-detail', { service: svc.name })}>Book</Button>
+                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('service-detail', { service: svc.name })}>Book</Button>
                   </div>
                 </CardContent>
               </Card>

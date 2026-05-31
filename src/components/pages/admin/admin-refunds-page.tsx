@@ -51,12 +51,12 @@ export function AdminRefundsPage() {
               <p className="text-xs text-slate-400 mt-1">Reason: {refund.reason} • {refund.date}</p>
               {refund.status === 'Pending' && (
                 <div className="flex gap-2 mt-3">
-                  <Button size="sm" className="h-7 bg-emerald-600 hover:bg-emerald-700 gap-1 text-xs rounded-lg"><CheckCircle className="size-3" /> Approve</Button>
+                  <Button size="sm" className="h-7 bg-emerald-600 hover:bg-emerald-700 text-white gap-1 text-xs rounded-lg"><CheckCircle className="size-3" /> Approve</Button>
                   <Button size="sm" variant="outline" className="h-7 gap-1 text-xs text-red-600 border-red-200 rounded-lg"><XCircle className="size-3" /> Reject</Button>
                 </div>
               )}
               {refund.status === 'Approved' && (
-                <Button size="sm" className="h-7 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 text-xs rounded-lg mt-3"><RotateCcw className="size-3" /> Process Refund</Button>
+                <Button size="sm" className="h-7 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 text-xs rounded-lg mt-3"><RotateCcw className="size-3" /> Process Refund</Button>
               )}
             </CardContent>
           </Card>

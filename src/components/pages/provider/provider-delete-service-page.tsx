@@ -71,7 +71,7 @@ export function ProviderDeleteServicePage() {
             <input className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm" placeholder='Type "DELETE" to confirm' />
             <div className="flex gap-3">
               <Button variant="outline" className="flex-1 rounded-xl">Cancel</Button>
-              <Button className="flex-1 bg-red-600 hover:bg-red-700 gap-1 rounded-xl"><XCircle className="size-4" /> Delete Service</Button>
+              <Button className="flex-1 bg-red-600 hover:bg-red-700 text-white gap-1 rounded-xl"><XCircle className="size-4" /> Delete Service</Button>
             </div>
           </CardContent>
         </Card>

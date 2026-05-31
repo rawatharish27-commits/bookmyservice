@@ -114,7 +114,7 @@ export function ClientEditProfilePage() {
             </div>
 
             <div className="mt-6 flex gap-3">
-              <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={handleSave} disabled={saving} aria-label="Save changes">
+              <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleSave} disabled={saving} aria-label="Save changes">
                 {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />} Save Changes
               </Button>
               <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={goBack}>Cancel</Button>

@@ -169,7 +169,7 @@ export function CareersPage() {
                 key={dept}
                 variant={selectedDept === dept ? 'default' : 'outline'}
                 size="sm"
-                className={selectedDept === dept ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''}
+                className={selectedDept === dept ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}
                 onClick={() => setSelectedDept(dept)}
               >
                 {dept}
@@ -210,7 +210,7 @@ export function CareersPage() {
                         <p className="font-semibold text-emerald-600 text-sm">{job.salary}</p>
                         <p className="text-[10px] text-slate-400">{job.posted}</p>
                       </div>
-                      <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
+                      <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
                         Apply <ChevronRight className="size-3 ml-1" />
                       </Button>
                     </div>

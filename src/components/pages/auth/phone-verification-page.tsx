@@ -78,7 +78,7 @@ export function PhoneVerificationPage() {
             ))}
           </div>
 
-          <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl gap-2" onClick={handleVerify} disabled={loading}>
+          <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl gap-2" onClick={handleVerify} disabled={loading}>
             {loading ? <Loader2 className="size-4 animate-spin" /> : <Shield className="size-4" />} {loading ? 'Verifying...' : 'Verify Number'}
           </Button>
 

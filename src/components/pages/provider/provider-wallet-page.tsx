@@ -29,7 +29,7 @@ export function ProviderWalletPage() {
             <p className="text-3xl font-bold">₹7,650.00</p>
           </div>
           <div className="bg-white p-4 flex gap-3">
-            <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><Plus className="size-4" /> Add Money</Button>
+            <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Money</Button>
             <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
           </div>
         </Card>

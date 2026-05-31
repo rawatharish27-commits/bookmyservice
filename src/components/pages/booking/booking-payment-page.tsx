@@ -101,7 +101,7 @@ export function BookingPaymentPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" onClick={() => navigate('booking-razorpay')}>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5" onClick={() => navigate('booking-razorpay')}>
           <Shield className="size-4" /> Pay ₹{data.pricing.pay}
         </Button>
       </div>

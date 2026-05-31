@@ -31,7 +31,7 @@ export function ProviderSupportPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Support</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Ticket</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> New Ticket</Button>
         </div>
 
         <Card className="bg-white rounded-xl">

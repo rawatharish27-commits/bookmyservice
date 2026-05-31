@@ -554,7 +554,7 @@ export function TermsPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                     <FileText className="size-4" />
                     Download Full Terms (PDF)
                   </Button>

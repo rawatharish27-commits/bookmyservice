@@ -369,7 +369,7 @@ export function AdminDashboard() {
                 <span className="hidden sm:inline">May 19 &ndash; Jun 19, 2024</span>
                 <span className="sm:hidden">Date Range</span>
               </Button>
-              <Button variant="default" size="default" className="gap-2 bg-blue-600 hover:bg-blue-700">
+              <Button variant="default" size="default" className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
                 <Download className="size-4" />
                 <span className="hidden sm:inline">Export Report</span>
                 <span className="sm:hidden">Export</span>

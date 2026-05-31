@@ -1740,3 +1740,200 @@ Stage Summary:
 - Visitor stats (daily, weekly, monthly, yearly) update automatically every 10 seconds
 - Visitor heartbeat sent every 60 seconds to keep session active
 - All APIs tested and returning real data from database
+
+---
+Task ID: font-fix-1
+Agent: Font Fix Agent
+Task: Fix font color issue — add text-white to all blue/dark background buttons missing it
+
+Work Log:
+
+Fixed 14 .tsx files by adding `text-white` class after `bg-[#1D63FF] hover:bg-[#0B3D91]` patterns on buttons, tabs, and filters with blue backgrounds.
+
+**Pattern 1: Conditional tab/filter buttons** (most critical — dark text on blue bg):
+1. **client-add-money-page.tsx** (line 90): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200 text-slate-900'` → added `text-white`
+2. **client-bookings-page.tsx** (line 80): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'` → added `text-white`
+3. **client-wallet-transactions-page.tsx** (line 65): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'` → added `text-white`
+4. **client-rebook-page.tsx** (line 105): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'` → added `text-white`
+5. **booking-datetime-page.tsx** (line 72): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : !slot.available ? 'opacity-30' : 'border-slate-200'` → added `text-white`
+6. **booking-reschedule-page.tsx** (line 79): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'` → added `text-white`
+7. **how-it-works-page.tsx** (line 107): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'` → added `text-white`
+8. **how-it-works-page.tsx** (line 114): `'bg-emerald-600 hover:bg-emerald-700' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'` → added `text-white`
+9. **faq-page.tsx** (line 114, 123): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''` → added `text-white` (2 instances)
+10. **careers-page.tsx** (line 172): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''` → added `text-white`
+11. **blog-page.tsx** (line 187): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white shadow-sm'` → added `text-white`
+12. **testimonials-page.tsx** (line 132): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white'` → added `text-white`
+13. **ai-suggestions-page.tsx** (line 204, 214): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''` → added `text-white` (2 instances)
+14. **franchise-management-page.tsx** (line 140, 148, 156): `'bg-[#1D63FF] hover:bg-[#0B3D91]' : ''` → added `text-white` (3 instances)
+
+**Pattern 2: Blue bg buttons missing text-white**:
+- client-add-money-page.tsx: "Add Money" button
+- client-rebook-page.tsx: "Confirm Rebook" button
+- booking-datetime-page.tsx: "Confirm Date & Time" button
+- booking-reschedule-page.tsx: "Confirm Reschedule" button
+- careers-page.tsx: "Apply" button
+- blog-page.tsx: "Read More" button
+- ai-suggestions-page.tsx: "Analyze" button
+- franchise-management-page.tsx: "Add Branch" button, "Create Branch" button
+- partner-program-page.tsx: "Choose Growth" tier button, "Submit Application" button
+
+**NOT touched** (as instructed):
+- provider-dashboard.tsx (already fixed)
+- client-dashboard.tsx (already fixed)
+- provider-subscription-page.tsx (already fixed)
+
+Stage Summary:
+- 14 files modified with 25 individual `text-white` additions
+- All conditional tab/filter buttons now display white text when active on blue background
+- All standalone blue buttons now display white text
+- No inactive/else branch styling was changed
+- No JSX structure was modified — only className strings
+- Dev server running successfully on port 3000
+
+---
+Task ID: font-fix-2
+Agent: Font Fix Agent
+Task: Find and fix ALL standalone Button elements with blue backgrounds missing text-white
+
+Work Log:
+Searched all .tsx files in src/components/pages/, src/components/bys/, src/components/dashboards/, and src/app/ for Button and button elements with `bg-[#1D63FF]` or `bg-blue-600` patterns missing `text-white`.
+
+Excluded files per instructions:
+- provider-dashboard.tsx, client-dashboard.tsx, provider-subscription-page.tsx (already fixed)
+- 14 files previously fixed by prior agent (client-add-money-page, client-bookings-page, client-wallet-transactions-page, client-rebook-page, booking-datetime-page, booking-reschedule-page, how-it-works-page, faq-page, careers-page, blog-page, testimonials-page, ai-suggestions-page, franchise-management-page, partner-program-page)
+
+Also correctly skipped:
+- Elements with light blue backgrounds (bg-[#1D63FF]/10, bg-[#1D63FF]/5, bg-blue-50, etc.)
+- Elements that already had text-white
+- Non-Button/non-button elements (divs, spans with bg-[#1D63FF] backgrounds)
+
+Fixed 98 Button elements across 57 files by adding `text-white` after the blue bg class:
+
+**Public pages (7 fixes, 5 files):**
+- service-detail-page.tsx: 2 buttons (Select, Book Now)
+- nearby-providers-page.tsx: 1 button (Book)
+- home-page.tsx: 2 buttons (Search, Book Now)
+- featured-services-page.tsx: 1 button (Book)
+- service-listing-page.tsx: 1 button (Book Now)
+
+**Provider pages (14 fixes, 14 files):**
+- provider-support-page.tsx, provider-wallet-page.tsx, provider-availability-page.tsx, provider-withdraw-page.tsx, provider-edit-service-page.tsx, provider-edit-profile-page.tsx, provider-services-page.tsx, provider-add-service-page.tsx, provider-payouts-page.tsx, provider-chat-page.tsx, provider-settings-page.tsx, provider-profile-page.tsx, provider-upload-docs-page.tsx, provider-schedule-page.tsx
+
+**Admin pages (22 fixes, 15 files):**
+- admin-reports-page.tsx (2), admin-seo-page.tsx, admin-email-templates-page.tsx (2), admin-admins-page.tsx, admin-amc-page.tsx, admin-refunds-page.tsx, admin-backup-page.tsx, admin-api-settings-page.tsx (2), admin-categories-page.tsx, admin-push-notifications-page.tsx (2), admin-roles-page.tsx, admin-notifications-page.tsx (2), admin-system-settings-page.tsx, admin-sms-templates-page.tsx (2), admin-cms-page.tsx, admin-profile-page.tsx, admin-coupons-page.tsx
+
+**Advanced pages (8 fixes, 8 files):**
+- franchise-dashboard-page.tsx, escrow-management-page.tsx, lead-management-page.tsx, dynamic-pricing-page.tsx, vendor-management-page.tsx, inventory-management-page.tsx, loyalty-rewards-page.tsx, recommendation-engine-page.tsx
+
+**Customer pages (14 fixes, 14 files):**
+- client-favorites-page.tsx, client-chat-page.tsx, client-edit-profile-page.tsx, client-support-detail-page.tsx, client-wallet-page.tsx, client-payment-methods-page.tsx, client-booking-review-page.tsx, client-booking-detail-page.tsx, client-notification-detail-page.tsx, client-addresses-page.tsx (2), client-amc-detail-page.tsx, client-invoice-page.tsx, client-support-page.tsx, client-amc-page.tsx
+
+**Marketing pages (3 fixes, 3 files):**
+- about-page.tsx, contact-page.tsx (careers/blog/partner already had text-white or were excluded)
+
+**Legal pages (6 fixes, 6 files):**
+- refund-policy-page.tsx, cookie-policy-page.tsx (2), terms-page.tsx, gdpr-page.tsx, privacy-policy-page.tsx, cancellation-policy-page.tsx
+
+**Auth pages (11 fixes, 8 files):**
+- reset-password-page.tsx (2), otp-verification-page.tsx, phone-verification-page.tsx, role-selection-page.tsx, forgot-password-page.tsx (2), signup-page.tsx (2), email-verification-page.tsx, login-page.tsx
+
+**Booking pages (6 fixes, 6 files):**
+- booking-payment-page.tsx, booking-checkout-page.tsx, booking-confirmation-page.tsx, payment-failed-page.tsx, booking-summary-page.tsx, payment-success-page.tsx
+
+**Tracking pages (2 fixes, 2 files):**
+- technician-contact-page.tsx, technician-eta-page.tsx
+
+**Communication pages (2 fixes, 2 files):**
+- video-consultation-page.tsx, provider-customer-chat-page.tsx
+
+**PWA pages (5 fixes, 3 files):**
+- offline-sync-page.tsx (3), push-permission-page.tsx, install-app-page.tsx
+
+**Dashboards (1 fix, 1 file):**
+- admin-dashboard.tsx (bg-blue-600 → added text-white)
+
+Verification: Final search for `bg-[#1D63FF] hover:bg-[#0B3D91]"` and `bg-blue-600 hover:bg-blue-700"` patterns (ending with quote, no text-white) returns 0 results — all Button elements with blue backgrounds now have text-white.
+
+Stage Summary:
+- 98 Button elements fixed across 57 files
+- All standalone blue-background Button elements now have text-white
+- Light backgrounds (/10, /5, bg-blue-50) correctly left without text-white
+- Excluded files untouched as instructed
+- Zero false positives
+
+---
+Task ID: font-fix-3
+Agent: Font Fix Agent
+Task: Add text-white to all buttons with dark/colored backgrounds missing explicit text-white
+
+Work Log:
+
+### Emerald buttons (bg-emerald-600) — 9 files fixed:
+1. **tracking/technician-contact-page.tsx:66** — Added `text-white` to Call button
+2. **customer/client-referral-page.tsx:61** — Added `text-white` to WhatsApp share button
+3. **admin/admin-refunds-page.tsx:54** — Added `text-white` to Approve button
+4. **communication/admin-support-chat-page.tsx:485** — Added `text-white` to Send button
+5. **provider/provider-booking-requests-page.tsx:42** — Added `text-white` to Accept button
+6. **provider/provider-active-jobs-page.tsx:48** — Added `text-white` to Mark Complete button
+7. **advanced/escrow-management-page.tsx:243** — Added `text-white` to Release button
+8. **advanced/ai-suggestions-page.tsx:308** — Added `text-white` to Accept button
+9. **public/popular-providers-page.tsx:93** — Added `text-white` to View Profile button
+
+### Red buttons (bg-red-600) — 3 files fixed:
+10. **booking/booking-cancellation-page.tsx:79** — Added `text-white` to Confirm Cancellation button
+11. **provider/provider-delete-service-page.tsx:74** — Added `text-white` to Delete Service button
+12. **pwa/push-permission-page.tsx:216** — Added `text-white` to Open Settings button
+
+### Amber button (bg-amber-500) — 1 file fixed:
+13. **customer/client-completed-page.tsx:82** — Added `text-white` to Rate button
+
+### Red buttons in bys/ — 2 files fixed:
+14. **bys/client-profile-page.tsx:332** — Added `text-white` to AlertDialogAction (Delete My Account)
+15. **bys/client-reviews-page.tsx:163** — Added `text-white` to AlertDialogAction (Delete review)
+
+### Broader search verification:
+- Searched all of /home/z/my-project/src/components/pages/ and /home/z/my-project/src/components/bys/ for bg-(emerald|red|rose|amber|orange|violet|indigo|purple|pink|teal|cyan|sky|lime|fuchsia)-[5-9]00 patterns
+- Verified all hex-colored buttons (bg-[#1D63FF]) already have text-white
+- Verified bys/ emerald buttons (admin-faq-page, admin-categories-page, admin-disputes-page, provider-create-service-page, categories-page) already have text-white
+- Verified video-consultation-page red/slate buttons already have text-white
+- Verified provider-subscription-page purple/blue buttons already have text-white
+- Confirmed no other dark-colored buttons are missing text-white
+
+Stage Summary:
+- 15 buttons fixed across 15 files — all dark/colored background buttons now have explicit text-white
+- Zero buttons remaining without text-white on dark backgrounds
+- All edits are className string additions only — no logic changes
+- TypeScript: No new errors (pre-existing errors unrelated)
+
+---
+Task ID: font-color-fix-all
+Agent: Main Agent (coordinating subagents)
+Task: Fix font color to white on ALL blue/dark backgrounds across all pages
+
+Work Log:
+- Found all files with blue/colored backgrounds that had dark/non-white text
+- Fixed provider-dashboard.tsx sidebar: added text-white to bg-[#1e293b] aside
+- Fixed client-dashboard.tsx: 3 buttons (Search, View Details, Add Money) with bg-blue-600 missing text-white
+- Fixed provider-subscription-page.tsx: Pro (bg-[#1D63FF]) and Premium (bg-purple-600) buttons missing text-white
+- Subagent font-fix-1 fixed 14 files with 25 conditional tab/filter patterns missing text-white:
+  - client-add-money-page, client-bookings-page, client-wallet-transactions-page, client-rebook-page
+  - booking-datetime-page, booking-reschedule-page
+  - how-it-works-page, faq-page, careers-page, blog-page, testimonials-page
+  - ai-suggestions-page, franchise-management-page, partner-program-page
+- Subagent font-fix-2 fixed 98 Button elements across 57 files missing text-white on blue backgrounds
+- Fixed 6 error page buttons manually: maintenance, access-denied (2 buttons), session-expired, no-internet, server-error, not-found
+- Fixed signup-page.tsx role selection button missing text-white
+- Fixed trending-services-page.tsx purple Book button missing text-white
+- Subagent font-fix-3 fixed 15 more colored background buttons:
+  - 9 emerald buttons (technician-contact, client-referral, admin-refunds, admin-support-chat, provider-booking-requests, provider-active-jobs, escrow-management, ai-suggestions, popular-providers)
+  - 3 red buttons (booking-cancellation, provider-delete-service, push-permission)
+  - 1 amber button (client-completed-page)
+  - 2 AlertDialogAction buttons in bys/ (client-profile, client-reviews)
+
+Stage Summary:
+- Total files fixed: 70+ files across all page directories
+- All bg-[#1D63FF], bg-blue-600, bg-emerald-600, bg-red-600, bg-purple-600, bg-amber-500 buttons now have text-white
+- All conditional tab/filter patterns now include text-white in the active state
+- Provider dashboard sidebar now has text-white on dark navy background
+- Final verification: 0 remaining instances of dark backgrounds without white text
+- App loads correctly (HTTP 200)

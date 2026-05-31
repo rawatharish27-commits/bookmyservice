@@ -291,7 +291,7 @@ export function OfflineSyncPage() {
                 onClick={handleSyncNow}
                 disabled={syncing || isOnline}
                 size="sm"
-                className="bg-[#1D63FF] hover:bg-[#0B3D91]"
+                className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white"
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-1 ${syncing ? 'animate-spin' : ''}`} />
                 {syncing ? 'Syncing...' : isOnline ? 'Synced' : 'Sync Now'}
@@ -359,7 +359,7 @@ export function OfflineSyncPage() {
                           </div>
                           <div className="flex gap-2 pt-1">
                             {action.status === 'failed' && (
-                              <Button size="xs" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-xs">
+                              <Button size="xs" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs">
                                 <RefreshCw className="w-3 h-3 mr-1" /> Retry
                               </Button>
                             )}
@@ -408,7 +408,7 @@ export function OfflineSyncPage() {
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        className="bg-[#1D63FF] hover:bg-[#0B3D91] text-xs flex-1"
+                        className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs flex-1"
                         onClick={() => handleResolveConflict(conflict.id, 'local')}
                       >
                         Keep Mine

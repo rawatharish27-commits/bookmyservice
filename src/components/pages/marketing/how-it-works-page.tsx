@@ -104,14 +104,14 @@ export function HowItWorksPage() {
         <div className="flex justify-center gap-2">
           <Button
             size="lg"
-            className={activeTab === 'customer' ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
+            className={activeTab === 'customer' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
             onClick={() => setActiveTab('customer')}
           >
             <Users className="size-4 mr-2" /> For Customers
           </Button>
           <Button
             size="lg"
-            className={activeTab === 'provider' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
+            className={activeTab === 'provider' ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
             onClick={() => setActiveTab('provider')}
           >
             <Wrench className="size-4 mr-2" /> For Providers

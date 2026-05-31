@@ -63,11 +63,11 @@ export function TechnicianContactPage() {
         </Card>
 
         <div className="grid grid-cols-3 gap-3">
-          <Button className="flex-col h-auto gap-2 bg-emerald-600 hover:bg-emerald-700 rounded-xl py-4">
+          <Button className="flex-col h-auto gap-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl py-4">
             <Phone className="size-5" />
             <span className="text-xs">Call</span>
           </Button>
-          <Button className="flex-col h-auto gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl py-4">
+          <Button className="flex-col h-auto gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl py-4">
             <MessageSquare className="size-5" />
             <span className="text-xs">Chat</span>
           </Button>

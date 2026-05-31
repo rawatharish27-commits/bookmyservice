@@ -81,7 +81,7 @@ export function ResetPasswordPage() {
               <CheckCircle2 className="size-12 text-emerald-500" />
               <h2 className="text-2xl font-bold text-slate-900">Password Reset!</h2>
               <p className="text-slate-500 text-sm">Your password has been reset successfully. Redirecting to login...</p>
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
+              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
                 Go to Login
               </Button>
             </div>
@@ -171,7 +171,7 @@ export function ResetPasswordPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl" disabled={loading}>
               {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : null} {loading ? 'Resetting...' : 'Reset Password'}
             </Button>
           </form>

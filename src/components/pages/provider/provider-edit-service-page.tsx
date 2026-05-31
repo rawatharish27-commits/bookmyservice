@@ -72,7 +72,7 @@ export function ProviderEditServicePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><Save className="size-4" /> Update Service</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Save className="size-4" /> Update Service</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

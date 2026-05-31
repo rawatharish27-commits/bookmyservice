@@ -65,7 +65,7 @@ export function ProviderAddServicePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl"><Plus className="size-4" /> Add Service</Button>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Service</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

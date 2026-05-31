@@ -97,7 +97,7 @@ export function LeadManagementPage() {
             <h1 className="text-2xl font-bold text-slate-900">Lead Management</h1>
             <p className="text-sm text-slate-500 mt-1">Track and manage sales pipeline</p>
           </div>
-          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]">
+          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
             <Plus className="size-4" /> Add Lead
           </Button>
         </div>

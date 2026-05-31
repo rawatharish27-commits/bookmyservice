@@ -129,7 +129,7 @@ export function TestimonialsPage() {
                 key={cat}
                 variant={selectedCategory === cat ? 'default' : 'outline'}
                 size="sm"
-                className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white'}
+                className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'bg-white'}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat}

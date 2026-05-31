@@ -56,7 +56,7 @@ export function ClientInvoicePage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Invoice</h1>
-          <Button className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl" aria-label="Download invoice"><Download className="size-4" /> Download</Button>
+          <Button className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Download invoice"><Download className="size-4" /> Download</Button>
         </div>
 
         <Card className="bg-white rounded-xl">

@@ -79,7 +79,7 @@ export function ProviderChatPage() {
             </ScrollArea>
             <div className="p-4 border-t border-slate-200 flex gap-2">
               <Input placeholder="Type a message..." className="flex-1" />
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] gap-1"><Send className="size-4" /></Button>
+              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1"><Send className="size-4" /></Button>
             </div>
           </div>
         )}

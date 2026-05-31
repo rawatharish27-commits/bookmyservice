@@ -58,7 +58,7 @@ export function ClientReferralPage() {
               <Button size="sm" variant="outline" className="gap-1 border-blue-200 text-[#1D63FF] rounded-lg" aria-label="Copy referral code"><Copy className="size-3" /> Copy</Button>
             </div>
             <div className="flex gap-3">
-              <Button className="flex-1 gap-1 bg-emerald-600 hover:bg-emerald-700 rounded-xl" aria-label="Share on WhatsApp"><Share2 className="size-4" /> WhatsApp</Button>
+              <Button className="flex-1 gap-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl" aria-label="Share on WhatsApp"><Share2 className="size-4" /> WhatsApp</Button>
               <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl" aria-label="Copy referral link"><Link2 className="size-4" /> Copy Link</Button>
             </div>
           </div>

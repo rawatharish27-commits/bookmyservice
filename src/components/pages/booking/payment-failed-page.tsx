@@ -37,7 +37,7 @@ export function PaymentFailedPage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={() => navigate('booking-payment')}><RefreshCw className="size-4" /> Retry Payment</Button>
+              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={() => navigate('booking-payment')}><RefreshCw className="size-4" /> Retry Payment</Button>
               <Button variant="outline" className="w-full gap-1 border-slate-200 rounded-xl" onClick={() => navigate('booking-payment')}><CreditCard className="size-4" /> Try Different Method</Button>
               <Button variant="ghost" className="w-full gap-1 text-slate-500" onClick={() => navigate('booking-checkout')}><ArrowLeft className="size-4" /> Back to Checkout</Button>
             </div>

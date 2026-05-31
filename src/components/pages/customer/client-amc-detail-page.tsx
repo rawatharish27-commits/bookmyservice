@@ -123,7 +123,7 @@ export function ClientAmcDetailPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" aria-label="Renew AMC plan"><RotateCcw className="size-4" /> Renew Plan</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" aria-label="Renew AMC plan"><RotateCcw className="size-4" /> Renew Plan</Button>
       </div>
     </div>
   )

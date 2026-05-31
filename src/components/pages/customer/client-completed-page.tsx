@@ -79,7 +79,7 @@ export function ClientCompletedPage() {
                       </div>
                     ) : (
                       <div className="flex gap-2">
-                        <Button size="sm" className="gap-1 bg-amber-500 hover:bg-amber-600 rounded-lg text-xs" onClick={() => navigate('client-booking-review', { id: b.id })} aria-label={`Rate ${b.service}`}><Star className="size-3" /> Rate</Button>
+                        <Button size="sm" className="gap-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs" onClick={() => navigate('client-booking-review', { id: b.id })} aria-label={`Rate ${b.service}`}><Star className="size-3" /> Rate</Button>
                         <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-[#1D63FF] hover:bg-blue-50 rounded-lg text-xs" onClick={() => navigate('client-rebook', { id: b.id })} aria-label={`Rebook ${b.service}`}><RotateCcw className="size-3" /> Rebook</Button>
                       </div>
                     )}

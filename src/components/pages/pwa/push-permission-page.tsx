@@ -213,7 +213,7 @@ export function PushPermissionPage() {
                   </p>
                   <Button
                     size="sm"
-                    className="mt-3 bg-red-600 hover:bg-red-700 text-xs"
+                    className="mt-3 bg-red-600 hover:bg-red-700 text-white text-xs"
                     onClick={() => setPermissionGranted(true)}
                   >
                     Open Settings
@@ -470,7 +470,7 @@ export function PushPermissionPage() {
 
         {/* Save Button */}
         <div className="pb-6">
-          <Button className="w-full h-11 bg-[#1D63FF] hover:bg-[#0B3D91] font-semibold rounded-xl">
+          <Button className="w-full h-11 bg-[#1D63FF] hover:bg-[#0B3D91] text-white font-semibold rounded-xl">
             <CheckCircle2 className="w-4 h-4 mr-2" />
             Save Preferences
           </Button>

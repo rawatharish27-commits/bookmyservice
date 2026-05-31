@@ -49,7 +49,7 @@ export function ClientAddressesPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">My Addresses</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl" aria-label="Add new address">
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Add new address">
             <Plus className="size-4" /> Add Address
           </Button>
         </div>
@@ -58,7 +58,7 @@ export function ClientAddressesPage() {
           <div className="text-center py-12">
             <MapPin className="size-12 text-slate-300 mx-auto mb-3" />
             <p className="text-slate-500">No addresses saved yet</p>
-            <Button className="mt-4 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1" aria-label="Add your first address">
+            <Button className="mt-4 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1" aria-label="Add your first address">
               <Plus className="size-4" /> Add Address
             </Button>
           </div>

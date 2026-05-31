@@ -87,7 +87,7 @@ export function ClientAddMoneyPage() {
               {presets.map((p) => (
                 <Button key={p} variant={amount === String(p) ? 'default' : 'outline'}
                   onClick={() => setAmount(String(p))}
-                  className={`rounded-xl py-6 text-lg font-bold ${amount === String(p) ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200 text-slate-900'}`}
+                  className={`rounded-xl py-6 text-lg font-bold ${amount === String(p) ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200 text-slate-900'}`}
                   aria-pressed={amount === String(p)}>
                   ₹{p}
                 </Button>
@@ -118,7 +118,7 @@ export function ClientAddMoneyPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" disabled={!amount || submitting} onClick={handleAddMoney} aria-label={`Add ₹${amount || '0'} to wallet`}>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5" disabled={!amount || submitting} onClick={handleAddMoney} aria-label={`Add ₹${amount || '0'} to wallet`}>
           {submitting ? <Loader2 className="size-4 animate-spin" /> : <Plus className="size-4" />} Add ₹{amount || '0'} to Wallet
         </Button>
       </div>

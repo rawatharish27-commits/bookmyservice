@@ -83,7 +83,7 @@ export function BookingSummaryPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5" onClick={() => navigate('booking-payment')}>Proceed to Payment</Button>
       </div>
     </div>
   )

@@ -95,7 +95,7 @@ export function RecommendationEnginePage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><RefreshCw className="size-4" /> Retrain</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]"><Brain className="size-4" /> New Rule</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Brain className="size-4" /> New Rule</Button>
           </div>
         </div>
 

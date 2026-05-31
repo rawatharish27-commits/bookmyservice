@@ -423,7 +423,7 @@ export function RefundPolicyPage() {
             <h3 className="text-lg font-bold text-slate-900 mb-2">Need Help with a Refund?</h3>
             <p className="text-sm text-slate-500 mb-4">Our support team is available 24/7 to assist you with any refund-related queries.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl">
+              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
                 <RotateCcw className="size-4" />
                 Raise Refund Request
               </Button>

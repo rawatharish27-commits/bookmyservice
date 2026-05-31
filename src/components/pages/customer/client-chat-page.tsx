@@ -89,7 +89,7 @@ export function ClientChatPage() {
           <Button variant="ghost" size="icon" className="shrink-0 text-slate-400" aria-label="Attach file"><Paperclip className="size-5" /></Button>
           <label htmlFor="chat-msg" className="sr-only">Type a message</label>
           <input id="chat-msg" type="text" placeholder="Type a message..." className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF]/20" />
-          <Button size="icon" className="shrink-0 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl" aria-label="Send message"><Send className="size-4" /></Button>
+          <Button size="icon" className="shrink-0 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Send message"><Send className="size-4" /></Button>
         </div>
       </div>
     </div>

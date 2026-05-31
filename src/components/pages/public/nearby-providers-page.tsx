@@ -97,7 +97,7 @@ export function NearbyProvidersPage() {
                         </div>
                       </div>
                       <div className="flex gap-2 mt-3">
-                        <Button size="sm" className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91]" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
+                        <Button size="sm" className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={(e) => { e.stopPropagation(); navigate('booking-checkout') }}>Book</Button>
                         <Button variant="outline" size="sm" className="gap-1" aria-label={`Call ${p.name}`}><Phone className="size-3" /> Call</Button>
                       </div>
                     </CardContent>

@@ -225,7 +225,7 @@ export function VideoConsultationPage() {
               />
               <Button
                 size="icon"
-                className="bg-[#1D63FF] hover:bg-[#0B3D91] size-8 rounded-lg shrink-0"
+                className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white size-8 rounded-lg shrink-0"
                 onClick={sendMessage}
               >
                 <Send className="size-3.5" />

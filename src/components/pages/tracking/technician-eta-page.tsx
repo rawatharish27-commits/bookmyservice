@@ -47,7 +47,7 @@ export function TechnicianEtaPage() {
                 <p className="text-sm font-semibold text-slate-900">Amit Sharma</p>
                 <p className="text-xs text-slate-400">AC Technician • 4.9 ★</p>
               </div>
-              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-lg"><Phone className="size-3" /> Call</Button>
+              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-lg"><Phone className="size-3" /> Call</Button>
             </div>
           </CardContent>
         </Card>

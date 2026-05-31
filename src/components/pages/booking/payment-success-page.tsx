@@ -42,7 +42,7 @@ export function PaymentSuccessPage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={() => navigate('booking-confirmation')}><MapPin className="size-4" /> Track Booking</Button>
+              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={() => navigate('booking-confirmation')}><MapPin className="size-4" /> Track Booking</Button>
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="gap-1 border-slate-200 rounded-xl" aria-label="Download receipt"><Download className="size-4" /> Receipt</Button>
                 <Button variant="outline" className="gap-1 border-slate-200 rounded-xl" aria-label="Share booking details"><Share2 className="size-4" /> Share</Button>

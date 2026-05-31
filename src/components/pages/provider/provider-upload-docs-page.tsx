@@ -56,7 +56,7 @@ export function ProviderUploadDocsPage() {
                       </div>
                     ) : (
                       <div className="mt-2">
-                        <Button size="sm" className="h-7 text-xs gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-lg"><Upload className="size-3" /> Upload Document</Button>
+                        <Button size="sm" className="h-7 text-xs gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-lg"><Upload className="size-3" /> Upload Document</Button>
                       </div>
                     )}
                   </div>

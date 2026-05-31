@@ -99,7 +99,7 @@ export function ClientAmcPage() {
                       <div key={b} className="flex items-center gap-1.5 text-xs text-slate-600"><Check className="size-3 text-emerald-500" />{b}</div>
                     ))}
                   </div>
-                  <Button className="w-full gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl text-xs" aria-label={`Buy ${plan.name} plan`}><Zap className="size-3" />Buy Now</Button>
+                  <Button className="w-full gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl text-xs" aria-label={`Buy ${plan.name} plan`}><Zap className="size-3" />Buy Now</Button>
                 </CardContent>
               </Card>
             ))}

@@ -240,7 +240,7 @@ export function EscrowManagementPage() {
                       <div><span className="text-slate-400">Created:</span> <span className="text-slate-700">{escrow.createdDate}</span></div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="h-7 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 gap-1">
+                      <Button size="sm" className="h-7 text-xs rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white gap-1">
                         <Unlock className="size-3" /> Release
                       </Button>
                       <Button variant="outline" size="sm" className="h-7 text-xs rounded-lg gap-1">
@@ -308,7 +308,7 @@ export function EscrowManagementPage() {
                       <div><span className="text-slate-400">Filed:</span> <span className="text-slate-700">{dispute.filedDate}</span></div>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" className="h-7 text-xs rounded-lg bg-[#1D63FF] hover:bg-[#0B3D91]">Resolve</Button>
+                      <Button size="sm" className="h-7 text-xs rounded-lg bg-[#1D63FF] hover:bg-[#0B3D91] text-white">Resolve</Button>
                       <Button variant="outline" size="sm" className="h-7 text-xs rounded-lg">View Chat</Button>
                     </div>
                   </CardContent>

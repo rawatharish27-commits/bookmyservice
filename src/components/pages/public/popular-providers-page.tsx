@@ -90,7 +90,7 @@ export function PopularProvidersPage() {
                     </div>
                   </div>
 
-                  <Button className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700" onClick={() => navigate('service-detail', { provider: p.name })}>View Profile</Button>
+                  <Button className="w-full mt-3 bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('service-detail', { provider: p.name })}>View Profile</Button>
                 </CardContent>
               </Card>
             ))}

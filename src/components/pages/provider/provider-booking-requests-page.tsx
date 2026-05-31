@@ -39,7 +39,7 @@ export function ProviderBookingRequestsPage() {
               <div className="flex items-center gap-2"><Clock className="size-4 text-slate-400" /><span className="text-sm text-slate-700">{req.date} at {req.time}</span></div>
               <Separator className="bg-slate-100" />
               <div className="flex gap-3">
-                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 gap-1 rounded-xl"><CheckCircle className="size-4" /> Accept</Button>
+                <Button className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white gap-1 rounded-xl"><CheckCircle className="size-4" /> Accept</Button>
                 <Button variant="outline" className="flex-1 gap-1 border-red-200 text-red-600 hover:bg-red-50 rounded-xl"><XCircle className="size-4" /> Reject</Button>
               </div>
             </CardContent>

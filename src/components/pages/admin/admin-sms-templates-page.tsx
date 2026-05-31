@@ -21,7 +21,7 @@ export function AdminSmsTemplatesPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">SMS Templates</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Plus className="size-4" /> New Template</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> New Template</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -63,7 +63,7 @@ export function AdminSmsTemplatesPage() {
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="gap-1 text-xs rounded-lg"><Eye className="size-3" /> Preview</Button>
-                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-xs rounded-xl">Save Template</Button>
+                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs rounded-xl">Save Template</Button>
               </div>
             </div>
           </CardContent>

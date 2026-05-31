@@ -69,7 +69,7 @@ export function BookingDatetimePage() {
                 <Button key={slot.time} disabled={!slot.available}
                   onClick={() => slot.available && setSelectedTime(slot.time)}
                   variant={selectedTime === slot.time ? 'default' : 'outline'}
-                  className={`rounded-xl text-xs ${selectedTime === slot.time ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : !slot.available ? 'opacity-30' : 'border-slate-200'}`}>
+                  className={`rounded-xl text-xs ${selectedTime === slot.time ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : !slot.available ? 'opacity-30' : 'border-slate-200'}`}>
                   {slot.time}
                 </Button>
               ))}
@@ -87,7 +87,7 @@ export function BookingDatetimePage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl py-5">Confirm Date & Time</Button>
+        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5">Confirm Date & Time</Button>
       </div>
     </div>
   )

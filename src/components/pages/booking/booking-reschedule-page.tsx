@@ -76,7 +76,7 @@ export function BookingReschedulePage() {
             <div className="grid grid-cols-3 gap-2">
               {timeSlots.map((t) => (
                 <Button key={t} onClick={() => setSelectedTime(t)} variant={selectedTime === t ? 'default' : 'outline'}
-                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}>{t}</Button>
+                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}>{t}</Button>
               ))}
             </div>
           </CardContent>
@@ -97,7 +97,7 @@ export function BookingReschedulePage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => navigate('booking-confirmation')}>Cancel</Button>
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
+          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
             <RefreshCw className="size-4" /> {loading ? 'Rescheduling...' : 'Confirm Reschedule'}
           </Button>
         </div>

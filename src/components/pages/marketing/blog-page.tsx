@@ -184,7 +184,7 @@ export function BlogPage() {
               key={cat}
               variant={selectedCategory === cat ? 'default' : 'outline'}
               size="sm"
-              className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'bg-white shadow-sm'}
+              className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'bg-white shadow-sm'}
               onClick={() => setSelectedCategory(cat)}
             >
               {cat}
@@ -215,7 +215,7 @@ export function BlogPage() {
                       <p className="text-[10px] text-slate-400">{featuredPost.date} • {featuredPost.readTime}</p>
                     </div>
                   </div>
-                  <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91]">
+                  <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
                     Read More <ArrowRight className="size-3 ml-1" />
                   </Button>
                 </div>

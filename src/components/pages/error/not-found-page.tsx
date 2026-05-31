@@ -78,7 +78,7 @@ export function NotFoundPage() {
             {/* Action buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
               <Button
-                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] gap-2 rounded-xl py-5"
+                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
                 onClick={() => (window.location.href = '/')}
               >
                 <Home className="size-4" /> Go Home

@@ -91,7 +91,7 @@ export function ClientNotificationDetailPage() {
               <span>Received {notification.receivedAt}</span>
             </div>
 
-            <Button className="w-full gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl" onClick={() => navigate('client-booking-detail', { id: notification.bookingId })} aria-label="View booking details"><ExternalLink className="size-4" /> View Booking</Button>
+            <Button className="w-full gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" onClick={() => navigate('client-booking-detail', { id: notification.bookingId })} aria-label="View booking details"><ExternalLink className="size-4" /> View Booking</Button>
           </CardContent>
         </Card>
       </div>

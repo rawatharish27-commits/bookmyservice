@@ -482,7 +482,7 @@ export function AdminSupportChatPage() {
                 onChange={(e) => setReplyText(e.target.value)}
                 className="flex-1 rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-emerald-400 focus:outline-none focus:ring-2 focus:ring-emerald-100"
               />
-              <Button size="icon" className="shrink-0 bg-emerald-600 hover:bg-emerald-700 rounded-xl">
+              <Button size="icon" className="shrink-0 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
                 <Send className="size-4" />
               </Button>
             </div>

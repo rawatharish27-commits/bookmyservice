@@ -34,7 +34,7 @@ export function EmailVerificationPage() {
             Your email has been successfully verified. You can now access all features.
           </p>
 
-          <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl gap-2" onClick={() => navigate('client-dashboard')}>
+          <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl gap-2" onClick={() => navigate('client-dashboard')}>
             Continue to Dashboard <ArrowRight className="size-4" />
           </Button>
 

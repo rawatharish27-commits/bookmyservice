@@ -62,7 +62,7 @@ export function ClientWalletTransactionsPage() {
         <div className="flex gap-2" role="group" aria-label="Filter by type">
           {(['all', 'credit', 'debit'] as const).map((f) => (
             <Button key={f} onClick={() => setFilter(f)} variant={filter === f ? 'default' : 'outline'}
-              className={`rounded-xl text-xs capitalize ${filter === f ? 'bg-[#1D63FF] hover:bg-[#0B3D91]' : 'border-slate-200'}`}
+              className={`rounded-xl text-xs capitalize ${filter === f ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}
               aria-pressed={filter === f}>{f}</Button>
           ))}
         </div>

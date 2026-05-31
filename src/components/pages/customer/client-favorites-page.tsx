@@ -71,7 +71,7 @@ export function ClientFavoritesPage() {
                       <div className="flex items-center gap-1 mt-1 text-xs text-slate-400"><MapPin className="size-3" />{fav.area}</div>
                     </div>
                     <div className="flex gap-1">
-                      <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-lg text-xs" aria-label={`Book ${fav.name}`}>Book Now</Button>
+                      <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-lg text-xs" aria-label={`Book ${fav.name}`}>Book Now</Button>
                       <Button variant="ghost" size="icon" className="size-8 text-red-400 hover:text-red-600 hover:bg-red-50" aria-label={`Remove ${fav.name} from favorites`}><Heart className="size-4 fill-red-400" /></Button>
                     </div>
                   </div>

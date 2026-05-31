@@ -20,7 +20,7 @@ export function AdminSeoPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">SEO Settings</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Save className="size-4" /> Save All</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Save className="size-4" /> Save All</Button>
         </div>
 
         <Card className="bg-white rounded-xl">

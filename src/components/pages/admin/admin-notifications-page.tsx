@@ -26,7 +26,7 @@ export function AdminNotificationsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><Send className="size-4" /> Broadcast</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Send className="size-4" /> Broadcast</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -36,7 +36,7 @@ export function AdminNotificationsPage() {
             <textarea className="w-full rounded-lg border border-slate-200 p-3 text-sm resize-none" rows={3} placeholder="Type your message..." />
             <div className="flex gap-2">
               <Button size="sm" variant="outline" className="text-xs gap-1 rounded-lg"><Eye className="size-3" /> Preview</Button>
-              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-xs gap-1 rounded-lg"><Send className="size-3" /> Send to All</Button>
+              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs gap-1 rounded-lg"><Send className="size-3" /> Send to All</Button>
             </div>
           </CardContent>
         </Card>

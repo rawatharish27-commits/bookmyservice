@@ -27,7 +27,7 @@ export function AdminPushNotificationsPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Push Notifications</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl"><BellRing className="size-4" /> New Campaign</Button>
+          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><BellRing className="size-4" /> New Campaign</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -42,7 +42,7 @@ export function AdminPushNotificationsPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="text-xs rounded-lg">Save Draft</Button>
-              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] gap-1 text-xs rounded-xl"><Send className="size-3" /> Send Now</Button>
+              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 text-xs rounded-xl"><Send className="size-3" /> Send Now</Button>
               <Button variant="outline" size="sm" className="gap-1 text-xs rounded-lg"><Calendar className="size-3" /> Schedule</Button>
             </div>
           </CardContent>

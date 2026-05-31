@@ -74,7 +74,7 @@ export function SignupPage() {
                   {selectedRole === role.key && <CheckCircle className="size-5 ml-auto text-current" />}
                 </button>
               ))}
-              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] py-5 rounded-xl mt-4" disabled={!selectedRole}
+              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl mt-4" disabled={!selectedRole}
                 onClick={() => setStep(2)}>Continue <ArrowRight className="size-4 ml-1" /></Button>
             </div>
           )}
@@ -96,7 +96,7 @@ export function SignupPage() {
               </div>
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="rounded-xl flex-1" onClick={() => setStep(1)}><ArrowLeft className="size-4 mr-1" /> Back</Button>
-                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl flex-1">Continue <ArrowRight className="size-4 ml-1" /></Button>
+                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl flex-1">Continue <ArrowRight className="size-4 ml-1" /></Button>
               </div>
             </form>
           )}
@@ -127,7 +127,7 @@ export function SignupPage() {
               </label>
               <div className="flex gap-3">
                 <Button type="button" variant="outline" className="rounded-xl flex-1" onClick={() => setStep(2)}><ArrowLeft className="size-4 mr-1" /> Back</Button>
-                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] rounded-xl flex-1" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
+                <Button type="submit" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl flex-1" disabled={loading}>{loading ? 'Creating...' : 'Create Account'}</Button>
               </div>
             </form>
           )}

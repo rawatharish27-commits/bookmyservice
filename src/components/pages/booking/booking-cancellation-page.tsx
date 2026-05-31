@@ -76,7 +76,7 @@ export function BookingCancellationPage() {
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-red-600 hover:bg-red-700 gap-1 rounded-xl py-5" disabled={!selected || loading} onClick={handleCancel}>
+        <Button className="w-full bg-red-600 hover:bg-red-700 text-white gap-1 rounded-xl py-5" disabled={!selected || loading} onClick={handleCancel}>
           <XCircle className="size-4" /> {loading ? 'Cancelling...' : 'Confirm Cancellation'}
         </Button>
       </div>

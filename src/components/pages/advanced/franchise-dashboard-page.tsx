@@ -73,7 +73,7 @@ export function FranchiseDashboardPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91]"><BarChart3 className="size-4" /> Reports</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><BarChart3 className="size-4" /> Reports</Button>
           </div>
         </div>
 
