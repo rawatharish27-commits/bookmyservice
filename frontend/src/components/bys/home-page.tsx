@@ -663,14 +663,14 @@ export function HomePage() {
           <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-8">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="flex items-center gap-3">
               <Sparkles className="size-5 text-[#7DB0FF]" />
-              <p className="text-sm font-medium text-[#1D63FF]/10">
+              <p className="text-sm font-medium text-white/80">
                 <span className="font-bold text-white">First 100 Clients</span> — Get FREE Subscription for 1 Year!
               </p>
             </motion.div>
             <div className="hidden h-4 w-px bg-white/20 sm:block" />
             <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="flex items-center gap-3">
               <ShieldCheck className="size-5 text-[#7DB0FF]" />
-              <p className="text-sm font-medium text-[#1D63FF]/10">
+              <p className="text-sm font-medium text-white/80">
                 <span className="font-bold text-white">First 50 Providers</span> — Get FREE Subscription for 1 Year!
               </p>
             </motion.div>
@@ -704,7 +704,7 @@ export function HomePage() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
             <motion.div initial="hidden" animate="visible" variants={staggerContainer}>
               <motion.div variants={fadeUp} custom={0}>
-                <Badge className="mb-6 border-[#7DB0FF]/20 bg-[#0D3B7A]/50 px-5 py-2 text-[#4D8AFF]/10 hover:bg-[#0D3B7A]/60 text-sm">
+                <Badge className="mb-6 border-[#7DB0FF]/20 bg-[#0D3B7A]/50 px-5 py-2 text-white/80 hover:bg-[#0D3B7A]/60 text-sm">
                   <Sparkles className="mr-2 size-4" /> India&apos;s Trusted Home Service Platform
                 </Badge>
               </motion.div>
@@ -716,7 +716,7 @@ export function HomePage() {
                 <span className="bg-gradient-to-r from-[#7DB0FF] via-[#1D63FF]/20 to-[#FFE066] bg-clip-text text-transparent" style={{ textShadow: '0 0 40px rgba(30,58,95,0.5)' }}>at Your Doorstep</span>
               </motion.h1>
 
-              <motion.p variants={fadeUp} custom={2} className="mt-6 max-w-xl text-lg leading-relaxed text-[#1D63FF]/10">
+              <motion.p variants={fadeUp} custom={2} className="mt-6 max-w-xl text-lg leading-relaxed text-white/80">
                 Book verified professionals for AC repair, plumbing, electrical, appliance repair, and more.
                 Quality work, transparent pricing, and our satisfaction guarantee.
               </motion.p>
@@ -725,17 +725,17 @@ export function HomePage() {
               <motion.div variants={fadeUp} custom={3} className="mt-5 flex items-center gap-2.5">
                 <Navigation className="size-4 text-[#7DB0FF]" />
                 {locationLoading ? (
-                  <span className="text-sm text-[#1D63FF]/20">📍 Detecting your location...</span>
+                  <span className="text-sm text-white/70">📍 Detecting your location...</span>
                 ) : location ? (
-                  <span className="text-sm text-[#1D63FF]/20">📍 {location.city}{location.state ? `, ${location.state}` : ''}</span>
+                  <span className="text-sm text-white/70">📍 {location.city}{location.state ? `, ${location.state}` : ''}</span>
                 ) : (
-                  <span className="text-sm text-[#1D63FF]/10">📍 Location unavailable</span>
+                  <span className="text-sm text-white/80">📍 Location unavailable</span>
                 )}
                 <span className="relative flex size-3">
                   <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#7DB0FF]/60" />
                   <span className="relative inline-flex size-3 rounded-full bg-[#7DB0FF] shadow-md shadow-[#7DB0FF]/50" />
                 </span>
-                <span className="text-sm font-medium text-[#1D63FF]/20">
+                <span className="text-sm font-medium text-white/70">
                   <AnimatedCounter value={liveStats?.activeVisitors || 0} loading={!liveStats} className="font-bold" /> viewing
                 </span>
               </motion.div>
@@ -749,7 +749,7 @@ export function HomePage() {
                     <Button size="lg" onClick={() => navigate('login')} className="h-13 border-2 border-[#7DB0FF]/40 bg-[#0D3B7A]/30 px-8 text-base text-white shadow-lg backdrop-blur-sm hover:border-[#7DB0FF]/60 hover:bg-[#0D3B7A]/40">
                       Client Login
                     </Button>
-                    <Button size="lg" variant="outline" onClick={() => navigate('register')} className="h-13 border-[#1D63FF]/40 text-base text-[#1D63FF]/10 hover:bg-[#0D3B7A]/15 hover:border-[#1D63FF]/60">
+                    <Button size="lg" variant="outline" onClick={() => navigate('register')} className="h-13 border-[#1D63FF]/40 text-base text-white/80 hover:bg-[#0D3B7A]/15 hover:border-[#1D63FF]/60">
                       Join as Provider
                     </Button>
                   </>
@@ -775,7 +775,7 @@ export function HomePage() {
                 {/* Floating service icons */}
                 <motion.div className="absolute -left-4 top-4" animate={{ y: [0, -20, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}>
                   <div className="flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#0D3B7A]/40 to-[#7DB0FF]/20 shadow-2xl shadow-[#0D3B7A]/25 backdrop-blur-xl ring-1 ring-white/20">
-                    <Wind className="size-10 text-[#4D8AFF]/20 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
+                    <Wind className="size-10 text-white/50 drop-shadow-[0_0_12px_rgba(147,197,253,0.6)]" />
                   </div>
                 </motion.div>
                 <motion.div className="absolute right-0 top-16" animate={{ y: [0, 18, 0] }} transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}>
@@ -785,14 +785,14 @@ export function HomePage() {
                 </motion.div>
                 <motion.div className="absolute bottom-4 left-1/2 -translate-x-1/2" animate={{ y: [0, -15, 0] }} transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut' }}>
                   <div className="flex size-24 items-center justify-center rounded-3xl bg-gradient-to-br from-[#4D8AFF]/20 to-[#0D3B7A]/15 shadow-2xl shadow-[#4D8AFF]/20 backdrop-blur-xl ring-1 ring-white/20">
-                    <Zap className="size-10 text-[#4D8AFF]/20 drop-shadow-[0_0_12px_rgba(125,211,252,0.6)]" />
+                    <Zap className="size-10 text-white/50 drop-shadow-[0_0_12px_rgba(125,211,252,0.6)]" />
                   </div>
                 </motion.div>
 
                 <div className="rounded-3xl bg-white/10 px-8 py-5 text-center shadow-2xl backdrop-blur-xl ring-1 ring-white/20">
-                  <Home className="mx-auto mb-2 size-7 text-[#4D8AFF]/15" />
+                  <Home className="mx-auto mb-2 size-7 text-white/50" />
                   <p className="text-xl font-bold text-white">Your Home</p>
-                  <p className="text-sm font-medium text-[#1D63FF]/15">Our Expertise</p>
+                  <p className="text-sm font-medium text-white/70">Our Expertise</p>
                 </div>
               </div>
             </motion.div>
@@ -954,7 +954,7 @@ export function HomePage() {
                         {/* Content overlay */}
                         <div className="absolute bottom-0 left-0 right-0 z-10 p-4">
                           <h3 className="text-base font-bold text-white drop-shadow-md">{service.name}</h3>
-                          <p className="mt-1 text-xs text-[#1D63FF]/10 leading-relaxed">{service.description}</p>
+                          <p className="mt-1 text-xs text-white/80 leading-relaxed">{service.description}</p>
                           {isAvailable && (
                             <div className="mt-2 flex items-center gap-1 text-xs text-[#7DB0FF] font-medium">
                               <span>View Services</span>
@@ -966,10 +966,10 @@ export function HomePage() {
                         {/* Coming Soon Overlay */}
                         {!isAvailable && (
                           <div className="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[#0A2463]/60 backdrop-blur-[2px]">
-                            <Badge className="bg-[#0D3B7A]/80 text-[#4D8AFF]/20 border-[#1D63FF]/30 backdrop-blur-sm px-4 py-1.5 text-sm font-semibold">
+                            <Badge className="bg-[#0D3B7A]/80 text-white/50 border-[#1D63FF]/30 backdrop-blur-sm px-4 py-1.5 text-sm font-semibold">
                               Coming Soon
                             </Badge>
-                            <p className="mt-2 text-xs text-[#1D63FF]/10">In Your Area</p>
+                            <p className="mt-2 text-xs text-white/80">In Your Area</p>
                           </div>
                         )}
                       </div>
@@ -1000,7 +1000,7 @@ export function HomePage() {
             <h2 className="text-2xl font-extrabold text-white sm:text-3xl">
               🚀 {location?.city || 'Your City'} Area Launch Progress
             </h2>
-            <p className="mt-2 text-[#1D63FF]/10">Help us launch faster — join as a provider or refer one!</p>
+            <p className="mt-2 text-white/80">Help us launch faster — join as a provider or refer one!</p>
           </motion.div>
 
           <motion.div
@@ -1017,7 +1017,7 @@ export function HomePage() {
                   <Shield className="size-4 text-[#7DB0FF]" /> Providers Joined
                 </span>
                 <span className="text-sm font-bold text-[#7DB0FF]">
-                  {areaProviders}/20 <span className="text-[#1D63FF]/5 font-normal">({Math.round((areaProviders / 20) * 100)}%)</span>
+                  {areaProviders}/20 <span className="text-white/60 font-normal">({Math.round((areaProviders / 20) * 100)}%)</span>
                 </span>
               </div>
               <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/10">
@@ -1038,7 +1038,7 @@ export function HomePage() {
                   <Users className="size-4 text-[#7DB0FF]" /> Customers Joined
                 </span>
                 <span className="text-sm font-bold text-[#7DB0FF]">
-                  {areaCustomers}/100 <span className="text-[#1D63FF]/5 font-normal">({Math.round((areaCustomers / 100) * 100)}%)</span>
+                  {areaCustomers}/100 <span className="text-white/60 font-normal">({Math.round((areaCustomers / 100) * 100)}%)</span>
                 </span>
               </div>
               <div className="relative h-3 w-full overflow-hidden rounded-full bg-white/10">
@@ -1053,7 +1053,7 @@ export function HomePage() {
             </div>
 
             {/* Milestone markers */}
-            <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-[#1D63FF]/5">
+            <div className="flex items-center justify-between border-t border-white/10 pt-4 text-xs text-white/60">
               <span>🚀 Launching</span>
               <span>⚡ 25% — Early Access</span>
               <span>🔥 50% — Active</span>
@@ -1107,7 +1107,7 @@ export function HomePage() {
                                 <Wrench className="size-12 text-[#0D3B7A]/30" />
                               </div>
                             )}
-                            <Badge className="absolute top-3 right-3 bg-[#0A2463]/80 text-[#4D8AFF]/20 backdrop-blur-sm border-[#1D63FF]/30">
+                            <Badge className="absolute top-3 right-3 bg-[#0A2463]/80 text-white/50 backdrop-blur-sm border-[#1D63FF]/30">
                               {service.category?.name || 'Category'}
                             </Badge>
                           </div>
@@ -1351,7 +1351,7 @@ export function HomePage() {
                 <Handshake className="size-8 text-[#7DB0FF]" />
               </div>
               <h2 className="mt-6 text-3xl font-extrabold text-white sm:text-4xl">Refer & Earn</h2>
-              <p className="mt-4 text-lg text-[#1D63FF]/10 leading-relaxed">
+              <p className="mt-4 text-lg text-white/80 leading-relaxed">
                 Apne area ke service providers ko refer karein aur har booking pe 5% referral commission paayein. Jitne zyada referrals, utni zyada earning!
               </p>
 
@@ -1361,7 +1361,7 @@ export function HomePage() {
                 </div>
                 <div>
                   <p className="font-bold text-white">Referral Commission</p>
-                  <p className="text-sm text-[#1D63FF]/10">On every booking from your referral</p>
+                  <p className="text-sm text-white/80">On every booking from your referral</p>
                 </div>
               </div>
 
@@ -1391,7 +1391,7 @@ export function HomePage() {
                         </div>
                         <div>
                           <p className="font-semibold text-white text-sm">{item.title}</p>
-                          <p className="text-xs text-[#1D63FF]/10">{item.desc}</p>
+                          <p className="text-xs text-white/80">{item.desc}</p>
                         </div>
                       </div>
                     ))}

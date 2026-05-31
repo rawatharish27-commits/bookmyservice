@@ -299,7 +299,7 @@ export function JoinManagerPage() {
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
             Join as <span className="text-[#7DB0FF]">Area Manager</span>
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/10">
+          <p className="mx-auto max-w-xl text-lg text-white/80">
             Lead your city&apos;s service marketplace. Manage providers, drive growth, and earn commissions on every booking in your area.
           </p>
         </div>

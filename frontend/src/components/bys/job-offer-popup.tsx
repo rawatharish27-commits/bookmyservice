@@ -179,7 +179,7 @@ export function JobOfferPopup() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs text-[#FFE066]/50">Registration Fee</span>
+                      <span className="text-xs text-white/60">Registration Fee</span>
                       <p className="text-lg font-bold text-yellow-300">₹100</p>
                     </div>
                     <Button
@@ -235,7 +235,7 @@ export function JobOfferPopup() {
 
                   <div className="flex items-center justify-between">
                     <div>
-                      <span className="text-xs text-[#FFE066]/50">Registration Fee</span>
+                      <span className="text-xs text-white/60">Registration Fee</span>
                       <p className="text-lg font-bold text-[#7DB0FF]">₹50</p>
                     </div>
                     <Button

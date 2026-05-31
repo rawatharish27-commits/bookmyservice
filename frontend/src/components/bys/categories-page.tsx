@@ -423,11 +423,11 @@ export function CategoriesPage() {
             className="mb-10"
           >
             <Breadcrumb>
-              <BreadcrumbList className="text-[#4D8AFF]/70/70">
+              <BreadcrumbList className="text-white/80/70">
                 <BreadcrumbItem>
                   <BreadcrumbLink
                     onClick={() => navigate('home')}
-                    className="cursor-pointer text-[#4D8AFF]/70/70 transition-colors duration-200 hover:text-white"
+                    className="cursor-pointer text-white/80/70 transition-colors duration-200 hover:text-white"
                   >
                     Home
                   </BreadcrumbLink>
@@ -446,7 +446,7 @@ export function CategoriesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              <Badge className="mb-6 border-[#7DB0FF]/20 bg-[#7DB0FF]/15 px-5 py-2 text-sm font-medium text-[#4D8AFF]/60 backdrop-blur-sm hover:bg-[#7DB0FF]/25">
+              <Badge className="mb-6 border-[#7DB0FF]/20 bg-[#7DB0FF]/15 px-5 py-2 text-sm font-medium text-white/70 backdrop-blur-sm hover:bg-[#7DB0FF]/25">
                 <Sparkles className="mr-2 size-4" /> Professional Home Services
               </Badge>
             </motion.div>
@@ -467,7 +467,7 @@ export function CategoriesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.35 }}
-              className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-[#4D8AFF]/60/75 sm:text-xl"
+              className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-white/75 sm:text-xl"
             >
               Book verified professionals for plumbing, electrical, and air conditioner services.
               Quality work, transparent pricing, and our satisfaction guarantee.
@@ -486,21 +486,21 @@ export function CategoriesPage() {
                     <p className="text-3xl font-bold text-white sm:text-4xl">
                       <AnimatedCounter value={categories.length} />
                     </p>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#4D8AFF]/70/60">Categories</p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-white/80/60">Categories</p>
                   </div>
                   <div className="size-px h-12 bg-gradient-to-b from-transparent via-[#7DB0FF]/25 to-transparent" />
                   <div className="px-8 py-4 text-center sm:px-10">
                     <p className="text-3xl font-bold text-white sm:text-4xl">
                       <AnimatedCounter value={totalSubcategories} />
                     </p>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#4D8AFF]/70/60">Specializations</p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-white/80/60">Specializations</p>
                   </div>
                   <div className="size-px h-12 bg-gradient-to-b from-transparent via-[#7DB0FF]/25 to-transparent" />
                   <div className="px-8 py-4 text-center sm:px-10">
                     <p className="text-3xl font-bold text-white sm:text-4xl">
                       <AnimatedCounter value={totalServices} />
                     </p>
-                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-[#4D8AFF]/70/60">Services</p>
+                    <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-white/80/60">Services</p>
                   </div>
                 </div>
               </motion.div>

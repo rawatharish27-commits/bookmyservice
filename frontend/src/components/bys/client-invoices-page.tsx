@@ -169,35 +169,35 @@ export function ClientInvoicesPage() {
         <motion.div variants={fadeUp}>
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] p-4 text-white shadow-lg shadow-[#4D8AFF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Receipt className="size-5 text-[#1D63FF]/20" />
+            <Receipt className="size-5 text-white/70" />
             <p className="mt-2 text-2xl font-bold">{invoices.length}</p>
-            <p className="text-xs text-[#1D63FF]/10">Total Invoices</p>
+            <p className="text-xs text-white/80">Total Invoices</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#7DB0FF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <IndianRupee className="size-5 text-[#1D63FF]/20" />
+            <IndianRupee className="size-5 text-white/70" />
             <p className="mt-2 text-2xl font-bold">₹{totalPaid.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-[#1D63FF]/10">Total Paid</p>
+            <p className="text-xs text-white/80">Total Paid</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#FFE066]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Clock className="size-5 text-[#1D63FF]/20" />
+            <Clock className="size-5 text-white/70" />
             <p className="mt-2 text-2xl font-bold">₹{totalPending.toLocaleString('en-IN')}</p>
-            <p className="text-xs text-[#1D63FF]/10">Pending</p>
+            <p className="text-xs text-white/80">Pending</p>
           </div>
         </motion.div>
         <motion.div variants={fadeUp}>
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#4D8AFF] to-[#4D8AFF] p-4 text-white shadow-lg shadow-[#4D8AFF]/20">
             <div className="absolute -right-4 -top-4 size-16 rounded-full bg-white/10 blur-xl" />
-            <Download className="size-5 text-[#1D63FF]/20" />
+            <Download className="size-5 text-white/70" />
             <p className="mt-2 text-2xl font-bold">
               {invoices.filter((i) => i.status === 'PAID').length}
             </p>
-            <p className="text-xs text-[#1D63FF]/10">Downloadable</p>
+            <p className="text-xs text-white/80">Downloadable</p>
           </div>
         </motion.div>
       </motion.div>

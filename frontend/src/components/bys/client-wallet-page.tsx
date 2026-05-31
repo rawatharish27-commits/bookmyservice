@@ -185,7 +185,7 @@ export function ClientWalletPage() {
           <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-white/5 blur-3xl" />
 
           <div className="relative">
-            <div className="flex items-center gap-2 text-[#1D63FF]/10">
+            <div className="flex items-center gap-2 text-white/80">
               <Wallet className="size-5" />
               <span className="text-sm font-medium">Total Balance</span>
             </div>
@@ -194,7 +194,7 @@ export function ClientWalletPage() {
               <Skeleton className="mt-2 h-12 w-48 bg-white/20" />
             ) : (
               <div className="mt-2 flex items-baseline gap-1">
-                <IndianRupee className="size-7 text-[#1D63FF]/20 sm:size-8" />
+                <IndianRupee className="size-7 text-white/70 sm:size-8" />
                 <span className="text-4xl font-bold text-white sm:text-5xl">
                   {wallet.balance?.toLocaleString('en-IN') || '0'}
                 </span>
@@ -203,7 +203,7 @@ export function ClientWalletPage() {
 
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
               <div className="rounded-xl bg-white/10 p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 text-[#1D63FF]/20">
+                <div className="flex items-center gap-1.5 text-white/70">
                   <Gift className="size-3.5" />
                   <span className="text-xs font-medium">Cashback</span>
                 </div>
@@ -212,7 +212,7 @@ export function ClientWalletPage() {
                 </p>
               </div>
               <div className="rounded-xl bg-white/10 p-3 backdrop-blur-sm">
-                <div className="flex items-center gap-1.5 text-[#1D63FF]/20">
+                <div className="flex items-center gap-1.5 text-white/70">
                   <CreditCard className="size-3.5" />
                   <span className="text-xs font-medium">Promo</span>
                 </div>
@@ -221,7 +221,7 @@ export function ClientWalletPage() {
                 </p>
               </div>
               <div className="col-span-2 rounded-xl bg-white/10 p-3 backdrop-blur-sm sm:col-span-1">
-                <div className="flex items-center gap-1.5 text-[#1D63FF]/20">
+                <div className="flex items-center gap-1.5 text-white/70">
                   <TrendingUp className="size-3.5" />
                   <span className="text-xs font-medium">Total Credited</span>
                 </div>

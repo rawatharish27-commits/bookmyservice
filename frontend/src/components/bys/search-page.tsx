@@ -200,7 +200,7 @@ export function SearchPage() {
             <h1 className="mb-2 text-3xl font-bold text-white sm:text-4xl">
               Find Your Perfect Service
             </h1>
-            <p className="mx-auto mb-8 max-w-lg text-[#4D8AFF]/60">
+            <p className="mx-auto mb-8 max-w-lg text-white/70">
               Search across verified professionals for plumbing, electrical, and air conditioner services
             </p>
 

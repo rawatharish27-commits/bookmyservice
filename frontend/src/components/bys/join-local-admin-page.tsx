@@ -302,7 +302,7 @@ export function JoinLocalAdminPage() {
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
             Join as <span className="text-[#7DB0FF]">Local Admin</span>
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/10">
+          <p className="mx-auto max-w-xl text-lg text-white/80">
             Be the bridge between your community and quality services. Oversee local operations, verify providers, and ensure customer satisfaction in your neighborhood.
           </p>
         </div>

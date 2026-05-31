@@ -113,9 +113,9 @@ export function ContactPage() {
             <MessageSquare className="size-7 text-white" />
           </motion.div>
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
-            Get in <span className="text-[#4D8AFF]/70">Touch</span>
+            Get in <span className="text-white/80">Touch</span>
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/60">
+          <p className="mx-auto max-w-xl text-lg text-white/70">
             Have a question or need help? We&apos;d love to hear from you. Send us a message and we&apos;ll respond as soon as possible.
           </p>
         </div>

@@ -235,7 +235,7 @@ export function RegisterPage() {
               <span className="bg-gradient-to-r from-[#1D63FF]/20 via-[#1D63FF]/20 to-[#FFCE32]/20 bg-clip-text text-transparent">Trusted Platform.</span>
             </h2>
 
-            <p className="text-[#1D63FF]/10 text-lg mb-10 max-w-md leading-relaxed">
+            <p className="text-white/80 text-lg mb-10 max-w-md leading-relaxed">
               Whether you need home services or want to offer them, we&apos;ve got you covered with a seamless experience.
             </p>
 

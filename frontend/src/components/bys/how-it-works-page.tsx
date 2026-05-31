@@ -236,7 +236,7 @@ export function HowItWorksPage() {
             <Sparkles className="size-7 text-white" />
           </motion.div>
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
-            How It <span className="text-[#4D8AFF]/70">Works</span>
+            How It <span className="text-white/80">Works</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-[#4D8AFF]/60">
             Whether you need a service or provide one, our platform makes the process simple and secure
@@ -443,7 +443,7 @@ export function HowItWorksPage() {
             </div>
             <div className="relative">
               <h2 className="text-3xl font-bold text-white">
-                Ready to Grow Your <span className="text-[#4D8AFF]/70">Business</span>?
+                Ready to Grow Your <span className="text-white/80">Business</span>?
               </h2>
               <p className="mx-auto mt-3 max-w-md text-[#4D8AFF]/60">
                 Join our network of professionals and reach thousands of customers

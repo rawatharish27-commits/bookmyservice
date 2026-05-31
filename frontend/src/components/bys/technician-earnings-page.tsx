@@ -335,7 +335,7 @@ export function TechnicianEarningsPage() {
               </div>
               <div>
                 <h3 className="text-lg font-bold">Ready to Withdraw?</h3>
-                <p className="text-sm text-[#1D63FF]/10">Transfer your earnings to your bank account or UPI</p>
+                <p className="text-sm text-white/80">Transfer your earnings to your bank account or UPI</p>
               </div>
             </div>
             <Button

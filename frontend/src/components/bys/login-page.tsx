@@ -260,7 +260,7 @@ export function LoginPage() {
               <span className="bg-gradient-to-r from-[#1D63FF]/20 via-[#1D63FF]/20 to-[#FFCE32]/20 bg-clip-text text-transparent">Perfectly Served.</span>
             </h2>
 
-            <p className="text-[#1D63FF]/10 text-lg mb-10 max-w-md leading-relaxed">
+            <p className="text-white/80 text-lg mb-10 max-w-md leading-relaxed">
               Connect with verified professionals for plumbing, electrical, and air conditioner services — all in one place.
             </p>
 
@@ -279,7 +279,7 @@ export function LoginPage() {
                   className="text-center"
                 >
                   <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-[#1D63FF]/15 mt-0.5">{stat.label}</div>
+                  <div className="text-xs text-white/70 mt-0.5">{stat.label}</div>
                 </motion.div>
               ))}
             </div>

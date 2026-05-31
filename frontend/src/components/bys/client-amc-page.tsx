@@ -166,20 +166,20 @@ export function ClientAmcPage() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-[#1D63FF]/20" />
-              <span className="text-sm font-medium text-[#1D63FF]/10">Protect Your Home</span>
+              <ShieldCheck className="size-5 text-white/70" />
+              <span className="text-sm font-medium text-white/80">Protect Your Home</span>
             </div>
             <h2 className="mt-1 text-xl font-bold text-white sm:text-2xl">
               Annual Maintenance Contracts
             </h2>
-            <p className="mt-1 text-[#1D63FF]/10">
+            <p className="mt-1 text-white/80">
               Get unlimited service visits, priority support & exclusive discounts
             </p>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
               <span className="text-2xl font-bold text-white">{activeSubscriptions.length}</span>
-              <span className="text-xs text-[#1D63FF]/20">Active Plans</span>
+              <span className="text-xs text-white/70">Active Plans</span>
             </div>
           </div>
         </div>

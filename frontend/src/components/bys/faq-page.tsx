@@ -142,7 +142,7 @@ export function FaqPage() {
             <HelpCircle className="size-7 text-white" />
           </motion.div>
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
-            Frequently Asked <span className="text-[#4D8AFF]/70">Questions</span>
+            Frequently Asked <span className="text-white/80">Questions</span>
           </h1>
           <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/60">
             Find answers to common questions about our platform, services, and policies

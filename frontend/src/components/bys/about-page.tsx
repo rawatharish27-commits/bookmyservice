@@ -191,7 +191,7 @@ export function AboutPage() {
             <Award className="size-7 text-white" />
           </motion.div>
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
-            About <span className="text-[#4D8AFF]/70">BookYourService</span>
+            About <span className="text-white/80">BookYourService</span>
           </h1>
           <p className="mx-auto max-w-2xl text-lg text-[#4D8AFF]/60">
             We are on a mission to make professional home services accessible, reliable, and
@@ -259,7 +259,7 @@ export function AboutPage() {
           }} />
         </div>
         <h2 className="relative mb-10 text-center text-3xl font-bold text-white">
-          Our <span className="text-[#4D8AFF]/70">Impact</span>
+          Our <span className="text-white/80">Impact</span>
         </h2>
         <div className="relative grid grid-cols-2 gap-6 sm:grid-cols-4">
           {stats.map((stat, idx) => (
@@ -277,7 +277,7 @@ export function AboutPage() {
               <p className="text-3xl font-bold text-white sm:text-4xl">
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} />
               </p>
-              <p className="mt-1 text-sm text-[#4D8AFF]/70">{stat.label}</p>
+              <p className="mt-1 text-sm text-white/80">{stat.label}</p>
             </motion.div>
           ))}
         </div>

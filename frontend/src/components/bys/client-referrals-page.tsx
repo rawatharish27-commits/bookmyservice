@@ -175,7 +175,7 @@ export function ClientReferralsPage() {
         <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-white/5 blur-3xl" />
 
         <div className="relative">
-          <div className="flex items-center gap-2 text-[#1D63FF]/10">
+          <div className="flex items-center gap-2 text-white/80">
             <Gift className="size-5" />
             <span className="text-sm font-medium">Your Referral Code</span>
           </div>
@@ -204,7 +204,7 @@ export function ClientReferralsPage() {
                     {copiedCode ? <Check className="size-5" /> : <Copy className="size-5" />}
                   </Button>
                 </div>
-                <p className="mt-2 text-sm text-[#1D63FF]/10">
+                <p className="mt-2 text-sm text-white/80">
                   Share this code with friends — they get ₹50 off, you earn ₹50 cashback!
                 </p>
               </div>
@@ -213,7 +213,7 @@ export function ClientReferralsPage() {
               <div className="hidden sm:flex items-center gap-4">
                 <div className="flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
                   <span className="text-2xl font-bold text-white">{referral.totalReferrals}</span>
-                  <span className="text-xs text-[#1D63FF]/20">Referrals</span>
+                  <span className="text-xs text-white/70">Referrals</span>
                 </div>
               </div>
             </div>
