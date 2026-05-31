@@ -1,12 +1,23 @@
 import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 export async function POST() {
   try {
-    // Cleanup is handled in-memory by the visitor route
+    const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes
+    const threshold = new Date(Date.now() - ACTIVE_THRESHOLD_MS);
+
+    const result = await db.visitorSession.updateMany({
+      where: {
+        isActive: true,
+        lastActiveAt: { lt: threshold },
+      },
+      data: { isActive: false },
+    });
+
     return NextResponse.json({
       success: true,
-      deactivatedCount: 0,
-      message: 'Cleanup handled by in-memory visitor tracking',
+      deactivatedCount: result.count,
+      message: `Deactivated ${result.count} expired visitor sessions`,
     });
   } catch (error) {
     console.error('Visitor cleanup error:', error);

@@ -1714,3 +1714,29 @@ Stage Summary:
 - text-blue-100 preserved as required (light text on dark backgrounds)
 - Non-target shades (50, 200, 300, 400, 500 standalone) left unchanged
 - Zero build errors, zero TypeScript errors introduced
+
+---
+Task ID: realtime-visitors-clock
+Agent: Main Agent
+Task: Add real-time visitor tracking (daily/weekly/monthly/yearly) and live IST clock to home page
+
+Work Log:
+- Added VisitorSession model to Prisma schema (sessionId, ipAddress, userAgent, page, referrer, isActive, lastActiveAt, createdAt)
+- Pushed schema to SQLite database successfully
+- Rewrote /api/stats/visitor/route.ts: POST upserts visitor sessions into DB (replaced in-memory Map), GET returns activeVisitors/todayVisitors/totalVisitors from DB
+- Rewrote /api/stats/platform/route.ts: Now calculates real daily/weekly/monthly/yearly visitor counts from VisitorSession table with proper time boundaries (today start, Monday week start, month start, year start)
+- Rewrote /api/stats/cleanup/route.ts: Now properly marks expired sessions as inactive in DB
+- Updated home page (src/app/page.tsx) with:
+  - useISTClock hook: Real-time clock using toLocaleTimeString/toLocaleDateString with Asia/Kolkata timezone, updates every second
+  - useVisitorStats hook: Fetches /api/stats/platform every 10 seconds, sends heartbeat to /api/stats/visitor every 60 seconds with session ID stored in sessionStorage
+  - Live clock + stats bar below header: Shows IST date/time and visitor stats (Active, Today, Week, Month, Year) with Live pulse indicator
+  - Visitor stats cards section: 5 animated cards (Active Now, Today, This Week, This Month, This Year) with color-coded gradients and animated number transitions
+  - AnimatedNumber component: Smooth number animation with easing when stats update
+  - LivePulse component: Animated green dot indicator for real-time status
+
+Stage Summary:
+- Real-time visitor tracking fully functional with database persistence (no more in-memory/fake data)
+- Live IST clock running on home page with date and time
+- Visitor stats (daily, weekly, monthly, yearly) update automatically every 10 seconds
+- Visitor heartbeat sent every 60 seconds to keep session active
+- All APIs tested and returning real data from database

@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { db } from '@/lib/db';
 
 const ACTIVE_THRESHOLD_MS = 5 * 60 * 1000; // 5 minutes
-
-// In-memory visitor tracking (simple alternative since VisitorSession model doesn't exist in schema)
-const visitors = new Map<string, { lastActive: Date; page?: string; referrer?: string }>();
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,20 +15,48 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Cleanup old sessions
+    // Mark expired sessions as inactive
     const threshold = new Date(Date.now() - ACTIVE_THRESHOLD_MS);
-    for (const [key, value] of visitors.entries()) {
-      if (value.lastActive < threshold) {
-        visitors.delete(key);
-      }
-    }
-
-    // Update or create session
-    visitors.set(sessionId, {
-      lastActive: new Date(),
-      page: page || visitors.get(sessionId)?.page,
-      referrer: referrer || visitors.get(sessionId)?.referrer,
+    await db.visitorSession.updateMany({
+      where: {
+        isActive: true,
+        lastActiveAt: { lt: threshold },
+      },
+      data: { isActive: false },
     });
+
+    // Get IP and user agent from headers
+    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || null;
+    const userAgent = request.headers.get('user-agent') || null;
+
+    // Upsert session
+    const existing = await db.visitorSession.findUnique({
+      where: { sessionId },
+    });
+
+    if (existing) {
+      await db.visitorSession.update({
+        where: { sessionId },
+        data: {
+          lastActiveAt: new Date(),
+          isActive: true,
+          page: page || existing.page,
+          referrer: referrer || existing.referrer,
+        },
+      });
+    } else {
+      await db.visitorSession.create({
+        data: {
+          sessionId,
+          ipAddress,
+          userAgent,
+          page: page || null,
+          referrer: referrer || null,
+          isActive: true,
+          lastActiveAt: new Date(),
+        },
+      });
+    }
 
     return NextResponse.json({ sessionId });
   } catch (error) {
@@ -44,20 +70,35 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   try {
+    // Mark expired sessions as inactive first
     const threshold = new Date(Date.now() - ACTIVE_THRESHOLD_MS);
+    await db.visitorSession.updateMany({
+      where: {
+        isActive: true,
+        lastActiveAt: { lt: threshold },
+      },
+      data: { isActive: false },
+    });
 
     // Count active visitors
-    let activeVisitors = 0;
-    for (const [, value] of visitors.entries()) {
-      if (value.lastActive > threshold) {
-        activeVisitors++;
-      }
-    }
+    const activeVisitors = await db.visitorSession.count({
+      where: { isActive: true },
+    });
+
+    // Count today's visitors
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayVisitors = await db.visitorSession.count({
+      where: { createdAt: { gte: todayStart } },
+    });
+
+    // Total visitors ever
+    const totalVisitors = await db.visitorSession.count();
 
     return NextResponse.json({
       activeVisitors,
-      todayVisitors: visitors.size,
-      totalVisitors: visitors.size,
+      todayVisitors,
+      totalVisitors,
     });
   } catch (error) {
     console.error('Visitor stats error:', error);

@@ -1,11 +1,12 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import {
   Shield, User, Wrench, ChevronDown, X, Menu, Globe, Lock, Home as HomeIcon,
   LayoutDashboard, Settings, BarChart3, Briefcase, Calendar, Smartphone,
   Megaphone, Scale, MessageSquare, Cpu, AlertTriangle, ShoppingCart, MapPin,
-  Star, Phone, Mail, ArrowRight, CheckCircle, Clock, Users, Zap, Award, Headphones
+  Star, Phone, Mail, ArrowRight, CheckCircle, Clock, Users, Zap, Award, Headphones,
+  Activity, Eye, TrendingUp, CalendarDays, CalendarRange, Timer, RefreshCw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -43,11 +44,195 @@ const testimonials = [
   { name: 'Amit M.', role: 'Business Owner', text: 'Reliable and affordable. Have been using their services for 6 months now. Highly recommend!', rating: 4 },
 ]
 
+// ─── Live IST Clock Hook ──────────────────────────────────────────────────────
+function useISTClock() {
+  const [time, setTime] = useState<Date>(new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime(new Date())
+    }, 1000)
+    return () => clearInterval(timer)
+  }, [])
+
+  // Convert to IST string
+  const istTime = time.toLocaleTimeString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: true,
+  })
+
+  const istDate = time.toLocaleDateString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+
+  return { istTime, istDate }
+}
+
+// ─── Visitor Stats Hook ───────────────────────────────────────────────────────
+interface VisitorStats {
+  activeVisitors: number
+  dailyVisitors: number
+  weeklyVisitors: number
+  monthlyVisitors: number
+  yearlyVisitors: number
+  totalVisitors: number
+}
+
+function useVisitorStats() {
+  const [stats, setStats] = useState<VisitorStats>({
+    activeVisitors: 0,
+    dailyVisitors: 0,
+    weeklyVisitors: 0,
+    monthlyVisitors: 0,
+    yearlyVisitors: 0,
+    totalVisitors: 0,
+  })
+  const [loading, setLoading] = useState(true)
+  const sessionIdRef = useRef<string>('')
+  const heartbeatRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Generate or retrieve session ID
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let sid = sessionStorage.getItem('bms_visitor_sid')
+      if (!sid) {
+        sid = `v_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        sessionStorage.setItem('bms_visitor_sid', sid)
+      }
+      sessionIdRef.current = sid
+    }
+  }, [])
+
+  // Fetch stats
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await fetch('/api/stats/platform')
+      if (res.ok) {
+        const data = await res.json()
+        setStats({
+          activeVisitors: data.activeVisitors || 0,
+          dailyVisitors: data.dailyVisitors || 0,
+          weeklyVisitors: data.weeklyVisitors || 0,
+          monthlyVisitors: data.monthlyVisitors || 0,
+          yearlyVisitors: data.yearlyVisitors || 0,
+          totalVisitors: data.totalVisitors || 0,
+        })
+      }
+    } catch {
+      // Silently fail
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  // Send heartbeat
+  const sendHeartbeat = useCallback(async () => {
+    if (!sessionIdRef.current) return
+    try {
+      await fetch('/api/stats/visitor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: sessionIdRef.current,
+          page: window.location.pathname,
+          referrer: document.referrer || undefined,
+        }),
+      })
+    } catch {
+      // Silently fail
+    }
+  }, [])
+
+  useEffect(() => {
+    // Initial heartbeat + fetch
+    sendHeartbeat()
+    fetchStats()
+
+    // Heartbeat every 60 seconds
+    heartbeatRef.current = setInterval(() => {
+      sendHeartbeat()
+    }, 60000)
+
+    // Refresh stats every 10 seconds for real-time feel
+    const statsInterval = setInterval(fetchStats, 10000)
+
+    return () => {
+      if (heartbeatRef.current) clearInterval(heartbeatRef.current)
+      clearInterval(statsInterval)
+    }
+  }, [sendHeartbeat, fetchStats])
+
+  return { stats, loading }
+}
+
+// ─── Animated Number Component ────────────────────────────────────────────────
+function AnimatedNumber({ value, loading }: { value: number; loading: boolean }) {
+  const [displayValue, setDisplayValue] = useState(0)
+  const prevValue = useRef(0)
+
+  useEffect(() => {
+    if (loading) return
+    const start = prevValue.current
+    const end = value
+    const duration = 800
+    const startTime = Date.now()
+
+    const animate = () => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      // Ease out
+      const eased = 1 - Math.pow(1 - progress, 3)
+      const current = Math.round(start + (end - start) * eased)
+      setDisplayValue(current)
+
+      if (progress < 1) {
+        requestAnimationFrame(animate)
+      } else {
+        prevValue.current = end
+      }
+    }
+
+    requestAnimationFrame(animate)
+  }, [value, loading])
+
+  if (loading) {
+    return (
+      <span className="inline-flex items-center gap-1">
+        <RefreshCw className="size-4 animate-spin text-[#FFCE32]" />
+      </span>
+    )
+  }
+
+  return <span>{displayValue.toLocaleString('en-IN')}</span>
+}
+
+// ─── Live Pulse Dot ───────────────────────────────────────────────────────────
+function LivePulse() {
+  return (
+    <span className="inline-flex items-center gap-1.5">
+      <span className="relative flex size-2.5">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+        <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
+      </span>
+      <span className="text-xs font-semibold text-emerald-400 uppercase tracking-wider">Live</span>
+    </span>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [activeSection, setActiveSection] = useState('home')
+  const { istTime, istDate } = useISTClock()
+  const { stats, loading } = useVisitorStats()
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -120,6 +305,57 @@ export default function Home() {
         )}
       </header>
 
+      {/* ─── Live Clock & Visitor Stats Bar ─────────────────────────────── */}
+      <div className="bg-gradient-to-r from-[#0B3D91] via-[#1D63FF] to-[#0B3D91] text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            {/* Live Clock */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-1.5">
+                <Timer className="size-4 text-[#FFCE32]" />
+                <div className="flex flex-col leading-tight">
+                  <span className="text-xs text-slate-300">{istDate}</span>
+                  <span className="text-sm font-bold tracking-wider font-mono">{istTime}</span>
+                </div>
+              </div>
+              <span className="text-[10px] text-slate-300 font-medium">IST</span>
+            </div>
+
+            {/* Visitor Stats */}
+            <div className="flex items-center gap-2 sm:gap-4">
+              <LivePulse />
+              <div className="flex items-center gap-3 sm:gap-5 text-xs sm:text-sm">
+                <div className="flex items-center gap-1.5" title="Currently Active">
+                  <Activity className="size-3.5 text-emerald-400" />
+                  <span className="text-slate-300">Active:</span>
+                  <span className="font-bold text-white"><AnimatedNumber value={stats.activeVisitors} loading={loading} /></span>
+                </div>
+                <div className="flex items-center gap-1.5" title="Today's Visitors">
+                  <Eye className="size-3.5 text-[#FFCE32]" />
+                  <span className="text-slate-300">Today:</span>
+                  <span className="font-bold text-white"><AnimatedNumber value={stats.dailyVisitors} loading={loading} /></span>
+                </div>
+                <div className="hidden sm:flex items-center gap-1.5" title="This Week">
+                  <CalendarDays className="size-3.5 text-sky-300" />
+                  <span className="text-slate-300">Week:</span>
+                  <span className="font-bold text-white"><AnimatedNumber value={stats.weeklyVisitors} loading={loading} /></span>
+                </div>
+                <div className="hidden md:flex items-center gap-1.5" title="This Month">
+                  <CalendarRange className="size-3.5 text-violet-300" />
+                  <span className="text-slate-300">Month:</span>
+                  <span className="font-bold text-white"><AnimatedNumber value={stats.monthlyVisitors} loading={loading} /></span>
+                </div>
+                <div className="hidden lg:flex items-center gap-1.5" title="This Year">
+                  <TrendingUp className="size-3.5 text-rose-300" />
+                  <span className="text-slate-300">Year:</span>
+                  <span className="font-bold text-white"><AnimatedNumber value={stats.yearlyVisitors} loading={loading} /></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ─── Hero Section ────────────────────────────────────────────────── */}
       <section id="home" className="relative overflow-hidden">
         {/* Background */}
@@ -147,6 +383,46 @@ export default function Home() {
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ─── Visitor Stats Cards (Mobile-Visible Details) ─────────────────── */}
+      <section className="py-8 bg-white border-b border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+            {[
+              { icon: Activity, label: 'Active Now', value: stats.activeVisitors, color: 'emerald', bgGradient: 'from-emerald-50 to-emerald-100/50', iconColor: 'text-emerald-600', valueColor: 'text-emerald-700' },
+              { icon: Eye, label: 'Today', value: stats.dailyVisitors, color: 'amber', bgGradient: 'from-amber-50 to-amber-100/50', iconColor: 'text-amber-600', valueColor: 'text-amber-700' },
+              { icon: CalendarDays, label: 'This Week', value: stats.weeklyVisitors, color: 'sky', bgGradient: 'from-sky-50 to-sky-100/50', iconColor: 'text-sky-600', valueColor: 'text-sky-700' },
+              { icon: CalendarRange, label: 'This Month', value: stats.monthlyVisitors, color: 'violet', bgGradient: 'from-violet-50 to-violet-100/50', iconColor: 'text-violet-600', valueColor: 'text-violet-700' },
+              { icon: TrendingUp, label: 'This Year', value: stats.yearlyVisitors, color: 'rose', bgGradient: 'from-rose-50 to-rose-100/50', iconColor: 'text-rose-600', valueColor: 'text-rose-700' },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className={cn(
+                  'relative overflow-hidden rounded-2xl bg-gradient-to-br p-4 sm:p-5 border border-white/60 shadow-sm hover:shadow-md transition-all duration-300',
+                  stat.bgGradient
+                )}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <stat.icon className={cn('size-4', stat.iconColor)} />
+                  <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{stat.label}</span>
+                </div>
+                <div className={cn('text-2xl sm:text-3xl font-extrabold', stat.valueColor)}>
+                  <AnimatedNumber value={stat.value} loading={loading} />
+                </div>
+                {stat.label === 'Active Now' && !loading && (
+                  <span className="absolute top-3 right-3 flex size-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs text-slate-400 mt-3">
+            📊 Visitor stats update automatically every 10 seconds • Data refreshes in real-time
+          </p>
         </div>
       </section>
 

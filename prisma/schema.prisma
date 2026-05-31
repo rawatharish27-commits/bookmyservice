@@ -483,3 +483,15 @@ model PasswordReset {
   used      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model VisitorSession {
+  id           String   @id @default(cuid())
+  sessionId    String   @unique
+  ipAddress    String?
+  userAgent    String?
+  page         String?
+  referrer     String?
+  isActive     Boolean  @default(true)
+  lastActiveAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+}
