@@ -177,7 +177,7 @@ export function AdminUsersPage() {
                               ? 'border-green-200 bg-green-100 text-green-800'
                               : user.status === 'BLOCKED'
                                 ? 'border-red-200 bg-red-100 text-red-800'
-                                : 'border-yellow-200 bg-yellow-100 text-yellow-800'
+                                : 'border-yellow-200 bg-yellow-100 text-[#0A1F44]/80'
                           }
                         >
                           {user.status}
@@ -200,7 +200,7 @@ export function AdminUsersPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-8 text-blue-600"
+                              className="size-8 text-[#0A1F44]"
                               onClick={() => handleStatusChange(user.id, 'BLOCKED')}
                             >
                               <Ban className="size-4" />

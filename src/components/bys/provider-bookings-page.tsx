@@ -34,9 +34,9 @@ interface BookingResponse {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    ACCEPTED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
+    IN_PROGRESS: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
   const c = config[status] || { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' };
@@ -49,10 +49,10 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 const TABS = [
-  { key: 'PENDING', label: 'New Requests', gradient: 'from-amber-400 to-blue-500', icon: Clock },
-  { key: 'ACCEPTED', label: 'Accepted', gradient: 'from-sky-400 to-blue-500', icon: CheckCircle2 },
-  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-sky-400 to-amber-500', icon: Play },
-  { key: 'COMPLETED', label: 'Completed', gradient: 'from-emerald-400 to-teal-500', icon: CheckCircle2 },
+  { key: 'PENDING', label: 'New Requests', gradient: '[#D4A017] to-[#0A1F44]', icon: Clock },
+  { key: 'ACCEPTED', label: 'Accepted', gradient: '[#0A1F44] to-[#132D5E]', icon: CheckCircle2 },
+  { key: 'IN_PROGRESS', label: 'In Progress', gradient: '[#0A1F44] to-[#D4A017]', icon: Play },
+  { key: 'COMPLETED', label: 'Completed', gradient: '[#0A1F44] to-[#132D5E]', icon: CheckCircle2 },
   { key: 'CANCELLED', label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 ];
 
@@ -80,7 +80,7 @@ export function ProviderBookingsPage() {
           <>
             <Button
               size="sm"
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25 rounded-lg"
+              className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-sm shadow-[#0A1F44]/25 rounded-lg"
               onClick={() => handleAction(booking.id, 'accept')}
             >
               <CheckCircle2 className="mr-1 size-3" /> Accept
@@ -94,7 +94,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-gradient-to-r from-blue-500 to-amber-600 text-white shadow-sm rounded-lg"
+            className="bg-gradient-to-r [#0A1F44] to-[#D4A017] text-white shadow-sm rounded-lg"
             onClick={() => handleAction(booking.id, 'start')}
           >
             <Play className="mr-1 size-3" /> Start Service
@@ -104,7 +104,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25 rounded-lg"
+            className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-sm shadow-[#0A1F44]/25 rounded-lg"
             onClick={() => handleAction(booking.id, 'complete')}
           >
             <CheckCircle2 className="mr-1 size-3" /> Mark Complete
@@ -163,8 +163,8 @@ export function ProviderBookingsPage() {
           >
             <Card className="rounded-2xl border-0 shadow-sm">
               <CardContent className="flex flex-col items-center py-12 text-center">
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-                  <CalendarCheck className="size-10 text-emerald-300" />
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br [#0A1F44]/10 to-[#132D5E]/5">
+                  <CalendarCheck className="size-10 text-[#0A1F44]/40" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">
                   No {TABS.find(t => t.key === activeTab)?.label.toLowerCase()}
@@ -205,7 +205,7 @@ export function ProviderBookingsPage() {
                               <StatusBadge status={booking.status} />
                             </div>
                             <div className="mt-2 flex items-center gap-2">
-                              <Briefcase className="size-4 text-emerald-600" />
+                              <Briefcase className="size-4 text-[#0A1F44]" />
                               <span className="font-medium">{booking.service?.title}</span>
                             </div>
                             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">

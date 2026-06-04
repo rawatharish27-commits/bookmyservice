@@ -53,14 +53,14 @@ interface DashboardData {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-sky-100 text-blue-800 border-blue-200',
+    PENDING: 'bg-yellow-100 text-[#0A1F44]/80 border-yellow-200',
+    ACCEPTED: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20',
+    IN_PROGRESS: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20',
     COMPLETED: 'bg-green-100 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
   return (
-    <Badge variant="outline" className={colors[status] || 'bg-gray-100 text-gray-800'}>
+    <Badge variant="outline" className={colors[status] || 'bg-[#D4A017] text-[#0A1F44]/90'}>
       {status.replace('_', ' ')}
     </Badge>
   );
@@ -96,62 +96,62 @@ export function AdminDashboardPage() {
 
       {/* Key Metrics */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Total Users</p>
-                <p className="mt-1 text-2xl font-bold">{stats?.totalUsers || 0}</p>
+                <p className="text-xs text-[#FFD54F]/70">Total Users</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{stats?.totalUsers || 0}</p>
               </div>
-              <Users className="size-5 text-emerald-600" />
+              <Users className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Providers</p>
-                <p className="mt-1 text-2xl font-bold">{stats?.totalProviders || 0}</p>
+                <p className="text-xs text-[#FFD54F]/70">Providers</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{stats?.totalProviders || 0}</p>
               </div>
-              <Briefcase className="size-5 text-blue-600" />
+              <Briefcase className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-purple-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Bookings</p>
-                <p className="mt-1 text-2xl font-bold">{stats?.totalBookings || 0}</p>
+                <p className="text-xs text-[#FFD54F]/70">Bookings</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{stats?.totalBookings || 0}</p>
               </div>
-              <CalendarCheck className="size-5 text-purple-600" />
+              <CalendarCheck className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-yellow-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Revenue</p>
-                <p className="mt-1 text-2xl font-bold">₹{(stats?.totalRevenue || 0).toLocaleString()}</p>
+                <p className="text-xs text-[#FFD54F]/70">Revenue</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">₹{(stats?.totalRevenue || 0).toLocaleString()}</p>
               </div>
-              <DollarSign className="size-5 text-yellow-600" />
+              <DollarSign className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-l-4 border-l-red-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-muted-foreground">Active Disputes</p>
-                <p className="mt-1 text-2xl font-bold">{stats?.activeDisputes || 0}</p>
+                <p className="text-xs text-[#FFD54F]/70">Active Disputes</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{stats?.activeDisputes || 0}</p>
               </div>
-              <FileWarning className="size-5 text-red-600" />
+              <FileWarning className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
@@ -159,21 +159,21 @@ export function AdminDashboardPage() {
 
       {/* Quick Stats */}
       <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="rounded-lg bg-yellow-50 p-3 text-center">
-          <p className="text-xs text-muted-foreground">Pending Bookings</p>
-          <p className="mt-1 text-lg font-bold text-yellow-700">{stats?.pendingBookings || 0}</p>
+        <div className="rounded-lg bg-[#132D5E] p-3 text-center">
+          <p className="text-xs text-[#FFD54F]/70">Pending Bookings</p>
+          <p className="mt-1 text-lg font-bold text-[#FFD54F]">{stats?.pendingBookings || 0}</p>
         </div>
         <div className="rounded-lg bg-green-50 p-3 text-center">
           <p className="text-xs text-muted-foreground">Completed</p>
           <p className="mt-1 text-lg font-bold text-green-700">{stats?.completedBookings || 0}</p>
         </div>
-        <div className="rounded-lg bg-blue-50 p-3 text-center">
-          <p className="text-xs text-muted-foreground">Pending KYC</p>
-          <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingKyc || 0}</p>
+        <div className="rounded-lg bg-[#132D5E] p-3 text-center">
+          <p className="text-xs text-[#FFD54F]/70">Pending KYC</p>
+          <p className="mt-1 text-lg font-bold text-[#FFD54F]">{stats?.pendingKyc || 0}</p>
         </div>
-        <div className="rounded-lg bg-blue-50 p-3 text-center">
-          <p className="text-xs text-muted-foreground">Pending Approvals</p>
-          <p className="mt-1 text-lg font-bold text-blue-700">{stats?.pendingServiceApprovals || 0}</p>
+        <div className="rounded-lg bg-[#132D5E] p-3 text-center">
+          <p className="text-xs text-[#FFD54F]/70">Pending Approvals</p>
+          <p className="mt-1 text-lg font-bold text-[#FFD54F]">{stats?.pendingServiceApprovals || 0}</p>
         </div>
       </div>
 

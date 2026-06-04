@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.ReactNode; gradient: string; fallbackContent: string }> = {
-  terms: { title: 'Terms of Service', type: 'terms', icon: <Shield className="size-5" />, gradient: 'from-emerald-700 to-teal-600',
+  terms: { title: 'Terms of Service', type: 'terms', icon: <Shield className="size-5" />, gradient: 'from-[#0A1F44] to-[#132D5E]',
     fallbackContent: `TERMS OF SERVICE - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -84,7 +84,7 @@ BookYourService is an online marketplace that connects customers with verified h
 - Any disputes shall be resolved in courts of New Delhi, India
 
 For questions about these Terms, contact us at support@bookyourservice.in` },
-  privacy: { title: 'Privacy Policy', type: 'privacy', icon: <Lock className="size-5" />, gradient: 'from-teal-700 to-cyan-600',
+  privacy: { title: 'Privacy Policy', type: 'privacy', icon: <Lock className="size-5" />, gradient: 'from-[#0A1F44] to-[#132D5E]',
     fallbackContent: `PRIVACY POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -142,7 +142,7 @@ Effective Date: January 1, 2025
 
 10. CONTACT US
 For privacy concerns, contact: privacy@bookyourservice.in` },
-  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-amber-600 to-blue-500',
+  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-[#0A1F44] to-[#132D5E]',
     fallbackContent: `REFUND POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -191,7 +191,7 @@ At BookYourService, we strive to ensure customer satisfaction. Our refund policy
 - Wallet: Refunded to BookYourService wallet
 
 For refund requests: support@bookyourservice.in` },
-  'cookie-policy': { title: 'Cookie Policy', type: 'cookies', icon: <Cookie className="size-5" />, gradient: 'from-violet-600 to-purple-500',
+  'cookie-policy': { title: 'Cookie Policy', type: 'cookies', icon: <Cookie className="size-5" />, gradient: 'from-[#0A1F44] to-[#132D5E]',
     fallbackContent: `COOKIE POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -337,7 +337,7 @@ const fadeUp = {
 export function LegalPage() {
   const { navigate, nav } = useApp();
   const pageType = nav.params.type || nav.page;
-  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-emerald-700 to-teal-600', fallbackContent: '' };
+  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-[#0A1F44] to-[#132D5E]', fallbackContent: '' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(
     `/api/legal/${pageInfo.type}`
@@ -406,7 +406,7 @@ export function LegalPage() {
       if (/^\d+\./.test(trimmed)) {
         return (
           <h3 key={i} id={`section-${i}`} className="mt-6 mb-2 flex items-center gap-2 font-semibold text-gray-800">
-            <ChevronRight className="size-4 text-emerald-500" />
+            <ChevronRight className="size-4 text-[#0A1F44]/80" />
             {trimmed}
           </h3>
         );
@@ -415,7 +415,7 @@ export function LegalPage() {
       if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
         return (
           <div key={i} className="ml-6 mt-1 flex items-start gap-2">
-            <div className="mt-2 size-1.5 shrink-0 rounded-full bg-emerald-400" />
+            <div className="mt-2 size-1.5 shrink-0 rounded-full bg-[#0A1F44]" />
             <p className="leading-relaxed text-gray-600">{trimmed.replace(/^[•-]\s*/, '')}</p>
           </div>
         );
@@ -449,7 +449,7 @@ export function LegalPage() {
           variant="ghost"
           size="sm"
           onClick={() => navigate('home')}
-          className="group mb-6 text-muted-foreground hover:text-emerald-700"
+          className="group mb-6 text-muted-foreground hover:text-[#0A1F44]"
         >
           <ArrowLeft className="mr-1 size-4 transition-transform group-hover:-translate-x-1" /> Back to Home
         </Button>
@@ -484,13 +484,13 @@ export function LegalPage() {
 
       {error && !pageInfo.fallbackContent && (
         <motion.div {...fadeUp} className="py-16 text-center">
-          <div className="glass-emerald mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
+          <div className="glass mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
             <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-red-50">
               <AlertCircle className="size-8 text-red-400" />
             </div>
             <p className="text-lg font-semibold text-gray-800">Failed to Load Page</p>
             <p className="mt-1 text-sm text-muted-foreground">Please try again later</p>
-            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50">
+            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-[#0A1F44]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10">
               Retry
             </Button>
           </div>
@@ -508,7 +508,7 @@ export function LegalPage() {
               className="hidden lg:block"
             >
               <div className="sticky top-24">
-                <div className="glass-emerald overflow-hidden rounded-2xl border border-white/20 shadow-lg">
+                <div className="glass overflow-hidden rounded-2xl border border-white/20 shadow-lg">
                   <div className={`h-1.5 bg-gradient-to-r ${pageInfo.gradient}`} />
                   <div className="p-5">
                     <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-gray-500">Contents</h3>
@@ -524,13 +524,13 @@ export function LegalPage() {
                               el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             }
                           }}
-                          className={`flex items-start gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-emerald-50 hover:text-emerald-700 ${
+                          className={`flex items-start gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-[#FFD54F]/10 hover:text-[#0A1F44] ${
                             section.level === 1
                               ? 'font-semibold text-gray-800'
                               : 'text-gray-500 ml-3'
                           }`}
                         >
-                          <ChevronRight className="mt-0.5 size-3 shrink-0 text-emerald-400" />
+                          <ChevronRight className="mt-0.5 size-3 shrink-0 text-[#0A1F44]/60" />
                           <span className="line-clamp-2">{section.title}</span>
                         </a>
                       ))}
@@ -539,7 +539,7 @@ export function LegalPage() {
                 </div>
 
                 {/* Other Legal Pages */}
-                <div className="glass-emerald mt-4 overflow-hidden rounded-2xl border border-white/20 shadow-lg">
+                <div className="glass mt-4 overflow-hidden rounded-2xl border border-white/20 shadow-lg">
                   <div className="p-5">
                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-500">Other Pages</h3>
                     <div className="space-y-1">
@@ -549,7 +549,7 @@ export function LegalPage() {
                           <button
                             key={key}
                             onClick={() => navigate(key as Page, { type: key })}
-                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-emerald-50 hover:text-emerald-700"
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-[#FFD54F]/10 hover:text-[#0A1F44]"
                           >
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ${info.gradient} text-white`}>
                               <span className="scale-75">{info.icon}</span>
@@ -571,13 +571,13 @@ export function LegalPage() {
             transition={{ duration: 0.5, delay: 0.15 }}
             className={tableOfContents.length > 0 ? 'lg:col-span-3' : 'lg:col-span-4'}
           >
-            <div className="glass-emerald overflow-hidden rounded-2xl border border-white/20 shadow-lg">
+            <div className="glass overflow-hidden rounded-2xl border border-white/20 shadow-lg">
               <div className={`h-1.5 bg-gradient-to-r ${pageInfo.gradient}`} />
               <div className="p-6 sm:p-8 lg:p-10">
                 {/* Header */}
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg shadow-emerald-500/20`}>
+                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg shadow-[#0A1F44]/20`}>
                       {pageInfo.icon}
                     </div>
                     <div>
@@ -599,18 +599,18 @@ export function LegalPage() {
                   </div>
                   {/* Last updated badge */}
                   {displayDate && (
-                    <div className="shrink-0 rounded-full bg-emerald-50 px-4 py-1.5 text-sm font-medium text-emerald-700 ring-1 ring-emerald-200">
+                    <div className="shrink-0 rounded-full bg-[#FFD54F]/10 px-4 py-1.5 text-sm font-medium text-[#0A1F44] ring-1 ring-[#0A1F44]/20">
                       Last Updated: {new Date(displayDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
                   )}
                 </div>
 
                 {/* Separator */}
-                <div className="mb-8 h-px bg-gradient-to-r from-transparent via-emerald-300/40 to-transparent" />
+                <div className="mb-8 h-px bg-gradient-to-r from-transparent via-[#FFD54F]/40 to-transparent" />
 
                 {/* Mobile TOC */}
                 {tableOfContents.length > 0 && (
-                  <div className="mb-8 rounded-xl bg-emerald-50/50 border border-emerald-100/50 p-4 lg:hidden">
+                  <div className="mb-8 rounded-xl bg-[#FFD54F]/10 border border-[#0A1F44]/15 p-4 lg:hidden">
                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-500">Table of Contents</h3>
                     <nav className="space-y-1 max-h-48 overflow-y-auto">
                       {tableOfContents.map((section, idx) => (
@@ -622,11 +622,11 @@ export function LegalPage() {
                             const el = document.getElementById(section.id);
                             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           }}
-                          className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white hover:text-emerald-700 ${
+                          className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white hover:text-[#0A1F44] ${
                             section.level === 1 ? 'font-medium text-gray-800' : 'text-gray-500 ml-4'
                           }`}
                         >
-                          <ChevronRight className="size-3 text-emerald-400" />
+                          <ChevronRight className="size-3 text-[#0A1F44]/60" />
                           <span className="line-clamp-1">{section.title}</span>
                         </a>
                       ))}
@@ -653,7 +653,7 @@ export function LegalPage() {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate(key as Page, { type: key })}
-                      className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+                      className="rounded-xl border-[#0A1F44]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10"
                     >
                       <span className="mr-1.5 scale-90">{info.icon}</span>
                       {info.title}
@@ -667,7 +667,7 @@ export function LegalPage() {
 
       {!loading && !displayContent && (
         <motion.div {...fadeUp} className="py-16 text-center">
-          <div className="glass-emerald mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
+          <div className="glass mx-auto max-w-md rounded-2xl border border-white/20 p-8 shadow-lg">
             <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50">
               <FileText className="size-8 text-gray-400" />
             </div>
@@ -687,7 +687,7 @@ export function LegalPage() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-lg shadow-emerald-500/30 hover:from-emerald-700 hover:to-teal-700 transition-all"
+            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/30 hover:from-[#132D5E] hover:to-[#0A1F44] transition-all"
             aria-label="Back to top"
           >
             <ArrowUp className="size-5" />

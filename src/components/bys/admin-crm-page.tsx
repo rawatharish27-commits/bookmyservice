@@ -18,13 +18,13 @@ export function AdminCrmPage() {
         transition={{ duration: 0.4 }}
         className="flex flex-col items-center gap-4 text-center"
       >
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1e3a5f]/10 to-[#2d5a8e]/10">
-          <Construction className="size-8 text-[#1e3a5f]" />
+        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44]/10 to-[#132D5E]/10">
+          <Construction className="size-8 text-[#0A1F44]" />
         </div>
-        <h1 className="text-2xl font-bold text-[#0a1628]">CRM</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44]">CRM</h1>
         <p className="max-w-md text-muted-foreground">Customer relationship management.</p>
-        <p className="text-sm text-[#2d5a8e] font-medium">🚧 This page is under construction</p>
-        <Button onClick={() => navigate('home')} variant="outline" className="mt-2 border-[#1e3a5f]/20 text-[#1e3a5f] hover:bg-[#0a1628]/5">
+        <p className="text-sm text-[#0A1F44] font-medium">🚧 This page is under construction</p>
+        <Button onClick={() => navigate('home')} variant="outline" className="mt-2 border-[#0A1F44]/20 text-[#0A1F44] hover:bg-[#0A1F44]/5">
           <ArrowLeft className="mr-2 size-4" /> Back to Home
         </Button>
       </motion.div>

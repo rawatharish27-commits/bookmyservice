@@ -51,7 +51,7 @@ const stagger = {
 function CommissionStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-yellow-50 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-400' },
-    APPROVED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
+    APPROVED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
     PAID: { className: 'bg-green-50 text-green-700 border-green-200', dotColor: 'bg-green-400' },
   };
   const c = config[status] || config.PENDING;
@@ -65,9 +65,9 @@ function CommissionStatusBadge({ status }: { status: string }) {
 
 function CommissionTypeBadge({ type }: { type: string }) {
   const config: Record<string, { className: string }> = {
-    REFERRAL: { className: 'bg-[#1e3a5f]/10 text-[#1e3a5f] border-[#1e3a5f]/20' },
-    AREA_MANAGER: { className: 'bg-sky-50 text-sky-700 border-sky-200' },
-    PLATFORM: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+    REFERRAL: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20' },
+    AREA_MANAGER: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20' },
+    PLATFORM: { className: 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20' },
   };
   const c = config[type] || config.REFERRAL;
   return (
@@ -140,32 +140,32 @@ export function ClientCommissionsPage() {
       title: 'Total Earned',
       value: summary?.totalEarnings || 0,
       icon: IndianRupee,
-      gradient: 'from-[#1e3a5f] to-[#2d5a8e]',
-      bgGlow: 'bg-sky-500/10',
-      color: 'text-[#0a1628]',
+      gradient: 'from-[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
+      color: 'text-[#0A1F44]',
     },
     {
       title: 'Pending',
       value: summary?.pendingAmount || 0,
       icon: Clock,
       gradient: 'from-yellow-400 to-amber-500',
-      bgGlow: 'bg-yellow-500/10',
+      bgGlow: 'bg-[#D4A017]/10',
       color: 'text-yellow-700',
     },
     {
       title: 'Approved',
       value: summary?.approvedAmount || 0,
       icon: CheckCircle2,
-      gradient: 'from-sky-400 to-blue-500',
-      bgGlow: 'bg-sky-400/10',
-      color: 'text-sky-700',
+      gradient: '[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
+      color: 'text-[#0A1F44]',
     },
     {
       title: 'Paid',
       value: summary?.paidAmount || 0,
       icon: Wallet,
       gradient: 'from-emerald-400 to-green-500',
-      bgGlow: 'bg-emerald-500/10',
+      bgGlow: 'bg-[#0A1F44]/10',
       color: 'text-green-700',
     },
   ];
@@ -174,10 +174,10 @@ export function ClientCommissionsPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#132D5E] hover:text-[#0A1F44] hover:bg-[#FFD54F]/10">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Commissions</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">Commissions</h1>
         <p className="mt-1 text-sm text-muted-foreground">Track your earnings from referrals & area management</p>
       </motion.div>
 
@@ -213,8 +213,8 @@ export function ClientCommissionsPage() {
           <CardContent className="p-4">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <div className="flex items-center gap-2">
-                <Filter className="size-4 text-[#2d5a8e]" />
-                <span className="text-sm font-medium text-[#0a1628]">Filters</span>
+                <Filter className="size-4 text-[#132D5E]" />
+                <span className="text-sm font-medium text-[#0A1F44]">Filters</span>
               </div>
               <div className="flex flex-1 flex-col gap-3 sm:flex-row">
                 <Select value={typeFilter} onValueChange={(val) => { setTypeFilter(val); setPage(1); }}>
@@ -248,9 +248,9 @@ export function ClientCommissionsPage() {
       {/* Commission Table */}
       <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] pb-3">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-              <Banknote className="size-5 text-sky-300" />
+              <Banknote className="size-5 text-[#FFD54F]" />
               Commission History
             </CardTitle>
           </CardHeader>
@@ -271,8 +271,8 @@ export function ClientCommissionsPage() {
               </div>
             ) : commissions.length === 0 ? (
               <div className="py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#0a1628]/5">
-                  <IndianRupee className="size-8 text-[#2d5a8e]/40" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#0A1F44]/5">
+                  <IndianRupee className="size-8 text-[#132D5E]/40" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No commissions found</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">
@@ -303,7 +303,7 @@ export function ClientCommissionsPage() {
                           initial={{ opacity: 0, x: -10 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: idx * 0.04 }}
-                          className="border-b border-muted/30 transition-colors hover:bg-sky-50/30"
+                          className="border-b border-muted/30 transition-colors hover:bg-[#FFD54F]/10/30"
                         >
                           <TableCell className="py-3 text-sm">
                             {new Date(commission.createdAt).toLocaleDateString('en-IN', {
@@ -321,7 +321,7 @@ export function ClientCommissionsPage() {
                           <TableCell className="py-3 text-sm font-medium">
                             {(commission.rate * 100).toFixed(0)}%
                           </TableCell>
-                          <TableCell className="py-3 text-sm font-bold text-[#0a1628]">
+                          <TableCell className="py-3 text-sm font-bold text-[#0A1F44]">
                             ₹{commission.amount.toLocaleString()}
                           </TableCell>
                           <TableCell className="py-3">
@@ -343,7 +343,7 @@ export function ClientCommissionsPage() {
                       transition={{ delay: idx * 0.04 }}
                       className="flex items-center gap-4 border-b border-muted/30 p-4"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-md shadow-[#1e3a5f]/20">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] shadow-md shadow-[#0A1F44]/20">
                         <IndianRupee className="size-4 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -358,7 +358,7 @@ export function ClientCommissionsPage() {
                         </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
-                        <span className="text-sm font-bold text-[#0a1628]">₹{commission.amount.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-[#0A1F44]">₹{commission.amount.toLocaleString()}</span>
                         <CommissionStatusBadge status={commission.status} />
                       </div>
                     </motion.div>
@@ -377,7 +377,7 @@ export function ClientCommissionsPage() {
                         size="sm"
                         disabled={page <= 1}
                         onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        className="h-8 gap-1 border-[#1e3a5f]/20 text-[#1e3a5f]"
+                        className="h-8 gap-1 border-[#0A1F44]/20 text-[#0A1F44]"
                       >
                         <ChevronLeft className="size-3" />
                         Prev
@@ -387,7 +387,7 @@ export function ClientCommissionsPage() {
                         size="sm"
                         disabled={page >= pagination.totalPages}
                         onClick={() => setPage((p) => p + 1)}
-                        className="h-8 gap-1 border-[#1e3a5f]/20 text-[#1e3a5f]"
+                        className="h-8 gap-1 border-[#0A1F44]/20 text-[#0A1F44]"
                       >
                         Next
                         <ChevronRight className="size-3" />

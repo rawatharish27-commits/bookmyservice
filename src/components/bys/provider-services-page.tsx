@@ -38,7 +38,7 @@ interface ServicesResponse {
 function ApprovalBadge({ status }: { status: string }) {
   const config: Record<string, { class: string; label: string; dotColor: string }> = {
     PENDING: { class: 'bg-amber-50 text-amber-700 border-amber-200', label: 'Pending Review', dotColor: 'bg-amber-400' },
-    APPROVED: { class: 'bg-emerald-50 text-emerald-700 border-emerald-200', label: 'Approved', dotColor: 'bg-emerald-400' },
+    APPROVED: { class: 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20', label: 'Approved', dotColor: 'bg-emerald-400' },
     REJECTED: { class: 'bg-red-50 text-red-700 border-red-200', label: 'Rejected', dotColor: 'bg-red-400' },
   };
   const c = config[status] || config.PENDING;
@@ -94,7 +94,7 @@ export function ProviderServicesPage() {
           <p className="mt-1 text-sm text-muted-foreground">Manage your service offerings</p>
         </div>
         <Button
-          className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
+          className="shimmer bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl"
           onClick={() => navigate('provider-create-service')}
         >
           <Plus className="mr-2 size-4" />
@@ -110,15 +110,15 @@ export function ProviderServicesPage() {
         >
           <Card className="rounded-2xl border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-12 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-                <Briefcase className="size-10 text-emerald-300" />
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br [#0A1F44]/10 to-[#132D5E]/5">
+                <Briefcase className="size-10 text-[#0A1F44]/40" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No services yet</h3>
               <p className="mt-1 text-sm text-muted-foreground/70">
                 Create your first service to start receiving bookings
               </p>
               <Button
-                className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+                className="mt-4 bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25"
                 onClick={() => navigate('provider-create-service')}
               >
                 <Plus className="mr-2 size-4" />
@@ -137,7 +137,7 @@ export function ProviderServicesPage() {
               transition={{ delay: idx * 0.05 }}
             >
               <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-amber-400 to-blue-500'}`} />
+                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r [#0A1F44] to-[#132D5E]' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r [#D4A017] to-[#0A1F44]'}`} />
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">

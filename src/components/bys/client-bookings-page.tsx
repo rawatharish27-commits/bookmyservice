@@ -30,8 +30,8 @@ import {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string; iconBg: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400', iconBg: 'bg-amber-100' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400', iconBg: 'bg-sky-100' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400', iconBg: 'bg-sky-100' },
+    ACCEPTED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]', iconBg: 'bg-[#0A1F44]/10' },
+    IN_PROGRESS: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#132D5E]', iconBg: 'bg-[#0A1F44]/10' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400', iconBg: 'bg-emerald-100' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', iconBg: 'bg-red-100' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400', iconBg: 'bg-gray-100' },
@@ -60,9 +60,9 @@ interface Booking {
 
 const TAB_CONFIG: Record<string, { label: string; gradient: string; icon: typeof Briefcase }> = {
   all: { label: 'All', gradient: 'from-gray-400 to-gray-500', icon: Briefcase },
-  upcoming: { label: 'Upcoming', gradient: 'from-sky-400 to-blue-500', icon: CalendarDays },
-  in_progress: { label: 'In Progress', gradient: 'from-sky-400 to-amber-500', icon: Clock },
-  completed: { label: 'Completed', gradient: 'from-emerald-400 to-teal-500', icon: Briefcase },
+  upcoming: { label: 'Upcoming', gradient: 'from-[#0A1F44] to-[#132D5E]', icon: CalendarDays },
+  in_progress: { label: 'In Progress', gradient: 'from-[#0A1F44] to-[#D4A017]', icon: Clock },
+  completed: { label: 'Completed', gradient: 'from-emerald-400 to-emerald-500', icon: Briefcase },
   cancelled: { label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 };
 
@@ -132,7 +132,7 @@ export function ClientBookingsPage() {
         className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
         <div>
-          <h1 className="text-2xl font-bold">My Bookings</h1>
+          <h1 className="text-2xl font-bold text-[#0A1F44]">My Bookings</h1>
           <p className="text-sm text-muted-foreground">Manage and track your service bookings</p>
         </div>
         <div className="relative w-full max-w-xs">
@@ -141,7 +141,7 @@ export function ClientBookingsPage() {
             placeholder="Search bookings..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 rounded-xl border-muted-foreground/20 focus:border-emerald-400"
+            className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#0A1F44]"
           />
         </div>
       </motion.div>
@@ -188,15 +188,15 @@ export function ClientBookingsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center py-16 text-center"
           >
-            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-              <CalendarDays className="size-10 text-emerald-300" />
+            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44]/10 to-[#132D5E]/5">
+              <CalendarDays className="size-10 text-[#0A1F44]/30" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No bookings found</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">
               {searchQuery ? 'Try a different search term' : 'Book a service to get started'}
             </p>
             <Button
-              className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+              className="mt-4 bg-[#0A1F44] text-[#FFD54F] shadow-lg shadow-[#0A1F44]/25"
               onClick={() => navigate('categories')}
             >
               Browse Services <ArrowRight className="ml-2 size-4" />
@@ -227,14 +227,14 @@ export function ClientBookingsPage() {
                       <div className={`h-1 bg-gradient-to-r ${tabConf.gradient}`} />
                       <button
                         onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
-                        className="flex w-full flex-col gap-4 p-4 text-left transition-colors hover:bg-gray-50/50 sm:flex-row sm:items-center sm:gap-6"
+                        className="flex w-full flex-col gap-4 p-4 text-left transition-colors hover:bg-[#F2C94C]/30 sm:flex-row sm:items-center sm:gap-6"
                       >
                         <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${tabConf.gradient} shadow-md`}>
                           <Briefcase className="size-6 text-white" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <p className="text-sm font-semibold">{booking.service?.title || 'Service'}</p>
+                            <p className="text-sm font-semibold text-[#0A1F44]">{booking.service?.title || 'Service'}</p>
                             <StatusBadge status={booking.status} />
                           </div>
                           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">

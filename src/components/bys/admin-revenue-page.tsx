@@ -59,36 +59,36 @@ export function AdminRevenuePage() {
 
       {/* Summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-emerald-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Est. Monthly Revenue</p>
-                <p className="mt-1 text-2xl font-bold text-emerald-600">₹{totalRevenue.toLocaleString()}</p>
+                <p className="text-sm text-[#FFD54F]/70">Est. Monthly Revenue</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">₹{totalRevenue.toLocaleString()}</p>
               </div>
-              <DollarSign className="size-5 text-emerald-600" />
+              <DollarSign className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Active Streams</p>
-                <p className="mt-1 text-2xl font-bold">{activeStreams.length}</p>
+                <p className="text-sm text-[#FFD54F]/70">Active Streams</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{activeStreams.length}</p>
               </div>
-              <CheckCircle2 className="size-5 text-blue-600" />
+              <CheckCircle2 className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-blue-500">
+        <Card className="border-0 bg-[#0A1F44]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Planned Streams</p>
-                <p className="mt-1 text-2xl font-bold">{plannedStreams.length}</p>
+                <p className="text-sm text-[#FFD54F]/70">Planned Streams</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{plannedStreams.length}</p>
               </div>
-              <Clock className="size-5 text-blue-600" />
+              <Clock className="size-5 text-[#FFD54F]/60" />
             </div>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ export function AdminRevenuePage() {
       <Card className="mt-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <BarChart3 className="size-4 text-emerald-600" />
+            <BarChart3 className="size-4 text-[#0A1F44]" />
             Revenue Streams
           </CardTitle>
         </CardHeader>
@@ -140,7 +140,7 @@ export function AdminRevenuePage() {
                           className={
                             stream.status === 'ACTIVE'
                               ? 'border-green-200 bg-green-100 text-green-800'
-                              : 'border-yellow-200 bg-yellow-100 text-yellow-800'
+                              : 'border-yellow-200 bg-yellow-100 text-[#0A1F44]/80'
                           }
                         >
                           {stream.status}
@@ -162,10 +162,10 @@ export function AdminRevenuePage() {
       <Card className="mt-4">
         <CardContent className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
-            <TrendingUp className="size-5 text-emerald-600" />
+            <TrendingUp className="size-5 text-[#0A1F44]" />
             <span className="font-medium">Total Estimated Monthly Revenue</span>
           </div>
-          <span className="text-xl font-bold text-emerald-600">₹{totalRevenue.toLocaleString()}</span>
+          <span className="text-xl font-bold text-[#0A1F44]">₹{totalRevenue.toLocaleString()}</span>
         </CardContent>
       </Card>
     </div>

@@ -79,9 +79,9 @@ function AnimatedCounter({ value, duration = 1200 }: { value: number; duration?:
 function ReferralStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-yellow-50 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-400' },
-    REGISTERED: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-blue-400' },
+    REGISTERED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
     ACTIVE: { className: 'bg-green-50 text-green-700 border-green-200', dotColor: 'bg-green-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20', dotColor: 'bg-emerald-400' },
     EXPIRED: { className: 'bg-gray-50 text-gray-500 border-gray-200', dotColor: 'bg-gray-400' },
   };
   const c = config[status] || config.PENDING;
@@ -189,8 +189,8 @@ export function ClientReferralsPage() {
       title: 'Total Referrals',
       value: stats?.totalReferrals || 0,
       icon: Users,
-      gradient: 'from-[#1e3a5f] to-[#2d5a8e]',
-      bgGlow: 'bg-sky-500/10',
+      gradient: 'from-[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
     {
       title: 'Active',
@@ -203,15 +203,15 @@ export function ClientReferralsPage() {
       title: 'Registered',
       value: stats?.registeredReferrals || 0,
       icon: UserCheck,
-      gradient: 'from-sky-400 to-blue-500',
-      bgGlow: 'bg-sky-400/10',
+      gradient: '[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
     {
       title: 'Earnings',
       value: stats?.totalCommissionEarned || 0,
       icon: IndianRupee,
-      gradient: 'from-[#1e3a5f] to-sky-500',
-      bgGlow: 'bg-sky-300/10',
+      gradient: 'from-[#0A1F44] to-sky-500',
+      bgGlow: 'bg-[#FFD54F]/10',
       isCurrency: true,
     },
   ];
@@ -220,10 +220,10 @@ export function ClientReferralsPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#132D5E] hover:text-[#0A1F44] hover:bg-[#FFD54F]/10">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0a1628] sm:text-3xl">Referral Program</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">Referral Program</h1>
         <p className="mt-1 text-sm text-muted-foreground">Refer friends & earn commissions on every booking</p>
       </motion.div>
 
@@ -262,12 +262,12 @@ export function ClientReferralsPage() {
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Gift className="size-5 text-[#2d5a8e]" />
-                  <h3 className="font-semibold text-[#0a1628]">Your Referral Code</h3>
+                  <Gift className="size-5 text-[#132D5E]" />
+                  <h3 className="font-semibold text-[#0A1F44]">Your Referral Code</h3>
                 </div>
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2 rounded-xl bg-[#0a1628] px-5 py-3">
-                    <span className="font-mono text-lg font-bold tracking-wider text-sky-300">{referralCode}</span>
+                  <div className="flex items-center gap-2 rounded-xl bg-[#0A1F44] px-5 py-3">
+                    <span className="font-mono text-lg font-bold tracking-wider text-[#FFD54F]">{referralCode}</span>
                     <button
                       onClick={handleCopyCode}
                       className="ml-2 rounded-lg p-1.5 transition-colors hover:bg-white/10"
@@ -276,7 +276,7 @@ export function ClientReferralsPage() {
                       {copied ? (
                         <Check className="size-4 text-green-400" />
                       ) : (
-                        <Copy className="size-4 text-sky-300" />
+                        <Copy className="size-4 text-[#FFD54F]" />
                       )}
                     </button>
                   </div>
@@ -295,14 +295,14 @@ export function ClientReferralsPage() {
                 </Button>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
-                    <Button className="gap-2 bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25 hover:shadow-xl">
+                    <Button className="gap-2 bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 hover:shadow-xl">
                       <Plus className="size-4" />
                       Add Referral
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="sm:max-w-md">
                     <DialogHeader>
-                      <DialogTitle className="text-[#0a1628]">Create Referral</DialogTitle>
+                      <DialogTitle className="text-[#0A1F44]">Create Referral</DialogTitle>
                       <DialogDescription>Manually add someone to your referral network</DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4 py-2">
@@ -356,7 +356,7 @@ export function ClientReferralsPage() {
                       <Button
                         onClick={handleCreateReferral}
                         disabled={creating || (!formData.referredName && !formData.referredPhone && !formData.referredEmail)}
-                        className="bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white"
+                        className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white"
                       >
                         {creating ? 'Creating...' : 'Create Referral'}
                       </Button>
@@ -372,9 +372,9 @@ export function ClientReferralsPage() {
       {/* Commission Summary */}
       <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0a1628] to-[#1e3a5f] pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] pb-3">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-              <IndianRupee className="size-5 text-sky-300" />
+              <IndianRupee className="size-5 text-[#FFD54F]" />
               Commission Summary
             </CardTitle>
           </CardHeader>
@@ -387,9 +387,9 @@ export function ClientReferralsPage() {
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-xl bg-[#0a1628]/5 p-4 text-center">
+                <div className="rounded-xl bg-[#0A1F44]/5 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Total Earned</p>
-                  <p className="mt-1 text-xl font-bold text-[#0a1628]">₹{(stats?.totalCommissionEarned || 0).toLocaleString()}</p>
+                  <p className="mt-1 text-xl font-bold text-[#0A1F44]">₹{(stats?.totalCommissionEarned || 0).toLocaleString()}</p>
                 </div>
                 <div className="rounded-xl bg-yellow-50 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Pending</p>
@@ -408,16 +408,16 @@ export function ClientReferralsPage() {
       {/* Referral List */}
       <motion.div {...fadeUp} transition={{ delay: 0.25 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#0a1628]/5 to-sky-50/50 pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0a1628]">
-              <UserPlus className="size-5 text-[#2d5a8e]" />
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#0A1F44]/5 to-sky-50/50 pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A1F44]">
+              <UserPlus className="size-5 text-[#132D5E]" />
               Your Referrals
             </CardTitle>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => navigate('client-commissions' as Page)}
-              className="text-[#2d5a8e] hover:text-[#1e3a5f] hover:bg-sky-50"
+              className="text-[#132D5E] hover:text-[#0A1F44] hover:bg-[#FFD54F]/10"
             >
               <IndianRupee className="mr-1 size-4" /> View Earnings
             </Button>
@@ -431,13 +431,13 @@ export function ClientReferralsPage() {
               </div>
             ) : referrals.length === 0 ? (
               <div className="py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#0a1628]/5">
-                  <Users className="size-8 text-[#2d5a8e]/40" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#0A1F44]/5">
+                  <Users className="size-8 text-[#132D5E]/40" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No referrals yet</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">Start referring friends and earn commissions!</p>
                 <Button
-                  className="mt-4 bg-gradient-to-r from-[#1e3a5f] to-[#2d5a8e] text-white shadow-lg shadow-[#1e3a5f]/25"
+                  className="mt-4 bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25"
                   size="sm"
                   onClick={handleWhatsAppShare}
                 >
@@ -453,9 +453,9 @@ export function ClientReferralsPage() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="group flex items-center gap-4 rounded-xl border border-transparent p-4 transition-all hover:border-sky-100 hover:bg-sky-50/30 hover:shadow-sm"
+                    className="group flex items-center gap-4 rounded-xl border border-transparent p-4 transition-all hover:border-[#0A1F44]/10 hover:bg-[#FFD54F]/10/30 hover:shadow-sm"
                   >
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1e3a5f] to-[#2d5a8e] shadow-md shadow-[#1e3a5f]/20">
+                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] shadow-md shadow-[#0A1F44]/20">
                       <Users className="size-5 text-white" />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -469,7 +469,7 @@ export function ClientReferralsPage() {
                     </div>
                     <div className="flex shrink-0 flex-col items-end gap-1.5">
                       <ReferralStatusBadge status={ref.status} />
-                      <span className="text-xs font-medium text-[#2d5a8e]">
+                      <span className="text-xs font-medium text-[#132D5E]">
                         ₹{ref.totalEarnings.toLocaleString()}
                       </span>
                     </div>

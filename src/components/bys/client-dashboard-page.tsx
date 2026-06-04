@@ -36,8 +36,8 @@ const stagger = {
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
+    ACCEPTED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
+    IN_PROGRESS: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#132D5E]' },
     COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
@@ -73,9 +73,9 @@ interface ReviewData {
 }
 
 const SERVICE_ICONS = [
-  { icon: Droplets, color: 'from-blue-400 to-cyan-400', label: 'Plumbing' },
-  { icon: Zap, color: 'from-amber-400 to-yellow-400', label: 'Electrical' },
-  { icon: Wind, color: 'from-teal-400 to-emerald-400', label: 'AC & HVAC' },
+  { icon: Droplets, color: 'from-[#0A1F44] to-[#132D5E]', label: 'Plumbing' },
+  { icon: Zap, color: 'from-[#D4A017] to-[#C99700]', label: 'Electrical' },
+  { icon: Wind, color: 'from-[#0A1F44] to-[#D4A017]', label: 'AC & HVAC' },
 ];
 
 export function ClientDashboardPage() {
@@ -104,37 +104,37 @@ export function ClientDashboardPage() {
       title: 'Upcoming Bookings',
       value: upcomingBookings.length,
       icon: CalendarCheck,
-      gradient: 'from-sky-400 to-blue-500',
-      bgGlow: 'bg-sky-500/10',
+      gradient: 'from-[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
     {
       title: 'Completed Services',
       value: completedCount,
       icon: CheckCircle2,
-      gradient: 'from-emerald-400 to-teal-500',
+      gradient: 'from-emerald-500 to-emerald-600',
       bgGlow: 'bg-emerald-500/10',
     },
     {
       title: 'Favorite Providers',
       value: 0,
       icon: Heart,
-      gradient: 'from-pink-400 to-rose-500',
+      gradient: 'from-pink-500 to-rose-600',
       bgGlow: 'bg-pink-500/10',
     },
     {
       title: 'Total Spent',
       value: `₹${totalSpent.toLocaleString()}`,
       icon: DollarSign,
-      gradient: 'from-amber-400 to-blue-500',
-      bgGlow: 'bg-amber-500/10',
+      gradient: 'from-[#D4A017] to-[#C99700]',
+      bgGlow: 'bg-[#D4A017]/10',
     },
   ];
 
   const quickActions = [
-    { icon: Briefcase, label: 'Book a Service', nav: 'categories', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
-    { icon: CalendarCheck, label: 'My Bookings', nav: 'client-bookings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: Heart, label: 'Favorites', nav: 'client-favorites', gradient: 'from-pink-500 to-rose-600', shadow: 'shadow-pink-500/25' },
-    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
+    { icon: Briefcase, label: 'Book a Service', nav: 'categories', gradient: 'from-[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25' },
+    { icon: CalendarCheck, label: 'My Bookings', nav: 'client-bookings', gradient: 'from-[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25' },
+    { icon: Heart, label: 'Favorites', nav: 'client-favorites', gradient: 'from-[#D4A017] to-[#C99700]', shadow: 'shadow-[#D4A017]/25' },
+    { icon: User, label: 'My Profile', nav: 'client-profile', gradient: 'from-[#0A1F44] to-[#D4A017]', shadow: 'shadow-[#0A1F44]/25' },
   ];
 
   return (
@@ -143,25 +143,25 @@ export function ClientDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-[#0A1F44] p-6 sm:p-8"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
-        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
-        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-[#FFD54F]/10 blur-2xl" />
+        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-[#FFD54F]/5 blur-3xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="size-5 text-emerald-200" />
-              <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+              <Sparkles className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#E0B84C]">Welcome back</span>
             </div>
-            <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
+            <h1 className="mt-1 text-2xl font-bold text-[#FFD54F] sm:text-3xl">
               {user?.name?.split(' ')[0] || 'Client'} 👋
             </h1>
-            <p className="mt-1 text-emerald-100/80">Here&apos;s an overview of your activity</p>
+            <p className="mt-1 text-[#E0B84C]/80">Here&apos;s an overview of your activity</p>
           </div>
           <div className="flex gap-3">
             <Button
-              className="shimmer bg-white/15 text-white backdrop-blur-sm hover:bg-white/25 border border-white/20"
+              className="shimmer bg-[#FFD54F]/15 text-[#FFD54F] backdrop-blur-sm hover:bg-[#FFD54F]/25 border border-[#FFD54F]/20"
               onClick={() => navigate('categories')}
             >
               <Briefcase className="mr-2 size-4" />
@@ -169,7 +169,7 @@ export function ClientDashboardPage() {
             </Button>
             <Button
               variant="outline"
-              className="border-white/30 bg-transparent text-white hover:bg-white/10 hover:text-white"
+              className="border-[#FFD54F]/30 bg-transparent text-[#FFD54F] hover:bg-[#FFD54F]/10 hover:text-[#FFD54F]"
               onClick={() => navigate('client-bookings')}
             >
               View Bookings
@@ -187,15 +187,15 @@ export function ClientDashboardPage() {
       >
         {stats.map((stat) => (
           <motion.div key={stat.title} variants={fadeUp}>
-            <div className="glass group relative overflow-hidden rounded-2xl p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
+            <div className="group relative overflow-hidden rounded-2xl bg-[#0A1F44] p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
               <div className={`absolute -right-3 -top-3 size-16 rounded-full ${stat.bgGlow} blur-xl transition-all duration-300 group-hover:scale-150`} />
               <div className="relative flex items-center gap-4">
                 <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-lg`}>
-                  <stat.icon className="size-5 text-white" />
+                  <stat.icon className="size-5 text-[#FFD54F]" />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-xs text-muted-foreground">{stat.title}</p>
-                  <p className="text-xl font-bold">{stat.value}</p>
+                  <p className="truncate text-xs text-[#E0B84C]">{stat.title}</p>
+                  <p className="text-xl font-bold text-[#FFD54F]">{stat.value}</p>
                 </div>
               </div>
             </div>
@@ -207,9 +207,9 @@ export function ClientDashboardPage() {
         {/* Upcoming Bookings */}
         <motion.div className="lg:col-span-2" {...fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
-              <CardTitle className="text-lg font-semibold">Upcoming Bookings</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+            <CardHeader className="flex flex-row items-center justify-between bg-[#0A1F44] pb-3">
+              <CardTitle className="text-lg font-semibold text-[#FFD54F]">Upcoming Bookings</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-bookings')} className="text-[#FFD54F] hover:text-[#FFD54F] hover:bg-[#FFD54F]/10">
                 View All <ArrowRight className="ml-1 size-4" />
               </Button>
             </CardHeader>
@@ -222,13 +222,13 @@ export function ClientDashboardPage() {
                 </div>
               ) : upcomingBookings.length === 0 ? (
                 <div className="py-10 text-center">
-                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                    <CalendarDays className="size-8 text-emerald-300" />
+                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#0A1F44]/5">
+                    <CalendarDays className="size-8 text-[#0A1F44]/30" />
                   </div>
                   <p className="mt-3 font-medium text-muted-foreground">No upcoming bookings</p>
                   <p className="mt-1 text-sm text-muted-foreground/70">Book a service to get started</p>
                   <Button
-                    className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 hover:shadow-xl hover:shadow-emerald-500/30"
+                    className="mt-4 bg-[#0A1F44] text-[#FFD54F] shadow-lg shadow-[#0A1F44]/25 hover:bg-[#132D5E]"
                     size="sm"
                     onClick={() => navigate('categories')}
                   >
@@ -244,13 +244,13 @@ export function ClientDashboardPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.08 }}
                       onClick={() => navigate('client-booking-detail', { bookingId: booking.id })}
-                      className="group flex w-full items-center gap-4 rounded-xl border border-transparent p-4 text-left transition-all hover:border-emerald-100 hover:bg-emerald-50/50 hover:shadow-sm"
+                      className="group flex w-full items-center gap-4 rounded-xl border border-transparent p-4 text-left transition-all hover:border-[#0A1F44]/10 hover:bg-[#FFD54F]/5 hover:shadow-sm"
                     >
-                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-md shadow-emerald-500/20">
-                        <Briefcase className="size-5 text-white" />
+                      <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] shadow-md shadow-[#0A1F44]/20">
+                        <Briefcase className="size-5 text-[#FFD54F]" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold">
+                        <p className="truncate text-sm font-semibold text-[#0A1F44]">
                           {booking.service?.title || 'Service'}
                         </p>
                         <p className="text-xs text-muted-foreground">
@@ -264,7 +264,7 @@ export function ClientDashboardPage() {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         <StatusBadge status={booking.status} />
-                        <span className="text-xs font-semibold text-emerald-600">₹{booking.finalPrice?.toLocaleString()}</span>
+                        <span className="text-xs font-semibold text-[#0A1F44]">₹{booking.finalPrice?.toLocaleString()}</span>
                       </div>
                     </motion.button>
                   ))}
@@ -277,9 +277,9 @@ export function ClientDashboardPage() {
         {/* Recent Reviews */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
-              <CardTitle className="text-lg font-semibold">Recent Reviews</CardTitle>
-              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
+            <CardHeader className="flex flex-row items-center justify-between bg-[#0A1F44] pb-3">
+              <CardTitle className="text-lg font-semibold text-[#FFD54F]">Recent Reviews</CardTitle>
+              <Button variant="ghost" size="sm" onClick={() => navigate('client-reviews')} className="text-[#FFD54F] hover:text-[#FFD54F] hover:bg-[#FFD54F]/10">
                 View All
               </Button>
             </CardHeader>
@@ -292,21 +292,21 @@ export function ClientDashboardPage() {
                 </div>
               ) : recentReviews.length === 0 ? (
                 <div className="py-8 text-center">
-                  <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-amber-50">
-                    <Star className="size-7 text-amber-300" />
+                  <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-[#D4A017]/10">
+                    <Star className="size-7 text-[#D4A017]/50" />
                   </div>
                   <p className="mt-3 text-sm text-muted-foreground">No reviews yet</p>
                 </div>
               ) : (
                 <div className="space-y-3">
                   {recentReviews.map((review) => (
-                    <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-amber-100 hover:bg-amber-50/30">
+                    <div key={review.id} className="rounded-xl border border-transparent p-3 transition-colors hover:border-[#0A1F44]/10 hover:bg-[#FFD54F]/5">
                       <div className="flex items-center gap-2">
                         <div className="flex">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <Star
                               key={i}
-                              className={`size-3.5 ${i < review.rating ? 'fill-amber-400 text-amber-400 drop-shadow-[0_0_3px_rgba(251,191,36,0.4)]' : 'text-gray-200'}`}
+                              className={`size-3.5 ${i < review.rating ? 'fill-[#D4A017] text-[#D4A017] drop-shadow-[0_0_3px_rgba(212,160,23,0.4)]' : 'text-gray-200'}`}
                             />
                           ))}
                         </div>
@@ -317,7 +317,7 @@ export function ClientDashboardPage() {
                           })}
                         </span>
                       </div>
-                      <p className="mt-1 text-sm font-medium">{review.service?.title || 'Service'}</p>
+                      <p className="mt-1 text-sm font-medium text-[#0A1F44]">{review.service?.title || 'Service'}</p>
                       {review.comment && (
                         <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{review.comment}</p>
                       )}
@@ -337,7 +337,7 @@ export function ClientDashboardPage() {
         transition={{ delay: 0.2 }}
         className="mt-8"
       >
-        <h2 className="mb-4 text-lg font-semibold">Quick Actions</h2>
+        <h2 className="mb-4 text-lg font-semibold text-[#0A1F44]">Quick Actions</h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {quickActions.map((action) => (
             <motion.button
@@ -345,7 +345,7 @@ export function ClientDashboardPage() {
               whileHover={{ scale: 1.02, y: -2 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => navigate(action.nav as Page)}
-              className={`flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br ${action.gradient} p-5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
+              className={`flex flex-col items-center gap-3 rounded-2xl bg-gradient-to-br ${action.gradient} p-5 text-[#FFD54F] shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
             >
               <action.icon className="size-6" />
               <span className="text-sm font-semibold">{action.label}</span>
@@ -362,8 +362,8 @@ export function ClientDashboardPage() {
         className="mt-8"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Explore Services</h2>
-          <Button variant="ghost" size="sm" onClick={() => navigate('categories')} className="text-emerald-600 hover:text-emerald-700">
+          <h2 className="text-lg font-semibold text-[#0A1F44]">Explore Services</h2>
+          <Button variant="ghost" size="sm" onClick={() => navigate('categories')} className="text-[#0A1F44] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
             See All <ArrowRight className="ml-1 size-4" />
           </Button>
         </div>
@@ -377,13 +377,13 @@ export function ClientDashboardPage() {
               whileHover={{ y: -4 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => navigate('categories')}
-              className="group flex min-w-[180px] flex-col items-center gap-3 rounded-2xl border border-transparent bg-white p-6 shadow-sm transition-all hover:border-emerald-100 hover:shadow-md"
+              className="group flex min-w-[180px] flex-col items-center gap-3 rounded-2xl border border-[#0A1F44]/10 bg-[#F2C94C] p-6 shadow-sm transition-all hover:border-[#0A1F44]/20 hover:shadow-md"
             >
               <div className={`flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br ${svc.color} shadow-lg transition-transform group-hover:scale-110`}>
-                <svc.icon className="size-7 text-white" />
+                <svc.icon className="size-7 text-[#FFD54F]" />
               </div>
-              <span className="font-semibold text-sm">{svc.label}</span>
-              <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium group-hover:gap-2 transition-all">
+              <span className="font-semibold text-sm text-[#0A1F44]">{svc.label}</span>
+              <span className="flex items-center gap-1 text-xs text-[#0A1F44]/70 font-medium group-hover:gap-2 transition-all">
                 Explore <ArrowRight className="size-3" />
               </span>
             </motion.button>

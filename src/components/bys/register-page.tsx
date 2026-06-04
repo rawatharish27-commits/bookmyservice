@@ -13,9 +13,9 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 
 const specializations = [
-  { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-600 to-cyan-400', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-blue-700', desc: 'Pipes, leaks, installations' },
-  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-amber-500 via-blue-500 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-amber-700', desc: 'Wiring, switches, fixtures' },
-  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-teal-500 via-emerald-500 to-cyan-400', bgColor: 'bg-teal-50 border-teal-200', activeBg: 'bg-teal-100 border-teal-400 ring-2 ring-teal-300', textColor: 'text-teal-700', desc: 'Cooling, heating, ventilation' },
+  { value: 'plumbing', label: 'Plumbing', Icon: Droplets, color: 'from-blue-600 to-[#D4A017]', bgColor: 'bg-blue-50 border-blue-200', activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300', textColor: 'text-[#0A1F44]', desc: 'Pipes, leaks, installations' },
+  { value: 'electrical', label: 'Electrical', Icon: Zap, color: 'from-amber-500 via-blue-500 to-yellow-400', bgColor: 'bg-amber-50 border-amber-200', activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300', textColor: 'text-[#0A1F44]', desc: 'Wiring, switches, fixtures' },
+  { value: 'ac-hvac', label: 'AC & HVAC', Icon: Wind, color: 'from-[#0A1F44] via-[#132D5E] to-[#D4A017]', bgColor: 'bg-[#FFD54F]/10 border-[#0A1F44]/20', activeBg: 'bg-[#0A1F44]/10 border-[#0A1F44] ring-2 ring-[#D4A017]', textColor: 'text-[#0A1F44]', desc: 'Cooling, heating, ventilation' },
 ];
 
 const roleOptions = [
@@ -25,10 +25,10 @@ const roleOptions = [
     roleName: 'CLIENT',
     label: 'Client',
     Icon: User,
-    gradient: 'from-emerald-600 via-teal-500 to-cyan-500',
-    bgColor: 'bg-emerald-50 border-emerald-200',
-    activeBg: 'bg-emerald-100 border-emerald-400 ring-2 ring-emerald-300',
-    textColor: 'text-emerald-700',
+    gradient: 'from-[#0A1F44] via-[#132D5E] to-[#0A1F44]',
+    bgColor: 'bg-[#FFD54F]/10 border-[#0A1F44]/20',
+    activeBg: 'bg-[#0A1F44]/10 border-[#0A1F44] ring-2 ring-[#D4A017]',
+    textColor: 'text-[#0A1F44]',
     desc: 'Book home services',
     banner: 'Book trusted professionals for Plumbing, Electrical & AC services',
     dashboard: 'client-dashboard' as Page,
@@ -39,10 +39,10 @@ const roleOptions = [
     roleName: 'TECHNICIAN',
     label: 'Technician',
     Icon: Wrench,
-    gradient: 'from-blue-500 via-indigo-500 to-violet-500',
+    gradient: 'from-[#0A1F44] via-[#132D5E] to-[#0A1F44]',
     bgColor: 'bg-blue-50 border-blue-200',
     activeBg: 'bg-blue-100 border-blue-400 ring-2 ring-blue-300',
-    textColor: 'text-blue-700',
+    textColor: 'text-[#0A1F44]',
     desc: 'Accept jobs & earn',
     banner: 'Join as a skilled technician and grow your career',
     dashboard: 'technician-dashboard' as Page,
@@ -53,10 +53,10 @@ const roleOptions = [
     roleName: 'PROVIDER',
     label: 'Service Provider',
     Icon: Briefcase,
-    gradient: 'from-amber-500 via-blue-500 to-rose-500',
+    gradient: 'from-[#0A1F44] via-[#132D5E] to-[#0A1F44]',
     bgColor: 'bg-amber-50 border-amber-200',
     activeBg: 'bg-amber-100 border-amber-400 ring-2 ring-amber-300',
-    textColor: 'text-amber-700',
+    textColor: 'text-[#0A1F44]',
     desc: 'List & manage services',
     banner: 'Reach thousands of customers, grow your business',
     dashboard: 'provider-dashboard' as Page,
@@ -67,7 +67,7 @@ const roleOptions = [
     roleName: 'VENDOR',
     label: 'Vendor',
     Icon: Package,
-    gradient: 'from-rose-500 via-pink-500 to-fuchsia-500',
+    gradient: 'from-[#8B0000] via-[#8B0000] to-[#8B0000]',
     bgColor: 'bg-rose-50 border-rose-200',
     activeBg: 'bg-rose-100 border-rose-400 ring-2 ring-rose-300',
     textColor: 'text-rose-700',
@@ -81,7 +81,7 @@ const roleOptions = [
     roleName: 'FRANCHISE',
     label: 'Franchise Owner',
     Icon: Building2,
-    gradient: 'from-slate-600 via-zinc-600 to-gray-700',
+    gradient: 'from-[#0A1F44] via-[#132D5E] to-[#0A1F44]',
     bgColor: 'bg-slate-50 border-slate-200',
     activeBg: 'bg-slate-100 border-slate-400 ring-2 ring-slate-300',
     textColor: 'text-slate-700',
@@ -102,8 +102,8 @@ function getPasswordStrength(password: string): { label: string; color: string; 
   if (score <= 1) return { label: 'Very Weak', color: 'bg-gradient-to-r from-red-500 to-red-600', width: 'w-1/5', emoji: '😩', score };
   if (score === 2) return { label: 'Weak', color: 'bg-gradient-to-r from-blue-500 to-amber-500', width: 'w-2/5', emoji: '😕', score };
   if (score === 3) return { label: 'Fair', color: 'bg-gradient-to-r from-yellow-500 to-amber-400', width: 'w-3/5', emoji: '😐', score };
-  if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-emerald-500 to-teal-400', width: 'w-4/5', emoji: '😊', score };
-  return { label: 'Very Strong', color: 'bg-gradient-to-r from-emerald-600 via-teal-500 to-cyan-500', width: 'w-full', emoji: '💪', score };
+  if (score === 4) return { label: 'Strong', color: 'bg-gradient-to-r from-[#0A1F44] to-[#D4A017]', width: 'w-4/5', emoji: '😊', score };
+  return { label: 'Very Strong', color: 'bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]', width: 'w-full', emoji: '💪', score };
 }
 
 export function RegisterPage() {
@@ -181,7 +181,7 @@ export function RegisterPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-emerald-900 via-teal-800 to-cyan-900">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44]">
         {/* Mesh gradient overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(16,185,129,0.55),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(6,182,212,0.4),transparent_50%)]" />
@@ -232,10 +232,10 @@ export function RegisterPage() {
 
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
               Join India&apos;s<br />
-              <span className="bg-gradient-to-r from-emerald-200 via-teal-200 to-cyan-200 bg-clip-text text-transparent">Trusted Platform.</span>
+              <span className="bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F] bg-clip-text text-transparent">Trusted Platform.</span>
             </h2>
 
-            <p className="text-emerald-100/80 text-lg mb-10 max-w-md leading-relaxed">
+            <p className="text-[#E0B84C]/80 text-lg mb-10 max-w-md leading-relaxed">
               Whether you need home services or want to offer them, we&apos;ve got you covered with a seamless experience.
             </p>
 
@@ -290,18 +290,18 @@ export function RegisterPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             onClick={() => navigate('home')}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-emerald-700 mb-6 transition-colors group"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#0A1F44] mb-6 transition-colors group"
           >
             <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
           </motion.button>
 
           {/* ========== GLASSMORPHISM CARD ========== */}
-          <div className="glass-emerald rounded-2xl shadow-xl border-gray-200/50 relative overflow-hidden backdrop-blur-xl">
+          <div className="glass rounded-2xl shadow-xl border-[#0A1F44]/10 relative overflow-hidden backdrop-blur-xl">
             {/* Subtle border glow */}
-            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-gray-200/30 pointer-events-none" />
+            <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-[#0A1F44]/10 pointer-events-none" />
             {/* Gradient top accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0A1F44] via-[#D4A017] to-[#0A1F44]" />
 
             {/* Header */}
             <div className="text-center pt-8 pb-2 px-6">
@@ -309,7 +309,7 @@ export function RegisterPage() {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-500 to-cyan-500 text-white shadow-lg shadow-emerald-500/30"
+                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44] text-white shadow-lg shadow-[#0A1F44]/30"
               >
                 <Wrench className="size-8" />
               </motion.div>
@@ -334,15 +334,15 @@ export function RegisterPage() {
             {/* Step Indicator */}
             <div className="px-6 pt-3">
               <div className="flex items-center gap-3">
-                <div className="flex-1 h-2 rounded-full bg-emerald-100 overflow-hidden">
+                <div className="flex-1 h-2 rounded-full bg-[#FFD54F]/20 overflow-hidden">
                   <motion.div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-cyan-400"
+                    className="h-full rounded-full bg-gradient-to-r from-[#0A1F44] to-[#D4A017]"
                     initial={{ width: 0 }}
                     animate={{ width: `${(filledSteps / totalSteps) * 100}%` }}
                     transition={{ type: 'spring', stiffness: 120, damping: 18 }}
                   />
                 </div>
-                <span className="text-xs font-medium text-emerald-600 whitespace-nowrap">
+                <span className="text-xs font-medium text-[#0A1F44] whitespace-nowrap">
                   {filledSteps}/{totalSteps}
                 </span>
               </div>
@@ -375,7 +375,7 @@ export function RegisterPage() {
                         {isSelected && (
                           <motion.div
                             layoutId="role-check"
-                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                            className="absolute -top-1.5 -right-1.5 size-4 rounded-full bg-[#FFD54F]/100 flex items-center justify-center shadow-sm"
                             transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                           >
                             <CheckCircle2 className="size-2.5 text-white" />
@@ -397,14 +397,14 @@ export function RegisterPage() {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3 }}
-                    className="relative rounded-xl overflow-hidden p-4 border border-emerald-100/70"
+                    className="relative rounded-xl overflow-hidden p-4 border border-[#0A1F44]/10/70"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#FFD54F]/10 via-[#E0B84C]/10 to-[#FFD54F]/10 bg-[length:200%_100%] animate-[gradient-shift_6s_ease_infinite]" />
                     <div className="relative">
-                      <p className="text-sm font-semibold text-emerald-800">
+                      <p className="text-sm font-semibold text-[#0A1F44]">
                         {currentRole.banner}
                       </p>
-                      <p className="text-xs text-emerald-600 mt-1">
+                      <p className="text-xs text-[#0A1F44] mt-1">
                         Sign up as a {currentRole.label} to get started
                       </p>
                     </div>
@@ -433,14 +433,14 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-name" className="text-sm font-medium text-foreground/80">Full Name</Label>
                   <div className="relative group">
-                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#0A1F44] transition-colors" />
                     <Input
                       id="reg-name"
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       required
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-[#E0B84C]/50 border-[#0A1F44]/15 focus:border-[#0A1F44] focus:ring-[#FFD54F]/30 focus:bg-[#F2C94C]/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -449,7 +449,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#0A1F44] transition-colors" />
                     <Input
                       id="reg-email"
                       type="email"
@@ -458,7 +458,7 @@ export function RegisterPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-[#E0B84C]/50 border-[#0A1F44]/15 focus:border-[#0A1F44] focus:ring-[#FFD54F]/30 focus:bg-[#F2C94C]/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -473,7 +473,7 @@ export function RegisterPage() {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                    className="h-11 bg-[#E0B84C]/50 border-[#0A1F44]/15 focus:border-[#0A1F44] focus:ring-[#FFD54F]/30 focus:bg-[#F2C94C]/80 transition-all rounded-xl"
                   />
                 </div>
 
@@ -513,7 +513,7 @@ export function RegisterPage() {
                               {isActive && (
                                 <motion.div
                                   layoutId="specialization-check"
-                                  className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-emerald-500 flex items-center justify-center shadow-sm"
+                                  className="absolute -top-1.5 -right-1.5 size-5 rounded-full bg-[#FFD54F]/100 flex items-center justify-center shadow-sm"
                                 >
                                   <CheckCircle2 className="size-3 text-white" />
                                 </motion.div>
@@ -530,7 +530,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-password" className="text-sm font-medium text-foreground/80">Password</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#0A1F44] transition-colors" />
                     <Input
                       id="reg-password"
                       type={showPassword ? 'text' : 'password'}
@@ -539,7 +539,7 @@ export function RegisterPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="new-password"
-                      className="pl-10 pr-11 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 pr-11 h-11 bg-[#E0B84C]/50 border-[#0A1F44]/15 focus:border-[#0A1F44] focus:ring-[#FFD54F]/30 focus:bg-[#F2C94C]/80 transition-all rounded-xl"
                     />
                     <button
                       type="button"
@@ -580,7 +580,7 @@ export function RegisterPage() {
                 <div className="space-y-2">
                   <Label htmlFor="reg-confirm" className="text-sm font-medium text-foreground/80">Confirm Password</Label>
                   <div className="relative group">
-                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-emerald-600 transition-colors" />
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#0A1F44] transition-colors" />
                     <Input
                       id="reg-confirm"
                       type="password"
@@ -589,7 +589,7 @@ export function RegisterPage() {
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
                       autoComplete="new-password"
-                      className="pl-10 h-11 bg-white/60 border-emerald-100/50 focus:border-emerald-400 focus:ring-emerald-400/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-11 bg-[#E0B84C]/50 border-[#0A1F44]/15 focus:border-[#0A1F44] focus:ring-[#FFD54F]/30 focus:bg-[#F2C94C]/80 transition-all rounded-xl"
                     />
                   </div>
                   <AnimatePresence>
@@ -611,7 +611,7 @@ export function RegisterPage() {
                         initial={{ opacity: 0, y: -5 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -5 }}
-                        className="text-xs text-emerald-600 flex items-center gap-1"
+                        className="text-xs text-[#0A1F44] flex items-center gap-1"
                       >
                         <CheckCircle2 className="size-3.5" />
                         Passwords match
@@ -622,21 +622,21 @@ export function RegisterPage() {
 
                 {/* Terms */}
                 <div
-                  className="flex items-start gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200 select-none"
+                  className="flex items-start gap-3 p-4 rounded-xl bg-[#E0B84C]/30 border border-[#0A1F44]/15 select-none"
                 >
                   <Checkbox
                     id="reg-terms"
                     checked={termsAccepted}
                     onCheckedChange={(checked) => setTermsAccepted(checked === true)}
-                    className="mt-0.5 size-5 data-[state=checked]:bg-emerald-500 data-[state=checked]:border-emerald-500 cursor-pointer"
+                    className="mt-0.5 size-5 data-[state=checked]:bg-[#FFD54F]/100 data-[state=checked]:border-[#0A1F44] cursor-pointer"
                   />
                   <Label htmlFor="reg-terms" className="text-sm font-normal leading-snug text-muted-foreground cursor-pointer">
                     I agree to the{' '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Terms of Service</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('terms', { type: 'terms' }); }} className="text-[#0A1F44] hover:text-[#132D5E] font-medium underline underline-offset-2">Terms of Service</button>
                     {', '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">AUP</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('aup', { type: 'aup' }); }} className="text-[#0A1F44] hover:text-[#132D5E] font-medium underline underline-offset-2">AUP</button>
                     {' '}and{' '}
-                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-emerald-600 hover:text-emerald-700 font-medium underline underline-offset-2">Privacy Policy</button>
+                    <button type="button" onClick={(e) => { e.preventDefault(); navigate('privacy', { type: 'privacy' }); }} className="text-[#0A1F44] hover:text-[#132D5E] font-medium underline underline-offset-2">Privacy Policy</button>
                   </Label>
                 </div>
               </div>
@@ -646,7 +646,7 @@ export function RegisterPage() {
                 {/* Submit button */}
                 <Button
                   type="submit"
-                  className="w-full shimmer bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-500 hover:from-emerald-700 hover:via-teal-700 hover:to-cyan-600 shadow-lg shadow-emerald-600/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                  className="w-full shimmer bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44] hover:from-[#132D5E] hover:via-[#0A1F44] hover:to-[#0A1F44] shadow-lg shadow-[#0A1F44]/30 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
                   disabled={loading}
                 >
                   {loading ? (
@@ -667,7 +667,7 @@ export function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => navigate('login')}
-                    className="font-semibold text-emerald-600 hover:text-emerald-700 transition-colors underline underline-offset-2"
+                    className="font-semibold text-[#0A1F44] hover:text-[#132D5E] transition-colors underline underline-offset-2"
                   >
                     Log in
                   </button>

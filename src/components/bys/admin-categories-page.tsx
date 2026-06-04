@@ -138,7 +138,7 @@ export function AdminCategoriesPage() {
           <h1 className="text-2xl font-bold">Categories</h1>
           <p className="mt-1 text-sm text-muted-foreground">Manage service categories and subcategories</p>
         </div>
-        <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={openAdd}>
+        <Button className="bg-[#0A1F44] text-[#FFD54F] hover:bg-[#132D5E]" onClick={openAdd}>
           <Plus className="mr-2 size-4" /> Add Category
         </Button>
       </div>
@@ -163,7 +163,7 @@ export function AdminCategoriesPage() {
             <Card key={cat.id}>
               <CardContent className="flex items-center justify-between p-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-emerald-100 text-lg">
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#FFD54F]/20 text-lg">
                     {cat.icon || '📂'}
                   </div>
                   <div>
@@ -220,7 +220,7 @@ export function AdminCategoriesPage() {
                 <Input type="number" value={formOrder} onChange={(e) => setFormOrder(e.target.value)} />
               </div>
             </div>
-            <Button className="bg-emerald-600 text-white hover:bg-emerald-700 w-full" onClick={handleSave} disabled={saving}>
+            <Button className="bg-[#0A1F44] text-[#FFD54F] hover:bg-[#132D5E] w-full" onClick={handleSave} disabled={saving}>
               <Save className="mr-2 size-4" />
               {saving ? 'Saving...' : editingCat ? 'Update Category' : 'Create Category'}
             </Button>

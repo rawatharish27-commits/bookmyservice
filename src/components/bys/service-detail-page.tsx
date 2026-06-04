@@ -221,7 +221,7 @@ export function ServiceDetailPage() {
           <Button
             variant="outline"
             onClick={refetch}
-            className="mt-4 border-emerald-200 text-emerald-700 hover:bg-emerald-50"
+            className="mt-4 border-[#0A1F44]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10"
           >
             Try Again
           </Button>
@@ -267,8 +267,8 @@ export function ServiceDetailPage() {
             backgroundSize: '32px 32px',
           }}
         />
-        <div className="absolute -left-40 top-20 size-[500px] rounded-full bg-emerald-100/30 blur-3xl" />
-        <div className="absolute -right-40 bottom-20 size-[400px] rounded-full bg-teal-100/20 blur-3xl" />
+        <div className="absolute -left-40 top-20 size-[500px] rounded-full bg-[#FFD54F]/15 blur-3xl" />
+        <div className="absolute -right-40 bottom-20 size-[400px] rounded-full bg-[#FFD54F]/10 blur-3xl" />
       </div>
 
       <div className="relative mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
@@ -283,7 +283,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => navigate('home')}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#0A1F44]"
                 >
                   Home
                 </BreadcrumbLink>
@@ -292,7 +292,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => navigate('categories')}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#0A1F44]"
                 >
                   Categories
                 </BreadcrumbLink>
@@ -301,7 +301,7 @@ export function ServiceDetailPage() {
               <BreadcrumbItem>
                 <BreadcrumbLink
                   onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
-                  className="cursor-pointer text-muted-foreground transition-colors hover:text-emerald-600"
+                  className="cursor-pointer text-muted-foreground transition-colors hover:text-[#0A1F44]"
                 >
                   {service.category.name}
                 </BreadcrumbLink>
@@ -326,7 +326,7 @@ export function ServiceDetailPage() {
             variant="ghost"
             size="sm"
             onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
-            className="group mb-5 gap-2 text-muted-foreground hover:text-emerald-700 hover:bg-emerald-50"
+            className="group mb-5 gap-2 text-muted-foreground hover:text-[#0A1F44] hover:bg-[#FFD54F]/10"
           >
             <ArrowLeft className="size-4 transition-transform group-hover:-translate-x-1" /> Back to{' '}
             {service.category.name}
@@ -343,7 +343,7 @@ export function ServiceDetailPage() {
               variants={fadeUp}
               custom={0}
             >
-              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-50 to-teal-50 shadow-lg ring-1 ring-emerald-100/50">
+              <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 shadow-lg ring-1 ring-[#FFD54F]/20/50">
                 {/* Main Image with Crossfade */}
                 <div className="relative aspect-video overflow-hidden">
                   {images.length > 0 ? (
@@ -398,10 +398,10 @@ export function ServiceDetailPage() {
                       )}
                     </>
                   ) : (
-                    <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+                    <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-[#FFD54F]/10 via-[#FFD54F]/10 to-[#FFD54F]/10">
                       <div className="text-center">
-                        <Wrench className="mx-auto size-20 text-emerald-300" />
-                        <p className="mt-2 text-sm text-emerald-400">No images available</p>
+                        <Wrench className="mx-auto size-20 text-[#0A1F44]/50" />
+                        <p className="mt-2 text-sm text-[#0A1F44]/60">No images available</p>
                       </div>
                     </div>
                   )}
@@ -418,7 +418,7 @@ export function ServiceDetailPage() {
                         onClick={() => setCurrentImage(i)}
                         className={`relative shrink-0 size-20 overflow-hidden rounded-xl transition-all duration-300 ${
                           i === currentImage
-                            ? 'ring-2 ring-emerald-500 ring-offset-2 shadow-md shadow-emerald-500/20'
+                            ? 'ring-2 ring-[#0A1F44] ring-offset-2 shadow-md shadow-[#0A1F44]/20'
                             : 'ring-1 ring-gray-200 opacity-60 hover:opacity-100'
                         }`}
                       >
@@ -428,7 +428,7 @@ export function ServiceDetailPage() {
                           className="size-full object-cover"
                         />
                         {i === currentImage && (
-                          <div className="absolute inset-0 bg-emerald-500/10" />
+                          <div className="absolute inset-0 bg-[#FFD54F]/100/10" />
                         )}
                       </motion.button>
                     ))}
@@ -451,17 +451,17 @@ export function ServiceDetailPage() {
                     {service.title}
                   </h1>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <Badge className="border-emerald-200 bg-emerald-50 text-emerald-700 hover:bg-emerald-100">
+                    <Badge className="border-[#0A1F44]/20 bg-[#FFD54F]/10 text-[#0A1F44] hover:bg-[#FFD54F]/20">
                       {service.category.name}
                     </Badge>
                     {service.subcategory && (
-                      <Badge variant="outline" className="border-teal-200 text-teal-700">
+                      <Badge variant="outline" className="border-[#0A1F44]/20 text-[#0A1F44]">
                         {service.subcategory.name}
                       </Badge>
                     )}
                     {service.city && (
                       <span className="flex items-center gap-1 text-sm text-muted-foreground">
-                        <MapPin className="size-3.5 text-emerald-500" /> {service.city}
+                        <MapPin className="size-3.5 text-[#0A1F44]/80" /> {service.city}
                         {service.state && `, ${service.state}`}
                       </span>
                     )}
@@ -500,8 +500,8 @@ export function ServiceDetailPage() {
                   <span className="text-sm text-muted-foreground">({service.totalReviews} reviews)</span>
                 </div>
                 <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-emerald-50">
-                    <Users className="size-3.5 text-emerald-600" />
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                    <Users className="size-3.5 text-[#0A1F44]" />
                   </div>
                   <span className="font-medium">{service.totalBookings}</span> bookings
                 </div>
@@ -525,9 +525,9 @@ export function ServiceDetailPage() {
               className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4"
             >
               {[
-                { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-emerald-500 to-teal-500' },
+                { icon: <MapPin className="size-4" />, label: 'Service Area', value: `${service.serviceAreaRadiusKm} km`, color: 'from-[#0A1F44] to-[#132D5E]' },
                 { icon: <Clock className="size-4" />, label: 'Duration', value: service.serviceDurationMinutes ? `${service.serviceDurationMinutes} min` : 'Flexible', color: 'from-amber-500 to-blue-500' },
-                { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-blue-500 to-cyan-500' },
+                { icon: <ShieldCheck className="size-4" />, label: 'Verified', value: 'KYC Approved', color: 'from-[#0A1F44] to-[#132D5E]' },
                 { icon: <TrendingUp className="size-4" />, label: 'Popularity', value: service.totalBookings > 20 ? 'High' : service.totalBookings > 5 ? 'Growing' : 'New', color: 'from-purple-500 to-pink-500' },
               ].map((item, idx) => (
                 <motion.div
@@ -556,12 +556,12 @@ export function ServiceDetailPage() {
               custom={0}
             >
               <div className="flex items-center gap-2">
-                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-sm">
+                <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] text-white shadow-sm">
                   <Wrench className="size-4" />
                 </div>
                 <h2 className="text-lg font-bold">About This Service</h2>
               </div>
-              <div className="mt-4 rounded-2xl bg-gradient-to-br from-emerald-50/50 to-teal-50/50 p-5 ring-1 ring-emerald-100/50">
+              <div className="mt-4 rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 p-5 ring-1 ring-[#FFD54F]/20/50">
                 <p className="whitespace-pre-line leading-relaxed text-foreground/80">{service.description}</p>
               </div>
             </motion.div>
@@ -591,13 +591,13 @@ export function ServiceDetailPage() {
                         key={slot.id}
                         variants={scaleIn}
                         custom={idx}
-                        className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-200"
+                        className="group relative overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#0A1F44]/20"
                       >
                         {/* Gradient active indicator */}
-                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-emerald-400 to-teal-500 rounded-r-full transition-all duration-300 group-hover:w-1.5" />
+                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-[#0A1F44] to-[#D4A017] rounded-r-full transition-all duration-300 group-hover:w-1.5" />
                         <div className="ml-3 flex items-center justify-between">
                           <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-sm font-bold text-emerald-700">
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-[#FFD54F]/10 text-sm font-bold text-[#0A1F44]">
                               {DAY_SHORT[slot.dayOfWeek]}
                             </div>
                             <div>
@@ -607,8 +607,8 @@ export function ServiceDetailPage() {
                               </p>
                             </div>
                           </div>
-                          <div className="flex size-6 items-center justify-center rounded-full bg-emerald-50">
-                            <CheckCircle2 className="size-3.5 text-emerald-500" />
+                          <div className="flex size-6 items-center justify-center rounded-full bg-[#FFD54F]/10">
+                            <CheckCircle2 className="size-3.5 text-[#0A1F44]/80" />
                           </div>
                         </div>
                       </motion.div>
@@ -628,7 +628,7 @@ export function ServiceDetailPage() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 text-white shadow-sm">
+                  <div className="flex size-8 items-center justify-center rounded-xl bg-gradient-to-br from-[#D4A017] to-[#FFD54F] text-white shadow-sm">
                     <Star className="size-4" />
                   </div>
                   <h2 className="text-lg font-bold">Reviews</h2>
@@ -645,17 +645,17 @@ export function ServiceDetailPage() {
                       key={review.id}
                       variants={scaleIn}
                       custom={idx}
-                      className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-emerald-100"
+                      className="group rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-300 hover:shadow-md hover:border-[#0A1F44]/10"
                     >
                       <div className="flex items-start gap-3">
                         {/* Avatar with gradient ring */}
                         <div className="relative shrink-0">
-                          <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2px]">
+                          <div className="rounded-full bg-gradient-to-br from-[#0A1F44] to-[#D4A017] p-[2px]">
                             <Avatar className="size-10 ring-2 ring-white">
                               {review.reviewer.profileImageUrl && (
                                 <AvatarImage src={review.reviewer.profileImageUrl} alt={review.reviewer.name} />
                               )}
-                              <AvatarFallback className="bg-emerald-50 text-xs font-bold text-emerald-700">
+                              <AvatarFallback className="bg-[#FFD54F]/10 text-xs font-bold text-[#0A1F44]">
                                 {getInitials(review.reviewer.name)}
                               </AvatarFallback>
                             </Avatar>
@@ -708,9 +708,9 @@ export function ServiceDetailPage() {
               custom={1}
               className="sticky top-24"
             >
-              <div className="glass overflow-hidden rounded-2xl shadow-xl ring-1 ring-emerald-100/50">
+              <div className="glass overflow-hidden rounded-2xl shadow-xl ring-1 ring-[#FFD54F]/20/50">
                 {/* Gradient top accent */}
-                <div className="h-1.5 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+                <div className="h-1.5 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
 
                 <div className="p-6">
                   {/* Price Display */}
@@ -728,7 +728,7 @@ export function ServiceDetailPage() {
 
                   {/* Book Now Button with Shimmer */}
                   <Button
-                    className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-emerald-600 to-teal-600 py-6 text-base font-bold text-white shadow-lg shadow-emerald-500/25 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-xl hover:shadow-emerald-500/30"
+                    className="shimmer group relative w-full overflow-hidden bg-gradient-to-r from-[#0A1F44] to-[#132D5E] py-6 text-base font-bold text-white shadow-lg shadow-[#0A1F44]/25 transition-all hover:from-[#132D5E] hover:to-[#0A1F44] hover:shadow-xl hover:shadow-[#0A1F44]/30"
                     size="lg"
                     onClick={() => navigate('booking', { serviceId: service.id })}
                   >
@@ -739,7 +739,7 @@ export function ServiceDetailPage() {
                   {service.priceNegotiable && (
                     <Button
                       variant="outline"
-                      className="mt-3 w-full border-emerald-200 py-5 text-emerald-700 hover:bg-emerald-50 hover:border-emerald-300"
+                      className="mt-3 w-full border-[#0A1F44]/20 py-5 text-[#0A1F44] hover:bg-[#FFD54F]/10 hover:border-[#0A1F44]/30"
                       onClick={() => navigate('booking', { serviceId: service.id })}
                     >
                       Negotiate Price
@@ -754,44 +754,44 @@ export function ServiceDetailPage() {
                       Service Provider
                     </h3>
                     <div
-                      className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-emerald-50/50"
+                      className="group flex cursor-pointer items-center gap-3 rounded-xl p-3 transition-all hover:bg-[#FFD54F]/10"
                       onClick={() => navigate('category-detail', { categoryId: String(service.category.id) })}
                     >
                       {/* Avatar with Gradient Ring */}
                       <div className="relative shrink-0">
-                        <div className="rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 p-[2.5px] shadow-md shadow-emerald-500/20">
+                        <div className="rounded-full bg-gradient-to-br from-[#0A1F44] to-[#D4A017] p-[2.5px] shadow-md shadow-[#0A1F44]/20">
                           <Avatar className="size-12 ring-2 ring-white">
                             {service.provider.profileImageUrl && (
                               <AvatarImage src={service.provider.profileImageUrl} alt={service.provider.name} />
                             )}
-                            <AvatarFallback className="bg-emerald-50 text-sm font-bold text-emerald-700">
+                            <AvatarFallback className="bg-[#FFD54F]/10 text-sm font-bold text-[#0A1F44]">
                               {getInitials(service.provider.name)}
                             </AvatarFallback>
                           </Avatar>
                         </div>
                         {/* Verified Badge with Glow */}
-                        <div className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-emerald-500 shadow-md shadow-emerald-500/30 ring-2 ring-white">
+                        <div className="absolute -bottom-0.5 -right-0.5 flex size-5 items-center justify-center rounded-full bg-[#FFD54F]/100 shadow-md shadow-[#0A1F44]/30 ring-2 ring-white">
                           <ShieldCheck className="size-3 text-white" />
                         </div>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                        <p className="truncate font-semibold text-foreground group-hover:text-[#0A1F44] transition-colors">
                           {service.provider.name}
                         </p>
                         <div className="flex items-center gap-1">
-                          <Award className="size-3 text-emerald-500" />
-                          <span className="text-xs font-medium text-emerald-600">Verified Provider</span>
+                          <Award className="size-3 text-[#0A1F44]/80" />
+                          <span className="text-xs font-medium text-[#0A1F44]">Verified Provider</span>
                         </div>
                       </div>
-                      <ArrowRight className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-emerald-600" />
+                      <ArrowRight className="size-4 text-muted-foreground/50 transition-all group-hover:translate-x-0.5 group-hover:text-[#0A1F44]" />
                     </div>
 
                     {/* Provider Stats */}
                     <div className="mt-3 grid grid-cols-2 gap-2">
                       {service.totalBookings > 0 && (
-                        <div className="rounded-xl bg-emerald-50/50 p-2.5 text-center ring-1 ring-emerald-100/50">
-                          <p className="text-lg font-bold text-emerald-700">{service.totalBookings}</p>
-                          <p className="text-xs text-emerald-600">Bookings</p>
+                        <div className="rounded-xl bg-[#FFD54F]/10 p-2.5 text-center ring-1 ring-[#FFD54F]/20/50">
+                          <p className="text-lg font-bold text-[#0A1F44]">{service.totalBookings}</p>
+                          <p className="text-xs text-[#0A1F44]">Bookings</p>
                         </div>
                       )}
                       {service.averageRating > 0 && (
@@ -812,8 +812,8 @@ export function ServiceDetailPage() {
                   <div className="space-y-3">
                     {service.address && (
                       <div className="flex items-start gap-3 rounded-xl bg-gray-50/50 p-3 ring-1 ring-gray-100">
-                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50">
-                          <MapPin className="size-4 text-emerald-600" />
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                          <MapPin className="size-4 text-[#0A1F44]" />
                         </div>
                         <div>
                           <p className="text-xs font-medium text-muted-foreground">Location</p>
@@ -849,7 +849,7 @@ export function ServiceDetailPage() {
                 custom={0}
               >
                 <h3 className="mb-4 flex items-center gap-2 text-lg font-bold">
-                  <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 text-white">
+                  <div className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#132D5E] text-white">
                     <Wrench className="size-3.5" />
                   </div>
                   Similar Services
@@ -868,9 +868,9 @@ export function ServiceDetailPage() {
                           window.scrollTo(0, 0);
                         }}
                       >
-                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-emerald-200 hover:-translate-y-1">
+                        <div className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:shadow-lg hover:border-[#0A1F44]/20 hover:-translate-y-1">
                           {/* Service Image */}
-                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-emerald-50 to-teal-50">
+                          <div className="relative aspect-[4/3] overflow-hidden bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10">
                             {sImages[0] ? (
                               <img
                                 src={sImages[0]}
@@ -879,18 +879,18 @@ export function ServiceDetailPage() {
                               />
                             ) : (
                               <div className="flex size-full items-center justify-center">
-                                <Wrench className="size-10 text-emerald-200" />
+                                <Wrench className="size-10 text-[#FFD54F]" />
                               </div>
                             )}
                             {/* Gradient overlay on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-emerald-900/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0A1F44]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                             {/* Price badge */}
                             <div className="absolute right-2 top-2 rounded-lg bg-white/90 px-2 py-1 text-sm font-bold text-gradient backdrop-blur-sm shadow-sm">
                               ₹{s.basePrice}
                             </div>
                           </div>
                           <div className="p-3">
-                            <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-emerald-700 transition-colors">
+                            <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-[#0A1F44] transition-colors">
                               {s.title}
                             </p>
                             <p className="mt-0.5 text-xs text-muted-foreground">{s.provider.name}</p>

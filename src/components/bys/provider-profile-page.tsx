@@ -78,30 +78,30 @@ export function ProviderProfilePage() {
         className="mb-6 flex flex-col items-center"
       >
         <div className="relative">
-          <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 p-[3px]">
+          <div className="rounded-full bg-gradient-to-br [#0A1F44] via-[#132D5E] to-[#0A1F44] p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
               {user?.profileImageUrl ? (
                 <img src={user.profileImageUrl} alt={user.name} className="size-24 rounded-full object-cover" />
               ) : (
-                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-teal-50">
-                  <User className="size-10 text-emerald-400" />
+                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br [#FFD54F]/10 to-[#0A1F44]/5">
+                  <User className="size-10 text-[#D4A017]" />
                 </div>
               )}
             </div>
           </div>
-          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/30">
             <Camera className="size-3.5" />
           </button>
         </div>
         <h2 className="mt-3 text-xl font-bold">{user?.name}</h2>
         <p className="text-sm text-muted-foreground">{user?.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-amber-500 to-blue-600 text-white border-0 font-semibold">Provider</Badge>
+          <Badge className="bg-gradient-to-r [#D4A017] to-[#0A1F44] text-white border-0 font-semibold">Provider</Badge>
           <Badge
             variant="outline"
             className={
               user?.status === 'ACTIVE'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20'
                 : 'bg-amber-50 text-amber-700 border-amber-200'
             }
           >
@@ -119,7 +119,7 @@ export function ProviderProfilePage() {
             exit={{ opacity: 0, y: -10 }}
             className={`mb-4 rounded-xl p-3 text-sm border ${
               message.includes('success')
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20'
                 : 'bg-red-50 text-red-700 border-red-200'
             }`}
           >
@@ -133,10 +133,10 @@ export function ProviderProfilePage() {
         {/* Business Info */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+            <div className="h-1 bg-gradient-to-r [#0A1F44] via-[#132D5E] to-[#0A1F44]" />
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E]">
                   <Building className="size-4 text-white" />
                 </div>
                 Business Information
@@ -171,7 +171,7 @@ export function ProviderProfilePage() {
                 </div>
               </div>
               <Button
-                className="shimmer w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 h-11 rounded-xl"
+                className="shimmer w-full bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 h-11 rounded-xl"
                 onClick={handleSaveProfile}
                 disabled={saving}
               >
@@ -187,7 +187,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#D4A017] to-[#0A1F44]">
                   <Shield className="size-4 text-white" />
                 </div>
                 KYC Verification
@@ -197,16 +197,16 @@ export function ProviderProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {kycStatus === 'APPROVED' ? (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-emerald-100">
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#0A1F44]/10">
                       <CheckCircle2 className="size-6 text-emerald-500" />
                     </div>
                   ) : kycStatus === 'PENDING' ? (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-amber-100">
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#D4A017]/10">
                       <Clock className="size-6 text-amber-500" />
                     </div>
                   ) : (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-sky-100">
-                      <AlertCircle className="size-6 text-blue-500" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#0A1F44]/10">
+                      <AlertCircle className="size-6 text-[#0A1F44]" />
                     </div>
                   )}
                   <div>
@@ -237,7 +237,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E]">
                   <MapPin className="size-4 text-white" />
                 </div>
                 Service Areas
@@ -260,7 +260,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-400 to-purple-500">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E]">
                   <Building className="size-4 text-white" />
                 </div>
                 Bank Details

@@ -43,7 +43,7 @@ interface ServicesResponse {
 
 function ApprovalBadge({ status }: { status: string }) {
   const config: Record<string, { class: string }> = {
-    PENDING: { class: 'bg-yellow-100 text-yellow-800 border-yellow-200' },
+    PENDING: { class: 'bg-yellow-100 text-[#0A1F44]/80 border-yellow-200' },
     APPROVED: { class: 'bg-green-100 text-green-800 border-green-200' },
     REJECTED: { class: 'bg-red-100 text-red-800 border-red-200' },
   };

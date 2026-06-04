@@ -31,13 +31,13 @@ interface Notification {
 function getNotifConfig(type: string) {
   switch (type) {
     case 'BOOKING':
-      return { icon: CalendarCheck, gradient: 'from-sky-400 to-blue-500', bg: 'bg-sky-100' };
+      return { icon: CalendarCheck, gradient: '[#0A1F44] to-[#132D5E]', bg: 'bg-[#0A1F44]/10' };
     case 'REVIEW':
-      return { icon: Star, gradient: 'from-amber-400 to-blue-500', bg: 'bg-amber-100' };
+      return { icon: Star, gradient: '[#D4A017] to-[#0A1F44]', bg: 'bg-[#D4A017]/10' };
     case 'DISPUTE':
-      return { icon: AlertTriangle, gradient: 'from-sky-400 to-red-500', bg: 'bg-sky-100' };
+      return { icon: AlertTriangle, gradient: '[#0A1F44] to-[#8B0000]', bg: 'bg-[#0A1F44]/10' };
     case 'MESSAGE':
-      return { icon: MessageSquare, gradient: 'from-emerald-400 to-teal-500', bg: 'bg-emerald-100' };
+      return { icon: MessageSquare, gradient: '[#0A1F44] to-[#132D5E]', bg: 'bg-[#0A1F44]/10' };
     default:
       return { icon: Info, gradient: 'from-gray-400 to-gray-500', bg: 'bg-gray-100' };
   }
@@ -108,7 +108,7 @@ export function ClientNotificationsPage() {
             size="sm"
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="rounded-xl border-emerald-200 text-emerald-600 hover:bg-emerald-50"
+            className="rounded-xl border-[#0A1F44]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10"
           >
             {markingAll ? <Loader2 className="mr-2 size-4 animate-spin" /> : <CheckCheck className="mr-2 size-4" />}
             Mark all read
@@ -128,8 +128,8 @@ export function ClientNotificationsPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center py-16 text-center"
         >
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-50">
-            <BellOff className="size-10 text-emerald-300" />
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br [#0A1F44]/10 to-[#132D5E]/5">
+            <BellOff className="size-10 text-[#0A1F44]/40" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No notifications</h3>
           <p className="mt-1 text-sm text-muted-foreground/70">You&apos;ll see notifications about your bookings here</p>
@@ -148,7 +148,7 @@ export function ClientNotificationsPage() {
                   onClick={() => handleNotificationClick(notif)}
                   className={`flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-sm ${
                     !notif.isRead
-                      ? 'border-emerald-100 bg-gradient-to-r from-emerald-50/60 to-white'
+                      ? 'border-[#0A1F44]/10 bg-gradient-to-r from-[#FFD54F]/10 to-white'
                       : 'border-transparent bg-white hover:bg-gray-50/50'
                   }`}
                 >
@@ -179,7 +179,7 @@ export function ClientNotificationsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="shrink-0 text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50"
+                      className="shrink-0 text-[#0A1F44] hover:text-[#132D5E] hover:bg-[#FFD54F]/10"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleMarkRead(notif.id);

@@ -108,32 +108,32 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         className="mb-6 flex flex-col items-center"
       >
         <div className="relative">
-          <div className="rounded-full bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-500 p-[3px]">
+          <div className="rounded-full bg-gradient-to-br [#0A1F44] via-[#132D5E] to-[#0A1F44] p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
               {user.profileImageUrl ? (
                 <img src={user.profileImageUrl} alt={user.name} className="size-24 rounded-full object-cover" />
               ) : (
-                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-emerald-50 to-teal-50">
-                  <User className="size-10 text-emerald-400" />
+                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br [#FFD54F]/10 to-[#0A1F44]/5">
+                  <User className="size-10 text-[#D4A017]" />
                 </div>
               )}
             </div>
           </div>
-          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/30">
+          <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/30">
             <Camera className="size-3.5" />
           </button>
         </div>
         <h2 className="mt-3 text-xl font-bold">{user.name}</h2>
         <p className="text-sm text-muted-foreground">{user.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 capitalize font-semibold">
+          <Badge className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white border-0 capitalize font-semibold">
             {user.role}
           </Badge>
           <Badge
             variant="outline"
             className={
               user.status === 'ACTIVE'
-                ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                ? 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20'
                 : user.status === 'PENDING'
                 ? 'bg-amber-50 text-amber-700 border-amber-200'
                 : 'bg-red-50 text-red-700 border-red-200'
@@ -148,10 +148,10 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       {/* Edit Profile Form */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+          <div className="h-1 bg-gradient-to-r [#0A1F44] via-[#132D5E] to-[#0A1F44]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E]">
                 <User className="size-4 text-white" />
               </div>
               Edit Profile
@@ -174,7 +174,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="flex items-center gap-2 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700 border border-emerald-200"
+                  className="flex items-center gap-2 rounded-xl bg-[#FFD54F]/10 p-3 text-sm text-emerald-700 border border-[#0A1F44]/20"
                 >
                   <CheckCircle2 className="size-4" />
                   Profile updated successfully!
@@ -216,7 +216,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           </CardContent>
           <div className="px-6 pb-6">
             <Button
-              className="shimmer w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 h-11 rounded-xl"
+              className="shimmer w-full bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 h-11 rounded-xl"
               onClick={handleSaveProfile}
               disabled={saving}
             >
@@ -232,7 +232,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-amber-400 to-blue-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#D4A017] to-[#0A1F44]">
                 <Key className="size-4 text-white" />
               </div>
               Security
@@ -255,10 +255,10 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       {/* Account Status */}
       <motion.div {...fadeUp} transition={{ delay: 0.25 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+          <div className="h-1 bg-gradient-to-r [#0A1F44] via-[#132D5E] to-[#0A1F44]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E]">
                 <Shield className="size-4 text-white" />
               </div>
               Account Status
@@ -275,15 +275,15 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
                 <span className="text-sm">{item.label}</span>
                 {item.isStatus ? (
                   <Badge variant="outline" className={
-                    user.status === 'ACTIVE' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                    user.status === 'ACTIVE' ? 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20' : 'bg-amber-50 text-amber-700 border-amber-200'
                   }>
                     <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-emerald-400' : 'bg-amber-400'}`} />
                     {item.value}
                   </Badge>
                 ) : item.isRole ? (
-                  <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 capitalize">{item.value}</Badge>
+                  <Badge className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white border-0 capitalize">{item.value}</Badge>
                 ) : (
-                  <Badge variant="outline" className={item.isVerified ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'}>
+                  <Badge variant="outline" className={item.isVerified ? 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20' : 'bg-amber-50 text-amber-700 border-amber-200'}>
                     {item.isVerified && <CheckCircle2 className="mr-1 size-3" />}
                     {item.value}
                   </Badge>
@@ -385,7 +385,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           <DialogFooter>
             <Button variant="outline" onClick={() => setPasswordDialog(false)} className="rounded-xl">Cancel</Button>
             <Button
-              className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white rounded-xl"
+              className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white rounded-xl"
               onClick={handleChangePassword}
               disabled={changingPassword}
             >
@@ -408,7 +408,7 @@ export function ClientProfilePage() {
       <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
         <p className="text-muted-foreground">Please log in to view your profile</p>
         <Button
-          className="mt-4 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25"
+          className="mt-4 bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25"
           onClick={() => navigate('login')}
         >
           Log In

@@ -98,7 +98,7 @@ export function AdminUserDetailPage() {
               ? 'border-green-200 bg-green-100 text-green-800'
               : user.status === 'BLOCKED'
                 ? 'border-red-200 bg-red-100 text-red-800'
-                : 'border-yellow-200 bg-yellow-100 text-yellow-800'
+                : 'border-yellow-200 bg-yellow-100 text-[#0A1F44]/80'
           }
         >
           {user.status}
@@ -155,25 +155,25 @@ export function AdminUserDetailPage() {
 
         {/* Summary */}
         <div className="grid grid-cols-3 gap-4">
-          <Card>
+          <Card className="border-0 bg-[#0A1F44]">
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <CalendarCheck className="size-5 text-emerald-600" />
-              <p className="mt-2 text-lg font-bold">—</p>
-              <p className="text-xs text-muted-foreground">Bookings</p>
+              <CalendarCheck className="size-5 text-[#FFD54F]/60" />
+              <p className="mt-2 text-lg font-bold text-[#FFD54F]">—</p>
+              <p className="text-xs text-[#FFD54F]/70">Bookings</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-0 bg-[#0A1F44]">
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <Briefcase className="size-5 text-blue-600" />
-              <p className="mt-2 text-lg font-bold">—</p>
-              <p className="text-xs text-muted-foreground">Services</p>
+              <Briefcase className="size-5 text-[#FFD54F]/60" />
+              <p className="mt-2 text-lg font-bold text-[#FFD54F]">—</p>
+              <p className="text-xs text-[#FFD54F]/70">Services</p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="border-0 bg-[#0A1F44]">
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <Shield className="size-5 text-purple-600" />
-              <p className="mt-2 text-lg font-bold">—</p>
-              <p className="text-xs text-muted-foreground">KYC</p>
+              <Shield className="size-5 text-[#FFD54F]/60" />
+              <p className="mt-2 text-lg font-bold text-[#FFD54F]">—</p>
+              <p className="text-xs text-[#FFD54F]/70">KYC</p>
             </CardContent>
           </Card>
         </div>
@@ -199,7 +199,7 @@ export function AdminUserDetailPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             {user.status === 'ACTIVE' ? (
-              <Button variant="outline" className="text-blue-600" onClick={() => handleStatusChange('BLOCKED')}>
+              <Button variant="outline" className="text-[#0A1F44]" onClick={() => handleStatusChange('BLOCKED')}>
                 <Ban className="mr-2 size-4" /> Block User
               </Button>
             ) : (

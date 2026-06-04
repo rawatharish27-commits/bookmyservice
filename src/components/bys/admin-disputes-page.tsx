@@ -57,12 +57,12 @@ interface DisputesResponse {
 function DisputeStatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     OPEN: 'bg-red-100 text-red-800 border-red-200',
-    UNDER_REVIEW: 'bg-blue-100 text-blue-800 border-blue-200',
+    UNDER_REVIEW: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20',
     RESOLVED: 'bg-green-100 text-green-800 border-green-200',
-    CLOSED: 'bg-gray-100 text-gray-800 border-gray-200',
+    CLOSED: 'bg-[#D4A017] text-[#0A1F44]/90 border-gray-200',
   };
   return (
-    <Badge variant="outline" className={colors[status] || 'bg-gray-100 text-gray-800'}>
+    <Badge variant="outline" className={colors[status] || 'bg-[#D4A017] text-[#0A1F44]/90'}>
       {status.replace('_', ' ')}
     </Badge>
   );
@@ -222,7 +222,7 @@ export function AdminDisputesPage() {
           </DialogHeader>
           {selectedDispute && (
             <div className="space-y-4">
-              <div className="rounded-lg bg-gray-50 p-3 text-sm">
+              <div className="rounded-lg bg-[#E0B84C] p-3 text-sm">
                 <p><span className="font-medium">Booking:</span> {selectedDispute.booking?.bookingNumber}</p>
                 <p><span className="font-medium">Service:</span> {selectedDispute.booking?.service?.title}</p>
                 <p><span className="font-medium">Raised By:</span> {selectedDispute.raiser?.name}</p>
@@ -258,7 +258,7 @@ export function AdminDisputesPage() {
                   />
                 </div>
                 <Button
-                  className="bg-emerald-600 text-white hover:bg-emerald-700"
+                  className="bg-[#0A1F44] text-[#FFD54F] hover:bg-[#132D5E]"
                   onClick={handleResolve}
                   disabled={resolving || !resolution}
                 >

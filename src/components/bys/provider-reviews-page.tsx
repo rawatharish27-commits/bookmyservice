@@ -74,7 +74,7 @@ export function ProviderReviewsPage() {
           transition={{ delay: 0.1 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-amber-400 via-blue-500 to-rose-500" />
+            <div className="h-1 bg-gradient-to-r [#D4A017] via-[#0A1F44] to-[#C99700]" />
             <CardContent className="flex items-center gap-6 p-6">
               <div className="text-center">
                 <p className="text-gradient text-4xl font-bold">{avgRating}</p>
@@ -91,7 +91,7 @@ export function ProviderReviewsPage() {
                         initial={{ width: 0 }}
                         animate={{ width: `${r.pct}%` }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="h-2 rounded-full bg-gradient-to-r from-amber-400 to-sky-400"
+                        className="h-2 rounded-full bg-gradient-to-r [#D4A017] to-[#0A1F44]"
                       />
                     </div>
                     <span className="w-8 text-right text-xs text-muted-foreground">{r.count}</span>
@@ -108,9 +108,9 @@ export function ProviderReviewsPage() {
           transition={{ delay: 0.15 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
+            <div className="h-1 bg-gradient-to-r [#0A1F44] to-[#132D5E]" />
             <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/25">
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br [#0A1F44] to-[#132D5E] shadow-lg shadow-[#0A1F44]/25">
                 <MessageSquare className="size-7 text-white" />
               </div>
               <p className="mt-3 text-sm font-medium">Response Rate</p>
@@ -131,8 +131,8 @@ export function ProviderReviewsPage() {
         >
           <Card className="rounded-2xl border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-12 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-100 to-blue-50">
-                <Star className="size-10 text-amber-300" />
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br [#D4A017]/10 to-[#0A1F44]/5">
+                <Star className="size-10 text-[#D4A017]/50" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
               <p className="mt-1 text-sm text-muted-foreground/70">Reviews will appear once clients complete bookings</p>
@@ -154,12 +154,12 @@ export function ProviderReviewsPage() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500 text-xs font-bold text-white">
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br [#0A1F44] to-[#132D5E] text-xs font-bold text-white">
                             {review.reviewer?.name?.charAt(0) || 'C'}
                           </div>
                           <span className="font-medium">{review.reviewer?.name || 'Client'}</span>
                           {review.isVerified && (
-                            <span className="flex items-center gap-1 rounded-md bg-emerald-50 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 border border-emerald-200">
+                            <span className="flex items-center gap-1 rounded-md bg-[#FFD54F]/10 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-700 border border-[#0A1F44]/20">
                               <CheckCircle2 className="size-2.5" />
                               Verified
                             </span>

@@ -42,14 +42,14 @@ interface BookingsResponse {
 
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200',
-    IN_PROGRESS: 'bg-sky-100 text-blue-800 border-blue-200',
+    PENDING: 'bg-yellow-100 text-[#0A1F44]/80 border-yellow-200',
+    ACCEPTED: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20',
+    IN_PROGRESS: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20',
     COMPLETED: 'bg-green-100 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
   return (
-    <Badge variant="outline" className={colors[status] || 'bg-gray-100 text-gray-800'}>
+    <Badge variant="outline" className={colors[status] || 'bg-[#D4A017] text-[#0A1F44]/90'}>
       {status.replace('_', ' ')}
     </Badge>
   );

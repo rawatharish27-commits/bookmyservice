@@ -176,7 +176,7 @@ export function BookingPage() {
             <p className="mt-2 text-sm text-muted-foreground">Please log in to book a service</p>
             <div className="mt-6 flex justify-center gap-3">
               <Button variant="outline" onClick={goBack} className="rounded-xl">Go Back</Button>
-              <Button className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl" onClick={() => navigate('login')}>
+              <Button className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl" onClick={() => navigate('login')}>
                 Log In
               </Button>
             </div>
@@ -213,7 +213,7 @@ export function BookingPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6 flex items-center gap-3"
       >
-        <Button variant="ghost" size="icon" onClick={goBack} aria-label="Go back" className="rounded-xl hover:bg-emerald-50">
+        <Button variant="ghost" size="icon" onClick={goBack} aria-label="Go back" className="rounded-xl hover:bg-[#FFD54F]/10">
           <ArrowLeft className="size-5" />
         </Button>
         <div>
@@ -237,15 +237,15 @@ export function BookingPage() {
                     }}
                     className={`flex size-10 items-center justify-center rounded-xl border-2 text-sm font-medium transition-all ${
                       isCompleted
-                        ? 'border-emerald-500 bg-gradient-to-br from-emerald-400 to-teal-500 text-white shadow-lg shadow-emerald-500/25'
+                        ? 'border-[#0A1F44] bg-gradient-to-br from-[#0A1F44] to-[#D4A017] text-white shadow-lg shadow-[#0A1F44]/25'
                         : isCurrent
-                        ? 'border-emerald-500 bg-emerald-50 text-emerald-600 ring-4 ring-emerald-100'
+                        ? 'border-[#0A1F44] bg-[#FFD54F]/10 text-[#0A1F44] ring-4 ring-[#FFD54F]/20'
                         : 'border-gray-200 bg-white text-gray-400'
                     }`}
                   >
                     {isCompleted ? <Check className="size-5" /> : <s.icon className="size-4" />}
                   </motion.div>
-                  <span className={`mt-2 text-xs font-medium ${isCurrent ? 'text-emerald-700' : isCompleted ? 'text-emerald-600' : 'text-gray-400'}`}>
+                  <span className={`mt-2 text-xs font-medium ${isCurrent ? 'text-[#0A1F44]' : isCompleted ? 'text-[#0A1F44]' : 'text-gray-400'}`}>
                     {s.label}
                   </span>
                 </div>
@@ -256,7 +256,7 @@ export function BookingPage() {
                         initial={{ width: '0%' }}
                         animate={{ width: step > s.number ? '100%' : '0%' }}
                         transition={{ duration: 0.3 }}
-                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-full"
+                        className="absolute inset-y-0 left-0 bg-gradient-to-r from-[#0A1F44] to-[#D4A017] rounded-full"
                       />
                     </div>
                   </div>
@@ -275,7 +275,7 @@ export function BookingPage() {
       >
         <div className="glass overflow-hidden rounded-2xl">
           <div className="flex items-center gap-4 p-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 shadow-lg shadow-emerald-500/20">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#D4A017] shadow-lg shadow-[#0A1F44]/20">
               <Briefcase className="size-6 text-white" />
             </div>
             <div className="min-w-0 flex-1">
@@ -303,10 +303,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#D4A017]">
                     <CalendarDays className="size-4 text-white" />
                   </div>
                   Select Date
@@ -315,8 +315,8 @@ export function BookingPage() {
               <CardContent>
                 {availableDayIndices.size === 0 ? (
                   <div className="py-8 text-center">
-                    <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                      <CalendarDays className="size-8 text-emerald-300" />
+                    <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/10">
+                      <CalendarDays className="size-8 text-[#0A1F44]/50" />
                     </div>
                     <p className="mt-3 text-sm text-muted-foreground">No availability configured for this service</p>
                   </div>
@@ -324,7 +324,7 @@ export function BookingPage() {
                   <>
                     <div className="mb-3 flex flex-wrap gap-2">
                       {Array.from(availableDayIndices).sort().map((d) => (
-                        <Badge key={d} variant="secondary" className="bg-emerald-50 text-emerald-700 rounded-lg">
+                        <Badge key={d} variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] rounded-lg">
                           {DAY_NAMES[d]}
                         </Badge>
                       ))}
@@ -343,7 +343,7 @@ export function BookingPage() {
               </CardContent>
               <CardFooter className="justify-end p-4">
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
+                  className="shimmer bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl"
                   disabled={!selectedDate}
                   onClick={() => setStep(2)}
                 >
@@ -363,10 +363,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-blue-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#132D5E]">
                     <Clock className="size-4 text-white" />
                   </div>
                   Select Time Slot
@@ -395,8 +395,8 @@ export function BookingPage() {
                         onClick={() => setSelectedTime(time)}
                         className={`rounded-xl border-2 p-3 text-center text-sm font-medium transition-all ${
                           selectedTime === time
-                            ? 'border-emerald-500 bg-gradient-to-br from-emerald-50 to-teal-50 text-emerald-700 shadow-md shadow-emerald-500/10'
-                            : 'border-gray-100 bg-white text-gray-600 hover:border-emerald-200 hover:bg-emerald-50/50'
+                            ? 'border-[#0A1F44] bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 text-[#0A1F44] shadow-md shadow-[#0A1F44]/10'
+                            : 'border-gray-100 bg-white text-gray-600 hover:border-[#0A1F44]/20 hover:bg-[#FFD54F]/10'
                         }`}
                       >
                         <Clock className="mx-auto mb-1 size-3.5 opacity-50" />
@@ -411,7 +411,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
+                  className="shimmer bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl"
                   disabled={!selectedTime}
                   onClick={() => setStep(3)}
                 >
@@ -431,10 +431,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-amber-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#D4A017]">
                     <MapPin className="size-4 text-white" />
                   </div>
                   Service Address
@@ -449,7 +449,7 @@ export function BookingPage() {
                         <Loader2 className="size-3 animate-spin" /> Detecting location...
                       </Badge>
                     ) : detectedCity && !geoError ? (
-                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <Badge variant="secondary" className="gap-1.5 rounded-lg bg-[#FFD54F]/10 text-[#0A1F44] border border-[#0A1F44]/20">
                         <Navigation className="size-3" /> Location Detected
                       </Badge>
                     ) : (
@@ -461,7 +461,7 @@ export function BookingPage() {
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-emerald-600"
+                    className="h-7 gap-1 text-xs text-muted-foreground hover:text-[#0A1F44]"
                     onClick={refreshLocation}
                     disabled={geoLoading}
                   >
@@ -520,7 +520,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl"
+                  className="shimmer bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl"
                   disabled={!address.trim()}
                   onClick={() => setStep(4)}
                 >
@@ -540,10 +540,10 @@ export function BookingPage() {
             exit={{ opacity: 0, x: -20 }}
           >
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-400 to-teal-500">
+                  <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#D4A017]">
                     <Check className="size-4 text-white" />
                   </div>
                   Review & Confirm
@@ -620,9 +620,9 @@ export function BookingPage() {
                 )}
 
                 {/* Trust Badge */}
-                <div className="flex items-center gap-2 rounded-xl bg-emerald-50/50 p-3">
-                  <Shield className="size-4 text-emerald-600" />
-                  <span className="text-xs text-emerald-700 font-medium">Secure booking with platform protection</span>
+                <div className="flex items-center gap-2 rounded-xl bg-[#FFD54F]/10 p-3">
+                  <Shield className="size-4 text-[#0A1F44]" />
+                  <span className="text-xs text-[#0A1F44] font-medium">Secure booking with platform protection</span>
                 </div>
               </CardContent>
               <CardFooter className="justify-between p-4">
@@ -630,7 +630,7 @@ export function BookingPage() {
                   <ArrowLeft className="mr-2 size-4" /> Back
                 </Button>
                 <Button
-                  className="shimmer bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11 px-8"
+                  className="shimmer bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl h-11 px-8"
                   onClick={handleBooking}
                   disabled={creating}
                 >

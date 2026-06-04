@@ -52,9 +52,9 @@ const stagger = {
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-amber-50 text-amber-700 border-amber-200', dotColor: 'bg-amber-400' },
-    ACCEPTED: { className: 'bg-sky-50 text-sky-700 border-sky-200', dotColor: 'bg-sky-400' },
-    IN_PROGRESS: { className: 'bg-blue-50 text-blue-700 border-blue-200', dotColor: 'bg-sky-400' },
-    COMPLETED: { className: 'bg-emerald-50 text-emerald-700 border-emerald-200', dotColor: 'bg-emerald-400' },
+    ACCEPTED: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
+    IN_PROGRESS: { className: 'bg-[#0A1F44]/10 text-[#0A1F44] border-[#0A1F44]/20', dotColor: 'bg-[#0A1F44]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-emerald-700 border-[#0A1F44]/20', dotColor: 'bg-emerald-400' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
   const c = colors[status] || colors.PENDING;
@@ -118,37 +118,37 @@ export function ProviderDashboardPage() {
       title: "Today's Bookings",
       value: todayBookings.length,
       icon: CalendarCheck,
-      gradient: 'from-emerald-400 to-teal-500',
-      bgGlow: 'bg-emerald-500/10',
+      gradient: '[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
     {
       title: 'This Week Earnings',
       value: `₹${weekEarnings.toLocaleString()}`,
       icon: DollarSign,
-      gradient: 'from-sky-400 to-blue-500',
-      bgGlow: 'bg-sky-500/10',
+      gradient: '[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
     {
       title: 'Average Rating',
       value: avgRating,
       icon: Star,
-      gradient: 'from-amber-400 to-blue-500',
-      bgGlow: 'bg-amber-500/10',
+      gradient: '[#D4A017] to-[#0A1F44]',
+      bgGlow: 'bg-[#D4A017]/10',
     },
     {
       title: 'Total Bookings',
       value: bookings.length,
       icon: TrendingUp,
-      gradient: 'from-violet-400 to-purple-500',
-      bgGlow: 'bg-violet-500/10',
+      gradient: '[#0A1F44] to-[#132D5E]',
+      bgGlow: 'bg-[#0A1F44]/10',
     },
   ];
 
   const quickActions = [
-    { icon: Plus, label: 'Create Service', nav: 'provider-create-service', gradient: 'from-emerald-500 to-teal-600', shadow: 'shadow-emerald-500/25' },
-    { icon: DollarSign, label: 'View Earnings', nav: 'provider-earnings', gradient: 'from-sky-500 to-blue-600', shadow: 'shadow-sky-500/25' },
-    { icon: Star, label: 'View Reviews', nav: 'provider-reviews', gradient: 'from-amber-500 to-blue-600', shadow: 'shadow-amber-500/25' },
-    { icon: CalendarCheck, label: 'All Bookings', nav: 'provider-bookings', gradient: 'from-violet-500 to-purple-600', shadow: 'shadow-violet-500/25' },
+    { icon: Plus, label: 'Create Service', nav: 'provider-create-service', gradient: '[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25' },
+    { icon: DollarSign, label: 'View Earnings', nav: 'provider-earnings', gradient: '[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25' },
+    { icon: Star, label: 'View Reviews', nav: 'provider-reviews', gradient: '[#D4A017] to-[#0A1F44]', shadow: 'shadow-[#D4A017]/25' },
+    { icon: CalendarCheck, label: 'All Bookings', nav: 'provider-bookings', gradient: '[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25' },
   ];
 
   return (
@@ -157,7 +157,7 @@ export function ProviderDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-600 p-6 sm:p-8"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r [#0A1F44] p-6 sm:p-8"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
@@ -165,17 +165,17 @@ export function ProviderDashboardPage() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="size-5 text-emerald-200" />
-              <span className="text-sm font-medium text-emerald-100">Welcome back</span>
+              <Sparkles className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#E0B84C]">Welcome back</span>
             </div>
             <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
               {user?.name?.split(' ')[0] || 'Provider'} 👋
             </h1>
-            <p className="mt-1 text-emerald-100/80">Here&apos;s an overview of your business today</p>
+            <p className="mt-1 text-[#E0B84C]/80">Here&apos;s an overview of your business today</p>
           </div>
           <div className="flex items-center gap-4">
             <div className="glass-dark rounded-xl px-4 py-2 text-center">
-              <p className="text-xs text-emerald-200">This Week</p>
+              <p className="text-xs text-[#FFD54F]">This Week</p>
               <p className="text-lg font-bold text-white">₹{weekEarnings.toLocaleString()}</p>
             </div>
           </div>
@@ -211,9 +211,9 @@ export function ProviderDashboardPage() {
         {/* New Booking Requests */}
         <motion.div className="lg:col-span-2" {...fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-amber-50/80 to-blue-50/50 pb-3">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r [#0A1F44] pb-3">
               <CardTitle className="text-lg font-semibold">New Booking Requests</CardTitle>
-              <Badge className="bg-gradient-to-r from-amber-500 to-blue-500 text-white border-0 shadow-sm">
+              <Badge className="bg-gradient-to-r [#D4A017] to-[#0A1F44] text-white border-0 shadow-sm">
                 {pendingBookings.length} pending
               </Badge>
             </CardHeader>
@@ -221,7 +221,7 @@ export function ProviderDashboardPage() {
               {pendingBookings.length === 0 ? (
                 <div className="p-8 text-center">
                   <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-amber-50">
-                    <Clock className="size-8 text-amber-300" />
+                    <Clock className="size-8 text-[#D4A017]/50" />
                   </div>
                   <p className="mt-3 text-muted-foreground">No pending requests</p>
                 </div>
@@ -233,7 +233,7 @@ export function ProviderDashboardPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30"
+                      className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-[#FFD54F]/10/30"
                     >
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -243,14 +243,14 @@ export function ProviderDashboardPage() {
                         <p className="mt-1 text-sm text-muted-foreground">
                           {booking.client?.name} &middot; {booking.scheduledDate} at {booking.scheduledTime}
                         </p>
-                        <p className="text-sm font-semibold text-emerald-600">
+                        <p className="text-sm font-semibold text-[#0A1F44]">
                           ₹{booking.finalPrice?.toLocaleString()}
                         </p>
                       </div>
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-sm shadow-emerald-500/25"
+                          className="bg-gradient-to-r [#0A1F44] to-[#132D5E] text-white shadow-sm shadow-[#0A1F44]/25"
                           onClick={() => handleBookingAction(booking.id, 'accept')}
                         >
                           <CheckCircle2 className="mr-1 size-3" />
@@ -277,7 +277,7 @@ export function ProviderDashboardPage() {
         {/* Quick Actions */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-violet-50/80 to-purple-50/50 pb-3">
+            <CardHeader className="bg-gradient-to-r [#0A1F44] pb-3">
               <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3 p-4">
@@ -302,25 +302,25 @@ export function ProviderDashboardPage() {
       {/* Today's Schedule */}
       <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-emerald-50/80 to-teal-50/50 pb-3">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r [#0A1F44] pb-3">
             <CardTitle className="text-lg font-semibold">Today&apos;s Schedule</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')} className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50">
+            <Button variant="ghost" size="sm" onClick={() => navigate('provider-bookings')} className="text-[#0A1F44] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
               View all <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
           <CardContent className="p-0">
             {todayBookings.length === 0 ? (
               <div className="p-8 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-50">
-                  <CalendarCheck className="size-8 text-emerald-300" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/10">
+                  <CalendarCheck className="size-8 text-[#0A1F44]/40" />
                 </div>
                 <p className="mt-3 text-muted-foreground">No bookings scheduled for today</p>
               </div>
             ) : (
               <ScrollArea className="max-h-64">
                 {todayBookings.map((booking, i) => (
-                  <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-emerald-50/30">
-                    <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-bold text-white shadow-sm`}>
+                  <div key={booking.id} className="flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-[#FFD54F]/10/30">
+                    <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br [#0A1F44] to-[#132D5E] text-sm font-bold text-white shadow-sm`}>
                       {i + 1}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -341,19 +341,19 @@ export function ProviderDashboardPage() {
       {/* Earnings Summary */}
       <motion.div {...fadeUp} transition={{ delay: 0.25 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sky-50/80 to-blue-50/50 pb-3">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r [#0A1F44] pb-3">
             <CardTitle className="text-lg font-semibold">Earnings Overview</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('provider-earnings')} className="text-sky-600 hover:text-sky-700 hover:bg-sky-50">
+            <Button variant="ghost" size="sm" onClick={() => navigate('provider-earnings')} className="text-[#0A1F44] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
               Details <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
           <CardContent className="p-4">
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[
-                { label: 'Today', value: `₹${todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-emerald-400 to-teal-500' },
-                { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-sky-400 to-blue-500' },
-                { label: 'Total', value: `₹${completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: 'from-violet-400 to-purple-500' },
-                { label: 'In Progress', value: `${bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}`, gradient: 'from-sky-400 to-amber-500' },
+                { label: 'Today', value: `₹${todayBookings.filter(b => b.status === 'COMPLETED').reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: '[#0A1F44] to-[#132D5E]' },
+                { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: '[#0A1F44] to-[#132D5E]' },
+                { label: 'Total', value: `₹${completedBookings.reduce((s, b) => s + (b.providerEarnings || 0), 0).toLocaleString()}`, gradient: '[#0A1F44] to-[#132D5E]' },
+                { label: 'In Progress', value: `${bookings.filter(b => b.status === 'ACCEPTED' || b.status === 'IN_PROGRESS').length}`, gradient: '[#0A1F44] to-[#D4A017]' },
               ].map((item) => (
                 <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center">
                   <p className="text-xs text-muted-foreground">{item.label}</p>

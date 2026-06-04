@@ -71,19 +71,19 @@ function SuccessCheckmark() {
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15, delay: 0.2 }}
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-20"
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-[#0A1F44] to-[#D4A017] opacity-20"
       />
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1.5 }}
         transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.1 }}
-        className="absolute inset-0 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 opacity-10"
+        className="absolute inset-0 rounded-full bg-gradient-to-br from-[#0A1F44] to-[#D4A017] opacity-10"
       />
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 shadow-xl shadow-emerald-500/30"
+        className="relative flex size-20 items-center justify-center rounded-full bg-gradient-to-br from-[#0A1F44] to-[#D4A017] shadow-xl shadow-[#0A1F44]/30"
       >
         <motion.div
           initial={{ scale: 0, pathLength: 0 }}
@@ -151,7 +151,7 @@ export function BookingConfirmationPage() {
           </p>
           {booking?.bookingNumber && (
             <div className="mt-3">
-              <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 text-base px-4 py-1.5 shadow-lg shadow-emerald-500/25">
+              <Badge className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white border-0 text-base px-4 py-1.5 shadow-lg shadow-[#0A1F44]/25">
                 <Sparkles className="mr-1.5 size-3.5" />
                 {booking.bookingNumber}
               </Badge>
@@ -169,17 +169,17 @@ export function BookingConfirmationPage() {
             transition={{ delay: 0.7 }}
           >
             <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
-              <div className="h-1.5 bg-gradient-to-r from-emerald-400 via-teal-500 to-cyan-500" />
+              <div className="h-1.5 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44]" />
               <CardHeader className="pb-2">
                 <CardTitle className="text-lg">Booking Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
                 {[
-                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-emerald-400 to-teal-500' },
-                  { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-sky-400 to-blue-500' },
+                  { icon: Briefcase, label: 'Service', value: booking.service?.title || 'Service', gradient: 'from-[#0A1F44] to-[#D4A017]' },
+                  { icon: User, label: 'Provider', value: booking.service?.provider?.name || booking.provider?.name || 'Provider', gradient: 'from-[#0A1F44] to-[#132D5E]' },
                   { icon: CalendarDays, label: 'Date', value: new Date(booking.scheduledDate).toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }), gradient: 'from-amber-400 to-blue-500' },
-                  { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-violet-400 to-purple-500' },
-                  { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-pink-400 to-rose-500' },
+                  { icon: Clock, label: 'Time', value: booking.scheduledTime, gradient: 'from-[#0A1F44] to-[#132D5E]' },
+                  { icon: MapPin, label: 'Address', value: booking.serviceAddress, gradient: 'from-[#8B0000] to-[#8B0000]' },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
                     <div className={`flex size-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br ${item.gradient}`}>
@@ -239,15 +239,15 @@ export function BookingConfirmationPage() {
             </Card>
 
             {/* Trust Badge */}
-            <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-emerald-50/50 p-3">
-              <Shield className="size-4 text-emerald-600" />
-              <span className="text-xs text-emerald-700 font-medium">Your booking is protected by our platform guarantee</span>
+            <div className="mb-6 flex items-center justify-center gap-2 rounded-xl bg-[#FFD54F]/10 p-3">
+              <Shield className="size-4 text-[#0A1F44]" />
+              <span className="text-xs text-[#0A1F44] font-medium">Your booking is protected by our platform guarantee</span>
             </div>
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-3 sm:flex-row">
               <Button
-                className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/25 rounded-xl h-11"
+                className="flex-1 bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-white shadow-lg shadow-[#0A1F44]/25 rounded-xl h-11"
                 onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
               >
                 View Booking <ArrowRight className="ml-2 size-4" />
@@ -265,7 +265,7 @@ export function BookingConfirmationPage() {
             <div className="mt-4 text-center">
               <Button
                 variant="ghost"
-                className="text-emerald-600 hover:text-emerald-700 hover:bg-emerald-50 rounded-xl"
+                className="text-[#0A1F44] hover:text-[#0A1F44] hover:bg-[#FFD54F]/10 rounded-xl"
                 onClick={() => navigate('categories')}
               >
                 Book Another Service
