@@ -10,7 +10,9 @@ import {
   BadgeCheck, Handshake, IndianRupee, Wallet, Rocket, ChevronRight, Sparkles,
   ShieldCheck, CircleDollarSign, UserPlus, Building2, BadgePercent, Truck,
   Droplets, Flame, Tv, WashingMachine, UtensilsCrossed, Snowflake, Plug, Wrench as WrenchIcon,
-  Move, TimerIcon, Gift, Share2, UsersRound, BadgeDollarSign, PartyPopper
+  Move, TimerIcon, Gift, Share2, UsersRound, BadgeDollarSign, PartyPopper,
+  Download, MessageCircle, ThumbsUp, AlertCircle, XCircle, Hammer, Droplet,
+  CircuitBoard, Wind, SmartphoneNfc, QrCode
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -65,24 +67,28 @@ const trustPoints = [
 ]
 
 const features = [
-  { icon: BadgeCheck, title: 'Verified Local Experts', desc: 'All technicians are background-verified and skill-certified' },
-  { icon: IndianRupee, title: 'Affordable Fixed Pricing', desc: 'No hidden charges. Transparent pricing starting ₹99' },
-  { icon: Timer, title: 'Service Within 2 Hours', desc: 'Fast response with same-day service guarantee' },
-  { icon: ShieldCheck, title: '3 Months Warranty', desc: 'Free revisit if any issue happens after service' },
-  { icon: Headphones, title: 'Local Support Team', desc: 'Palwal-based support team for quick resolution' },
-  { icon: Zap, title: 'Warranty Protection', desc: 'Every service backed by our satisfaction guarantee' },
+  { icon: BadgeCheck, title: 'Verified Local Experts', desc: 'All technicians are background-verified and skill-certified for your safety' },
+  { icon: IndianRupee, title: 'Affordable Fixed Pricing', desc: 'No hidden charges. Transparent pricing starting ₹99 for every service' },
+  { icon: Timer, title: 'Service Within 2 Hours', desc: 'Fast response with same-day service guarantee across Palwal' },
+  { icon: ShieldCheck, title: '3 Months Warranty', desc: 'Free revisit if any issue happens after service — no extra charge' },
+  { icon: Headphones, title: 'Local Support Team', desc: 'Palwal-based support team for quick resolution of your concerns' },
+  { icon: Zap, title: 'Warranty Protection', desc: 'Every service backed by our satisfaction guarantee and warranty' },
 ]
 
 const howItWorks = [
-  { step: '1', title: 'Choose Service', desc: 'Browse our 11 verified home services' },
-  { step: '2', title: 'Book Appointment', desc: 'Pick a convenient time slot' },
-  { step: '3', title: 'Get It Done', desc: 'Verified professional arrives at your door' },
+  { step: '1', title: 'Select Service', desc: 'Choose from 11 verified home services', icon: Smartphone },
+  { step: '2', title: 'Technician Assigned', desc: 'Verified professional assigned within minutes', icon: BadgeCheck },
+  { step: '3', title: 'Service Completed', desc: 'Quality work done at your doorstep with warranty', icon: CheckCircle },
 ]
 
+// LOCAL PALWAL testimonials
 const testimonials = [
-  { name: 'Rajesh K.', role: 'Homeowner', text: 'Excellent AC repair service! The technician was professional and fixed the issue in no time.', rating: 5 },
-  { name: 'Priya S.', role: 'Working Professional', text: 'Booked a plumber through BookMyService and was impressed by the quick response and quality work.', rating: 5 },
-  { name: 'Amit M.', role: 'Business Owner', text: 'Reliable and affordable. Have been using their services for 6 months now. Highly recommend!', rating: 4 },
+  { name: 'Rajesh K.', area: 'HUDA Sector', service: 'AC Repair', text: 'AC service completed within 90 minutes! Technician was very professional. The cooling is now perfect.', rating: 5 },
+  { name: 'Priya S.', area: 'Camp Colony', service: 'Plumber', text: 'Booked a plumber and was impressed by the quick response. Fixed the leakage issue in no time.', rating: 5 },
+  { name: 'Amit M.', area: 'Railway Road', service: 'RO Service', text: 'Reliable and affordable. RO service was done same day. 3 months warranty gives peace of mind!', rating: 5 },
+  { name: 'Sunita D.', area: 'Minar Gate', service: 'Electrician', text: 'Electrician came within 2 hours as promised. Very professional work. Highly recommend BookMyService!', rating: 5 },
+  { name: 'Vikram T.', area: 'HUDA Sector', service: 'Washing Machine', text: 'My washing machine stopped working. Called BookMyService and technician fixed it the same day. Amazing!', rating: 4 },
+  { name: 'Anita R.', area: 'Camp Colony', service: 'Geyser', text: 'Winter mein geyser kharab ho gaya. BookMyService ne 2 ghante mein technician bheja. Best service!', rating: 5 },
 ]
 
 const clientBenefits = [
@@ -114,6 +120,45 @@ const comboServices = [
   { name: 'Home Utility Combo', services: 'Electrician + Plumber', icon: '🏠', discount: 'Save ₹80' },
   { name: 'Moving Combo', services: 'Movers + Tank Cleaning', icon: '🚚', discount: 'Save ₹100' },
 ]
+
+// NEW: Customer Problems
+const customerProblems = [
+  { icon: Wind, text: 'AC not cooling properly', color: 'text-[#0A1F44]' },
+  { icon: Droplet, text: 'RO leaking or not filtering', color: 'text-[#0A1F44]' },
+  { icon: WashingMachine, text: 'Washing machine stopped working', color: 'text-[#0A1F44]' },
+  { icon: CircuitBoard, text: 'Electrician not available urgently', color: 'text-[#0A1F44]' },
+  { icon: AlertTriangle, text: 'Emergency plumbing issue', color: 'text-[#0A1F44]' },
+  { icon: Tv, text: 'TV display or sound problems', color: 'text-[#0A1F44]' },
+]
+
+// NEW: Before/After Items
+const beforeAfterItems = [
+  { service: 'AC Cleaning', before: 'Dusty coils, poor cooling, high bills', after: 'Deep cleaned, instant cooling, lower bills', icon: '❄️' },
+  { service: 'Tank Cleaning', before: 'Dirty water, sediment buildup, odour', after: 'Crystal clear water, hygienic & safe', icon: '🚿' },
+  { service: 'Appliance Repair', before: 'Broken, noisy, not working', after: 'Fixed, quiet, running perfectly', icon: '🔧' },
+]
+
+// NEW: Limited Time Offers
+const limitedOffers = [
+  { title: 'Summer AC Service Offer', desc: 'Get AC deep clean + gas check at special price', icon: '🔥', badge: 'HOT DEAL', color: 'bg-[#8B0000]' },
+  { title: 'Free RO Inspection', desc: 'Book any RO service and get free water quality check', icon: '💧', badge: 'FREE CHECK', color: 'bg-[#0A1F44]' },
+  { title: 'First Booking Wallet Reward', desc: 'Get ₹50 wallet credit on your first completed booking', icon: '🎁', badge: '₹50 CREDIT', color: 'bg-emerald-700' },
+]
+
+// NEW: Live Activity Messages
+const activityMessages = [
+  { message: 'RO service booked in Railway Road', time: '2 min ago' },
+  { message: 'AC repair completed in HUDA Sector', time: '5 min ago' },
+  { message: 'Electrician assigned in Camp Colony', time: '8 min ago' },
+  { message: 'Washing machine repaired in Minar Gate', time: '12 min ago' },
+  { message: 'Plumber booking confirmed in HUDA Sector', time: '15 min ago' },
+  { message: 'Water tank cleaning done in Railway Road', time: '20 min ago' },
+  { message: 'Geyser service booked in Camp Colony', time: '25 min ago' },
+  { message: 'TV repair completed in Minar Gate', time: '30 min ago' },
+]
+
+// NEW: Palwal local areas
+const palwalAreas = ['HUDA Sector', 'Camp Colony', 'Railway Road', 'Minar Gate', 'Old City', 'Industrial Area', 'Model Town', 'Subhash Colony']
 
 // ─── Live IST Clock Hook ──────────────────────────────────────────────────────
 function useISTClock() {
@@ -254,6 +299,77 @@ function LivePulse() {
   )
 }
 
+// ─── Live Activity Popup ─────────────────────────────────────────────────────
+function LiveActivityPopup() {
+  const [visible, setVisible] = useState(false)
+  const [currentMsg, setCurrentMsg] = useState(activityMessages[0])
+  const msgIndexRef = useRef(0)
+
+  useEffect(() => {
+    const showNext = () => {
+      msgIndexRef.current = (msgIndexRef.current + 1) % activityMessages.length
+      setCurrentMsg(activityMessages[msgIndexRef.current])
+      setVisible(true)
+      setTimeout(() => setVisible(false), 4000)
+    }
+    // First show after 8 seconds
+    const initialTimeout = setTimeout(() => {
+      showNext()
+    }, 8000)
+    // Then repeat every 15-25 seconds
+    const interval = setInterval(showNext, 18000)
+    return () => { clearTimeout(initialTimeout); clearInterval(interval) }
+  }, [])
+
+  if (!visible) return null
+
+  return (
+    <div className="fixed bottom-20 left-4 z-40 max-w-xs animate-slide-in-up">
+      <div className="bg-[#0A1F44]/95 backdrop-blur-xl text-white rounded-2xl p-3.5 shadow-2xl shadow-[#0A1F44]/30 border border-[#FFD54F]/20 flex items-start gap-3">
+        <div className="flex items-center justify-center size-8 rounded-full bg-emerald-500/20 shrink-0">
+          <CheckCircle className="size-4 text-emerald-400" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs font-medium text-white leading-snug">{currentMsg.message}</p>
+          <p className="text-[10px] text-[#FFD54F]/60 mt-0.5">{currentMsg.time}</p>
+        </div>
+        <button onClick={() => setVisible(false)} className="text-[#FFD54F]/40 hover:text-[#FFD54F] shrink-0">
+          <X className="size-3.5" />
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Floating WhatsApp Button ────────────────────────────────────────────────
+function FloatingWhatsApp() {
+  const [tooltip, setTooltip] = useState(true)
+
+  useEffect(() => {
+    const timer = setTimeout(() => setTooltip(false), 8000)
+    return () => clearTimeout(timer)
+  }, [])
+
+  return (
+    <div className="fixed bottom-6 right-6 z-50 flex items-end gap-3">
+      {tooltip && (
+        <div className="bg-white text-[#0A1F44] text-xs font-semibold px-3 py-2 rounded-xl shadow-lg animate-slide-in-right whitespace-nowrap">
+          Need urgent help?
+        </div>
+      )}
+      <a
+        href="https://wa.me/919999999999?text=Hi%2C%20I%20need%20urgent%20home%20service%20in%20Palwal"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center size-14 rounded-full bg-[#25D366] text-white shadow-xl shadow-[#25D366]/30 hover:shadow-[#25D366]/50 hover:scale-110 transition-all duration-300"
+        aria-label="Chat on WhatsApp"
+      >
+        <MessageCircle className="size-7" />
+      </a>
+    </div>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -261,25 +377,33 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState('home')
   const { istTime, istDate } = useISTClock()
   const { stats, loading } = useVisitorStats()
+  const [scrolled, setScrolled] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#D4A017] flex flex-col">
-      {/* ─── Header ──────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 bg-[#0A1F44]/95 backdrop-blur-xl border-b border-[#FFD54F]/20 shadow-lg">
+      {/* ─── Header (Navy with shadow on scroll) ────────────────────────── */}
+      <header className={cn('sticky top-0 z-50 bg-[#0A1F44]/95 backdrop-blur-xl border-b border-[#FFD54F]/20 transition-shadow duration-300', scrolled ? 'shadow-2xl shadow-[#0A1F44]/50' : 'shadow-lg')}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#D4A017] flex items-center justify-center text-[#0A1F44] font-bold text-sm shadow-lg shadow-[#FFD54F]/20">B</div>
               <span className="font-bold text-lg text-[#FFD54F] tracking-tight">BookMyService</span>
             </div>
-            <nav className="hidden md:flex items-center gap-8">
+            <nav className="hidden md:flex items-center gap-6">
               {['Home', 'Services', 'How It Works', 'About', 'Contact'].map(item => (
-                <button key={item} onClick={() => { const id = item.toLowerCase().replace(/\s/g, '-'); setActiveSection(id); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }} className="text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] transition-colors">{item}</button>
+                <button key={item} onClick={() => { const id = item.toLowerCase().replace(/\s/g, '-'); setActiveSection(id); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }) }}
+                  className="px-3 py-1.5 text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] hover:bg-[#FFD54F]/10 rounded-lg transition-all">{item}</button>
               ))}
             </nav>
             <div className="hidden md:flex items-center gap-3">
-              <button className="text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] px-4 py-2 transition-colors">Login</button>
-              <button className="text-sm font-bold bg-[#FFD54F] text-[#0A1F44] hover:bg-[#FFCE32] px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-[#FFD54F]/20">Book Now</button>
+              <button className="px-4 py-2 text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] hover:bg-[#FFD54F]/10 rounded-lg transition-all">Login</button>
+              <button className="px-5 py-2.5 text-sm font-bold bg-[#FFD54F] text-[#0A1F44] hover:bg-[#FFCE32] rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-[#FFD54F]/20">Book Now</button>
             </div>
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-[#FFD54F]">
               {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -290,7 +414,8 @@ export default function Home() {
           <div className="md:hidden border-t border-[#FFD54F]/20 bg-[#0A1F44]/98 backdrop-blur-xl">
             <div className="px-4 py-3 space-y-2">
               {['Home', 'Services', 'How It Works', 'About', 'Contact'].map(item => (
-                <button key={item} onClick={() => { setMobileMenuOpen(false); document.getElementById(item.toLowerCase().replace(/\s/g, '-'))?.scrollIntoView({ behavior: 'smooth' }) }} className="block w-full text-left px-3 py-2 text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] hover:bg-[#FFD54F]/5 rounded-lg">{item}</button>
+                <button key={item} onClick={() => { setMobileMenuOpen(false); document.getElementById(item.toLowerCase().replace(/\s/g, '-'))?.scrollIntoView({ behavior: 'smooth' }) }}
+                  className="block w-full text-left px-3 py-2.5 text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] hover:bg-[#FFD54F]/5 rounded-lg">{item}</button>
               ))}
               <div className="pt-2 flex gap-2">
                 <button className="flex-1 text-sm font-medium text-[#FFD54F] px-4 py-2.5 border border-[#FFD54F]/30 rounded-xl">Login</button>
@@ -321,22 +446,40 @@ export default function Home() {
                 <div className="flex items-center gap-1.5"><Activity className="size-3.5 text-emerald-400" /><span className="text-[#FFD54F]/60">Active:</span><span className="font-bold text-[#FFD54F]"><AnimatedNumber value={stats.activeVisitors} loading={loading} /></span></div>
                 <div className="flex items-center gap-1.5"><Eye className="size-3.5 text-[#FFD54F]" /><span className="text-[#FFD54F]/60">Today:</span><span className="font-bold text-[#FFD54F]"><AnimatedNumber value={stats.dailyVisitors} loading={loading} /></span></div>
                 <div className="hidden sm:flex items-center gap-1.5"><CalendarDays className="size-3.5 text-[#E0B84C]" /><span className="text-[#FFD54F]/60">Week:</span><span className="font-bold text-[#FFD54F]"><AnimatedNumber value={stats.weeklyVisitors} loading={loading} /></span></div>
-                <div className="hidden md:flex items-center gap-1.5"><CalendarRange className="size-3.5 text-[#C99700]" /><span className="text-[#FFD54F]/60">Month:</span><span className="font-bold text-[#FFD54F]"><AnimatedNumber value={stats.monthlyVisitors} loading={loading} /></span></div>
-                <div className="hidden lg:flex items-center gap-1.5"><TrendingUp className="size-3.5 text-[#FFD54F]" /><span className="text-[#FFD54F]/60">Year:</span><span className="font-bold text-[#FFD54F]"><AnimatedNumber value={stats.yearlyVisitors} loading={loading} /></span></div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ─── Emergency Banner ───────────────────────────────────────────── */}
+      {/* ─── Emergency Sticky Banner ────────────────────────────────────── */}
       <div className="bg-[#8B0000] text-white py-2.5 px-4 text-center">
         <div className="flex items-center justify-center gap-2 text-sm font-semibold">
           <span className="animate-pulse">🚨</span>
-          <span>Emergency AC, RO & Electrician Support Available — Service Within 2 Hours</span>
+          <span>Emergency Appliance & Home Service Available — Service Within 2 Hours</span>
           <span className="animate-pulse">🚨</span>
         </div>
       </div>
+
+      {/* ─── 1. LIVE TRUST COUNTER (Social Proof) ────────────────────────── */}
+      <section className="py-6 bg-[#C99700] border-b border-[#0A1F44]/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+            {[
+              { icon: Users, value: '1500+', label: 'Happy Customers', color: 'from-[#F2C94C] to-[#E0B84C]' },
+              { icon: BadgeCheck, value: '250+', label: 'Verified Technicians', color: 'from-[#E0B84C] to-[#D4A017]' },
+              { icon: CheckCircle, value: '5000+', label: 'Services Completed', color: 'from-[#D4A017] to-[#C99700]' },
+              { icon: MapPin, value: 'Palwal', label: 'Available Across Palwal', color: 'from-[#F2C94C] to-[#E0B84C]' },
+            ].map((item) => (
+              <div key={item.label} className={cn('text-center p-4 rounded-2xl bg-gradient-to-br border border-[#0A1F44]/10 shadow-sm', item.color)}>
+                <item.icon className="size-6 text-[#0A1F44] mx-auto mb-2" />
+                <p className="text-2xl sm:text-3xl font-extrabold text-[#0A1F44]">{item.value}</p>
+                <p className="text-xs text-[#0A1F44]/70 font-semibold mt-1">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ─── Hero Section ────────────────────────────────────────────────── */}
       <section id="home" className="relative overflow-hidden bg-[#0A1F44]">
@@ -360,7 +503,7 @@ export default function Home() {
               AC Repair, RO Service, Electrician, TV Repair, Plumber & More — Service Within 2 Hours
             </p>
 
-            {/* Trust Points */}
+            {/* Trust Points in Hero */}
             <div className="flex flex-wrap gap-3 mb-8">
               {trustPoints.map((point) => (
                 <div key={point.text} className="flex items-center gap-2 bg-[#FFD54F]/10 backdrop-blur-sm rounded-lg px-3 py-2 border border-[#FFD54F]/15">
@@ -370,51 +513,42 @@ export default function Home() {
               ))}
             </div>
 
-            {/* 3 Primary Buttons */}
+            {/* 3 Smart CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-base hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:shadow-[#FFD54F]/40">
-                Book Service <ArrowRight className="size-5" />
+              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-base hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:shadow-[#FFD54F]/40 hover:scale-[1.02] active:scale-[0.98]">
+                Get Technician Fast <ArrowRight className="size-5" />
               </button>
-              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-base hover:bg-[#FFD54F]/20 transition-all">
-                <Wrench className="size-5" /> Become Technician
+              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-base hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+                <Wrench className="size-5" /> Start Earning
               </button>
-              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-emerald-500/90 text-white font-semibold text-base hover:bg-emerald-600 transition-all shadow-lg shadow-emerald-500/25">
-                <CircleDollarSign className="size-5" /> Earn With Us
+              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#8B0000] text-white font-semibold text-base hover:bg-[#A00000] transition-all shadow-lg shadow-[#8B0000]/25 hover:scale-[1.02] active:scale-[0.98]">
+                <Zap className="size-5" /> Emergency Support
               </button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Visitor Stats Cards ─────────────────────────────────────────── */}
-      <section className="py-8 bg-[#C99700] border-b border-[#0A1F44]/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
-            {[
-              { icon: Activity, label: 'Active Now', value: stats.activeVisitors, bgGradient: 'from-[#F2C94C] to-[#E0B84C]', iconColor: 'text-[#0A1F44]', valueColor: 'text-[#0A1F44]' },
-              { icon: Eye, label: 'Today', value: stats.dailyVisitors, bgGradient: 'from-[#F2C94C] to-[#E0B84C]', iconColor: 'text-[#0A1F44]', valueColor: 'text-[#0A1F44]' },
-              { icon: CalendarDays, label: 'This Week', value: stats.weeklyVisitors, bgGradient: 'from-[#E0B84C] to-[#D4A017]', iconColor: 'text-[#0A1F44]', valueColor: 'text-[#0A1F44]' },
-              { icon: CalendarRange, label: 'This Month', value: stats.monthlyVisitors, bgGradient: 'from-[#E0B84C] to-[#D4A017]', iconColor: 'text-[#0A1F44]', valueColor: 'text-[#0A1F44]' },
-              { icon: TrendingUp, label: 'This Year', value: stats.yearlyVisitors, bgGradient: 'from-[#D4A017] to-[#C99700]', iconColor: 'text-[#0A1F44]', valueColor: 'text-[#0A1F44]' },
-            ].map((stat) => (
-              <div key={stat.label} className={cn('relative overflow-hidden rounded-2xl bg-gradient-to-br p-4 sm:p-5 border border-[#0A1F44]/10 shadow-sm hover:shadow-md transition-all duration-300', stat.bgGradient)}>
-                <div className="flex items-center gap-2 mb-2">
-                  <stat.icon className={cn('size-4', stat.iconColor)} />
-                  <span className="text-xs font-semibold text-[#0A1F44]/70 uppercase tracking-wider">{stat.label}</span>
+      {/* ─── 5. Customer Problem Section (Psychological Trigger) ────────── */}
+      <section className="py-16 sm:py-20 bg-[#C99700]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#8B0000]/15 text-[#8B0000] text-xs font-semibold mb-4">FACING THESE PROBLEMS?</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
+            Don&apos;t Stress — We Fix It Fast
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-8 mt-8">
+            {customerProblems.map((p) => (
+              <div key={p.text} className="flex items-center gap-3 p-4 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 text-left">
+                <div className="flex items-center justify-center size-10 rounded-xl bg-[#8B0000]/10 shrink-0">
+                  <p.icon className="size-5 text-[#8B0000]" />
                 </div>
-                <div className={cn('text-2xl sm:text-3xl font-extrabold', stat.valueColor)}>
-                  <AnimatedNumber value={stat.value} loading={loading} />
-                </div>
-                {stat.label === 'Active Now' && !loading && (
-                  <span className="absolute top-3 right-3 flex size-2.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full size-2.5 bg-emerald-500"></span>
-                  </span>
-                )}
+                <span className="text-sm font-semibold text-[#0A1F44]">{p.text}</span>
               </div>
             ))}
           </div>
-          <p className="text-center text-xs text-[#0A1F44]/50 mt-3">📊 Visitor stats update automatically every 10 seconds • Data refreshes in real-time</p>
+          <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-bold text-base hover:bg-[#132D5E] transition-all shadow-xl shadow-[#0A1F44]/25 hover:shadow-[#0A1F44]/40 hover:scale-[1.02]">
+            <CheckCircle className="size-5" /> Book Trusted Technician Now
+          </button>
         </div>
       </section>
 
@@ -446,9 +580,11 @@ export default function Home() {
                       className="group relative p-4 sm:p-5 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/30 hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 text-left card-hover-lift"
                     >
                       {/* Warranty badge */}
-                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-[#0A1F44]/80 text-[#FFD54F] text-[9px] font-bold">3M WAR.</span>
+                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-[#0A1F44]/80 text-[#FFD54F] text-[9px] font-bold flex items-center gap-0.5">
+                        <ShieldCheck className="size-2.5" /> 3M
+                      </span>
                       <div className="text-2xl sm:text-3xl mb-2">{service.icon}</div>
-                      <h4 className="font-bold text-[#0A1F44] text-xs sm:text-sm mb-1 group-hover:text-[#0A1F44] transition-colors">{service.name}</h4>
+                      <h4 className="font-bold text-[#0A1F44] text-xs sm:text-sm mb-1">{service.name}</h4>
                       <p className="text-xs text-[#0A1F44]/60 font-semibold">Starting {service.price}</p>
                       <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
                         <span className="text-[10px] font-bold text-[#0A1F44] bg-[#FFD54F] px-2 py-1 rounded-lg">Quick Book →</span>
@@ -462,33 +598,71 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── 3 Months Warranty Highlight ─────────────────────────────────── */}
-      <section className="py-16 bg-[#0A1F44] relative overflow-hidden">
+      {/* ─── 4. Before / After Section ──────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#0A1F44] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_40%_50%,rgba(255,213,79,0.08),transparent_60%)]" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">TRANSFORMATION</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">See the Difference</h2>
+            <p className="text-lg text-[#E0B84C]/70">Visual transformation that builds trust</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {beforeAfterItems.map((item) => (
+              <div key={item.service} className="rounded-2xl overflow-hidden bg-[#0C1629] border border-[#FFD54F]/15 hover:border-[#FFD54F]/30 transition-all hover:shadow-lg hover:shadow-[#FFD54F]/10">
+                <div className="p-4 text-center border-b border-[#FFD54F]/10">
+                  <div className="text-3xl mb-2">{item.icon}</div>
+                  <h3 className="font-bold text-[#FFD54F] text-lg">{item.service}</h3>
+                </div>
+                <div className="grid grid-cols-2 divide-x divide-[#FFD54F]/10">
+                  <div className="p-4 text-center">
+                    <span className="text-[10px] font-bold text-[#8B0000] uppercase tracking-wider">Before</span>
+                    <p className="text-xs text-red-300/80 mt-2 leading-relaxed">{item.before}</p>
+                  </div>
+                  <div className="p-4 text-center">
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">After</span>
+                    <p className="text-xs text-emerald-300/80 mt-2 leading-relaxed">{item.after}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 11. Warranty Section (Premium) ──────────────────────────────── */}
+      <section className="py-16 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_50%,rgba(255,213,79,0.15),transparent_60%)]" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center justify-center size-20 rounded-full bg-[#FFD54F]/10 border-2 border-[#FFD54F]/25 mb-6">
-            <ShieldCheck className="size-10 text-[#FFD54F]" />
+          <div className="inline-flex items-center justify-center size-20 rounded-full bg-[#FFD54F]/10 border-2 border-[#FFD54F]/25 mb-6 pulse-ring text-[#FFD54F]">
+            <ShieldCheck className="size-10" />
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-4">
             3 Months Service Warranty
           </h2>
           <p className="text-lg sm:text-xl text-[#E0B84C] mb-6 max-w-3xl mx-auto">
-            Every service booked through BookMyService comes with a 3-month warranty. If any issue happens after service, a free support visit will be provided.
+            If any issue remains unresolved after service, a free support visit will be provided — No extra charge, no questions asked.
           </p>
-          <div className="inline-flex items-center gap-2 bg-[#FFD54F]/10 backdrop-blur-sm rounded-full px-6 py-3 border border-[#FFD54F]/20">
-            <CheckCircle className="size-5 text-emerald-400" />
-            <span className="text-[#FFD54F] font-semibold">Free Revisit If Issue Remains — No Extra Charge</span>
+          <div className="flex flex-wrap justify-center gap-4">
+            <div className="inline-flex items-center gap-2 bg-[#FFD54F]/10 backdrop-blur-sm rounded-full px-6 py-3 border border-[#FFD54F]/20">
+              <CheckCircle className="size-5 text-emerald-400" />
+              <span className="text-[#FFD54F] font-semibold">Free Revisit If Issue Remains</span>
+            </div>
+            <div className="inline-flex items-center gap-2 bg-[#FFD54F]/10 backdrop-blur-sm rounded-full px-6 py-3 border border-[#FFD54F]/20">
+              <ShieldCheck className="size-5 text-[#FFD54F]" />
+              <span className="text-[#FFD54F] font-semibold">100% Satisfaction Guarantee</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ─── Why People Trust Us ──────────────────────────────────────────── */}
+      {/* ─── 3. Why People Trust Us ──────────────────────────────────────── */}
       <section className="py-20 sm:py-28 bg-[#C99700]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">WHY PEOPLE TRUST US</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
-              Fast Trusted Local Solution
+              Fast, Trusted & Local
             </h2>
             <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">
               Income opportunity + Warranty-backed support — that&apos;s what sets us apart.
@@ -496,7 +670,7 @@ export default function Home() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {features.map((feature) => (
-              <div key={feature.title} className="text-center p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/8 hover:border-[#0A1F44]/20 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all duration-300">
+              <div key={feature.title} className="text-center p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/8 hover:border-[#0A1F44]/20 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all duration-300 card-hover-lift">
                 <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-[#0A1F44] mb-4">
                   <feature.icon className="size-7 text-[#FFD54F]" />
                 </div>
@@ -508,7 +682,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── How It Works ────────────────────────────────────────────────── */}
+      {/* ─── 12. Fast Response Section ───────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#0A1F44]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">LIGHTNING FAST</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Fast Response, Every Time</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {[
+              { icon: Zap, title: 'Technician Assigned Quickly', desc: 'Get a verified technician assigned within minutes of booking', color: 'text-[#FFD54F]' },
+              { icon: BadgeCheck, title: 'Fast Booking Confirmation', desc: 'Instant confirmation with all booking details on your phone', color: 'text-emerald-400' },
+              { icon: Activity, title: 'Real-Time Booking Updates', desc: 'Track your technician arrival in real-time on your device', color: 'text-[#E0B84C]' },
+            ].map((item) => (
+              <div key={item.title} className="p-6 rounded-2xl bg-[#0C1629] border border-[#FFD54F]/15 text-center hover:border-[#FFD54F]/30 hover:shadow-lg hover:shadow-[#FFD54F]/10 transition-all card-hover-lift">
+                <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-[#FFD54F]/10 mb-4">
+                  <item.icon className={cn('size-7', item.color)} />
+                </div>
+                <h3 className="font-bold text-white mb-2">{item.title}</h3>
+                <p className="text-sm text-[#FFD54F]/60 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 10. How It Works ────────────────────────────────────────────── */}
       <section id="how-it-works" className="py-20 sm:py-28 bg-[#D4A017]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -528,7 +727,239 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Benefit Cards (Client, Technician, Admin) ───────────────────── */}
+      {/* ─── 7. Earn With Us Section (3 Earning Paths) ─────────────────── */}
+      <section className="py-20 sm:py-28 bg-[#C99700]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">EARN WITH US</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
+              3 Ways to Earn With BookMyService
+            </h2>
+            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Join our growing network and start earning today</p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Path 1: Become Technician */}
+            <div className="rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 overflow-hidden hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 card-hover-lift">
+              <div className="bg-[#0A1F44] p-5 text-[#FFD54F]">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center justify-center size-12 rounded-xl bg-[#FFD54F]/15"><Wrench className="size-6 text-[#FFD54F]" /></div>
+                  <h3 className="text-lg font-bold">Become Technician</h3>
+                </div>
+                <p className="text-[#E0B84C] text-sm">Get 20+ extra clients monthly</p>
+              </div>
+              <div className="p-5 space-y-3">
+                {technicianBenefits.map((b) => (
+                  <div key={b} className="flex items-start gap-3">
+                    <CheckCircle className="size-5 text-[#0A1F44] shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#0A1F44]/80">{b}</span>
+                  </div>
+                ))}
+                <div className="pt-4">
+                  <button className="w-full py-3 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-semibold text-sm hover:bg-[#132D5E] transition-all shadow-lg shadow-[#0A1F44]/25 hover:scale-[1.02] active:scale-[0.98]">
+                    Join as Technician <ArrowRight className="size-4 inline ml-1" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Path 2: Refer & Earn */}
+            <div className="rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 overflow-hidden hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 card-hover-lift">
+              <div className="bg-gradient-to-r from-emerald-700 to-emerald-800 p-5 text-white">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center justify-center size-12 rounded-xl bg-white/15"><Share2 className="size-6 text-white" /></div>
+                  <h3 className="text-lg font-bold">Refer & Earn</h3>
+                </div>
+                <p className="text-emerald-200 text-sm">Earn rewards after successful bookings</p>
+              </div>
+              <div className="p-5 space-y-3">
+                {[
+                  'Share your referral link with friends',
+                  'Friend books & completes a service',
+                  'You earn reward after successful booking',
+                  'No limit on referrals — earn unlimited',
+                  'Track all your referrals in dashboard',
+                ].map((b) => (
+                  <div key={b} className="flex items-start gap-3">
+                    <Gift className="size-5 text-emerald-700 shrink-0 mt-0.5" />
+                    <span className="text-sm text-[#0A1F44]/80">{b}</span>
+                  </div>
+                ))}
+                <div className="pt-4">
+                  <button className="w-full py-3 rounded-xl bg-emerald-700 text-white font-semibold text-sm hover:bg-emerald-800 transition-all shadow-lg shadow-emerald-700/25 hover:scale-[1.02] active:scale-[0.98]">
+                    Start Referring <ArrowRight className="size-4 inline ml-1" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Path 3: Become Local Admin */}
+            <div className="rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 overflow-hidden hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 card-hover-lift">
+              <div className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] p-5 text-[#FFD54F]">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="flex items-center justify-center size-12 rounded-xl bg-[#FFD54F]/15"><Building2 className="size-6 text-[#FFD54F]" /></div>
+                  <h3 className="text-lg font-bold">Become Area Growth Partner</h3>
+                </div>
+                <p className="text-[#E0B84C] text-sm">Build your local service network</p>
+              </div>
+              <div className="p-5">
+                <p className="text-xs font-semibold text-[#0A1F44]/50 uppercase tracking-wider mb-3">Monthly Earning:</p>
+                <div className="space-y-3 mb-4">
+                  {adminBenefits.map((b) => (
+                    <div key={b} className="flex items-start gap-3">
+                      <CircleDollarSign className="size-5 text-[#0A1F44] shrink-0 mt-0.5" />
+                      <span className="text-sm text-[#0A1F44]/80">{b}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs font-semibold text-[#0A1F44]/50 uppercase tracking-wider mb-3">You Will:</p>
+                <div className="space-y-2 mb-4">
+                  {['Add technicians in your area', 'Help customer onboarding', 'Promote services locally'].map((r) => (
+                    <div key={r} className="flex items-start gap-2">
+                      <ChevronRight className="size-4 text-[#0A1F44]/50 shrink-0 mt-0.5" />
+                      <span className="text-sm text-[#0A1F44]/70">{r}</span>
+                    </div>
+                  ))}
+                </div>
+                <button className="w-full py-3 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-semibold text-sm hover:bg-[#132D5E] transition-all shadow-lg shadow-[#0A1F44]/25 hover:scale-[1.02] active:scale-[0.98]">
+                  Become Partner <ArrowRight className="size-4 inline ml-1" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 13. Service Provider Growth Section ──────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#0A1F44] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_60%_50%,rgba(255,213,79,0.08),transparent_60%)]" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">GROW YOUR BUSINESS</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Grow Your Business With More Customers</h2>
+            <p className="text-[#E0B84C]/70 max-w-xl mx-auto">Join Palwal&apos;s fastest-growing service platform</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { icon: Users, value: '20+', label: 'Extra clients monthly', color: 'text-[#FFD54F]' },
+              { icon: Eye, value: '100%', label: 'Online visibility', color: 'text-emerald-400' },
+              { icon: RefreshCw, value: '∞', label: 'Repeat customers', color: 'text-[#E0B84C]' },
+              { icon: Headphones, value: '24/7', label: 'Booking management', color: 'text-[#FFD54F]' },
+            ].map((item) => (
+              <div key={item.label} className="p-5 rounded-2xl bg-[#0C1629] border border-[#FFD54F]/15 text-center hover:border-[#FFD54F]/30 transition-all card-hover-lift">
+                <item.icon className={cn('size-8 mx-auto mb-3', item.color)} />
+                <p className="text-2xl font-extrabold text-white mb-1">{item.value}</p>
+                <p className="text-xs text-[#FFD54F]/60 font-semibold">{item.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-base hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:scale-[1.02]">
+              <Rocket className="size-5" /> Start Earning Today
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 9. Limited Time Offers Section ──────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#D4A017]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#8B0000]/15 text-[#8B0000] text-xs font-semibold mb-4">LIMITED TIME OFFERS</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Special Deals For You</h2>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6">
+            {limitedOffers.map((offer) => (
+              <div key={offer.title} className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all text-center card-hover-lift">
+                <div className="text-4xl mb-3">{offer.icon}</div>
+                <span className={cn('inline-block px-3 py-1 rounded-full text-white text-[10px] font-bold mb-3', offer.color)}>{offer.badge}</span>
+                <h3 className="font-bold text-[#0A1F44] text-lg mb-2">{offer.title}</h3>
+                <p className="text-sm text-[#0A1F44]/70 mb-4">{offer.desc}</p>
+                <button className="px-5 py-2.5 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-semibold text-sm hover:bg-[#132D5E] transition-all hover:scale-[1.02]">
+                  Claim Now
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Combo Services ───────────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#C99700]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">SAVE MORE</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Combo Service Deals</h2>
+            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Book multiple services together and save more!</p>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {comboServices.map((combo) => (
+              <div key={combo.name} className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all text-center card-hover-lift">
+                <div className="text-4xl mb-3">{combo.icon}</div>
+                <h3 className="font-bold text-[#0A1F44] text-lg mb-1">{combo.name}</h3>
+                <p className="text-sm text-[#0A1F44]/60 mb-3">{combo.services}</p>
+                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0A1F44] text-[#FFD54F] text-xs font-bold">
+                  <BadgePercent className="size-3.5" /> {combo.discount}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── 6. Local Palwal Feel ─────────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#0A1F44] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(255,213,79,0.06),transparent_70%)]" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">TRUSTED ACROSS PALWAL</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Serving Every Corner of Palwal</h2>
+          <p className="text-lg text-[#E0B84C]/70 mb-8">From HUDA Sector to Camp Colony — we&apos;re in your neighbourhood</p>
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            {palwalAreas.map((area) => (
+              <span key={area} className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0C1629] border border-[#FFD54F]/20 text-[#FFD54F] text-sm font-medium hover:bg-[#FFD54F]/10 hover:border-[#FFD54F]/40 transition-all cursor-pointer">
+                <MapPin className="size-3.5" /> {area}
+              </span>
+            ))}
+          </div>
+          <p className="text-sm text-[#FFD54F]/50">And many more areas across Palwal district</p>
+        </div>
+      </section>
+
+      {/* ─── 8. Real Customer Reviews (Local) ─────────────────────────────── */}
+      <section className="py-20 sm:py-28 bg-[#D4A017]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">REAL REVIEWS</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">What Palwal Says About Us</h2>
+            <p className="text-lg text-[#0A1F44]/70">Real reviews from real customers in your area</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-h-[600px] overflow-y-auto scrollbar-smooth pr-1">
+            {testimonials.map((t) => (
+              <div key={t.name + t.area} className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all">
+                <div className="flex items-center gap-1 mb-3">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={cn('size-4', i < t.rating ? 'fill-[#0A1F44] text-[#0A1F44]' : 'text-[#0A1F44]/20')} />
+                  ))}
+                </div>
+                <p className="text-[#0A1F44]/80 text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-[#0A1F44] flex items-center justify-center text-[#FFD54F] font-bold text-sm">{t.name[0]}</div>
+                  <div>
+                    <p className="font-semibold text-[#0A1F44] text-sm">{t.name}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-[#0A1F44]/50">{t.area}</span>
+                      <span className="text-[#0A1F44]/30">•</span>
+                      <span className="text-xs text-[#0A1F44]/50">{t.service}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Benefit Cards (Client, Technician, Admin) Quick Overview ───── */}
       <section className="py-20 sm:py-28 bg-[#C99700]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -625,58 +1056,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Combo Services ───────────────────────────────────────────────── */}
-      <section className="py-16 sm:py-20 bg-[#D4A017]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">SAVE MORE</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Combo Service Deals</h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Book multiple services together and save more!</p>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {comboServices.map((combo) => (
-              <div key={combo.name} className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all text-center">
-                <div className="text-4xl mb-3">{combo.icon}</div>
-                <h3 className="font-bold text-[#0A1F44] text-lg mb-1">{combo.name}</h3>
-                <p className="text-sm text-[#0A1F44]/60 mb-3">{combo.services}</p>
-                <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[#0A1F44] text-[#FFD54F] text-xs font-bold">
-                  <BadgePercent className="size-3.5" /> {combo.discount}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ─── Testimonials ────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 bg-[#C99700]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">TESTIMONIALS</span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">What Our Customers Say</h2>
-          </div>
-          <div className="grid sm:grid-cols-3 gap-6 sm:gap-8">
-            {testimonials.map((t) => (
-              <div key={t.name} className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all">
-                <div className="flex items-center gap-1 mb-4">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className={cn('size-4', i < t.rating ? 'fill-[#0A1F44] text-[#0A1F44]' : 'text-[#0A1F44]/20')} />
-                  ))}
-                </div>
-                <p className="text-[#0A1F44]/80 text-sm leading-relaxed mb-4">&ldquo;{t.text}&rdquo;</p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-[#0A1F44] flex items-center justify-center text-[#FFD54F] font-bold text-sm">{t.name[0]}</div>
-                  <div>
-                    <p className="font-semibold text-[#0A1F44] text-sm">{t.name}</p>
-                    <p className="text-xs text-[#0A1F44]/50">{t.role}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ─── About Section ────────────────────────────────────────────────── */}
       <section id="about" className="py-20 sm:py-28 bg-[#D4A017]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -750,8 +1129,61 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── 19. App Download Section ────────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#0A1F44] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_50%,rgba(255,213,79,0.1),transparent_60%)]" />
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">MOBILE APP</span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">Book Services Faster From Mobile</h2>
+              <p className="text-[#E0B84C]/70 mb-6">Get the BookMyService app for faster booking, live tracking, exclusive offers & wallet rewards</p>
+              <div className="space-y-3">
+                {[
+                  { icon: Zap, text: 'Faster booking in 30 seconds' },
+                  { icon: MapPin, text: 'Live technician tracking' },
+                  { icon: BadgePercent, text: 'App-exclusive offers' },
+                  { icon: Wallet, text: 'Wallet rewards & cashback' },
+                ].map((item) => (
+                  <div key={item.text} className="flex items-center gap-3">
+                    <div className="flex items-center justify-center size-8 rounded-lg bg-[#FFD54F]/10">
+                      <item.icon className="size-4 text-[#FFD54F]" />
+                    </div>
+                    <span className="text-sm text-[#FFD54F]/80">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-3 mt-8">
+                <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-sm hover:bg-[#FFCE32] transition-all shadow-lg shadow-[#FFD54F]/20">
+                  <Smartphone className="size-5" /> Download App
+                </button>
+                <button className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-sm hover:bg-[#FFD54F]/20 transition-all">
+                  <QrCode className="size-5" /> Scan QR
+                </button>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <div className="relative w-64 h-[500px] rounded-[2.5rem] bg-gradient-to-br from-[#F2C94C] to-[#D4A017] p-3 shadow-2xl shadow-[#FFD54F]/20">
+                <div className="w-full h-full rounded-[2rem] bg-[#0C1629] flex items-center justify-center overflow-hidden">
+                  <div className="text-center p-4">
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#D4A017] flex items-center justify-center text-[#0A1F44] font-bold text-2xl mx-auto mb-4 shadow-lg">B</div>
+                    <h4 className="text-white font-bold text-lg mb-1">BookMyService</h4>
+                    <p className="text-[#FFD54F]/60 text-xs mb-6">Palwal&apos;s #1 Home Service App</p>
+                    <div className="space-y-2">
+                      {['❄️ AC Service', '💧 RO Repair', '⚡ Electrician', '🔧 Plumber'].map((s) => (
+                        <div key={s} className="px-3 py-2 rounded-lg bg-[#FFD54F]/10 text-[#FFD54F] text-xs font-medium">{s}</div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── CTA Section ─────────────────────────────────────────────────── */}
-      <section className="py-20 sm:py-28 bg-[#0A1F44] relative overflow-hidden">
+      <section className="py-20 sm:py-28 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(255,213,79,0.08),transparent_70%)]" />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight mb-6">
@@ -764,13 +1196,13 @@ export default function Home() {
             ✅ 3 Months Warranty • ✅ Free Revisit • ✅ Service Within 2 Hours
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-lg hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25">
+            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-lg hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:scale-[1.02] active:scale-[0.98]">
               Book Now <ArrowRight className="size-5" />
             </button>
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-lg hover:bg-[#FFD54F]/20 transition-all">
+            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-lg hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02]">
               <Wrench className="size-5" /> Join as Technician
             </button>
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-lg hover:bg-[#FFD54F]/20 transition-all">
+            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-lg hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02]">
               <Phone className="size-5" /> Contact Us
             </button>
           </div>
@@ -790,7 +1222,7 @@ export default function Home() {
               { icon: Mail, title: 'Email Us', detail: 'support@bookmyservice.in', sub: 'We reply within 2 hours' },
               { icon: MessageSquare, title: 'Live Chat', detail: 'Chat with us', sub: 'Available 24/7' },
             ].map(item => (
-              <div key={item.title} className="text-center p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/20 hover:shadow-md hover:shadow-[#0A1F44]/10 transition-all">
+              <div key={item.title} className="text-center p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/20 hover:shadow-md hover:shadow-[#0A1F44]/10 transition-all card-hover-lift">
                 <div className="inline-flex items-center justify-center size-12 rounded-xl bg-[#0A1F44] mb-4">
                   <item.icon className="size-6 text-[#FFD54F]" />
                 </div>
@@ -803,20 +1235,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── Footer ──────────────────────────────────────────────────────── */}
+      {/* ─── 17. Premium Footer ────────────────────────────────────────────── */}
       <footer className="bg-[#0A1F44] text-[#FFD54F] mt-auto">
         <div className="h-1.5 w-full bg-gradient-to-r from-[#FFD54F] via-[#D4A017] to-[#FFD54F]" />
+
+        {/* Trust Badges Row */}
+        <div className="border-b border-[#FFD54F]/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { icon: ShieldCheck, text: '3 Months Warranty' },
+                { icon: Zap, text: 'Service Within 2 Hours' },
+                { icon: BadgeCheck, text: 'Verified Professionals' },
+                { icon: Headphones, text: 'Free Support Visit' },
+              ].map((badge) => (
+                <div key={badge.text} className="flex items-center gap-2 justify-center sm:justify-start">
+                  <badge.icon className="size-5 text-[#FFD54F]" />
+                  <span className="text-xs sm:text-sm font-semibold text-[#FFD54F]">{badge.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Main Footer Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Brand */}
             <div>
               <div className="flex items-center gap-2.5 mb-4">
                 <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#D4A017] flex items-center justify-center text-[#0A1F44] font-bold text-sm">B</div>
                 <span className="font-bold text-lg text-[#FFD54F]">BookMyService</span>
               </div>
-              <p className="text-[#E0B84C]/70 text-sm leading-relaxed">
+              <p className="text-[#E0B84C]/70 text-sm leading-relaxed mb-4">
                 Palwal&apos;s trusted appliance & home service platform. Fast repair + essential utility with warranty-backed support.
               </p>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-[#8B0000]/20 border border-[#8B0000]/30">
+                <span className="animate-pulse text-sm">🚨</span>
+                <span className="text-xs text-red-300 font-semibold">Emergency Support Available 24/7</span>
+              </div>
             </div>
+
+            {/* Appliance Services */}
             <div>
               <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-4">Appliance Services</h4>
               <ul className="space-y-2">
@@ -825,16 +1285,32 @@ export default function Home() {
                 ))}
               </ul>
             </div>
+
+            {/* Home Utility + Coverage */}
             <div>
               <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-4">Home Utility</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-2 mb-4">
                 {services.filter(s => ['Water Purifier','Plumber','Water Tank Cleaning','Electrician','Movers and Packers'].includes(s.name)).map(s => (
                   <li key={s.slug}><span className="text-sm text-[#E0B84C]/60 hover:text-[#FFD54F] transition-colors cursor-pointer">{s.name}</span></li>
                 ))}
               </ul>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-3 mt-4">Palwal Coverage</h4>
+              <div className="flex flex-wrap gap-1.5">
+                {palwalAreas.slice(0, 4).map((area) => (
+                  <span key={area} className="text-[10px] text-[#E0B84C]/50 bg-[#FFD54F]/5 px-2 py-1 rounded-md">{area}</span>
+                ))}
+              </div>
             </div>
+
+            {/* Legal + Quick Links */}
             <div>
-              <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-4">Legal</h4>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-4">Quick Links</h4>
+              <ul className="space-y-2 mb-4">
+                {['Book Service', 'Become Technician', 'Refer & Earn', 'Area Partner', 'Contact Support'].map(item => (
+                  <li key={item}><span className="text-sm text-[#E0B84C]/60 hover:text-[#FFD54F] transition-colors cursor-pointer">{item}</span></li>
+                ))}
+              </ul>
+              <h4 className="font-semibold text-sm uppercase tracking-wider text-[#FFD54F] mb-3">Legal</h4>
               <ul className="space-y-2">
                 {['Privacy Policy', 'Terms of Service', 'Refund Policy', 'Cancellation Policy'].map(item => (
                   <li key={item}><span className="text-sm text-[#E0B84C]/60 hover:text-[#FFD54F] transition-colors cursor-pointer">{item}</span></li>
@@ -842,14 +1318,35 @@ export default function Home() {
               </ul>
             </div>
           </div>
+
+          {/* Bottom Bar */}
           <div className="border-t border-[#FFD54F]/15 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-xs text-[#E0B84C]/50">&copy; {new Date().getFullYear()} BookMyService. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <span className="text-xs text-[#E0B84C]/50">Made with ❤️ in India</span>
+              <p className="text-xs text-[#E0B84C]/50">&copy; {new Date().getFullYear()} BookMyService. All rights reserved.</p>
+              <span className="text-xs text-[#E0B84C]/50">Made with ❤️ in Palwal, India</span>
+            </div>
+            <div className="flex items-center gap-3">
+              {/* Social Icons */}
+              {[
+                { icon: Globe, label: 'Website' },
+                { icon: MessageCircle, label: 'WhatsApp' },
+                { icon: Smartphone, label: 'App' },
+              ].map((social) => (
+                <button key={social.label} className="flex items-center justify-center size-9 rounded-lg bg-[#FFD54F]/10 text-[#FFD54F]/60 hover:text-[#FFD54F] hover:bg-[#FFD54F]/20 transition-all" aria-label={social.label}>
+                  <social.icon className="size-4" />
+                </button>
+              ))}
             </div>
           </div>
         </div>
       </footer>
+
+      {/* ─── 15. Floating WhatsApp Button ─────────────────────────────────── */}
+      <FloatingWhatsApp />
+
+      {/* ─── 18. Live Activity Popups ─────────────────────────────────────── */}
+      <LiveActivityPopup />
     </div>
   )
 }
+
