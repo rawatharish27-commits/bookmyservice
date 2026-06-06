@@ -50,6 +50,22 @@ import {
   Briefcase,
   Handshake,
   X,
+  AlertTriangle,
+  Smartphone,
+  QrCode,
+  BadgePercent,
+  Wallet,
+  Gift,
+  Share2,
+  UsersRound,
+  Building2,
+  CircleDollarSign,
+  BadgeCheck,
+  Activity,
+  RefreshCw,
+  Headphones,
+  IndianRupee,
+  Bell,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiUrl } from '@/lib/api-url';
@@ -135,6 +151,23 @@ const CATEGORY_ICON_MAP: Record<string, React.ReactNode> = {
   Droplet: <Droplet className="size-7" />,
   Truck: <Truck className="size-7" />,
 };
+
+// ─── Palwal Areas ──────────────────────────────────────────────────────────────
+
+const PALWAL_AREAS = ['HUDA Sector', 'Camp Colony', 'Railway Road', 'Minar Gate', 'Old City', 'Industrial Area', 'Model Town', 'Subhash Colony'];
+
+// ─── Live Activity Data ────────────────────────────────────────────────────────
+
+const LIVE_ACTIVITY_DATA = [
+  { name: 'Rahul S.', action: 'RO service booked in Railway Road', time: '2 min ago' },
+  { name: 'Priya M.', action: 'AC repair completed in HUDA Sector', time: '5 min ago' },
+  { name: 'Amit K.', action: 'Electrician booked in Camp Colony', time: '8 min ago' },
+  { name: 'Sunita D.', action: 'Water tank cleaning in Model Town', time: '12 min ago' },
+  { name: 'Vikram P.', action: 'Washing machine repair in Minar Gate', time: '15 min ago' },
+  { name: 'Neha R.', action: 'Plumber booked in Subhash Colony', time: '18 min ago' },
+  { name: 'Rajesh T.', action: 'TV repair completed in Old City', time: '22 min ago' },
+  { name: 'Anita G.', action: 'Geyser installed in Industrial Area', time: '25 min ago' },
+];
 
 // ─── Testimonial Data ─────────────────────────────────────────────────────────
 
@@ -322,6 +355,104 @@ function TestimonialCarousel({ testimonials }: { testimonials: Testimonial[] }) 
         </button>
       </div>
     </div>
+  );
+}
+
+// ─── Floating WhatsApp Button ─────────────────────────────────────────────────
+
+function FloatingWhatsApp() {
+  const [showTooltip, setShowTooltip] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowTooltip(false), 8000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <a
+      href="https://wa.me/919999999999?text=Hi%2C%20I%20need%20help%20with%20a%20home%20service"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="fixed bottom-6 right-6 z-50 flex items-center gap-3"
+      aria-label="Chat on WhatsApp"
+    >
+      <AnimatePresence>
+        {showTooltip && (
+          <motion.span
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="whitespace-nowrap rounded-lg bg-white px-4 py-2 text-sm font-semibold text-[#0A1F44] shadow-lg ring-1 ring-[#132D5E]/10"
+          >
+            Need urgent help?
+          </motion.span>
+        )}
+      </AnimatePresence>
+      <motion.div
+        className="flex size-14 items-center justify-center rounded-full bg-[#25D366] shadow-xl shadow-[#25D366]/30"
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.95 }}
+        animate={{ boxShadow: ['0 4px 15px rgba(37,211,102,0.3)', '0 4px 25px rgba(37,211,102,0.5)', '0 4px 15px rgba(37,211,102,0.3)'] }}
+        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+      >
+        <MessageCircle className="size-7 text-white fill-white" />
+      </motion.div>
+    </a>
+  );
+}
+
+// ─── Live Activity Popup ──────────────────────────────────────────────────────
+
+function LiveActivityPopup() {
+  const [visible, setVisible] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    // Initial delay of 8 seconds
+    const initialTimer = setTimeout(() => {
+      setVisible(true);
+      // Auto-hide after 4 seconds
+      setTimeout(() => setVisible(false), 4000);
+    }, 8000);
+
+    // Then show every 18 seconds
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % LIVE_ACTIVITY_DATA.length);
+      setVisible(true);
+      setTimeout(() => setVisible(false), 4000);
+    }, 18000);
+
+    return () => {
+      clearTimeout(initialTimer);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const activity = LIVE_ACTIVITY_DATA[currentIndex];
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          initial={{ opacity: 0, x: -100, y: 0 }}
+          animate={{ opacity: 1, x: 0, y: 0 }}
+          exit={{ opacity: 0, x: -100, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+          className="fixed bottom-6 left-6 z-50 max-w-xs rounded-2xl bg-white p-4 shadow-2xl ring-1 ring-[#132D5E]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
+              <Activity className="size-5 text-[#0A1F44]" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-[#0A1F44]">{activity.name}</p>
+              <p className="truncate text-xs text-muted-foreground">{activity.action}</p>
+              <p className="text-[10px] text-[#FFD54F] font-medium mt-0.5">{activity.time}</p>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
 
@@ -678,6 +809,94 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ 1a. Emergency Sticky Banner ═══════════ */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sticky top-0 z-40 w-full overflow-hidden"
+        style={{ background: 'linear-gradient(90deg, #8B0000 0%, #A00000 50%, #8B0000 100%)' }}
+      >
+        <div className="mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:px-8">
+          <motion.p
+            className="text-center text-sm font-bold text-white sm:text-base"
+            animate={{ opacity: [1, 0.6, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            🚨 Emergency Appliance &amp; Home Service Available — Service Within 2 Hours 🚨
+          </motion.p>
+        </div>
+      </motion.div>
+
+      {/* ═══════════ 1b. Live Trust Counter ═══════════ */}
+      <section className="bg-white py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            {[
+              { value: '1500+', label: 'Happy Customers', icon: <Users className="size-6 text-[#0A1F44]" /> },
+              { value: '250+', label: 'Verified Technicians', icon: <BadgeCheck className="size-6 text-[#0A1F44]" /> },
+              { value: '5000+', label: 'Services Completed', icon: <CheckCircle2 className="size-6 text-[#0A1F44]" /> },
+              { value: 'Palwal', label: 'Available Across', icon: <MapPin className="size-6 text-[#0A1F44]" /> },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex flex-col items-center rounded-2xl p-5 text-center shadow-lg ring-1 ring-[#132D5E]/10"
+                style={{ background: 'linear-gradient(135deg, #FFD54F 0%, #F2C94C 100%)' }}
+              >
+                <div className="mb-3 flex size-12 items-center justify-center rounded-full bg-[#0A1F44]/10">
+                  {stat.icon}
+                </div>
+                <p className="text-2xl font-extrabold text-[#0A1F44]">{stat.value}</p>
+                <p className="mt-1 text-xs font-medium text-[#0A1F44]/70">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 1c. Customer Problems Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#8B0000]/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#8B0000]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#8B0000]/30 bg-[#8B0000]/20 px-4 py-1.5 text-[#FFD54F]">Common Issues</Badge>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">FACING THESE PROBLEMS?</h2>
+            <p className="mt-3 text-white/70">We solve these everyday home service headaches</p>
+          </motion.div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: <Wind className="size-6" />, title: 'AC Not Cooling', desc: 'AC running but not cooling? Gas leak or compressor issue?' },
+              { icon: <Droplets className="size-6" />, title: 'RO Leaking', desc: 'Water purifier leaking or giving bad taste? Filter needs change?' },
+              { icon: <Shirt className="size-6" />, title: 'Washing Machine Stopped', desc: 'Machine not spinning or draining? Drum or motor problem?' },
+              { icon: <Zap className="size-6" />, title: 'Electrician Not Available', desc: 'No electrician when you need one urgently? Switch or wiring issue?' },
+              { icon: <Wrench className="size-6" />, title: 'Emergency Plumbing', desc: 'Pipe burst or tap leaking? Need immediate plumbing help?' },
+              { icon: <Tv className="size-6" />, title: 'TV Display Problems', desc: 'No display, lines on screen, or no sound? TV needs repair?' },
+            ].map((problem, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="group rounded-2xl bg-white/5 p-5 backdrop-blur-sm ring-1 ring-white/10 hover:bg-white/10 transition-all duration-300"
+              >
+                <div className="mb-3 flex size-12 items-center justify-center rounded-xl bg-[#8B0000]/20 text-[#FFD54F] group-hover:bg-[#8B0000]/30 transition-colors">
+                  {problem.icon}
+                </div>
+                <h3 className="text-lg font-bold text-white">{problem.title}</h3>
+                <p className="mt-1 text-sm text-white/60">{problem.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ 2. Hero Section (Navy Blue Gradient) ═══════════ */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 50%, #0A1F44 100%)' }}>
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -984,6 +1203,291 @@ export function HomePage() {
 
       {/* ═══════════ 4b. AI Recommendations Section ═══════════ */}
       <AiRecommendationsSection />
+
+      {/* ═══════════ 4c. Before/After Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #0D2A52 50%, #0A1F44 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 -top-20 size-60 rounded-full bg-[#FFD54F]/10 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-60 rounded-full bg-[#E0B84C]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#FFD54F]/20 bg-[#132D5E]/50 px-4 py-1.5 text-[#FFD54F]">Real Results</Badge>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">See the Difference</h2>
+            <p className="mt-3 text-white/70">Before and after our professional service</p>
+          </motion.div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { title: 'AC Cleaning', before: 'Dusty coils, poor airflow, high bills', after: 'Deep cleaned, 40% better cooling, lower bills', icon: <Wind className="size-6" /> },
+              { title: 'Tank Cleaning', before: 'Dirty water, sediment buildup, health risk', after: 'Crystal clean water, sanitized tank, safe for family', icon: <Droplet className="size-6" /> },
+              { title: 'Appliance Repair', before: 'Broken appliance, costly replacement', after: 'Expertly repaired, working like new, warranty covered', icon: <Wrench className="size-6" /> },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
+                className="overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm ring-1 ring-white/10"
+              >
+                <div className="flex size-14 items-center justify-center rounded-b-2xl rounded-t-2xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44]">
+                  {item.icon}
+                </div>
+                <div className="p-5">
+                  <h3 className="mb-3 text-lg font-bold text-white">{item.title}</h3>
+                  <div className="mb-3 rounded-xl bg-[#8B0000]/15 p-3">
+                    <p className="text-xs font-semibold text-[#FF6B6B]">❌ Before</p>
+                    <p className="mt-1 text-sm text-white/70">{item.before}</p>
+                  </div>
+                  <div className="rounded-xl bg-[#25D366]/10 p-3">
+                    <p className="text-xs font-semibold text-[#25D366]">✅ After</p>
+                    <p className="mt-1 text-sm text-white/70">{item.after}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4d. Why Trust Us Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #FFD54F 0%, #F2C94C 50%, #E0B84C 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#0A1F44]/5 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#0A1F44]/3 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#0A1F44]/20 bg-[#0A1F44]/10 px-4 py-1.5 text-[#0A1F44]">Our Promise</Badge>
+            <h2 className="text-3xl font-extrabold text-[#0A1F44] sm:text-4xl">Why Trust Us?</h2>
+            <p className="mt-3 text-[#0A1F44]/70">6 reasons why Palwal trusts BookYourService</p>
+          </motion.div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { icon: <BadgeCheck className="size-6 text-[#FFD54F]" />, title: 'Verified Local Experts', desc: 'All technicians are background-verified and skill-tested' },
+              { icon: <IndianRupee className="size-6 text-[#FFD54F]" />, title: 'Affordable Fixed Pricing', desc: 'No hidden charges. See exact prices before booking' },
+              { icon: <Clock className="size-6 text-[#FFD54F]" />, title: 'Service Within 2 Hours', desc: 'Quick response for emergency and regular bookings' },
+              { icon: <ShieldCheck className="size-6 text-[#FFD54F]" />, title: '3 Months Warranty', desc: 'Every service comes with a 3-month quality guarantee' },
+              { icon: <Headphones className="size-6 text-[#FFD54F]" />, title: 'Local Support Team', desc: 'Dedicated Palwal-based support for your queries' },
+              { icon: <RefreshCw className="size-6 text-[#FFD54F]" />, title: 'Warranty Protection', desc: 'Free re-service if issue recurs within warranty period' },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.08, duration: 0.5 }}
+                className="group rounded-2xl bg-white/80 p-5 shadow-md ring-1 ring-[#0A1F44]/5 hover:shadow-lg transition-all duration-300"
+              >
+                <div className="mb-3 flex size-12 items-center justify-center rounded-xl bg-[#0A1F44] shadow-md">
+                  {item.icon}
+                </div>
+                <h3 className="text-lg font-bold text-[#0A1F44]">{item.title}</h3>
+                <p className="mt-1 text-sm text-[#0A1F44]/60">{item.desc}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4e. Warranty Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #0D2A52 50%, #132D5E 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 size-96 rounded-full bg-[#FFD54F]/10 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+            className="rounded-3xl bg-white/5 p-10 text-center backdrop-blur-sm ring-1 ring-white/10 shadow-2xl sm:p-14"
+          >
+            <motion.div
+              initial={{ scale: 0.8 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
+              className="mx-auto mb-6 flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-xl shadow-[#FFD54F]/20"
+            >
+              <ShieldCheck className="size-10 text-[#0A1F44]" />
+            </motion.div>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">3 Months Service Warranty</h2>
+            <p className="mt-4 text-lg text-white/70">Every service comes with a guaranteed warranty. If the same issue recurs, we fix it for free.</p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+              {[
+                { label: 'Quality Guarantee', icon: <CheckCircle2 className="size-4" /> },
+                { label: 'Free Re-Service', icon: <RefreshCw className="size-4" /> },
+                { label: 'No Extra Cost', icon: <IndianRupee className="size-4" /> },
+              ].map((badge, i) => (
+                <div key={i} className="flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FFD54F]/20 to-[#E0B84C]/20 px-5 py-2 ring-1 ring-[#FFD54F]/20">
+                  <span className="text-[#FFD54F]">{badge.icon}</span>
+                  <span className="text-sm font-semibold text-[#FFD54F]">{badge.label}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4f. Fast Response Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 top-1/4 size-60 rounded-full bg-[#FFD54F]/8 blur-3xl" />
+          <div className="absolute -left-20 bottom-1/4 size-60 rounded-full bg-[#E0B84C]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#FFD54F]/20 bg-[#132D5E]/50 px-4 py-1.5 text-[#FFD54F]">⚡ Fast Response</Badge>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Lightning-Fast Booking</h2>
+            <p className="mt-3 text-white/70">From booking to service — faster than you expect</p>
+          </motion.div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { step: '01', title: 'Technician Assigned Quickly', desc: 'Get a verified technician assigned within minutes of booking', icon: <UsersRound className="size-6 text-[#FFD54F]" /> },
+              { step: '02', title: 'Fast Booking Confirmation', desc: 'Instant confirmation with all service details on your phone', icon: <BadgeCheck className="size-6 text-[#FFD54F]" /> },
+              { step: '03', title: 'Real-Time Booking Updates', desc: 'Track your technician arrival in real-time, no waiting around', icon: <Activity className="size-6 text-[#FFD54F]" /> },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
+                className="group relative overflow-hidden rounded-2xl bg-white/5 p-6 backdrop-blur-sm ring-1 ring-white/10"
+              >
+                <div className="absolute -right-4 -top-4 text-6xl font-extrabold text-[#FFD54F]/5">{item.step}</div>
+                <div className="relative">
+                  <div className="mb-4 flex size-14 items-center justify-center rounded-xl bg-[#0A1F44]/50 ring-1 ring-[#FFD54F]/20">
+                    {item.icon}
+                  </div>
+                  <h3 className="text-lg font-bold text-white">{item.title}</h3>
+                  <p className="mt-2 text-sm text-white/60">{item.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4g. Limited Offers Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #FFD54F 0%, #F2C94C 50%, #E0B84C 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#0A1F44]/5 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#0A1F44]/3 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#0A1F44]/20 bg-[#0A1F44]/10 px-4 py-1.5 text-[#0A1F44]">🔥 Limited Time</Badge>
+            <h2 className="text-3xl font-extrabold text-[#0A1F44] sm:text-4xl">Exclusive Offers</h2>
+            <p className="mt-3 text-[#0A1F44]/70">Grab these deals before they expire</p>
+          </motion.div>
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { badge: 'SUMMER DEAL', badgeColor: 'bg-[#8B0000] text-white', title: 'Summer AC Service Offer', desc: 'Get AC deep clean + gas check at flat ₹499', icon: <Wind className="size-6 text-[#0A1F44]" /> },
+              { badge: 'FREE', badgeColor: 'bg-[#25D366] text-white', title: 'Free RO Inspection', desc: 'Book any service & get a free RO health checkup', icon: <Gift className="size-6 text-[#0A1F44]" /> },
+              { badge: 'REWARD', badgeColor: 'bg-[#0A1F44] text-[#FFD54F]', title: 'First Booking Wallet Reward', desc: 'Get ₹100 in your wallet on your first booking', icon: <Wallet className="size-6 text-[#0A1F44]" /> },
+            ].map((offer, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.12, duration: 0.5 }}
+                className="group overflow-hidden rounded-2xl bg-white/80 p-6 shadow-lg ring-1 ring-[#0A1F44]/5 hover:shadow-xl transition-all duration-300"
+              >
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="flex size-12 items-center justify-center rounded-xl bg-[#0A1F44]/5">
+                    {offer.icon}
+                  </div>
+                  <span className={`rounded-full px-3 py-1 text-xs font-bold ${offer.badgeColor}`}>
+                    {offer.badge}
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-[#0A1F44]">{offer.title}</h3>
+                <p className="mt-2 text-sm text-[#0A1F44]/60">{offer.desc}</p>
+                <Button onClick={() => navigate('categories')} className="mt-4 w-full bg-[#0A1F44] text-[#FFD54F] hover:bg-[#132D5E]">
+                  Claim Now <ArrowRight className="ml-2 size-4" />
+                </Button>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4h. Local Palwal Feel ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 -top-20 size-60 rounded-full bg-[#FFD54F]/10 blur-3xl" />
+          <div className="absolute -bottom-20 -right-20 size-60 rounded-full bg-[#E0B84C]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#FFD54F]/20 bg-[#132D5E]/50 px-4 py-1.5 text-[#FFD54F]">📍 Palwal Local</Badge>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Serving Every Corner of Palwal</h2>
+            <p className="mt-3 text-white/70">From HUDA Sector to Old City — we cover it all</p>
+          </motion.div>
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            {PALWAL_AREAS.map((area, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.8 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06, duration: 0.4 }}
+                whileHover={{ scale: 1.08 }}
+                className="flex items-center gap-2 rounded-full bg-white/5 px-5 py-2.5 ring-1 ring-[#FFD54F]/20 backdrop-blur-sm cursor-default hover:bg-[#FFD54F]/10 transition-colors"
+              >
+                <MapPin className="size-4 text-[#FFD54F]" />
+                <span className="text-sm font-semibold text-white">{area}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 4i. Provider Growth Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #0D2A52 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#FFD54F]/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#E0B84C]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#FFD54F]/20 bg-[#132D5E]/50 px-4 py-1.5 text-[#FFD54F]">🚀 For Providers</Badge>
+            <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Grow Your Business</h2>
+            <p className="mt-3 text-white/70">Join BookYourService and watch your business scale</p>
+          </motion.div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { value: '20+', label: 'Extra clients monthly', icon: <UsersRound className="size-6 text-[#FFD54F]" /> },
+              { value: '100%', label: 'Online visibility', icon: <Eye className="size-6 text-[#FFD54F]" /> },
+              { value: '∞', label: 'Repeat customers', icon: <RefreshCw className="size-6 text-[#FFD54F]" /> },
+              { value: '24/7', label: 'Booking management', icon: <Clock className="size-6 text-[#FFD54F]" /> },
+            ].map((stat, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1, duration: 0.5 }}
+                className="flex flex-col items-center rounded-2xl bg-white/5 p-6 text-center backdrop-blur-sm ring-1 ring-white/10"
+              >
+                <div className="mb-3 flex size-14 items-center justify-center rounded-xl bg-[#0A1F44]/50 ring-1 ring-[#FFD54F]/20">
+                  {stat.icon}
+                </div>
+                <p className="text-3xl font-extrabold text-[#FFD54F]">{stat.value}</p>
+                <p className="mt-1 text-sm text-white/70">{stat.label}</p>
+              </motion.div>
+            ))}
+          </div>
+          <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.5 }} className="mt-8 text-center">
+            <Button onClick={() => navigate('register')} size="lg" className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] px-10 text-[#0A1F44] font-bold shadow-xl shadow-[#FFD54F]/30 hover:from-[#E0B84C] hover:to-[#FFD54F]">
+              Join as Provider <ArrowRight className="ml-2 size-5" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ═══════════ 5. Area Activation Meter ═══════════ */}
       <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
@@ -1337,6 +1841,129 @@ export function HomePage() {
         </div>
       </section>
 
+      {/* ═══════════ 9a. App Download Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#FFD54F]/10 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#E0B84C]/5 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+            {/* Phone Mockup */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="flex justify-center"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 rounded-[3rem] bg-gradient-to-br from-[#FFD54F]/20 to-[#E0B84C]/10 blur-2xl" />
+                <div className="relative flex h-[500px] w-[260px] flex-col items-center justify-center rounded-[3rem] bg-gradient-to-b from-[#132D5E] to-[#0A1F44] p-6 ring-2 ring-[#FFD54F]/20 shadow-2xl">
+                  <div className="absolute left-1/2 top-3 h-6 w-24 -translate-x-1/2 rounded-full bg-[#0A1F44] ring-1 ring-white/10" />
+                  <div className="mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-lg shadow-[#FFD54F]/20">
+                    <Smartphone className="size-8 text-[#0A1F44]" />
+                  </div>
+                  <p className="text-lg font-bold text-white">BookYourService</p>
+                  <p className="mt-1 text-xs text-[#FFD54F]">Book in 30 seconds</p>
+                  <div className="mt-6 w-full space-y-3">
+                    {['Book any service instantly', 'Track technician in real-time', 'Secure online payments'].map((item, i) => (
+                      <div key={i} className="flex items-center gap-2 rounded-xl bg-white/5 px-3 py-2 ring-1 ring-white/10">
+                        <CheckCircle2 className="size-4 text-[#FFD54F] shrink-0" />
+                        <span className="text-xs text-white/80">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Content */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+            >
+              <Badge className="mb-4 border-[#FFD54F]/20 bg-[#132D5E]/50 px-4 py-1.5 text-[#FFD54F]">📱 Coming Soon</Badge>
+              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">Get the BookYourService App</h2>
+              <p className="mt-4 text-lg text-white/70">Book services in 30 seconds, track your technician, and pay securely — all from your phone.</p>
+              <ul className="mt-6 space-y-3">
+                {[
+                  { icon: <Zap className="size-5 text-[#FFD54F]" />, text: 'Book any service in 30 seconds' },
+                  { icon: <MapPin className="size-5 text-[#FFD54F]" />, text: 'Real-time technician tracking' },
+                  { icon: <ShieldCheck className="size-5 text-[#FFD54F]" />, text: 'Secure payments & warranty tracking' },
+                  { icon: <Bell className="size-5 text-[#FFD54F]" />, text: 'Instant booking updates & reminders' },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-xl bg-[#FFD54F]/10 ring-1 ring-[#FFD54F]/20">
+                      {item.icon}
+                    </div>
+                    <span className="text-sm font-medium text-white/90">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Button size="lg" className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] font-bold shadow-xl shadow-[#FFD54F]/30 hover:from-[#E0B84C] hover:to-[#FFD54F]">
+                  <Smartphone className="mr-2 size-5" /> Download App
+                </Button>
+                <Button size="lg" variant="outline" className="border-[#FFD54F]/40 text-[#FFD54F] hover:bg-[#FFD54F]/10 hover:border-[#FFD54F]/60">
+                  <QrCode className="mr-2 size-5" /> Scan QR Code
+                </Button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ 9b. SEO Landing Pages Section ═══════════ */}
+      <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #FFD54F 0%, #F2C94C 50%, #E0B84C 100%)' }}>
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-20 -top-20 size-60 rounded-full bg-[#0A1F44]/5 blur-3xl" />
+          <div className="absolute -bottom-20 -left-20 size-60 rounded-full bg-[#0A1F44]/3 blur-3xl" />
+        </div>
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="mb-10 text-center">
+            <Badge className="mb-4 border-[#0A1F44]/20 bg-[#0A1F44]/10 px-4 py-1.5 text-[#0A1F44]">📍 Service Areas</Badge>
+            <h2 className="text-3xl font-extrabold text-[#0A1F44] sm:text-4xl">Find Services in Your Area</h2>
+            <p className="mt-3 text-[#0A1F44]/70">Click on any service to book in your locality</p>
+          </motion.div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              { service: 'AC Repair', area: 'Palwal', icon: <Wind className="size-5 text-[#FFD54F]" /> },
+              { service: 'RO Service', area: 'Palwal', icon: <Droplets className="size-5 text-[#FFD54F]" /> },
+              { service: 'Plumber', area: 'Palwal', icon: <Wrench className="size-5 text-[#FFD54F]" /> },
+              { service: 'Electrician', area: 'Palwal', icon: <Zap className="size-5 text-[#FFD54F]" /> },
+              { service: 'Washing Machine', area: 'Palwal', icon: <Shirt className="size-5 text-[#FFD54F]" /> },
+              { service: 'TV Repair', area: 'Palwal', icon: <Tv className="size-5 text-[#FFD54F]" /> },
+              { service: 'Geyser Repair', area: 'Palwal', icon: <Flame className="size-5 text-[#FFD54F]" /> },
+              { service: 'Water Tank Cleaning', area: 'Palwal', icon: <Droplet className="size-5 text-[#FFD54F]" /> },
+              { service: 'Kitchen Appliances', area: 'Palwal', icon: <ChefHat className="size-5 text-[#FFD54F]" /> },
+            ].map((item, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05, duration: 0.4 }}
+                whileHover={{ scale: 1.03 }}
+                onClick={() => navigate('categories')}
+                className="group flex cursor-pointer items-center gap-3 rounded-xl bg-white/70 px-4 py-3 shadow-sm ring-1 ring-[#0A1F44]/5 hover:shadow-md hover:bg-white/90 transition-all"
+              >
+                <div className="flex size-10 items-center justify-center rounded-lg bg-[#0A1F44] shrink-0">
+                  {item.icon}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-[#0A1F44]">{item.service} in {item.area}</p>
+                  <p className="text-xs text-[#0A1F44]/50">Verified experts • Fixed pricing</p>
+                </div>
+                <ArrowRight className="ml-auto size-4 text-[#0A1F44]/30 group-hover:text-[#0A1F44] group-hover:translate-x-1 transition-all shrink-0" />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ 10. Referral Section ═══════════ */}
       <section className="relative overflow-hidden py-16" style={{ background: 'linear-gradient(135deg, #0A1F44 0%, #132D5E 100%)' }}>
         <div className="pointer-events-none absolute inset-0">
@@ -1495,6 +2122,12 @@ export function HomePage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* ═══════════ Floating WhatsApp Button ═══════════ */}
+      <FloatingWhatsApp />
+
+      {/* ═══════════ Live Activity Popup ═══════════ */}
+      <LiveActivityPopup />
     </div>
   );
 }
