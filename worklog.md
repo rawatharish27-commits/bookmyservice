@@ -20,3 +20,27 @@ Stage Summary:
 - Changes pushed to GitHub main branch (commit 8fa5564)
 - Key files modified: src/app/page.tsx (added SEO section), removed proxy.js
 - Theme configuration already in place: tailwind.config.ts, globals.css with BYS brand tokens
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Fix browser caching issue - location detection wrong and stale cached data showing
+
+Work Log:
+- Diagnosed root cause: Caddy gateway routes /api/* to Hono API (port 3001) with Redis caching, not to Next.js API routes (port 3000)
+- The Hono API's /api/stats/platform uses Redis CacheTTL.LONG, returning stale data
+- The visitor tracking POST to /api/stats/visitor was going to Hono which doesn't have the same visitor tracking implementation
+- Fixed page.tsx API calls: Added ?XTransformPort=3000 to route requests directly to Next.js API routes
+- Added cache: 'no-store' option to fetch calls in page.tsx
+- Added Cache-Control: no-store, no-cache, must-revalidate headers to Next.js API routes (platform stats, visitor tracking)
+- Added global no-cache headers in next.config.ts for all pages and API routes
+- Added cache-control meta tag in layout.tsx
+- Cleared .next cache directory to remove any stale compiled pages
+- Verified site renders correctly with Agent Browser (all 20 marketing sections visible)
+- Committed and pushed to main branch (commit e3bd0aa)
+
+Stage Summary:
+- Root cause: Caddy gateway was routing /api/* to Hono (Redis-cached) instead of Next.js (fresh data)
+- Fix: Use XTransformPort=3000 in API calls to bypass Caddy/Hono routing
+- Added comprehensive no-cache headers at multiple layers (next.config.ts, API routes, layout.tsx, fetch options)
+- All changes committed and pushed to GitHub main branch
