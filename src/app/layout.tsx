@@ -8,6 +8,9 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 export const metadata: Metadata = {
   title: "BookMyService - Hyperlocal Service Marketplace",
   description: "Book verified professionals for home services with our satisfaction guarantee.",
+  other: {
+    'cache-control': 'no-cache',
+  },
 };
 
 export default function RootLayout({

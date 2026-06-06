@@ -223,7 +223,7 @@ function useVisitorStats() {
 
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch('/api/stats/platform')
+      const res = await fetch('/api/stats/platform?XTransformPort=3000', { cache: 'no-store' })
       if (res.ok) {
         const data = await res.json()
         setStats({
@@ -238,9 +238,9 @@ function useVisitorStats() {
   const sendHeartbeat = useCallback(async () => {
     if (!sessionIdRef.current) return
     try {
-      await fetch('/api/stats/visitor', {
+      await fetch('/api/stats/visitor?XTransformPort=3000', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
         body: JSON.stringify({ sessionId: sessionIdRef.current, page: window.location.pathname, referrer: document.referrer || undefined }),
       })
     } catch { /* */ }

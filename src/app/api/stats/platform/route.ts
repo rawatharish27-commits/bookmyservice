@@ -68,6 +68,12 @@ export async function GET() {
       totalServices,
       totalBookings,
       timestamp: new Date().toISOString(),
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     });
   } catch (error) {
     console.error('Platform stats fetch error:', error);
@@ -83,6 +89,12 @@ export async function GET() {
       totalServices: 0,
       totalBookings: 0,
       timestamp: new Date().toISOString(),
+    }, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      },
     });
   }
 }
