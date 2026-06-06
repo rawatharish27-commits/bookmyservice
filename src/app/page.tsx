@@ -1182,6 +1182,52 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── 20. SEO + Local Landing Pages ─────────────────────────────────── */}
+      <section className="py-16 sm:py-20 bg-[#C99700]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">POPULAR SEARCHES</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Find Services in Your Area</h2>
+            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Quick access to the most searched home services across Palwal</p>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[
+              { icon: '❄️', title: 'AC Repair in Palwal', desc: 'Fast AC service, gas refill, deep cleaning & installation', slug: 'ac-repair-palwal' },
+              { icon: '💧', title: 'RO Service in Palwal', desc: 'RO repair, filter change, installation & annual maintenance', slug: 'ro-service-palwal' },
+              { icon: '⚡', title: 'Electrician in Palwal', desc: 'Wiring, switch board, MCB, fan & appliance installation', slug: 'electrician-palwal' },
+              { icon: '🔧', title: 'Plumber in Palwal', desc: 'Leakage repair, pipe fitting, tap installation & drainage', slug: 'plumber-palwal' },
+              { icon: '📺', title: 'TV Repair in Palwal', desc: 'LED/LCD TV repair, screen issues, sound problems & more', slug: 'tv-repair-palwal' },
+              { icon: '🫧', title: 'Washing Machine Repair in Palwal', desc: 'Drum issues, spin problems, water leakage & servicing', slug: 'washing-machine-palwal' },
+              { icon: '🔥', title: 'Geyser Service in Palwal', desc: 'Geyser repair, installation, heating element replacement', slug: 'geyser-palwal' },
+              { icon: '🚿', title: 'Water Tank Cleaning in Palwal', desc: 'Professional tank cleaning, sanitization & disinfection', slug: 'tank-cleaning-palwal' },
+              { icon: '🧊', title: 'Refrigerator Repair in Palwal', desc: 'Cooling issues, gas refill, compressor repair & servicing', slug: 'refrigerator-palwal' },
+            ].map((page) => (
+              <button key={page.slug} className="group p-5 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/30 hover:shadow-lg hover:shadow-[#0A1F44]/10 transition-all text-left card-hover-lift">
+                <div className="flex items-start gap-3">
+                  <span className="text-2xl">{page.icon}</span>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-bold text-[#0A1F44] text-sm mb-1 group-hover:text-[#0A1F44]/80">{page.title}</h3>
+                    <p className="text-xs text-[#0A1F44]/60 leading-relaxed">{page.desc}</p>
+                  </div>
+                  <ArrowRight className="size-4 text-[#0A1F44]/30 group-hover:text-[#0A1F44] group-hover:translate-x-1 transition-all shrink-0 mt-1" />
+                </div>
+              </button>
+            ))}
+          </div>
+          {/* Area-specific landing hints */}
+          <div className="mt-10 text-center">
+            <p className="text-sm text-[#0A1F44]/60 mb-4">Also serving in your area:</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {palwalAreas.map((area) => (
+                <span key={area} className="px-3 py-1.5 rounded-full bg-[#0A1F44]/5 text-[#0A1F44]/70 text-xs font-medium hover:bg-[#0A1F44]/10 transition-colors cursor-pointer">
+                  AC Repair in {area}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── CTA Section ─────────────────────────────────────────────────── */}
       <section className="py-20 sm:py-28 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#0A1F44] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(255,213,79,0.08),transparent_70%)]" />
