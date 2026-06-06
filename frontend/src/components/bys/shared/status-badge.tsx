@@ -7,9 +7,9 @@ interface StatusBadgeProps {
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
-  CONFIRMED: 'bg-[#1D63FF]/10 text-[#0D3B7A]',
-  ACCEPTED: 'bg-[#1D63FF]/10 text-[#0D3B7A]',
-  IN_PROGRESS: 'bg-[#4D8AFF]/10 text-[#0D3B7A]',
+  CONFIRMED: 'bg-[#FFD54F]/10 text-[#132D5E]',
+  ACCEPTED: 'bg-[#FFD54F]/10 text-[#132D5E]',
+  IN_PROGRESS: 'bg-[#E0B84C]/10 text-[#132D5E]',
   COMPLETED: 'bg-green-100 text-green-800',
   CANCELLED: 'bg-red-100 text-red-800',
   REJECTED: 'bg-red-100 text-red-800',

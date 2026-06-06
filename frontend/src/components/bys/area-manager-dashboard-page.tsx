@@ -30,14 +30,14 @@ const fadeUp = {
   transition: { duration: 0.4 },
 };
 
-function AnimatedProgress({ value, color = 'bg-[#4D8AFF]' }: { value: number; color?: string }) {
+function AnimatedProgress({ value, color = 'bg-[#E0B84C]' }: { value: number; color?: string }) {
   const [width, setWidth] = useState(0);
   useEffect(() => {
     const timer = setTimeout(() => setWidth(value), 100);
     return () => clearTimeout(timer);
   }, [value]);
   return (
-    <div className="h-3 w-full overflow-hidden rounded-full bg-[#0A2463]/10">
+    <div className="h-3 w-full overflow-hidden rounded-full bg-[#0A1F44]/10">
       <motion.div
         initial={{ width: 0 }}
         animate={{ width: `${width}%` }}
@@ -51,9 +51,9 @@ function AnimatedProgress({ value, color = 'bg-[#4D8AFF]' }: { value: number; co
 function ReferralStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
     PENDING: { className: 'bg-yellow-50 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-400' },
-    REGISTERED: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]' },
+    REGISTERED: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/20', dotColor: 'bg-[#FFD54F]' },
     ACTIVE: { className: 'bg-green-50 text-green-700 border-green-200', dotColor: 'bg-green-400' },
-    COMPLETED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#7DB0FF]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]' },
     EXPIRED: { className: 'bg-gray-50 text-gray-500 border-gray-200', dotColor: 'bg-gray-400' },
   };
   const c = config[status] || config.PENDING;
@@ -129,10 +129,10 @@ export function AreaManagerDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
+        <Button variant="ghost" size="sm" onClick={goBack} className="mb-3 text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">Area Manager Dashboard</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">Area Manager Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Manage your area & track activation progress</p>
       </motion.div>
 
@@ -141,19 +141,19 @@ export function AreaManagerDashboardPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-6 sm:p-8"
+        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-6 sm:p-8"
       >
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Shield className="size-5 text-[#FFCE32]" />
-              <span className="text-sm font-medium text-[#FFE066]">Area Manager</span>
+              <Shield className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#F2C94C]">Area Manager</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">
               {user?.name?.split(' ')[0] || 'Manager'} 👋
             </h2>
-            <p className="mt-1 text-[#FFE066]/80">
+            <p className="mt-1 text-[#F2C94C]/80">
               {myArea ? `${myArea.city} area` : 'Loading area details...'}
             </p>
           </div>
@@ -174,9 +174,9 @@ export function AreaManagerDashboardPage() {
         {/* Area Overview */}
         <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-                <MapPin className="size-5 text-[#FFCE32]" />
+                <MapPin className="size-5 text-[#FFD54F]" />
                 Area Overview
               </CardTitle>
             </CardHeader>
@@ -189,26 +189,26 @@ export function AreaManagerDashboardPage() {
               ) : myArea ? (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#0A2463]/5">
-                      <MapPin className="size-6 text-[#1D63FF]" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#0A1F44]/5">
+                      <MapPin className="size-6 text-[#FFD54F]" />
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold text-[#0A2463]">{myArea.city}</h3>
+                      <h3 className="text-lg font-bold text-[#0A1F44]">{myArea.city}</h3>
                       <p className="text-sm text-muted-foreground">
                         {myArea.pincode || 'All pincodes'} &middot; {myArea.radiusKm}km radius
                       </p>
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <div className="rounded-xl bg-[#1D63FF]/5 p-3 text-center">
+                    <div className="rounded-xl bg-[#FFD54F]/5 p-3 text-center">
                       <p className="text-xs text-muted-foreground">Status</p>
                       <Badge variant="outline" className={`mt-1 ${myArea.isActive ? 'bg-green-50 text-green-700 border-green-200' : 'bg-yellow-50 text-yellow-700 border-yellow-200'}`}>
                         {myArea.isActive ? 'Active' : 'Not Active'}
                       </Badge>
                     </div>
-                    <div className="rounded-xl bg-[#1D63FF]/5 p-3 text-center">
+                    <div className="rounded-xl bg-[#FFD54F]/5 p-3 text-center">
                       <p className="text-xs text-muted-foreground">Activation</p>
-                      <p className="mt-1 text-lg font-bold text-[#0A2463]">{myArea.overallProgress}%</p>
+                      <p className="mt-1 text-lg font-bold text-[#0A1F44]">{myArea.overallProgress}%</p>
                     </div>
                   </div>
                 </div>
@@ -225,9 +225,9 @@ export function AreaManagerDashboardPage() {
         {/* Activation Meter */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
-                <Zap className="size-5 text-[#1D63FF]" />
+            <CardHeader className="bg-gradient-to-r from-[#0A1F44]/5 to-[#FFD54F]/5 pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A1F44]">
+                <Zap className="size-5 text-[#FFD54F]" />
                 Activation Meter
               </CardTitle>
             </CardHeader>
@@ -242,14 +242,14 @@ export function AreaManagerDashboardPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Wrench className="size-4 text-[#4D8AFF]" />
-                        <span className="text-sm font-medium text-[#0A2463]">Providers</span>
+                        <Wrench className="size-4 text-[#E0B84C]" />
+                        <span className="text-sm font-medium text-[#0A1F44]">Providers</span>
                       </div>
-                      <span className="text-sm font-bold text-[#0D3B7A]">
+                      <span className="text-sm font-bold text-[#132D5E]">
                         {providerCount}/{providerTarget}
                       </span>
                     </div>
-                    <AnimatedProgress value={providerPercent} color="bg-gradient-to-r from-[#0D3B7A] to-[#4D8AFF]" />
+                    <AnimatedProgress value={providerPercent} color="bg-gradient-to-r from-[#132D5E] to-[#E0B84C]" />
                     <p className="text-xs text-muted-foreground">
                       {providerPercent}% activated &middot; {providerTarget - providerCount} more needed
                     </p>
@@ -258,21 +258,21 @@ export function AreaManagerDashboardPage() {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Users className="size-4 text-[#7DB0FF]" />
-                        <span className="text-sm font-medium text-[#0A2463]">Customers</span>
+                        <Users className="size-4 text-[#FFD54F]" />
+                        <span className="text-sm font-medium text-[#0A1F44]">Customers</span>
                       </div>
-                      <span className="text-sm font-bold text-[#0D3B7A]">
+                      <span className="text-sm font-bold text-[#132D5E]">
                         {customerCount}/{customerTarget}
                       </span>
                     </div>
-                    <AnimatedProgress value={customerPercent} color="bg-gradient-to-r from-[#4D8AFF] to-[#7DB0FF]" />
+                    <AnimatedProgress value={customerPercent} color="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F]" />
                     <p className="text-xs text-muted-foreground">
                       {customerPercent}% activated &middot; {customerTarget - customerCount} more needed
                     </p>
                   </div>
 
-                  <div className="rounded-xl bg-[#0A2463] p-4 text-center">
-                    <p className="text-xs text-[#FFCE32]">Overall Activation</p>
+                  <div className="rounded-xl bg-[#0A1F44] p-4 text-center">
+                    <p className="text-xs text-[#FFD54F]">Overall Activation</p>
                     <p className="mt-1 text-3xl font-bold text-white">{myArea?.overallProgress || 0}%</p>
                   </div>
                 </div>
@@ -286,9 +286,9 @@ export function AreaManagerDashboardPage() {
       <div className="mt-6">
         <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-white">
-                <IndianRupee className="size-5 text-[#FFCE32]" />
+                <IndianRupee className="size-5 text-[#FFD54F]" />
                 Commission Balance
               </CardTitle>
             </CardHeader>
@@ -301,9 +301,9 @@ export function AreaManagerDashboardPage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-3 gap-4">
-                  <div className="rounded-xl bg-[#0A2463]/5 p-4 text-center">
+                  <div className="rounded-xl bg-[#0A1F44]/5 p-4 text-center">
                     <p className="text-xs text-muted-foreground">Current Balance</p>
-                    <p className="mt-1 text-2xl font-bold text-[#0A2463]">
+                    <p className="mt-1 text-2xl font-bold text-[#0A1F44]">
                       ₹{(commissionSummary?.pendingAmount || 0).toLocaleString()}
                     </p>
                   </div>
@@ -313,9 +313,9 @@ export function AreaManagerDashboardPage() {
                       ₹{(commissionSummary?.totalEarnings || 0).toLocaleString()}
                     </p>
                   </div>
-                  <div className="rounded-xl bg-[#1D63FF]/5 p-4 text-center">
+                  <div className="rounded-xl bg-[#FFD54F]/5 p-4 text-center">
                     <p className="text-xs text-muted-foreground">Commission Rate</p>
-                    <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{commissionSummary?.rate || '3'}%</p>
+                    <p className="mt-1 text-2xl font-bold text-[#132D5E]">{commissionSummary?.rate || '3'}%</p>
                   </div>
                 </div>
               )}
@@ -328,9 +328,9 @@ export function AreaManagerDashboardPage() {
       <div className="mt-6">
         <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
-                <UserPlus className="size-5 text-[#1D63FF]" />
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#0A1F44]/5 to-[#FFD54F]/5 pb-3">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A1F44]">
+                <UserPlus className="size-5 text-[#FFD54F]" />
                 Recent Referrals
               </CardTitle>
             </CardHeader>
@@ -354,9 +354,9 @@ export function AreaManagerDashboardPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
-                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-[#1D63FF]/5/30"
+                      className="flex items-center gap-4 rounded-xl p-3 transition-all hover:bg-[#FFD54F]/5/30"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-md">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#132D5E] to-[#FFD54F] shadow-md">
                         <Users className="size-4 text-white" />
                       </div>
                       <div className="min-w-0 flex-1">
@@ -367,7 +367,7 @@ export function AreaManagerDashboardPage() {
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
                         <ReferralStatusBadge status={ref.status} />
-                        <span className="text-xs font-medium text-[#1D63FF]">₹{ref.totalEarnings.toLocaleString()}</span>
+                        <span className="text-xs font-medium text-[#FFD54F]">₹{ref.totalEarnings.toLocaleString()}</span>
                       </div>
                     </motion.div>
                   ))}

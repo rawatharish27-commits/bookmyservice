@@ -59,36 +59,36 @@ export function AdminRevenuePage() {
 
       {/* Summary */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <Card className="border-l-4 border-l-[#4D8AFF]">
+        <Card className="border-l-4 border-l-[#E0B84C]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Est. Monthly Revenue</p>
-                <p className="mt-1 text-2xl font-bold text-[#1D63FF]">₹{totalRevenue.toLocaleString()}</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">₹{totalRevenue.toLocaleString()}</p>
               </div>
-              <DollarSign className="size-5 text-[#1D63FF]" />
+              <DollarSign className="size-5 text-[#FFD54F]" />
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[#4D8AFF]">
+        <Card className="border-l-4 border-l-[#E0B84C]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Active Streams</p>
                 <p className="mt-1 text-2xl font-bold">{activeStreams.length}</p>
               </div>
-              <CheckCircle2 className="size-5 text-[#1D63FF]" />
+              <CheckCircle2 className="size-5 text-[#FFD54F]" />
             </div>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[#4D8AFF]">
+        <Card className="border-l-4 border-l-[#E0B84C]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Planned Streams</p>
                 <p className="mt-1 text-2xl font-bold">{plannedStreams.length}</p>
               </div>
-              <Clock className="size-5 text-[#1D63FF]" />
+              <Clock className="size-5 text-[#FFD54F]" />
             </div>
           </CardContent>
         </Card>
@@ -98,7 +98,7 @@ export function AdminRevenuePage() {
       <Card className="mt-6">
         <CardHeader className="pb-3">
           <CardTitle className="text-base flex items-center gap-2">
-            <BarChart3 className="size-4 text-[#1D63FF]" />
+            <BarChart3 className="size-4 text-[#FFD54F]" />
             Revenue Streams
           </CardTitle>
         </CardHeader>
@@ -139,7 +139,7 @@ export function AdminRevenuePage() {
                           variant="outline"
                           className={
                             stream.status === 'ACTIVE'
-                              ? 'border-[#1D63FF]/20 bg-[#1D63FF]/10 text-[#0A2463]'
+                              ? 'border-[#FFD54F]/20 bg-[#FFD54F]/10 text-[#0A1F44]'
                               : 'border-yellow-200 bg-yellow-100 text-yellow-800'
                           }
                         >
@@ -162,10 +162,10 @@ export function AdminRevenuePage() {
       <Card className="mt-4">
         <CardContent className="flex items-center justify-between p-4">
           <div className="flex items-center gap-3">
-            <TrendingUp className="size-5 text-[#1D63FF]" />
+            <TrendingUp className="size-5 text-[#FFD54F]" />
             <span className="font-medium">Total Estimated Monthly Revenue</span>
           </div>
-          <span className="text-xl font-bold text-[#1D63FF]">₹{totalRevenue.toLocaleString()}</span>
+          <span className="text-xl font-bold text-[#FFD54F]">₹{totalRevenue.toLocaleString()}</span>
         </CardContent>
       </Card>
     </div>

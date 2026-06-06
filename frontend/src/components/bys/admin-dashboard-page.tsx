@@ -248,7 +248,7 @@ function MetricCard({
   value,
   icon: Icon,
   iconColor = 'text-primary',
-  borderClass = 'border-l-[#1D63FF]',
+  borderClass = 'border-l-[#FFD54F]',
   subtitle,
   trend,
   trendValue,
@@ -272,13 +272,13 @@ function MetricCard({
             {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
             {trend && trendValue && (
               <div className="mt-1 flex items-center gap-1">
-                {trend === 'up' && <ArrowUpRight className="size-3 text-[#1D63FF]" />}
+                {trend === 'up' && <ArrowUpRight className="size-3 text-[#FFD54F]" />}
                 {trend === 'down' && <ArrowDownRight className="size-3 text-red-600" />}
                 {trend === 'neutral' && <Minus className="size-3 text-yellow-600" />}
                 <span
                   className={`text-xs font-medium ${
                     trend === 'up'
-                      ? 'text-[#1D63FF]'
+                      ? 'text-[#FFD54F]'
                       : trend === 'down'
                         ? 'text-red-600'
                         : 'text-yellow-600'
@@ -301,12 +301,12 @@ function MetricCard({
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#4D8AFF]/30',
-    IN_PROGRESS: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30',
-    COMPLETED: 'bg-[#1D63FF]/10 text-green-800 border-green-200',
+    ACCEPTED: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#E0B84C]/30',
+    IN_PROGRESS: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30',
+    COMPLETED: 'bg-[#FFD54F]/10 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
-    completed: 'bg-[#1D63FF]/10 text-green-800 border-green-200',
-    processing: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#4D8AFF]/30',
+    completed: 'bg-[#FFD54F]/10 text-green-800 border-green-200',
+    processing: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#E0B84C]/30',
     failed: 'bg-red-100 text-red-800 border-red-200',
   };
   return (
@@ -318,12 +318,12 @@ function StatusBadge({ status }: { status: string }) {
 
 function AdminActionTypeBadge({ type }: { type: string }) {
   const map: Record<string, { color: string; icon: React.ElementType }> = {
-    approve: { color: 'bg-[#1D63FF]/10 text-green-700', icon: CheckCircle2 },
-    resolve: { color: 'bg-[#1D63FF]/10 text-[#0D3B7A]', icon: Shield },
+    approve: { color: 'bg-[#FFD54F]/10 text-green-700', icon: CheckCircle2 },
+    resolve: { color: 'bg-[#FFD54F]/10 text-[#132D5E]', icon: Shield },
     suspend: { color: 'bg-red-100 text-red-700', icon: Ban },
     update: { color: 'bg-yellow-100 text-yellow-700', icon: RefreshCcw },
     refund: { color: 'bg-purple-100 text-purple-700', icon: CreditCard },
-    create: { color: 'bg-[#1D63FF]/10 text-[#0D3B7A]', icon: FileText },
+    create: { color: 'bg-[#FFD54F]/10 text-[#132D5E]', icon: FileText },
   };
   const cfg = map[type] || { color: 'bg-gray-100 text-gray-700', icon: Activity };
   return (
@@ -336,7 +336,7 @@ function AdminActionTypeBadge({ type }: { type: string }) {
 
 function HealthScoreGauge({ score }: { score: number }) {
   const getColor = (s: number) => {
-    if (s >= 90) return 'text-[#1D63FF]';
+    if (s >= 90) return 'text-[#FFD54F]';
     if (s >= 70) return 'text-yellow-600';
     return 'text-red-600';
   };
@@ -376,8 +376,8 @@ function OverviewTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Top Row - Key Metrics (1-6) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Total Users" value={d.totalUsers.toLocaleString()} icon={Users} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Providers" value={d.totalProviders.toLocaleString()} icon={Briefcase} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" subtitle={`${d.pendingServiceApprovals} pending`} />
+        <MetricCard title="Total Users" value={d.totalUsers.toLocaleString()} icon={Users} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Providers" value={d.totalProviders.toLocaleString()} icon={Briefcase} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" subtitle={`${d.pendingServiceApprovals} pending`} />
         <MetricCard title="Clients" value={d.totalClients.toLocaleString()} icon={UserCheck} iconColor="text-violet-600" borderClass="border-l-violet-500" />
         <MetricCard title="Technicians" value={d.totalTechnicians} icon={Wrench} iconColor="text-orange-600" borderClass="border-l-orange-500" />
         <MetricCard title="Total Bookings" value={d.totalBookings.toLocaleString()} icon={CalendarCheck} iconColor="text-purple-600" borderClass="border-l-purple-500" subtitle={`${d.pendingBookings} pending`} />
@@ -386,36 +386,36 @@ function OverviewTab({ d }: { d: TabData }) {
 
       {/* Second Row - Status Metrics (7-12) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <MetricCard title="Active Now" value={d.activeVisitors || 0} icon={Activity} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="Active Now" value={d.activeVisitors || 0} icon={Activity} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Pending KYC" value={d.pendingKyc} icon={Shield} iconColor="text-yellow-600" borderClass="border-l-yellow-400" />
-        <MetricCard title="Pending Approvals" value={d.pendingServiceApprovals} icon={Clock} iconColor="text-[#1D63FF]" borderClass="border-l-[#4D8AFF]" />
+        <MetricCard title="Pending Approvals" value={d.pendingServiceApprovals} icon={Clock} iconColor="text-[#FFD54F]" borderClass="border-l-[#E0B84C]" />
         <MetricCard title="Active Disputes" value={d.activeDisputes} icon={FileWarning} iconColor="text-red-600" borderClass="border-l-red-500" />
-        <Card className="border-l-4 border-l-[#1D63FF]">
+        <Card className="border-l-4 border-l-[#FFD54F]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground">Health Score</p>
-                <p className="mt-1 text-2xl font-bold text-[#1D63FF]">{d.platformHealth}/100</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">{d.platformHealth}/100</p>
               </div>
-              <div className="rounded-lg bg-[#1D63FF]/10 p-2.5">
-                <Activity className="size-5 text-[#1D63FF]" />
+              <div className="rounded-lg bg-[#FFD54F]/10 p-2.5">
+                <Activity className="size-5 text-[#FFD54F]" />
               </div>
             </div>
             <Progress value={d.platformHealth} className="mt-2 h-1.5" />
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[#1D63FF]">
+        <Card className="border-l-4 border-l-[#FFD54F]">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-medium text-muted-foreground">Server Status</p>
-                <p className="mt-1 text-2xl font-bold text-[#1D63FF]">Online</p>
+                <p className="mt-1 text-2xl font-bold text-[#FFD54F]">Online</p>
               </div>
-              <div className="rounded-lg bg-[#1D63FF]/10 p-2.5">
-                <Server className="size-5 text-[#1D63FF]" />
+              <div className="rounded-lg bg-[#FFD54F]/10 p-2.5">
+                <Server className="size-5 text-[#FFD54F]" />
               </div>
             </div>
-            <p className="mt-1 text-xs text-[#1D63FF]">● API connected</p>
+            <p className="mt-1 text-xs text-[#FFD54F]">● API connected</p>
           </CardContent>
         </Card>
       </div>
@@ -526,12 +526,12 @@ function RevenueTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Revenue Metrics (13-18) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Revenue Today" value={`₹${fin.revenueToday.toLocaleString()}`} icon={DollarSign} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Revenue This Week" value={`₹${fin.revenueWeek.toLocaleString()}`} icon={TrendingUp} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="Revenue Today" value={`₹${fin.revenueToday.toLocaleString()}`} icon={DollarSign} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Revenue This Week" value={`₹${fin.revenueWeek.toLocaleString()}`} icon={TrendingUp} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Revenue This Month" value={`₹${(fin.revenueMonth / 100000).toFixed(1)}L`} icon={BarChart3} iconColor="text-violet-600" borderClass="border-l-violet-500" />
-        <MetricCard title="Commission Earned" value={`₹${fin.commissionEarned.toLocaleString()}`} icon={Banknote} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="Commission Earned" value={`₹${fin.commissionEarned.toLocaleString()}`} icon={Banknote} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Pending Payouts" value={`₹${fin.pendingPayouts.toLocaleString()}`} icon={Clock} iconColor="text-orange-600" borderClass="border-l-orange-500" />
-        <MetricCard title="Completed Payouts" value={`₹${(fin.completedPayouts / 100000).toFixed(1)}L`} icon={CheckCircle2} iconColor="text-[#1D63FF]" borderClass="border-l-[#4D8AFF]" />
+        <MetricCard title="Completed Payouts" value={`₹${(fin.completedPayouts / 100000).toFixed(1)}L`} icon={CheckCircle2} iconColor="text-[#FFD54F]" borderClass="border-l-[#E0B84C]" />
       </div>
 
       {/* Wallet + Escrow + Refund (19-22) */}
@@ -614,9 +614,9 @@ function UsersTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* User Metrics (25-31) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        <MetricCard title="New Users Today" value={u.newUsersToday} icon={UserPlus} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Active Users (7d)" value={u.activeUsers7d.toLocaleString()} icon={Activity} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Verified Providers" value={u.verifiedProviders} icon={UserCheck} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="New Users Today" value={u.newUsersToday} icon={UserPlus} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Active Users (7d)" value={u.activeUsers7d.toLocaleString()} icon={Activity} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Verified Providers" value={u.verifiedProviders} icon={UserCheck} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Pending Providers" value={u.pendingProviders} icon={Clock} iconColor="text-yellow-600" borderClass="border-l-yellow-500" />
         <MetricCard title="Suspended Users" value={u.suspendedUsers} icon={UserX} iconColor="text-red-600" borderClass="border-l-red-500" />
       </div>
@@ -716,9 +716,9 @@ function BookingsTab({ d }: { d: TabData }) {
     <div className="space-y-6">
       {/* Booking Metrics (34-39) */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6">
-        <MetricCard title="Bookings Today" value={b.bookingsToday} icon={CalendarCheck} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Success Rate" value={`${b.successRate}%`} icon={CheckCircle2} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
-        <MetricCard title="Avg. Booking Value" value={`₹${b.avgBookingValue.toLocaleString()}`} icon={DollarSign} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="Bookings Today" value={b.bookingsToday} icon={CalendarCheck} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Success Rate" value={`${b.successRate}%`} icon={CheckCircle2} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
+        <MetricCard title="Avg. Booking Value" value={`₹${b.avgBookingValue.toLocaleString()}`} icon={DollarSign} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Emergency Bookings" value={b.emergencyBookings} icon={Zap} iconColor="text-orange-600" borderClass="border-l-orange-500" />
         <MetricCard title="Cancelled" value={b.cancelledBookings} icon={XCircle} iconColor="text-red-600" borderClass="border-l-red-500" />
         <MetricCard title="Avg. Completion" value={b.avgCompletionTime} icon={Timer} iconColor="text-violet-600" borderClass="border-l-violet-500" />
@@ -880,23 +880,23 @@ function OperationsTab({ d }: { d: TabData }) {
               {d.activeDisputes > 0 && <Badge variant="secondary" className="ml-auto">{d.activeDisputes}</Badge>}
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-services')}>
-              <CheckCircle2 className="mr-2 size-4 text-[#1D63FF]" /> Approve Service
+              <CheckCircle2 className="mr-2 size-4 text-[#FFD54F]" /> Approve Service
               {d.pendingServiceApprovals > 0 && <Badge variant="secondary" className="ml-auto">{d.pendingServiceApprovals}</Badge>}
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-bookings')}>
               <CalendarCheck className="mr-2 size-4 text-purple-600" /> Manage Bookings
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-revenue')}>
-              <DollarSign className="mr-2 size-4 text-[#1D63FF]" /> Process Payouts
+              <DollarSign className="mr-2 size-4 text-[#FFD54F]" /> Process Payouts
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-users')}>
-              <Users className="mr-2 size-4 text-[#1D63FF]" /> Manage Users
+              <Users className="mr-2 size-4 text-[#FFD54F]" /> Manage Users
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.navigate('admin-logs')}>
               <Clock className="mr-2 size-4 text-gray-600" /> Activity Logs
             </Button>
             <Button variant="outline" className="w-full justify-start" onClick={() => d.onChangePassword()}>
-              <KeyRound className="mr-2 size-4 text-[#1D63FF]" /> Change Password
+              <KeyRound className="mr-2 size-4 text-[#FFD54F]" /> Change Password
             </Button>
           </CardContent>
         </Card>
@@ -913,7 +913,7 @@ function SecurityTab({ d }: { d: TabData }) {
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
         <MetricCard title="Failed Logins Today" value={sec.failedLogins} icon={Lock} iconColor="text-red-600" borderClass="border-l-red-500" />
         <MetricCard title="Suspicious Activities" value={sec.suspiciousActivities} icon={ShieldAlert} iconColor="text-orange-600" borderClass="border-l-orange-500" />
-        <MetricCard title="Active Sessions" value={sec.activeSessions.toLocaleString()} icon={Eye} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" />
+        <MetricCard title="Active Sessions" value={sec.activeSessions.toLocaleString()} icon={Eye} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" />
         <MetricCard title="Admin Actions Today" value={sec.adminActionsToday} icon={FileText} iconColor="text-violet-600" borderClass="border-l-violet-500" />
       </div>
 

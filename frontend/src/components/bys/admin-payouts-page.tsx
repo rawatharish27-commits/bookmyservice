@@ -90,11 +90,11 @@ const itemVariants = {
 function PayoutStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; icon: React.ReactNode }> = {
     PENDING: {
-      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+      className: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
       icon: <Clock className="mr-1 size-3" />,
     },
     APPROVED: {
-      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+      className: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
       icon: <CheckCircle2 className="mr-1 size-3" />,
     },
     REJECTED: {
@@ -102,11 +102,11 @@ function PayoutStatusBadge({ status }: { status: string }) {
       icon: <XCircle className="mr-1 size-3" />,
     },
     PROCESSING: {
-      className: 'bg-[#FFCE32]/10 text-[#B89E00] border-[#FFCE32]/20',
+      className: 'bg-[#FFD54F]/10 text-[#B89E00] border-[#FFD54F]/20',
       icon: <Loader2 className="mr-1 size-3 animate-spin" />,
     },
     COMPLETED: {
-      className: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+      className: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
       icon: <CheckCircle2 className="mr-1 size-3" />,
     },
   };
@@ -184,19 +184,19 @@ export function AdminPayoutsPage() {
       label: 'Pending Amount',
       value: formatCurrency(stats.totalPendingAmount),
       icon: Clock,
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#1D63FF]',
-      gradient: 'from-[#1D63FF] to-[#4D8AFF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#FFD54F]',
+      gradient: 'from-[#FFD54F] to-[#E0B84C]',
     },
     {
       label: 'Approved Amount',
       value: formatCurrency(stats.totalApprovedAmount),
       icon: CheckCircle2,
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#4D8AFF]',
-      gradient: 'from-[#4D8AFF] to-[#1D63FF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#E0B84C]',
+      gradient: 'from-[#E0B84C] to-[#FFD54F]',
     },
     {
       label: 'Rejected Amount',
@@ -219,7 +219,7 @@ export function AdminPayoutsPage() {
         className="mb-8"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
             <Wallet className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -290,7 +290,7 @@ export function AdminPayoutsPage() {
                   size="sm"
                   className={
                     statusFilter === filter.value
-                      ? 'bg-[#1D63FF] text-white hover:bg-[#0D3B7A] shrink-0'
+                      ? 'bg-[#FFD54F] text-[#0A1F44] hover:bg-[#132D5E] hover:text-white shrink-0'
                       : 'shrink-0'
                   }
                   onClick={() => {
@@ -356,8 +356,8 @@ export function AdminPayoutsPage() {
                         >
                           <TableCell>
                             <div className="flex items-center gap-3">
-                              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/10">
-                                <span className="text-sm font-bold text-[#0D3B7A]">
+                              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10">
+                                <span className="text-sm font-bold text-[#132D5E]">
                                   {payout.user?.name?.charAt(0)?.toUpperCase() || '?'}
                                 </span>
                               </div>
@@ -394,7 +394,7 @@ export function AdminPayoutsPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="size-8 text-[#1D63FF] hover:bg-[#1D63FF]/5 hover:text-[#0D3B7A]"
+                                  className="size-8 text-[#FFD54F] hover:bg-[#FFD54F]/5 hover:text-[#132D5E]"
                                   onClick={() => openActionDialog(payout, 'APPROVED')}
                                   title="Approve"
                                 >
@@ -464,7 +464,7 @@ export function AdminPayoutsPage() {
           <DialogHeader>
             <DialogTitle
               className={`flex items-center gap-2 ${
-                actionType === 'APPROVED' ? 'text-[#0D3B7A]' : 'text-rose-700'
+                actionType === 'APPROVED' ? 'text-[#132D5E]' : 'text-rose-700'
               }`}
             >
               {actionType === 'APPROVED' ? (
@@ -557,7 +557,7 @@ export function AdminPayoutsPage() {
                 <Button
                   className={`flex-1 ${
                     actionType === 'APPROVED'
-                      ? 'bg-[#1D63FF] text-white hover:bg-[#0D3B7A]'
+                      ? 'bg-[#FFD54F] text-[#0A1F44] hover:bg-[#132D5E] hover:text-white'
                       : 'bg-rose-600 text-white hover:bg-rose-700'
                   }`}
                   onClick={handleAction}

@@ -106,7 +106,7 @@ const EMPTY_MANAGER_DATA: ManagerDashboardData = {
 
 function TechnicianStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    'On Job': { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]' },
+    'On Job': { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/20', dotColor: 'bg-[#FFD54F]' },
     'Available': { className: 'bg-green-50 text-green-700 border-green-200', dotColor: 'bg-green-400' },
     'Break': { className: 'bg-yellow-50 text-yellow-700 border-yellow-200', dotColor: 'bg-yellow-400' },
     'Offline': { className: 'bg-gray-50 text-gray-500 border-gray-200', dotColor: 'bg-gray-400' },
@@ -159,10 +159,10 @@ export function ManagerDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <Button variant="ghost" size="sm" onClick={() => navigate('manager-dashboard')} className="mb-3 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
+        <Button variant="ghost" size="sm" onClick={() => navigate('manager-dashboard')} className="mb-3 text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5">
           <ArrowLeft className="mr-1 size-4" /> Back
         </Button>
-        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">Manager Dashboard</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">Manager Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Oversee city operations, manage providers & track performance</p>
       </motion.div>
 
@@ -171,19 +171,19 @@ export function ManagerDashboardPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-6 sm:p-8"
+        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-6 sm:p-8"
       >
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Shield className="size-5 text-[#FFCE32]" />
-              <span className="text-sm font-medium text-[#FFE066]">Area Manager</span>
+              <Shield className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#F2C94C]">Area Manager</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">
               {data.cityAnalytics.city === '—' ? 'Area' : data.cityAnalytics.city} Operations
             </h2>
-            <p className="mt-1 text-[#FFE066]/80">
+            <p className="mt-1 text-[#F2C94C]/80">
               Managing {data.cityAnalytics.providers} provider{data.cityAnalytics.providers !== 1 ? 's' : ''} across the city
             </p>
           </div>
@@ -199,40 +199,40 @@ export function ManagerDashboardPage() {
       {/* City Analytics Cards */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#FFD54F] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">City</p>
-                  <p className="mt-1 text-lg font-bold text-[#0A2463]">{data.cityAnalytics.city}</p>
+                  <p className="mt-1 text-lg font-bold text-[#0A1F44]">{data.cityAnalytics.city}</p>
                 </div>
-                <div className="rounded-lg bg-[#0A2463]/10 p-2.5 text-[#1D63FF]">
+                <div className="rounded-lg bg-[#0A1F44]/10 p-2.5 text-[#FFD54F]">
                   <MapPin className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-[#0D3B7A] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#132D5E] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Providers</p>
                   <p className="mt-1 text-lg font-bold">{data.cityAnalytics.providers}</p>
                 </div>
-                <div className="rounded-lg bg-[#0A2463]/10 p-2.5 text-[#0D3B7A]">
+                <div className="rounded-lg bg-[#0A1F44]/10 p-2.5 text-[#132D5E]">
                   <Users className="size-5" />
                 </div>
               </div>
             </CardContent>
           </Card>
-          <Card className="border-l-4 border-l-[#1D63FF] transition-shadow hover:shadow-md">
+          <Card className="border-l-4 border-l-[#FFD54F] transition-shadow hover:shadow-md">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-xs font-medium text-muted-foreground">Bookings</p>
                   <p className="mt-1 text-lg font-bold">{data.cityAnalytics.bookings.toLocaleString()}</p>
                 </div>
-                <div className="rounded-lg bg-[#FFCE32]/10 p-2.5 text-[#1D63FF]">
+                <div className="rounded-lg bg-[#FFD54F]/10 p-2.5 text-[#FFD54F]">
                   <CalendarCheck className="size-5" />
                 </div>
               </div>
@@ -272,11 +272,11 @@ export function ManagerDashboardPage() {
         {/* Provider Approval */}
         <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                <UserCheck className="size-4 text-[#FFCE32]" />
+                <UserCheck className="size-4 text-[#FFD54F]" />
                 Provider Approval
-                <Badge className="ml-auto bg-[#1D63FF]/20 text-[#FFE066] border-0">
+                <Badge className="ml-auto bg-[#FFD54F]/20 text-[#F2C94C] border-0">
                   {data.pendingProviders.length} pending
                 </Badge>
               </CardTitle>
@@ -289,13 +289,13 @@ export function ManagerDashboardPage() {
                       key={provider.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="flex items-center gap-3 rounded-xl bg-[#0A2463]/5 p-3"
+                      className="flex items-center gap-3 rounded-xl bg-[#0A1F44]/5 p-3"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-md">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#132D5E] to-[#FFD54F] text-[#0A1F44] shadow-md">
                         <Users className="size-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-[#0A2463]">{provider.name}</p>
+                        <p className="text-sm font-semibold text-[#0A1F44]">{provider.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {provider.service} &middot; {provider.appliedAt}
                         </p>
@@ -303,7 +303,7 @@ export function ManagerDashboardPage() {
                       <div className="flex shrink-0 gap-2">
                         <Button
                           size="sm"
-                          className="h-8 rounded-lg bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
+                          className="h-8 rounded-lg bg-[#FFD54F] text-[#0A1F44] hover:bg-[#132D5E] hover:text-white"
                           onClick={() => handleProviderAction(provider.id, 'approve')}
                         >
                           <CheckCircle2 className="mr-1 size-3" /> Approve
@@ -328,29 +328,29 @@ export function ManagerDashboardPage() {
         {/* Revenue Tracking */}
         <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                <IndianRupee className="size-4 text-[#FFCE32]" />
+                <IndianRupee className="size-4 text-[#FFD54F]" />
                 Revenue Tracking
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-xl bg-[#0A2463]/5 p-4 text-center">
+                <div className="rounded-xl bg-[#0A1F44]/5 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Today</p>
-                  <p className="mt-1 text-xl font-bold text-[#0A2463]">₹{data.revenueTracking.today.toLocaleString()}</p>
+                  <p className="mt-1 text-xl font-bold text-[#0A1F44]">₹{data.revenueTracking.today.toLocaleString()}</p>
                 </div>
-                <div className="rounded-xl bg-[#0A2463]/5 p-4 text-center">
+                <div className="rounded-xl bg-[#0A1F44]/5 p-4 text-center">
                   <p className="text-xs text-muted-foreground">This Week</p>
-                  <p className="mt-1 text-xl font-bold text-[#0A2463]">₹{(data.revenueTracking.thisWeek / 1000).toFixed(0)}k</p>
+                  <p className="mt-1 text-xl font-bold text-[#0A1F44]">₹{(data.revenueTracking.thisWeek / 1000).toFixed(0)}k</p>
                 </div>
-                <div className="rounded-xl bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] p-4 text-center">
-                  <p className="text-xs text-[#FFCE32]">This Month</p>
+                <div className="rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] p-4 text-center">
+                  <p className="text-xs text-[#FFD54F]">This Month</p>
                   <p className="mt-1 text-xl font-bold text-white">₹{(data.revenueTracking.thisMonth / 100000).toFixed(1)}L</p>
                 </div>
-                <div className="rounded-xl bg-[#FFCE32]/10 p-4 text-center">
+                <div className="rounded-xl bg-[#FFD54F]/10 p-4 text-center">
                   <p className="text-xs text-muted-foreground">Commission Earned</p>
-                  <p className="mt-1 text-xl font-bold text-[#0D3B7A]">₹{(data.revenueTracking.commissionEarned / 1000).toFixed(0)}k</p>
+                  <p className="mt-1 text-xl font-bold text-[#132D5E]">₹{(data.revenueTracking.commissionEarned / 1000).toFixed(0)}k</p>
                 </div>
               </div>
               <div className="mt-4 rounded-xl bg-orange-50 p-4 text-center">
@@ -367,11 +367,11 @@ export function ManagerDashboardPage() {
         {/* Technician Monitoring */}
         <motion.div {...fadeUp} transition={{ delay: 0.25 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                <Wrench className="size-4 text-[#FFCE32]" />
+                <Wrench className="size-4 text-[#FFD54F]" />
                 Technician Monitoring
-                <Badge className="ml-auto bg-[#1D63FF]/20 text-[#FFE066] border-0">
+                <Badge className="ml-auto bg-[#FFD54F]/20 text-[#F2C94C] border-0">
                   {data.activeTechnicians.filter((t) => t.status === 'On Job' || t.status === 'Available').length} active
                 </Badge>
               </CardTitle>
@@ -380,12 +380,12 @@ export function ManagerDashboardPage() {
               <ScrollArea className="max-h-72">
                 <div className="space-y-3">
                   {data.activeTechnicians.map((tech) => (
-                    <div key={tech.id} className="flex items-center gap-3 rounded-xl bg-[#0A2463]/5 p-3">
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1D63FF] to-[#4D8AFF] text-white shadow-md">
+                    <div key={tech.id} className="flex items-center gap-3 rounded-xl bg-[#0A1F44]/5 p-3">
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-md">
                         <Wrench className="size-4" />
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-[#0A2463]">{tech.name}</p>
+                        <p className="text-sm font-semibold text-[#0A1F44]">{tech.name}</p>
                         <p className="text-xs text-muted-foreground">
                           {tech.currentJob !== '-' ? tech.currentJob : 'No active job'}
                         </p>
@@ -408,9 +408,9 @@ export function ManagerDashboardPage() {
         {/* Complaint Handling */}
         <motion.div {...fadeUp} transition={{ delay: 0.3 }}>
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] pb-3">
+            <CardHeader className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] pb-3">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                <MessageSquare className="size-4 text-[#FFCE32]" />
+                <MessageSquare className="size-4 text-[#FFD54F]" />
                 Open Complaints
                 <Badge className="ml-auto bg-red-500/20 text-red-200 border-0">
                   {data.openComplaints.length} open
@@ -421,15 +421,15 @@ export function ManagerDashboardPage() {
               <ScrollArea className="max-h-72">
                 <div className="space-y-3">
                   {data.openComplaints.map((complaint) => (
-                    <div key={complaint.id} className="rounded-xl bg-[#0A2463]/5 p-3">
+                    <div key={complaint.id} className="rounded-xl bg-[#0A1F44]/5 p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <AlertCircle className="size-4 text-[#1D63FF]" />
+                          <AlertCircle className="size-4 text-[#FFD54F]" />
                           <span className="text-xs font-medium text-muted-foreground">{complaint.id}</span>
                         </div>
                         <PriorityBadge priority={complaint.priority} />
                       </div>
-                      <p className="mt-1.5 text-sm font-medium text-[#0A2463]">{complaint.issue}</p>
+                      <p className="mt-1.5 text-sm font-medium text-[#0A1F44]">{complaint.issue}</p>
                       <div className="mt-1.5 flex items-center justify-between">
                         <p className="text-xs text-muted-foreground">
                           Client: {complaint.client} &middot; Provider: {complaint.provider}
@@ -437,10 +437,10 @@ export function ManagerDashboardPage() {
                         <p className="text-xs text-muted-foreground">{complaint.createdAt}</p>
                       </div>
                       <div className="mt-2 flex gap-2">
-                        <Button size="sm" className="h-7 rounded-lg bg-[#0D3B7A] text-white hover:bg-[#0A2463] text-xs">
+                        <Button size="sm" className="h-7 rounded-lg bg-[#132D5E] text-white hover:bg-[#0A1F44] text-xs">
                           <Eye className="mr-1 size-3" /> Review
                         </Button>
-                        <Button size="sm" variant="outline" className="h-7 rounded-lg border-[#1D63FF] text-[#0D3B7A] text-xs hover:bg-[#1D63FF]/5">
+                        <Button size="sm" variant="outline" className="h-7 rounded-lg border-[#FFD54F] text-[#132D5E] text-xs hover:bg-[#FFD54F]/5">
                           <MessageSquare className="mr-1 size-3" /> Respond
                         </Button>
                       </div>

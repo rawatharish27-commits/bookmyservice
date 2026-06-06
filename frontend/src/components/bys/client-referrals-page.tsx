@@ -63,14 +63,14 @@ interface ReferralEntry {
 /* ---------- status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; icon: typeof Clock; label: string }> = {
   PENDING: {
-    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
-    dotColor: 'bg-[#FFE066]',
+    className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20',
+    dotColor: 'bg-[#F2C94C]',
     icon: Clock,
     label: 'Pending',
   },
   COMPLETED: {
-    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
-    dotColor: 'bg-[#7DB0FF]',
+    className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20',
+    dotColor: 'bg-[#FFD54F]',
     icon: CheckCircle2,
     label: 'Completed',
   },
@@ -168,52 +168,52 @@ export function ClientReferralsPage() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.4 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#1D63FF] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8 shadow-xl shadow-[#4D8AFF]/20"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-br from-[#FFD54F] via-[#E0B84C] to-[#F2C94C] p-6 sm:p-8 shadow-xl shadow-[#E0B84C]/20"
       >
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
-        <div className="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwQTFGNDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+        <div className="absolute -right-10 -top-10 size-48 rounded-full bg-[#0A1F44]/10 blur-3xl" />
+        <div className="absolute -bottom-16 -left-16 size-56 rounded-full bg-[#0A1F44]/5 blur-3xl" />
 
         <div className="relative">
-          <div className="flex items-center gap-2 text-white/80">
+          <div className="flex items-center gap-2 text-[#0A1F44]/80">
             <Gift className="size-5" />
             <span className="text-sm font-medium">Your Referral Code</span>
           </div>
 
           {referralLoading ? (
-            <Skeleton className="mt-3 h-14 w-64 bg-white/20" />
+            <Skeleton className="mt-3 h-14 w-64 bg-[#0A1F44]/20" />
           ) : (
             <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-3">
-                  <div className="rounded-xl border-2 border-dashed border-white/40 bg-white/10 px-6 py-3 backdrop-blur-sm">
-                    <p className="font-mono text-3xl font-bold tracking-[0.2em] text-white sm:text-4xl">
+                  <div className="rounded-xl border-2 border-dashed border-[#0A1F44]/40 bg-[#0A1F44]/10 px-6 py-3 backdrop-blur-sm">
+                    <p className="font-mono text-3xl font-bold tracking-[0.2em] text-[#0A1F44] sm:text-4xl">
                       {referral.referralCode}
                     </p>
                   </div>
                   <Button
                     variant="outline"
                     size="icon"
-                    className={`shrink-0 rounded-xl size-11 border-white/30 bg-white/10 backdrop-blur-sm transition-all ${
+                    className={`shrink-0 rounded-xl size-11 border-[#0A1F44]/30 bg-[#0A1F44]/10 backdrop-blur-sm transition-all ${
                       copiedCode
-                        ? 'border-white bg-white/30 text-white'
-                        : 'text-white hover:bg-white/20 hover:text-white'
+                        ? 'border-[#0A1F44] bg-[#0A1F44]/30 text-[#0A1F44]'
+                        : 'text-[#0A1F44] hover:bg-[#0A1F44]/20 hover:text-[#0A1F44]'
                     }`}
                     onClick={handleCopyCode}
                   >
                     {copiedCode ? <Check className="size-5" /> : <Copy className="size-5" />}
                   </Button>
                 </div>
-                <p className="mt-2 text-sm text-white/80">
+                <p className="mt-2 text-sm text-[#0A1F44]/80">
                   Share this code with friends — they get ₹50 off, you earn ₹50 cashback!
                 </p>
               </div>
 
               {/* Quick stat */}
               <div className="hidden sm:flex items-center gap-4">
-                <div className="flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
-                  <span className="text-2xl font-bold text-white">{referral.totalReferrals}</span>
-                  <span className="text-xs text-white/70">Referrals</span>
+                <div className="flex flex-col items-center rounded-xl bg-[#0A1F44]/10 px-5 py-3 backdrop-blur-sm">
+                  <span className="text-2xl font-bold text-[#0A1F44]">{referral.totalReferrals}</span>
+                  <span className="text-xs text-[#0A1F44]/70">Referrals</span>
                 </div>
               </div>
             </div>
@@ -229,10 +229,10 @@ export function ClientReferralsPage() {
         className="mb-8"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 p-5">
+          <div className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 p-5">
             <div className="flex items-center gap-3">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg">
-                <Share2 className="size-5 text-white" />
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] shadow-lg">
+                <Share2 className="size-5 text-[#0A1F44]" />
               </div>
               <div>
                 <h2 className="text-lg font-semibold">Share Your Link</h2>
@@ -257,8 +257,8 @@ export function ClientReferralsPage() {
                 onClick={handleCopyLink}
                 className={`shrink-0 rounded-xl px-4 transition-all ${
                   copiedLink
-                    ? 'border-[#7DB0FF] bg-[#1D63FF]/5 text-[#1D63FF]'
-                    : 'hover:border-[#9DC2FF] hover:bg-[#1D63FF]/5 hover:text-[#1D63FF]'
+                    ? 'border-[#FFD54F] bg-[#FFD54F]/5 text-[#FFD54F]'
+                    : 'hover:border-[#E0B84C] hover:bg-[#FFD54F]/5 hover:text-[#FFD54F]'
                 }`}
               >
                 {copiedLink ? (
@@ -279,32 +279,32 @@ export function ClientReferralsPage() {
             <div className="mt-4 grid grid-cols-3 gap-3">
               <button
                 onClick={() => handleShare('whatsapp')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#1D63FF]/20 bg-[#1D63FF]/5 p-4 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#FFD54F]/20 bg-[#FFD54F]/5 p-4 transition-all hover:border-[#FFD54F] hover:bg-[#FFD54F]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-[#1D63FF] shadow-md transition-transform group-hover:scale-110">
-                  <MessageSquare className="size-5 text-white" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-[#FFD54F] shadow-md transition-transform group-hover:scale-110">
+                  <MessageSquare className="size-5 text-[#0A1F44]" />
                 </div>
-                <span className="text-xs font-medium text-[#0D3B7A]">WhatsApp</span>
+                <span className="text-xs font-medium text-[#132D5E]">WhatsApp</span>
               </button>
 
               <button
                 onClick={() => handleShare('email')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#1D63FF]/20 bg-[#1D63FF]/5 p-4 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#FFD54F]/20 bg-[#FFD54F]/5 p-4 transition-all hover:border-[#FFD54F] hover:bg-[#FFD54F]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#FFCE32] shadow-md transition-transform group-hover:scale-110">
-                  <Mail className="size-5 text-white" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] shadow-md transition-transform group-hover:scale-110">
+                  <Mail className="size-5 text-[#0A1F44]" />
                 </div>
-                <span className="text-xs font-medium text-[#0D3B7A]">Email</span>
+                <span className="text-xs font-medium text-[#132D5E]">Email</span>
               </button>
 
               <button
                 onClick={() => handleShare('sms')}
-                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#FFCE32]/20 bg-[#FFCE32]/5 p-4 transition-all hover:border-[#FFE066] hover:bg-[#FFCE32]/5 hover:shadow-md"
+                className="group flex flex-col items-center gap-2 rounded-xl border-2 border-[#FFD54F]/20 bg-[#FFD54F]/5 p-4 transition-all hover:border-[#F2C94C] hover:bg-[#FFD54F]/5 hover:shadow-md"
               >
-                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFCE32] to-[#1D63FF] shadow-md transition-transform group-hover:scale-110">
-                  <Send className="size-5 text-white" />
+                <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md transition-transform group-hover:scale-110">
+                  <Send className="size-5 text-[#0A1F44]" />
                 </div>
-                <span className="text-xs font-medium text-[#E6B800]">SMS</span>
+                <span className="text-xs font-medium text-[#D4A017]">SMS</span>
               </button>
             </div>
           </CardContent>
@@ -327,11 +327,11 @@ export function ClientReferralsPage() {
                   {referralLoading ? (
                     <Skeleton className="mt-1 h-8 w-16" />
                   ) : (
-                    <p className="mt-1 text-3xl font-bold text-[#1D63FF]">{referral.totalReferrals}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#FFD54F]">{referral.totalReferrals}</p>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-lg">
-                  <Users className="size-6 text-white" />
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-lg">
+                  <Users className="size-6 text-[#0A1F44]" />
                 </div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Friends who signed up</p>
@@ -349,15 +349,15 @@ export function ClientReferralsPage() {
                     <Skeleton className="mt-1 h-8 w-24" />
                   ) : (
                     <div className="mt-1 flex items-baseline gap-1">
-                      <IndianRupee className="size-5 text-[#1D63FF]" />
-                      <span className="text-3xl font-bold text-[#1D63FF]">
+                      <IndianRupee className="size-5 text-[#FFD54F]" />
+                      <span className="text-3xl font-bold text-[#FFD54F]">
                         {referral.totalEarned?.toLocaleString('en-IN') || '0'}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFE066] to-[#4D8AFF] shadow-lg">
-                  <Trophy className="size-6 text-white" />
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#F2C94C] to-[#E0B84C] shadow-lg">
+                  <Trophy className="size-6 text-[#0A1F44]" />
                 </div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Earned from referrals</p>
@@ -375,15 +375,15 @@ export function ClientReferralsPage() {
                     <Skeleton className="mt-1 h-8 w-20" />
                   ) : (
                     <div className="mt-1 flex items-baseline gap-1">
-                      <IndianRupee className="size-5 text-[#1D63FF]" />
-                      <span className="text-3xl font-bold text-[#1D63FF]">
+                      <IndianRupee className="size-5 text-[#FFD54F]" />
+                      <span className="text-3xl font-bold text-[#FFD54F]">
                         {referral.pendingRewards?.toLocaleString('en-IN') || '0'}
                       </span>
                     </div>
                   )}
                 </div>
-                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFE066] to-yellow-500 shadow-lg">
-                  <Star className="size-6 text-white" />
+                <div className="flex size-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#F2C94C] to-yellow-500 shadow-lg">
+                  <Star className="size-6 text-[#0A1F44]" />
                 </div>
               </div>
               <p className="mt-2 text-xs text-muted-foreground">Awaiting completion</p>
@@ -400,16 +400,16 @@ export function ClientReferralsPage() {
         className="mb-8"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 p-5">
+          <div className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 p-5">
             <div className="flex items-center gap-2">
-              <Sparkles className="size-5 text-[#1D63FF]" />
+              <Sparkles className="size-5 text-[#FFD54F]" />
               <h2 className="text-lg font-semibold">How It Works</h2>
             </div>
           </div>
           <CardContent className="p-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] text-sm font-bold text-[#0A1F44] shadow-md">
                   1
                 </div>
                 <div>
@@ -418,7 +418,7 @@ export function ClientReferralsPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] text-sm font-bold text-[#0A1F44] shadow-md">
                   2
                 </div>
                 <div>
@@ -427,7 +427,7 @@ export function ClientReferralsPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-sm font-bold text-white shadow-md">
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] text-sm font-bold text-[#0A1F44] shadow-md">
                   3
                 </div>
                 <div>
@@ -447,11 +447,11 @@ export function ClientReferralsPage() {
         transition={{ delay: 0.2 }}
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Referral History</CardTitle>
               {referralHistory.length > 0 && (
-                <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
+                <Badge className="bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">
                   {referralHistory.length} Referrals
                 </Badge>
               )}
@@ -473,15 +473,15 @@ export function ClientReferralsPage() {
               </div>
             ) : referralHistory.length === 0 ? (
               <div className="py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
-                  <UserPlus className="size-8 text-[#9DC2FF]" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/5">
+                  <UserPlus className="size-8 text-[#E0B84C]" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No Referrals Yet</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">
                   Start sharing your referral code to earn rewards!
                 </p>
                 <Button
-                  className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+                  className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
                   size="sm"
                   onClick={handleCopyCode}
                 >
@@ -508,8 +508,8 @@ export function ClientReferralsPage() {
                           {/* Avatar */}
                           <div className={`flex size-11 shrink-0 items-center justify-center rounded-full font-semibold text-white shadow-md ${
                             isCompleted
-                              ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]'
-                              : 'bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]'
+                              ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]'
+                              : 'bg-gradient-to-br from-[#F2C94C] to-[#E0B84C]'
                           }`}>
                             {getInitials(entry.referredName)}
                           </div>
@@ -529,7 +529,7 @@ export function ClientReferralsPage() {
 
                           {/* Reward & status */}
                           <div className="shrink-0 text-right">
-                            <p className={`text-sm font-bold ${isCompleted ? 'text-[#1D63FF]' : 'text-[#1D63FF]'}`}>
+                            <p className={`text-sm font-bold ${isCompleted ? 'text-[#FFD54F]' : 'text-[#FFD54F]'}`}>
                               {isCompleted ? '+' : ''}₹{entry.rewardEarned?.toLocaleString('en-IN')}
                             </p>
                             <Badge variant="outline" className={`mt-0.5 gap-1 text-[10px] font-semibold ${statusConf.className}`}>
@@ -549,7 +549,7 @@ export function ClientReferralsPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowAllHistory(!showAllHistory)}
-                      className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5"
+                      className="text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5"
                     >
                       {showAllHistory ? (
                         <>

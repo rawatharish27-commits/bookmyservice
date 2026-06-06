@@ -68,7 +68,7 @@ export function ClientFavoritesPage() {
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No favorites yet</h3>
           <p className="mt-1 text-sm text-muted-foreground/70">Save services you like to find them easily later</p>
           <Button
-            className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+            className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
             onClick={() => navigate('categories')}
           >
             Browse Services <ArrowRight className="ml-2 size-4" />
@@ -92,7 +92,7 @@ export function ClientFavoritesPage() {
                     <div className="flex items-start justify-between gap-2">
                       <button
                         onClick={() => navigate('service-detail', { serviceId: service.id })}
-                        className="min-w-0 flex-1 text-left group-hover:text-[#1D63FF] transition-colors"
+                        className="min-w-0 flex-1 text-left group-hover:text-[#FFD54F] transition-colors"
                       >
                         <h3 className="truncate font-semibold">{service.title}</h3>
                       </button>
@@ -116,7 +116,7 @@ export function ClientFavoritesPage() {
                         </span>
                       )}
                       <span className="flex items-center gap-1">
-                        <Star className="size-3 fill-[#FFE066] text-[#FFE066]" />
+                        <Star className="size-3 fill-[#F2C94C] text-[#F2C94C]" />
                         {service.averageRating?.toFixed(1) || '0.0'} ({service.totalReviews || 0})
                       </span>
                     </div>
@@ -125,7 +125,7 @@ export function ClientFavoritesPage() {
                       <span className="text-gradient text-lg font-bold">₹{service.basePrice?.toLocaleString()}</span>
                       <Button
                         size="sm"
-                        className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#4D8AFF]/25 rounded-lg"
+                        className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#E0B84C]/25 rounded-lg"
                         onClick={() => navigate('service-detail', { serviceId: service.id })}
                       >
                         View Details

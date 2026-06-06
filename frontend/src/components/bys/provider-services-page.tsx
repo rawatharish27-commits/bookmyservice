@@ -37,8 +37,8 @@ interface ServicesResponse {
 
 function ApprovalBadge({ status }: { status: string }) {
   const config: Record<string, { class: string; label: string; dotColor: string }> = {
-    PENDING: { class: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', label: 'Pending Review', dotColor: 'bg-[#FFCE32]' },
-    APPROVED: { class: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', label: 'Approved', dotColor: 'bg-[#7DB0FF]' },
+    PENDING: { class: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', label: 'Pending Review', dotColor: 'bg-[#FFD54F]' },
+    APPROVED: { class: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', label: 'Approved', dotColor: 'bg-[#FFD54F]' },
     REJECTED: { class: 'bg-red-50 text-red-700 border-red-200', label: 'Rejected', dotColor: 'bg-red-400' },
   };
   const c = config[status] || config.PENDING;
@@ -94,7 +94,7 @@ export function ProviderServicesPage() {
           <p className="mt-1 text-sm text-muted-foreground">Manage your service offerings</p>
         </div>
         <Button
-          className="shimmer bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 rounded-xl"
+          className="shimmer bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 rounded-xl"
           onClick={() => navigate('provider-create-service')}
         >
           <Plus className="mr-2 size-4" />
@@ -110,15 +110,15 @@ export function ProviderServicesPage() {
         >
           <Card className="rounded-2xl border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-12 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
-                <Briefcase className="size-10 text-[#7DB0FF]" />
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+                <Briefcase className="size-10 text-[#FFD54F]" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No services yet</h3>
               <p className="mt-1 text-sm text-muted-foreground/70">
                 Create your first service to start receiving bookings
               </p>
               <Button
-                className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
+                className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25"
                 onClick={() => navigate('provider-create-service')}
               >
                 <Plus className="mr-2 size-4" />
@@ -137,7 +137,7 @@ export function ProviderServicesPage() {
               transition={{ delay: idx * 0.05 }}
             >
               <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5">
-                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-[#7DB0FF] to-[#4D8AFF]' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-[#FFCE32] to-[#1D63FF]'}`} />
+                <div className={`h-1 ${service.approvalStatus === 'APPROVED' ? 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]' : service.approvalStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' : 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]'}`} />
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
@@ -187,7 +187,7 @@ export function ProviderServicesPage() {
 
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      <Star className="size-3 fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_2px_rgba(6,182,212,0.4)]" />
+                      <Star className="size-3 fill-[#FFD54F] text-[#FFD54F] drop-shadow-[0_0_2px_rgba(6,182,212,0.4)]" />
                       <span className="text-sm font-medium">{service.averageRating || '0'}</span>
                     </div>
                     <span className="text-xs text-muted-foreground">

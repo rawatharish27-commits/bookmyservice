@@ -54,9 +54,9 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_GRADIENTS: Record<string, string> = {
-  General: 'from-[#1D63FF] to-[#1D63FF]',
-  Booking: 'from-[#1D63FF] to-[#FFCE32]',
-  Payment: 'from-[#1D63FF] to-[#1D63FF]',
+  General: 'from-[#FFD54F] to-[#E0B84C]',
+  Booking: 'from-[#FFD54F] to-[#E0B84C]',
+  Payment: 'from-[#FFD54F] to-[#E0B84C]',
   Provider: 'from-violet-600 to-purple-600',
   Cancellation: 'from-rose-600 to-pink-600',
 };
@@ -122,7 +122,7 @@ export function FaqPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#E6B800] p-10 sm:p-14"
+        className="relative mb-10 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#D4A017] p-10 sm:p-14"
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -144,7 +144,7 @@ export function FaqPage() {
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
             Frequently Asked <span className="text-white/80">Questions</span>
           </h1>
-          <p className="mx-auto max-w-xl text-lg text-[#4D8AFF]/60">
+          <p className="mx-auto max-w-xl text-lg text-[#E0B84C]/60">
             Find answers to common questions about our platform, services, and policies
           </p>
         </div>
@@ -158,14 +158,14 @@ export function FaqPage() {
         className="mx-auto mb-8 max-w-xl"
       >
         <div className="group relative">
-          <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-[#1D63FF]/0 via-[#FFCE32]/20/50 to-[#1D63FF]/0 opacity-0 blur transition-opacity duration-500 group-focus-within:opacity-100" />
+          <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-[#FFD54F]/0 via-[#FFD54F]/20/50 to-[#FFD54F]/0 opacity-0 blur transition-opacity duration-500 group-focus-within:opacity-100" />
           <div className="relative">
-            <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#4D8AFF]" />
+            <Search className="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-[#E0B84C]" />
             <Input
               placeholder="Search questions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="h-12 rounded-xl border-gray-200 bg-white pl-12 pr-10 text-base shadow-md focus:border-[#1D63FF] focus:ring-[#1D63FF]/30"
+              className="h-12 rounded-xl border-gray-200 bg-white pl-12 pr-10 text-base shadow-md focus:border-[#FFD54F] focus:ring-[#FFD54F]/30"
             />
             {searchQuery && (
               <button
@@ -192,15 +192,15 @@ export function FaqPage() {
           onClick={() => setActiveCategory('all')}
           className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all ${
             activeCategory === 'all'
-              ? 'bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-md shadow-[#1D63FF]/25'
-              : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:ring-[#7DB0FF] hover:text-[#0D3B7A]'
+              ? 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-md shadow-[#FFD54F]/25'
+              : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:ring-[#FFD54F] hover:text-[#132D5E]'
           }`}
         >
           <Settings className="size-3.5" />
           All
         </motion.button>
         {categories.map((cat) => {
-          const gradient = CATEGORY_GRADIENTS[cat] || 'from-[#4D8AFF] to-[#4D8AFF]';
+          const gradient = CATEGORY_GRADIENTS[cat] || 'from-[#E0B84C] to-[#FFD54F]';
           const icon = CATEGORY_ICONS[cat] || <BookOpen className="size-4" />;
           return (
             <motion.button
@@ -211,7 +211,7 @@ export function FaqPage() {
               className={`inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 activeCategory === cat
                   ? `bg-gradient-to-r ${gradient} text-white shadow-md`
-                  : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:ring-[#7DB0FF] hover:text-[#0D3B7A]'
+                  : 'bg-white text-gray-600 shadow-sm ring-1 ring-gray-200 hover:ring-[#FFD54F] hover:text-[#132D5E]'
               }`}
             >
               {icon}
@@ -244,7 +244,7 @@ export function FaqPage() {
             </div>
             <p className="text-lg font-semibold text-gray-800">Failed to Load FAQs</p>
             <p className="mt-1 text-sm text-muted-foreground">Please try again later</p>
-            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-[#7DB0FF] text-[#0D3B7A] hover:bg-[#FFCE32]/5">
+            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-[#FFD54F] text-[#132D5E] hover:bg-[#FFD54F]/5">
               Retry
             </Button>
           </div>
@@ -265,7 +265,7 @@ export function FaqPage() {
           )}
 
           {Object.entries(filteredData).map(([category, items], catIdx) => {
-            const gradient = CATEGORY_GRADIENTS[category] || 'from-[#4D8AFF] to-[#4D8AFF]';
+            const gradient = CATEGORY_GRADIENTS[category] || 'from-[#E0B84C] to-[#FFD54F]';
             const icon = CATEGORY_ICONS[category] || <BookOpen className="size-5" />;
             return (
               <motion.div
@@ -282,7 +282,7 @@ export function FaqPage() {
                   <h2 className="text-xl font-bold text-gray-900">
                     {CATEGORY_LABELS[category] || category}
                   </h2>
-                  <span className="rounded-full bg-[#FFCE32]/5 px-2.5 py-0.5 text-xs font-medium text-[#0D3B7A]">
+                  <span className="rounded-full bg-[#FFD54F]/5 px-2.5 py-0.5 text-xs font-medium text-[#132D5E]">
                     {items.length}
                   </span>
                 </div>
@@ -294,7 +294,7 @@ export function FaqPage() {
                       <AccordionItem
                         key={item.id}
                         value={`faq-${item.id}`}
-                        className="rounded-xl border border-gray-100 glass-emerald px-5 shadow-sm transition-all data-[state=open]:shadow-md data-[state=open]:border-[#7DB0FF]/50"
+                        className="rounded-xl border border-gray-100 glass-emerald px-5 shadow-sm transition-all data-[state=open]:shadow-md data-[state=open]:border-[#FFD54F]/50"
                       >
                         <AccordionTrigger className="text-left hover:no-underline py-4 text-gray-800">
                           <span className="flex items-center gap-3 pr-2">
@@ -328,7 +328,7 @@ export function FaqPage() {
         >
           <div className="glass-emerald mx-auto max-w-md rounded-3xl p-10">
             <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl bg-white">
-              <HelpCircle className="size-10 text-[#7DB0FF]" />
+              <HelpCircle className="size-10 text-[#FFD54F]" />
             </div>
             <h3 className="text-xl font-bold text-gray-800">No FAQs Found</h3>
             <p className="mt-2 text-muted-foreground">
@@ -339,7 +339,7 @@ export function FaqPage() {
                 variant="outline"
                 size="sm"
                 onClick={() => setSearchQuery('')}
-                className="mt-4 rounded-xl border-[#7DB0FF] text-[#0D3B7A] hover:bg-[#FFCE32]/5"
+                className="mt-4 rounded-xl border-[#FFD54F] text-[#132D5E] hover:bg-[#FFD54F]/5"
               >
                 Clear Search
               </Button>
@@ -356,7 +356,7 @@ export function FaqPage() {
         transition={{ duration: 0.5 }}
         className="mx-auto mt-16 max-w-xl"
       >
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#E6B800] p-8 text-center">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#D4A017] p-8 text-center">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -right-12 -top-12 size-40 rounded-full bg-white/5" />
             <div className="absolute -bottom-12 -left-12 size-40 rounded-full bg-white/5" />
@@ -366,13 +366,13 @@ export function FaqPage() {
               <MessageSquare className="size-7 text-white" />
             </div>
             <h3 className="text-xl font-bold text-white">Still have questions?</h3>
-            <p className="mt-2 text-[#4D8AFF]/60">
+            <p className="mt-2 text-[#E0B84C]/60">
               Our support team is ready to help you with any questions
             </p>
             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <Button
                 onClick={() => navigate('contact')}
-                className="shimmer rounded-xl bg-white px-6 text-[#0D3B7A] shadow-lg hover:bg-[#FFCE32]/5"
+                className="shimmer rounded-xl bg-white px-6 text-[#132D5E] shadow-lg hover:bg-[#FFD54F]/5"
               >
                 <Mail className="mr-2 size-4" /> Contact Us
               </Button>

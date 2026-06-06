@@ -101,14 +101,14 @@ function FooterLinkButton({ link, onNavigate }: { link: FooterLink; onNavigate: 
   return (
     <motion.button
       onClick={() => onNavigate(link.page, link.params)}
-      className="group relative inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-[#1D63FF]"
+      className="group relative inline-flex items-center gap-1.5 text-[15px] font-medium text-muted-foreground transition-colors duration-200 hover:text-[#FFD54F]"
       whileHover={{ x: 4 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
       <ChevronRight className="size-3 opacity-0 -ml-4 transition-all duration-200 group-hover:opacity-60 group-hover:ml-0" />
       <span className="relative">
         {link.label}
-        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-[#0D3B7A] to-[#4D8AFF] transition-all duration-300 group-hover:w-full" />
+        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-[#132D5E] to-[#E0B84C] transition-all duration-300 group-hover:w-full" />
       </span>
     </motion.button>
   );
@@ -126,16 +126,16 @@ function ServiceLinkButton({
   return (
     <motion.button
       onClick={() => onNavigate(link.page)}
-      className="group flex items-center gap-2.5 text-[14px] font-medium text-muted-foreground transition-colors duration-200 hover:text-[#1D63FF]"
+      className="group flex items-center gap-2.5 text-[14px] font-medium text-muted-foreground transition-colors duration-200 hover:text-[#FFD54F]"
       whileHover={{ x: 3 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
     >
-      <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#1D63FF]/5 to-[#4D8AFF]/5 text-[#1D63FF] transition-all duration-300 group-hover:from-[#1D63FF]/10 group-hover:to-[#4D8AFF]/10 group-hover:text-[#0D3B7A] group-hover:shadow-sm group-hover:shadow-[#1D63FF]/20">
+      <span className="flex size-7 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F]/5 to-[#E0B84C]/5 text-[#FFD54F] transition-all duration-300 group-hover:from-[#FFD54F]/10 group-hover:to-[#E0B84C]/10 group-hover:text-[#132D5E] group-hover:shadow-sm group-hover:shadow-[#FFD54F]/20">
         {link.icon}
       </span>
       <span className="relative">
         {link.label}
-        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-[#0D3B7A] to-[#4D8AFF] transition-all duration-300 group-hover:w-full" />
+        <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 rounded-full bg-gradient-to-r from-[#132D5E] to-[#E0B84C] transition-all duration-300 group-hover:w-full" />
       </span>
     </motion.button>
   );
@@ -158,7 +158,7 @@ function ContactPill({
   return (
     <Wrapper
       {...(href ? { href } : {})}
-      className="flex items-start gap-3 text-[15px] text-muted-foreground transition-colors duration-200 hover:text-[#1D63FF]"
+      className="flex items-start gap-3 text-[15px] text-muted-foreground transition-colors duration-200 hover:text-[#FFD54F]"
     >
       <span className={`mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} shadow-sm`}>
         {icon}
@@ -201,7 +201,7 @@ export function Footer() {
   return (
     <footer className="mt-auto">
       {/* ── Navy Blue Gradient Top Bar ─────────────────────────────── */}
-      <div className="h-2 w-full bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#7DB0FF]" />
+      <div className="h-2 w-full bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F]" />
 
       {/* ── Main Footer Content ──────────────────────────────────────── */}
       <div className="bg-white">
@@ -218,7 +218,7 @@ export function Footer() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#7DB0FF] shadow-lg shadow-[#4D8AFF]/25 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-[#4D8AFF]/30">
+                <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] shadow-lg shadow-[#E0B84C]/25 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-[#E0B84C]/30">
                   <Wrench className="size-4.5 text-white" />
                   <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 via-white/5 to-transparent" />
                 </div>
@@ -240,7 +240,7 @@ export function Footer() {
                   <motion.a
                     key={social.label}
                     href={social.href}
-                    className="group flex size-10 items-center justify-center rounded-xl bg-gray-50 text-muted-foreground ring-1 ring-gray-200/60 transition-all duration-300 hover:bg-gradient-to-br hover:from-[#0A2463] hover:via-[#1D63FF] hover:to-[#4D8AFF] hover:text-white hover:ring-transparent hover:shadow-lg hover:shadow-[#4D8AFF]/25"
+                    className="group flex size-10 items-center justify-center rounded-xl bg-gray-50 text-muted-foreground ring-1 ring-gray-200/60 transition-all duration-300 hover:bg-gradient-to-br hover:from-[#0A1F44] hover:via-[#FFD54F] hover:to-[#E0B84C] hover:text-white hover:ring-transparent hover:shadow-lg hover:shadow-[#E0B84C]/25"
                     aria-label={social.label}
                     whileHover={{ scale: 1.1, y: -2 }}
                     whileTap={{ scale: 0.95 }}
@@ -253,7 +253,7 @@ export function Footer() {
 
             {/* ── Quick Links Column ──────────────────────────────────── */}
             <div>
-              <SectionHeader dotFrom="from-[#0A2463]" dotTo="to-[#7DB0FF]">
+              <SectionHeader dotFrom="from-[#0A1F44]" dotTo="to-[#FFD54F]">
                 Quick Links
               </SectionHeader>
               <ul className="space-y-3.5">
@@ -267,7 +267,7 @@ export function Footer() {
 
             {/* ── Services Column with Category Icons ─────────────────── */}
             <div>
-              <SectionHeader dotFrom="from-[#1D63FF]" dotTo="to-[#7DB0FF]">
+              <SectionHeader dotFrom="from-[#FFD54F]" dotTo="to-[#E0B84C]">
                 Services
               </SectionHeader>
               <ul className="grid grid-cols-1 gap-2.5">
@@ -280,7 +280,7 @@ export function Footer() {
 
               {/* Company links */}
               <div className="mt-8">
-                <SectionHeader dotFrom="from-slate-600" dotTo="to-[#7DB0FF]">
+                <SectionHeader dotFrom="from-slate-600" dotTo="to-[#FFD54F]">
                   Company
                 </SectionHeader>
                 <ul className="space-y-3.5">
@@ -295,7 +295,7 @@ export function Footer() {
 
             {/* ── Newsletter + Contact Column ─────────────────────────── */}
             <div>
-              <SectionHeader dotFrom="from-[#0D3B7A]" dotTo="to-[#7DB0FF]">
+              <SectionHeader dotFrom="from-[#132D5E]" dotTo="to-[#FFD54F]">
                 Stay Updated
               </SectionHeader>
               <p className="mb-4 text-[15px] leading-relaxed text-muted-foreground/80">
@@ -306,13 +306,13 @@ export function Footer() {
               <form onSubmit={handleSubscribe} className="mb-8">
                 <div className="flex gap-2">
                   <div className="relative flex-1">
-                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#7DB0FF]/60" />
+                    <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-[#FFD54F]/60" />
                     <Input
                       type="email"
                       placeholder="Your email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-10 rounded-xl border-[#1D63FF]/15 bg-[#1D63FF]/5 pl-10 text-sm placeholder:text-[#7DB0FF]/40 focus:border-[#7DB0FF] focus-visible:ring-[#4D8AFF]/30"
+                      className="h-10 rounded-xl border-[#FFD54F]/15 bg-[#FFD54F]/5 pl-10 text-sm placeholder:text-[#FFD54F]/40 focus:border-[#FFD54F] focus-visible:ring-[#E0B84C]/30"
                       required
                     />
                   </div>
@@ -320,7 +320,7 @@ export function Footer() {
                     <Button
                       type="submit"
                       size="sm"
-                      className="h-10 rounded-xl bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#4D8AFF] px-4 text-white shadow-md shadow-[#4D8AFF]/20 transition-all duration-300 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] hover:shadow-lg hover:shadow-[#4D8AFF]/30"
+                      className="h-10 rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] px-4 text-[#0A1F44] shadow-md shadow-[#E0B84C]/20 transition-all duration-300 hover:from-[#E0B84C] hover:to-[#FFD54F] hover:shadow-lg hover:shadow-[#FFD54F]/30"
                     >
                       <Send className="size-4" />
                     </Button>
@@ -330,7 +330,7 @@ export function Footer() {
                   <motion.div
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mt-2.5 flex items-center gap-1.5 text-xs font-semibold text-[#1D63FF]"
+                    className="mt-2.5 flex items-center gap-1.5 text-xs font-semibold text-[#FFD54F]"
                   >
                     <CheckCircle2 className="size-3.5" />
                     Subscribed successfully!
@@ -339,14 +339,14 @@ export function Footer() {
               </form>
 
               {/* Contact Info */}
-              <SectionHeader dotFrom="from-[#0D3B7A]" dotTo="to-[#7DB0FF]">
+              <SectionHeader dotFrom="from-[#132D5E]" dotTo="to-[#FFD54F]">
                 Contact Us
               </SectionHeader>
               <ul className="space-y-4">
                 <li>
                   <ContactPill
-                    icon={<MapPin className="size-4 text-[#1D63FF]" />}
-                    gradient="from-[#1D63FF]/5 to-[#4D8AFF]/5"
+                    icon={<MapPin className="size-4 text-[#FFD54F]" />}
+                    gradient="from-[#FFD54F]/5 to-[#E0B84C]/5"
                   >
                     Palwal, Haryana
                     <br />
@@ -357,8 +357,8 @@ export function Footer() {
                 </li>
                 <li>
                   <ContactPill
-                    icon={<Phone className="size-4 text-[#1D63FF]" />}
-                    gradient="from-[#1D63FF]/5 to-[#4D8AFF]/5"
+                    icon={<Phone className="size-4 text-[#FFD54F]" />}
+                    gradient="from-[#FFD54F]/5 to-[#E0B84C]/5"
                     href="tel:+918901172507"
                   >
                     +91 8901172507
@@ -366,8 +366,8 @@ export function Footer() {
                 </li>
                 <li>
                   <ContactPill
-                    icon={<Mail className="size-4 text-[#4D8AFF]" />}
-                    gradient="from-[#4D8AFF]/5 to-[#1D63FF]/5"
+                    icon={<Mail className="size-4 text-[#E0B84C]" />}
+                    gradient="from-[#E0B84C]/5 to-[#FFD54F]/5"
                     href="mailto:support@bookyourservice.co.in"
                   >
                     support@bookyourservice.co.in
@@ -379,17 +379,17 @@ export function Footer() {
 
           {/* ── Gradient Divider ──────────────────────────────────────── */}
           <div className="relative my-10">
-            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-[#7DB0FF]/40 via-50% to-transparent" />
+            <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-[#FFD54F]/40 via-50% to-transparent" />
             <div className="absolute inset-0 h-px bg-gradient-to-r from-transparent via-slate-300/20 via-50% to-transparent blur-sm" />
           </div>
 
           {/* ── Bottom Bar ────────────────────────────────────────────── */}
-          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-gray-50 via-[#1D63FF]/5 to-gray-50 px-6 py-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-between gap-4 rounded-2xl bg-gradient-to-r from-gray-50 via-[#FFD54F]/5 to-gray-50 px-6 py-4 sm:flex-row">
             <p className="flex items-center gap-1.5 text-sm text-muted-foreground">
               &copy; {new Date().getFullYear()}{' '}
               <span className="font-bold text-foreground">Harish Rawat</span>
               . Made with{' '}
-              <Heart className="inline size-3.5 fill-[#1D63FF] text-[#1D63FF] drop-shadow-sm" />{' '}
+              <Heart className="inline size-3.5 fill-[#FFD54F] text-[#FFD54F] drop-shadow-sm" />{' '}
               in India. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
@@ -400,7 +400,7 @@ export function Footer() {
                   )}
                   <motion.button
                     onClick={() => handleNavigate(link.page)}
-                    className="text-xs font-medium text-muted-foreground/70 transition-colors duration-200 hover:text-[#1D63FF]"
+                    className="text-xs font-medium text-muted-foreground/70 transition-colors duration-200 hover:text-[#FFD54F]"
                     whileHover={{ y: -1 }}
                   >
                     {link.label}

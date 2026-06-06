@@ -45,13 +45,13 @@ const TRACKING_STEPS = [
 
 function TrackingStatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    ACCEPTED: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
+    ACCEPTED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
     ON_THE_WAY: { className: 'bg-purple-50 text-purple-700 border-purple-200', dotColor: 'bg-purple-400' },
-    ARRIVED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#4D8AFF]' },
-    IN_PROGRESS: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#7DB0FF]' },
-    COMPLETED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#7DB0FF]' },
+    ARRIVED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
+    IN_PROGRESS: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]' },
     PENDING: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' },
-    ASSIGNED: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
+    ASSIGNED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
   };
   const c = config[status] || config.PENDING;
   return (
@@ -133,8 +133,8 @@ export function BookingTrackingPage() {
   if (!booking) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-16 text-center sm:px-6">
-        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
-          <Navigation className="size-8 text-[#7DB0FF]" />
+        <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+          <Navigation className="size-8 text-[#FFD54F]" />
         </div>
         <p className="text-lg font-semibold text-muted-foreground">Booking not found</p>
         <Button variant="outline" className="mt-4 rounded-xl" onClick={goBack}>
@@ -195,7 +195,7 @@ export function BookingTrackingPage() {
       >
         <div className={`mb-4 flex items-center gap-2 rounded-xl p-2.5 text-sm ${
           isConnected
-            ? 'bg-[#FFCE32]/10 text-[#0D3B7A]'
+            ? 'bg-[#FFD54F]/10 text-[#132D5E]'
             : 'bg-amber-50 text-amber-700'
         }`}>
           {isConnected ? (
@@ -250,34 +250,34 @@ export function BookingTrackingPage() {
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
-                <MapPin className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
+                <MapPin className="size-4 text-[#0A1F44]" />
               </div>
               Provider Location
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="relative h-56 overflow-hidden rounded-xl bg-gradient-to-br from-[#FFCE32]/10 via-[#1D63FF]/5 to-[#FFCE32]/5 sm:h-72">
+            <div className="relative h-56 overflow-hidden rounded-xl bg-gradient-to-br from-[#FFD54F]/10 via-[#FFD54F]/5 to-[#FFD54F]/5 sm:h-72">
               {/* Grid lines for map effect */}
               <div className="absolute inset-0 opacity-20">
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div
                     key={`h-${i}`}
-                    className="absolute h-px w-full bg-[#7DB0FF]"
+                    className="absolute h-px w-full bg-[#FFD54F]"
                     style={{ top: `${(i + 1) * 12.5}%` }}
                   />
                 ))}
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div
                     key={`v-${i}`}
-                    className="absolute h-full w-px bg-[#7DB0FF]"
+                    className="absolute h-full w-px bg-[#FFD54F]"
                     style={{ left: `${(i + 1) * 12.5}%` }}
                   />
                 ))}
               </div>
 
               {/* Map label */}
-              <div className="absolute left-3 top-3 rounded-lg bg-white/80 px-2.5 py-1 text-xs font-medium text-[#0D3B7A] backdrop-blur-sm">
+              <div className="absolute left-3 top-3 rounded-lg bg-white/80 px-2.5 py-1 text-xs font-medium text-[#132D5E] backdrop-blur-sm">
                 Live Map
               </div>
 
@@ -286,31 +286,31 @@ export function BookingTrackingPage() {
                 <div className="absolute inset-0 flex items-center justify-center">
                   {/* Pulse ring - key remount triggers CSS ping animation */}
                   <div key={`pulse-${locationKey}`} className="absolute animate-ping">
-                    <div className="size-20 rounded-full bg-[#7DB0FF]/20" />
+                    <div className="size-20 rounded-full bg-[#FFD54F]/20" />
                   </div>
                   {/* Static ring */}
                   <div className="absolute">
-                    <div className="size-12 rounded-full bg-[#7DB0FF]/30" />
+                    <div className="size-12 rounded-full bg-[#FFD54F]/30" />
                   </div>
                   {/* Center dot */}
-                  <div className="relative flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg shadow-[#1D63FF]/40">
-                    <Navigation className="size-4 text-white" />
+                  <div className="relative flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] shadow-lg shadow-[#FFD54F]/40">
+                    <Navigation className="size-4 text-[#0A1F44]" />
                   </div>
                 </div>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
                   <div className="flex size-12 items-center justify-center rounded-full bg-white/60">
-                    <Crosshair className="size-6 text-[#7DB0FF]" />
+                    <Crosshair className="size-6 text-[#FFD54F]" />
                   </div>
-                  <p className="text-sm font-medium text-[#1D63FF]">Waiting for location data</p>
+                  <p className="text-sm font-medium text-[#FFD54F]">Waiting for location data</p>
                 </div>
               )}
 
               {/* Coordinates display */}
               {providerLocation && (
                 <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 rounded-lg bg-white/90 px-3 py-2 text-xs backdrop-blur-sm">
-                  <Crosshair className="size-3.5 shrink-0 text-[#4D8AFF]" />
-                  <span className="font-mono text-[#0A2463]">
+                  <Crosshair className="size-3.5 shrink-0 text-[#E0B84C]" />
+                  <span className="font-mono text-[#0A1F44]">
                     Lat: {providerLocation.lat.toFixed(6)}, Lng: {providerLocation.lng.toFixed(6)}
                   </span>
                   {providerLocation.accuracy && (
@@ -359,7 +359,7 @@ export function BookingTrackingPage() {
           <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md shadow-[#1D63FF]/25">
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md shadow-[#FFD54F]/25">
                   {provider?.profileImageUrl ? (
                     <img
                       src={provider.profileImageUrl}
@@ -367,7 +367,7 @@ export function BookingTrackingPage() {
                       className="size-12 rounded-xl object-cover"
                     />
                   ) : (
-                    <User className="size-6 text-white" />
+                    <User className="size-6 text-[#0A1F44]" />
                   )}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -402,11 +402,11 @@ export function BookingTrackingPage() {
         transition={{ delay: 0.25 }}
       >
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1.5 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
-                <Route className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
+                <Route className="size-4 text-[#0A1F44]" />
               </div>
               Booking Timeline
             </CardTitle>
@@ -431,7 +431,7 @@ export function BookingTrackingPage() {
                     {i < TRACKING_STEPS.length - 1 && (
                       <div
                         className={`absolute left-[17px] top-[36px] h-[calc(100%-28px)] w-0.5 transition-colors duration-500 ${
-                          isCompleted ? 'bg-[#7DB0FF]' : isCurrent ? 'bg-gradient-to-b from-[#7DB0FF] to-gray-200' : 'bg-gray-200'
+                          isCompleted ? 'bg-[#FFD54F]' : isCurrent ? 'bg-gradient-to-b from-[#FFD54F] to-gray-200' : 'bg-gray-200'
                         }`}
                       />
                     )}
@@ -439,14 +439,14 @@ export function BookingTrackingPage() {
                     {/* Icon circle */}
                     <div className="relative z-10 shrink-0">
                       {isCompleted ? (
-                        <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md shadow-[#1D63FF]/25">
-                          <CheckCircle2 className="size-4 text-white" />
+                        <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md shadow-[#FFD54F]/25">
+                          <CheckCircle2 className="size-4 text-[#0A1F44]" />
                         </div>
                       ) : isCurrent ? (
                         <div className="relative">
-                          <div className="absolute inset-0 animate-ping rounded-full bg-[#7DB0FF] opacity-30" />
-                          <div className="relative flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] shadow-lg shadow-[#1D63FF]/30">
-                            <step.icon className="size-4 text-white" />
+                          <div className="absolute inset-0 animate-ping rounded-full bg-[#FFD54F] opacity-30" />
+                          <div className="relative flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] shadow-lg shadow-[#FFD54F]/30">
+                            <step.icon className="size-4 text-[#0A1F44]" />
                           </div>
                         </div>
                       ) : (
@@ -459,11 +459,11 @@ export function BookingTrackingPage() {
                     {/* Content */}
                     <div className="min-w-0 flex-1 pt-1">
                       <div className="flex items-center gap-2">
-                        <p className={`text-sm font-semibold ${isCompleted ? 'text-[#0D3B7A]' : isCurrent ? 'text-[#1D63FF]' : 'text-gray-400'}`}>
+                        <p className={`text-sm font-semibold ${isCompleted ? 'text-[#132D5E]' : isCurrent ? 'text-[#FFD54F]' : 'text-gray-400'}`}>
                           {step.label}
                         </p>
                         {isCurrent && (
-                          <span className="inline-flex items-center rounded-full bg-[#FFCE32]/10 px-2 py-0.5 text-[10px] font-bold text-[#0D3B7A]">
+                          <span className="inline-flex items-center rounded-full bg-[#FFD54F]/10 px-2 py-0.5 text-[10px] font-bold text-[#132D5E]">
                             CURRENT
                           </span>
                         )}
@@ -472,7 +472,7 @@ export function BookingTrackingPage() {
                         {step.description}
                       </p>
                       {timestamp && (
-                        <p className="mt-0.5 text-[11px] font-medium text-[#1D63FF]/70">
+                        <p className="mt-0.5 text-[11px] font-medium text-[#FFD54F]/70">
                           {new Date(timestamp).toLocaleString('en-IN', {
                             day: 'numeric',
                             month: 'short',
@@ -500,8 +500,8 @@ export function BookingTrackingPage() {
           <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
-                  <Activity className="size-4 text-white" />
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
+                  <Activity className="size-4 text-[#0A1F44]" />
                 </div>
                 Live Updates
               </CardTitle>
@@ -514,12 +514,12 @@ export function BookingTrackingPage() {
                     initial={{ opacity: 0, x: 10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="flex items-start gap-2 rounded-lg bg-[#1D63FF]/10/50 p-2.5"
+                    className="flex items-start gap-2 rounded-lg bg-[#FFD54F]/10/50 p-2.5"
                   >
-                    <div className="mt-0.5 size-1.5 shrink-0 rounded-full bg-[#4D8AFF]" />
+                    <div className="mt-0.5 size-1.5 shrink-0 rounded-full bg-[#E0B84C]" />
                     <div className="flex-1">
-                      <p className="text-xs font-medium text-[#0A2463]">{notif.message}</p>
-                      <p className="text-[10px] text-[#1D63FF]/70">
+                      <p className="text-xs font-medium text-[#0A1F44]">{notif.message}</p>
+                      <p className="text-[10px] text-[#FFD54F]/70">
                         {new Date(notif.timestamp).toLocaleString('en-IN', {
                           hour: '2-digit',
                           minute: '2-digit',
@@ -564,7 +564,7 @@ export function BookingTrackingPage() {
       >
         <div className="flex flex-col gap-3 sm:flex-row">
           <Button
-            className="flex-1 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 rounded-xl h-11"
+            className="flex-1 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 rounded-xl h-11"
             onClick={() => navigate('client-booking-detail', { bookingId: bookingId || '' })}
           >
             View Booking Details

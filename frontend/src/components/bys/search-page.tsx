@@ -66,15 +66,15 @@ const CATEGORY_ICONS: Record<string, React.ReactNode> = {
 };
 
 const CATEGORY_COLORS: Record<string, string> = {
-  plumbing: 'from-[#4D8AFF] to-[#FFCE32]',
-  electrical: 'from-[#4D8AFF] to-[#FFCE32]',
-  'air-conditioner': 'from-[#4D8AFF] to-[#4D8AFF]',
+  plumbing: 'from-[#E0B84C] to-[#FFD54F]',
+  electrical: 'from-[#E0B84C] to-[#FFD54F]',
+  'air-conditioner': 'from-[#E0B84C] to-[#FFD54F]',
 };
 
 const CATEGORY_BG_COLORS: Record<string, string> = {
-  plumbing: 'bg-[#4D8AFF]/5 text-[#1D63FF] border-[#4D8AFF]/30',
-  electrical: 'bg-[#4D8AFF]/5 text-[#1D63FF] border-[#4D8AFF]/30',
-  'air-conditioner': 'bg-[#FFCE32]/5 text-[#0D3B7A] border-[#1D63FF]/30',
+  plumbing: 'bg-[#E0B84C]/5 text-[#0A1F44] border-[#E0B84C]/30',
+  electrical: 'bg-[#E0B84C]/5 text-[#0A1F44] border-[#E0B84C]/30',
+  'air-conditioner': 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/30',
 };
 
 const fadeUp = {
@@ -175,7 +175,7 @@ export function SearchPage() {
         transition={{ duration: 0.5, ease: 'easeOut' }}
         className="mb-10"
       >
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#1D63FF] via-[#1D63FF] to-[#E6B800] p-8 sm:p-12">
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-8 sm:p-12">
           {/* Decorative elements */}
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -210,7 +210,7 @@ export function SearchPage() {
                 <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-white/0 via-white/30 to-white/0 opacity-0 blur transition-opacity duration-500 group-focus-within:opacity-100" />
                 <div className="relative flex items-center overflow-hidden rounded-xl bg-white shadow-2xl shadow-black/20">
                   <div className="flex items-center pl-4">
-                    <Search className="size-5 text-[#4D8AFF]" />
+                    <Search className="size-5 text-[#E0B84C]" />
                   </div>
                   <Input
                     placeholder="Search for plumbing, electrical, air conditioner services..."
@@ -224,13 +224,13 @@ export function SearchPage() {
                       variant="ghost"
                       size="icon"
                       onClick={() => setShowFilters(!showFilters)}
-                      className={`size-10 rounded-lg transition-all ${showFilters ? 'bg-[#FFCE32]/5 text-[#1D63FF]' : 'text-gray-400 hover:text-gray-600'}`}
+                      className={`size-10 rounded-lg transition-all ${showFilters ? 'bg-[#FFD54F]/5 text-[#0A1F44]' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                       <SlidersHorizontal className="size-5" />
                     </Button>
                     <Button
                       onClick={handleSearch}
-                      className="shimmer h-10 rounded-lg bg-gradient-to-r from-[#4D8AFF] to-[#4D8AFF] px-6 text-white shadow-lg shadow-[#1D63FF]/30 hover:from-[#1D63FF] hover:to-[#1D63FF]"
+                      className="shimmer h-10 rounded-lg bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] px-6 text-[#0A1F44] shadow-lg shadow-[#FFD54F]/30 hover:from-[#E0B84C] hover:to-[#FFD54F]"
                     >
                       <Sparkles className="mr-1.5 size-4" />
                       Search
@@ -245,7 +245,7 @@ export function SearchPage() {
               {categories.map((cat) => {
                 const slug = cat.slug;
                 const isActive = String(cat.id) === categoryId;
-                const colorClass = CATEGORY_BG_COLORS[slug] || 'bg-[#FFCE32]/5 text-[#0D3B7A] border-[#1D63FF]/30';
+                const colorClass = CATEGORY_BG_COLORS[slug] || 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/30';
                 return (
                   <motion.button
                     key={cat.id}
@@ -284,7 +284,7 @@ export function SearchPage() {
             <div className="glass rounded-2xl p-6 shadow-lg ring-1 ring-black/5">
               <div className="mb-4 flex items-center justify-between">
                 <h3 className="flex items-center gap-2 font-semibold">
-                  <SlidersHorizontal className="size-4 text-[#1D63FF]" />
+                  <SlidersHorizontal className="size-4 text-[#0A1F44]" />
                   Advanced Filters
                 </h3>
                 {hasActiveFilters && (
@@ -302,7 +302,7 @@ export function SearchPage() {
                 <div>
                   <label className="mb-1.5 block text-xs font-medium text-muted-foreground">Category</label>
                   <Select value={categoryId} onValueChange={setCategoryId}>
-                    <SelectTrigger className="h-11 rounded-xl border-gray-200 bg-white/80 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20">
+                    <SelectTrigger className="h-11 rounded-xl border-gray-200 bg-white/80 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20">
                       <SelectValue placeholder="All Categories" />
                     </SelectTrigger>
                     <SelectContent>
@@ -327,7 +327,7 @@ export function SearchPage() {
                       placeholder="0"
                       value={minPrice}
                       onChange={(e) => setMinPrice(e.target.value)}
-                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20"
+                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20"
                     />
                   </div>
                 </div>
@@ -340,7 +340,7 @@ export function SearchPage() {
                       placeholder="10000"
                       value={maxPrice}
                       onChange={(e) => setMaxPrice(e.target.value)}
-                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20"
+                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20"
                     />
                   </div>
                 </div>
@@ -352,7 +352,7 @@ export function SearchPage() {
                       placeholder="Enter city"
                       value={city}
                       onChange={(e) => setCity(e.target.value)}
-                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20"
+                      className="h-11 rounded-xl border-gray-200 bg-white/80 pl-9 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20"
                     />
                   </div>
                 </div>
@@ -372,32 +372,32 @@ export function SearchPage() {
             className="mb-6 mt-6 flex flex-wrap gap-2"
           >
             {query && (
-              <Badge variant="secondary" className="gap-1 rounded-full border border-[#1D63FF]/30 bg-[#FFCE32]/5 px-3 py-1 text-[#0D3B7A]">
+              <Badge variant="secondary" className="gap-1 rounded-full border border-[#FFD54F]/30 bg-[#FFD54F]/5 px-3 py-1 text-[#132D5E]">
                 &ldquo;{query}&rdquo;
                 <X className="size-3 cursor-pointer hover:text-red-500" onClick={() => setQuery('')} />
               </Badge>
             )}
             {categoryId && (
-              <Badge variant="secondary" className="gap-1 rounded-full border border-[#1D63FF]/30 bg-[#FFCE32]/5 px-3 py-1 text-[#0D3B7A]">
+              <Badge variant="secondary" className="gap-1 rounded-full border border-[#FFD54F]/30 bg-[#FFD54F]/5 px-3 py-1 text-[#132D5E]">
                 {CATEGORY_ICONS[activeCategorySlug]}
                 {categories.find((c) => String(c.id) === categoryId)?.name || 'Category'}
                 <X className="size-3 cursor-pointer hover:text-red-500" onClick={() => setCategoryId('')} />
               </Badge>
             )}
             {minPrice && (
-              <Badge variant="secondary" className="gap-1 rounded-full border border-[#1D63FF]/30 bg-[#FFCE32]/5 px-3 py-1 text-[#0D3B7A]">
+              <Badge variant="secondary" className="gap-1 rounded-full border border-[#FFD54F]/30 bg-[#FFD54F]/5 px-3 py-1 text-[#132D5E]">
                 Min ₹{minPrice}
                 <X className="size-3 cursor-pointer hover:text-red-500" onClick={() => setMinPrice('')} />
               </Badge>
             )}
             {maxPrice && (
-              <Badge variant="secondary" className="gap-1 rounded-full border border-[#1D63FF]/30 bg-[#FFCE32]/5 px-3 py-1 text-[#0D3B7A]">
+              <Badge variant="secondary" className="gap-1 rounded-full border border-[#FFD54F]/30 bg-[#FFD54F]/5 px-3 py-1 text-[#132D5E]">
                 Max ₹{maxPrice}
                 <X className="size-3 cursor-pointer hover:text-red-500" onClick={() => setMaxPrice('')} />
               </Badge>
             )}
             {city && (
-              <Badge variant="secondary" className="gap-1 rounded-full border border-[#1D63FF]/30 bg-[#FFCE32]/5 px-3 py-1 text-[#0D3B7A]">
+              <Badge variant="secondary" className="gap-1 rounded-full border border-[#FFD54F]/30 bg-[#FFD54F]/5 px-3 py-1 text-[#132D5E]">
                 <MapPin className="size-3" />{city}
                 <X className="size-3 cursor-pointer hover:text-red-500" onClick={() => setCity('')} />
               </Badge>
@@ -415,7 +415,7 @@ export function SearchPage() {
             </div>
             <p className="text-lg font-semibold text-gray-800">Search Failed</p>
             <p className="mt-1 text-sm text-muted-foreground">We couldn&apos;t complete your search. Please try again.</p>
-            <Button variant="outline" onClick={refetch} className="mt-4 rounded-xl border-[#1D63FF]/30 text-[#1D63FF] hover:bg-[#FFCE32]/5">
+            <Button variant="outline" onClick={refetch} className="mt-4 rounded-xl border-[#FFD54F]/30 text-[#0A1F44] hover:bg-[#FFD54F]/5">
               Retry Search
             </Button>
           </div>
@@ -429,7 +429,7 @@ export function SearchPage() {
             <p className="text-sm text-muted-foreground">
               {loading ? (
                 <span className="flex items-center gap-2">
-                  <span className="inline-block size-2 animate-pulse rounded-full bg-[#4D8AFF]" />
+                  <span className="inline-block size-2 animate-pulse rounded-full bg-[#E0B84C]" />
                   Searching...
                 </span>
               ) : (
@@ -472,17 +472,17 @@ export function SearchPage() {
                 ))
               : services.map((service) => {
                   const catSlug = service.category?.slug || '';
-                  const gradientColor = CATEGORY_COLORS[catSlug] || 'from-[#4D8AFF] to-[#4D8AFF]';
+                  const gradientColor = CATEGORY_COLORS[catSlug] || 'from-[#E0B84C] to-[#FFD54F]';
                   return (
                     <motion.div
                       key={service.id}
                       variants={fadeUp}
                       whileHover={{ y: -4 }}
-                      className="group cursor-pointer overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[#1D63FF]/30/50"
+                      className="group cursor-pointer overflow-hidden rounded-2xl border bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:border-[#FFD54F]/30/50"
                       onClick={() => navigate('service-detail', { serviceId: service.id })}
                     >
                       {/* Image */}
-                      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5">
+                      <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/5">
                         {service.images ? (
                           <img
                             src={(() => { try { const parsed = JSON.parse(service.images); return Array.isArray(parsed) ? parsed[0] || '' : ''; } catch { return ''; } })()}
@@ -500,7 +500,7 @@ export function SearchPage() {
                         <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                         {/* Negotiable badge */}
                         {service.priceNegotiable && (
-                          <Badge className="absolute right-3 top-3 border-0 bg-[#4D8AFF]/10/90 text-[#1D63FF] backdrop-blur-sm hover:bg-[#4D8AFF]/10/90">
+                          <Badge className="absolute right-3 top-3 border-0 bg-[#E0B84C]/10/90 text-[#0A1F44] backdrop-blur-sm hover:bg-[#E0B84C]/10/90">
                             Negotiable
                           </Badge>
                         )}
@@ -532,7 +532,7 @@ export function SearchPage() {
                         </div>
 
                         {/* Title */}
-                        <h3 className="mt-3 font-semibold leading-tight text-gray-900 group-hover:text-[#0D3B7A] transition-colors">
+                        <h3 className="mt-3 font-semibold leading-tight text-gray-900 group-hover:text-[#132D5E] transition-colors">
                           {service.title}
                         </h3>
 
@@ -540,7 +540,7 @@ export function SearchPage() {
                         <div className="mt-3 flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <div className="flex items-center gap-0.5">
-                              <Star className="size-4 fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_2px_rgba(6,182,212,0.4)]" />
+                              <Star className="size-4 fill-[#FFD54F] text-[#FFD54F] drop-shadow-[0_0_2px_rgba(255,213,79,0.4)]" />
                               <span className="text-sm font-semibold">{service.averageRating.toFixed(1)}</span>
                             </div>
                             <span className="text-xs text-muted-foreground">({service.totalReviews})</span>
@@ -551,7 +551,7 @@ export function SearchPage() {
                         {/* Book Button */}
                         <Button
                           size="sm"
-                          className="mt-4 w-full rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#4D8AFF] text-white shadow-md shadow-[#1D63FF]/20 hover:from-[#1D63FF] hover:to-[#1D63FF] group-hover:shadow-lg group-hover:shadow-[#1D63FF]/30 transition-all"
+                          className="mt-4 w-full rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-md shadow-[#FFD54F]/20 hover:from-[#E0B84C] hover:to-[#FFD54F] group-hover:shadow-lg group-hover:shadow-[#FFD54F]/30 transition-all"
                           onClick={(e) => {
                             e.stopPropagation();
                             navigate('service-detail', { serviceId: service.id });
@@ -575,8 +575,8 @@ export function SearchPage() {
               className="py-16 text-center"
             >
               <div className="glass mx-auto max-w-md rounded-3xl p-10">
-                <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5">
-                  <FolderOpen className="size-10 text-[#7DB0FF]" />
+                <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/5">
+                  <FolderOpen className="size-10 text-[#0A1F44]" />
                 </div>
                 <h3 className="text-xl font-bold text-gray-800">No Services Found</h3>
                 <p className="mt-2 text-muted-foreground">
@@ -584,7 +584,7 @@ export function SearchPage() {
                 </p>
                 <Button
                   onClick={clearFilters}
-                  className="mt-6 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#4D8AFF] text-white shadow-md shadow-[#1D63FF]/20"
+                  className="mt-6 rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-md shadow-[#FFD54F]/20"
                 >
                   Clear All Filters
                 </Button>
@@ -603,10 +603,10 @@ export function SearchPage() {
           className="py-20 text-center"
         >
           <div className="relative mx-auto mb-6 size-32">
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFCE32]/10 to-[#1D63FF]/10" />
-            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5" />
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10" />
+            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/5" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <Search className="size-12 text-[#7DB0FF]" />
+              <Search className="size-12 text-[#0A1F44]" />
             </div>
           </div>
           <h3 className="text-xl font-semibold text-gray-800">
@@ -617,9 +617,9 @@ export function SearchPage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             {[
-              { label: 'Plumbing', icon: <Droplets className="size-4" />, color: 'from-[#4D8AFF] to-[#FFCE32]' },
-              { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-[#4D8AFF] to-[#FFCE32]' },
-              { label: 'Air Conditioner', icon: <Wind className="size-4" />, color: 'from-[#4D8AFF] to-[#4D8AFF]' },
+              { label: 'Plumbing', icon: <Droplets className="size-4" />, color: 'from-[#E0B84C] to-[#FFD54F]' },
+              { label: 'Electrical', icon: <Zap className="size-4" />, color: 'from-[#E0B84C] to-[#FFD54F]' },
+              { label: 'Air Conditioner', icon: <Wind className="size-4" />, color: 'from-[#E0B84C] to-[#FFD54F]' },
             ].map((item) => (
               <motion.button
                 key={item.label}

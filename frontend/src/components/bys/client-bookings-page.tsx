@@ -29,10 +29,10 @@ import {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string; iconBg: string }> = {
-    PENDING: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#FFCE32]', iconBg: 'bg-[#1D63FF]/10' },
-    ACCEPTED: { className: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]', iconBg: 'bg-[#1D63FF]/10' },
-    IN_PROGRESS: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]', iconBg: 'bg-[#1D63FF]/10' },
-    COMPLETED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#7DB0FF]', iconBg: 'bg-[#FFCE32]/10' },
+    PENDING: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]', iconBg: 'bg-[#FFD54F]/10' },
+    ACCEPTED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]', iconBg: 'bg-[#FFD54F]/10' },
+    IN_PROGRESS: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]', iconBg: 'bg-[#FFD54F]/10' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]', iconBg: 'bg-[#FFD54F]/10' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', iconBg: 'bg-red-100' },
     REFUNDED: { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400', iconBg: 'bg-gray-100' },
   };
@@ -60,9 +60,9 @@ interface Booking {
 
 const TAB_CONFIG: Record<string, { label: string; gradient: string; icon: typeof Briefcase }> = {
   all: { label: 'All', gradient: 'from-gray-400 to-gray-500', icon: Briefcase },
-  upcoming: { label: 'Upcoming', gradient: 'from-[#4D8AFF] to-[#1D63FF]', icon: CalendarDays },
-  in_progress: { label: 'In Progress', gradient: 'from-[#4D8AFF] to-[#1D63FF]', icon: Clock },
-  completed: { label: 'Completed', gradient: 'from-[#7DB0FF] to-[#4D8AFF]', icon: Briefcase },
+  upcoming: { label: 'Upcoming', gradient: 'from-[#E0B84C] to-[#FFD54F]', icon: CalendarDays },
+  in_progress: { label: 'In Progress', gradient: 'from-[#E0B84C] to-[#FFD54F]', icon: Clock },
+  completed: { label: 'Completed', gradient: 'from-[#FFD54F] to-[#E0B84C]', icon: Briefcase },
   cancelled: { label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 };
 
@@ -141,7 +141,7 @@ export function ClientBookingsPage() {
             placeholder="Search bookings..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#4D8AFF]"
+            className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#E0B84C]"
           />
         </div>
       </motion.div>
@@ -188,15 +188,15 @@ export function ClientBookingsPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center py-16 text-center"
           >
-            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
-              <CalendarDays className="size-10 text-[#7DB0FF]" />
+            <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+              <CalendarDays className="size-10 text-[#FFD54F]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No bookings found</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">
               {searchQuery ? 'Try a different search term' : 'Book a service to get started'}
             </p>
             <Button
-              className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
+              className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25"
               onClick={() => navigate('categories')}
             >
               Browse Services <ArrowRight className="ml-2 size-4" />

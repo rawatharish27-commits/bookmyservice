@@ -33,10 +33,10 @@ interface BookingResponse {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]' },
-    ACCEPTED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#4D8AFF]' },
-    IN_PROGRESS: { className: 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/20', dotColor: 'bg-[#4D8AFF]' },
-    COMPLETED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]' },
+    PENDING: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#F2C94C]' },
+    ACCEPTED: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#E0B84C]' },
+    IN_PROGRESS: { className: 'bg-[#FFD54F]/5 text-[#FFD54F] border-[#FFD54F]/20', dotColor: 'bg-[#E0B84C]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#FFD54F]' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
   const c = config[status] || { className: 'bg-gray-50 text-gray-700 border-gray-200', dotColor: 'bg-gray-400' };
@@ -49,10 +49,10 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 const TABS = [
-  { key: 'PENDING', label: 'New Requests', gradient: 'from-[#FFE066] to-[#4D8AFF]', icon: Clock },
-  { key: 'ACCEPTED', label: 'Accepted', gradient: 'from-[#4D8AFF] to-[#4D8AFF]', icon: CheckCircle2 },
-  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-[#4D8AFF] to-[#1D63FF]', icon: Play },
-  { key: 'COMPLETED', label: 'Completed', gradient: 'from-[#7DB0FF] to-[#4D8AFF]', icon: CheckCircle2 },
+  { key: 'PENDING', label: 'New Requests', gradient: 'from-[#F2C94C] to-[#E0B84C]', icon: Clock },
+  { key: 'ACCEPTED', label: 'Accepted', gradient: 'from-[#E0B84C] to-[#FFD54F]', icon: CheckCircle2 },
+  { key: 'IN_PROGRESS', label: 'In Progress', gradient: 'from-[#E0B84C] to-[#FFD54F]', icon: Play },
+  { key: 'COMPLETED', label: 'Completed', gradient: 'from-[#FFD54F] to-[#E0B84C]', icon: CheckCircle2 },
   { key: 'CANCELLED', label: 'Cancelled', gradient: 'from-red-400 to-rose-500', icon: XCircle },
 ];
 
@@ -80,7 +80,7 @@ export function ProviderBookingsPage() {
           <>
             <Button
               size="sm"
-              className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#4D8AFF]/25 rounded-lg"
+              className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#E0B84C]/25 rounded-lg"
               onClick={() => handleAction(booking.id, 'accept')}
             >
               <CheckCircle2 className="mr-1 size-3" /> Accept
@@ -94,7 +94,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm rounded-lg"
+            className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm rounded-lg"
             onClick={() => handleAction(booking.id, 'start')}
           >
             <Play className="mr-1 size-3" /> Start Service
@@ -104,7 +104,7 @@ export function ProviderBookingsPage() {
         return (
           <Button
             size="sm"
-            className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#4D8AFF]/25 rounded-lg"
+            className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#E0B84C]/25 rounded-lg"
             onClick={() => handleAction(booking.id, 'complete')}
           >
             <CheckCircle2 className="mr-1 size-3" /> Mark Complete
@@ -163,7 +163,7 @@ export function ProviderBookingsPage() {
           >
             <Card className="rounded-2xl border-0 shadow-sm">
               <CardContent className="flex flex-col items-center py-12 text-center">
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
                   <CalendarCheck className="size-10 text-[#9DC2FF]" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">
@@ -205,7 +205,7 @@ export function ProviderBookingsPage() {
                               <StatusBadge status={booking.status} />
                             </div>
                             <div className="mt-2 flex items-center gap-2">
-                              <Briefcase className="size-4 text-[#1D63FF]" />
+                              <Briefcase className="size-4 text-[#FFD54F]" />
                               <span className="font-medium">{booking.service?.title}</span>
                             </div>
                             <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">

@@ -5,7 +5,7 @@ interface PriorityBadgeProps {
 }
 
 const PRIORITY_COLORS: Record<string, string> = {
-  LOW: 'bg-[#1D63FF]/10 text-[#0D3B7A]',
+  LOW: 'bg-[#FFD54F]/10 text-[#132D5E]',
   MEDIUM: 'bg-yellow-100 text-yellow-800',
   HIGH: 'bg-orange-100 text-orange-800',
   CRITICAL: 'bg-red-100 text-red-800',

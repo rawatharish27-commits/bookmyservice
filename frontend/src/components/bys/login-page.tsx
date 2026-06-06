@@ -42,17 +42,17 @@ const loadGoogleScript = (): Promise<void> => {
 };
 
 const floatingIcons = [
-  { Icon: Droplets, color: 'from-[#7DB0FF] to-[#FFCE32]', glow: 'shadow-[#7DB0FF]/30', x: '15%', y: '20%', delay: 0, size: 48 },
-  { Icon: Zap, color: 'from-[#FFCE32] to-yellow-400', glow: 'shadow-[#FFCE32]/30', x: '70%', y: '15%', delay: 0.5, size: 44 },
-  { Icon: Wind, color: 'from-[#7DB0FF] to-[#7DB0FF]', glow: 'shadow-[#7DB0FF]/30', x: '50%', y: '65%', delay: 1, size: 46 },
-  { Icon: Wrench, color: 'from-[#7DB0FF] to-green-400', glow: 'shadow-[#7DB0FF]/30', x: '25%', y: '75%', delay: 1.5, size: 40 },
-  { Icon: Shield, color: 'from-[#FFCE32]/50 to-[#FFCE32]/50', glow: 'shadow-[#4D8AFF]/30', x: '80%', y: '55%', delay: 2, size: 42 },
+  { Icon: Droplets, color: 'from-[#0A1F44] to-[#132D5E]', glow: 'shadow-[#FFD54F]/30', x: '15%', y: '20%', delay: 0, size: 48 },
+  { Icon: Zap, color: 'from-[#FFD54F] to-yellow-400', glow: 'shadow-[#FFD54F]/30', x: '70%', y: '15%', delay: 0.5, size: 44 },
+  { Icon: Wind, color: 'from-[#0A1F44] to-[#132D5E]', glow: 'shadow-[#FFD54F]/30', x: '50%', y: '65%', delay: 1, size: 46 },
+  { Icon: Wrench, color: 'from-[#FFD54F] to-green-400', glow: 'shadow-[#FFD54F]/30', x: '25%', y: '75%', delay: 1.5, size: 40 },
+  { Icon: Shield, color: 'from-[#FFD54F]/50 to-[#FFD54F]/50', glow: 'shadow-[#E0B84C]/30', x: '80%', y: '55%', delay: 2, size: 42 },
 ];
 
 const trustBadges = [
-  { icon: BadgeCheck, label: 'KYC Verified', gradient: 'from-[#FFCE32]/10 to-[#FFCE32]/10', iconColor: 'text-[#0D3B7A]', border: 'border-[#1D63FF]/20', shadow: 'shadow-[#1D63FF]/20' },
-  { icon: Shield, label: 'Secure Payments', gradient: 'from-[#FFCE32]/10 to-[#FFCE32]/10', iconColor: 'text-[#0D3B7A]', border: 'border-[#1D63FF]/20', shadow: 'shadow-[#1D63FF]/20' },
-  { icon: Clock, label: '24/7 Support', gradient: 'from-[#FFCE32]/10 to-[#FFCE32]/10', iconColor: 'text-[#E6B800]', border: 'border-[#FFCE32]/20', shadow: 'shadow-[#FFCE32]/15' },
+  { icon: BadgeCheck, label: 'KYC Verified', gradient: 'from-[#FFD54F]/10 to-[#FFD54F]/10', iconColor: 'text-[#132D5E]', border: 'border-[#FFD54F]/20', shadow: 'shadow-[#FFD54F]/20' },
+  { icon: Shield, label: 'Secure Payments', gradient: 'from-[#FFD54F]/10 to-[#FFD54F]/10', iconColor: 'text-[#132D5E]', border: 'border-[#FFD54F]/20', shadow: 'shadow-[#FFD54F]/20' },
+  { icon: Clock, label: '24/7 Support', gradient: 'from-[#FFD54F]/10 to-[#FFD54F]/10', iconColor: 'text-[#D4A017]', border: 'border-[#FFD54F]/20', shadow: 'shadow-[#FFD54F]/15' },
 ];
 
 export function LoginPage() {
@@ -117,36 +117,36 @@ export function LoginPage() {
 
   const isClient = activeTab === 'client';
   const tabGradient = isClient
-    ? 'from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50'
-    : 'from-[#4D8AFF]/50 via-[#1D63FF]/50 to-rose-500';
+    ? 'from-[#0A1F44] via-[#132D5E]/50 to-[#FFD54F]/50'
+    : 'from-[#132D5E]/50 via-[#0A1F44]/50 to-rose-500';
   const tabGradientHover = isClient
-    ? 'hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800]'
-    : 'hover:from-[#1D63FF] hover:via-[#1D63FF] hover:to-rose-600';
+    ? 'hover:from-[#132D5E] hover:via-[#FFD54F] hover:to-[#FFD54F]'
+    : 'hover:from-[#0A1F44] hover:via-[#132D5E] hover:to-rose-600';
   const tabShadow = isClient
-    ? 'shadow-[#1D63FF]/30'
-    : 'shadow-[#4D8AFF]/30';
+    ? 'shadow-[#FFD54F]/30'
+    : 'shadow-[#E0B84C]/30';
   const focusIconClass = isClient
-    ? 'group-focus-within:text-[#1D63FF]'
-    : 'group-focus-within:text-[#4D8AFF]';
+    ? 'group-focus-within:text-[#FFD54F]'
+    : 'group-focus-within:text-[#E0B84C]';
   const focusBorderClass = isClient
-    ? 'focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20'
-    : 'focus:border-[#FFCE32] focus:ring-[#FFCE32]/20';
+    ? 'focus:border-[#FFD54F] focus:ring-[#FFD54F]/20'
+    : 'focus:border-[#FFD54F] focus:ring-[#FFD54F]/20';
   const forgotLinkClass = isClient
-    ? 'text-[#1D63FF] hover:text-[#0D3B7A]'
-    : 'text-[#1D63FF] hover:text-[#0D3B7A]';
+    ? 'text-[#0A1F44] hover:text-[#FFD54F]'
+    : 'text-[#0A1F44] hover:text-[#FFD54F]';
   const signUpLinkClass = isClient
-    ? 'text-[#1D63FF] hover:text-[#0D3B7A]'
-    : 'text-[#1D63FF] hover:text-[#0D3B7A]';
+    ? 'text-[#0A1F44] hover:text-[#FFD54F]'
+    : 'text-[#0A1F44] hover:text-[#FFD54F]';
   const bannerBg = isClient
-    ? 'from-[#FFCE32]/5 to-[#FFCE32]/5 border-[#1D63FF]/15'
-    : 'from-[#4D8AFF]/5 to-[#1D63FF]/5 border-[#4D8AFF]/15';
-  const dividerVia = isClient ? 'via-[#1D63FF]/20' : 'via-[#4D8AFF]/20';
+    ? 'from-[#FFD54F]/5 to-[#FFD54F]/5 border-[#FFD54F]/15'
+    : 'from-[#E0B84C]/5 to-[#FFD54F]/5 border-[#E0B84C]/15';
+  const dividerVia = isClient ? 'via-[#FFD54F]/20' : 'via-[#E0B84C]/20';
   const inputBorder = isClient
-    ? 'border-[#1D63FF]/10'
-    : 'border-[#4D8AFF]/10';
+    ? 'border-[#FFD54F]/10'
+    : 'border-[#E0B84C]/10';
   const tabBg = isClient
-    ? 'from-[#1D63FF]/10 to-[#FFCE32]/10 border-[#1D63FF]/10'
-    : 'from-[#4D8AFF]/10 to-[#1D63FF]/10 border-[#4D8AFF]/10';
+    ? 'from-[#FFD54F]/10 to-[#FFD54F]/10 border-[#FFD54F]/10'
+    : 'from-[#E0B84C]/10 to-[#FFD54F]/10 border-[#E0B84C]/10';
 
   // Note: activeTab is cosmetic only - user role is determined server-side from their registered account
   const handleSubmit = async (e: React.FormEvent) => {
@@ -204,7 +204,7 @@ export function LoginPage() {
   return (
     <div className="relative flex min-h-[80vh] overflow-hidden">
       {/* ========== LEFT DECORATIVE PANEL (desktop) ========== */}
-      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#0A2463]">
+      <div className="hidden lg:flex lg:w-[45%] relative overflow-hidden bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44]">
         {/* Mesh gradient overlays */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_50%,rgba(16,185,129,0.55),transparent_50%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(6,182,212,0.4),transparent_50%)]" />
@@ -257,7 +257,7 @@ export function LoginPage() {
 
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight mb-6">
               Your Home,<br />
-              <span className="bg-gradient-to-r from-[#1D63FF]/20 via-[#1D63FF]/20 to-[#FFCE32]/20 bg-clip-text text-transparent">Perfectly Served.</span>
+              <span className="bg-gradient-to-r from-[#FFD54F]/30 via-[#FFD54F]/20 to-[#FFD54F]/30 bg-clip-text text-transparent">Perfectly Served.</span>
             </h2>
 
             <p className="text-white/80 text-lg mb-10 max-w-md leading-relaxed">
@@ -297,9 +297,9 @@ export function LoginPage() {
       {/* ========== RIGHT FORM PANEL ========== */}
       <div className="flex-1 flex items-center justify-center px-4 py-8 sm:px-6 lg:px-12 relative bg-gradient-to-br from-white via-gray-50/30 to-white">
         {/* Subtle background orbs */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-[#1D63FF]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#1D63FF]/3 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
-        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#FFCE32]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#FFD54F]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#FFD54F]/3 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+        <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-[#FFD54F]/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -313,7 +313,7 @@ export function LoginPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.15 }}
             onClick={() => navigate('home')}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#0D3B7A] mb-6 transition-colors group"
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#132D5E] mb-6 transition-colors group"
           >
             <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
             Back to Home
@@ -324,7 +324,7 @@ export function LoginPage() {
             {/* Subtle inner ring */}
             <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/40 pointer-events-none" />
             {/* Gradient top accent */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#7DB0FF] via-[#7DB0FF] to-[#FFCE32]" />
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F]" />
 
             {/* Header */}
             <div className="relative pointer-events-auto text-center pt-8 pb-2 px-6">
@@ -332,7 +332,7 @@ export function LoginPage() {
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 text-white shadow-lg shadow-[#4D8AFF]/30"
+                className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44] text-white shadow-lg shadow-[#FFD54F]/30"
               >
                 <Wrench className="size-8" />
               </motion.div>
@@ -360,13 +360,13 @@ export function LoginPage() {
                 <TabsList className={`w-full h-auto p-1.5 bg-gradient-to-r ${tabBg} rounded-xl border transition-colors duration-300`}>
                   <TabsTrigger
                     value="client"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#1D63FF] data-[state=active]:via-[#1D63FF] data-[state=active]:to-[#FFCE32] data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-[#1D63FF]/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#FFD54F] data-[state=active]:via-[#E0B84C] data-[state=active]:to-[#FFD54F] data-[state=active]:text-[#0A1F44] data-[state=active]:shadow-md data-[state=active]:shadow-[#FFD54F]/30"
                   >
                     <User className="size-4 mr-2" />Client Login
                   </TabsTrigger>
                   <TabsTrigger
                     value="provider"
-                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4D8AFF] data-[state=active]:via-[#1D63FF] data-[state=active]:to-rose-500 data-[state=active]:text-white data-[state=active]:shadow-md data-[state=active]:shadow-[#4D8AFF]/30"
+                    className="flex-1 py-3 rounded-lg transition-all duration-300 text-sm font-medium data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#0A1F44] data-[state=active]:via-[#132D5E] data-[state=active]:to-rose-500 data-[state=active]:text-[#FFD54F] data-[state=active]:shadow-md data-[state=active]:shadow-[#E0B84C]/30"
                   >
                     <Briefcase className="size-4 mr-2" />Provider Login
                   </TabsTrigger>
@@ -387,14 +387,14 @@ export function LoginPage() {
                         transition={{ duration: 0.3 }}
                         className={`rounded-xl bg-gradient-to-r ${bannerBg} p-4 border`}
                       >
-                        <p className="text-sm font-semibold text-[#0D3B7A] mb-3">
+                        <p className="text-sm font-semibold text-[#132D5E] mb-3">
                           Book trusted professionals for:
                         </p>
                         <div className="flex flex-wrap gap-2">
                           {[
-                            { Icon: Droplets, label: 'Plumbing', color: 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/10' },
-                            { Icon: Zap, label: 'Electrical', color: 'bg-[#4D8AFF]/5 text-[#1D63FF] border-[#4D8AFF]/10' },
-                            { Icon: Wind, label: 'Air Conditioner', color: 'bg-[#FFCE32]/5 text-[#1D63FF] border-[#FFCE32]/10' },
+                            { Icon: Droplets, label: 'Plumbing', color: 'bg-[#FFD54F]/5 text-[#0A1F44] border-[#FFD54F]/10' },
+                            { Icon: Zap, label: 'Electrical', color: 'bg-[#E0B84C]/5 text-[#0A1F44] border-[#E0B84C]/10' },
+                            { Icon: Wind, label: 'Air Conditioner', color: 'bg-[#FFD54F]/5 text-[#0A1F44] border-[#FFD54F]/10' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}
@@ -571,15 +571,15 @@ export function LoginPage() {
                         transition={{ duration: 0.3 }}
                         className={`rounded-xl bg-gradient-to-r ${bannerBg} p-4 border`}
                       >
-                        <p className="text-sm font-semibold text-[#0D3B7A] flex items-center gap-2">
-                          <Briefcase className="size-4 text-[#1D63FF]" />
+                        <p className="text-sm font-semibold text-[#132D5E] flex items-center gap-2">
+                          <Briefcase className="size-4 text-[#FFD54F]" />
                           Reach thousands of customers and grow your business
                         </p>
                         <div className="flex flex-wrap gap-2 mt-3">
                           {[
-                            { Icon: Droplets, label: 'Plumbing Jobs', color: 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/10' },
-                            { Icon: Zap, label: 'Electrical Jobs', color: 'bg-[#4D8AFF]/5 text-[#1D63FF] border-[#4D8AFF]/10' },
-                            { Icon: Wind, label: 'Air Conditioner Jobs', color: 'bg-[#FFCE32]/5 text-[#1D63FF] border-[#FFCE32]/10' },
+                            { Icon: Droplets, label: 'Plumbing Jobs', color: 'bg-[#FFD54F]/5 text-[#0A1F44] border-[#FFD54F]/10' },
+                            { Icon: Zap, label: 'Electrical Jobs', color: 'bg-[#E0B84C]/5 text-[#0A1F44] border-[#E0B84C]/10' },
+                            { Icon: Wind, label: 'Air Conditioner Jobs', color: 'bg-[#FFD54F]/5 text-[#0A1F44] border-[#FFD54F]/10' },
                           ].map(({ Icon, label, color }) => (
                             <span key={label} className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full border ${color}`}>
                               <Icon className="size-3.5" /> {label}
@@ -763,8 +763,8 @@ export function LoginPage() {
           </DialogHeader>
           {forgotSuccess ? (
             <div className="flex flex-col items-center gap-3 py-4">
-              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/10 border border-[#1D63FF]/20 shadow-md shadow-[#1D63FF]/15">
-                <Mail className="size-6 text-[#1D63FF]" />
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 border border-[#FFD54F]/20 shadow-md shadow-[#FFD54F]/15">
+                <Mail className="size-6 text-[#0A1F44]" />
               </div>
               <p className="text-sm text-center text-muted-foreground max-w-xs leading-relaxed">
                 If an account with that email exists, a reset link has been sent to your inbox.
@@ -772,7 +772,7 @@ export function LoginPage() {
               <Button
                 type="button"
                 onClick={() => setForgotDialogOpen(false)}
-                className="mt-2 bg-gradient-to-r from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800] shadow-lg shadow-[#4D8AFF]/20 rounded-xl h-11 px-6"
+                className="mt-2 bg-gradient-to-r from-[#0A1F44] via-[#132D5E]/50 to-[#FFD54F]/50 hover:from-[#132D5E] hover:via-[#FFD54F] hover:to-[#FFD54F] shadow-lg shadow-[#E0B84C]/20 rounded-xl h-11 px-6"
               >
                 Back to Login
               </Button>
@@ -783,7 +783,7 @@ export function LoginPage() {
                 <div className="space-y-2">
                   <Label htmlFor="forgot-email" className="text-sm font-medium text-foreground/80">Email Address</Label>
                   <div className="relative group">
-                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#1D63FF] transition-colors" />
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground group-focus-within:text-[#FFD54F] transition-colors" />
                     <Input
                       id="forgot-email"
                       type="email"
@@ -792,7 +792,7 @@ export function LoginPage() {
                       onChange={(e) => setForgotEmail(e.target.value)}
                       required
                       autoComplete="email"
-                      className="pl-10 h-12 bg-white/60 border-[#1D63FF]/10 focus:border-[#7DB0FF] focus:ring-[#7DB0FF]/20 focus:bg-white/80 transition-all rounded-xl"
+                      className="pl-10 h-12 bg-white/60 border-[#FFD54F]/10 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 focus:bg-white/80 transition-all rounded-xl"
                     />
                   </div>
                 </div>
@@ -810,7 +810,7 @@ export function LoginPage() {
                 <Button
                   type="submit"
                   disabled={forgotLoading}
-                  className="bg-gradient-to-r from-[#1D63FF] via-[#FFCE32]/50 to-[#FFCE32]/50 hover:from-[#0D3B7A] hover:via-[#1D63FF] hover:to-[#E6B800] shadow-lg shadow-[#4D8AFF]/20 rounded-xl h-11"
+                  className="bg-gradient-to-r from-[#0A1F44] via-[#132D5E]/50 to-[#FFD54F]/50 hover:from-[#132D5E] hover:via-[#FFD54F] hover:to-[#FFD54F] shadow-lg shadow-[#E0B84C]/20 rounded-xl h-11"
                 >
                   {forgotLoading ? (
                     <>

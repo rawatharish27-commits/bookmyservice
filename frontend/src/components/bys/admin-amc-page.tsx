@@ -67,8 +67,8 @@ interface SubscriptionsResponse {
 
 /* ---------- subscription status config ---------- */
 const SUB_STATUS_CONFIG: Record<string, { className: string; dotColor: string; label: string }> = {
-  ACTIVE: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]', label: 'Active' },
-  EXPIRED: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]', label: 'Expired' },
+  ACTIVE: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#FFD54F]', label: 'Active' },
+  EXPIRED: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#F2C94C]', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
 };
 
@@ -135,10 +135,10 @@ export function AdminAmcPage() {
               placeholder="Search plans or subscriptions..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#7DB0FF]"
+              className="pl-9 rounded-xl border-muted-foreground/20 focus:border-[#FFD54F]"
             />
           </div>
-          <Button className="shrink-0 rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25">
+          <Button className="shrink-0 rounded-xl bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25">
             <Plus className="mr-2 size-4" />
             New Plan
           </Button>
@@ -153,9 +153,9 @@ export function AdminAmcPage() {
         className="grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {[
-          { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bgGlow: 'bg-[#4D8AFF]/10' },
-          { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
-          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-[#FFE066] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
+          { label: 'Total Plans', value: plans.length, icon: Shield, gradient: 'from-[#FFD54F] to-[#E0B84C]', bgGlow: 'bg-[#E0B84C]/10' },
+          { label: 'Active Plans', value: activePlans, icon: CheckCircle2, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
+          { label: 'Active Subs', value: activeSubs, icon: Users, gradient: 'from-[#F2C94C] to-[#E0B84C]', bgGlow: 'bg-[#FFD54F]/10' },
           { label: 'Revenue (Active)', value: `₹${totalRevenue.toLocaleString('en-IN')}`, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -169,7 +169,7 @@ export function AdminAmcPage() {
                   </p>
                 </div>
                 <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-md`}>
-                  <stat.icon className="size-5 text-white" />
+                  <stat.icon className="size-5 text-[#0A1F44]" />
                 </div>
               </div>
             </div>
@@ -180,11 +180,11 @@ export function AdminAmcPage() {
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
         <TabsList className="bg-muted/50 rounded-xl p-1">
-          <TabsTrigger value="plans" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4D8AFF] data-[state=active]:to-[#1D63FF] data-[state=active]:text-white">
+          <TabsTrigger value="plans" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#E0B84C] data-[state=active]:to-[#FFD54F] data-[state=active]:text-[#0A1F44]">
             <Shield className="mr-2 size-4" />
             Plans ({plans.length})
           </TabsTrigger>
-          <TabsTrigger value="subscriptions" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#4D8AFF] data-[state=active]:to-[#1D63FF] data-[state=active]:text-white">
+          <TabsTrigger value="subscriptions" className="rounded-lg data-[state=active]:bg-gradient-to-r data-[state=active]:from-[#E0B84C] data-[state=active]:to-[#FFD54F] data-[state=active]:text-[#0A1F44]">
             <Repeat className="mr-2 size-4" />
             Subscriptions ({subscriptions.length})
           </TabsTrigger>
@@ -205,8 +205,8 @@ export function AdminAmcPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-16 text-center mt-4"
               >
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
-                  <Shield className="size-10 text-[#9DC2FF]" />
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+                  <Shield className="size-10 text-[#E0B84C]" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No AMC plans found</h3>
                 <p className="mt-1 text-sm text-muted-foreground/70">
@@ -228,21 +228,21 @@ export function AdminAmcPage() {
                     transition={{ delay: idx * 0.05 }}
                   >
                     <Card className="group overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-md h-full">
-                      <div className={`h-2 ${plan.isActive ? 'bg-gradient-to-r from-[#7DB0FF] to-[#4D8AFF]' : 'bg-gradient-to-r from-gray-300 to-gray-400'}`} />
+                      <div className={`h-2 ${plan.isActive ? 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]' : 'bg-gradient-to-r from-gray-300 to-gray-400'}`} />
                       <CardContent className="p-5 flex flex-col h-full">
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-center gap-2">
                             <div className={`flex size-10 items-center justify-center rounded-xl ${
                               plan.isActive
-                                ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md'
+                                ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md'
                                 : 'bg-gradient-to-br from-gray-300 to-gray-400'
                             }`}>
-                              <Shield className="size-5 text-white" />
+                              <Shield className="size-5 text-[#0A1F44]" />
                             </div>
                             <div>
                               <h3 className="text-sm font-bold">{plan.name}</h3>
                               {plan.category && (
-                                <Badge variant="outline" className="text-[10px] border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] mt-0.5">
+                                <Badge variant="outline" className="text-[10px] border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E] mt-0.5">
                                   <Tag className="size-2.5 mr-0.5" />
                                   {plan.category}
                                 </Badge>
@@ -253,7 +253,7 @@ export function AdminAmcPage() {
                             variant="outline"
                             className={`shrink-0 gap-1 text-[10px] font-semibold ${
                               plan.isActive
-                                ? 'border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]'
+                                ? 'border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E]'
                                 : 'border-gray-200 bg-gray-50 text-gray-500'
                             }`}
                           >
@@ -267,19 +267,19 @@ export function AdminAmcPage() {
                         )}
 
                         <div className="grid grid-cols-3 gap-2 mt-auto mb-3">
-                          <div className="rounded-lg bg-[#1D63FF]/5 p-2 text-center">
-                            <IndianRupeeIcon className="size-3.5 text-[#1D63FF] mx-auto" />
-                            <p className="text-sm font-bold text-[#0D3B7A]">₹{plan.price?.toLocaleString('en-IN')}</p>
+                          <div className="rounded-lg bg-[#FFD54F]/5 p-2 text-center">
+                            <IndianRupeeIcon className="size-3.5 text-[#FFD54F] mx-auto" />
+                            <p className="text-sm font-bold text-[#132D5E]">₹{plan.price?.toLocaleString('en-IN')}</p>
                             <p className="text-[10px] text-muted-foreground">Price</p>
                           </div>
-                          <div className="rounded-lg bg-[#1D63FF]/5 p-2 text-center">
-                            <Calendar className="size-3.5 text-[#1D63FF] mx-auto" />
-                            <p className="text-sm font-bold text-[#0D3B7A]">{plan.duration}mo</p>
+                          <div className="rounded-lg bg-[#FFD54F]/5 p-2 text-center">
+                            <Calendar className="size-3.5 text-[#FFD54F] mx-auto" />
+                            <p className="text-sm font-bold text-[#132D5E]">{plan.duration}mo</p>
                             <p className="text-[10px] text-muted-foreground">Duration</p>
                           </div>
-                          <div className="rounded-lg bg-[#FFCE32]/5 p-2 text-center">
-                            <Wrench className="size-3.5 text-[#FFCE32] mx-auto" />
-                            <p className="text-sm font-bold text-[#E6B800]">{plan.visitsPerYear}</p>
+                          <div className="rounded-lg bg-[#FFD54F]/5 p-2 text-center">
+                            <Wrench className="size-3.5 text-[#FFD54F] mx-auto" />
+                            <p className="text-sm font-bold text-[#D4A017]">{plan.visitsPerYear}</p>
                             <p className="text-[10px] text-muted-foreground">Visits/yr</p>
                           </div>
                         </div>
@@ -305,7 +305,7 @@ export function AdminAmcPage() {
                             className={`flex-1 rounded-lg text-xs ${
                               plan.isActive
                                 ? 'bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 border border-red-200'
-                                : 'bg-[#1D63FF]/5 text-[#1D63FF] hover:bg-[#1D63FF]/10 hover:text-[#0D3B7A] border border-[#1D63FF]/20'
+                                : 'bg-[#FFD54F]/5 text-[#FFD54F] hover:bg-[#FFD54F]/10 hover:text-[#132D5E] border border-[#FFD54F]/20'
                             }`}
                             variant="outline"
                           >
@@ -336,8 +336,8 @@ export function AdminAmcPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center py-16 text-center mt-4"
               >
-                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
-                  <Repeat className="size-10 text-[#9DC2FF]" />
+                <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+                  <Repeat className="size-10 text-[#E0B84C]" />
                 </div>
                 <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No subscriptions found</h3>
                 <p className="mt-1 text-sm text-muted-foreground/70">
@@ -352,9 +352,9 @@ export function AdminAmcPage() {
                 className="mt-4"
               >
                 <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 pb-3">
                     <CardTitle className="text-base font-semibold flex items-center gap-2">
-                      <Repeat className="size-4 text-[#1D63FF]" />
+                      <Repeat className="size-4 text-[#FFD54F]" />
                       Active Subscriptions ({filteredSubs.length})
                     </CardTitle>
                   </CardHeader>
@@ -370,15 +370,15 @@ export function AdminAmcPage() {
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: idx * 0.04 }}
-                            className="group flex flex-col gap-3 border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/5 sm:flex-row sm:items-center sm:gap-6"
+                            className="group flex flex-col gap-3 border-b p-4 last:border-0 transition-colors hover:bg-[#FFD54F]/5 sm:flex-row sm:items-center sm:gap-6"
                           >
                             <div className="flex items-center gap-3 flex-1 min-w-0">
                               <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl ${
                                 sub.status === 'ACTIVE'
-                                  ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md'
+                                  ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md'
                                   : 'bg-gradient-to-br from-gray-300 to-gray-400'
                               }`}>
-                                <Repeat className="size-5 text-white" />
+                                <Repeat className="size-5 text-[#0A1F44]" />
                               </div>
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 flex-wrap">
@@ -406,7 +406,7 @@ export function AdminAmcPage() {
                                 <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
                                   <div
                                     className={`h-full rounded-full transition-all ${
-                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-[#FFE066]' : 'bg-[#7DB0FF]'
+                                      progress > 80 ? 'bg-red-400' : progress > 50 ? 'bg-[#F2C94C]' : 'bg-[#FFD54F]'
                                     }`}
                                     style={{ width: `${Math.min(progress, 100)}%` }}
                                   />
@@ -426,7 +426,7 @@ export function AdminAmcPage() {
                                 </div>
                               </div>
 
-                              <Button variant="ghost" size="sm" className="shrink-0 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
+                              <Button variant="ghost" size="sm" className="shrink-0 text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5">
                                 <ArrowRight className="size-4" />
                               </Button>
                             </div>

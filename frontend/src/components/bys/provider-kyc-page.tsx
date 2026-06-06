@@ -200,7 +200,7 @@ export function ProviderKycPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-6 flex items-center gap-4"
       >
-        <Button variant="ghost" size="icon" onClick={() => navigate('provider-profile')} className="rounded-xl hover:bg-[#1D63FF]/5">
+        <Button variant="ghost" size="icon" onClick={() => navigate('provider-profile')} className="rounded-xl hover:bg-[#FFD54F]/5">
           <ArrowLeft className="size-4" />
         </Button>
         <div>
@@ -217,7 +217,7 @@ export function ProviderKycPage() {
             exit={{ opacity: 0, y: -10 }}
             className={`mb-4 rounded-xl p-3 text-sm border ${
               message.includes('success')
-                ? 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20'
+                ? 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20'
                 : 'bg-red-50 text-red-700 border-red-200'
             }`}
           >
@@ -235,19 +235,19 @@ export function ProviderKycPage() {
       >
         <Card className="mb-6 overflow-hidden rounded-2xl border-0 shadow-sm">
           <div className={`h-1.5 ${
-            effectiveStatus === 'APPROVED' ? 'bg-gradient-to-r from-[#7DB0FF] to-[#4D8AFF]' :
-            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-[#FFE066] to-[#4D8AFF]' :
+            effectiveStatus === 'APPROVED' ? 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]' :
+            effectiveStatus === 'PENDING' ? 'bg-gradient-to-r from-[#F2C94C] to-[#E0B84C]' :
             effectiveStatus === 'REJECTED' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
-            'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF]'
+            'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F]'
           }`} />
           <CardContent className="flex items-center gap-4 p-6">
             {effectiveStatus === 'APPROVED' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                  <CheckCircle2 className="size-7 text-[#4D8AFF]" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                  <CheckCircle2 className="size-7 text-[#E0B84C]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0D3B7A]">Verified</h3>
+                  <h3 className="text-lg font-semibold text-[#132D5E]">Verified</h3>
                   <p className="text-sm text-muted-foreground">
                     Your identity has been verified{kycStatus?.verifiedAt ? ` on ${new Date(kycStatus.verifiedAt).toLocaleDateString()}` : ''}
                   </p>
@@ -256,11 +256,11 @@ export function ProviderKycPage() {
             )}
             {effectiveStatus === 'PENDING' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                  <Clock className="size-7 text-[#1D63FF]" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                  <Clock className="size-7 text-[#FFD54F]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#0D3B7A]">Under Review</h3>
+                  <h3 className="text-lg font-semibold text-[#132D5E]">Under Review</h3>
                   <p className="text-sm text-muted-foreground">
                     We are reviewing your documents. This usually takes 1-2 business days.
                   </p>
@@ -282,11 +282,11 @@ export function ProviderKycPage() {
             )}
             {effectiveStatus === 'NOT_SUBMITTED' && (
               <>
-                <div className="flex size-14 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                  <Shield className="size-7 text-[#4D8AFF]" />
+                <div className="flex size-14 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                  <Shield className="size-7 text-[#E0B84C]" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-[#1D63FF]">Not Submitted</h3>
+                  <h3 className="text-lg font-semibold text-[#FFD54F]">Not Submitted</h3>
                   <p className="text-sm text-muted-foreground">Complete KYC verification to unlock full provider features</p>
                 </div>
               </>
@@ -303,10 +303,10 @@ export function ProviderKycPage() {
           transition={{ delay: 0.2 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
+            <div className="h-1 bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]" />
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
                   <Shield className="size-4 text-white" />
                 </div>
                 {effectiveStatus === 'REJECTED' ? 'Resubmit Documents' : 'Submit Documents'}
@@ -348,7 +348,7 @@ export function ProviderKycPage() {
                   onChange={handleFileChange('front')}
                 />
                 {frontPreview ? (
-                  <div className="relative rounded-xl border-2 border-[#1D63FF]/20 overflow-hidden">
+                  <div className="relative rounded-xl border-2 border-[#FFD54F]/20 overflow-hidden">
                     <img src={frontPreview} alt="Document front" className="w-full h-40 object-cover" />
                     <button
                       onClick={() => { setFrontFile(null); setFrontPreview(''); }}
@@ -360,10 +360,10 @@ export function ProviderKycPage() {
                 ) : (
                   <button
                     onClick={() => frontInputRef.current?.click()}
-                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 p-6 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5"
+                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#FFD54F]/20 bg-[#FFD54F]/5 p-6 transition-all hover:border-[#FFD54F] hover:bg-[#FFD54F]/5"
                   >
-                    <Upload className="size-8 text-[#7DB0FF]" />
-                    <span className="text-sm font-medium text-[#0D3B7A]">Click to upload document front</span>
+                    <Upload className="size-8 text-[#FFD54F]" />
+                    <span className="text-sm font-medium text-[#132D5E]">Click to upload document front</span>
                     <span className="text-xs text-muted-foreground">PNG, JPG up to 5MB</span>
                   </button>
                 )}
@@ -380,7 +380,7 @@ export function ProviderKycPage() {
                   onChange={handleFileChange('selfie')}
                 />
                 {selfiePreview ? (
-                  <div className="relative rounded-xl border-2 border-[#1D63FF]/20 overflow-hidden">
+                  <div className="relative rounded-xl border-2 border-[#FFD54F]/20 overflow-hidden">
                     <img src={selfiePreview} alt="Selfie with document" className="w-full h-40 object-cover" />
                     <button
                       onClick={() => { setSelfieFile(null); setSelfiePreview(''); }}
@@ -392,17 +392,17 @@ export function ProviderKycPage() {
                 ) : (
                   <button
                     onClick={() => selfieInputRef.current?.click()}
-                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 p-6 transition-all hover:border-[#7DB0FF] hover:bg-[#1D63FF]/5"
+                    className="flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-[#FFD54F]/20 bg-[#FFD54F]/5 p-6 transition-all hover:border-[#FFD54F] hover:bg-[#FFD54F]/5"
                   >
-                    <Upload className="size-8 text-[#7DB0FF]" />
-                    <span className="text-sm font-medium text-[#0D3B7A]">Click to upload selfie with document</span>
+                    <Upload className="size-8 text-[#FFD54F]" />
+                    <span className="text-sm font-medium text-[#132D5E]">Click to upload selfie with document</span>
                     <span className="text-xs text-muted-foreground">A clear selfie holding your document</span>
                   </button>
                 )}
               </div>
 
               <Button
-                className="shimmer w-full bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25 h-11 rounded-xl"
+                className="shimmer w-full bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25 h-11 rounded-xl"
                 onClick={handleSubmit}
                 disabled={uploading || loading}
               >

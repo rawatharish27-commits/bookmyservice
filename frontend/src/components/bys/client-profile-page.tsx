@@ -129,18 +129,18 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         className="mb-6 flex flex-col items-center"
       >
         <div className="relative">
-          <div className="rounded-full bg-gradient-to-br from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32] p-[3px]">
+          <div className="rounded-full bg-gradient-to-br from-[#FFD54F] via-[#E0B84C] to-[#FFD54F] p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
               {user?.profileImageUrl ? (
                 <img src={user.profileImageUrl} alt={user?.name || 'User'} className="size-24 rounded-full object-cover" />
               ) : (
-                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/10">
-                  <User className="size-10 text-[#7DB0FF]" />
+                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/10">
+                  <User className="size-10 text-[#FFD54F]" />
                 </div>
               )}
             </div>
           </div>
-          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/30">
+          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/30">
             <Camera className="size-3.5" />
           </button>
           <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -148,20 +148,20 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <h2 className="mt-3 text-xl font-bold">{user?.name || 'Guest'}</h2>
         <p className="text-sm text-muted-foreground">{user.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 capitalize font-semibold">
+          <Badge className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] border-0 capitalize font-semibold">
             {user.role}
           </Badge>
           <Badge
             variant="outline"
             className={
               user.status === 'ACTIVE'
-                ? 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30'
+                ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30'
                 : user.status === 'PENDING'
-                ? 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/30'
+                ? 'bg-[#FFD54F]/5 text-[#FFD54F] border-[#FFD54F]/30'
                 : 'bg-red-50 text-red-700 border-red-200'
             }
           >
-            <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-[#7DB0FF]' : user.status === 'PENDING' ? 'bg-[#FFE066]' : 'bg-red-400'}`} />
+            <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-[#FFD54F]' : user.status === 'PENDING' ? 'bg-[#F2C94C]' : 'bg-red-400'}`} />
             {user.status}
           </Badge>
         </div>
@@ -170,11 +170,11 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       {/* Edit Profile Form */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
+          <div className="h-1 bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
-                <User className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
+                <User className="size-4 text-[#0A1F44]" />
               </div>
               Edit Profile
             </CardTitle>
@@ -196,7 +196,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="flex items-center gap-2 rounded-xl bg-[#1D63FF]/10 p-3 text-sm text-[#0D3B7A] border border-[#1D63FF]/30"
+                  className="flex items-center gap-2 rounded-xl bg-[#FFD54F]/10 p-3 text-sm text-[#132D5E] border border-[#FFD54F]/30"
                 >
                   <CheckCircle2 className="size-4" />
                   Profile updated successfully!
@@ -238,7 +238,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           </CardContent>
           <div className="px-6 pb-6">
             <Button
-              className="shimmer w-full bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 h-11 rounded-xl"
+              className="shimmer w-full bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 h-11 rounded-xl"
               onClick={handleSaveProfile}
               disabled={saving}
             >
@@ -254,8 +254,8 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]">
-                <Key className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#F2C94C] to-[#E0B84C]">
+                <Key className="size-4 text-[#0A1F44]" />
               </div>
               Security
             </CardTitle>
@@ -277,11 +277,11 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
       {/* Account Status */}
       <motion.div {...fadeUp} transition={{ delay: 0.25 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
+          <div className="h-1 bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]" />
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-lg">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
-                <Shield className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
+                <Shield className="size-4 text-[#0A1F44]" />
               </div>
               Account Status
             </CardTitle>
@@ -297,15 +297,15 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
                 <span className="text-sm">{item.label}</span>
                 {item.isStatus ? (
                   <Badge variant="outline" className={
-                    user.status === 'ACTIVE' ? 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30' : 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/30'
+                    user.status === 'ACTIVE' ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30' : 'bg-[#FFD54F]/5 text-[#FFD54F] border-[#FFD54F]/30'
                   }>
-                    <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-[#7DB0FF]' : 'bg-[#FFE066]'}`} />
+                    <span className={`mr-1.5 size-1.5 rounded-full ${user.status === 'ACTIVE' ? 'bg-[#FFD54F]' : 'bg-[#F2C94C]'}`} />
                     {item.value}
                   </Badge>
                 ) : item.isRole ? (
-                  <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 capitalize">{item.value}</Badge>
+                  <Badge className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] border-0 capitalize">{item.value}</Badge>
                 ) : (
-                  <Badge variant="outline" className={item.isVerified ? 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30' : 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/30'}>
+                  <Badge variant="outline" className={item.isVerified ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30' : 'bg-[#FFD54F]/5 text-[#FFD54F] border-[#FFD54F]/30'}>
                     {item.isVerified && <CheckCircle2 className="mr-1 size-3" />}
                     {item.value}
                   </Badge>
@@ -407,7 +407,7 @@ function ProfileForm({ user, onLogout }: { user: UserType; onLogout: () => void 
           <DialogFooter>
             <Button variant="outline" onClick={() => setPasswordDialog(false)} className="rounded-xl">Cancel</Button>
             <Button
-              className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white rounded-xl"
+              className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] rounded-xl"
               onClick={handleChangePassword}
               disabled={changingPassword}
             >
@@ -430,7 +430,7 @@ export function ClientProfilePage() {
       <div className="mx-auto max-w-2xl px-4 py-16 text-center sm:px-6">
         <p className="text-muted-foreground">Please log in to view your profile</p>
         <Button
-          className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
+          className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25"
           onClick={() => navigate('login')}
         >
           Log In

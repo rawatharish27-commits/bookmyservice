@@ -107,9 +107,9 @@ const itemVariants = {
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
-    IN_PROGRESS: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
-    COMPLETED: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+    ACCEPTED: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
+    IN_PROGRESS: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
+    COMPLETED: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
   return (
@@ -164,9 +164,9 @@ export function AdminAnalyticsPage() {
       icon: DollarSign,
       growth: stats?.revenueGrowth,
       color: 'emerald',
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#4D8AFF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#E0B84C]',
     },
     {
       label: 'Total Bookings',
@@ -174,9 +174,9 @@ export function AdminAnalyticsPage() {
       icon: CalendarCheck,
       growth: stats?.bookingGrowth,
       color: 'teal',
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#4D8AFF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#E0B84C]',
     },
     {
       label: 'Active Users',
@@ -184,9 +184,9 @@ export function AdminAnalyticsPage() {
       icon: Users,
       growth: stats?.userGrowth,
       color: 'cyan',
-      bgLight: 'bg-[#FFCE32]/5',
-      textColor: 'text-[#E6B800]',
-      borderColor: 'border-l-[#FFCE32]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#D4A017]',
+      borderColor: 'border-l-[#FFD54F]',
     },
     {
       label: 'Active Providers',
@@ -194,9 +194,9 @@ export function AdminAnalyticsPage() {
       icon: Briefcase,
       growth: stats?.providerGrowth,
       color: 'sky',
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#1D63FF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#FFD54F]',
     },
     {
       label: 'Cancellation Rate',
@@ -232,7 +232,7 @@ export function AdminAnalyticsPage() {
         className="mb-8"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
             <BarChart3 className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -272,13 +272,13 @@ export function AdminAnalyticsPage() {
                       {card.growth !== undefined && card.growth !== null && (
                         <div className="mt-1 flex items-center gap-0.5">
                           {isPositiveGrowth ? (
-                            <ArrowUpRight className="size-3 text-[#1D63FF]" />
+                            <ArrowUpRight className="size-3 text-[#FFD54F]" />
                           ) : (
                             <ArrowDownRight className="size-3 text-red-500" />
                           )}
                           <span
                             className={`text-xs font-medium ${
-                              isPositiveGrowth ? 'text-[#1D63FF]' : 'text-red-500'
+                              isPositiveGrowth ? 'text-[#FFD54F]' : 'text-red-500'
                             }`}
                           >
                             {Math.abs(card.growth).toFixed(1)}%
@@ -310,11 +310,11 @@ export function AdminAnalyticsPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <Activity className="size-4 text-[#1D63FF]" />
+                  <Activity className="size-4 text-[#FFD54F]" />
                   Monthly Revenue
                 </CardTitle>
                 {monthlyRevenue.length > 0 && (
-                  <Badge variant="secondary" className="bg-[#1D63FF]/5 text-[#0D3B7A]">
+                  <Badge variant="secondary" className="bg-[#FFD54F]/5 text-[#132D5E]">
                     Last {monthlyRevenue.length} months
                   </Badge>
                 )}
@@ -377,8 +377,8 @@ export function AdminAnalyticsPage() {
                                 transition={{ duration: 0.6, delay: index * 0.05, ease: 'easeOut' }}
                                 className={`w-full max-w-10 rounded-t-md transition-all duration-200 ${
                                   isHovered
-                                    ? 'bg-gradient-to-t from-[#1D63FF] to-[#7DB0FF] shadow-md'
-                                    : 'bg-gradient-to-t from-[#4D8AFF] to-[#4D8AFF]'
+                                    ? 'bg-gradient-to-t from-[#FFD54F] to-[#E0B84C] shadow-md'
+                                    : 'bg-gradient-to-t from-[#E0B84C] to-[#FFD54F]'
                                 }`}
                                 style={{ minHeight: '2px' }}
                               />
@@ -408,7 +408,7 @@ export function AdminAnalyticsPage() {
           <Card className="h-full">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Tag className="size-4 text-[#1D63FF]" />
+                <Tag className="size-4 text-[#FFD54F]" />
                 Top Categories
               </CardTitle>
             </CardHeader>
@@ -434,14 +434,14 @@ export function AdminAnalyticsPage() {
                         <TableRow key={cat.id || index}>
                           <TableCell>
                             <div className="flex items-center gap-2">
-                              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/10 text-xs font-bold text-[#0D3B7A]">
+                              <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 text-xs font-bold text-[#132D5E]">
                                 {index + 1}
                               </span>
                               <span className="truncate text-sm font-medium">{cat.name}</span>
                             </div>
                           </TableCell>
                           <TableCell className="text-center">
-                            <Badge variant="secondary" className="bg-[#1D63FF]/5 text-[#0D3B7A]">
+                            <Badge variant="secondary" className="bg-[#FFD54F]/5 text-[#132D5E]">
                               {cat.bookings}
                             </Badge>
                           </TableCell>
@@ -602,7 +602,7 @@ export function AdminAnalyticsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <CalendarCheck className="size-4 text-[#1D63FF]" />
+              <CalendarCheck className="size-4 text-[#FFD54F]" />
               Recent Bookings
             </CardTitle>
           </CardHeader>

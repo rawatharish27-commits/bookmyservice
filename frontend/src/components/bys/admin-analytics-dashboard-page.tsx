@@ -179,8 +179,8 @@ const dailyBookingsChartConfig: ChartConfig = {
 function StatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    ACCEPTED: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
-    IN_PROGRESS: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
+    ACCEPTED: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
+    IN_PROGRESS: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
     COMPLETED: 'bg-green-100 text-green-800 border-green-200',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
   };
@@ -197,7 +197,7 @@ function formatCurrency(amount: number) {
 
 // ─── PIE CHART COLORS ─────────────────────────────────────────────────────────
 
-const PIE_COLORS = ['#0A2463', '#0D3B7A', '#1D63FF', '#4D8AFF', '#7DB0FF', '#A8C8FF', '#CCE0FF', '#E8F0FF'];
+const PIE_COLORS = ['#0A1F44', '#132D5E', '#FFD54F', '#E0B84C', '#F2C94C', '#D4A017', '#C49612', '#A87D0E'];
 
 // ─── Date Range Selector ──────────────────────────────────────────────────────
 
@@ -339,9 +339,9 @@ export function AdminAnalyticsDashboardPage() {
       icon: CalendarCheck,
       growth: stats?.bookingGrowth,
       color: 'teal',
-      bgLight: 'bg-[#FFCE32]/10',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#1D63FF]',
+      bgLight: 'bg-[#FFD54F]/10',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#FFD54F]',
     },
     {
       label: 'Total Revenue',
@@ -349,9 +349,9 @@ export function AdminAnalyticsDashboardPage() {
       icon: DollarSign,
       growth: stats?.revenueGrowth,
       color: 'emerald',
-      bgLight: 'bg-[#FFCE32]/10',
-      textColor: 'text-[#0D3B7A]',
-      borderColor: 'border-l-[#1D63FF]',
+      bgLight: 'bg-[#FFD54F]/10',
+      textColor: 'text-[#132D5E]',
+      borderColor: 'border-l-[#FFD54F]',
     },
     {
       label: 'Active Users',
@@ -359,9 +359,9 @@ export function AdminAnalyticsDashboardPage() {
       icon: Users,
       growth: stats?.userGrowth,
       color: 'cyan',
-      bgLight: 'bg-[#FFCE32]/10',
-      textColor: 'text-[#E6B800]',
-      borderColor: 'border-l-[#FFCE32]',
+      bgLight: 'bg-[#FFD54F]/10',
+      textColor: 'text-[#D4A017]',
+      borderColor: 'border-l-[#FFD54F]',
     },
     {
       label: 'Avg. Rating',
@@ -390,9 +390,9 @@ export function AdminAnalyticsDashboardPage() {
       icon: Briefcase,
       growth: stats?.providerGrowth,
       color: 'sky',
-      bgLight: 'bg-[#1D63FF]/5',
-      textColor: 'text-[#1D63FF]',
-      borderColor: 'border-l-[#1D63FF]',
+      bgLight: 'bg-[#FFD54F]/5',
+      textColor: 'text-[#FFD54F]',
+      borderColor: 'border-l-[#FFD54F]',
     },
   ];
 
@@ -418,7 +418,7 @@ export function AdminAnalyticsDashboardPage() {
               <ChevronLeft className="size-5" />
             </Button>
             <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
+              <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
                 <BarChart3 className="h-5 w-5 text-white" />
               </div>
               <div>
@@ -437,7 +437,7 @@ export function AdminAnalyticsDashboardPage() {
                   key={opt.value}
                   variant={dateRange === opt.value ? 'default' : 'ghost'}
                   size="sm"
-                  className={`h-7 text-xs ${dateRange === opt.value ? 'bg-gradient-to-r from-[#0A2463] to-[#1D63FF] text-white' : ''}`}
+                  className={`h-7 text-xs ${dateRange === opt.value ? 'bg-gradient-to-r from-[#0A1F44] to-[#FFD54F] text-white' : ''}`}
                   onClick={() => setDateRange(opt.value)}
                 >
                   {opt.label}
@@ -481,13 +481,13 @@ export function AdminAnalyticsDashboardPage() {
                       {card.growth !== undefined && card.growth !== null && (
                         <div className="mt-1 flex items-center gap-0.5">
                           {isPositiveGrowth ? (
-                            <ArrowUpRight className="size-3 text-[#1D63FF]" />
+                            <ArrowUpRight className="size-3 text-[#FFD54F]" />
                           ) : (
                             <ArrowDownRight className="size-3 text-red-500" />
                           )}
                           <span
                             className={`text-xs font-medium ${
-                              isPositiveGrowth ? 'text-[#1D63FF]' : 'text-red-500'
+                              isPositiveGrowth ? 'text-[#FFD54F]' : 'text-red-500'
                             }`}
                           >
                             {Math.abs(card.growth).toFixed(1)}%
@@ -518,10 +518,10 @@ export function AdminAnalyticsDashboardPage() {
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <TrendingUp className="size-4 text-[#1D63FF]" />
+                  <TrendingUp className="size-4 text-[#FFD54F]" />
                   Revenue Trend
                 </CardTitle>
-                <Badge variant="secondary" className="bg-[#FFCE32]/10 text-[#0D3B7A]">
+                <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#132D5E]">
                   Last {monthlyRevenue.length || 12} months
                 </Badge>
               </div>
@@ -546,7 +546,7 @@ export function AdminAnalyticsDashboardPage() {
                       stroke="hsl(var(--chart-1))"
                       strokeWidth={2.5}
                       dot={{ fill: 'hsl(var(--chart-1))', r: 4 }}
-                      activeDot={{ r: 6, fill: '#0A2463' }}
+                      activeDot={{ r: 6, fill: '#0A1F44' }}
                     />
                   </LineChart>
                 </ChartContainer>
@@ -564,7 +564,7 @@ export function AdminAnalyticsDashboardPage() {
           <Card className="h-full">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Tag className="size-4 text-[#1D63FF]" />
+                <Tag className="size-4 text-[#FFD54F]" />
                 Bookings by Category
               </CardTitle>
             </CardHeader>
@@ -602,7 +602,7 @@ export function AdminAnalyticsDashboardPage() {
           <Card className="h-full">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Activity className="size-4 text-[#FFCE32]" />
+                <Activity className="size-4 text-[#FFD54F]" />
                 Booking Status
               </CardTitle>
             </CardHeader>
@@ -647,7 +647,7 @@ export function AdminAnalyticsDashboardPage() {
           <Card className="h-full">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Users className="size-4 text-[#FFCE32]" />
+                <Users className="size-4 text-[#FFD54F]" />
                 User Growth
               </CardTitle>
             </CardHeader>
@@ -745,10 +745,10 @@ export function AdminAnalyticsDashboardPage() {
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-base">
-                <CalendarCheck className="size-4 text-[#1D63FF]" />
+                <CalendarCheck className="size-4 text-[#FFD54F]" />
                 Daily Bookings (Last 30 Days)
               </CardTitle>
-              <Badge variant="secondary" className="bg-[#FFCE32]/10 text-[#0D3B7A]">
+              <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#132D5E]">
                 {(stats?.totalBookings || 0).toLocaleString()} total
               </Badge>
             </div>
@@ -779,7 +779,7 @@ export function AdminAnalyticsDashboardPage() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Briefcase className="size-4 text-[#1D63FF]" />
+                <Briefcase className="size-4 text-[#FFD54F]" />
                 Top Performing Providers
               </CardTitle>
             </CardHeader>
@@ -801,7 +801,7 @@ export function AdminAnalyticsDashboardPage() {
                       <TableRow key={svc.id || i}>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#FFCE32]/10 text-xs font-bold text-[#1D63FF]">
+                            <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10 text-xs font-bold text-[#FFD54F]">
                               {i + 1}
                             </span>
                             <span className="truncate text-sm font-medium max-w-[120px]">
@@ -810,7 +810,7 @@ export function AdminAnalyticsDashboardPage() {
                           </div>
                         </TableCell>
                         <TableCell className="text-center">
-                          <Badge variant="secondary" className="bg-[#1D63FF]/5 text-[#1D63FF]">
+                          <Badge variant="secondary" className="bg-[#FFD54F]/5 text-[#FFD54F]">
                             {svc.bookings}
                           </Badge>
                         </TableCell>
@@ -917,7 +917,7 @@ export function AdminAnalyticsDashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="flex items-center gap-2 text-base">
-              <Clock className="size-4 text-[#1D63FF]" />
+              <Clock className="size-4 text-[#FFD54F]" />
               Recent Bookings
             </CardTitle>
           </CardHeader>
@@ -979,14 +979,14 @@ export function AdminAnalyticsDashboardPage() {
         transition={{ duration: 0.5, delay: 0.7 }}
         className="mt-6"
       >
-        <Card className="border-[#0D3B7A]/10 bg-gradient-to-br from-[#0A2463]/[0.02] to-[#1D63FF]/[0.02]">
+        <Card className="border-[#132D5E]/10 bg-gradient-to-br from-[#0A1F44]/[0.02] to-[#FFD54F]/[0.02]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Sparkles className="size-4 text-[#1D63FF]" />
+                <Sparkles className="size-4 text-[#FFD54F]" />
                 AI Business Insights
               </CardTitle>
-              <Badge variant="secondary" className="bg-[#0D3B7A]/10 text-[#0D3B7A] text-[10px]">
+              <Badge variant="secondary" className="bg-[#132D5E]/10 text-[#132D5E] text-[10px]">
                 AI-Powered
               </Badge>
             </div>
@@ -1009,7 +1009,7 @@ export function AdminAnalyticsDashboardPage() {
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {aiInsights.map((insight, i) => {
                   const trendIcon = insight.trend === 'up'
-                    ? <ArrowUpRight className="size-3 text-[#1D63FF]" />
+                    ? <ArrowUpRight className="size-3 text-[#FFD54F]" />
                     : insight.trend === 'down'
                       ? <ArrowDownRight className="size-3 text-red-500" />
                       : null;
@@ -1027,7 +1027,7 @@ export function AdminAnalyticsDashboardPage() {
                         {insight.description}
                       </p>
                       {insight.value !== undefined && (
-                        <p className="mt-2 text-base font-bold text-[#0D3B7A]">
+                        <p className="mt-2 text-base font-bold text-[#132D5E]">
                           {typeof insight.value === 'number' ? formatCurrency(insight.value) : insight.value}
                         </p>
                       )}

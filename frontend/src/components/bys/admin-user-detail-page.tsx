@@ -157,14 +157,14 @@ export function AdminUserDetailPage() {
         <div className="grid grid-cols-3 gap-4">
           <Card>
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <CalendarCheck className="size-5 text-[#1D63FF]" />
+              <CalendarCheck className="size-5 text-[#FFD54F]" />
               <p className="mt-2 text-lg font-bold">—</p>
               <p className="text-xs text-muted-foreground">Bookings</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="flex flex-col items-center p-4 text-center">
-              <Briefcase className="size-5 text-[#1D63FF]" />
+              <Briefcase className="size-5 text-[#FFD54F]" />
               <p className="mt-2 text-lg font-bold">—</p>
               <p className="text-xs text-muted-foreground">Services</p>
             </CardContent>
@@ -199,7 +199,7 @@ export function AdminUserDetailPage() {
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             {user.status === 'ACTIVE' ? (
-              <Button variant="outline" className="text-[#1D63FF]" onClick={() => handleStatusChange('BLOCKED')}>
+              <Button variant="outline" className="text-[#FFD54F]" onClick={() => handleStatusChange('BLOCKED')}>
                 <Ban className="mr-2 size-4" /> Block User
               </Button>
             ) : (

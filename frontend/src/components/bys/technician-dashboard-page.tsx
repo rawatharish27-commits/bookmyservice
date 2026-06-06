@@ -113,13 +113,13 @@ interface ProfileResponse {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, { className: string; dotColor: string }> = {
-    PENDING: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#FFCE32]' },
-    ASSIGNED: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
+    PENDING: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]' },
+    ASSIGNED: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
     ACCEPTED: { className: 'bg-indigo-50 text-indigo-700 border-indigo-200', dotColor: 'bg-indigo-400' },
-    ON_THE_WAY: { className: 'bg-[#FFCE32]/10 text-[#E6B800] border-[#FFCE32]/30', dotColor: 'bg-[#FFCE32]' },
-    ARRIVED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#4D8AFF]' },
-    IN_PROGRESS: { className: 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/30', dotColor: 'bg-[#4D8AFF]' },
-    COMPLETED: { className: 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30', dotColor: 'bg-[#4D8AFF]' },
+    ON_THE_WAY: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#FFD54F]' },
+    ARRIVED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
+    IN_PROGRESS: { className: 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
+    COMPLETED: { className: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30', dotColor: 'bg-[#E0B84C]' },
     CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400' },
   };
   const c = config[status] || config.PENDING;
@@ -142,9 +142,9 @@ function StarRating({ rating, size = 'sm' }: { rating: number; size?: 'sm' | 'md
           key={i}
           className={`${iconSize} ${
             i < Math.floor(rating)
-              ? 'fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_3px_rgba(255,206,50,0.4)]'
+              ? 'fill-[#FFD54F] text-[#FFD54F] drop-shadow-[0_0_3px_rgba(255,213,79,0.4)]'
               : i < rating
-                ? 'fill-[#1D63FF]/30 text-[#FFCE32]'
+                ? 'fill-[#FFD54F]/30 text-[#FFD54F]'
                 : 'text-gray-200'
           }`}
         />
@@ -165,17 +165,17 @@ function getJobAction(
     case 'PENDING':
     case 'ASSIGNED':
       return [
-        { label: 'Accept', icon: CheckCircle2, action: 'accept', variant: 'default' as const, className: 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#1D63FF]/25 hover:shadow-md' },
+        { label: 'Accept', icon: CheckCircle2, action: 'accept', variant: 'default' as const, className: 'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#0A1F44]/25 hover:shadow-md' },
         { label: 'Reject', icon: XCircle, action: 'reject', variant: 'outline' as const, className: 'border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700' },
       ];
     case 'ACCEPTED':
-      return [{ label: 'On the Way', icon: Truck, action: 'start-travel', variant: 'default' as const, className: 'bg-gradient-to-r from-[#FFCE32] to-[#1D63FF] text-white shadow-sm shadow-[#FFCE32]/25 hover:shadow-md' }];
+      return [{ label: 'On the Way', icon: Truck, action: 'start-travel', variant: 'default' as const, className: 'bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-sm shadow-[#0A1F44]/25 hover:shadow-md' }];
     case 'ON_THE_WAY':
-      return [{ label: 'Arrived', icon: DoorOpen, action: 'arrive', variant: 'default' as const, className: 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#4D8AFF]/25 hover:shadow-md' }];
+      return [{ label: 'Arrived', icon: DoorOpen, action: 'arrive', variant: 'default' as const, className: 'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#0A1F44]/25 hover:shadow-md' }];
     case 'ARRIVED':
-      return [{ label: 'Start Work', icon: PlayCircle, action: 'start', variant: 'default' as const, className: 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-sm shadow-[#4D8AFF]/25 hover:shadow-md' }];
+      return [{ label: 'Start Work', icon: PlayCircle, action: 'start', variant: 'default' as const, className: 'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-sm shadow-[#0A1F44]/25 hover:shadow-md' }];
     case 'IN_PROGRESS':
-      return [{ label: 'Complete', icon: CheckCircle2, action: undefined, variant: 'default' as const, className: 'bg-gradient-to-r from-[#1D63FF] to-[#0D3B7A] text-white shadow-sm shadow-[#1D63FF]/25 hover:shadow-md', onCompleteAction: true }];
+      return [{ label: 'Complete', icon: CheckCircle2, action: undefined, variant: 'default' as const, className: 'bg-gradient-to-r from-[#FFD54F] to-[#132D5E] text-[#0A1F44] shadow-sm shadow-[#0A1F44]/25 hover:shadow-md', onCompleteAction: true }];
     default:
       return [];
   }
@@ -314,42 +314,42 @@ export function TechnicianDashboardPage() {
       title: "Today's Earnings",
       value: `₹${todayEarnings.toLocaleString()}`,
       icon: DollarSign,
-      gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
-      bgGlow: 'bg-[#1D63FF]/10',
-      valueColor: 'text-[#1D63FF]',
+      gradient: 'from-[#FFD54F] to-[#E0B84C]',
+      bgGlow: 'bg-[#FFD54F]/10',
+      valueColor: 'text-[#FFD54F]',
     },
     {
       title: 'Total Earnings',
       value: `₹${totalEarnings.toLocaleString()}`,
       icon: Wallet,
-      gradient: 'from-[#4D8AFF] to-[#FFCE32]',
-      bgGlow: 'bg-[#4D8AFF]/10',
-      valueColor: 'text-[#0D3B7A]',
+      gradient: 'from-[#E0B84C] to-[#FFD54F]',
+      bgGlow: 'bg-[#E0B84C]/10',
+      valueColor: 'text-[#132D5E]',
     },
     {
       title: 'Jobs Completed',
       value: completedCount,
       icon: Briefcase,
-      gradient: 'from-[#4D8AFF] to-[#1D63FF]',
-      bgGlow: 'bg-[#1D63FF]/10',
-      valueColor: 'text-[#1D63FF]',
+      gradient: 'from-[#E0B84C] to-[#FFD54F]',
+      bgGlow: 'bg-[#FFD54F]/10',
+      valueColor: 'text-[#FFD54F]',
     },
     {
       title: 'Average Rating',
       value: avgRating > 0 ? avgRating.toFixed(1) : '—',
       icon: Star,
-      gradient: 'from-[#FFCE32] to-[#1D63FF]',
-      bgGlow: 'bg-[#FFCE32]/10',
-      valueColor: 'text-[#0D3B7A]',
+      gradient: 'from-[#FFD54F] to-[#E0B84C]',
+      bgGlow: 'bg-[#FFD54F]/10',
+      valueColor: 'text-[#132D5E]',
     },
   ];
 
   // ── Quick actions config ──
   const quickActions = [
-    { icon: Wallet, label: 'Earnings', nav: 'technician-earnings' as Page, gradient: 'from-[#4D8AFF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: User, label: 'My Profile', nav: 'technician-profile' as Page, gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-[#1D63FF] to-[#1D63FF]', shadow: 'shadow-[#1D63FF]/25' },
-    { icon: Briefcase, label: 'All Jobs', nav: 'technician-jobs' as Page, gradient: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/25' },
+    { icon: Wallet, label: 'Earnings', nav: 'technician-earnings' as Page, gradient: 'from-[#E0B84C] to-[#FFD54F]', shadow: 'shadow-[#0A1F44]/25', textColor: 'text-[#0A1F44]' },
+    { icon: User, label: 'My Profile', nav: 'technician-profile' as Page, gradient: 'from-[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25', textColor: 'text-white' },
+    { icon: CalendarCheck, label: 'Availability', nav: 'technician-availability' as Page, gradient: 'from-[#0A1F44] to-[#132D5E]', shadow: 'shadow-[#0A1F44]/25', textColor: 'text-[#FFD54F]' },
+    { icon: Briefcase, label: 'All Jobs', nav: 'technician-jobs' as Page, gradient: 'from-rose-500 to-pink-600', shadow: 'shadow-rose-500/25', textColor: 'text-white' },
   ];
 
   // ── Loading state ──
@@ -378,7 +378,7 @@ export function TechnicianDashboardPage() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#FFD54F] p-6 sm:p-8"
       >
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
@@ -386,18 +386,18 @@ export function TechnicianDashboardPage() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="size-5 text-[#FFCE32]" />
-              <span className="text-sm font-medium text-[#FFCE32]/80">Welcome back</span>
+              <Sparkles className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#FFD54F]/80">Welcome back</span>
             </div>
             <h1 className="mt-1 text-2xl font-bold text-white sm:text-3xl">
               {user?.name?.split(' ')[0] || 'Technician'} 👋
             </h1>
-            <p className="mt-1 text-[#FFCE32]/80">Manage your jobs and stay on track</p>
+            <p className="mt-1 text-[#FFD54F]/80">Manage your jobs and stay on track</p>
             {/* Location status */}
             <div className="mt-3 flex items-center gap-2">
               <div className="flex items-center gap-1.5 rounded-lg bg-white/10 px-3 py-1.5 backdrop-blur-sm">
-                <MapPin className="size-3.5 text-[#FFCE32]" />
-                <span className="text-xs font-medium text-[#FFCE32]/80">
+                <MapPin className="size-3.5 text-[#FFD54F]" />
+                <span className="text-xs font-medium text-[#FFD54F]/80">
                   {locationStatus === 'current'
                     ? `Location updated ${locationAge}m ago`
                     : locationStatus === 'stale'
@@ -405,7 +405,7 @@ export function TechnicianDashboardPage() {
                       : 'Location not shared'}
                 </span>
                 {locationStatus === 'current' && (
-                  <span className="size-1.5 rounded-full bg-[#4D8AFF] animate-pulse" />
+                  <span className="size-1.5 rounded-full bg-[#E0B84C] animate-pulse" />
                 )}
               </div>
             </div>
@@ -415,11 +415,11 @@ export function TechnicianDashboardPage() {
           <div className="flex flex-col items-center gap-2 rounded-2xl bg-white/10 p-4 backdrop-blur-sm sm:min-w-[180px]">
             <div className="flex items-center gap-2">
               {isOnline ? (
-                <Wifi className="size-4 text-[#FFCE32]" />
+                <Wifi className="size-4 text-[#FFD54F]" />
               ) : (
                 <WifiOff className="size-4 text-gray-300" />
               )}
-              <span className={`text-sm font-semibold ${isOnline ? 'text-[#FFCE32]/80' : 'text-gray-300'}`}>
+              <span className={`text-sm font-semibold ${isOnline ? 'text-[#FFD54F]/80' : 'text-gray-300'}`}>
                 {isOnline ? 'Online' : 'Offline'}
               </span>
             </div>
@@ -428,10 +428,10 @@ export function TechnicianDashboardPage() {
                 checked={isOnline}
                 onCheckedChange={handleToggleAvailability}
                 disabled={isTogglingAvailability}
-                className="data-[state=checked]:bg-[#4D8AFF] data-[state=unchecked]:bg-gray-400/50 h-7 w-14 [&>span]:size-6 [&>span]:data-[state=checked]:translate-x-[calc(100%-2px)]"
+                className="data-[state=checked]:bg-[#0A1F44] data-[state=unchecked]:bg-gray-400/50 h-7 w-14 [&>span]:size-6 [&>span]:data-[state=checked]:translate-x-[calc(100%-2px)]"
               />
             </div>
-            <span className="text-xs text-[#FFCE32]/80/70">
+            <span className="text-xs text-[#FFD54F]/80/70">
               {isOnline ? 'Receiving jobs' : 'Not receiving jobs'}
             </span>
           </div>
@@ -467,16 +467,16 @@ export function TechnicianDashboardPage() {
         {/* ── Active Jobs ── */}
         <motion.div className="lg:col-span-2" {...fadeUp}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
+            <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-lg font-semibold">Active Jobs</CardTitle>
                 {activeJobs.length > 0 && (
-                  <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 shadow-sm">
+                  <Badge className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] border-0 shadow-sm">
                     {activeJobs.length} active
                   </Badge>
                 )}
               </div>
-              <Button variant="ghost" size="sm" onClick={() => navigate('technician-jobs')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#FFCE32]/10">
+              <Button variant="ghost" size="sm" onClick={() => navigate('technician-jobs')} className="text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
                 View All <ArrowRight className="ml-1 size-3" />
               </Button>
             </CardHeader>
@@ -489,8 +489,8 @@ export function TechnicianDashboardPage() {
                 </div>
               ) : activeJobs.length === 0 ? (
                 <div className="py-12 text-center">
-                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFCE32]/10">
-                    <CircleDot className="size-8 text-[#FFCE32]" />
+                  <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/10">
+                    <CircleDot className="size-8 text-[#FFD54F]" />
                   </div>
                   <p className="mt-3 font-medium text-muted-foreground">No active jobs</p>
                   <p className="mt-1 text-sm text-muted-foreground/70">
@@ -498,7 +498,7 @@ export function TechnicianDashboardPage() {
                   </p>
                   {!isOnline && (
                     <Button
-                      className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
+                      className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#0A1F44]/25"
                       size="sm"
                       onClick={handleToggleAvailability}
                       disabled={isTogglingAvailability}
@@ -517,7 +517,7 @@ export function TechnicianDashboardPage() {
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.05 }}
-                        className="p-4 transition-colors hover:bg-[#FFCE32]/10/30"
+                        className="p-4 transition-colors hover:bg-[#FFD54F]/10/30"
                       >
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                           <div className="min-w-0 flex-1">
@@ -542,7 +542,7 @@ export function TechnicianDashboardPage() {
                               )}
                             </div>
                             <div className="mt-1 flex items-center gap-2">
-                              <span className="text-sm font-bold text-[#1D63FF]">₹{job.finalPrice?.toLocaleString()}</span>
+                              <span className="text-sm font-bold text-[#FFD54F]">₹{job.finalPrice?.toLocaleString()}</span>
                               {job.technicianEarnings > 0 && (
                                 <span className="text-xs text-muted-foreground">
                                   (Earnings: ₹{job.technicianEarnings.toLocaleString()})
@@ -560,11 +560,11 @@ export function TechnicianDashboardPage() {
                                 return (
                                   <div key={step} className="flex items-center gap-1">
                                     <div className={`size-2 rounded-full transition-all ${
-                                      isDone ? 'bg-[#4D8AFF]'
-                                        : isActive ? 'bg-[#7DB0FF] ring-2 ring-[#FFCE32]/30 animate-pulse'
+                                      isDone ? 'bg-[#E0B84C]'
+                                        : isActive ? 'bg-[#FFD54F] ring-2 ring-[#FFD54F]/30 animate-pulse'
                                           : 'bg-gray-200'
                                     }`} />
-                                    {i < 3 && <div className={`h-0.5 w-4 ${isDone ? 'bg-[#4D8AFF]' : 'bg-gray-200'}`} />}
+                                    {i < 3 && <div className={`h-0.5 w-4 ${isDone ? 'bg-[#E0B84C]' : 'bg-gray-200'}`} />}
                                   </div>
                                 );
                               })}
@@ -588,29 +588,29 @@ export function TechnicianDashboardPage() {
           {/* Availability Card */}
           <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
+              <CardHeader className="bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
                 <CardTitle className="text-lg font-semibold">Availability</CardTitle>
               </CardHeader>
               <CardContent className="p-5">
                 <div className="flex flex-col items-center gap-4">
                   <div className={`relative flex size-24 items-center justify-center rounded-full ${
                     isOnline
-                      ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-lg shadow-[#1D63FF]/30'
+                      ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-lg shadow-[#0A1F44]/30'
                       : 'bg-gradient-to-br from-gray-300 to-gray-400 shadow-lg shadow-gray-400/30'
                   } transition-all duration-500`}>
                     {isOnline ? (
-                      <Wifi className="size-10 text-white" />
+                      <Wifi className="size-10 text-[#0A1F44]" />
                     ) : (
                       <WifiOff className="size-10 text-white" />
                     )}
                     {isOnline && (
-                      <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-[#7DB0FF] shadow-md">
+                      <span className="absolute -right-1 -top-1 flex size-5 items-center justify-center rounded-full bg-[#0A1F44] shadow-md">
                         <span className="size-2 rounded-full bg-white animate-ping" />
                       </span>
                     )}
                   </div>
                   <div className="text-center">
-                    <p className={`text-lg font-bold ${isOnline ? 'text-[#1D63FF]' : 'text-gray-500'}`}>
+                    <p className={`text-lg font-bold ${isOnline ? 'text-[#FFD54F]' : 'text-gray-500'}`}>
                       {isOnline ? 'You are Online' : 'You are Offline'}
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
@@ -620,8 +620,8 @@ export function TechnicianDashboardPage() {
                   <Button
                     className={`w-full font-semibold shadow-lg transition-all ${
                       isOnline
-                        ? 'bg-gradient-to-r from-red-500 to-[#1D63FF] text-white shadow-red-500/25 hover:shadow-xl'
-                        : 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-[#1D63FF]/25 hover:shadow-xl'
+                        ? 'bg-gradient-to-r from-red-500 to-[#FFD54F] text-white shadow-red-500/25 hover:shadow-xl'
+                        : 'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-[#0A1F44]/25 hover:shadow-xl'
                     }`}
                     onClick={handleToggleAvailability}
                     disabled={isTogglingAvailability}
@@ -646,7 +646,7 @@ export function TechnicianDashboardPage() {
           {/* Quick Actions */}
           <motion.div {...fadeUp} transition={{ delay: 0.15 }}>
             <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-              <CardHeader className="bg-gradient-to-r from-[#1D63FF]/10 to-[#1D63FF]/5 pb-3">
+              <CardHeader className="bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
                 <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2.5 p-4">
@@ -656,7 +656,7 @@ export function TechnicianDashboardPage() {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
                     onClick={() => navigate(action.nav)}
-                    className={`flex w-full items-center gap-3 rounded-xl bg-gradient-to-r ${action.gradient} p-3.5 text-white shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
+                    className={`flex w-full items-center gap-3 rounded-xl bg-gradient-to-r ${action.gradient} p-3.5 ${action.textColor} shadow-lg ${action.shadow} transition-shadow hover:shadow-xl`}
                   >
                     <action.icon className="size-5" />
                     <span className="text-sm font-semibold">{action.label}</span>
@@ -672,9 +672,9 @@ export function TechnicianDashboardPage() {
       {/* ── Recent Job History ── */}
       <motion.div {...fadeUp} transition={{ delay: 0.2 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
             <CardTitle className="text-lg font-semibold">Recent Completed Jobs</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('technician-jobs')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#FFCE32]/10">
+            <Button variant="ghost" size="sm" onClick={() => navigate('technician-jobs')} className="text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
               View All <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
@@ -687,8 +687,8 @@ export function TechnicianDashboardPage() {
               </div>
             ) : completedJobs.length === 0 ? (
               <div className="py-10 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFCE32]/10">
-                  <Timer className="size-8 text-[#FFCE32]" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/10">
+                  <Timer className="size-8 text-[#FFD54F]" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No completed jobs yet</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">Your completed jobs will appear here</p>
@@ -703,10 +703,10 @@ export function TechnicianDashboardPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.05 }}
                       onClick={() => navigate('technician-job-detail', { jobId: job.id })}
-                      className="group flex w-full items-center gap-4 p-4 text-left transition-all hover:bg-[#FFCE32]/10/30"
+                      className="group flex w-full items-center gap-4 p-4 text-left transition-all hover:bg-[#FFD54F]/10/30"
                     >
-                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-md shadow-[#1D63FF]/20">
-                        <CheckCircle2 className="size-5 text-white" />
+                      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-md shadow-[#0A1F44]/20">
+                        <CheckCircle2 className="size-5 text-[#0A1F44]" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="truncate text-sm font-semibold">
@@ -722,10 +722,10 @@ export function TechnicianDashboardPage() {
                         </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1">
-                        <span className="text-sm font-bold text-[#1D63FF]">₹{job.finalPrice?.toLocaleString()}</span>
+                        <span className="text-sm font-bold text-[#FFD54F]">₹{job.finalPrice?.toLocaleString()}</span>
                         <StatusBadge status="COMPLETED" />
                       </div>
-                      <ChevronRight className="size-4 text-muted-foreground/50 group-hover:text-[#4D8AFF] transition-colors" />
+                      <ChevronRight className="size-4 text-muted-foreground/50 group-hover:text-[#E0B84C] transition-colors" />
                     </motion.button>
                   ))}
                 </div>
@@ -738,9 +738,9 @@ export function TechnicianDashboardPage() {
       {/* ── Earnings Summary ── */}
       <motion.div {...fadeUp} transition={{ delay: 0.25 }} className="mt-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
+          <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
             <CardTitle className="text-lg font-semibold">Earnings Overview</CardTitle>
-            <Button variant="ghost" size="sm" onClick={() => navigate('technician-earnings')} className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#FFCE32]/10">
+            <Button variant="ghost" size="sm" onClick={() => navigate('technician-earnings')} className="text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/10">
               Details <ArrowRight className="ml-1 size-3" />
             </Button>
           </CardHeader>
@@ -754,9 +754,9 @@ export function TechnicianDashboardPage() {
             ) : (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {[
-                  { label: 'Today', value: `₹${todayEarnings.toLocaleString()}`, gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
-                  { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-[#4D8AFF] to-[#1D63FF]' },
-                  { label: 'This Month', value: `₹${monthEarnings.toLocaleString()}`, gradient: 'from-[#FFCE32] to-[#1D63FF]' },
+                  { label: 'Today', value: `₹${todayEarnings.toLocaleString()}`, gradient: 'from-[#FFD54F] to-[#E0B84C]' },
+                  { label: 'This Week', value: `₹${weekEarnings.toLocaleString()}`, gradient: 'from-[#E0B84C] to-[#FFD54F]' },
+                  { label: 'This Month', value: `₹${monthEarnings.toLocaleString()}`, gradient: 'from-[#FFD54F] to-[#E0B84C]' },
                   { label: 'All Time', value: `₹${totalEarnings.toLocaleString()}`, gradient: 'from-rose-400 to-pink-500' },
                 ].map((item) => (
                   <div key={item.label} className="rounded-xl bg-muted/30 p-4 text-center transition-colors hover:bg-muted/50">
@@ -777,7 +777,7 @@ export function TechnicianDashboardPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <CheckCircle2 className="size-5 text-[#4D8AFF]" />
+              <CheckCircle2 className="size-5 text-[#E0B84C]" />
               Complete Job
             </DialogTitle>
             <DialogDescription>
@@ -785,8 +785,8 @@ export function TechnicianDashboardPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col items-center gap-6 py-4">
-            <div className="rounded-2xl bg-[#FFCE32]/10 p-6 text-center">
-              <p className="text-sm text-[#0D3B7A] font-medium">Enter 4-digit OTP</p>
+            <div className="rounded-2xl bg-[#FFD54F]/10 p-6 text-center">
+              <p className="text-sm text-[#132D5E] font-medium">Enter 4-digit OTP</p>
               <InputOTP
                 maxLength={4}
                 value={otpValue}
@@ -794,13 +794,13 @@ export function TechnicianDashboardPage() {
                 className="mt-4"
               >
                 <InputOTPGroup>
-                  <InputOTPSlot index={0} className="size-12 text-lg font-bold border-[#FFCE32]/30 data-[active=true]:border-[#4D8AFF] data-[active=true]:ring-[#FFCE32]/30/50" />
-                  <InputOTPSlot index={1} className="size-12 text-lg font-bold border-[#FFCE32]/30 data-[active=true]:border-[#4D8AFF] data-[active=true]:ring-[#FFCE32]/30/50" />
+                  <InputOTPSlot index={0} className="size-12 text-lg font-bold border-[#FFD54F]/30 data-[active=true]:border-[#E0B84C] data-[active=true]:ring-[#FFD54F]/30/50" />
+                  <InputOTPSlot index={1} className="size-12 text-lg font-bold border-[#FFD54F]/30 data-[active=true]:border-[#E0B84C] data-[active=true]:ring-[#FFD54F]/30/50" />
                 </InputOTPGroup>
                 <InputOTPSeparator />
                 <InputOTPGroup>
-                  <InputOTPSlot index={2} className="size-12 text-lg font-bold border-[#FFCE32]/30 data-[active=true]:border-[#4D8AFF] data-[active=true]:ring-[#FFCE32]/30/50" />
-                  <InputOTPSlot index={3} className="size-12 text-lg font-bold border-[#FFCE32]/30 data-[active=true]:border-[#4D8AFF] data-[active=true]:ring-[#FFCE32]/30/50" />
+                  <InputOTPSlot index={2} className="size-12 text-lg font-bold border-[#FFD54F]/30 data-[active=true]:border-[#E0B84C] data-[active=true]:ring-[#FFD54F]/30/50" />
+                  <InputOTPSlot index={3} className="size-12 text-lg font-bold border-[#FFD54F]/30 data-[active=true]:border-[#E0B84C] data-[active=true]:ring-[#FFD54F]/30/50" />
                 </InputOTPGroup>
               </InputOTP>
             </div>
@@ -817,7 +817,7 @@ export function TechnicianDashboardPage() {
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25"
+              className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#0A1F44]/25"
               onClick={handleCompleteJob}
               disabled={otpValue.length < 4 || mutationLoading}
             >

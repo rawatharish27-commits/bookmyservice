@@ -69,14 +69,14 @@ interface InvoiceDetail {
 /* ---------- status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; gradient: string; icon: typeof CheckCircle2; label: string }> = {
   PAID: {
-    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
-    gradient: 'from-[#7DB0FF] to-[#4D8AFF]',
+    className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20',
+    gradient: 'from-[#FFD54F] to-[#E0B84C]',
     icon: CheckCircle2,
     label: 'Paid',
   },
   PENDING: {
-    className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20',
-    gradient: 'from-[#FFE066] to-[#4D8AFF]',
+    className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20',
+    gradient: 'from-[#F2C94C] to-[#E0B84C]',
     icon: Clock,
     label: 'Pending',
   },
@@ -121,11 +121,11 @@ export function ClientInvoiceDetailPage() {
     return (
       <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center py-20 text-center">
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
-            <FileText className="size-10 text-[#9DC2FF]" />
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+            <FileText className="size-10 text-[#E0B84C]" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">Invoice not found</h3>
-          <Button className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white" onClick={goBack}>
+          <Button className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44]" onClick={goBack}>
             <ArrowLeft className="mr-2 size-4" /> Go Back
           </Button>
         </div>
@@ -163,7 +163,7 @@ export function ClientInvoiceDetailPage() {
             Print
           </Button>
           <Button
-            className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+            className="rounded-xl bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
             onClick={() => {
               // Placeholder for PDF download
               alert('PDF download will be available soon');
@@ -181,11 +181,11 @@ export function ClientInvoiceDetailPage() {
           {/* Status Banner */}
           <div className={`h-2 bg-gradient-to-r ${statusConf.gradient}`} />
 
-          <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-4">
+          <CardHeader className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 pb-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${statusConf.gradient} shadow-md`}>
-                  <Receipt className="size-6 text-white" />
+                  <Receipt className="size-6 text-[#0A1F44]" />
                 </div>
                 <div>
                   <CardTitle className="text-lg font-bold">{invoice.invoiceNumber}</CardTitle>
@@ -255,8 +255,8 @@ export function ClientInvoiceDetailPage() {
               {/* Billed To */}
               <div className="rounded-xl bg-gray-50/80 p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <User className="size-4 text-[#1D63FF]" />
-                  <span className="text-sm font-semibold text-[#0D3B7A]">Billed To</span>
+                  <User className="size-4 text-[#FFD54F]" />
+                  <span className="text-sm font-semibold text-[#132D5E]">Billed To</span>
                 </div>
                 <p className="text-sm font-bold">{invoice.client.name}</p>
                 {invoice.client.email && (
@@ -278,7 +278,7 @@ export function ClientInvoiceDetailPage() {
                   </div>
                 )}
                 {invoice.client.gstNumber && (
-                  <div className="mt-2 inline-flex items-center gap-1 rounded-md bg-[#1D63FF]/10 px-2 py-0.5 text-xs font-medium text-[#0D3B7A]">
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-md bg-[#FFD54F]/10 px-2 py-0.5 text-xs font-medium text-[#132D5E]">
                     GST: {invoice.client.gstNumber}
                   </div>
                 )}
@@ -287,8 +287,8 @@ export function ClientInvoiceDetailPage() {
               {/* From */}
               <div className="rounded-xl bg-gray-50/80 p-4">
                 <div className="flex items-center gap-2 mb-3">
-                  <Building2 className="size-4 text-[#1D63FF]" />
-                  <span className="text-sm font-semibold text-[#0D3B7A]">From</span>
+                  <Building2 className="size-4 text-[#FFD54F]" />
+                  <span className="text-sm font-semibold text-[#132D5E]">From</span>
                 </div>
                 <p className="text-sm font-bold">{invoice.provider?.name || 'Unknown Provider'}</p>
                 {invoice.provider?.email && (
@@ -310,7 +310,7 @@ export function ClientInvoiceDetailPage() {
                   </div>
                 )}
                 {invoice.provider?.gstNumber && (
-                  <div className="mt-2 inline-flex items-center gap-1 rounded-md bg-[#1D63FF]/10 px-2 py-0.5 text-xs font-medium text-[#0D3B7A]">
+                  <div className="mt-2 inline-flex items-center gap-1 rounded-md bg-[#FFD54F]/10 px-2 py-0.5 text-xs font-medium text-[#132D5E]">
                     GST: {invoice.provider.gstNumber}
                   </div>
                 )}
@@ -325,7 +325,7 @@ export function ClientInvoiceDetailPage() {
               <div className="overflow-x-auto rounded-xl border">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5">
+                    <tr className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5">
                       <th className="px-4 py-3 text-left font-semibold text-muted-foreground">Description</th>
                       <th className="px-4 py-3 text-center font-semibold text-muted-foreground">Qty</th>
                       <th className="px-4 py-3 text-right font-semibold text-muted-foreground">Unit Price</th>
@@ -376,8 +376,8 @@ export function ClientInvoiceDetailPage() {
 
                 {invoice.discount > 0 && (
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#1D63FF]">Discount</span>
-                    <span className="font-medium text-[#1D63FF]">
+                    <span className="text-[#FFD54F]">Discount</span>
+                    <span className="font-medium text-[#FFD54F]">
                       -₹{invoice.discount?.toLocaleString('en-IN')}
                     </span>
                   </div>
@@ -387,7 +387,7 @@ export function ClientInvoiceDetailPage() {
 
                 <div className="flex items-center justify-between">
                   <span className="text-base font-bold">Total</span>
-                  <span className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] bg-clip-text text-xl font-bold text-transparent">
+                  <span className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] bg-clip-text text-xl font-bold text-transparent">
                     ₹{invoice.total?.toLocaleString('en-IN')}
                   </span>
                 </div>
@@ -395,15 +395,15 @@ export function ClientInvoiceDetailPage() {
                 {invoice.paidAmount !== undefined && invoice.paidAmount > 0 && (
                   <>
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-[#1D63FF]">Paid</span>
-                      <span className="font-medium text-[#1D63FF]">
+                      <span className="text-[#FFD54F]">Paid</span>
+                      <span className="font-medium text-[#FFD54F]">
                         ₹{invoice.paidAmount?.toLocaleString('en-IN')}
                       </span>
                     </div>
                     {invoice.total - invoice.paidAmount > 0 && (
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-[#1D63FF]">Balance Due</span>
-                        <span className="font-bold text-[#1D63FF]">
+                        <span className="text-[#FFD54F]">Balance Due</span>
+                        <span className="font-bold text-[#FFD54F]">
                           ₹{(invoice.total - invoice.paidAmount)?.toLocaleString('en-IN')}
                         </span>
                       </div>
@@ -447,7 +447,7 @@ export function ClientInvoiceDetailPage() {
             Print Invoice
           </Button>
           <Button
-            className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+            className="rounded-xl bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
             onClick={() => alert('PDF download will be available soon')}
           >
             <Download className="mr-2 size-4" />

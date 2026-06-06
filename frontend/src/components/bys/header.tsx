@@ -339,29 +339,29 @@ function getInitials(name: string): string {
 }
 
 function getRoleBadgeStyle(roleId: number | undefined): string {
-  if (!roleId) return 'bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF]/50 text-white';
+  if (!roleId) return 'bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-[#FFD54F]';
   switch (roleId) {
     case ROLE_IDS.ADMIN:
       return 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-sm shadow-violet-500/30';
     case ROLE_IDS.SUB_ADMIN:
       return 'bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-sm shadow-indigo-500/30';
     case ROLE_IDS.PROVIDER:
-      return 'bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF]/50 text-white shadow-sm shadow-[#4D8AFF]/30';
+      return 'bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-[#FFD54F] shadow-sm shadow-[#E0B84C]/30';
     case ROLE_IDS.TECHNICIAN:
-      return 'bg-gradient-to-r from-[#1D63FF]/50 to-indigo-500 text-white shadow-sm shadow-[#4D8AFF]/30';
+      return 'bg-gradient-to-r from-[#0A1F44] to-[#E0B84C]/50 text-white shadow-sm shadow-[#E0B84C]/30';
     case ROLE_IDS.VENDOR:
       return 'bg-gradient-to-r from-rose-500 to-pink-500 text-white shadow-sm shadow-rose-500/30';
     case ROLE_IDS.FRANCHISE:
       return 'bg-gradient-to-r from-slate-600 to-zinc-700 text-white shadow-sm shadow-slate-500/30';
     case ROLE_IDS.AREA_MANAGER:
-      return 'bg-gradient-to-r from-[#FFCE32]/50 to-[#FFCE32]/50 text-white shadow-sm shadow-[#4D8AFF]/30';
+      return 'bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-[#FFD54F] shadow-sm shadow-[#E0B84C]/30';
     case ROLE_IDS.MANAGER:
-      return 'bg-gradient-to-r from-[#1D63FF] to-[#FFCE32]/50 text-white shadow-sm shadow-[#4D8AFF]/30';
+      return 'bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-[#FFD54F] shadow-sm shadow-[#E0B84C]/30';
     case ROLE_IDS.LOCAL_ADMIN:
       return 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-sm shadow-orange-500/30';
     case ROLE_IDS.CLIENT:
     default:
-      return 'bg-gradient-to-r from-[#0D3B7A] to-[#4D8AFF]/50 text-white shadow-sm shadow-[#4D8AFF]/30';
+      return 'bg-gradient-to-r from-[#0A1F44] to-[#132D5E] text-[#FFD54F] shadow-sm shadow-[#E0B84C]/30';
   }
 }
 
@@ -390,13 +390,13 @@ function ActiveIndicator() {
       {/* Bottom gradient bar */}
       <motion.div
         layoutId="activeNavIndicator"
-        className="absolute -bottom-[1px] left-3 right-3 h-[2.5px] rounded-full bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#7DB0FF]"
+        className="absolute -bottom-[1px] left-3 right-3 h-[2.5px] rounded-full bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F]"
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
       />
       {/* Subtle glow */}
       <motion.div
         layoutId="activeNavGlow"
-        className="absolute -bottom-1 left-4 right-4 h-3 rounded-full bg-gradient-to-r from-[#7DB0FF]/30 via-[#7DB0FF]/20 to-[#7DB0FF]/30 blur-sm"
+        className="absolute -bottom-1 left-4 right-4 h-3 rounded-full bg-gradient-to-r from-[#FFD54F]/30 via-[#E0B84C]/20 to-[#FFD54F]/30 blur-sm"
         transition={{ type: 'spring', stiffness: 380, damping: 30 }}
       />
     </>
@@ -409,8 +409,8 @@ function NotificationBadge({ count }: { count: number }) {
   if (count <= 0) return null;
   return (
     <span className="relative flex items-center justify-center">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-[#7DB0FF] via-[#1D63FF]/50 to-[#7DB0FF] opacity-60" />
-      <span className="relative flex size-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF]/50 text-[9px] font-bold text-white shadow-md shadow-[#4D8AFF]/40 ring-[1.5px] ring-white/30">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-gradient-to-r from-[#FFD54F] via-[#E0B84C]/50 to-[#FFD54F] opacity-60" />
+      <span className="relative flex size-[18px] min-w-[18px] items-center justify-center rounded-full bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#E0B84C]/50 text-[9px] font-bold text-[#FFD54F] shadow-md shadow-[#E0B84C]/40 ring-[1.5px] ring-white/30">
         {count > 9 ? '9+' : count}
       </span>
     </span>
@@ -422,7 +422,7 @@ function NotificationBadge({ count }: { count: number }) {
 function VerifiedBadge() {
   return (
     <span className="inline-flex items-center" title="Verified account">
-      <CheckCircle2 className="size-3.5 fill-[#1D63FF]/50 text-white" />
+      <CheckCircle2 className="size-3.5 fill-[#0A1F44]/50 text-white" />
     </span>
   );
 }
@@ -555,7 +555,7 @@ export function Header() {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-500 relative ${
         scrolled
-          ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-[#1D63FF]/10'
+          ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-black/[0.04] border-b border-[#FFD54F]/10'
           : 'bg-white/60 backdrop-blur-md border-b border-transparent'
       }`}
     >
@@ -564,7 +564,7 @@ export function Header() {
         <motion.div
           initial={{ opacity: 0, scaleX: 0.8 }}
           animate={{ opacity: 1, scaleX: 1 }}
-          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#1D63FF]/60 to-transparent"
+          className="absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFD54F]/60 to-transparent"
         />
       )}
 
@@ -577,13 +577,13 @@ export function Header() {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
         >
-          <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#7DB0FF] shadow-lg shadow-[#4D8AFF]/30 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-[#7DB0FF]/40">
+          <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] shadow-lg shadow-[#E0B84C]/30 transition-shadow duration-300 group-hover:shadow-xl group-hover:shadow-[#FFD54F]/40">
             <Wrench className="size-[18px] text-white drop-shadow-sm" />
             <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/30 via-white/5 to-transparent" />
-            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-[#7DB0FF]/20 to-[#7DB0FF]/20 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+            <div className="absolute -inset-0.5 rounded-xl bg-gradient-to-br from-[#FFD54F]/20 to-[#E0B84C]/20 blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
           </div>
           <span className="text-2xl font-black tracking-tight">
-            <span className="bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 bg-clip-text text-transparent">BookYour</span>
+            <span className="bg-gradient-to-r from-[#0A1F44] via-[#FFD54F] to-[#E0B84C]/50 bg-clip-text text-transparent">BookYour</span>
             <span className="text-foreground">Service</span>
           </span>
         </motion.button>
@@ -602,14 +602,14 @@ export function Header() {
                 onClick={() => handleNavigate(link.page)}
                 className={`relative inline-flex items-center gap-1.5 rounded-xl px-4 py-2.5 text-[15px] font-semibold transition-all duration-300 ${
                   active
-                    ? 'bg-[#1D63FF]/5 text-[#1D63FF]'
-                    : 'text-muted-foreground hover:bg-[#1D63FF]/3 hover:text-foreground'
+                    ? 'bg-[#FFD54F]/5 text-[#FFD54F]'
+                    : 'text-muted-foreground hover:bg-[#FFD54F]/3 hover:text-foreground'
                 }`}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
               >
                 {active && <ActiveIndicator />}
-                <span className={`transition-colors duration-200 ${active ? 'text-[#1D63FF]' : ''}`}>
+                <span className={`transition-colors duration-200 ${active ? 'text-[#FFD54F]' : ''}`}>
                   {link.icon}
                 </span>
                 {link.label}
@@ -627,7 +627,7 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <motion.button
-                  className="relative inline-flex items-center gap-1 rounded-xl px-3 py-2.5 text-[15px] font-semibold text-muted-foreground transition-all hover:bg-[#1D63FF]/3 hover:text-foreground"
+                  className="relative inline-flex items-center gap-1 rounded-xl px-3 py-2.5 text-[15px] font-semibold text-muted-foreground transition-all hover:bg-[#FFD54F]/3 hover:text-foreground"
                   whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                 >
@@ -635,12 +635,12 @@ export function Header() {
                   More
                 </motion.button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5 shadow-xl shadow-black/10 border-[#1D63FF]/10">
+              <DropdownMenuContent align="end" className="w-52 rounded-xl p-1.5 shadow-xl shadow-black/10 border-[#FFD54F]/10">
                 {overflowLinks.map((link) => (
                   <DropdownMenuItem
                     key={link.page}
                     onClick={() => handleNavigate(link.page)}
-                    className="cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#1D63FF]/5 focus:text-[#1D63FF]"
+                    className="cursor-pointer rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#FFD54F]/5 focus:text-[#FFD54F]"
                   >
                     <span className="mr-2.5 text-muted-foreground">{link.icon}</span>
                     {link.label}
@@ -666,9 +666,9 @@ export function Header() {
             >
               <button
                 onClick={() => handleNavigate(getWalletPage()!)}
-                className="hidden items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#1D63FF]/5 to-[#4D8AFF]/5 px-3 py-1.5 text-xs font-semibold text-[#1D63FF] transition-all duration-300 hover:from-[#1D63FF]/10 hover:to-[#4D8AFF]/10 hover:shadow-md hover:shadow-[#4D8AFF]/10 lg:inline-flex ring-1 ring-inset ring-[#1D63FF]/15 hover:ring-[#1D63FF]/30"
+                className="hidden items-center gap-1.5 rounded-xl bg-gradient-to-r from-[#FFD54F]/5 to-[#E0B84C]/5 px-3 py-1.5 text-xs font-semibold text-[#FFD54F] transition-all duration-300 hover:from-[#FFD54F]/10 hover:to-[#E0B84C]/10 hover:shadow-md hover:shadow-[#E0B84C]/10 lg:inline-flex ring-1 ring-inset ring-[#FFD54F]/15 hover:ring-[#FFD54F]/30"
               >
-                <Wallet className="size-3.5 text-[#1D63FF]" />
+                <Wallet className="size-3.5 text-[#FFD54F]" />
                 <span>₹{user!.walletBalance!.toLocaleString('en-IN')}</span>
               </button>
             </motion.div>
@@ -685,7 +685,7 @@ export function Header() {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="relative hidden h-9 w-9 rounded-xl text-muted-foreground transition-all duration-200 hover:bg-[#1D63FF]/5 hover:text-[#1D63FF] lg:inline-flex"
+                    className="relative hidden h-9 w-9 rounded-xl text-muted-foreground transition-all duration-200 hover:bg-[#FFD54F]/5 hover:text-[#FFD54F] lg:inline-flex"
                     onClick={() => handleNavigate(getNotificationPage())}
                     aria-label={`Notifications${effectiveUnreadCount > 0 ? `, ${effectiveUnreadCount} unread` : ''}`}
                   >
@@ -703,18 +703,18 @@ export function Header() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <motion.button
-                    className="hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition-all duration-200 hover:bg-[#1D63FF]/5 lg:inline-flex"
+                    className="hidden items-center gap-2.5 rounded-xl px-2.5 py-1.5 transition-all duration-200 hover:bg-[#FFD54F]/5 lg:inline-flex"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     aria-label="User menu"
                   >
                     {/* Avatar with gradient ring */}
-                    <div className="rounded-full bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#7DB0FF] p-[2.5px] transition-all duration-300 hover:shadow-lg hover:shadow-[#7DB0FF]/30">
+                    <div className="rounded-full bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-[2.5px] transition-all duration-300 hover:shadow-lg hover:shadow-[#FFD54F]/30">
                       <Avatar className="size-8 ring-2 ring-white ring-offset-0">
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 text-xs font-bold text-white" role="img" aria-label={user.name}>
+                        <AvatarFallback className="bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44] text-xs font-bold text-[#FFD54F]" role="img" aria-label={user.name}>
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -726,17 +726,17 @@ export function Header() {
                   </motion.button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-64 overflow-hidden rounded-2xl p-1.5 shadow-xl shadow-black/10 border-[#1D63FF]/10"
+                  className="w-64 overflow-hidden rounded-2xl p-1.5 shadow-xl shadow-black/10 border-[#FFD54F]/10"
                   align="end"
                 >
                   <DropdownMenuLabel className="font-normal px-2 py-3.5">
                     <div className="flex items-center gap-3">
-                      <div className="rounded-full bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#7DB0FF] p-[2.5px]">
+                      <div className="rounded-full bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-[2.5px]">
                         <Avatar className="size-11 ring-2 ring-white">
                           {user.profileImageUrl && (
                             <AvatarImage src={user.profileImageUrl} alt={user.name} />
                           )}
-                          <AvatarFallback className="bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 text-sm font-bold text-white" role="img" aria-label={user.name}>
+                          <AvatarFallback className="bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44] text-sm font-bold text-[#FFD54F]" role="img" aria-label={user.name}>
                             {getInitials(user.name)}
                           </AvatarFallback>
                         </Avatar>
@@ -754,7 +754,7 @@ export function Header() {
                             {getRoleLabel(roleId)}
                           </Badge>
                           {user.walletBalance !== undefined && user.walletBalance !== null && (
-                            <span className="flex items-center gap-1 text-[10px] font-semibold text-[#1D63FF]">
+                            <span className="flex items-center gap-1 text-[10px] font-semibold text-[#FFD54F]">
                               <Wallet className="size-3" />
                               ₹{user.walletBalance.toLocaleString('en-IN')}
                             </span>
@@ -763,28 +763,28 @@ export function Header() {
                       </div>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="my-1 bg-[#1D63FF]/5" />
+                  <DropdownMenuSeparator className="my-1 bg-[#FFD54F]/5" />
                   <DropdownMenuGroup>
                     {dropdownLinks.map((link) => (
                       <DropdownMenuItem
                         key={link.page}
                         onClick={() => handleNavigate(link.page)}
-                        className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#1D63FF]/5 focus:text-[#1D63FF]"
+                        className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#FFD54F]/5 focus:text-[#FFD54F]"
                       >
                         <span className="mr-2.5 text-muted-foreground">{link.icon}</span>
                         {link.label}
                       </DropdownMenuItem>
                     ))}
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator className="my-1 bg-[#1D63FF]/5" />
+                  <DropdownMenuSeparator className="my-1 bg-[#FFD54F]/5" />
                   <DropdownMenuItem
                     onClick={() => setChangePasswordOpen(true)}
-                    className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#1D63FF]/5 focus:text-[#1D63FF]"
+                    className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus:bg-[#FFD54F]/5 focus:text-[#FFD54F]"
                   >
                     <KeyRound className="mr-2.5 size-4" />
                     Change Password
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="my-1 bg-[#1D63FF]/5" />
+                  <DropdownMenuSeparator className="my-1 bg-[#FFD54F]/5" />
                   <DropdownMenuItem
                     onClick={logout}
                     className="cursor-pointer rounded-xl px-3 py-2.5 text-sm font-medium text-destructive transition-all duration-200 focus:bg-red-50 focus:text-destructive"
@@ -813,7 +813,7 @@ export function Header() {
                   variant="ghost"
                   size="sm"
                   onClick={() => handleNavigate('login')}
-                  className="gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-[#1D63FF] transition-all duration-300 hover:bg-[#1D63FF]/5 hover:text-[#1D63FF]"
+                  className="gap-1.5 rounded-xl px-4 py-2 text-sm font-semibold text-[#FFD54F] transition-all duration-300 hover:bg-[#FFD54F]/5 hover:text-[#FFD54F]"
                 >
                   <LogIn className="size-4" />
                   Login
@@ -823,7 +823,7 @@ export function Header() {
                 <Button
                   size="sm"
                   onClick={() => handleNavigate('register')}
-                  className="gap-1.5 rounded-xl bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-[#4D8AFF]/25 transition-all duration-300 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] hover:shadow-xl hover:shadow-[#4D8AFF]/35"
+                  className="gap-1.5 rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] px-4 py-2 text-sm font-semibold text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25 transition-all duration-300 hover:from-[#E0B84C] hover:to-[#FFD54F] hover:shadow-xl hover:shadow-[#FFD54F]/35"
                 >
                   <UserPlus className="size-4" />
                   Sign up
@@ -838,7 +838,7 @@ export function Header() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 rounded-xl text-muted-foreground transition-colors hover:bg-[#1D63FF]/5 hover:text-[#1D63FF] lg:hidden"
+                className="h-9 w-9 rounded-xl text-muted-foreground transition-colors hover:bg-[#FFD54F]/5 hover:text-[#FFD54F] lg:hidden"
                 aria-label="Open menu"
               >
                 <Menu className="size-5" />
@@ -846,17 +846,17 @@ export function Header() {
             </SheetTrigger>
             <SheetContent
               side="right"
-              className="w-[340px] overflow-y-auto border-l border-[#1D63FF]/15 p-0 shadow-2xl shadow-[#0A2463]/10 bg-gradient-to-b from-[#1D63FF]/5 via-white/80 to-[#4D8AFF]/5 backdrop-blur-xl"
+              className="w-[340px] overflow-y-auto border-l border-[#FFD54F]/15 p-0 shadow-2xl shadow-[#0A1F44]/10 bg-gradient-to-b from-[#FFD54F]/5 via-white/80 to-[#E0B84C]/5 backdrop-blur-xl"
             >
               {/* ── Mobile Header ────────────────────────────────────────── */}
-              <SheetHeader className="border-b border-[#1D63FF]/20 px-6 py-5 bg-gradient-to-r from-[#1D63FF]/5 via-white/40 to-[#4D8AFF]/5">
+              <SheetHeader className="border-b border-[#FFD54F]/20 px-6 py-5 bg-gradient-to-r from-[#FFD54F]/5 via-white/40 to-[#E0B84C]/5">
                 <SheetTitle className="flex items-center gap-2.5">
-                  <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#7DB0FF] shadow-lg shadow-[#4D8AFF]/30">
+                  <div className="relative flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] shadow-lg shadow-[#E0B84C]/30">
                     <Wrench className="size-[18px] text-white" />
                     <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/25 via-white/5 to-transparent" />
                   </div>
                   <span className="text-2xl font-black tracking-tight">
-                    <span className="bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 bg-clip-text text-transparent">BookYour</span>
+                    <span className="bg-gradient-to-r from-[#0A1F44] via-[#FFD54F] to-[#E0B84C]/50 bg-clip-text text-transparent">BookYour</span>
                     <span className="text-foreground">Service</span>
                   </span>
                 </SheetTitle>
@@ -864,15 +864,15 @@ export function Header() {
 
               {/* ── Mobile User Info ─────────────────────────────────────── */}
               {user && (
-                <div className="border-b border-[#1D63FF]/20 px-6 py-5 bg-gradient-to-r from-[#1D63FF]/3 via-white/20 to-[#4D8AFF]/3">
+                <div className="border-b border-[#FFD54F]/20 px-6 py-5 bg-gradient-to-r from-[#FFD54F]/3 via-white/20 to-[#E0B84C]/3">
                   <div className="flex items-center gap-3.5">
                     {/* Avatar with premium gradient ring */}
-                    <div className="rounded-full bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#7DB0FF] p-[2.5px] shadow-md shadow-[#7DB0FF]/20">
+                    <div className="rounded-full bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-[2.5px] shadow-md shadow-[#FFD54F]/20">
                       <Avatar className="size-12 ring-2 ring-white">
                         {user.profileImageUrl && (
                           <AvatarImage src={user.profileImageUrl} alt={user.name} />
                         )}
-                        <AvatarFallback className="bg-gradient-to-br from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 text-sm font-bold text-white" role="img" aria-label={user.name}>
+                        <AvatarFallback className="bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#0A1F44] text-sm font-bold text-[#FFD54F]" role="img" aria-label={user.name}>
                           {getInitials(user.name)}
                         </AvatarFallback>
                       </Avatar>
@@ -890,7 +890,7 @@ export function Header() {
                           {getRoleLabel(roleId)}
                         </Badge>
                         {user.walletBalance !== undefined && user.walletBalance !== null && (
-                          <span className="flex items-center gap-1 text-[10px] font-semibold text-[#1D63FF]">
+                          <span className="flex items-center gap-1 text-[10px] font-semibold text-[#FFD54F]">
                             <Wallet className="size-3" />
                             ₹{user.walletBalance.toLocaleString('en-IN')}
                           </span>
@@ -927,8 +927,8 @@ export function Header() {
                         onClick={() => handleNavigate(link.page)}
                         className={`flex items-center gap-3 rounded-xl px-4 py-3 text-[15px] font-semibold transition-all duration-300 ${
                           active
-                            ? 'bg-gradient-to-r from-[#1D63FF]/5 via-[#4D8AFF]/5 to-[#1D63FF]/5 text-[#1D63FF] shadow-sm shadow-[#4D8AFF]/10 ring-1 ring-[#1D63FF]/20'
-                            : 'text-muted-foreground hover:bg-gradient-to-r hover:from-[#1D63FF]/5 hover:to-[#4D8AFF]/3 hover:text-foreground'
+                            ? 'bg-gradient-to-r from-[#FFD54F]/5 via-[#E0B84C]/5 to-[#FFD54F]/5 text-[#FFD54F] shadow-sm shadow-[#E0B84C]/10 ring-1 ring-[#FFD54F]/20'
+                            : 'text-muted-foreground hover:bg-gradient-to-r hover:from-[#FFD54F]/5 hover:to-[#E0B84C]/3 hover:text-foreground'
                         }`}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -936,7 +936,7 @@ export function Header() {
                       >
                         <span className={`flex size-8 items-center justify-center rounded-lg transition-all duration-200 ${
                           active
-                            ? 'bg-[#1D63FF]/10 text-[#1D63FF]'
+                            ? 'bg-[#FFD54F]/10 text-[#FFD54F]'
                             : 'text-muted-foreground'
                         }`}>
                           {link.icon}
@@ -954,11 +954,11 @@ export function Header() {
               </nav>
 
               {/* ── Mobile Footer ────────────────────────────────────────── */}
-              <div className="border-t border-[#1D63FF]/10 px-6 py-4">
+              <div className="border-t border-[#FFD54F]/10 px-6 py-4">
                 {!user && (
                   <div className="flex flex-col gap-2.5">
                     <Button
-                      className="w-full gap-2 bg-gradient-to-r from-[#0A2463] via-[#1D63FF] to-[#4D8AFF]/50 text-white shadow-lg shadow-[#4D8AFF]/20 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF]"
+                      className="w-full gap-2 bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/20 hover:from-[#E0B84C] hover:to-[#FFD54F]"
                       onClick={() => { handleNavigate('register'); setMobileOpen(false); }}
                     >
                       <UserPlus className="size-4" />
@@ -966,7 +966,7 @@ export function Header() {
                     </Button>
                     <Button
                       variant="outline"
-                      className="w-full gap-2 border-[#1D63FF]/20 text-[#1D63FF] hover:bg-[#1D63FF]/5"
+                      className="w-full gap-2 border-[#FFD54F]/20 text-[#FFD54F] hover:bg-[#FFD54F]/5"
                       onClick={() => { handleNavigate('login'); setMobileOpen(false); }}
                     >
                       <LogIn className="size-4" />

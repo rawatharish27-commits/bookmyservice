@@ -333,7 +333,7 @@ export function ProviderCreateServicePage() {
         {/* Submit */}
         <div className="flex gap-3">
           <Button
-            className="bg-[#1D63FF] text-white hover:bg-[#0D3B7A]"
+            className="bg-[#FFD54F] text-[#0A1F44] hover:bg-[#132D5E] hover:text-white"
             onClick={handleSubmit}
             disabled={loading}
           >

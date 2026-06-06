@@ -91,13 +91,13 @@ interface FollowUpsResponse {
 
 function ActivityTypeIcon({ type }: { type: string }) {
   const iconMap: Record<string, React.ReactNode> = {
-    CALL: <PhoneCall className="size-4 text-[#1D63FF]" />,
-    EMAIL: <Mail className="size-4 text-[#1D63FF]" />,
-    MEETING: <Video className="size-4 text-[#FFCE32]" />,
-    CHAT: <MessageSquare className="size-4 text-[#1D63FF]" />,
+    CALL: <PhoneCall className="size-4 text-[#FFD54F]" />,
+    EMAIL: <Mail className="size-4 text-[#FFD54F]" />,
+    MEETING: <Video className="size-4 text-[#FFD54F]" />,
+    CHAT: <MessageSquare className="size-4 text-[#FFD54F]" />,
   };
   return (
-    <div className="flex size-8 items-center justify-center rounded-lg bg-[#1D63FF]/5">
+    <div className="flex size-8 items-center justify-center rounded-lg bg-[#FFD54F]/5">
       {iconMap[type] || <UserCircle className="size-4 text-gray-600" />}
     </div>
   );
@@ -105,10 +105,10 @@ function ActivityTypeIcon({ type }: { type: string }) {
 
 function ActivityTypeBadge({ type }: { type: string }) {
   const colors: Record<string, string> = {
-    CALL: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
-    EMAIL: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
-    MEETING: 'bg-[#FFCE32]/10 text-[#B89E00] border-[#FFCE32]/20',
-    CHAT: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+    CALL: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
+    EMAIL: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
+    MEETING: 'bg-[#FFD54F]/10 text-[#B89E00] border-[#FFD54F]/20',
+    CHAT: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
   };
   return (
     <Badge variant="outline" className={colors[type] || 'bg-gray-100 text-gray-800'}>
@@ -119,8 +119,8 @@ function ActivityTypeBadge({ type }: { type: string }) {
 
 function ActivityStatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
-    COMPLETED: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
-    SCHEDULED: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
+    COMPLETED: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
+    SCHEDULED: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
   };
@@ -134,8 +134,8 @@ function ActivityStatusBadge({ status }: { status: string }) {
 function PriorityBadge({ priority }: { priority: string }) {
   const colors: Record<string, string> = {
     HIGH: 'bg-red-100 text-red-800 border-red-200',
-    MEDIUM: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
-    LOW: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+    MEDIUM: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
+    LOW: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
     URGENT: 'bg-red-200 text-red-900 border-red-300',
   };
   const icons: Record<string, React.ReactNode> = {
@@ -155,21 +155,21 @@ function PriorityBadge({ priority }: { priority: string }) {
 function FollowUpStatusIcon({ status }: { status: string }) {
   switch (status) {
     case 'COMPLETED':
-      return <CheckCircle2 className="size-4 text-[#1D63FF]" />;
+      return <CheckCircle2 className="size-4 text-[#FFD54F]" />;
     case 'CANCELLED':
       return <XCircle className="size-4 text-red-500" />;
     case 'OVERDUE':
       return <AlertCircle className="size-4 text-red-600" />;
     default:
-      return <Clock className="size-4 text-[#1D63FF]" />;
+      return <Clock className="size-4 text-[#FFD54F]" />;
   }
 }
 
 function FollowUpStatusBadge({ status }: { status: string }) {
   const colors: Record<string, string> = {
     PENDING: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-    IN_PROGRESS: 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/20',
-    COMPLETED: 'bg-[#1D63FF]/10 text-[#0A2463] border-[#1D63FF]/20',
+    IN_PROGRESS: 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/20',
+    COMPLETED: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
     CANCELLED: 'bg-red-100 text-red-800 border-red-200',
     OVERDUE: 'bg-red-200 text-red-900 border-red-300',
   };
@@ -253,7 +253,7 @@ export function AdminCrmPage() {
         className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
             <Users className="h-5 w-5 text-white" />
           </div>
           <div>
@@ -264,7 +264,7 @@ export function AdminCrmPage() {
           </div>
         </div>
         <Button
-          className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white hover:from-[#0D3B7A] hover:to-[#0D3B7A] shadow-md"
+          className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] hover:from-[#132D5E] hover:to-[#132D5E] shadow-md"
           onClick={() => setCreateOpen(true)}
         >
           <Plus className="mr-2 size-4" />
@@ -279,22 +279,22 @@ export function AdminCrmPage() {
         transition={{ duration: 0.4, delay: 0.1 }}
         className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4"
       >
-        <Card className="border-l-4 border-l-[#4D8AFF]">
+        <Card className="border-l-4 border-l-[#E0B84C]">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Total Activities</p>
-            <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{activities.length}</p>
+            <p className="mt-1 text-2xl font-bold text-[#132D5E]">{activities.length}</p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[#4D8AFF]">
+        <Card className="border-l-4 border-l-[#E0B84C]">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Follow-ups</p>
-            <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{followUps.length}</p>
+            <p className="mt-1 text-2xl font-bold text-[#132D5E]">{followUps.length}</p>
           </CardContent>
         </Card>
-        <Card className="border-l-4 border-l-[#1D63FF]">
+        <Card className="border-l-4 border-l-[#FFD54F]">
           <CardContent className="p-4">
             <p className="text-xs text-muted-foreground">Pending</p>
-            <p className="mt-1 text-2xl font-bold text-[#0D3B7A]">{pendingFollowUps}</p>
+            <p className="mt-1 text-2xl font-bold text-[#132D5E]">{pendingFollowUps}</p>
           </CardContent>
         </Card>
         <Card className="border-l-4 border-l-red-500">
@@ -328,7 +328,7 @@ export function AdminCrmPage() {
             <Card>
               <CardHeader className="pb-2">
                 <CardTitle className="flex items-center gap-2 text-base">
-                  <UserCircle className="size-4 text-[#1D63FF]" />
+                  <UserCircle className="size-4 text-[#FFD54F]" />
                   Activity Log
                 </CardTitle>
               </CardHeader>
@@ -390,13 +390,13 @@ export function AdminCrmPage() {
               <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                   <CardTitle className="flex items-center gap-2 text-base">
-                    <Target className="size-4 text-[#1D63FF]" />
+                    <Target className="size-4 text-[#FFD54F]" />
                     Follow-ups
                   </CardTitle>
                   <Button
                     variant="outline"
                     size="sm"
-                    className="border-[#1D63FF]/20 text-[#0D3B7A] hover:bg-[#1D63FF]/5"
+                    className="border-[#FFD54F]/20 text-[#132D5E] hover:bg-[#FFD54F]/5"
                     onClick={() => setCreateOpen(true)}
                   >
                     <Plus className="mr-1 size-3" /> New
@@ -490,8 +490,8 @@ export function AdminCrmPage() {
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF]">
-                <Plus className="size-4 text-white" />
+              <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#E0B84C] to-[#FFD54F]">
+                <Plus className="size-4 text-[#0A1F44]" />
               </div>
               Create Follow-up
             </DialogTitle>
@@ -584,7 +584,7 @@ export function AdminCrmPage() {
               Cancel
             </Button>
             <Button
-              className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white hover:from-[#0D3B7A] hover:to-[#0D3B7A]"
+              className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] hover:from-[#132D5E] hover:to-[#132D5E]"
               onClick={handleCreateFollowUp}
               disabled={creating || !formData.userId || !formData.title || !formData.dueDate}
             >

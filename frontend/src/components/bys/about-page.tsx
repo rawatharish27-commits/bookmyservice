@@ -33,10 +33,10 @@ import {
 } from 'lucide-react';
 
 const teamMembers = [
-  { name: 'Anil Verma', role: 'Founder & CEO', initials: 'AV', color: 'from-[#0D3B7A] to-[#1D63FF]' },
-  { name: 'Sneha Patel', role: 'Chief Technology Officer', initials: 'SP', color: 'from-[#1D63FF] to-[#FFCE32]' },
-  { name: 'Rahul Singh', role: 'Head of Operations', initials: 'RS', color: 'from-[#0D3B7A] to-[#4D8AFF]' },
-  { name: 'Meera Joshi', role: 'Customer Experience Lead', initials: 'MJ', color: 'from-[#E6B800] to-[#1D63FF]' },
+  { name: 'Anil Verma', role: 'Founder & CEO', initials: 'AV', color: 'from-[#132D5E] to-[#FFD54F]' },
+  { name: 'Sneha Patel', role: 'Chief Technology Officer', initials: 'SP', color: 'from-[#0A1F44] to-[#132D5E]' },
+  { name: 'Rahul Singh', role: 'Head of Operations', initials: 'RS', color: 'from-[#132D5E] to-[#E0B84C]' },
+  { name: 'Meera Joshi', role: 'Customer Experience Lead', initials: 'MJ', color: 'from-[#FFD54F] to-[#0A1F44]' },
 ];
 
 const values = [
@@ -44,15 +44,15 @@ const values = [
     icon: <Shield className="size-6" />,
     title: 'Trust & Safety',
     description: 'Every provider is KYC-verified and background-checked to ensure your safety and peace of mind.',
-    gradient: 'from-[#1D63FF] to-[#1D63FF]',
-    bg: 'bg-[#FFCE32]/5',
+    gradient: 'from-[#0A1F44] to-[#FFD54F]',
+    bg: 'bg-[#FFD54F]/5',
   },
   {
     icon: <Star className="size-6" />,
     title: 'Quality First',
     description: 'We maintain high standards through reviews, ratings, and continuous quality monitoring.',
-    gradient: 'from-[#1D63FF] to-[#1D63FF]',
-    bg: 'bg-[#4D8AFF]/5',
+    gradient: 'from-[#0A1F44] to-[#E0B84C]',
+    bg: 'bg-[#E0B84C]/5',
   },
   {
     icon: <Heart className="size-6" />,
@@ -72,15 +72,15 @@ const values = [
     icon: <Users className="size-6" />,
     title: 'Community',
     description: 'We build connections between customers and service providers, creating lasting relationships.',
-    gradient: 'from-[#1D63FF] to-[#FFCE32]',
-    bg: 'bg-[#4D8AFF]/5',
+    gradient: 'from-[#FFD54F] to-[#0A1F44]',
+    bg: 'bg-[#E0B84C]/5',
   },
   {
     icon: <Wrench className="size-6" />,
     title: 'Empowerment',
     description: 'We empower service professionals to grow their business and reach new customers.',
-    gradient: 'from-[#1D63FF] to-[#1D63FF]',
-    bg: 'bg-[#FFCE32]/5',
+    gradient: 'from-[#E0B84C] to-[#0A1F44]',
+    bg: 'bg-[#FFD54F]/5',
   },
 ];
 
@@ -157,7 +157,7 @@ export function AboutPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-16 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#E6B800] p-10 sm:p-16"
+        className="relative mb-16 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-10 sm:p-16"
       >
         {/* Decorative elements */}
         <div className="pointer-events-none absolute inset-0">
@@ -193,7 +193,7 @@ export function AboutPage() {
           <h1 className="mb-3 text-4xl font-bold text-white sm:text-5xl">
             About <span className="text-white/80">BookYourService</span>
           </h1>
-          <p className="mx-auto max-w-2xl text-lg text-[#4D8AFF]/60">
+          <p className="mx-auto max-w-2xl text-lg text-[#E0B84C]/60">
             We are on a mission to make professional home services accessible, reliable, and
             hassle-free for everyone across India.
           </p>
@@ -207,14 +207,14 @@ export function AboutPage() {
             icon: <Target className="size-7" />,
             title: 'Our Mission',
             description: 'To connect every household with trusted, verified service professionals while empowering providers to build thriving businesses. We believe everyone deserves access to quality home services at fair prices.',
-            gradient: 'from-[#1D63FF] to-[#1D63FF]',
+            gradient: 'from-[#0A1F44] to-[#FFD54F]',
             accent: 'emerald',
           },
           {
             icon: <Eye className="size-7" />,
             title: 'Our Vision',
             description: 'To become the most trusted marketplace for home services globally, where quality meets convenience. We envision a world where finding a reliable service professional is as easy as a few taps on your phone.',
-            gradient: 'from-[#1D63FF] to-[#FFCE32]',
+            gradient: 'from-[#FFD54F] to-[#0A1F44]',
             accent: 'teal',
           },
         ].map((item, idx) => (
@@ -235,7 +235,7 @@ export function AboutPage() {
                 <p className="mt-3 leading-relaxed text-muted-foreground">
                   {item.description}
                 </p>
-                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-[#0D3B7A] opacity-0 transition-opacity group-hover:opacity-100">
+                <div className="mt-5 flex items-center gap-2 text-sm font-medium text-[#132D5E] opacity-0 transition-opacity group-hover:opacity-100">
                   Learn more <ArrowRight className="size-4" />
                 </div>
               </CardContent>
@@ -250,7 +250,7 @@ export function AboutPage() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.6 }}
-        className="mb-16 rounded-3xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#E6B800] p-8 sm:p-12"
+        className="mb-16 rounded-3xl bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-8 sm:p-12"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-3xl">
           <div className="absolute inset-0 opacity-10" style={{
@@ -345,7 +345,7 @@ export function AboutPage() {
             >
               <Card className="group overflow-hidden rounded-2xl border-0 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <CardContent className="p-6 text-center">
-                  <Avatar className="mx-auto size-20 ring-4 ring-[#1D63FF]/30/60 transition-all group-hover:ring-[#7DB0FF]/80">
+                  <Avatar className="mx-auto size-20 ring-4 ring-[#FFD54F]/30/60 transition-all group-hover:ring-[#FFD54F]/80">
                     <AvatarFallback className={`bg-gradient-to-br ${member.color} text-lg font-bold text-white`}>
                       {member.initials}
                     </AvatarFallback>
@@ -387,7 +387,7 @@ export function AboutPage() {
               transition={{ delay: idx * 0.08, duration: 0.3 }}
               className="glass-emerald rounded-2xl p-5 text-center shadow-md transition-all hover:shadow-lg hover:-translate-y-0.5"
             >
-              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] text-white">
+              <div className="mx-auto mb-3 flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] text-white">
                 {item.icon}
               </div>
               <h4 className="font-semibold text-gray-900">{item.title}</h4>
@@ -407,8 +407,8 @@ export function AboutPage() {
         <div className="relative overflow-hidden rounded-3xl bg-white p-10 text-center sm:p-14">
           {/* Decorative */}
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute -right-16 -top-16 size-48 rounded-full bg-[#FFCE32]/5/50" />
-            <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-[#FFCE32]/5/50" />
+            <div className="absolute -right-16 -top-16 size-48 rounded-full bg-[#FFD54F]/5/50" />
+            <div className="absolute -bottom-16 -left-16 size-48 rounded-full bg-[#FFD54F]/5/50" />
           </div>
           <div className="relative">
             <h2 className="text-3xl font-bold text-gray-900">
@@ -421,7 +421,7 @@ export function AboutPage() {
               <Button
                 size="lg"
                 onClick={() => navigate('categories')}
-                className="shimmer rounded-xl bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] px-8 text-white shadow-lg shadow-[#1D63FF]/25 hover:from-[#0D3B7A] hover:to-[#0D3B7A]"
+                className="shimmer rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] px-8 text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 hover:from-[#E0B84C] hover:to-[#FFD54F]"
               >
                 Find Services <ArrowRight className="ml-2 size-4" />
               </Button>
@@ -429,7 +429,7 @@ export function AboutPage() {
                 size="lg"
                 variant="outline"
                 onClick={() => navigate('contact')}
-                className="rounded-xl border-[#7DB0FF] px-8 text-[#0D3B7A] hover:bg-[#FFCE32]/5"
+                className="rounded-xl border-[#FFD54F] px-8 text-[#132D5E] hover:bg-[#FFD54F]/5"
               >
                 Contact Us
               </Button>

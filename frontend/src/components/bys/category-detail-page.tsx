@@ -117,49 +117,49 @@ const CATEGORY_STYLES: Record<string, {
   cardAccent: string;
 }> = {
   plumbing: {
-    gradient: 'from-[#4D8AFF] to-[#FFCE32]',
-    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#FFCE32]',
-    lightBg: 'bg-[#4D8AFF]/5',
-    lightText: 'text-[#1D63FF]',
+    gradient: 'from-[#E0B84C] to-[#FFD54F]',
+    headerGradient: 'from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]',
+    lightBg: 'bg-[#E0B84C]/5',
+    lightText: 'text-[#FFD54F]',
     borderColor: 'border-l-blue-500',
     hoverBorder: 'hover:border-l-blue-400',
-    glow: 'shadow-[#4D8AFF]/20',
-    accentBadge: 'bg-[#4D8AFF]/10 text-[#1D63FF]',
-    iconBg: 'bg-[#4D8AFF]/10',
-    pillBg: 'bg-[#4D8AFF]/5',
-    pillText: 'text-[#1D63FF]',
-    heroAccent: 'from-[#7DB0FF]/30 to-[#FFCE32]/20',
-    cardAccent: 'ring-[#4D8AFF]/30/50',
+    glow: 'shadow-[#E0B84C]/20',
+    accentBadge: 'bg-[#E0B84C]/10 text-[#FFD54F]',
+    iconBg: 'bg-[#E0B84C]/10',
+    pillBg: 'bg-[#E0B84C]/5',
+    pillText: 'text-[#FFD54F]',
+    heroAccent: 'from-[#FFD54F]/30 to-[#FFD54F]/20',
+    cardAccent: 'ring-[#E0B84C]/30/50',
   },
   electrical: {
-    gradient: 'from-[#4D8AFF] to-[#FFCE32]',
-    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#FFCE32]',
-    lightBg: 'bg-[#4D8AFF]/5',
-    lightText: 'text-[#1D63FF]',
-    borderColor: 'border-l-[#1D63FF]',
-    hoverBorder: 'hover:border-l-[#FFCE32]',
-    glow: 'shadow-[#4D8AFF]/20',
-    accentBadge: 'bg-[#4D8AFF]/10 text-[#1D63FF]',
-    iconBg: 'bg-[#4D8AFF]/10',
-    pillBg: 'bg-[#4D8AFF]/5',
-    pillText: 'text-[#1D63FF]',
-    heroAccent: 'from-[#FFCE32]/30 to-[#FFCE32]/20',
-    cardAccent: 'ring-[#4D8AFF]/30/50',
+    gradient: 'from-[#E0B84C] to-[#FFD54F]',
+    headerGradient: 'from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]',
+    lightBg: 'bg-[#E0B84C]/5',
+    lightText: 'text-[#FFD54F]',
+    borderColor: 'border-l-[#FFD54F]',
+    hoverBorder: 'hover:border-l-[#FFD54F]',
+    glow: 'shadow-[#E0B84C]/20',
+    accentBadge: 'bg-[#E0B84C]/10 text-[#FFD54F]',
+    iconBg: 'bg-[#E0B84C]/10',
+    pillBg: 'bg-[#E0B84C]/5',
+    pillText: 'text-[#FFD54F]',
+    heroAccent: 'from-[#FFD54F]/30 to-[#FFD54F]/20',
+    cardAccent: 'ring-[#E0B84C]/30/50',
   },
   'air-conditioner': {
-    gradient: 'from-[#4D8AFF] to-[#4D8AFF]',
-    headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#7DB0FF]',
-    lightBg: 'bg-[#FFCE32]/5',
-    lightText: 'text-[#0D3B7A]',
-    borderColor: 'border-l-[#4D8AFF]',
-    hoverBorder: 'hover:border-l-[#7DB0FF]',
-    glow: 'shadow-[#4D8AFF]/20',
-    accentBadge: 'bg-[#FFCE32]/5 text-[#0D3B7A]',
-    iconBg: 'bg-[#FFCE32]/5',
-    pillBg: 'bg-[#FFCE32]/5',
-    pillText: 'text-[#0D3B7A]',
-    heroAccent: 'from-[#7DB0FF]/30 to-[#7DB0FF]/20',
-    cardAccent: 'ring-[#1D63FF]/30/50',
+    gradient: 'from-[#E0B84C] to-[#FFD54F]',
+    headerGradient: 'from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]',
+    lightBg: 'bg-[#FFD54F]/5',
+    lightText: 'text-[#132D5E]',
+    borderColor: 'border-l-[#E0B84C]',
+    hoverBorder: 'hover:border-l-[#FFD54F]',
+    glow: 'shadow-[#E0B84C]/20',
+    accentBadge: 'bg-[#FFD54F]/5 text-[#132D5E]',
+    iconBg: 'bg-[#FFD54F]/5',
+    pillBg: 'bg-[#FFD54F]/5',
+    pillText: 'text-[#132D5E]',
+    heroAccent: 'from-[#FFD54F]/30 to-[#FFD54F]/20',
+    cardAccent: 'ring-[#FFD54F]/30/50',
   },
 };
 
@@ -170,19 +170,19 @@ const CATEGORY_IMAGE_MAP: Record<string, string> = {
 };
 
 const DEFAULT_STYLE = {
-  gradient: 'from-[#4D8AFF] to-[#4D8AFF]',
-  headerGradient: 'from-[#1D63FF] via-[#4D8AFF] to-[#7DB0FF]',
-  lightBg: 'bg-[#FFCE32]/5',
-  lightText: 'text-[#0D3B7A]',
-  borderColor: 'border-l-[#1D63FF]',
-  hoverBorder: 'hover:border-l-[#7DB0FF]',
-  glow: 'shadow-[#1D63FF]/20',
-  accentBadge: 'bg-[#FFCE32]/5 text-[#0D3B7A]',
-  iconBg: 'bg-[#FFCE32]/5',
-  pillBg: 'bg-[#FFCE32]/5',
-  pillText: 'text-[#0D3B7A]',
-  heroAccent: 'from-[#7DB0FF]/30 to-[#7DB0FF]/20',
-  cardAccent: 'ring-[#1D63FF]/30/50',
+  gradient: 'from-[#E0B84C] to-[#FFD54F]',
+  headerGradient: 'from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]',
+  lightBg: 'bg-[#FFD54F]/5',
+  lightText: 'text-[#132D5E]',
+  borderColor: 'border-l-[#FFD54F]',
+  hoverBorder: 'hover:border-l-[#FFD54F]',
+  glow: 'shadow-[#FFD54F]/20',
+  accentBadge: 'bg-[#FFD54F]/5 text-[#132D5E]',
+  iconBg: 'bg-[#FFD54F]/5',
+  pillBg: 'bg-[#FFD54F]/5',
+  pillText: 'text-[#132D5E]',
+  heroAccent: 'from-[#FFD54F]/30 to-[#FFD54F]/20',
+  cardAccent: 'ring-[#FFD54F]/30/50',
 };
 
 // ─── Subcategory Icon Helper ───────────────────────────────────────────────────
@@ -229,9 +229,9 @@ function StarRating({ rating, totalReviews }: { rating: number; totalReviews: nu
             key={i}
             className={`size-3.5 ${
               i < fullStars
-                ? 'fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]'
+                ? 'fill-[#FFD54F] text-[#FFD54F] drop-shadow-[0_0_3px_rgba(255,213,79,0.4)]'
                 : i === fullStars && hasHalf
-                  ? 'fill-[#FFE066] text-[#FFCE32]'
+                  ? 'fill-[#F2C94C] text-[#FFD54F]'
                   : 'fill-gray-200 text-gray-200'
             }`}
           />
@@ -487,7 +487,7 @@ export function CategoryDetailPage() {
               custom={0}
             >
               <div className="mb-6 flex items-center gap-3">
-                <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.gradient} text-white shadow-md`}>
+                <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.gradient} text-[#0A1F44] shadow-md`}>
                   <Layers className="size-5" />
                 </div>
                 <div>
@@ -528,7 +528,7 @@ export function CategoryDetailPage() {
                           <p className="line-clamp-1 text-xs text-muted-foreground">{sub.description}</p>
                         )}
                       </div>
-                      <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#1D63FF]" />
+                      <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-[#FFD54F]" />
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -551,7 +551,7 @@ export function CategoryDetailPage() {
             className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
           >
             <div className="flex items-center gap-3">
-              <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.gradient} text-white shadow-md`}>
+              <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${style.gradient} text-[#0A1F44] shadow-md`}>
                 <Wrench className="size-5" />
               </div>
               <div>
@@ -566,20 +566,20 @@ export function CategoryDetailPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-muted-foreground">Sort by:</span>
               <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[170px] rounded-xl border-[#1D63FF]/30 bg-white shadow-sm focus:ring-[#1D63FF]/20">
+                <SelectTrigger className="w-[170px] rounded-xl border-[#FFD54F]/30 bg-white shadow-sm focus:ring-[#FFD54F]/20">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
-                  <SelectItem value="newest" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
+                  <SelectItem value="newest" className="focus:bg-[#FFD54F]/5 focus:text-[#132D5E]">
                     Newest First
                   </SelectItem>
-                  <SelectItem value="rating" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
+                  <SelectItem value="rating" className="focus:bg-[#FFD54F]/5 focus:text-[#132D5E]">
                     Highest Rated
                   </SelectItem>
-                  <SelectItem value="price_low" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
+                  <SelectItem value="price_low" className="focus:bg-[#FFD54F]/5 focus:text-[#132D5E]">
                     Price: Low → High
                   </SelectItem>
-                  <SelectItem value="price_high" className="focus:bg-[#FFCE32]/5 focus:text-[#0D3B7A]">
+                  <SelectItem value="price_high" className="focus:bg-[#FFD54F]/5 focus:text-[#132D5E]">
                     Price: High → Low
                   </SelectItem>
                 </SelectContent>
@@ -599,7 +599,7 @@ export function CategoryDetailPage() {
               </div>
               <p className="text-xl font-bold text-foreground">Failed to load services</p>
               <p className="mt-2 text-muted-foreground">Something went wrong. Please try again.</p>
-              <Button variant="outline" size="lg" onClick={refetchSrv} className="mt-6 border-[#1D63FF]/30 text-[#0D3B7A] hover:bg-[#FFCE32]/5">
+              <Button variant="outline" size="lg" onClick={refetchSrv} className="mt-6 border-[#FFD54F]/30 text-[#132D5E] hover:bg-[#FFD54F]/5">
                 Retry
               </Button>
             </motion.div>
@@ -630,7 +630,7 @@ export function CategoryDetailPage() {
                         onClick={() => navigate('service-detail', { serviceId: service.id })}
                       >
                         {/* Image section */}
-                        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5">
+                        <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/5">
                           {service.images ? (
                             <img
                               src={(() => { try { const arr = JSON.parse(service.images); return Array.isArray(arr) ? arr[0] || '' : ''; } catch { return ''; } })()}
@@ -639,7 +639,7 @@ export function CategoryDetailPage() {
                             />
                           ) : (
                             <div className="flex size-full items-center justify-center">
-                              <Wrench className="size-12 text-[#7DB0FF]" />
+                              <Wrench className="size-12 text-[#FFD54F]" />
                             </div>
                           )}
 
@@ -648,14 +648,14 @@ export function CategoryDetailPage() {
 
                           {/* Price tag with gradient */}
                           <div className="absolute right-3 top-3">
-                            <Badge className={`rounded-full border-0 bg-gradient-to-r ${style.gradient} px-3 py-1 text-sm font-bold text-white shadow-lg`}>
+                            <Badge className={`rounded-full border-0 bg-gradient-to-r ${style.gradient} px-3 py-1 text-sm font-bold text-[#0A1F44] shadow-lg`}>
                               ₹{service.basePrice}
                             </Badge>
                           </div>
 
                           {/* Negotiable badge */}
                           {service.priceNegotiable && (
-                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-[#4D8AFF]/10/90 px-2.5 py-0.5 text-xs font-semibold text-[#1D63FF] backdrop-blur-sm">
+                            <Badge className="absolute left-3 top-3 rounded-full border-0 bg-[#E0B84C]/10/90 px-2.5 py-0.5 text-xs font-semibold text-[#FFD54F] backdrop-blur-sm">
                               Negotiable
                             </Badge>
                           )}
@@ -664,7 +664,7 @@ export function CategoryDetailPage() {
                           <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 group-hover:opacity-100">
                             <Button
                               size="sm"
-                              className="shimmer rounded-full bg-white/90 px-6 text-[#0D3B7A] shadow-xl hover:bg-white"
+                              className="shimmer rounded-full bg-white/90 px-6 text-[#132D5E] shadow-xl hover:bg-white"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 navigate('service-detail', { serviceId: service.id });
@@ -683,7 +683,7 @@ export function CategoryDetailPage() {
                         </div>
 
                         <CardContent className="p-5">
-                          <h3 className="text-base font-bold leading-tight line-clamp-1 group-hover:text-[#0D3B7A] transition-colors">
+                          <h3 className="text-base font-bold leading-tight line-clamp-1 group-hover:text-[#132D5E] transition-colors">
                             {service.title}
                           </h3>
 
@@ -714,7 +714,7 @@ export function CategoryDetailPage() {
                           {service.totalBookings > 0 && (
                             <div className="mt-2 flex items-center justify-between">
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                                <CheckCircle2 className="size-3 text-[#4D8AFF]" />
+                                <CheckCircle2 className="size-3 text-[#E0B84C]" />
                                 <span>{service.totalBookings} bookings completed</span>
                               </div>
                               <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -740,30 +740,30 @@ export function CategoryDetailPage() {
               {/* Illustration-style empty state */}
               <div className="relative mx-auto mb-6 size-36">
                 {/* Outer rings */}
-                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/5" />
-                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-[#FFCE32]/10/60 to-[#1D63FF]/4" />
+                <div className="absolute inset-0 rounded-full bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/5" />
+                <div className="absolute inset-3 rounded-full bg-gradient-to-br from-[#FFD54F]/10/60 to-[#FFD54F]/4" />
                 <div className="absolute inset-6 rounded-full bg-white/80" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <motion.div
                     animate={{ y: [0, -8, 0] }}
                     transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
                   >
-                    <Search className="size-14 text-[#7DB0FF]" />
+                    <Search className="size-14 text-[#FFD54F]" />
                   </motion.div>
                 </div>
                 {/* Decorative dots */}
-                <div className="absolute -right-2 top-2 size-3 rounded-full bg-[#7DB0FF]" />
-                <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-[#7DB0FF]" />
-                <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-[#FFCE32]/20" />
+                <div className="absolute -right-2 top-2 size-3 rounded-full bg-[#FFD54F]" />
+                <div className="absolute -left-1 bottom-4 size-2 rounded-full bg-[#FFD54F]" />
+                <div className="absolute right-4 -bottom-1 size-2.5 rounded-full bg-[#FFD54F]/20" />
                 <div className="absolute -top-1 left-1/2 size-2 rounded-full bg-rose-300" />
                 {/* Animated circles */}
                 <motion.div
-                  className="absolute -right-4 bottom-0 size-4 rounded-full bg-[#FFCE32]/10/50"
+                  className="absolute -right-4 bottom-0 size-4 rounded-full bg-[#FFD54F]/10/50"
                   animate={{ scale: [1, 1.3, 1] }}
                   transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
                 />
                 <motion.div
-                  className="absolute left-0 -top-3 size-3 rounded-full bg-[#7DB0FF]/30"
+                  className="absolute left-0 -top-3 size-3 rounded-full bg-[#FFD54F]/30"
                   animate={{ scale: [1, 1.4, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
                 />
@@ -774,14 +774,14 @@ export function CategoryDetailPage() {
               </p>
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button
-                  className="shimmer bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 hover:from-[#0D3B7A] hover:to-[#0D3B7A]"
+                  className="shimmer bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 hover:from-[#132D5E] hover:to-[#132D5E]"
                   onClick={() => navigate('categories')}
                 >
                   <ArrowLeft className="mr-1 size-4" /> Browse Other Categories
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-[#1D63FF]/30 text-[#0D3B7A] hover:bg-[#FFCE32]/5"
+                  className="border-[#FFD54F]/30 text-[#132D5E] hover:bg-[#FFD54F]/5"
                   onClick={() => navigate('home')}
                 >
                   Back to Home
@@ -832,7 +832,7 @@ export function CategoryDetailPage() {
                 <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                   <Button
                     size="lg"
-                    className="shimmer bg-white px-8 text-[#0D3B7A] shadow-xl hover:bg-[#FFCE32]/5"
+                    className="shimmer bg-white px-8 text-[#132D5E] shadow-xl hover:bg-[#FFD54F]/5"
                     onClick={() => navigate('home')}
                   >
                     Book Now <ArrowRight className="ml-2 size-4" />

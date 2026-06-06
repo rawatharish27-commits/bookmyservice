@@ -31,13 +31,13 @@ interface Notification {
 function getNotifConfig(type: string) {
   switch (type) {
     case 'BOOKING':
-      return { icon: CalendarCheck, gradient: 'from-[#4D8AFF] to-[#1D63FF]', bg: 'bg-[#1D63FF]/10' };
+      return { icon: CalendarCheck, gradient: 'from-[#E0B84C] to-[#FFD54F]', bg: 'bg-[#FFD54F]/10' };
     case 'REVIEW':
-      return { icon: Star, gradient: 'from-[#FFCE32] to-[#1D63FF]', bg: 'bg-[#1D63FF]/10' };
+      return { icon: Star, gradient: 'from-[#FFD54F] to-[#E0B84C]', bg: 'bg-[#FFD54F]/10' };
     case 'DISPUTE':
-      return { icon: AlertTriangle, gradient: 'from-[#4D8AFF] to-red-500', bg: 'bg-[#1D63FF]/10' };
+      return { icon: AlertTriangle, gradient: 'from-[#E0B84C] to-red-500', bg: 'bg-[#FFD54F]/10' };
     case 'MESSAGE':
-      return { icon: MessageSquare, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bg: 'bg-[#FFCE32]/10' };
+      return { icon: MessageSquare, gradient: 'from-[#FFD54F] to-[#E0B84C]', bg: 'bg-[#FFD54F]/10' };
     default:
       return { icon: Info, gradient: 'from-gray-400 to-gray-500', bg: 'bg-gray-100' };
   }
@@ -96,7 +96,7 @@ export function ClientNotificationsPage() {
           <p className="text-sm text-muted-foreground">
             {unreadCount > 0 ? (
               <span className="flex items-center gap-1.5">
-                <span className="size-2 rounded-full bg-[#1D63FF] animate-pulse" />
+                <span className="size-2 rounded-full bg-[#FFD54F] animate-pulse" />
                 You have {unreadCount} unread notification{unreadCount > 1 ? 's' : ''}
               </span>
             ) : 'All caught up!'}
@@ -108,7 +108,7 @@ export function ClientNotificationsPage() {
             size="sm"
             onClick={handleMarkAllRead}
             disabled={markingAll}
-            className="rounded-xl border-[#FFCE32]/30 text-[#1D63FF] hover:bg-[#FFCE32]/10"
+            className="rounded-xl border-[#FFD54F]/30 text-[#FFD54F] hover:bg-[#FFD54F]/10"
           >
             {markingAll ? <Loader2 className="mr-2 size-4 animate-spin" /> : <CheckCheck className="mr-2 size-4" />}
             Mark all read
@@ -128,8 +128,8 @@ export function ClientNotificationsPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center py-16 text-center"
         >
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFCE32]/10 to-[#FFCE32]/5">
-            <BellOff className="size-10 text-[#7DB0FF]" />
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+            <BellOff className="size-10 text-[#FFD54F]" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No notifications</h3>
           <p className="mt-1 text-sm text-muted-foreground/70">You&apos;ll see notifications about your bookings here</p>
@@ -148,7 +148,7 @@ export function ClientNotificationsPage() {
                   onClick={() => handleNotificationClick(notif)}
                   className={`flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-all hover:shadow-sm ${
                     !notif.isRead
-                      ? 'border-[#FFCE32]/20 bg-gradient-to-r from-[#FFCE32]/10 to-white'
+                      ? 'border-[#FFD54F]/20 bg-gradient-to-r from-[#FFD54F]/10 to-white'
                       : 'border-transparent bg-white hover:bg-gray-50/50'
                   }`}
                 >
@@ -161,7 +161,7 @@ export function ClientNotificationsPage() {
                         {notif.title}
                       </p>
                       {!notif.isRead && (
-                        <span className="size-2 shrink-0 rounded-full bg-[#1D63FF] animate-pulse" />
+                        <span className="size-2 shrink-0 rounded-full bg-[#FFD54F] animate-pulse" />
                       )}
                     </div>
                     <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2">{notif.message}</p>
@@ -179,7 +179,7 @@ export function ClientNotificationsPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="shrink-0 text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#FFCE32]/10"
+                      className="shrink-0 text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/10"
                       onClick={(e) => {
                         e.stopPropagation();
                         handleMarkRead(notif.id);

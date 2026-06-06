@@ -18,8 +18,8 @@ export function PlaceholderPage({ title, description }: PlaceholderPageProps) {
         transition={{ duration: 0.4 }}
         className="flex flex-col items-center gap-4 text-center"
       >
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#1D63FF]/10 to-[#FFCE32]/10">
-          <Construction className="h-8 w-8 text-[#1D63FF]" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/10">
+          <Construction className="h-8 w-8 text-[#FFD54F]" />
         </div>
         <h1 className="text-2xl font-bold text-gray-900">{title}</h1>
         <p className="max-w-md text-gray-500">

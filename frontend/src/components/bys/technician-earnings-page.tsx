@@ -105,7 +105,7 @@ export function TechnicianEarningsPage() {
           <p className="text-sm text-muted-foreground">Track your earnings and payment history</p>
         </div>
         <Button
-          className="self-start rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+          className="self-start rounded-xl bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
           onClick={() => navigate('technician-dashboard')}
         >
           <Banknote className="mr-2 size-4" />
@@ -121,9 +121,9 @@ export function TechnicianEarningsPage() {
         className="grid grid-cols-2 gap-3 sm:grid-cols-4"
       >
         {[
-          { label: 'Today', value: earnings.today, icon: Zap, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bgGlow: 'bg-[#4D8AFF]/10' },
-          { label: 'This Week', value: earnings.week, icon: Calendar, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
-          { label: 'This Month', value: earnings.month, icon: TrendingUp, gradient: 'from-[#FFE066] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
+          { label: 'Today', value: earnings.today, icon: Zap, gradient: 'from-[#FFD54F] to-[#E0B84C]', bgGlow: 'bg-[#E0B84C]/10' },
+          { label: 'This Week', value: earnings.week, icon: Calendar, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
+          { label: 'This Month', value: earnings.month, icon: TrendingUp, gradient: 'from-[#F2C94C] to-[#E0B84C]', bgGlow: 'bg-[#FFD54F]/10' },
           { label: 'All Time', value: earnings.allTime, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
         ].map((stat, idx) => (
           <motion.div key={stat.label} variants={fadeUp}>
@@ -153,10 +153,10 @@ export function TechnicianEarningsPage() {
         className="mt-6"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Weekly Earnings</CardTitle>
-              <Badge variant="outline" className="border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A] text-xs">
+              <Badge variant="outline" className="border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E] text-xs">
                 This Week
               </Badge>
             </div>
@@ -178,13 +178,13 @@ export function TechnicianEarningsPage() {
                         transition={{ delay: idx * 0.08, duration: 0.5, ease: 'easeOut' }}
                         className={`w-full max-w-[48px] rounded-t-lg ${
                           isToday
-                            ? 'bg-gradient-to-t from-[#1D63FF] to-[#7DB0FF] shadow-lg shadow-[#4D8AFF]/25'
-                            : 'bg-gradient-to-t from-[#9DC2FF]/60 to-[#1D63FF]/12'
+                            ? 'bg-gradient-to-t from-[#FFD54F] to-[#E0B84C] shadow-lg shadow-[#E0B84C]/25'
+                            : 'bg-gradient-to-t from-[#9DC2FF]/60 to-[#FFD54F]/12'
                         }`}
                         style={{ position: 'absolute', bottom: 0 }}
                       />
                     </div>
-                    <span className={`text-xs font-medium ${isToday ? 'text-[#0D3B7A] font-bold' : 'text-muted-foreground'}`}>
+                    <span className={`text-xs font-medium ${isToday ? 'text-[#132D5E] font-bold' : 'text-muted-foreground'}`}>
                       {day.day}
                     </span>
                   </div>
@@ -223,10 +223,10 @@ export function TechnicianEarningsPage() {
         className="mt-6"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#1D63FF]/5 to-[#1D63FF]/5 pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#FFD54F]/5 to-[#FFD54F]/5 pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg font-semibold">Recent Earnings</CardTitle>
-              <Button variant="ghost" size="sm" className="text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5">
+              <Button variant="ghost" size="sm" className="text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5">
                 View All <ArrowRight className="ml-1 size-3" />
               </Button>
             </div>
@@ -235,7 +235,7 @@ export function TechnicianEarningsPage() {
           <CardContent className="p-0">
             {recentTransactions.length === 0 ? (
               <div className="flex flex-col items-center py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/5">
                   <CheckCircle2 className="size-8 text-[#9DC2FF]" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No earnings yet</p>
@@ -243,7 +243,7 @@ export function TechnicianEarningsPage() {
                   Complete jobs to start earning
                 </p>
                 <Button
-                  className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+                  className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
                   size="sm"
                   onClick={() => navigate('technician-jobs')}
                 >
@@ -260,12 +260,12 @@ export function TechnicianEarningsPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.04 }}
-                      className="group flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-[#1D63FF]/5"
+                      className="group flex items-center gap-4 border-b p-4 last:border-0 transition-colors hover:bg-[#FFD54F]/5"
                     >
                       <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl shadow-md ${
                         isCompleted
-                          ? 'bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]'
-                          : 'bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]'
+                          ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]'
+                          : 'bg-gradient-to-br from-[#F2C94C] to-[#E0B84C]'
                       }`}>
                         <Briefcase className="size-5 text-white" />
                       </div>
@@ -276,8 +276,8 @@ export function TechnicianEarningsPage() {
                             variant="outline"
                             className={`shrink-0 gap-1 text-[10px] font-semibold ${
                               isCompleted
-                                ? 'border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]'
-                                : 'border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]'
+                                ? 'border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E]'
+                                : 'border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E]'
                             }`}
                           >
                             {isCompleted ? <CheckCircle2 className="size-2.5" /> : <Clock className="size-2.5" />}
@@ -303,7 +303,7 @@ export function TechnicianEarningsPage() {
                         </div>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-sm font-bold text-[#1D63FF] flex items-center justify-end gap-1">
+                        <p className="text-sm font-bold text-[#FFD54F] flex items-center justify-end gap-1">
                           <ArrowUpRight className="size-3.5" />
                           +₹{tx.netEarning?.toLocaleString('en-IN')}
                         </p>
@@ -327,7 +327,7 @@ export function TechnicianEarningsPage() {
         transition={{ delay: 0.3 }}
         className="mt-6"
       >
-        <Card className="overflow-hidden rounded-2xl border-0 shadow-sm bg-gradient-to-r from-[#1D63FF] via-[#1D63FF] to-[#FFCE32] text-white">
+        <Card className="overflow-hidden rounded-2xl border-0 shadow-sm bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F] text-[#0A1F44]">
           <CardContent className="p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="flex size-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">
@@ -339,7 +339,7 @@ export function TechnicianEarningsPage() {
               </div>
             </div>
             <Button
-              className="shrink-0 rounded-xl bg-white text-[#0D3B7A] font-semibold shadow-lg hover:bg-[#1D63FF]/5"
+              className="shrink-0 rounded-xl bg-white text-[#132D5E] font-semibold shadow-lg hover:bg-[#FFD54F]/5"
               onClick={() => navigate('technician-dashboard')}
             >
               <Briefcase className="mr-2 size-4" />

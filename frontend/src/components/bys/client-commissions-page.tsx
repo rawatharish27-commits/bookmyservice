@@ -74,23 +74,23 @@ export function ClientCommissionsPage() {
     <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">My Commissions</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">My Commissions</h1>
         <p className="mt-1 text-sm text-muted-foreground">Track your referral earnings and commission history</p>
       </motion.div>
 
       {/* Referral Code Card */}
       <motion.div {...fadeUp} transition={{ delay: 0.05 }} className="mb-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <div className="h-1.5 bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF]" />
+          <div className="h-1.5 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F]" />
           <CardContent className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <Gift className="size-5 text-[#1D63FF]" />
-                  <h2 className="text-lg font-bold text-[#0A2463]">Your Referral Code</h2>
+                  <Gift className="size-5 text-[#FFD54F]" />
+                  <h2 className="text-lg font-bold text-[#0A1F44]">Your Referral Code</h2>
                 </div>
                 <div className="flex items-center gap-3">
-                  <code className="rounded-lg bg-[#0A2463]/5 px-4 py-2 text-lg font-bold tracking-widest text-[#0D3B7A]">
+                  <code className="rounded-lg bg-[#0A1F44]/5 px-4 py-2 text-lg font-bold tracking-widest text-[#132D5E]">
                     {referralCode}
                   </code>
                   <Button variant="outline" size="sm" className="rounded-lg" onClick={handleCopyCode}>
@@ -102,7 +102,7 @@ export function ClientCommissionsPage() {
                 </p>
               </div>
               <Button
-                className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg rounded-xl"
+                className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] text-white shadow-lg rounded-xl"
                 onClick={() => {
                   const msg = `Join BookYourService! Use my referral code ${referralCode} to sign up. 🛠️`;
                   window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
@@ -120,9 +120,9 @@ export function ClientCommissionsPage() {
       <motion.div {...fadeUp} transition={{ delay: 0.1 }} className="mb-6">
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            { label: 'Total Earned', value: summary.totalEarnings, icon: IndianRupee, gradient: 'from-[#4D8AFF] to-[#1D63FF]', bgGlow: 'bg-[#FFCE32]/10' },
+            { label: 'Total Earned', value: summary.totalEarnings, icon: IndianRupee, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
             { label: 'Pending', value: summary.pendingAmount, icon: Clock, gradient: 'from-amber-500 to-yellow-500', bgGlow: 'bg-amber-500/10' },
-            { label: 'Approved', value: summary.approvedAmount, icon: CheckCircle2, gradient: 'from-[#4D8AFF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
+            { label: 'Approved', value: summary.approvedAmount, icon: CheckCircle2, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
             { label: 'Paid Out', value: summary.paidAmount, icon: DollarSign, gradient: 'from-violet-400 to-purple-500', bgGlow: 'bg-violet-500/10' },
           ].map((stat) => (
             <div key={stat.label} className="glass group relative overflow-hidden rounded-2xl p-4 sm:p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5">
@@ -135,7 +135,7 @@ export function ClientCommissionsPage() {
                   </p>
                 </div>
                 <div className={`flex size-10 items-center justify-center rounded-xl bg-gradient-to-br ${stat.gradient} shadow-md`}>
-                  <stat.icon className="size-5 text-white" />
+                  <stat.icon className="size-5 text-[#0A1F44]" />
                 </div>
               </div>
             </div>
@@ -146,9 +146,9 @@ export function ClientCommissionsPage() {
       {/* How It Works */}
       <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="mb-6">
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0A2463]/5 to-[#1D63FF]/5 pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A2463]">
-              <TrendingUp className="size-5 text-[#1D63FF]" />
+          <CardHeader className="bg-gradient-to-r from-[#0A1F44]/5 to-[#FFD54F]/5 pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-[#0A1F44]">
+              <TrendingUp className="size-5 text-[#FFD54F]" />
               How Commissions Work
             </CardTitle>
           </CardHeader>
@@ -159,11 +159,11 @@ export function ClientCommissionsPage() {
                 { step: '2', title: 'Earn', desc: 'When your referral signs up and completes their first booking, you earn a commission of 3%', icon: IndianRupee },
                 { step: '3', title: 'Get Paid', desc: 'Commissions are approved monthly and transferred directly to your bank account or wallet', icon: DollarSign },
               ].map((item) => (
-                <div key={item.step} className="flex flex-col items-center text-center rounded-xl bg-[#0A2463]/5 p-4">
-                  <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-md mb-3">
-                    <item.icon className="size-5 text-white" />
+                <div key={item.step} className="flex flex-col items-center text-center rounded-xl bg-[#0A1F44]/5 p-4">
+                  <div className="flex size-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#132D5E] to-[#FFD54F] shadow-md mb-3">
+                    <item.icon className="size-5 text-[#0A1F44]" />
                   </div>
-                  <p className="text-sm font-bold text-[#0A2463]">{item.step}. {item.title}</p>
+                  <p className="text-sm font-bold text-[#0A1F44]">{item.step}. {item.title}</p>
                   <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
                 </div>
               ))}
@@ -175,11 +175,11 @@ export function ClientCommissionsPage() {
       {/* Commission History */}
       <motion.div {...fadeUp} transition={{ delay: 0.2 }}>
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
             <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-              <IndianRupee className="size-4 text-[#FFCE32]" />
+              <IndianRupee className="size-4 text-[#FFD54F]" />
               Commission History
-              <Badge className="ml-auto bg-[#1D63FF]/20 text-[#FFE066] border-0">
+              <Badge className="ml-auto bg-[#FFD54F]/20 text-[#F2C94C] border-0">
                 {summary.totalCount} total
               </Badge>
             </CardTitle>
@@ -193,15 +193,15 @@ export function ClientCommissionsPage() {
               </div>
             ) : entries.length === 0 ? (
               <div className="flex flex-col items-center py-12 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#1D63FF]/5">
-                  <Users className="size-8 text-[#FFCE32]" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/5">
+                  <Users className="size-8 text-[#FFD54F]" />
                 </div>
                 <p className="mt-3 font-medium text-muted-foreground">No commissions yet</p>
                 <p className="mt-1 text-sm text-muted-foreground/70">
                   Start referring providers and customers to earn commissions
                 </p>
                 <Button
-                  className="mt-4 bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg rounded-xl"
+                  className="mt-4 bg-gradient-to-r from-[#132D5E] to-[#FFD54F] text-white shadow-lg rounded-xl"
                   size="sm"
                   onClick={() => {
                     const msg = `Join BookYourService! Use my referral code ${referralCode} to sign up. 🛠️`;
@@ -222,14 +222,14 @@ export function ClientCommissionsPage() {
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.04 }}
-                      className="flex items-center gap-4 p-4 transition-colors hover:bg-[#1D63FF]/5/30"
+                      className="flex items-center gap-4 p-4 transition-colors hover:bg-[#FFD54F]/5/30"
                     >
                       <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl shadow-md ${
                         isPaid
-                          ? 'bg-gradient-to-br from-[#7DB0FF] to-[#1D63FF]'
+                          ? 'bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]'
                           : 'bg-gradient-to-br from-amber-400 to-yellow-500'
                       }`}>
-                        <IndianRupee className="size-5 text-white" />
+                        <IndianRupee className="size-5 text-[#0A1F44]" />
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
@@ -240,7 +240,7 @@ export function ClientCommissionsPage() {
                             variant="outline"
                             className={`shrink-0 gap-1 text-[10px] font-semibold ${
                               isPaid
-                                ? 'border-[#FFCE32]/30 bg-[#FFCE32]/10 text-[#0D3B7A]'
+                                ? 'border-[#FFD54F]/30 bg-[#FFD54F]/10 text-[#132D5E]'
                                 : 'border-amber-200 bg-amber-50 text-amber-700'
                             }`}
                           >
@@ -257,7 +257,7 @@ export function ClientCommissionsPage() {
                         </p>
                       </div>
                       <div className="shrink-0 text-right">
-                        <p className="text-sm font-bold text-[#1D63FF]">+₹{entry.amount?.toLocaleString('en-IN')}</p>
+                        <p className="text-sm font-bold text-[#FFD54F]">+₹{entry.amount?.toLocaleString('en-IN')}</p>
                       </div>
                     </motion.div>
                   );

@@ -69,9 +69,9 @@ export function ProviderEarningsPage() {
       {/* Summary Cards */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
-          { label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, icon: DollarSign, gradient: 'from-[#7DB0FF] to-[#4D8AFF]', bgGlow: 'bg-[#1D63FF]/10' },
-          { label: 'Pending Payout', value: `₹${pendingPayout.toLocaleString()}`, icon: Clock, gradient: 'from-[#4D8AFF] to-[#1D63FF]', bgGlow: 'bg-[#1D63FF]/10' },
-          { label: 'This Month', value: `₹${thisMonthEarnings.toLocaleString()}`, icon: TrendingUp, gradient: 'from-[#4D8AFF] to-[#1D63FF]', bgGlow: 'bg-[#1D63FF]/10' },
+          { label: 'Total Earnings', value: `₹${totalEarnings.toLocaleString()}`, icon: DollarSign, gradient: 'from-[#FFD54F] to-[#E0B84C]', bgGlow: 'bg-[#FFD54F]/10' },
+          { label: 'Pending Payout', value: `₹${pendingPayout.toLocaleString()}`, icon: Clock, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
+          { label: 'This Month', value: `₹${thisMonthEarnings.toLocaleString()}`, icon: TrendingUp, gradient: 'from-[#E0B84C] to-[#FFD54F]', bgGlow: 'bg-[#FFD54F]/10' },
         ].map((stat, idx) => (
           <motion.div
             key={stat.label}
@@ -120,22 +120,22 @@ export function ProviderEarningsPage() {
         className="mt-6"
       >
         <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-          <CardHeader className="bg-gradient-to-r from-[#FFCE32]/10 to-[#FFCE32]/5 pb-3">
+          <CardHeader className="bg-gradient-to-r from-[#FFD54F]/10 to-[#FFD54F]/5 pb-3">
             <CardTitle className="text-lg font-semibold">Earnings History</CardTitle>
           </CardHeader>
           <Separator />
           <CardContent className="p-0">
             {completed.length === 0 ? (
               <div className="p-8 text-center">
-                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFCE32]/10">
-                  <CheckCircle2 className="size-8 text-[#7DB0FF]" />
+                <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-[#FFD54F]/10">
+                  <CheckCircle2 className="size-8 text-[#FFD54F]" />
                 </div>
                 <p className="mt-3 text-muted-foreground">No completed bookings yet</p>
               </div>
             ) : (
               <ScrollArea className="max-h-96">
                 {completed.map((booking) => (
-                  <div key={booking.id} className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-[#FFCE32]/5">
+                  <div key={booking.id} className="flex items-center justify-between border-b p-4 last:border-0 transition-colors hover:bg-[#FFD54F]/5">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium">{booking.service?.title}</p>
                       <p className="mt-1 text-sm text-muted-foreground">
@@ -143,7 +143,7 @@ export function ProviderEarningsPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold text-[#1D63FF] flex items-center gap-1">
+                      <p className="font-semibold text-[#FFD54F] flex items-center gap-1">
                         <ArrowUpRight className="size-3.5" />
                         +₹{booking.providerEarnings?.toLocaleString()}
                       </p>

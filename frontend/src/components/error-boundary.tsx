@@ -70,7 +70,7 @@ function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
       <div className="mt-6 flex gap-3">
         <button
           onClick={resetErrorBoundary}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0A2463] to-[#1D63FF] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] px-6 py-3 text-white shadow-lg transition-opacity hover:opacity-90"
         >
           Try Again
         </button>

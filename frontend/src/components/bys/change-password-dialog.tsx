@@ -92,7 +92,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
       <DialogContent className="sm:max-w-md border-gray-200/60 shadow-xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-md">
+            <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#132D5E] to-[#FFD54F] text-white shadow-md">
               <KeyRound className="size-4" />
             </div>
             Change Password
@@ -111,7 +111,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
               exit={{ opacity: 0, scale: 0.9 }}
               className="flex flex-col items-center gap-3 py-6"
             >
-              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-[#1D63FF]/10 border border-green-200/80 shadow-md shadow-green-200/30">
+              <div className="flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-[#FFD54F]/10 border border-green-200/80 shadow-md shadow-green-200/30">
                 <ShieldCheck className="size-6 text-green-600" />
               </div>
               <p className="text-sm text-center text-muted-foreground max-w-xs leading-relaxed">
@@ -120,7 +120,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
               <Button
                 type="button"
                 onClick={() => handleClose(false)}
-                className="mt-2 bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF] hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] shadow-lg shadow-[#1D63FF]/20 rounded-xl h-11 px-6"
+                className="mt-2 bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#E0B84C] hover:from-[#0A1F44] hover:via-[#132D5E] hover:to-[#FFD54F] shadow-lg shadow-[#FFD54F]/20 rounded-xl h-11 px-6"
               >
                 Done
               </Button>
@@ -159,7 +159,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                     value={currentPassword}
                     onChange={(e) => { setCurrentPassword(e.target.value); if (error) setError(''); }}
                     required
-                    className="pl-10 pr-11 h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 rounded-xl"
+                    className="pl-10 pr-11 h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 rounded-xl"
                     placeholder="Enter current password"
                   />
                   <button
@@ -184,7 +184,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                     value={newPassword}
                     onChange={(e) => { setNewPassword(e.target.value); if (error) setError(''); }}
                     required
-                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 rounded-xl"
+                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 rounded-xl"
                     placeholder="Min 8 characters"
                   />
                 </div>
@@ -202,7 +202,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                     value={confirmPassword}
                     onChange={(e) => { setConfirmPassword(e.target.value); if (error) setError(''); }}
                     required
-                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 rounded-xl"
+                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 rounded-xl"
                     placeholder="Re-enter new password"
                   />
                 </div>
@@ -220,7 +220,7 @@ export function ChangePasswordDialog({ open, onOpenChange }: ChangePasswordDialo
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="flex-1 h-11 rounded-xl bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF] hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] shadow-lg shadow-[#1D63FF]/20 text-white font-semibold"
+                  className="flex-1 h-11 rounded-xl bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#E0B84C] hover:from-[#0A1F44] hover:via-[#132D5E] hover:to-[#FFD54F] shadow-lg shadow-[#FFD54F]/20 text-white font-semibold"
                 >
                   {loading ? (
                     <>

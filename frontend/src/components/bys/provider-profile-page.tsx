@@ -100,18 +100,18 @@ export function ProviderProfilePage() {
         className="mb-6 flex flex-col items-center"
       >
         <div className="relative">
-          <div className="rounded-full bg-gradient-to-br from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32] p-[3px]">
+          <div className="rounded-full bg-gradient-to-br from-[#FFD54F] via-[#E0B84C] to-[#FFD54F] p-[3px]">
             <div className="flex size-24 items-center justify-center rounded-full bg-white">
               {user?.profileImageUrl ? (
                 <img src={user?.profileImageUrl || ''} alt={user?.name || 'User'} className="size-24 rounded-full object-cover" />
               ) : (
-                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFCE32]/5 to-[#FFCE32]/10">
-                  <User className="size-10 text-[#7DB0FF]" />
+                <div className="flex size-full items-center justify-center rounded-full bg-gradient-to-br from-[#FFD54F]/5 to-[#FFD54F]/10">
+                  <User className="size-10 text-[#FFD54F]" />
                 </div>
               )}
             </div>
           </div>
-          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/30">
+          <button onClick={() => fileInputRef.current?.click()} className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-gradient-to-br from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/30">
             <Camera className="size-3.5" />
           </button>
           <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={handleImageUpload} />
@@ -119,16 +119,16 @@ export function ProviderProfilePage() {
         <h2 className="mt-3 text-xl font-bold">{user?.name}</h2>
         <p className="text-sm text-muted-foreground">{user?.email}</p>
         <div className="mt-2 flex items-center gap-2">
-          <Badge className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white border-0 font-semibold">Provider</Badge>
+          <Badge className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] border-0 font-semibold">Provider</Badge>
           <Badge
             variant="outline"
             className={
               user?.status === 'ACTIVE'
-                ? 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30'
-                : 'bg-[#1D63FF]/5 text-[#1D63FF] border-[#1D63FF]/30'
+                ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30'
+                : 'bg-[#FFD54F]/5 text-[#FFD54F] border-[#FFD54F]/30'
             }
           >
-            <span className={`mr-1.5 size-1.5 rounded-full ${user?.status === 'ACTIVE' ? 'bg-[#7DB0FF]' : 'bg-[#FFE066]'}`} />
+            <span className={`mr-1.5 size-1.5 rounded-full ${user?.status === 'ACTIVE' ? 'bg-[#FFD54F]' : 'bg-[#F2C94C]'}`} />
             {user?.status || 'ACTIVE'}
           </Badge>
         </div>
@@ -142,7 +142,7 @@ export function ProviderProfilePage() {
             exit={{ opacity: 0, y: -10 }}
             className={`mb-4 rounded-xl p-3 text-sm border ${
               message.includes('success')
-                ? 'bg-[#1D63FF]/10 text-[#0D3B7A] border-[#1D63FF]/30'
+                ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30'
                 : 'bg-red-50 text-red-700 border-red-200'
             }`}
           >
@@ -156,10 +156,10 @@ export function ProviderProfilePage() {
         {/* Business Info */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-[#7DB0FF] via-[#4D8AFF] to-[#FFCE32]" />
+            <div className="h-1 bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#FFD54F]" />
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
                   <Building className="size-4 text-white" />
                 </div>
                 Business Information
@@ -194,7 +194,7 @@ export function ProviderProfilePage() {
                 </div>
               </div>
               <Button
-                className="shimmer w-full bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25 h-11 rounded-xl"
+                className="shimmer w-full bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 h-11 rounded-xl"
                 onClick={handleSaveProfile}
                 disabled={saving}
               >
@@ -210,7 +210,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFE066] to-[#4D8AFF]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#F2C94C] to-[#E0B84C]">
                   <Shield className="size-4 text-white" />
                 </div>
                 KYC Verification
@@ -220,16 +220,16 @@ export function ProviderProfilePage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {kycStatus === 'verified' ? (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                      <CheckCircle2 className="size-6 text-[#4D8AFF]" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                      <CheckCircle2 className="size-6 text-[#E0B84C]" />
                     </div>
                   ) : kycStatus === 'pending' || kycStatus === 'submitted' ? (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                      <Clock className="size-6 text-[#1D63FF]" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                      <Clock className="size-6 text-[#FFD54F]" />
                     </div>
                   ) : (
-                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                      <AlertCircle className="size-6 text-[#4D8AFF]" />
+                    <div className="flex size-12 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                      <AlertCircle className="size-6 text-[#E0B84C]" />
                     </div>
                   )}
                   <div>
@@ -262,7 +262,7 @@ export function ProviderProfilePage() {
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C]">
                   <MapPin className="size-4 text-white" />
                 </div>
                 Service Areas

@@ -126,15 +126,15 @@ interface DashboardData {
 // ─── Chart Configs ────────────────────────────────────────────────────────────
 
 const bookingChartConfig: ChartConfig = {
-  bookings: { label: 'Bookings', color: '#1D63FF' },
+  bookings: { label: 'Bookings', color: '#FFD54F' },
 };
 
 const revenueChartConfig: ChartConfig = {
-  revenue: { label: 'Revenue (₹)', color: '#0D3B7A' },
+  revenue: { label: 'Revenue (₹)', color: '#132D5E' },
 };
 
 const growthChartConfig: ChartConfig = {
-  growth: { label: 'Growth %', color: '#1D63FF' },
+  growth: { label: 'Growth %', color: '#FFD54F' },
 };
 
 // ─── Helper Components ────────────────────────────────────────────────────────
@@ -143,8 +143,8 @@ function MetricCard({
   title,
   value,
   icon: Icon,
-  iconColor = 'text-[#1D63FF]',
-  borderClass = 'border-l-[#1D63FF]',
+  iconColor = 'text-[#FFD54F]',
+  borderClass = 'border-l-[#FFD54F]',
   trend,
   trendValue,
 }: {
@@ -165,15 +165,15 @@ function MetricCard({
             <p className="mt-1 text-2xl font-bold">{value}</p>
             {trend && trendValue && (
               <div className="mt-1 flex items-center gap-1">
-                {trend === 'up' && <ArrowUpRight className="size-3 text-[#1D63FF]" />}
+                {trend === 'up' && <ArrowUpRight className="size-3 text-[#FFD54F]" />}
                 {trend === 'down' && <ArrowDownRight className="size-3 text-red-600" />}
-                <span className={`text-xs font-medium ${trend === 'up' ? 'text-[#1D63FF]' : trend === 'down' ? 'text-red-600' : 'text-yellow-600'}`}>
+                <span className={`text-xs font-medium ${trend === 'up' ? 'text-[#FFD54F]' : trend === 'down' ? 'text-red-600' : 'text-yellow-600'}`}>
                   {trendValue}
                 </span>
               </div>
             )}
           </div>
-          <div className={`rounded-lg bg-[#0A2463]/10 p-2.5 ${iconColor}`}>
+          <div className={`rounded-lg bg-[#0A1F44]/10 p-2.5 ${iconColor}`}>
             <Icon className="size-5" />
           </div>
         </div>
@@ -251,7 +251,7 @@ export function SuperAdminDashboardPage() {
     <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
-        <h1 className="text-2xl font-bold text-[#0A2463] sm:text-3xl">Super Admin Dashboard</h1>
+        <h1 className="text-2xl font-bold text-[#0A1F44] sm:text-3xl">Super Admin Dashboard</h1>
         <p className="mt-1 text-sm text-muted-foreground">Platform-wide analytics, monitoring & AI insights</p>
       </motion.div>
 
@@ -260,17 +260,17 @@ export function SuperAdminDashboardPage() {
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.05 }}
-        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] p-6 sm:p-8"
+        className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-6 sm:p-8"
       >
         <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <Shield className="size-5 text-[#FFCE32]" />
-              <span className="text-sm font-medium text-[#FFE066]">Super Admin</span>
+              <Shield className="size-5 text-[#FFD54F]" />
+              <span className="text-sm font-medium text-[#F2C94C]">Super Admin</span>
             </div>
             <h2 className="mt-1 text-2xl font-bold text-white">Platform Overview 👋</h2>
-            <p className="mt-1 text-[#FFE066]/80">Complete visibility into all operations across India</p>
+            <p className="mt-1 text-[#F2C94C]/80">Complete visibility into all operations across India</p>
           </div>
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 backdrop-blur-sm">
@@ -284,9 +284,9 @@ export function SuperAdminDashboardPage() {
       {/* Analytics Cards Row */}
       <motion.div {...fadeUp} transition={{ delay: 0.1 }}>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          <MetricCard title="Total Bookings" value={data.stats.totalBookings.toLocaleString()} icon={CalendarCheck} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" trend="up" trendValue="+12.4%" />
-          <MetricCard title="Total Revenue" value={`₹${(data.stats.totalRevenue / 100000).toFixed(1)}L`} icon={IndianRupee} iconColor="text-[#1D63FF]" borderClass="border-l-[#1D63FF]" trend="up" trendValue="+8.7%" />
-          <MetricCard title="Active Providers" value={data.stats.activeProviders.toLocaleString()} icon={Users} iconColor="text-[#0D3B7A]" borderClass="border-l-[#0D3B7A]" trend="up" trendValue="+5.2%" />
+          <MetricCard title="Total Bookings" value={data.stats.totalBookings.toLocaleString()} icon={CalendarCheck} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" trend="up" trendValue="+12.4%" />
+          <MetricCard title="Total Revenue" value={`₹${(data.stats.totalRevenue / 100000).toFixed(1)}L`} icon={IndianRupee} iconColor="text-[#FFD54F]" borderClass="border-l-[#FFD54F]" trend="up" trendValue="+8.7%" />
+          <MetricCard title="Active Providers" value={data.stats.activeProviders.toLocaleString()} icon={Users} iconColor="text-[#132D5E]" borderClass="border-l-[#132D5E]" trend="up" trendValue="+5.2%" />
           <MetricCard title="Complaints" value={data.stats.complaints} icon={AlertTriangle} iconColor="text-orange-600" borderClass="border-l-orange-500" />
           <MetricCard title="Cancellations" value={data.stats.cancellations} icon={Ban} iconColor="text-red-600" borderClass="border-l-red-500" />
           <MetricCard title="Avg Completion" value={data.stats.avgCompletionTime} icon={Clock} iconColor="text-violet-600" borderClass="border-l-violet-500" />
@@ -296,11 +296,11 @@ export function SuperAdminDashboardPage() {
       {/* Tabs */}
       <motion.div {...fadeUp} transition={{ delay: 0.15 }} className="mt-6">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="bg-[#0A2463]/5">
-            <TabsTrigger value="overview" className="data-[state=active]:bg-[#0D3B7A] data-[state=active]:text-white">Charts</TabsTrigger>
-            <TabsTrigger value="tables" className="data-[state=active]:bg-[#0D3B7A] data-[state=active]:text-white">Tables</TabsTrigger>
-            <TabsTrigger value="live" className="data-[state=active]:bg-[#0D3B7A] data-[state=active]:text-white">Live Monitor</TabsTrigger>
-            <TabsTrigger value="ai" className="data-[state=active]:bg-[#0D3B7A] data-[state=active]:text-white">AI Analysis</TabsTrigger>
+          <TabsList className="bg-[#0A1F44]/5">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-[#132D5E] data-[state=active]:text-white">Charts</TabsTrigger>
+            <TabsTrigger value="tables" className="data-[state=active]:bg-[#132D5E] data-[state=active]:text-white">Tables</TabsTrigger>
+            <TabsTrigger value="live" className="data-[state=active]:bg-[#132D5E] data-[state=active]:text-white">Live Monitor</TabsTrigger>
+            <TabsTrigger value="ai" className="data-[state=active]:bg-[#132D5E] data-[state=active]:text-white">AI Analysis</TabsTrigger>
           </TabsList>
 
           {/* Charts Tab */}
@@ -308,9 +308,9 @@ export function SuperAdminDashboardPage() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
               {/* Daily Bookings */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <BarChart3 className="size-4 text-[#FFCE32]" />
+                    <BarChart3 className="size-4 text-[#FFD54F]" />
                     Daily Bookings
                   </CardTitle>
                 </CardHeader>
@@ -321,7 +321,7 @@ export function SuperAdminDashboardPage() {
                       <XAxis dataKey="day" fontSize={11} tickLine={false} />
                       <YAxis fontSize={11} tickLine={false} />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="bookings" fill="#1D63FF" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="bookings" fill="#FFD54F" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ChartContainer>
                 </CardContent>
@@ -329,9 +329,9 @@ export function SuperAdminDashboardPage() {
 
               {/* Weekly Revenue */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <TrendingUp className="size-4 text-[#FFCE32]" />
+                    <TrendingUp className="size-4 text-[#FFD54F]" />
                     Weekly Revenue
                   </CardTitle>
                 </CardHeader>
@@ -342,7 +342,7 @@ export function SuperAdminDashboardPage() {
                       <XAxis dataKey="week" fontSize={11} tickLine={false} />
                       <YAxis fontSize={11} tickLine={false} tickFormatter={(v: number) => `₹${(v / 1000).toFixed(0)}k`} />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line type="monotone" dataKey="revenue" stroke="#0D3B7A" strokeWidth={2} dot={{ fill: '#0D3B7A', r: 4 }} />
+                      <Line type="monotone" dataKey="revenue" stroke="#132D5E" strokeWidth={2} dot={{ fill: '#132D5E', r: 4 }} />
                     </LineChart>
                   </ChartContainer>
                 </CardContent>
@@ -350,9 +350,9 @@ export function SuperAdminDashboardPage() {
 
               {/* Monthly Growth */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <Activity className="size-4 text-[#FFCE32]" />
+                    <Activity className="size-4 text-[#FFD54F]" />
                     Monthly Growth
                   </CardTitle>
                 </CardHeader>
@@ -363,7 +363,7 @@ export function SuperAdminDashboardPage() {
                       <XAxis dataKey="month" fontSize={11} tickLine={false} />
                       <YAxis fontSize={11} tickLine={false} tickFormatter={(v: number) => `${v}%`} />
                       <ChartTooltip content={<ChartTooltipContent />} />
-                      <Area type="monotone" dataKey="growth" stroke="#1D63FF" fill="#1D63FF" fillOpacity={0.15} strokeWidth={2} />
+                      <Area type="monotone" dataKey="growth" stroke="#FFD54F" fill="#FFD54F" fillOpacity={0.15} strokeWidth={2} />
                     </AreaChart>
                   </ChartContainer>
                 </CardContent>
@@ -376,9 +376,9 @@ export function SuperAdminDashboardPage() {
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
               {/* Top Providers */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <Star className="size-4 text-[#FFCE32]" />
+                    <Star className="size-4 text-[#FFD54F]" />
                     Top Providers
                   </CardTitle>
                 </CardHeader>
@@ -415,9 +415,9 @@ export function SuperAdminDashboardPage() {
 
               {/* Complaint Escalation */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-                <CardHeader className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <AlertTriangle className="size-4 text-[#FFCE32]" />
+                    <AlertTriangle className="size-4 text-[#FFD54F]" />
                     Complaint Escalation
                   </CardTitle>
                 </CardHeader>
@@ -439,7 +439,7 @@ export function SuperAdminDashboardPage() {
                             <TableCell className="text-sm text-muted-foreground">{c.type}</TableCell>
                             <TableCell><PriorityBadge priority={c.priority} /></TableCell>
                             <TableCell>
-                              <Badge variant="outline" className={c.status === 'Open' ? 'bg-red-50 text-red-700 border-red-200' : c.status === 'In Progress' ? 'bg-[#1D63FF]/10 text-[#1D63FF] border-[#1D63FF]/20' : 'bg-orange-50 text-orange-700 border-orange-200'}>
+                              <Badge variant="outline" className={c.status === 'Open' ? 'bg-red-50 text-red-700 border-red-200' : c.status === 'In Progress' ? 'bg-[#FFD54F]/10 text-[#FFD54F] border-[#FFD54F]/20' : 'bg-orange-50 text-orange-700 border-orange-200'}>
                                 {c.status}
                               </Badge>
                             </TableCell>
@@ -453,9 +453,9 @@ export function SuperAdminDashboardPage() {
 
               {/* Area Performance */}
               <Card className="overflow-hidden rounded-2xl border-0 shadow-sm lg:col-span-2">
-                <CardHeader className="bg-gradient-to-r from-[#0A2463] via-[#0D3B7A] to-[#1D63FF] pb-3">
+                <CardHeader className="bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F] pb-3">
                   <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                    <MapPin className="size-4 text-[#FFCE32]" />
+                    <MapPin className="size-4 text-[#FFD54F]" />
                     Area Performance
                   </CardTitle>
                 </CardHeader>
@@ -497,11 +497,11 @@ export function SuperAdminDashboardPage() {
               >
                 <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
                   <CardContent className="p-6 text-center">
-                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A2463] to-[#0D3B7A] shadow-lg">
-                      <Radio className="size-6 text-[#FFCE32]" />
+                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] shadow-lg">
+                      <Radio className="size-6 text-[#FFD54F]" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Live Jobs</p>
-                    <p className="mt-1 text-3xl font-bold text-[#0A2463]">{data.liveMonitoring.liveJobs}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#0A1F44]">{data.liveMonitoring.liveJobs}</p>
                     <div className="mt-2 flex items-center justify-center gap-1">
                       <span className="size-2 animate-pulse rounded-full bg-green-500" />
                       <span className="text-xs text-green-600">Active Now</span>
@@ -517,11 +517,11 @@ export function SuperAdminDashboardPage() {
               >
                 <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
                   <CardContent className="p-6 text-center">
-                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] shadow-lg">
-                      <Users className="size-6 text-[#FFCE32]" />
+                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#132D5E] to-[#FFD54F] shadow-lg">
+                      <Users className="size-6 text-[#FFD54F]" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Live Providers</p>
-                    <p className="mt-1 text-3xl font-bold text-[#0A2463]">{data.liveMonitoring.liveProviders}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#0A1F44]">{data.liveMonitoring.liveProviders}</p>
                     <div className="mt-2 flex items-center justify-center gap-1">
                       <span className="size-2 animate-pulse rounded-full bg-green-500" />
                       <span className="text-xs text-green-600">Online</span>
@@ -537,11 +537,11 @@ export function SuperAdminDashboardPage() {
               >
                 <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
                   <CardContent className="p-6 text-center">
-                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] shadow-lg">
-                      <Wrench className="size-6 text-[#FFCE32]" />
+                    <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-lg">
+                      <Wrench className="size-6 text-[#FFD54F]" />
                     </div>
                     <p className="text-xs font-medium text-muted-foreground">Live Technicians</p>
-                    <p className="mt-1 text-3xl font-bold text-[#0A2463]">{data.liveMonitoring.liveTechnicians}</p>
+                    <p className="mt-1 text-3xl font-bold text-[#0A1F44]">{data.liveMonitoring.liveTechnicians}</p>
                     <div className="mt-2 flex items-center justify-center gap-1">
                       <span className="size-2 animate-pulse rounded-full bg-green-500" />
                       <span className="text-xs text-green-600">On Duty</span>
@@ -582,8 +582,8 @@ export function SuperAdminDashboardPage() {
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Eye className="size-5 text-[#1D63FF]" />
-                      <span className="text-sm font-semibold text-[#0A2463]">Real-Time System Status</span>
+                      <Eye className="size-5 text-[#FFD54F]" />
+                      <span className="text-sm font-semibold text-[#0A1F44]">Real-Time System Status</span>
                     </div>
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-1.5">
@@ -615,27 +615,27 @@ export function SuperAdminDashboardPage() {
                 transition={{ delay: 0.05 }}
               >
                 <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#0A2463] to-[#0D3B7A] pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#0A1F44] to-[#132D5E] pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                      <Brain className="size-4 text-[#FFCE32]" />
+                      <Brain className="size-4 text-[#FFD54F]" />
                       Demand Prediction
                     </CardTitle>
-                    <CardDescription className="text-xs text-[#FFE066]">AI-powered demand forecasting</CardDescription>
+                    <CardDescription className="text-xs text-[#F2C94C]">AI-powered demand forecasting</CardDescription>
                   </CardHeader>
                   <CardContent className="p-4">
                     <div className="space-y-3">
                       {data.aiAnalysis.demandPrediction.map((item) => (
-                        <div key={item.category} className="flex items-center justify-between rounded-xl bg-[#0A2463]/5 p-3">
+                        <div key={item.category} className="flex items-center justify-between rounded-xl bg-[#0A1F44]/5 p-3">
                           <div>
-                            <p className="text-sm font-semibold text-[#0A2463]">{item.category}</p>
+                            <p className="text-sm font-semibold text-[#0A1F44]">{item.category}</p>
                             <p className="text-xs text-muted-foreground">Demand: {item.demand}</p>
                           </div>
                           <div className="flex items-center gap-1">
-                            {item.trend === 'up' && <ArrowUpRight className="size-4 text-[#1D63FF]" />}
+                            {item.trend === 'up' && <ArrowUpRight className="size-4 text-[#FFD54F]" />}
                             {item.trend === 'down' && <ArrowDownRight className="size-4 text-red-600" />}
                             {item.trend === 'stable' && <Activity className="size-4 text-yellow-600" />}
                             <Badge variant="outline" className={
-                              item.trend === 'up' ? 'bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30' :
+                              item.trend === 'up' ? 'bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30' :
                               item.trend === 'down' ? 'bg-red-50 text-red-700 border-red-200' :
                               'bg-yellow-50 text-yellow-700 border-yellow-200'
                             }>
@@ -656,23 +656,23 @@ export function SuperAdminDashboardPage() {
                 transition={{ delay: 0.1 }}
               >
                 <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                      <Globe className="size-4 text-[#FFCE32]" />
+                      <Globe className="size-4 text-[#FFD54F]" />
                       City Expansion
                     </CardTitle>
-                    <CardDescription className="text-xs text-[#FFE066]">Suggested new cities</CardDescription>
+                    <CardDescription className="text-xs text-[#F2C94C]">Suggested new cities</CardDescription>
                   </CardHeader>
                   <CardContent className="p-4">
                     <div className="space-y-3">
                       {data.aiAnalysis.cityExpansion.map((item) => (
-                        <div key={item.city} className="rounded-xl bg-[#0A2463]/5 p-3">
+                        <div key={item.city} className="rounded-xl bg-[#0A1F44]/5 p-3">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <MapPin className="size-4 text-[#1D63FF]" />
-                              <p className="text-sm font-semibold text-[#0A2463]">{item.city}</p>
+                              <MapPin className="size-4 text-[#FFD54F]" />
+                              <p className="text-sm font-semibold text-[#0A1F44]">{item.city}</p>
                             </div>
-                            <Badge className="bg-gradient-to-r from-[#0D3B7A] to-[#1D63FF] text-white border-0">
+                            <Badge className="bg-gradient-to-r from-[#132D5E] to-[#FFD54F] text-[#0A1F44] border-0">
                               Score: {item.score}
                             </Badge>
                           </div>
@@ -691,24 +691,24 @@ export function SuperAdminDashboardPage() {
                 transition={{ delay: 0.15 }}
               >
                 <Card className="h-full overflow-hidden rounded-2xl border-0 shadow-sm">
-                  <CardHeader className="bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] pb-3">
+                  <CardHeader className="bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] pb-3">
                     <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-                      <DollarSign className="size-4 text-[#FFCE32]" />
+                      <DollarSign className="size-4 text-[#FFD54F]" />
                       Pricing Optimization
                     </CardTitle>
-                    <CardDescription className="text-xs text-[#FFE066]">AI pricing suggestions</CardDescription>
+                    <CardDescription className="text-xs text-[#F2C94C]">AI pricing suggestions</CardDescription>
                   </CardHeader>
                   <CardContent className="p-4">
                     <div className="space-y-3">
                       {data.aiAnalysis.pricingOptimization.map((item) => (
-                        <div key={item.category} className="rounded-xl bg-[#0A2463]/5 p-3">
-                          <p className="text-sm font-semibold text-[#0A2463]">{item.category}</p>
+                        <div key={item.category} className="rounded-xl bg-[#0A1F44]/5 p-3">
+                          <p className="text-sm font-semibold text-[#0A1F44]">{item.category}</p>
                           <div className="mt-2 flex items-center gap-2 text-xs">
                             <span className="text-muted-foreground">₹{item.current}</span>
-                            <ArrowUpRight className="size-3 text-[#1D63FF]" />
-                            <span className="font-semibold text-[#1D63FF]">₹{item.suggested}</span>
+                            <ArrowUpRight className="size-3 text-[#FFD54F]" />
+                            <span className="font-semibold text-[#FFD54F]">₹{item.suggested}</span>
                           </div>
-                          <Badge variant="outline" className="mt-2 bg-[#FFCE32]/10 text-[#0D3B7A] border-[#FFCE32]/30">
+                          <Badge variant="outline" className="mt-2 bg-[#FFD54F]/10 text-[#132D5E] border-[#FFD54F]/30">
                             {item.impact}
                           </Badge>
                         </div>

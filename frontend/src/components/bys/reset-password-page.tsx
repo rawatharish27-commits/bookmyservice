@@ -81,16 +81,16 @@ export function ResetPasswordPage() {
           className="w-full max-w-md text-center"
         >
           <div className="rounded-2xl border border-gray-200/50 bg-white/80 p-8 shadow-xl backdrop-blur-xl">
-            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] to-[#1D63FF] text-white shadow-lg shadow-[#1D63FF]/25">
+            <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#132D5E] to-[#FFD54F] text-white shadow-lg shadow-[#FFD54F]/25">
               <CheckCircle2 className="size-8" />
             </div>
-            <h2 className="text-2xl font-bold text-[#0A2463]">Password Reset!</h2>
+            <h2 className="text-2xl font-bold text-[#0A1F44]">Password Reset!</h2>
             <p className="mt-2 text-muted-foreground">
               Your password has been successfully reset. You can now sign in with your new password.
             </p>
             <Button
               onClick={() => navigate('login')}
-              className="mt-6 h-11 rounded-xl bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF] px-6 text-white shadow-lg shadow-[#1D63FF]/25 hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF]"
+              className="mt-6 h-11 rounded-xl bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#E0B84C] px-6 text-white shadow-lg shadow-[#FFD54F]/25 hover:from-[#0A1F44] hover:via-[#132D5E] hover:to-[#FFD54F]"
             >
               Go to Login
             </Button>
@@ -102,8 +102,8 @@ export function ResetPasswordPage() {
 
   return (
     <div className="flex min-h-[80vh] items-center justify-center px-4">
-      <div className="absolute top-0 right-0 w-80 h-80 bg-[#1D63FF]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#FFCE32]/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
+      <div className="absolute top-0 right-0 w-80 h-80 bg-[#FFD54F]/5 rounded-full blur-3xl -translate-y-1/3 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-72 h-72 bg-[#FFD54F]/10 rounded-full blur-3xl translate-y-1/3 -translate-x-1/3" />
 
       <motion.div
         {...fadeUp}
@@ -115,7 +115,7 @@ export function ResetPasswordPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.15 }}
           onClick={() => navigate('login')}
-          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#1D63FF] mb-6 transition-colors group"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-[#FFD54F] mb-6 transition-colors group"
         >
           <ArrowLeft className="size-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Login
@@ -123,14 +123,14 @@ export function ResetPasswordPage() {
 
         <div className="rounded-2xl shadow-xl shadow-gray-200/60 border border-gray-200/50 relative overflow-hidden bg-white/70 backdrop-blur-xl">
           <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/40 pointer-events-none" />
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#FFCE32]" />
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#E0B84C]" />
 
           <div className="relative pointer-events-auto text-center pt-8 pb-2 px-6">
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 180, damping: 14, delay: 0.1 }}
-              className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF] text-white shadow-lg shadow-[#1D63FF]/25"
+              className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#132D5E] via-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25"
             >
               <KeyRound className="size-8" />
             </motion.div>
@@ -173,7 +173,7 @@ export function ResetPasswordPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  className="h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 focus:bg-white/80 transition-all rounded-xl"
+                  className="h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 focus:bg-white/80 transition-all rounded-xl"
                   placeholder="you@example.com"
                 />
               </div>
@@ -190,7 +190,7 @@ export function ResetPasswordPage() {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     required
-                    className="pl-10 pr-11 h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 focus:bg-white/80 transition-all rounded-xl"
+                    className="pl-10 pr-11 h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 focus:bg-white/80 transition-all rounded-xl"
                     placeholder="Min 8 characters"
                   />
                   <button
@@ -215,7 +215,7 @@ export function ResetPasswordPage() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
-                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#1D63FF] focus:ring-[#1D63FF]/20 focus:bg-white/80 transition-all rounded-xl"
+                    className="pl-10 h-11 bg-white/60 border-gray-200 focus:border-[#FFD54F] focus:ring-[#FFD54F]/20 focus:bg-white/80 transition-all rounded-xl"
                     placeholder="Re-enter new password"
                   />
                 </div>
@@ -226,7 +226,7 @@ export function ResetPasswordPage() {
               <Button
                 type="submit"
                 disabled={loading || !token}
-                className="w-full shimmer bg-gradient-to-r from-[#0D3B7A] via-[#1D63FF] to-[#4D8AFF] hover:from-[#0A2463] hover:via-[#0D3B7A] hover:to-[#1D63FF] shadow-lg shadow-[#1D63FF]/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
+                className="w-full shimmer bg-gradient-to-r from-[#132D5E] via-[#FFD54F] to-[#E0B84C] hover:from-[#0A1F44] hover:via-[#132D5E] hover:to-[#FFD54F] shadow-lg shadow-[#FFD54F]/25 transition-all duration-300 h-12 rounded-xl text-base font-semibold"
               >
                 {loading ? (
                   <>

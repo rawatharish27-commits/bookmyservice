@@ -78,19 +78,19 @@ interface AMCPlan {
 
 /* ---------- category config ---------- */
 const CATEGORY_ICONS: Record<string, { icon: typeof Wrench; gradient: string }> = {
-  AIR_CONDITIONER: { icon: Wind, gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
-  PLUMBING: { icon: Droplets, gradient: 'from-[#7DB0FF] to-[#FFCE32]' },
-  ELECTRICAL: { icon: Zap, gradient: 'from-[#FFE066] to-yellow-500' },
-  REFRIGERATOR: { icon: Wrench, gradient: 'from-[#4D8AFF] to-[#4D8AFF]' },
+  AIR_CONDITIONER: { icon: Wind, gradient: 'from-[#FFD54F] to-[#E0B84C]' },
+  PLUMBING: { icon: Droplets, gradient: 'from-[#FFD54F] to-[#E0B84C]' },
+  ELECTRICAL: { icon: Zap, gradient: 'from-[#F2C94C] to-yellow-500' },
+  REFRIGERATOR: { icon: Wrench, gradient: 'from-[#E0B84C] to-[#FFD54F]' },
   WASHING_MACHINE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
   KITCHEN_APPLIANCES: { icon: Wrench, gradient: 'from-amber-400 to-orange-500' },
   TV_REPAIR: { icon: Wrench, gradient: 'from-rose-400 to-pink-500' },
-  WATER_PURIFIER: { icon: Droplets, gradient: 'from-[#FFE066] to-[#4D8AFF]' },
+  WATER_PURIFIER: { icon: Droplets, gradient: 'from-[#F2C94C] to-[#E0B84C]' },
   GEYSER: { icon: Wrench, gradient: 'from-red-400 to-orange-500' },
-  WATER_TANK_CLEANING: { icon: Droplets, gradient: 'from-[#7DB0FF] to-indigo-500' },
-  MOVERS_AND_PACKERS: { icon: Wrench, gradient: 'from-[#7DB0FF] to-green-500' },
+  WATER_TANK_CLEANING: { icon: Droplets, gradient: 'from-[#FFD54F] to-indigo-500' },
+  MOVERS_AND_PACKERS: { icon: Wrench, gradient: 'from-[#FFD54F] to-green-500' },
   APPLIANCE: { icon: Wrench, gradient: 'from-violet-400 to-purple-500' },
-  GENERAL: { icon: Shield, gradient: 'from-[#7DB0FF] to-[#4D8AFF]' },
+  GENERAL: { icon: Shield, gradient: 'from-[#FFD54F] to-[#E0B84C]' },
 };
 
 function getCategoryIcon(category: string) {
@@ -99,10 +99,10 @@ function getCategoryIcon(category: string) {
 
 /* ---------- subscription status config ---------- */
 const STATUS_CONFIG: Record<string, { className: string; dotColor: string; label: string }> = {
-  ACTIVE: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#7DB0FF]', label: 'Active' },
+  ACTIVE: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#FFD54F]', label: 'Active' },
   EXPIRED: { className: 'bg-gray-50 text-gray-600 border-gray-200', dotColor: 'bg-gray-400', label: 'Expired' },
   CANCELLED: { className: 'bg-red-50 text-red-700 border-red-200', dotColor: 'bg-red-400', label: 'Cancelled' },
-  PENDING: { className: 'bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20', dotColor: 'bg-[#FFE066]', label: 'Pending' },
+  PENDING: { className: 'bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20', dotColor: 'bg-[#F2C94C]', label: 'Pending' },
 };
 
 /* ==================== MAIN COMPONENT ==================== */
@@ -157,29 +157,29 @@ export function ClientAmcPage() {
       <motion.div
         {...fadeUp}
         transition={{ duration: 0.4 }}
-        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#1D63FF] via-[#1D63FF] to-[#FFCE32] p-6 sm:p-8"
+        className="relative mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-[#FFD54F] via-[#E0B84C] to-[#F2C94C] p-6 sm:p-8"
       >
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
-        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-white/10 blur-2xl" />
-        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-white/5 blur-3xl" />
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwQTFGNDAiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iMiIvPjwvZz48L2c+PC9zdmc+')] opacity-60" />
+        <div className="absolute -right-8 -top-8 size-40 rounded-full bg-[#0A1F44]/10 blur-2xl" />
+        <div className="absolute -bottom-12 -left-12 size-48 rounded-full bg-[#0A1F44]/5 blur-3xl" />
 
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldCheck className="size-5 text-white/70" />
-              <span className="text-sm font-medium text-white/80">Protect Your Home</span>
+              <ShieldCheck className="size-5 text-[#0A1F44]/70" />
+              <span className="text-sm font-medium text-[#0A1F44]/80">Protect Your Home</span>
             </div>
-            <h2 className="mt-1 text-xl font-bold text-white sm:text-2xl">
+            <h2 className="mt-1 text-xl font-bold text-[#0A1F44] sm:text-2xl">
               Annual Maintenance Contracts
             </h2>
-            <p className="mt-1 text-white/80">
+            <p className="mt-1 text-[#0A1F44]/80">
               Get unlimited service visits, priority support & exclusive discounts
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex flex-col items-center rounded-xl bg-white/10 px-5 py-3 backdrop-blur-sm">
-              <span className="text-2xl font-bold text-white">{activeSubscriptions.length}</span>
-              <span className="text-xs text-white/70">Active Plans</span>
+            <div className="hidden sm:flex flex-col items-center rounded-xl bg-[#0A1F44]/10 px-5 py-3 backdrop-blur-sm">
+              <span className="text-2xl font-bold text-[#0A1F44]">{activeSubscriptions.length}</span>
+              <span className="text-xs text-[#0A1F44]/70">Active Plans</span>
             </div>
           </div>
         </div>
@@ -195,7 +195,7 @@ export function ClientAmcPage() {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Active Subscriptions</h2>
           {activeSubscriptions.length > 0 && (
-            <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
+            <Badge className="bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">
               {activeSubscriptions.length} Active
             </Badge>
           )}
@@ -208,9 +208,9 @@ export function ClientAmcPage() {
             ))}
           </div>
         ) : activeSubscriptions.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 py-12 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
-              <Shield className="size-8 text-[#9DC2FF]" />
+          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#FFD54F]/20 bg-[#FFD54F]/5 py-12 text-center">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+              <Shield className="size-8 text-[#E0B84C]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No Active Subscriptions</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">Subscribe to an AMC plan below for hassle-free maintenance</p>
@@ -235,15 +235,15 @@ export function ClientAmcPage() {
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${catConfig.gradient} shadow-md`}>
-                            <catConfig.icon className="size-5 text-white" />
+                            <catConfig.icon className="size-5 text-[#0A1F44]" />
                           </div>
                           <div>
                             <p className="font-semibold">{sub.planName}</p>
                             <p className="text-xs text-muted-foreground">{sub.category}</p>
                           </div>
                         </div>
-                        <Badge variant="outline" className="gap-1 text-[10px] font-semibold bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20">
-                          <span className="size-1.5 rounded-full bg-[#7DB0FF]" />
+                        <Badge variant="outline" className="gap-1 text-[10px] font-semibold bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20">
+                          <span className="size-1.5 rounded-full bg-[#FFD54F]" />
                           Active
                         </Badge>
                       </div>
@@ -280,7 +280,7 @@ export function ClientAmcPage() {
                           </span>
                         </div>
                         {isExpiringSoon && (
-                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-[#1D63FF]/20 bg-[#1D63FF]/5 text-[#0D3B7A]">
+                          <Badge variant="outline" className="gap-1 text-[10px] font-semibold border-[#FFD54F]/20 bg-[#FFD54F]/5 text-[#132D5E]">
                             <AlertTriangle className="size-2.5" />
                             {daysRemaining}d left
                           </Badge>
@@ -291,7 +291,7 @@ export function ClientAmcPage() {
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="mt-3 w-full text-[#1D63FF] hover:text-[#0D3B7A] hover:bg-[#1D63FF]/5"
+                        className="mt-3 w-full text-[#FFD54F] hover:text-[#132D5E] hover:bg-[#FFD54F]/5"
                         onClick={() => navigate('client-amc-detail', { subscriptionId: sub.id })}
                       >
                         View Details <ChevronRight className="ml-1 size-4" />
@@ -326,7 +326,7 @@ export function ClientAmcPage() {
                   className="flex items-center gap-4 rounded-xl border border-gray-100 bg-white/50 p-4 transition-all hover:bg-gray-50/80"
                 >
                   <div className={`flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${catConfig.gradient} opacity-70`}>
-                    <catConfig.icon className="size-4.5 text-white" />
+                    <catConfig.icon className="size-4.5 text-[#0A1F44]" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-muted-foreground">{sub.planName}</p>
@@ -353,7 +353,7 @@ export function ClientAmcPage() {
       >
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Available Plans</h2>
-          <Badge className="bg-[#1D63FF]/5 text-[#0D3B7A] border-[#1D63FF]/20 hover:bg-[#1D63FF]/10">
+          <Badge className="bg-[#FFD54F]/5 text-[#132D5E] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">
             {plans.length} Plans
           </Badge>
         </div>
@@ -365,9 +365,9 @@ export function ClientAmcPage() {
             ))}
           </div>
         ) : plans.length === 0 ? (
-          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#1D63FF]/20 bg-[#1D63FF]/5 py-12 text-center">
-            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#FFCE32]/5">
-              <Package className="size-8 text-[#9DC2FF]" />
+          <div className="flex flex-col items-center rounded-2xl border-2 border-dashed border-[#FFD54F]/20 bg-[#FFD54F]/5 py-12 text-center">
+            <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+              <Package className="size-8 text-[#E0B84C]" />
             </div>
             <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No Plans Available</h3>
             <p className="mt-1 text-sm text-muted-foreground/70">New AMC plans will be added soon. Stay tuned!</p>
@@ -380,12 +380,12 @@ export function ClientAmcPage() {
               return (
                 <motion.div key={plan.id} variants={fadeUp}>
                   <Card className={`group relative flex flex-col overflow-hidden rounded-2xl border-0 shadow-sm transition-all hover:shadow-lg ${
-                    plan.popular ? 'ring-2 ring-[#4D8AFF]' : ''
+                    plan.popular ? 'ring-2 ring-[#E0B84C]' : ''
                   }`}>
                     {/* Popular badge */}
                     {plan.popular && (
                       <div className="absolute right-4 top-4 z-10">
-                        <Badge className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white border-0 shadow-md">
+                        <Badge className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] border-0 shadow-md">
                           <Sparkles className="mr-1 size-3" />
                           Popular
                         </Badge>
@@ -399,7 +399,7 @@ export function ClientAmcPage() {
                       {/* Plan icon & name */}
                       <div className="flex items-center gap-3">
                         <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${catConfig.gradient} shadow-lg`}>
-                          <catConfig.icon className="size-6 text-white" />
+                          <catConfig.icon className="size-6 text-[#0A1F44]" />
                         </div>
                         <div>
                           <h3 className="font-bold text-base">{plan.name}</h3>
@@ -409,15 +409,15 @@ export function ClientAmcPage() {
 
                       {/* Price */}
                       <div className="mt-5 flex items-baseline gap-1">
-                        <IndianRupee className="size-5 text-[#1D63FF]" />
-                        <span className="text-3xl font-bold text-[#1D63FF]">{plan.price?.toLocaleString('en-IN')}</span>
+                        <IndianRupee className="size-5 text-[#FFD54F]" />
+                        <span className="text-3xl font-bold text-[#FFD54F]">{plan.price?.toLocaleString('en-IN')}</span>
                         <span className="text-sm text-muted-foreground">/{plan.durationUnit}</span>
                       </div>
 
                       {/* Visits included */}
-                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#1D63FF]/5 p-2.5">
-                        <Wrench className="size-4 text-[#1D63FF]" />
-                        <span className="text-sm font-medium text-[#0D3B7A]">
+                      <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#FFD54F]/5 p-2.5">
+                        <Wrench className="size-4 text-[#FFD54F]" />
+                        <span className="text-sm font-medium text-[#132D5E]">
                           {plan.totalVisits} service visits included
                         </span>
                       </div>
@@ -427,7 +427,7 @@ export function ClientAmcPage() {
                         <div className="mt-4 flex-1 space-y-2">
                           {plan.features.map((feature, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <CheckCircle className="mt-0.5 size-4 shrink-0 text-[#4D8AFF]" />
+                              <CheckCircle className="mt-0.5 size-4 shrink-0 text-[#E0B84C]" />
                               <span className="text-sm text-muted-foreground">{feature}</span>
                             </div>
                           ))}
@@ -445,7 +445,7 @@ export function ClientAmcPage() {
                           className={`w-full rounded-xl shadow-lg ${
                             isAlreadySubscribed
                               ? 'bg-gray-100 text-gray-500 shadow-none hover:bg-gray-100 cursor-not-allowed'
-                              : 'bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-[#4D8AFF]/25 hover:shadow-xl hover:shadow-[#4D8AFF]/30'
+                              : 'bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-[#E0B84C]/25 hover:shadow-xl hover:shadow-[#E0B84C]/30'
                           }`}
                           disabled={isAlreadySubscribed}
                           onClick={() => {
@@ -491,16 +491,16 @@ export function ClientAmcPage() {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                className="flex size-20 items-center justify-center rounded-full bg-[#1D63FF]/10"
+                className="flex size-20 items-center justify-center rounded-full bg-[#FFD54F]/10"
               >
-                <ShieldCheck className="size-10 text-[#1D63FF]" />
+                <ShieldCheck className="size-10 text-[#FFD54F]" />
               </motion.div>
               <h3 className="mt-4 text-lg font-bold">Subscribed Successfully!</h3>
               <p className="mt-2 text-sm text-muted-foreground">
                 You&apos;re now enrolled in the <strong>{subscribeDialog?.name}</strong> plan. Enjoy {subscribeDialog?.totalVisits} service visits and priority support!
               </p>
               <Button
-                className="mt-6 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+                className="mt-6 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
                 onClick={() => { setSubscribeDialog(null); setSubscribeSuccess(false); }}
               >
                 View My Plans
@@ -511,7 +511,7 @@ export function ClientAmcPage() {
             <>
               <DialogHeader>
                 <DialogTitle className="flex items-center gap-2">
-                  <Shield className="size-5 text-[#1D63FF]" />
+                  <Shield className="size-5 text-[#FFD54F]" />
                   Subscribe to Plan
                 </DialogTitle>
                 <DialogDescription>
@@ -522,13 +522,13 @@ export function ClientAmcPage() {
               {subscribeDialog && (
                 <div className="space-y-5 pt-2">
                   {/* Plan summary card */}
-                  <div className="rounded-xl border border-[#1D63FF]/20 bg-[#1D63FF]/5 p-5">
+                  <div className="rounded-xl border border-[#FFD54F]/20 bg-[#FFD54F]/5 p-5">
                     <div className="flex items-center gap-3">
                       {(() => {
                         const catConfig = getCategoryIcon(subscribeDialog.category);
                         return (
                           <div className={`flex size-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${catConfig.gradient} shadow-lg`}>
-                            <catConfig.icon className="size-6 text-white" />
+                            <catConfig.icon className="size-6 text-[#0A1F44]" />
                           </div>
                         );
                       })()}
@@ -543,7 +543,7 @@ export function ClientAmcPage() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Price</span>
-                        <span className="font-bold text-[#1D63FF]">₹{subscribeDialog.price?.toLocaleString('en-IN')}</span>
+                        <span className="font-bold text-[#FFD54F]">₹{subscribeDialog.price?.toLocaleString('en-IN')}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm">
                         <span className="text-muted-foreground">Duration</span>
@@ -562,7 +562,7 @@ export function ClientAmcPage() {
                         <div className="space-y-2">
                           {subscribeDialog.features.slice(0, 4).map((feature, idx) => (
                             <div key={idx} className="flex items-start gap-2">
-                              <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-[#4D8AFF]" />
+                              <CheckCircle className="mt-0.5 size-3.5 shrink-0 text-[#E0B84C]" />
                               <span className="text-xs text-muted-foreground">{feature}</span>
                             </div>
                           ))}
@@ -575,9 +575,9 @@ export function ClientAmcPage() {
                   </div>
 
                   {/* Info note */}
-                  <div className="flex items-start gap-3 rounded-xl bg-[#1D63FF]/5 p-4">
-                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-[#1D63FF]" />
-                    <p className="text-xs text-[#0D3B7A]">
+                  <div className="flex items-start gap-3 rounded-xl bg-[#FFD54F]/5 p-4">
+                    <AlertTriangle className="mt-0.5 size-4 shrink-0 text-[#FFD54F]" />
+                    <p className="text-xs text-[#132D5E]">
                       The subscription amount will be deducted from your wallet balance. Make sure you have sufficient funds.
                     </p>
                   </div>
@@ -595,7 +595,7 @@ export function ClientAmcPage() {
                 <Button
                   onClick={handleSubscribe}
                   disabled={subscribing}
-                  className="rounded-xl bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+                  className="rounded-xl bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
                 >
                   {subscribing ? (
                     <>

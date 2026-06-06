@@ -93,7 +93,7 @@ export function ContactPage() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A2463] via-[#0D3B7A] to-[#E6B800] p-10 sm:p-14"
+        className="relative mb-12 overflow-hidden rounded-3xl bg-gradient-to-br from-[#0A1F44] via-[#132D5E] to-[#FFD54F] p-10 sm:p-14"
       >
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-16 -top-16 size-64 rounded-full bg-white/5" />
@@ -133,28 +133,28 @@ export function ContactPage() {
             icon: <MapPin className="size-6" />,
             title: 'Visit Us',
             detail: COMPANY_INFO.address,
-            gradient: 'from-[#1D63FF] to-[#1D63FF]',
+            gradient: 'from-[#0A1F44] to-[#132D5E]',
             action: null,
           },
           {
             icon: <Phone className="size-6" />,
             title: 'Call Us',
             detail: COMPANY_INFO.phone,
-            gradient: 'from-[#1D63FF] to-[#FFCE32]',
+            gradient: 'from-[#0A1F44] to-[#132D5E]',
             action: `tel:${COMPANY_INFO.phone}`,
           },
           {
             icon: <Mail className="size-6" />,
             title: 'Email Us',
             detail: COMPANY_INFO.email,
-            gradient: 'from-[#E6B800] to-[#1D63FF]',
+            gradient: 'from-[#D4A017] to-[#FFD54F]',
             action: `mailto:${COMPANY_INFO.email}`,
           },
           {
             icon: <Headphones className="size-6" />,
             title: 'Support Hours',
             detail: COMPANY_INFO.supportHours,
-            gradient: 'from-[#0D3B7A] to-[#4D8AFF]',
+            gradient: 'from-[#132D5E] to-[#E0B84C]',
             action: null,
           },
         ].map((item, idx) => (
@@ -198,7 +198,7 @@ export function ContactPage() {
         >
           <div className="overflow-hidden rounded-2xl border-0 glass-emerald shadow-lg">
             {/* Top gradient bar */}
-            <div className="h-1.5 bg-gradient-to-r from-[#1D63FF] via-[#1D63FF] to-[#FFCE32]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A1F44] via-[#132D5E] to-[#FFD54F]" />
 
             <div className="p-6 sm:p-8">
               <AnimatePresence mode="wait">
@@ -210,7 +210,7 @@ export function ContactPage() {
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="py-12 text-center"
                   >
-                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] text-white shadow-lg">
+                    <div className="mx-auto mb-4 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] text-white shadow-lg">
                       <CheckCircle2 className="size-8" />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900">Message Sent!</h3>
@@ -219,7 +219,7 @@ export function ContactPage() {
                     </p>
                     <Button
                       variant="outline"
-                      className="mt-6 rounded-xl border-[#7DB0FF] text-[#0D3B7A] hover:bg-[#FFCE32]/5"
+                      className="mt-6 rounded-xl border-[#FFD54F] text-[#132D5E] hover:bg-[#FFD54F]/5"
                       onClick={() => {
                         setSubmitted(false);
                         setForm({ name: '', email: '', subject: '', message: '' });
@@ -248,7 +248,7 @@ export function ContactPage() {
                           placeholder="Your name"
                           value={form.name}
                           onChange={(e) => handleChange('name', e.target.value)}
-                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
+                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#FFD54F] focus:bg-white focus:ring-[#FFD54F]/30"
                         />
                       </div>
                       <div className="space-y-2">
@@ -259,7 +259,7 @@ export function ContactPage() {
                           placeholder="you@example.com"
                           value={form.email}
                           onChange={(e) => handleChange('email', e.target.value)}
-                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
+                          className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#FFD54F] focus:bg-white focus:ring-[#FFD54F]/30"
                         />
                       </div>
                     </div>
@@ -270,7 +270,7 @@ export function ContactPage() {
                         placeholder="What is this about?"
                         value={form.subject}
                         onChange={(e) => handleChange('subject', e.target.value)}
-                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
+                        className="h-11 rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#FFD54F] focus:bg-white focus:ring-[#FFD54F]/30"
                       />
                     </div>
                     <div className="space-y-2">
@@ -281,7 +281,7 @@ export function ContactPage() {
                         rows={5}
                         value={form.message}
                         onChange={(e) => handleChange('message', e.target.value)}
-                        className="rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#1D63FF] focus:bg-white focus:ring-[#1D63FF]/30"
+                        className="rounded-xl border-gray-200 bg-gray-50/50 focus:border-[#FFD54F] focus:bg-white focus:ring-[#FFD54F]/30"
                       />
                     </div>
 
@@ -299,7 +299,7 @@ export function ContactPage() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="shimmer h-12 w-full rounded-xl bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-base font-medium text-white shadow-lg shadow-[#1D63FF]/25 hover:from-[#0D3B7A] hover:to-[#0D3B7A]"
+                      className="shimmer h-12 w-full rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-base font-medium text-[#0A1F44] shadow-lg shadow-[#FFD54F]/25 hover:from-[#E0B84C] hover:to-[#FFD54F]"
                     >
                       {loading ? 'Sending...' : 'Send Message'}
                       <Send className="ml-2 size-4" />
@@ -320,7 +320,7 @@ export function ContactPage() {
         >
           {/* Contact Details Card */}
           <div className="overflow-hidden rounded-2xl border-0 glass-emerald shadow-lg">
-            <div className="h-1.5 bg-gradient-to-r from-[#1D63FF] to-[#1D63FF]" />
+            <div className="h-1.5 bg-gradient-to-r from-[#0A1F44] to-[#132D5E]" />
             <div className="p-6">
               <h3 className="mb-5 text-lg font-bold text-gray-900">Contact Details</h3>
               <div className="space-y-5">
@@ -329,27 +329,27 @@ export function ContactPage() {
                     icon: <MapPin className="size-5" />,
                     label: 'Address',
                     value: COMPANY_INFO.address,
-                    gradient: 'from-[#1D63FF] to-[#1D63FF]',
+                    gradient: 'from-[#0A1F44] to-[#132D5E]',
                   },
                   {
                     icon: <Phone className="size-5" />,
                     label: 'Phone',
                     value: COMPANY_INFO.phone,
                     href: `tel:${COMPANY_INFO.phone}`,
-                    gradient: 'from-[#1D63FF] to-[#FFCE32]',
+                    gradient: 'from-[#0A1F44] to-[#132D5E]',
                   },
                   {
                     icon: <Mail className="size-5" />,
                     label: 'Email',
                     value: COMPANY_INFO.email,
                     href: `mailto:${COMPANY_INFO.email}`,
-                    gradient: 'from-[#E6B800] to-[#1D63FF]',
+                    gradient: 'from-[#D4A017] to-[#FFD54F]',
                   },
                   {
                     icon: <Clock className="size-5" />,
                     label: 'Business Hours',
                     value: COMPANY_INFO.supportHours,
-                    gradient: 'from-[#0D3B7A] to-[#4D8AFF]',
+                    gradient: 'from-[#132D5E] to-[#E0B84C]',
                   },
                 ].map((item) => (
                   <div key={item.label} className="flex items-start gap-3">
@@ -361,7 +361,7 @@ export function ContactPage() {
                       {item.href ? (
                         <a
                           href={item.href}
-                          className="text-sm text-muted-foreground hover:text-[#1D63FF] transition-colors"
+                          className="text-sm text-muted-foreground hover:text-[#0A1F44] transition-colors"
                         >
                           {item.value}
                         </a>
@@ -381,10 +381,10 @@ export function ContactPage() {
               <h3 className="mb-4 text-lg font-bold text-gray-900">Follow Us</h3>
               <div className="grid grid-cols-4 gap-3">
                 {[
-                  { icon: <Globe className="size-5" />, label: 'Facebook', color: 'hover:bg-[#4D8AFF]/5 hover:text-[#1D63FF]' },
-                  { icon: <Rss className="size-5" />, label: 'Twitter', color: 'hover:bg-[#4D8AFF]/5 hover:text-[#1D63FF]' },
+                  { icon: <Globe className="size-5" />, label: 'Facebook', color: 'hover:bg-[#FFD54F]/5 hover:text-[#0A1F44]' },
+                  { icon: <Rss className="size-5" />, label: 'Twitter', color: 'hover:bg-[#FFD54F]/5 hover:text-[#0A1F44]' },
                   { icon: <Camera className="size-5" />, label: 'Instagram', color: 'hover:bg-pink-50 hover:text-pink-600' },
-                  { icon: <Link2 className="size-5" />, label: 'LinkedIn', color: 'hover:bg-[#4D8AFF]/5 hover:text-[#1D63FF]' },
+                  { icon: <Link2 className="size-5" />, label: 'LinkedIn', color: 'hover:bg-[#FFD54F]/5 hover:text-[#0A1F44]' },
                 ].map((social) => (
                   <motion.a
                     key={social.label}
@@ -408,17 +408,17 @@ export function ContactPage() {
               {/* Map grid lines */}
               <div className="absolute inset-0 opacity-20" style={{
                 backgroundImage: `
-                  linear-gradient(to right, #1D63FF 1px, transparent 1px),
-                  linear-gradient(to bottom, #1D63FF 1px, transparent 1px)
+                  linear-gradient(to right, #FFD54F 1px, transparent 1px),
+                  linear-gradient(to bottom, #FFD54F 1px, transparent 1px)
                 `,
                 backgroundSize: '30px 30px',
               }} />
               <div className="relative text-center">
-                <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF] to-[#1D63FF] text-white shadow-lg">
+                <div className="mx-auto mb-3 flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A1F44] to-[#132D5E] text-white shadow-lg">
                   <MapPin className="size-7" />
                 </div>
-                <p className="font-semibold text-[#0D3B7A]">Our Location</p>
-                <p className="mt-1 text-xs text-[#0D3B7A]/70">{COMPANY_INFO.address}</p>
+                <p className="font-semibold text-[#132D5E]">Our Location</p>
+                <p className="mt-1 text-xs text-[#132D5E]/70">{COMPANY_INFO.address}</p>
               </div>
             </div>
           </div>

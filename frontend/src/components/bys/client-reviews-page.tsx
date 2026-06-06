@@ -109,13 +109,13 @@ export function ClientReviewsPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="flex flex-col items-center py-16 text-center"
         >
-          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
+          <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
             <MessageSquare className="size-10 text-[#9DC2FF]" />
           </div>
           <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
           <p className="mt-1 text-sm text-muted-foreground/70">Complete a booking to leave your first review</p>
           <Button
-            className="mt-4 bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/25"
+            className="mt-4 bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/25"
             onClick={() => navigate('client-bookings')}
           >
             View My Bookings <ArrowRight className="ml-2 size-4" />
@@ -140,7 +140,7 @@ export function ClientReviewsPage() {
                       </p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-[#1D63FF]/5" onClick={() => openEdit(review)}>
+                      <Button variant="ghost" size="icon" className="size-8 rounded-lg hover:bg-[#FFD54F]/5" onClick={() => openEdit(review)}>
                         <Pencil className="size-3.5" />
                       </Button>
                       <AlertDialog open={deleteTarget === review.id} onOpenChange={(open) => !open && setDeleteTarget(null)}>
@@ -175,7 +175,7 @@ export function ClientReviewsPage() {
                       {Array.from({ length: 5 }).map((_, i) => (
                         <Star
                           key={i}
-                          className={`size-4 ${i < review.rating ? 'fill-[#FFE066] text-[#FFE066] drop-shadow-[0_0_3px_rgba(255,206,50,0.4)]' : 'text-gray-200'}`}
+                          className={`size-4 ${i < review.rating ? 'fill-[#F2C94C] text-[#F2C94C] drop-shadow-[0_0_3px_rgba(255,213,79,0.4)]' : 'text-gray-200'}`}
                         />
                       ))}
                     </div>
@@ -219,7 +219,7 @@ export function ClientReviewsPage() {
                     className="transition-transform hover:scale-110"
                   >
                     <Star
-                      className={`size-8 ${i < editRating ? 'fill-[#FFE066] text-[#FFE066]' : 'text-gray-300'}`}
+                      className={`size-8 ${i < editRating ? 'fill-[#F2C94C] text-[#F2C94C]' : 'text-gray-300'}`}
                     />
                   </button>
                 ))}
@@ -238,7 +238,7 @@ export function ClientReviewsPage() {
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditDialog(null)} className="rounded-xl">Cancel</Button>
-            <Button className="bg-gradient-to-r from-[#4D8AFF] to-[#1D63FF] text-white rounded-xl" onClick={handleEdit} disabled={updating}>
+            <Button className="bg-gradient-to-r from-[#E0B84C] to-[#FFD54F] text-[#0A1F44] rounded-xl" onClick={handleEdit} disabled={updating}>
               {updating && <Loader2 className="mr-2 size-4 animate-spin" />}
               Save Changes
             </Button>

@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 const PAGE_TYPE_MAP: Record<string, { title: string; type: string; icon: React.ReactNode; gradient: string; fallbackContent: string }> = {
-  terms: { title: 'Terms of Service', type: 'terms', icon: <Shield className="size-5" />, gradient: 'from-[#0D3B7A] to-[#1D63FF]',
+  terms: { title: 'Terms of Service', type: 'terms', icon: <Shield className="size-5" />, gradient: 'from-[#132D5E] to-[#FFD54F]',
     fallbackContent: `TERMS OF SERVICE - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -84,7 +84,7 @@ BookYourService is an online marketplace that connects customers with verified h
 - Any disputes shall be resolved in courts of New Delhi, India
 
 For questions about these Terms, contact us at support@bookyourservice.in` },
-  privacy: { title: 'Privacy Policy', type: 'privacy', icon: <Lock className="size-5" />, gradient: 'from-[#0D3B7A] to-[#FFCE32]',
+  privacy: { title: 'Privacy Policy', type: 'privacy', icon: <Lock className="size-5" />, gradient: 'from-[#132D5E] to-[#FFD54F]',
     fallbackContent: `PRIVACY POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -142,7 +142,7 @@ Effective Date: January 1, 2025
 
 10. CONTACT US
 For privacy concerns, contact: privacy@bookyourservice.in` },
-  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-[#1D63FF] to-[#4D8AFF]',
+  'refund-policy': { title: 'Refund Policy', type: 'refund-policy', icon: <RefreshCw className="size-5" />, gradient: 'from-[#FFD54F] to-[#E0B84C]',
     fallbackContent: `REFUND POLICY - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -236,7 +236,7 @@ Users must use BookYourService responsibly and in compliance with all applicable
 - Temporary suspension for repeated violations
 - Permanent ban for severe violations
 - Legal action for illegal activities` },
-  'provider-agreement': { title: 'Provider Agreement', type: 'provider-agreement', icon: <HandshakeIcon className="size-5" />, gradient: 'from-[#1D63FF] to-[#4D8AFF]',
+  'provider-agreement': { title: 'Provider Agreement', type: 'provider-agreement', icon: <HandshakeIcon className="size-5" />, gradient: 'from-[#FFD54F] to-[#E0B84C]',
     fallbackContent: `PROVIDER AGREEMENT - BOOKYOURSERVICE
 Effective Date: January 1, 2025
 
@@ -337,7 +337,7 @@ const fadeUp = {
 export function LegalPage({ type }: { type?: string }) {
   const { navigate, nav } = useApp();
   const pageType = type || nav.params.type || nav.page;
-  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-[#0D3B7A] to-[#1D63FF]', fallbackContent: '' };
+  const pageInfo = PAGE_TYPE_MAP[pageType] || { title: 'Legal', type: pageType, icon: <FileText className="size-5" />, gradient: 'from-[#132D5E] to-[#FFD54F]', fallbackContent: '' };
 
   const { data, loading, error, refetch } = useApi<LegalPageData>(
     `/api/legal/${pageInfo.type}`
@@ -406,7 +406,7 @@ export function LegalPage({ type }: { type?: string }) {
       if (/^\d+\./.test(trimmed)) {
         return (
           <h3 key={i} id={`section-${i}`} className="mt-6 mb-2 flex items-center gap-2 font-semibold text-gray-800">
-            <ChevronRight className="size-4 text-[#4D8AFF]" />
+            <ChevronRight className="size-4 text-[#E0B84C]" />
             {trimmed}
           </h3>
         );
@@ -415,7 +415,7 @@ export function LegalPage({ type }: { type?: string }) {
       if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
         return (
           <div key={i} className="ml-6 mt-1 flex items-start gap-2">
-            <div className="mt-2 size-1.5 shrink-0 rounded-full bg-[#7DB0FF]" />
+            <div className="mt-2 size-1.5 shrink-0 rounded-full bg-[#FFD54F]" />
             <p className="leading-relaxed text-gray-600">{trimmed.replace(/^[•-]\s*/, '')}</p>
           </div>
         );
@@ -449,7 +449,7 @@ export function LegalPage({ type }: { type?: string }) {
           variant="ghost"
           size="sm"
           onClick={() => navigate('home')}
-          className="group mb-6 text-muted-foreground hover:text-[#0D3B7A]"
+          className="group mb-6 text-muted-foreground hover:text-[#132D5E]"
         >
           <ArrowLeft className="mr-1 size-4 transition-transform group-hover:-translate-x-1" /> Back to Home
         </Button>
@@ -490,7 +490,7 @@ export function LegalPage({ type }: { type?: string }) {
             </div>
             <p className="text-lg font-semibold text-gray-800">Failed to Load Page</p>
             <p className="mt-1 text-sm text-muted-foreground">Please try again later</p>
-            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-[#1D63FF]/20 text-[#1D63FF] hover:bg-[#1D63FF]/5">
+            <Button variant="outline" size="sm" onClick={refetch} className="mt-4 rounded-xl border-[#FFD54F]/20 text-[#FFD54F] hover:bg-[#FFD54F]/5">
               Retry
             </Button>
           </div>
@@ -524,13 +524,13 @@ export function LegalPage({ type }: { type?: string }) {
                               el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                             }
                           }}
-                          className={`flex items-start gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-[#1D63FF]/5 hover:text-[#0D3B7A] ${
+                          className={`flex items-start gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-[#FFD54F]/5 hover:text-[#132D5E] ${
                             section.level === 1
                               ? 'font-semibold text-gray-800'
                               : 'text-gray-500 ml-3'
                           }`}
                         >
-                          <ChevronRight className="mt-0.5 size-3 shrink-0 text-[#7DB0FF]" />
+                          <ChevronRight className="mt-0.5 size-3 shrink-0 text-[#FFD54F]" />
                           <span className="line-clamp-2">{section.title}</span>
                         </a>
                       ))}
@@ -549,7 +549,7 @@ export function LegalPage({ type }: { type?: string }) {
                           <button
                             key={key}
                             onClick={() => navigate(key as Page, { type: key })}
-                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-[#1D63FF]/5 hover:text-[#0D3B7A]"
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-gray-600 transition-colors hover:bg-[#FFD54F]/5 hover:text-[#132D5E]"
                           >
                             <div className={`flex size-6 shrink-0 items-center justify-center rounded-md bg-gradient-to-br ${info.gradient} text-white`}>
                               <span className="scale-75">{info.icon}</span>
@@ -577,7 +577,7 @@ export function LegalPage({ type }: { type?: string }) {
                 {/* Header */}
                 <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-4">
-                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg shadow-[#4D8AFF]/20`}>
+                    <div className={`flex size-12 items-center justify-center rounded-xl bg-gradient-to-br ${pageInfo.gradient} text-white shadow-lg shadow-[#E0B84C]/20`}>
                       {pageInfo.icon}
                     </div>
                     <div>
@@ -599,7 +599,7 @@ export function LegalPage({ type }: { type?: string }) {
                   </div>
                   {/* Last updated badge */}
                   {displayDate && (
-                    <div className="shrink-0 rounded-full bg-[#1D63FF]/5 px-4 py-1.5 text-sm font-medium text-[#0D3B7A] ring-1 ring-[#1D63FF]/20">
+                    <div className="shrink-0 rounded-full bg-[#FFD54F]/5 px-4 py-1.5 text-sm font-medium text-[#132D5E] ring-1 ring-[#FFD54F]/20">
                       Last Updated: {new Date(displayDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
                     </div>
                   )}
@@ -610,7 +610,7 @@ export function LegalPage({ type }: { type?: string }) {
 
                 {/* Mobile TOC */}
                 {tableOfContents.length > 0 && (
-                  <div className="mb-8 rounded-xl bg-[#1D63FF]/5 border border-[#1D63FF]/10 p-4 lg:hidden">
+                  <div className="mb-8 rounded-xl bg-[#FFD54F]/5 border border-[#FFD54F]/10 p-4 lg:hidden">
                     <h3 className="mb-3 text-sm font-bold uppercase tracking-wider text-gray-500">Table of Contents</h3>
                     <nav className="space-y-1 max-h-48 overflow-y-auto">
                       {tableOfContents.map((section, idx) => (
@@ -622,11 +622,11 @@ export function LegalPage({ type }: { type?: string }) {
                             const el = document.getElementById(section.id);
                             if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
                           }}
-                          className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white hover:text-[#0D3B7A] ${
+                          className={`flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-white hover:text-[#132D5E] ${
                             section.level === 1 ? 'font-medium text-gray-800' : 'text-gray-500 ml-4'
                           }`}
                         >
-                          <ChevronRight className="size-3 text-[#7DB0FF]" />
+                          <ChevronRight className="size-3 text-[#FFD54F]" />
                           <span className="line-clamp-1">{section.title}</span>
                         </a>
                       ))}
@@ -653,7 +653,7 @@ export function LegalPage({ type }: { type?: string }) {
                       variant="outline"
                       size="sm"
                       onClick={() => navigate(key as Page, { type: key })}
-                      className="rounded-xl border-[#1D63FF]/20 text-[#1D63FF] hover:bg-[#1D63FF]/5"
+                      className="rounded-xl border-[#FFD54F]/20 text-[#FFD54F] hover:bg-[#FFD54F]/5"
                     >
                       <span className="mr-1.5 scale-90">{info.icon}</span>
                       {info.title}
@@ -687,7 +687,7 @@ export function LegalPage({ type }: { type?: string }) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-[#1D63FF] to-[#1D63FF] text-white shadow-lg shadow-[#4D8AFF]/30 hover:from-[#0D3B7A] hover:to-[#0D3B7A] transition-all"
+            className="fixed bottom-6 right-6 z-50 flex size-12 items-center justify-center rounded-xl bg-gradient-to-r from-[#FFD54F] to-[#E0B84C] text-[#0A1F44] shadow-lg shadow-[#E0B84C]/30 hover:from-[#132D5E] hover:to-[#132D5E] transition-all"
             aria-label="Back to top"
           >
             <ArrowUp className="size-5" />

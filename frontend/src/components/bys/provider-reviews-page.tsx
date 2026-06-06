@@ -50,7 +50,7 @@ export function ProviderReviewsPage() {
     return Array.from({ length: 5 }).map((_, i) => (
       <Star
         key={i}
-        className={`size-4 ${i < rating ? 'fill-[#FFCE32] text-[#FFCE32] drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]' : 'text-gray-200'}`}
+        className={`size-4 ${i < rating ? 'fill-[#FFD54F] text-[#FFD54F] drop-shadow-[0_0_3px_rgba(6,182,212,0.4)]' : 'text-gray-200'}`}
       />
     ));
   };
@@ -74,7 +74,7 @@ export function ProviderReviewsPage() {
           transition={{ delay: 0.1 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-[#FFCE32] via-[#1D63FF] to-rose-500" />
+            <div className="h-1 bg-gradient-to-r from-[#FFD54F] via-[#FFD54F] to-rose-500" />
             <CardContent className="flex items-center gap-6 p-6">
               <div className="text-center">
                 <p className="text-gradient text-4xl font-bold">{avgRating}</p>
@@ -85,13 +85,13 @@ export function ProviderReviewsPage() {
                 {ratingDist.map((r) => (
                   <div key={r.star} className="flex items-center gap-2">
                     <span className="w-4 text-right text-sm">{r.star}</span>
-                    <Star className="size-3 fill-[#FFCE32] text-[#FFCE32]" />
+                    <Star className="size-3 fill-[#FFD54F] text-[#FFD54F]" />
                     <div className="h-2 flex-1 rounded-full bg-gray-100">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${r.pct}%` }}
                         transition={{ duration: 0.5, delay: 0.3 }}
-                        className="h-2 rounded-full bg-gradient-to-r from-[#FFCE32] to-[#4D8AFF]"
+                        className="h-2 rounded-full bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]"
                       />
                     </div>
                     <span className="w-8 text-right text-xs text-muted-foreground">{r.count}</span>
@@ -108,9 +108,9 @@ export function ProviderReviewsPage() {
           transition={{ delay: 0.15 }}
         >
           <Card className="overflow-hidden rounded-2xl border-0 shadow-sm">
-            <div className="h-1 bg-gradient-to-r from-[#7DB0FF] to-[#4D8AFF]" />
+            <div className="h-1 bg-gradient-to-r from-[#FFD54F] to-[#E0B84C]" />
             <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-              <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] shadow-lg shadow-[#1D63FF]/25">
+              <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] shadow-lg shadow-[#FFD54F]/25">
                 <MessageSquare className="size-7 text-white" />
               </div>
               <p className="mt-3 text-sm font-medium">Response Rate</p>
@@ -131,8 +131,8 @@ export function ProviderReviewsPage() {
         >
           <Card className="rounded-2xl border-0 shadow-sm">
             <CardContent className="flex flex-col items-center py-12 text-center">
-              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1D63FF]/10 to-[#1D63FF]/5">
-                <Star className="size-10 text-[#7DB0FF]" />
+              <div className="mx-auto flex size-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFD54F]/10 to-[#FFD54F]/5">
+                <Star className="size-10 text-[#FFD54F]" />
               </div>
               <h3 className="mt-4 text-lg font-semibold text-muted-foreground">No reviews yet</h3>
               <p className="mt-1 text-sm text-muted-foreground/70">Reviews will appear once clients complete bookings</p>
@@ -154,12 +154,12 @@ export function ProviderReviewsPage() {
                     <div className="flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#7DB0FF] to-[#4D8AFF] text-xs font-bold text-white">
+                          <div className="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-[#FFD54F] to-[#E0B84C] text-xs font-bold text-[#0A1F44]">
                             {review.reviewer?.name?.charAt(0) || 'C'}
                           </div>
                           <span className="font-medium">{review.reviewer?.name || 'Client'}</span>
                           {review.isVerified && (
-                            <span className="flex items-center gap-1 rounded-md bg-[#FFCE32]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#0D3B7A] border border-[#FFCE32]/30">
+                            <span className="flex items-center gap-1 rounded-md bg-[#FFD54F]/10 px-1.5 py-0.5 text-[10px] font-semibold text-[#132D5E] border border-[#FFD54F]/30">
                               <CheckCircle2 className="size-2.5" />
                               Verified
                             </span>
