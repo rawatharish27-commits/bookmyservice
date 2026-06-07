@@ -21,15 +21,15 @@ export function ProviderWalletPage() {
         <h1 className="text-2xl font-bold text-slate-900">Wallet</h1>
 
         <Card className="bg-white rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] p-6 text-white">
+          <div className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] p-6 text-white">
             <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-blue-100">Balance</span></div>
+              <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-[#FFD54F]/80">Balance</span></div>
               <Badge className="bg-white/20 text-white border-0">Active</Badge>
             </div>
             <p className="text-3xl font-bold">₹7,650.00</p>
           </div>
           <div className="bg-white p-4 flex gap-3">
-            <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Money</Button>
+            <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Money</Button>
             <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
           </div>
         </Card>
@@ -43,7 +43,7 @@ export function ProviderWalletPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-slate-900">Recent Transactions</CardTitle>
-              <Button variant="ghost" size="sm" className="text-[#1D63FF] text-xs">View All</Button>
+              <Button variant="ghost" size="sm" className="text-[#0A1F44] text-xs">View All</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">

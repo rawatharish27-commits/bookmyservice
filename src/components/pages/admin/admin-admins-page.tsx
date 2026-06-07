@@ -20,7 +20,7 @@ export function AdminAdminsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Admin Users</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Add Admin</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> Add Admin</Button>
         </div>
 
         <div className="relative">
@@ -44,11 +44,11 @@ export function AdminAdminsPage() {
                     <tr key={a.id} className="border-b border-slate-50 hover:bg-slate-50/50">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex size-8 items-center justify-center rounded-full bg-[#1D63FF]/10 text-xs font-bold text-[#1D63FF]">{a.name.charAt(0)}</div>
+                          <div className="flex size-8 items-center justify-center rounded-full bg-[#FFD54F]/10 text-xs font-bold text-[#0A1F44]">{a.name.charAt(0)}</div>
                           <div><p className="text-sm font-medium text-slate-700">{a.name}</p><p className="text-xs text-slate-400">{a.email}</p></div>
                         </div>
                       </td>
-                      <td className="px-4 py-3 hidden sm:table-cell"><Badge variant="secondary" className={a.role === 'Super Admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200'}>{a.role}</Badge></td>
+                      <td className="px-4 py-3 hidden sm:table-cell"><Badge variant="secondary" className={a.role === 'Super Admin' ? 'bg-purple-100 text-purple-700 border-purple-200' : 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20'}>{a.role}</Badge></td>
                       <td className="px-4 py-3 text-sm text-slate-500 hidden md:table-cell">{a.lastLogin}</td>
                       <td className="px-4 py-3"><Badge variant="secondary" className={a.status === 'Active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}>{a.status}</Badge></td>
                       <td className="px-4 py-3 text-right"><Button variant="ghost" size="sm" className="h-7"><MoreVertical className="size-4 text-slate-400" /></Button></td>

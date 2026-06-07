@@ -58,7 +58,7 @@ const recommendationConfigs: RecommendationConfig[] = [
 ]
 
 const performanceMetrics = [
-  { label: 'Avg CTR', value: '21.7%', change: '+3.2%', icon: MousePointerClick, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Avg CTR', value: '21.7%', change: '+3.2%', icon: MousePointerClick, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'Conversion Rate', value: '12.2%', change: '+2.1%', icon: Target, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Revenue Impact', value: '₹8.4L', change: '+28%', icon: IndianRupee, color: 'bg-amber-100 text-amber-600' },
   { label: 'Active Rules', value: '6/8', change: '+1', icon: Settings, color: 'bg-purple-100 text-purple-600' },
@@ -72,7 +72,7 @@ const abTests = [
 ]
 
 const typeConfig: Record<RecommendationType, { label: string; color: string; icon: React.ReactNode }> = {
-  'service': { label: 'Service', color: 'bg-blue-50 text-[#0B3D91]', icon: <Sparkles className="size-3" /> },
+  'service': { label: 'Service', color: 'bg-[#FFD54F]/10 text-[#0A1F44]', icon: <Sparkles className="size-3" /> },
   'provider': { label: 'Provider', color: 'bg-emerald-50 text-emerald-700', icon: <Users className="size-3" /> },
   'timeslot': { label: 'Time Slot', color: 'bg-purple-50 text-purple-700', icon: <Clock className="size-3" /> },
 }
@@ -95,7 +95,7 @@ export function RecommendationEnginePage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><RefreshCw className="size-4" /> Retrain</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Brain className="size-4" /> New Rule</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"><Brain className="size-4" /> New Rule</Button>
           </div>
         </div>
 
@@ -212,7 +212,7 @@ export function RecommendationEnginePage() {
                         <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              type === 'service' ? 'bg-blue-500' : type === 'provider' ? 'bg-emerald-500' : 'bg-purple-500'
+                              type === 'service' ? 'bg-[#FFD54F]/100' : type === 'provider' ? 'bg-emerald-500' : 'bg-purple-500'
                             }`}
                             style={{ width: `${(avgCTR / 35) * 100}%` }}
                           />
@@ -247,7 +247,7 @@ export function RecommendationEnginePage() {
                         <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              type === 'service' ? 'bg-blue-500' : type === 'provider' ? 'bg-emerald-500' : 'bg-purple-500'
+                              type === 'service' ? 'bg-[#FFD54F]/100' : type === 'provider' ? 'bg-emerald-500' : 'bg-purple-500'
                             }`}
                             style={{ width: `${(avgConversion / 25) * 100}%` }}
                           />
@@ -267,7 +267,7 @@ export function RecommendationEnginePage() {
                   {[...configs].sort((a, b) => b.conversion - a.conversion).slice(0, 5).map((config, i) => (
                     <div key={config.id}>
                       <div className="flex items-center gap-4 py-3">
-                        <span className="flex size-7 items-center justify-center rounded-full bg-blue-50 text-xs font-bold text-[#1D63FF]">
+                        <span className="flex size-7 items-center justify-center rounded-full bg-[#FFD54F]/10 text-xs font-bold text-[#0A1F44]">
                           {i + 1}
                         </span>
                         <div className="flex-1">
@@ -308,13 +308,13 @@ export function RecommendationEnginePage() {
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
-                          <TestTube className="size-4 text-[#1D63FF]" />
+                          <TestTube className="size-4 text-[#0A1F44]" />
                           <h3 className="text-sm font-semibold text-slate-900">{test.name}</h3>
                         </div>
                         <p className="text-xs text-slate-500">Variant: {test.variant} • Started {test.startDate}</p>
                       </div>
                       <Badge variant="secondary" className={`text-[10px] w-fit ${
-                        test.status === 'Running' ? 'bg-blue-50 text-[#0B3D91]' : 'bg-emerald-50 text-emerald-700'
+                        test.status === 'Running' ? 'bg-[#FFD54F]/10 text-[#0A1F44]' : 'bg-emerald-50 text-emerald-700'
                       }`}>
                         {test.status === 'Running' ? <Zap className="size-3 mr-1" /> : <CheckCircle2 className="size-3 mr-1" />}
                         {test.status}
@@ -339,7 +339,7 @@ export function RecommendationEnginePage() {
                         <span className="text-xs font-medium text-slate-700">{test.confidence}%</span>
                       </div>
                       <Badge variant="secondary" className={`text-[10px] ${
-                        test.winner === 'variant' ? 'bg-emerald-50 text-emerald-700' : 'bg-blue-50 text-[#0B3D91]'
+                        test.winner === 'variant' ? 'bg-emerald-50 text-emerald-700' : 'bg-[#FFD54F]/10 text-[#0A1F44]'
                       }`}>
                         {test.winner === 'variant' ? '↑ Variant Leading' : '↑ Control Leading'}
                       </Badge>

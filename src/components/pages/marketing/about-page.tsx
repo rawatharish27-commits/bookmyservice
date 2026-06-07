@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 
 const stats = [
-  { label: 'Happy Customers', value: '25 Lakh+', icon: Users, color: 'text-[#1D63FF]', bg: 'bg-blue-50' },
+  { label: 'Happy Customers', value: '25 Lakh+', icon: Users, color: 'text-[#0A1F44]', bg: 'bg-[#FFD54F]/10' },
   { label: 'Service Providers', value: '50,000+', icon: Briefcase, color: 'text-emerald-600', bg: 'bg-emerald-50' },
   { label: 'Cities Covered', value: '120+', icon: MapPin, color: 'text-purple-600', bg: 'bg-purple-50' },
   { label: 'Bookings Completed', value: '1 Crore+', icon: CalendarCheck, color: 'text-orange-600', bg: 'bg-orange-50' },
@@ -40,14 +40,14 @@ const values = [
 ]
 
 const team = [
-  { name: 'Rajesh Sharma', role: 'Founder & CEO', initials: 'RS', color: 'bg-[#1D63FF]' },
+  { name: 'Rajesh Sharma', role: 'Founder & CEO', initials: 'RS', color: 'bg-[#0A1F44]' },
   { name: 'Priya Patel', role: 'Co-Founder & COO', initials: 'PP', color: 'bg-emerald-600' },
   { name: 'Arun Kumar', role: 'Chief Technology Officer', initials: 'AK', color: 'bg-purple-600' },
   { name: 'Sneha Reddy', role: 'VP of Operations', initials: 'SR', color: 'bg-orange-600' },
   { name: 'Vikram Singh', role: 'VP of Marketing', initials: 'VS', color: 'bg-rose-600' },
   { name: 'Anita Desai', role: 'Head of Customer Success', initials: 'AD', color: 'bg-cyan-600' },
   { name: 'Karthik Iyer', role: 'Head of Product', initials: 'KI', color: 'bg-amber-600' },
-  { name: 'Meera Joshi', role: 'Head of HR', initials: 'MJ', color: 'bg-indigo-600' },
+  { name: 'Meera Joshi', role: 'Head of HR', initials: 'MJ', color: 'bg-[#0A1F44]' },
 ]
 
 const milestones = [
@@ -65,15 +65,15 @@ export function AboutPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="max-w-3xl">
-            <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">About Us</Badge>
+            <Badge className="bg-[#FFD54F]/100/30 text-[#FFD54F]/80 border-blue-400/30 mb-4">About Us</Badge>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
               Making Home Services <br />
               <span className="text-blue-200">Effortless for Every Indian</span>
             </h1>
-            <p className="text-blue-100 text-lg sm:text-xl leading-relaxed">
+            <p className="text-[#FFD54F]/80 text-lg sm:text-xl leading-relaxed">
               BookMyService was born from a simple idea — every Indian household deserves
               reliable, affordable, and professional home services at their fingertips.
               We connect millions of customers with skilled service providers across India.
@@ -87,8 +87,8 @@ export function AboutPage() {
         <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
           <Card className="shadow-md border-0">
             <CardHeader>
-              <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-2">
-                <Target className="size-6 text-[#1D63FF]" />
+              <div className="w-12 h-12 rounded-xl bg-[#FFD54F]/10 flex items-center justify-center mb-2">
+                <Target className="size-6 text-[#0A1F44]" />
               </div>
               <CardTitle className="text-xl">Our Mission</CardTitle>
             </CardHeader>
@@ -171,7 +171,7 @@ export function AboutPage() {
           <div className="space-y-6">
             {milestones.map((milestone, idx) => (
               <div key={milestone.year} className={`relative flex items-start gap-4 ${idx % 2 === 0 ? 'sm:flex-row' : 'sm:flex-row-reverse'}`}>
-                <div className="absolute left-4 sm:left-1/2 w-3 h-3 rounded-full bg-[#1D63FF] border-2 border-white shadow -translate-x-1.5 sm:-translate-x-1.5 mt-1.5" />
+                <div className="absolute left-4 sm:left-1/2 w-3 h-3 rounded-full bg-[#0A1F44] border-2 border-white shadow -translate-x-1.5 sm:-translate-x-1.5 mt-1.5" />
                 <div className={`ml-10 sm:ml-0 sm:w-1/2 ${idx % 2 === 0 ? 'sm:pr-12 sm:text-right' : 'sm:pl-12'}`}>
                   <Card className="shadow-sm border-0 inline-block">
                     <CardContent className="p-4">
@@ -196,8 +196,8 @@ export function AboutPage() {
           {values.map((value) => (
             <Card key={value.title} className="shadow-sm border-0 hover:shadow-md transition-shadow">
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mb-4">
-                  <value.icon className="size-6 text-[#1D63FF]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFD54F]/10 flex items-center justify-center mb-4">
+                  <value.icon className="size-6 text-[#0A1F44]" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-2">{value.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{value.description}</p>
@@ -239,7 +239,7 @@ export function AboutPage() {
           Whether you&apos;re a customer looking for reliable services or a professional seeking new opportunities, we&apos;d love to have you.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Button size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
+          <Button size="lg" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white">
             <Phone className="size-4 mr-2" /> Book a Service
           </Button>
           <Button size="lg" variant="outline">

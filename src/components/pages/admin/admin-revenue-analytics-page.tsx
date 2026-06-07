@@ -38,7 +38,7 @@ export function AdminRevenueAnalyticsPage() {
 
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">₹43,00,000</p><p className="text-xs text-slate-500">Total Revenue</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">₹8,90,000</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#0A1F44]">₹8,90,000</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><div className="flex items-center justify-center gap-1"><TrendingUp className="size-4 text-emerald-500" /><p className="text-2xl font-bold text-emerald-600">+8.5%</p></div><p className="text-xs text-slate-500">MoM Growth</p></CardContent></Card>
         </div>
 
@@ -49,7 +49,7 @@ export function AdminRevenueAnalyticsPage() {
               {revenueData.map((d) => (
                 <div key={d.month} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[10px] font-medium text-slate-500">₹{(d.revenue / 100000).toFixed(1)}L</span>
-                  <div className="w-full rounded-t-sm bg-blue-500 transition-all" style={{ height: `${(d.revenue / maxRevenue) * 100}%` }} />
+                  <div className="w-full rounded-t-sm bg-[#FFD54F]/100 transition-all" style={{ height: `${(d.revenue / maxRevenue) * 100}%` }} />
                   <span className="text-xs text-slate-400">{d.month}</span>
                 </div>
               ))}
@@ -65,7 +65,7 @@ export function AdminRevenueAnalyticsPage() {
                 <div className="flex items-center gap-4 py-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between"><span className="text-sm font-medium text-slate-900">{item.source}</span><span className="text-sm font-semibold text-slate-700">{item.amount}</span></div>
-                    <div className="mt-1.5 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500 rounded-full" style={{ width: `${item.percentage}%` }} /></div>
+                    <div className="mt-1.5 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${item.percentage}%` }} /></div>
                   </div>
                   <span className="text-xs text-slate-400 w-10 text-right">{item.percentage}%</span>
                 </div>

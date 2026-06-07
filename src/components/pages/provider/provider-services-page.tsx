@@ -26,11 +26,11 @@ export function ProviderServicesPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">My Services</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Add Service</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> Add Service</Button>
         </div>
 
         <div className="grid grid-cols-3 gap-4">
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">{services.length}</p><p className="text-xs text-slate-500">Total Services</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#0A1F44]">{services.length}</p><p className="text-xs text-slate-500">Total Services</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">{services.filter(s => s.status === 'Active').length}</p><p className="text-xs text-slate-500">Active</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-amber-600">{services.reduce((a, s) => a + s.bookings, 0)}</p><p className="text-xs text-slate-500">Total Bookings</p></CardContent></Card>
         </div>

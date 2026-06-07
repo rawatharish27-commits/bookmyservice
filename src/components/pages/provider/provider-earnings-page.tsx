@@ -37,7 +37,7 @@ export function ProviderEarningsPage() {
 
         <div className="grid grid-cols-3 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">₹{totalEarnings.toLocaleString()}</p><p className="text-xs text-slate-500">This Week</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">₹{(totalEarnings * 4).toLocaleString()}</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#0A1F44]">₹{(totalEarnings * 4).toLocaleString()}</p><p className="text-xs text-slate-500">This Month</p></CardContent></Card>
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-purple-600">₹7,650</p><p className="text-xs text-slate-500">Pending</p></CardContent></Card>
         </div>
 
@@ -57,8 +57,8 @@ export function ProviderEarningsPage() {
               {dailyEarnings.map((day) => (
                 <div key={day.date} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[10px] font-medium text-slate-500">₹{(day.amount / 1000).toFixed(1)}K</span>
-                  <div className="w-full bg-[#1D63FF]/10 rounded-t-sm relative" style={{ height: `${(day.amount / maxEarning) * 100}%` }}>
-                    <div className="absolute inset-0 bg-blue-500 rounded-t-sm" />
+                  <div className="w-full bg-[#FFD54F]/10 rounded-t-sm relative" style={{ height: `${(day.amount / maxEarning) * 100}%` }}>
+                    <div className="absolute inset-0 bg-[#FFD54F]/100 rounded-t-sm" />
                   </div>
                   <span className="text-[10px] text-slate-400">{day.date}</span>
                 </div>
@@ -79,7 +79,7 @@ export function ProviderEarningsPage() {
                       <span className="text-sm font-semibold text-slate-700">{item.amount}</span>
                     </div>
                     <div className="mt-1.5 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full bg-blue-500 rounded-full" style={{ width: `${item.percentage}%` }} />
+                      <div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${item.percentage}%` }} />
                     </div>
                   </div>
                 </div>

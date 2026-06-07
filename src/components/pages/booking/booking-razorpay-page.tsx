@@ -22,8 +22,8 @@ export function BookingRazorpayPage() {
         <CardContent className="p-8 text-center space-y-4">
           {status === 'processing' ? (
             <>
-              <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-blue-50">
-                <Loader2 className="size-10 text-[#1D63FF] animate-spin" />
+              <div className="mx-auto flex size-20 items-center justify-center rounded-full bg-[#FFD54F]/10">
+                <Loader2 className="size-10 text-[#0A1F44] animate-spin" />
               </div>
               <h2 className="text-xl font-bold text-slate-900">Processing Payment</h2>
               <p className="text-sm text-slate-500">Please wait while we process your payment of ₹299</p>
@@ -46,7 +46,7 @@ export function BookingRazorpayPage() {
               <p className="text-sm text-slate-500">Your payment has been processed successfully</p>
               <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100">Transaction ID: TXN20250520</Badge>
               <div className="pt-2">
-                <button className="text-[#1D63FF] font-semibold hover:underline" onClick={() => navigate('payment-success')}>
+                <button className="text-[#0A1F44] font-semibold hover:underline" onClick={() => navigate('payment-success')}>
                   View Booking Details
                 </button>
               </div>

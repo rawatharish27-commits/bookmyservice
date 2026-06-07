@@ -7,11 +7,11 @@ import { Separator } from '@/components/ui/separator'
 import { Calendar, User, MapPin, Clock, Phone, RotateCcw, MessageSquare } from 'lucide-react'
 
 const timeline = [
-  { time: '10:00 AM', event: 'Booking Created', detail: 'By Rahul Sharma', color: 'bg-blue-500' },
+  { time: '10:00 AM', event: 'Booking Created', detail: 'By Rahul Sharma', color: 'bg-[#FFD54F]/100' },
   { time: '10:05 AM', event: 'Payment Received', detail: '₹499 via UPI', color: 'bg-emerald-500' },
   { time: '10:10 AM', event: 'Provider Assigned', detail: 'Cool Care Services', color: 'bg-purple-500' },
   { time: '10:15 AM', event: 'Provider Accepted', detail: 'Arvind Kumar accepted', color: 'bg-emerald-500' },
-  { time: '02:00 PM', event: 'Service Started', detail: 'Provider arrived at location', color: 'bg-blue-500' },
+  { time: '02:00 PM', event: 'Service Started', detail: 'Provider arrived at location', color: 'bg-[#FFD54F]/100' },
   { time: '03:30 PM', event: 'Service Completed', detail: 'Marked complete by provider', color: 'bg-emerald-500' },
 ]
 

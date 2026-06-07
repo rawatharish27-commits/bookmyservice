@@ -63,7 +63,7 @@ export function ProviderAnalyticsPage() {
                     </div>
                   </div>
                   <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                    <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(week.earnings / maxEarnings) * 100}%` }} />
+                    <div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${(week.earnings / maxEarnings) * 100}%` }} />
                   </div>
                 </div>
                 {i < weeklyData.length - 1 && <Separator className="bg-slate-100" />}
@@ -76,7 +76,7 @@ export function ProviderAnalyticsPage() {
           <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900">Comparison Period</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-3 rounded-lg bg-blue-50"><p className="text-xs text-[#1D63FF] font-medium">This Month</p><p className="text-lg font-bold text-slate-900">67 bookings</p><p className="text-xs text-emerald-600">+12% vs last month</p></div>
+              <div className="p-3 rounded-lg bg-[#FFD54F]/10"><p className="text-xs text-[#0A1F44] font-medium">This Month</p><p className="text-lg font-bold text-slate-900">67 bookings</p><p className="text-xs text-emerald-600">+12% vs last month</p></div>
               <div className="p-3 rounded-lg bg-slate-50"><p className="text-xs text-slate-500 font-medium">Last Month</p><p className="text-lg font-bold text-slate-700">60 bookings</p><p className="text-xs text-slate-400">Baseline</p></div>
             </div>
           </CardContent>

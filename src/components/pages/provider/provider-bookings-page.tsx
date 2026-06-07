@@ -19,7 +19,7 @@ const bookings = [
 
 const statusColors: Record<string, string> = {
   Active: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
-  Completed: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10',
+  Completed: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10',
   Cancelled: 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100',
 }
 
@@ -47,7 +47,7 @@ export function ProviderBookingsPage() {
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
               className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
-                activeTab === tab.key ? 'bg-[#1D63FF] text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                activeTab === tab.key ? 'bg-[#0A1F44] text-white' : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
               }`}>
               {tab.label}
             </button>
@@ -62,7 +62,7 @@ export function ProviderBookingsPage() {
               filtered.map((booking, i) => (
                 <div key={booking.id}>
                   <div className="flex items-center gap-4 p-4 cursor-pointer hover:bg-slate-50 transition-colors">
-                    <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50 shrink-0"><Calendar className="size-5 text-[#1D63FF]" /></div>
+                    <div className="flex size-10 items-center justify-center rounded-lg bg-[#FFD54F]/10 shrink-0"><Calendar className="size-5 text-[#0A1F44]" /></div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-900">{booking.service}</p>

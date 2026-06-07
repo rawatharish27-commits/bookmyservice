@@ -40,14 +40,14 @@ export function BookingReschedulePage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <h1 className="text-2xl font-bold text-slate-900">Reschedule Booking</h1>
 
-        <Card className="bg-blue-50 border-[#1D63FF]/10 rounded-xl">
+        <Card className="bg-[#FFD54F]/10 border-[#0A1F44]/10 rounded-xl">
           <CardContent className="p-4">
             <div className="flex items-start gap-3">
-              <AlertCircle className="size-5 text-blue-500 shrink-0 mt-0.5" />
+              <AlertCircle className="size-5 text-[#FFD54F]/800 shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm font-semibold text-blue-800">Current Schedule</p>
-                <p className="text-xs text-[#0B3D91]">20 May 2025 at 10:00 AM</p>
-                <p className="text-xs text-[#1D63FF] mt-1">Free reschedule available (first change)</p>
+                <p className="text-xs text-[#0A1F44]">20 May 2025 at 10:00 AM</p>
+                <p className="text-xs text-[#0A1F44] mt-1">Free reschedule available (first change)</p>
               </div>
             </div>
           </CardContent>
@@ -55,13 +55,13 @@ export function BookingReschedulePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-[#1D63FF]" />New Date</CardTitle>
+            <CardTitle className="text-sm font-semibold text-slate-900"><Calendar className="size-4 inline mr-1.5 text-[#0A1F44]" />New Date</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-7 gap-2">
               {dates.map((d) => (
                 <button key={d.date} onClick={() => setSelectedDate(d.date)}
-                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${selectedDate === d.date ? 'bg-[#1D63FF] text-white' : 'hover:bg-slate-50'}`}>
+                  className={`flex flex-col items-center gap-1 rounded-xl p-2 transition-colors ${selectedDate === d.date ? 'bg-[#0A1F44] text-white' : 'hover:bg-slate-50'}`}>
                   <span className="text-[10px] font-medium opacity-70">{d.day}</span>
                   <span className="text-sm font-bold">{d.date}</span>
                 </button>
@@ -71,12 +71,12 @@ export function BookingReschedulePage() {
         </Card>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-[#1D63FF]" />New Time</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="text-sm font-semibold text-slate-900"><Clock className="size-4 inline mr-1.5 text-[#0A1F44]" />New Time</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-3 gap-2">
               {timeSlots.map((t) => (
                 <Button key={t} onClick={() => setSelectedTime(t)} variant={selectedTime === t ? 'default' : 'outline'}
-                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}>{t}</Button>
+                  className={`rounded-xl text-xs ${selectedTime === t ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : 'border-slate-200'}`}>{t}</Button>
               ))}
             </div>
           </CardContent>
@@ -87,8 +87,8 @@ export function BookingReschedulePage() {
           <CardContent className="space-y-2">
             {rescheduleReasons.map((r) => (
               <button key={r} onClick={() => setReason(r)}
-                className={`flex w-full items-center gap-3 rounded-xl border p-3 text-sm transition-colors ${reason === r ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:bg-slate-50'}`}>
-                <div className={`size-4 rounded-full border-2 ${reason === r ? 'border-blue-500 bg-blue-500' : 'border-slate-300'}`} />
+                className={`flex w-full items-center gap-3 rounded-xl border p-3 text-sm transition-colors ${reason === r ? 'border-[#0A1F44] bg-[#FFD54F]/10' : 'border-slate-100 hover:bg-slate-50'}`}>
+                <div className={`size-4 rounded-full border-2 ${reason === r ? 'border-[#0A1F44] bg-[#FFD54F]/100' : 'border-slate-300'}`} />
                 <span className="text-slate-700">{r}</span>
               </button>
             ))}
@@ -97,7 +97,7 @@ export function BookingReschedulePage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={() => navigate('booking-confirmation')}>Cancel</Button>
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
+          <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl" onClick={handleReschedule} disabled={loading}>
             <RefreshCw className="size-4" /> {loading ? 'Rescheduling...' : 'Confirm Reschedule'}
           </Button>
         </div>

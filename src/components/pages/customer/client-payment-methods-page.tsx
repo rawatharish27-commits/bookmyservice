@@ -43,7 +43,7 @@ export function ClientPaymentMethodsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading payment methods">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -63,11 +63,11 @@ export function ClientPaymentMethodsPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Payment Methods</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Add new payment method"><Plus className="size-4" /> Add New</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl" aria-label="Add new payment method"><Plus className="size-4" /> Add New</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><CreditCard className="size-4 text-[#1D63FF]" /> Saved Cards</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><CreditCard className="size-4 text-[#0A1F44]" /> Saved Cards</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {(!paymentData?.cards || paymentData.cards.length === 0) ? (
               <p className="text-sm text-slate-400 text-center py-4">No saved cards</p>
@@ -79,7 +79,7 @@ export function ClientPaymentMethodsPage() {
                     <p className="text-sm font-medium text-slate-900">{c.type} &bull;&bull;&bull;&bull; {c.last4}</p>
                     <p className="text-xs text-slate-400">Expires {c.expiry}</p>
                   </div>
-                  {c.isDefault && <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">Default</Badge>}
+                  {c.isDefault && <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">Default</Badge>}
                   <Button variant="ghost" size="icon" className="size-8 text-slate-400 hover:text-red-600" aria-label={`Remove ${c.type} card ending ${c.last4}`}><Trash2 className="size-4" /></Button>
                 </div>
               ))

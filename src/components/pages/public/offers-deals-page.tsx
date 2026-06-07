@@ -12,11 +12,11 @@ import { useApi } from '@/lib/use-api'
 // Offers data is static marketing content — no /api/offers endpoint exists
 // Using useApi with static data instead of useMockApi to remove artificial delay
 const offersData = [
-  { title: 'AC Summer Bonanza', desc: 'Get 20% off on all AC services', code: 'SUMMER20', discount: '20% OFF', gradient: 'from-[#1D63FF] to-[#FFCE32]', validTill: '2025-03-31', category: 'Air Conditioner' },
+  { title: 'AC Summer Bonanza', desc: 'Get 20% off on all AC services', code: 'SUMMER20', discount: '20% OFF', gradient: 'from-[#0A1F44] to-[#FFD54F]', validTill: '2025-03-31', category: 'Air Conditioner' },
   { title: 'Plumber Fix Sale', desc: '₹50 off on plumber services', code: 'FIX50', discount: '₹50 OFF', gradient: 'from-amber-500 to-yellow-400', validTill: '2025-03-28', category: 'Plumber' },
   { title: 'New User Offer', desc: 'First booking? Get 15% off up to ₹75', code: 'NEWUSER15', discount: '15% OFF', gradient: 'from-purple-500 to-fuchsia-400', validTill: '2025-04-15', category: 'All' },
   { title: 'Electrician Safety', desc: '₹50 off on electrical safety checkups', code: 'SAFE50', discount: '₹50 OFF', gradient: 'from-red-500 to-orange-400', validTill: '2025-03-20', category: 'Electrician' },
-  { title: 'Water Purifier Deal', desc: '10% off on RO service and filter change', code: 'RO10', discount: '10% OFF', gradient: 'from-teal-500 to-[#FFCE32]', validTill: '2025-04-05', category: 'Water Purifier' },
+  { title: 'Water Purifier Deal', desc: '10% off on RO service and filter change', code: 'RO10', discount: '10% OFF', gradient: 'from-teal-500 to-[#FFD54F]', validTill: '2025-04-05', category: 'Water Purifier' },
 ]
 
 function CountdownTimer({ targetDate }: { targetDate: string }) {
@@ -88,7 +88,7 @@ export function OffersDealsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20" role="status" aria-label="Loading offers">
-            <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+            <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
             <span className="sr-only">Loading...</span>
           </div>
         ) : error ? (

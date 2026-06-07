@@ -30,7 +30,7 @@ import {
 
 const benefits = [
   { icon: IndianRupee, title: 'Competitive Earnings', description: 'Earn ₹25,000-₹80,000+ per month. You keep 80% of every booking. Top providers earn even more with bonuses.', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { icon: Clock, title: 'Flexible Schedule', description: 'Choose your own working hours. Work full-time or part-time — you decide when and how much you want to work.', color: 'text-[#1D63FF]', bg: 'bg-blue-50' },
+  { icon: Clock, title: 'Flexible Schedule', description: 'Choose your own working hours. Work full-time or part-time — you decide when and how much you want to work.', color: 'text-[#0A1F44]', bg: 'bg-[#FFD54F]/10' },
   { icon: Shield, title: 'Insurance & Safety', description: 'Free accident insurance up to ₹5 lakhs. Health insurance options. Safe working environment guaranteed.', color: 'text-purple-600', bg: 'bg-purple-50' },
   { icon: GraduationCap, title: 'Free Training', description: 'Professional skill training and certification programmes at no cost. Upskill and increase your earning potential.', color: 'text-orange-600', bg: 'bg-orange-50' },
   { icon: Truck, title: 'Equipment Support', description: 'Subsidised tools and equipment. EMI options for purchasing vehicles. Everything you need to deliver great service.', color: 'text-cyan-600', bg: 'bg-cyan-50' },
@@ -57,7 +57,7 @@ const requirements = [
 ]
 
 const successStories = [
-  { name: 'Ramesh Kumar', avatar: 'RK', color: 'bg-[#1D63FF]', service: 'Plumber', city: 'Bengaluru', earnings: '₹65,000/month', story: 'I was struggling to find consistent work before joining BookMyService. Now I earn over ₹65,000 a month with a steady stream of bookings. The training improved my skills and the flexible hours let me balance family time.' },
+  { name: 'Ramesh Kumar', avatar: 'RK', color: 'bg-[#0A1F44]', service: 'Plumber', city: 'Bengaluru', earnings: '₹65,000/month', story: 'I was struggling to find consistent work before joining BookMyService. Now I earn over ₹65,000 a month with a steady stream of bookings. The training improved my skills and the flexible hours let me balance family time.' },
   { name: 'Sunita Devi', avatar: 'SD', color: 'bg-emerald-600', service: 'Electrician', city: 'Delhi', earnings: '₹55,000/month', story: 'As a single mother, I needed flexible working hours. BookMyService gave me the freedom to choose my schedule and earn a dignified livelihood. The safety features make me feel secure visiting customers\' homes.' },
   { name: 'Arjun Patel', avatar: 'AP', color: 'bg-purple-600', service: 'Electrician', city: 'Ahmedabad', earnings: '₹72,000/month', story: 'From earning ₹15,000 doing odd jobs to ₹72,000 a month — BookMyService changed my life. The insurance coverage and equipment support have been invaluable. I\'ve even hired 2 assistants now!' },
 ]

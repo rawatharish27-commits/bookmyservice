@@ -107,15 +107,15 @@ export function SessionExpiredPage() {
             </div>
 
             {/* Stay logged in info */}
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-blue-50/60 border border-[#1D63FF]/10 text-left">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#1D63FF]/10">
-                <Info className="size-4 text-[#1D63FF]" />
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-[#FFD54F]/10/60 border border-[#0A1F44]/10 text-left">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                <Info className="size-4 text-[#0A1F44]" />
               </div>
               <div>
-                <p className="text-sm font-medium text-[#0B3D91]">
+                <p className="text-sm font-medium text-[#0A1F44]">
                   Stay logged in longer
                 </p>
-                <p className="text-xs text-[#1D63FF]">
+                <p className="text-xs text-[#0A1F44]">
                   Check &quot;Remember me&quot; on the login page to extend your
                   session to 7 days.
                 </p>
@@ -124,7 +124,7 @@ export function SessionExpiredPage() {
 
             {/* Login button */}
             <Button
-              className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
+              className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-2 rounded-xl py-5"
               onClick={handleLogin}
               disabled={redirecting}
             >
@@ -213,7 +213,7 @@ export function SessionExpiredPage() {
               onClick={() => setShowSecurityTips(!showSecurityTips)}
             >
               <div className="flex items-center gap-2">
-                <ShieldCheck className="size-4 text-[#1D63FF]" />
+                <ShieldCheck className="size-4 text-[#0A1F44]" />
                 <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
                   Security Tips
                 </h3>
@@ -234,8 +234,8 @@ export function SessionExpiredPage() {
                       key={tip.title}
                       className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80"
                     >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                        <tip.icon className="size-4 text-[#1D63FF]" />
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                        <tip.icon className="size-4 text-[#0A1F44]" />
                       </div>
                       <div>
                         <p className="text-sm font-medium text-slate-700">

@@ -14,9 +14,9 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: |
+          bun install
           cd mini-services/api-service && bun install
-          cd ../../frontend && bun install
-      - name: Audit dependencies
-        run: |
-          cd mini-services/api-service && npm audit --audit-level=high || true
-          cd ../../frontend && npm audit --audit-level=high || true
+      - name: Audit root dependencies
+        run: npm audit --audit-level=high || true
+      - name: Audit API service dependencies
+        run: cd mini-services/api-service && npm audit --audit-level=high || true

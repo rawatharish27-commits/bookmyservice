@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { TrendingUp, Users, UserPlus, UserCheck, Download } from 'lucide-react'
 
 const userMetrics = [
-  { label: 'Total Users', value: '12,456', change: '+1,234', icon: Users, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Users', value: '12,456', change: '+1,234', icon: Users, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'New Users (May)', value: '1,234', change: '+18%', icon: UserPlus, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Active Users', value: '8,432', change: '+12%', icon: UserCheck, color: 'bg-purple-100 text-purple-600' },
 ]
@@ -61,7 +61,7 @@ export function AdminUserAnalyticsPage() {
                 <div key={d.group}>
                   <div className="py-3">
                     <div className="flex items-center justify-between mb-1"><span className="text-sm text-slate-700">{d.group} years</span><span className="text-sm font-semibold text-slate-700">{d.count.toLocaleString()}</span></div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500 rounded-full" style={{ width: `${d.percentage}%` }} /></div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${d.percentage}%` }} /></div>
                   </div>
                   {i < demographics.length - 1 && <Separator className="bg-slate-100" />}
                 </div>

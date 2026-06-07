@@ -61,7 +61,7 @@ const inventoryItems: InventoryItem[] = [
 const categories = ['All', 'Water Tank Cleaning', 'Air Conditioner', 'Kitchen Appliances', 'Plumber', 'Electrician', 'Geyser']
 
 const summaryStats = [
-  { label: 'Total Items', value: '156', icon: Package, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Items', value: '156', icon: Package, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'In Stock', value: '118', icon: CheckCircle2, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Low Stock', value: '24', icon: AlertTriangle, color: 'bg-amber-100 text-amber-600' },
   { label: 'Out of Stock', value: '14', icon: XCircle, color: 'bg-red-100 text-red-600' },
@@ -92,7 +92,7 @@ export function InventoryManagementPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Plus className="size-4" /> Add Item</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"><Plus className="size-4" /> Add Item</Button>
           </div>
         </div>
 

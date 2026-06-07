@@ -40,7 +40,7 @@ export function BookingPaymentPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading payment">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -55,12 +55,12 @@ export function BookingPaymentPage() {
 
         <Card className="bg-white rounded-xl">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-5 text-[#1D63FF]" /></div>
+            <div className="flex size-10 items-center justify-center rounded-xl bg-[#FFD54F]/10"><Zap className="size-5 text-[#0A1F44]" /></div>
             <div className="flex-1">
               <p className="text-sm font-semibold text-slate-900">{data.service.name}</p>
               <p className="text-xs text-slate-400">{data.service.date} • {data.service.time}</p>
             </div>
-            <span className="text-lg font-bold text-[#1D63FF]">₹{data.total}</span>
+            <span className="text-lg font-bold text-[#0A1F44]">₹{data.total}</span>
           </CardContent>
         </Card>
 
@@ -87,13 +87,13 @@ export function BookingPaymentPage() {
           <CardContent className="space-y-2">
             {data.methods.map((m) => (
               <button key={m.id} onClick={() => setSelected(m.id)}
-                className={`flex w-full items-center gap-3 rounded-xl border p-3 transition-colors ${selected === m.id ? 'border-blue-500 bg-blue-50' : 'border-slate-100 hover:bg-slate-50'}`}>
-                <m.icon className={`size-5 ${selected === m.id ? 'text-[#1D63FF]' : 'text-slate-400'}`} />
+                className={`flex w-full items-center gap-3 rounded-xl border p-3 transition-colors ${selected === m.id ? 'border-[#0A1F44] bg-[#FFD54F]/10' : 'border-slate-100 hover:bg-slate-50'}`}>
+                <m.icon className={`size-5 ${selected === m.id ? 'text-[#0A1F44]' : 'text-slate-400'}`} />
                 <div className="flex-1 text-left">
                   <p className="text-sm font-medium text-slate-900">{m.label}</p>
                   <p className="text-xs text-slate-400">{m.balance ? `Balance: ${m.balance}` : m.desc}</p>
                 </div>
-                {selected === m.id && <Check className="size-5 text-[#1D63FF]" />}
+                {selected === m.id && <Check className="size-5 text-[#0A1F44]" />}
               </button>
             ))}
           </CardContent>
@@ -104,11 +104,11 @@ export function BookingPaymentPage() {
             <div className="flex justify-between text-sm"><span className="text-slate-500">Subtotal</span><span className="text-slate-900">₹{data.pricing.subtotal}</span></div>
             <div className="flex justify-between text-sm"><span className="text-emerald-600">Discount</span><span className="text-emerald-600">-₹{data.pricing.discount}</span></div>
             <Separator />
-            <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Pay</span><span className="text-[#1D63FF]">₹{data.pricing.pay}</span></div>
+            <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Pay</span><span className="text-[#0A1F44]">₹{data.pricing.pay}</span></div>
           </CardContent>
         </Card>
 
-        <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl py-5" onClick={() => navigate('booking-razorpay')}>
+        <Button className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl py-5" onClick={() => navigate('booking-razorpay')}>
           <Shield className="size-4" /> Pay ₹{data.pricing.pay}
         </Button>
       </div>

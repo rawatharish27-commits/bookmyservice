@@ -62,9 +62,9 @@ const vendors: Vendor[] = [
 ]
 
 const categoryColors: Record<VendorCategory, string> = {
-  'Water Tank Cleaning': 'bg-[#1D63FF]/10 text-[#0B3D91]',
+  'Water Tank Cleaning': 'bg-[#FFD54F]/10 text-[#0A1F44]',
   'Air Conditioner': 'bg-cyan-100 text-cyan-700',
-  'Plumber': 'bg-indigo-100 text-indigo-700',
+  'Plumber': 'bg-[#0A1F44]/10 text-[#0A1F44]',
   'Electrician': 'bg-yellow-100 text-yellow-700',
   'Kitchen Appliances': 'bg-amber-100 text-amber-700',
   'Geyser': 'bg-orange-100 text-orange-700',
@@ -80,7 +80,7 @@ const categoryIcons: Record<VendorCategory, React.ReactNode> = {
 }
 
 const summaryStats = [
-  { label: 'Total Vendors', value: '48', icon: Building2, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Vendors', value: '48', icon: Building2, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'Active Vendors', value: '38', icon: CheckCircle2, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Pending Review', value: '7', icon: Clock, color: 'bg-amber-100 text-amber-600' },
   { label: 'Suspended', value: '3', icon: AlertTriangle, color: 'bg-red-100 text-red-600' },
@@ -108,7 +108,7 @@ export function VendorManagementPage() {
             <h1 className="text-2xl font-bold text-slate-900">Vendor Management</h1>
             <p className="text-sm text-slate-500 mt-1">Manage vendor partnerships and compliance</p>
           </div>
-          <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
+          <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white">
             <Plus className="size-4" /> Add Vendor
           </Button>
         </div>
@@ -250,7 +250,7 @@ export function VendorManagementPage() {
                   <div className="mb-3">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-slate-600">Onboarding</span>
-                      <span className="text-xs font-medium text-[#1D63FF]">{vendor.onboardingProgress}%</span>
+                      <span className="text-xs font-medium text-[#0A1F44]">{vendor.onboardingProgress}%</span>
                     </div>
                     <Progress value={vendor.onboardingProgress} className="h-1.5" />
                   </div>

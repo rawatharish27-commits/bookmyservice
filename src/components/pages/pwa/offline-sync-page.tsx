@@ -131,7 +131,7 @@ function getTypeIcon(type: PendingAction['type']) {
 
 function getTypeColor(type: PendingAction['type']) {
   switch (type) {
-    case 'booking': return { icon: 'text-[#1D63FF]', bg: 'bg-blue-50' }
+    case 'booking': return { icon: 'text-[#0A1F44]', bg: 'bg-[#FFD54F]/10' }
     case 'review': return { icon: 'text-amber-600', bg: 'bg-amber-50' }
     case 'payment': return { icon: 'text-emerald-600', bg: 'bg-emerald-50' }
     case 'cancellation': return { icon: 'text-red-600', bg: 'bg-red-50' }
@@ -141,7 +141,7 @@ function getTypeColor(type: PendingAction['type']) {
 function getStatusBadge(status: PendingAction['status']) {
   switch (status) {
     case 'pending': return <Badge variant="outline" className="text-slate-500 border-slate-300 text-[10px]">Pending</Badge>
-    case 'syncing': return <Badge className="bg-blue-50 text-[#1D63FF] border-0 text-[10px]"><Loader2 className="w-3 h-3 mr-1 animate-spin" />Syncing</Badge>
+    case 'syncing': return <Badge className="bg-[#FFD54F]/10 text-[#0A1F44] border-0 text-[10px]"><Loader2 className="w-3 h-3 mr-1 animate-spin" />Syncing</Badge>
     case 'failed': return <Badge variant="destructive" className="text-[10px]">Failed</Badge>
     case 'conflict': return <Badge className="bg-amber-50 text-amber-700 border-0 text-[10px]"><AlertTriangle className="w-3 h-3 mr-1" />Conflict</Badge>
   }
@@ -207,12 +207,12 @@ export function OfflineSyncPage() {
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  isOnline ? 'bg-emerald-50' : syncing ? 'bg-blue-50' : 'bg-red-50'
+                  isOnline ? 'bg-emerald-50' : syncing ? 'bg-[#FFD54F]/10' : 'bg-red-50'
                 }`}>
                   {isOnline ? (
                     <Cloud className="w-6 h-6 text-emerald-600" />
                   ) : syncing ? (
-                    <RefreshCw className="w-6 h-6 text-[#1D63FF] animate-spin" />
+                    <RefreshCw className="w-6 h-6 text-[#0A1F44] animate-spin" />
                   ) : (
                     <CloudOff className="w-6 h-6 text-red-600" />
                   )}
@@ -238,7 +238,7 @@ export function OfflineSyncPage() {
                 <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${
-                      isOnline ? 'bg-emerald-500' : 'bg-[#1D63FF]'
+                      isOnline ? 'bg-emerald-500' : 'bg-[#0A1F44]'
                     }`}
                     style={{ width: `${syncing ? syncProgress : 0}%` }}
                   />
@@ -280,7 +280,7 @@ export function OfflineSyncPage() {
                   className="flex items-center gap-2"
                 >
                   {autoSync ? (
-                    <ToggleRight className="w-8 h-8 text-[#1D63FF]" />
+                    <ToggleRight className="w-8 h-8 text-[#0A1F44]" />
                   ) : (
                     <ToggleLeft className="w-8 h-8 text-slate-400" />
                   )}
@@ -291,7 +291,7 @@ export function OfflineSyncPage() {
                 onClick={handleSyncNow}
                 disabled={syncing || isOnline}
                 size="sm"
-                className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white"
+                className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"
               >
                 <RefreshCw className={`w-3.5 h-3.5 mr-1 ${syncing ? 'animate-spin' : ''}`} />
                 {syncing ? 'Syncing...' : isOnline ? 'Synced' : 'Sync Now'}
@@ -359,7 +359,7 @@ export function OfflineSyncPage() {
                           </div>
                           <div className="flex gap-2 pt-1">
                             {action.status === 'failed' && (
-                              <Button size="xs" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs">
+                              <Button size="xs" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white text-xs">
                                 <RefreshCw className="w-3 h-3 mr-1" /> Retry
                               </Button>
                             )}
@@ -396,8 +396,8 @@ export function OfflineSyncPage() {
                       Conflict: {conflict.field}
                     </p>
                     <div className="grid grid-cols-2 gap-3 mb-3">
-                      <div className="bg-white rounded-lg p-3 border border-blue-200">
-                        <p className="text-[10px] text-[#1D63FF] font-medium mb-1">Your Version</p>
+                      <div className="bg-white rounded-lg p-3 border border-[#FFD54F]/20">
+                        <p className="text-[10px] text-[#0A1F44] font-medium mb-1">Your Version</p>
                         <p className="text-sm font-semibold text-slate-900">{conflict.localData}</p>
                       </div>
                       <div className="bg-white rounded-lg p-3 border border-slate-200">
@@ -408,7 +408,7 @@ export function OfflineSyncPage() {
                     <div className="flex gap-2">
                       <Button
                         size="sm"
-                        className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs flex-1"
+                        className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white text-xs flex-1"
                         onClick={() => handleResolveConflict(conflict.id, 'local')}
                       >
                         Keep Mine
@@ -459,8 +459,8 @@ export function OfflineSyncPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                <Database className="w-5 h-5 text-[#1D63FF]" />
+              <div className="w-10 h-10 rounded-xl bg-[#FFD54F]/10 flex items-center justify-center">
+                <Database className="w-5 h-5 text-[#0A1F44]" />
               </div>
               <div>
                 <p className="font-semibold text-sm text-slate-900">Local Storage</p>
@@ -474,7 +474,7 @@ export function OfflineSyncPage() {
                   <span className="font-medium text-slate-700">12.4 MB</span>
                 </div>
                 <div className="w-full h-1.5 bg-slate-100 rounded-full">
-                  <div className="h-full bg-blue-500 rounded-full" style={{ width: '45%' }} />
+                  <div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: '45%' }} />
                 </div>
               </div>
               <div>

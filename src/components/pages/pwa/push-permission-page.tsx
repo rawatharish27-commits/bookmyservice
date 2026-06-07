@@ -57,8 +57,8 @@ const initialCategories: NotificationCategory[] = [
     title: 'Booking Updates',
     description: 'Confirmations, cancellations, rescheduling, and status changes',
     icon: CalendarCheck,
-    color: 'text-[#1D63FF]',
-    bgColor: 'bg-blue-50',
+    color: 'text-[#0A1F44]',
+    bgColor: 'bg-[#FFD54F]/10',
     enabled: true,
     count: 12,
   },
@@ -122,7 +122,7 @@ const notificationPreviews: NotificationPreview[] = [
     body: 'Your Water Tank Cleaning service is confirmed for tomorrow, 10 AM. Provider: Rajesh K.',
     time: 'Just now',
     icon: CalendarCheck,
-    color: 'text-[#1D63FF]',
+    color: 'text-[#0A1F44]',
   },
   {
     id: '2',
@@ -228,8 +228,8 @@ export function PushPermissionPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardContent className="p-6">
             <div className="flex items-center gap-4 mb-4">
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
-                <Bell className="w-7 h-7 text-[#1D63FF]" />
+              <div className="w-14 h-14 rounded-2xl bg-[#FFD54F]/10 flex items-center justify-center">
+                <Bell className="w-7 h-7 text-[#0A1F44]" />
               </div>
               <div className="flex-1">
                 <p className="text-2xl font-bold text-slate-900">{enabledCount}/{categories.length}</p>
@@ -248,7 +248,7 @@ export function PushPermissionPage() {
               {categories.map((cat) => (
                 <div
                   key={cat.id}
-                  className={`h-1.5 rounded-full ${cat.enabled ? 'bg-blue-500' : 'bg-slate-200'}`}
+                  className={`h-1.5 rounded-full ${cat.enabled ? 'bg-[#FFD54F]/100' : 'bg-slate-200'}`}
                 />
               ))}
             </div>
@@ -298,7 +298,7 @@ export function PushPermissionPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Moon className="w-4 h-4 text-indigo-600" />
+              <Moon className="w-4 h-4 text-[#0A1F44]" />
               <CardTitle className="text-base">Quiet Hours</CardTitle>
             </div>
             <CardDescription>Silence notifications during specific hours</CardDescription>
@@ -321,7 +321,7 @@ export function PushPermissionPage() {
                   <div className="flex-1">
                     <p className="text-[10px] text-indigo-400 uppercase tracking-wider font-medium">From</p>
                     <div className="flex items-center gap-2 mt-1">
-                      <Moon className="w-4 h-4 text-indigo-600" />
+                      <Moon className="w-4 h-4 text-[#0A1F44]" />
                       <span className="text-lg font-semibold text-slate-900">{quietStart}</span>
                     </div>
                   </div>
@@ -336,7 +336,7 @@ export function PushPermissionPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <Info className="w-3.5 h-3.5 text-indigo-400" />
-                  <p className="text-xs text-indigo-600">
+                  <p className="text-xs text-[#0A1F44]">
                     Urgent notifications (booking cancellations, security alerts) will still come through.
                   </p>
                 </div>
@@ -351,7 +351,7 @@ export function PushPermissionPage() {
                     <button
                       key={preset.label}
                       onClick={() => { setQuietStart(preset.start); setQuietEnd(preset.end) }}
-                      className="px-3 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs font-medium text-indigo-700 hover:bg-indigo-100 transition-colors"
+                      className="px-3 py-1.5 rounded-lg bg-white border border-indigo-200 text-xs font-medium text-[#0A1F44] hover:bg-[#0A1F44]/10 transition-colors"
                     >
                       {preset.label}
                     </button>
@@ -402,8 +402,8 @@ export function PushPermissionPage() {
 
               <div className="flex items-center justify-between py-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center">
-                    <Eye className="w-4.5 h-4.5 text-[#1D63FF]" />
+                  <div className="w-9 h-9 rounded-lg bg-[#FFD54F]/10 flex items-center justify-center">
+                    <Eye className="w-4.5 h-4.5 text-[#0A1F44]" />
                   </div>
                   <div>
                     <p className="text-sm font-medium text-slate-900">Show Previews</p>
@@ -470,7 +470,7 @@ export function PushPermissionPage() {
 
         {/* Save Button */}
         <div className="pb-6">
-          <Button className="w-full h-11 bg-[#1D63FF] hover:bg-[#0B3D91] text-white font-semibold rounded-xl">
+          <Button className="w-full h-11 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white font-semibold rounded-xl">
             <CheckCircle2 className="w-4 h-4 mr-2" />
             Save Preferences
           </Button>

@@ -38,7 +38,7 @@ const conversations: Conversation[] = [
     id: 1,
     name: 'Amit Sharma',
     initials: 'AS',
-    avatarColor: 'bg-[#1D63FF]',
+    avatarColor: 'bg-[#0A1F44]',
     lastMessage: 'I will reach your place by 3 PM today',
     time: '2 min ago',
     unread: 3,
@@ -125,7 +125,7 @@ const conversations: Conversation[] = [
     id: 8,
     name: 'Kavita Iyer',
     initials: 'KI',
-    avatarColor: 'bg-indigo-600',
+    avatarColor: 'bg-[#0A1F44]',
     lastMessage: 'Please share the invoice for the last booking',
     time: 'Yesterday',
     unread: 0,
@@ -261,7 +261,7 @@ export function ChatInboxPage() {
                     <button
                       onClick={() => setSelectedId(conv.id)}
                       className={`w-full text-left px-4 py-3.5 sm:px-6 hover:bg-slate-50 transition-colors ${
-                        selectedId === conv.id ? 'bg-blue-50' : ''
+                        selectedId === conv.id ? 'bg-[#FFD54F]/10' : ''
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -295,14 +295,14 @@ export function ChatInboxPage() {
                             </div>
                             <span
                               className={`text-xs shrink-0 ml-2 ${
-                                conv.unread > 0 ? 'text-[#1D63FF] font-medium' : 'text-slate-400'
+                                conv.unread > 0 ? 'text-[#0A1F44] font-medium' : 'text-slate-400'
                               }`}
                             >
                               {conv.time}
                             </span>
                           </div>
                           {conv.serviceName && (
-                            <p className="text-xs text-[#1D63FF] mb-0.5 truncate">
+                            <p className="text-xs text-[#0A1F44] mb-0.5 truncate">
                               {conv.serviceName} • {conv.bookingId}
                             </p>
                           )}
@@ -315,7 +315,7 @@ export function ChatInboxPage() {
                               {conv.lastMessage}
                             </p>
                             {conv.unread > 0 && (
-                              <Badge className="bg-[#1D63FF] text-white text-[10px] h-5 min-w-[20px] flex items-center justify-center rounded-full px-1.5 shrink-0">
+                              <Badge className="bg-[#0A1F44] text-white text-[10px] h-5 min-w-[20px] flex items-center justify-center rounded-full px-1.5 shrink-0">
                                 {conv.unread}
                               </Badge>
                             )}
@@ -335,7 +335,7 @@ export function ChatInboxPage() {
         <div className="grid grid-cols-3 gap-3 mt-4">
           <Card className="bg-white rounded-xl shadow-sm">
             <CardContent className="p-3 sm:p-4 text-center">
-              <MessageSquare className="size-5 text-[#1D63FF] mx-auto mb-1" />
+              <MessageSquare className="size-5 text-[#0A1F44] mx-auto mb-1" />
               <p className="text-lg font-bold text-slate-900">{conversations.length}</p>
               <p className="text-[10px] sm:text-xs text-slate-500">Total Chats</p>
             </CardContent>

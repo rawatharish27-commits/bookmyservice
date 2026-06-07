@@ -48,7 +48,7 @@ const attachments: AttachmentInfo[] = [
     size: '2.4 MB',
     sender: 'Rahul Sharma',
     senderInitials: 'RS',
-    senderColor: 'bg-[#1D63FF]',
+    senderColor: 'bg-[#0A1F44]',
     date: '4 Mar 2025, 9:20 AM',
     bookingId: 'BK-2024-1847',
     serviceName: 'Air Conditioner',
@@ -230,7 +230,7 @@ export function AttachmentPreviewPage() {
             >
               <Share2 className="size-4" />
             </Button>
-            <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white size-8 rounded-lg">
+            <Button className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white size-8 rounded-lg">
               <Download className="size-4" />
             </Button>
             <Button
@@ -401,7 +401,7 @@ export function AttachmentPreviewPage() {
 
               {/* Actions */}
               <div className="mt-6 space-y-2">
-                <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
+                <Button className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl">
                   <Download className="size-4 mr-2" />
                   Download
                 </Button>
@@ -428,7 +428,7 @@ export function AttachmentPreviewPage() {
                       }}
                       className={`rounded-lg p-2 text-center transition-colors ${
                         i === currentIndex
-                          ? 'bg-[#1D63FF]/20 border border-blue-500'
+                          ? 'bg-[#0A1F44]/20 border border-[#0A1F44]'
                           : 'bg-slate-700 hover:bg-slate-600 border border-transparent'
                       }`}
                     >
@@ -459,7 +459,7 @@ export function AttachmentPreviewPage() {
                 setRotation(0)
               }}
               className={`shrink-0 w-14 h-14 rounded-lg flex items-center justify-center transition-colors ${
-                i === currentIndex ? 'bg-[#1D63FF]/20 border border-blue-500' : 'bg-slate-700'
+                i === currentIndex ? 'bg-[#0A1F44]/20 border border-[#0A1F44]' : 'bg-slate-700'
               }`}
             >
               {att.type === 'image' ? (

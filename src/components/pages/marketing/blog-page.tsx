@@ -28,7 +28,7 @@ const featuredPost = {
   excerpt: 'From monsoon prep to annual Water Tank Cleaning, learn the essential home maintenance schedule that will keep your home in top shape year-round. Expert tips from our top service providers.',
   author: 'Priya Sharma',
   authorInitials: 'PS',
-  authorColor: 'bg-[#1D63FF]',
+  authorColor: 'bg-[#0A1F44]',
   date: '28 Feb 2025',
   readTime: '8 min read',
   category: 'Home Maintenance',
@@ -108,7 +108,7 @@ const blogPosts = [
     excerpt: 'We\'re excited to announce our expansion to 30 new tier-3 cities across India, bringing professional home services to millions more households.',
     author: 'Marketing Team',
     authorInitials: 'MT',
-    authorColor: 'bg-[#1D63FF]',
+    authorColor: 'bg-[#0A1F44]',
     date: '12 Feb 2025',
     readTime: '3 min read',
     category: 'Company News',
@@ -157,11 +157,11 @@ export function BlogPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
-          <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Blog</Badge>
+          <Badge className="bg-[#FFD54F]/100/30 text-[#FFD54F]/80 border-blue-400/30 mb-4">Blog</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">Insights & Tips</h1>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto mb-8">
+          <p className="text-[#FFD54F]/80 text-lg max-w-2xl mx-auto mb-8">
             Expert advice, DIY guides, and the latest updates from the world of home services.
           </p>
           <div className="max-w-xl mx-auto relative">
@@ -184,7 +184,7 @@ export function BlogPage() {
               key={cat}
               variant={selectedCategory === cat ? 'default' : 'outline'}
               size="sm"
-              className={selectedCategory === cat ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'bg-white shadow-sm'}
+              className={selectedCategory === cat ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : 'bg-white shadow-sm'}
               onClick={() => setSelectedCategory(cat)}
             >
               {cat}
@@ -198,11 +198,11 @@ export function BlogPage() {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
           <Card className="shadow-sm border-0 overflow-hidden">
             <div className="grid lg:grid-cols-2">
-              <div className="h-48 lg:h-auto bg-gradient-to-br from-[#1D63FF]/10 to-blue-200 flex items-center justify-center">
+              <div className="h-48 lg:h-auto bg-gradient-to-br from-[#0A1F44]/10 to-blue-200 flex items-center justify-center">
                 <BookOpen className="size-16 text-blue-400" />
               </div>
               <CardContent className="p-6 sm:p-8">
-                <Badge className="bg-blue-50 text-[#0B3D91] mb-3">{featuredPost.category}</Badge>
+                <Badge className="bg-[#FFD54F]/10 text-[#0A1F44] mb-3">{featuredPost.category}</Badge>
                 <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-3 leading-tight">{featuredPost.title}</h2>
                 <p className="text-slate-500 text-sm leading-relaxed mb-4">{featuredPost.excerpt}</p>
                 <div className="flex items-center justify-between">
@@ -215,7 +215,7 @@ export function BlogPage() {
                       <p className="text-[10px] text-slate-400">{featuredPost.date} • {featuredPost.readTime}</p>
                     </div>
                   </div>
-                  <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
+                  <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white">
                     Read More <ArrowRight className="size-3 ml-1" />
                   </Button>
                 </div>
@@ -255,7 +255,7 @@ export function BlogPage() {
                 </div>
                 <CardContent className="p-4 sm:p-5">
                   <Badge variant="secondary" className="text-[10px] mb-2">{post.category}</Badge>
-                  <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2 leading-snug group-hover:text-[#1D63FF] transition-colors">
+                  <h3 className="font-semibold text-slate-900 text-sm mb-2 line-clamp-2 leading-snug group-hover:text-[#0A1F44] transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-xs text-slate-500 leading-relaxed mb-3 line-clamp-2">{post.excerpt}</p>
@@ -274,7 +274,7 @@ export function BlogPage() {
                   <div className="flex items-center gap-3 mt-3 pt-3 border-t border-slate-50">
                     <span className="flex items-center gap-1 text-[10px] text-slate-400"><Eye className="size-2.5" /> {post.views}</span>
                     <span className="flex items-center gap-1 text-[10px] text-slate-400"><Heart className="size-2.5" /> {post.likes}</span>
-                    <Bookmark className="size-3 text-slate-300 ml-auto hover:text-blue-500 cursor-pointer" />
+                    <Bookmark className="size-3 text-slate-300 ml-auto hover:text-[#FFD54F]/800 cursor-pointer" />
                   </div>
                 </CardContent>
               </Card>
@@ -284,11 +284,11 @@ export function BlogPage() {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
+      <section className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <BookOpen className="size-10 mx-auto mb-4 text-blue-200" />
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Stay Updated</h2>
-          <p className="text-blue-100 mb-6 max-w-lg mx-auto">
+          <p className="text-[#FFD54F]/80 mb-6 max-w-lg mx-auto">
             Get the latest home maintenance tips, DIY guides, and company updates delivered to your inbox weekly.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">

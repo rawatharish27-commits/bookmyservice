@@ -79,15 +79,15 @@ export function CareersPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="max-w-3xl">
-            <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Careers</Badge>
+            <Badge className="bg-[#FFD54F]/100/30 text-[#FFD54F]/80 border-blue-400/30 mb-4">Careers</Badge>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
               Build the Future of <br />
               <span className="text-blue-200">Home Services in India</span>
             </h1>
-            <p className="text-blue-100 text-lg sm:text-xl leading-relaxed mb-8">
+            <p className="text-[#FFD54F]/80 text-lg sm:text-xl leading-relaxed mb-8">
               Join a team of 500+ passionate people making quality home services accessible
               to every Indian household. Your work here will impact millions of lives.
             </p>
@@ -112,8 +112,8 @@ export function CareersPage() {
           {cultureValues.map((value) => (
             <Card key={value.title} className="shadow-sm border-0 hover:shadow-md transition-shadow">
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center mx-auto mb-4">
-                  <value.icon className="size-6 text-[#1D63FF]" />
+                <div className="w-12 h-12 rounded-xl bg-[#FFD54F]/10 flex items-center justify-center mx-auto mb-4">
+                  <value.icon className="size-6 text-[#0A1F44]" />
                 </div>
                 <h3 className="font-semibold text-slate-900 mb-2">{value.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{value.description}</p>
@@ -169,7 +169,7 @@ export function CareersPage() {
                 key={dept}
                 variant={selectedDept === dept ? 'default' : 'outline'}
                 size="sm"
-                className={selectedDept === dept ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}
+                className={selectedDept === dept ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : ''}
                 onClick={() => setSelectedDept(dept)}
               >
                 {dept}
@@ -210,7 +210,7 @@ export function CareersPage() {
                         <p className="font-semibold text-emerald-600 text-sm">{job.salary}</p>
                         <p className="text-[10px] text-slate-400">{job.posted}</p>
                       </div>
-                      <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
+                      <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white">
                         Apply <ChevronRight className="size-3 ml-1" />
                       </Button>
                     </div>
@@ -223,10 +223,10 @@ export function CareersPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white">
+      <section className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Don&apos;t See the Right Role?</h2>
-          <p className="text-blue-100 mb-8 max-w-lg mx-auto">
+          <p className="text-[#FFD54F]/80 mb-8 max-w-lg mx-auto">
             We&apos;re always looking for talented people. Send us your resume and we&apos;ll reach out when there&apos;s a match.
           </p>
           <Button size="lg" variant="secondary">Send Your Resume</Button>

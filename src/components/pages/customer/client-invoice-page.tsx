@@ -28,7 +28,7 @@ export function ClientInvoicePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading invoice">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -56,14 +56,14 @@ export function ClientInvoicePage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Invoice</h1>
-          <Button className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Download invoice"><Download className="size-4" /> Download</Button>
+          <Button className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl" aria-label="Download invoice"><Download className="size-4" /> Download</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardContent className="p-6 space-y-5">
             <div className="flex items-start justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-1"><FileText className="size-5 text-[#1D63FF]" /><h2 className="text-lg font-bold text-slate-900">Invoice</h2></div>
+                <div className="flex items-center gap-2 mb-1"><FileText className="size-5 text-[#0A1F44]" /><h2 className="text-lg font-bold text-slate-900">Invoice</h2></div>
                 <p className="text-xs text-slate-400">#{invoice.invoiceNumber}</p>
               </div>
               <div className="text-right text-sm text-slate-500">
@@ -106,7 +106,7 @@ export function ClientInvoicePage() {
                 <div key={item.label} className="flex justify-between text-sm"><span className="text-slate-500">{item.label}</span><span className="text-slate-700">{item.value}</span></div>
               ))}
               <Separator />
-              <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Total</span><span className="text-[#1D63FF]">{invoice.total}</span></div>
+              <div className="flex justify-between text-base font-bold"><span className="text-slate-900">Total</span><span className="text-[#0A1F44]">{invoice.total}</span></div>
             </div>
           </CardContent>
         </Card>

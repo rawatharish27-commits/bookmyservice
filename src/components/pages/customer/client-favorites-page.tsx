@@ -28,7 +28,7 @@ export function ClientFavoritesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading favorites">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -59,7 +59,7 @@ export function ClientFavoritesPage() {
               <Card key={fav.id} className="bg-white rounded-xl">
                 <CardContent className="p-5">
                   <div className="flex items-start gap-3">
-                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-[#1D63FF]">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#FFD54F]/10 text-[#0A1F44]">
                       <Heart className="size-6" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -71,7 +71,7 @@ export function ClientFavoritesPage() {
                       <div className="flex items-center gap-1 mt-1 text-xs text-slate-400"><MapPin className="size-3" />{fav.area}</div>
                     </div>
                     <div className="flex gap-1">
-                      <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-lg text-xs" aria-label={`Book ${fav.name}`}>Book Now</Button>
+                      <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-lg text-xs" aria-label={`Book ${fav.name}`}>Book Now</Button>
                       <Button variant="ghost" size="icon" className="size-8 text-red-400 hover:text-red-600 hover:bg-red-50" aria-label={`Remove ${fav.name} from favorites`}><Heart className="size-4 fill-red-400" /></Button>
                     </div>
                   </div>

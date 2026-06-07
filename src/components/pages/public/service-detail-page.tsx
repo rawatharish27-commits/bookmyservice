@@ -88,7 +88,7 @@ export function ServiceDetailPage() {
   if (svcLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen" role="status" aria-label="Loading service details">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -108,11 +108,11 @@ export function ServiceDetailPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Service Hero */}
-      <section className="bg-gradient-to-br from-[#1D63FF] to-[#FFCE32] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] to-[#FFD54F] text-white">
         <div className="max-w-7xl mx-auto px-4 py-12">
           <Badge className="bg-white/20 text-white border-0 mb-3">{service.category}</Badge>
           <h1 className="text-3xl sm:text-4xl font-bold mb-2">{service.name}</h1>
-          <p className="text-blue-100 mb-4 max-w-2xl">{service.description}</p>
+          <p className="text-[#FFD54F]/80 mb-4 max-w-2xl">{service.description}</p>
           <div className="flex flex-wrap items-center gap-4 text-sm">
             <span className="flex items-center gap-1"><Star className="size-4 fill-amber-400 text-amber-400" /> {service.provider.rating} ({service.provider.reviews} reviews)</span>
             <span className="flex items-center gap-1"><Clock className="size-4" /> 1-2 hours</span>
@@ -120,7 +120,7 @@ export function ServiceDetailPage() {
             <span className="flex items-center gap-1"><MapPin className="size-4" /> Serves within 15 km</span>
           </div>
           <div className="flex gap-3 mt-6">
-            <Button className="bg-white text-[#1D63FF] hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('booking-checkout')}>Book Now</Button>
+            <Button className="bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 font-semibold px-8" onClick={() => navigate('booking-checkout')}>Book Now</Button>
             <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 gap-2" aria-label="Call provider">
               <Phone className="size-4" /> Call
             </Button>
@@ -139,7 +139,7 @@ export function ServiceDetailPage() {
             <Card className="bg-white rounded-xl shadow-sm border-slate-100">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-[#1D63FF]/10 flex items-center justify-center text-2xl" aria-hidden="true">{service.provider.avatar}</div>
+                  <div className="w-14 h-14 rounded-2xl bg-[#FFD54F]/10 flex items-center justify-center text-2xl" aria-hidden="true">{service.provider.avatar}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-slate-900">{service.provider.name}</h3>
@@ -164,8 +164,8 @@ export function ServiceDetailPage() {
                 <h2 className="text-lg font-bold text-slate-900 mb-4">Pricing Plans</h2>
                 <div className="space-y-3">
                   {service.pricing.map((p) => (
-                    <div key={p.plan} className={`p-4 rounded-xl border ${p.popular ? 'border-blue-500 bg-blue-50/50' : 'border-slate-100'} relative`}>
-                      {p.popular && <Badge className="absolute -top-2 right-4 bg-[#1D63FF] text-white border-0 text-[10px]">Most Popular</Badge>}
+                    <div key={p.plan} className={`p-4 rounded-xl border ${p.popular ? 'border-[#0A1F44] bg-[#FFD54F]/10/50' : 'border-slate-100'} relative`}>
+                      {p.popular && <Badge className="absolute -top-2 right-4 bg-[#0A1F44] text-white border-0 text-[10px]">Most Popular</Badge>}
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-semibold text-slate-900">{p.plan}</h4>
@@ -173,7 +173,7 @@ export function ServiceDetailPage() {
                         </div>
                         <div className="text-right">
                           <span className="text-xl font-bold text-slate-900">₹{p.price}</span>
-                          <Button size="sm" className="ml-3 bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('booking-checkout')}>Select</Button>
+                          <Button size="sm" className="ml-3 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white" onClick={() => navigate('booking-checkout')}>Select</Button>
                         </div>
                       </div>
                     </div>
@@ -190,7 +190,7 @@ export function ServiceDetailPage() {
                   <span className="text-sm text-slate-500">{service.provider.reviews} reviews</span>
                 </div>
                 {revLoading ? (
-                  <div className="flex justify-center py-8"><Loader2 className="size-6 text-[#1D63FF] animate-spin" /></div>
+                  <div className="flex justify-center py-8"><Loader2 className="size-6 text-[#0A1F44] animate-spin" /></div>
                 ) : reviews && reviews.length > 0 ? (
                   <div className="space-y-4">
                     {reviews.map((r) => (
@@ -262,7 +262,7 @@ export function ServiceDetailPage() {
                   <div className="flex justify-between text-sm"><span className="text-slate-500">Discount</span><span className="text-green-600">-₹50</span></div>
                   <Separator />
                   <div className="flex justify-between font-bold"><span>Total</span><span>₹299</span></div>
-                  <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5" onClick={() => navigate('booking-checkout')}>Book Now</Button>
+                  <Button className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white py-5" onClick={() => navigate('booking-checkout')}>Book Now</Button>
                   <p className="text-xs text-center text-slate-400">Free cancellation up to 2 hours before</p>
                 </div>
               </CardContent>

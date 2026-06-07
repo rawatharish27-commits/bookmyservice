@@ -24,14 +24,14 @@ import {
 } from 'lucide-react'
 
 const crmMetrics = [
-  { label: 'Total Customers', value: '24,567', change: '+1,234', icon: Users, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Customers', value: '24,567', change: '+1,234', icon: Users, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'New This Month', value: '1,234', change: '+18.5%', icon: UserPlus, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Retention Rate', value: '78.4%', change: '+3.2%', icon: Heart, color: 'bg-pink-100 text-pink-600' },
   { label: 'Avg LTV', value: '₹8,450', change: '+12.3%', icon: IndianRupee, color: 'bg-amber-100 text-amber-600' },
 ]
 
 const acquisitionFunnel = [
-  { stage: 'Website Visitors', count: 45230, percentage: 100, color: 'bg-blue-500' },
+  { stage: 'Website Visitors', count: 45230, percentage: 100, color: 'bg-[#FFD54F]/100' },
   { stage: 'Service Page Views', count: 18920, percentage: 42, color: 'bg-blue-400' },
   { stage: 'Started Booking', count: 8540, percentage: 19, color: 'bg-blue-300' },
   { stage: 'Completed Booking', count: 4328, percentage: 10, color: 'bg-emerald-500' },
@@ -40,7 +40,7 @@ const acquisitionFunnel = [
 
 const customerSegments = [
   { name: 'Premium', count: 3245, percentage: 13, color: 'bg-amber-500', avgSpend: '₹15,200' },
-  { name: 'Regular', count: 8765, percentage: 36, color: 'bg-blue-500', avgSpend: '₹6,800' },
+  { name: 'Regular', count: 8765, percentage: 36, color: 'bg-[#FFD54F]/100', avgSpend: '₹6,800' },
   { name: 'Occasional', count: 6543, percentage: 27, color: 'bg-purple-500', avgSpend: '₹3,200' },
   { name: 'New', count: 4321, percentage: 18, color: 'bg-emerald-500', avgSpend: '₹1,800' },
   { name: 'At Risk', count: 1693, percentage: 7, color: 'bg-red-500', avgSpend: '₹2,400' },
@@ -110,7 +110,7 @@ export function CRMDashboardPage() {
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <Target className="size-4 text-[#1D63FF]" />
+                <Target className="size-4 text-[#0A1F44]" />
                 <CardTitle className="text-sm font-semibold text-slate-900">Customer Acquisition Funnel</CardTitle>
               </div>
             </CardHeader>
@@ -215,7 +215,7 @@ export function CRMDashboardPage() {
                         <span className="text-xs text-slate-500">{source.count.toLocaleString()} leads</span>
                       </div>
                       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 rounded-full" style={{ width: `${source.percentage}%` }} />
+                        <div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${source.percentage}%` }} />
                       </div>
                     </div>
                     <span className="text-sm font-semibold text-slate-900 w-10 text-right">{source.percentage}%</span>
@@ -230,7 +230,7 @@ export function CRMDashboardPage() {
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3">
               <div className="flex items-center gap-2">
-                <MessageSquare className="size-4 text-[#1D63FF]" />
+                <MessageSquare className="size-4 text-[#0A1F44]" />
                 <CardTitle className="text-sm font-semibold text-slate-900">Recent Interactions</CardTitle>
               </div>
             </CardHeader>
@@ -239,13 +239,13 @@ export function CRMDashboardPage() {
                 <div key={i}>
                   <div className="flex items-center gap-3 py-3">
                     <div className={`flex size-8 items-center justify-center rounded-full ${
-                      interaction.type === 'booking' ? 'bg-[#1D63FF]/10' :
+                      interaction.type === 'booking' ? 'bg-[#FFD54F]/10' :
                       interaction.type === 'review' ? 'bg-amber-100' :
                       interaction.type === 'inquiry' ? 'bg-purple-100' :
                       interaction.type === 'support' ? 'bg-red-100' :
                       'bg-emerald-100'
                     }`}>
-                      {interaction.type === 'booking' ? <CalendarIcon className="size-4 text-[#1D63FF]" /> :
+                      {interaction.type === 'booking' ? <CalendarIcon className="size-4 text-[#0A1F44]" /> :
                        interaction.type === 'review' ? <Star className="size-4 text-amber-600" /> :
                        interaction.type === 'inquiry' ? <MessageSquare className="size-4 text-purple-600" /> :
                        interaction.type === 'support' ? <Phone className="size-4 text-red-600" /> :

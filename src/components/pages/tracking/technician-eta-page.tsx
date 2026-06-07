@@ -13,7 +13,7 @@ export function TechnicianEtaPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <h1 className="text-2xl font-bold text-slate-900">Technician ETA</h1>
 
-        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl border-0 text-white">
+        <Card className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] rounded-xl border-0 text-white">
           <CardContent className="p-6 text-center">
             <Timer className="size-10 mx-auto mb-2 text-blue-200" />
             <p className="text-4xl font-bold">12 min</p>
@@ -23,7 +23,7 @@ export function TechnicianEtaPage() {
 
         <div className="grid grid-cols-3 gap-4">
           {[
-            { label: 'Distance', value: '2.5 km', icon: MapPin, color: 'text-[#1D63FF] bg-blue-50' },
+            { label: 'Distance', value: '2.5 km', icon: MapPin, color: 'text-[#0A1F44] bg-[#FFD54F]/10' },
             { label: 'Travel Time', value: '12 min', icon: Clock, color: 'text-emerald-600 bg-emerald-50' },
             { label: 'Avg Speed', value: '12 km/h', icon: Navigation, color: 'text-purple-600 bg-purple-50' },
           ].map((stat) => (
@@ -42,12 +42,12 @@ export function TechnicianEtaPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5">
             <div className="flex items-center gap-3">
-              <Avatar><AvatarFallback className="bg-[#1D63FF] text-white text-sm">AS</AvatarFallback></Avatar>
+              <Avatar><AvatarFallback className="bg-[#0A1F44] text-white text-sm">AS</AvatarFallback></Avatar>
               <div className="flex-1">
                 <p className="text-sm font-semibold text-slate-900">Amit Sharma</p>
                 <p className="text-xs text-slate-400">AC Technician • 4.9 ★</p>
               </div>
-              <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-lg"><Phone className="size-3" /> Call</Button>
+              <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-lg"><Phone className="size-3" /> Call</Button>
             </div>
           </CardContent>
         </Card>
@@ -62,8 +62,8 @@ export function TechnicianEtaPage() {
               { time: '~10:54 AM', msg: 'Expected arrival', active: false },
             ].map((u, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className={`size-2.5 rounded-full ${u.active ? 'bg-blue-500 animate-pulse' : 'bg-slate-300'}`} />
-                <span className={`text-sm flex-1 ${u.active ? 'text-[#1D63FF] font-semibold' : 'text-slate-600'}`}>{u.msg}</span>
+                <div className={`size-2.5 rounded-full ${u.active ? 'bg-[#FFD54F]/100 animate-pulse' : 'bg-slate-300'}`} />
+                <span className={`text-sm flex-1 ${u.active ? 'text-[#0A1F44] font-semibold' : 'text-slate-600'}`}>{u.msg}</span>
                 <span className="text-xs text-slate-400">{u.time}</span>
               </div>
             ))}

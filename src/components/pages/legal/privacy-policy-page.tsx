@@ -52,7 +52,7 @@ export function PrivacyPolicyPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#0A1F44]">
               <Shield className="size-5 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Privacy Policy</h1>
@@ -65,7 +65,7 @@ export function PrivacyPolicyPage() {
               <Clock className="size-3 mr-1" />
               Last Updated: March 1, 2025
             </Badge>
-            <Badge variant="outline" className="text-xs text-[#1D63FF] border-blue-200 bg-blue-50">
+            <Badge variant="outline" className="text-xs text-[#0A1F44] border-[#FFD54F]/20 bg-[#FFD54F]/10">
               <CheckCircle2 className="size-3 mr-1" />
               Effective Immediately
             </Badge>
@@ -95,7 +95,7 @@ export function PrivacyPolicyPage() {
                             onClick={() => scrollToSection(item.id)}
                             className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-left text-sm transition-colors ${
                               isActive
-                                ? 'bg-blue-50 text-[#1D63FF] font-medium'
+                                ? 'bg-[#FFD54F]/10 text-[#0A1F44] font-medium'
                                 : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                             }`}
                           >
@@ -114,7 +114,7 @@ export function PrivacyPolicyPage() {
               <Card className="bg-white rounded-xl mt-4">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <Info className="size-4 text-[#1D63FF]" />
+                    <Info className="size-4 text-[#0A1F44]" />
                     <span className="text-sm font-semibold text-slate-900">Quick Summary</span>
                   </div>
                   <ul className="space-y-2 text-xs text-slate-500">
@@ -146,7 +146,7 @@ export function PrivacyPolicyPage() {
             <Card id="information-collection" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Database className="size-5 text-[#1D63FF]" />
+                  <Database className="size-5 text-[#0A1F44]" />
                   1. Information We Collect
                 </CardTitle>
               </CardHeader>
@@ -159,20 +159,20 @@ export function PrivacyPolicyPage() {
                   <div className="rounded-lg border border-slate-200 p-4">
                     <h3 className="text-sm font-semibold text-slate-900 mb-2">Personal Information</h3>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Full name, email address, and phone number</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Residential and billing addresses</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Date of birth and gender (optional)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Government-issued ID (for KYC verification of service providers)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Profile photographs (optional)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Full name, email address, and phone number</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Residential and billing addresses</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Date of birth and gender (optional)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Government-issued ID (for KYC verification of service providers)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Profile photographs (optional)</li>
                     </ul>
                   </div>
 
                   <div className="rounded-lg border border-slate-200 p-4">
                     <h3 className="text-sm font-semibold text-slate-900 mb-2">Payment Information</h3>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Payment method details (credit/debit card, UPI, wallets)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Billing history and transaction records</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Bank account details (for service provider payouts)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Payment method details (credit/debit card, UPI, wallets)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Billing history and transaction records</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Bank account details (for service provider payouts)</li>
                     </ul>
                     <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
                       <AlertTriangle className="size-3" />
@@ -183,20 +183,20 @@ export function PrivacyPolicyPage() {
                   <div className="rounded-lg border border-slate-200 p-4">
                     <h3 className="text-sm font-semibold text-slate-900 mb-2">Usage & Device Information</h3>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Device type, operating system, and browser information</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> IP address and approximate location (city-level)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Pages visited, features used, and time spent on the platform</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Search queries and service preferences</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Push notification and communication preferences</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Device type, operating system, and browser information</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> IP address and approximate location (city-level)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Pages visited, features used, and time spent on the platform</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Search queries and service preferences</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Push notification and communication preferences</li>
                     </ul>
                   </div>
 
                   <div className="rounded-lg border border-slate-200 p-4">
                     <h3 className="text-sm font-semibold text-slate-900 mb-2">Information from Third Parties</h3>
                     <ul className="space-y-1.5 text-sm text-slate-600">
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Google/Facebook account data (when using social login)</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Referral information from existing users</li>
-                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Background check results (for service providers)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Google/Facebook account data (when using social login)</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Referral information from existing users</li>
+                      <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Background check results (for service providers)</li>
                     </ul>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export function PrivacyPolicyPage() {
             <Card id="how-we-use" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Eye className="size-5 text-[#1D63FF]" />
+                  <Eye className="size-5 text-[#0A1F44]" />
                   2. How We Use Your Data
                 </CardTitle>
               </CardHeader>
@@ -240,7 +240,7 @@ export function PrivacyPolicyPage() {
             <Card id="data-sharing" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Users className="size-5 text-[#1D63FF]" />
+                  <Users className="size-5 text-[#0A1F44]" />
                   3. Data Sharing & Disclosure
                 </CardTitle>
               </CardHeader>
@@ -251,7 +251,7 @@ export function PrivacyPolicyPage() {
 
                 <div className="space-y-3">
                   <div className="flex gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-blue-50 text-[#1D63FF] shrink-0 text-sm font-bold">1</div>
+                    <div className="flex items-center justify-center size-8 rounded-full bg-[#FFD54F]/10 text-[#0A1F44] shrink-0 text-sm font-bold">1</div>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900">With Service Providers</h4>
                       <p className="text-xs text-slate-500 mt-0.5">We share your name, address, and phone number with the assigned service professional to facilitate the booking. This information is necessary for them to reach your location and provide the service.</p>
@@ -259,7 +259,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <Separator />
                   <div className="flex gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-blue-50 text-[#1D63FF] shrink-0 text-sm font-bold">2</div>
+                    <div className="flex items-center justify-center size-8 rounded-full bg-[#FFD54F]/10 text-[#0A1F44] shrink-0 text-sm font-bold">2</div>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900">With Payment Partners</h4>
                       <p className="text-xs text-slate-500 mt-0.5">We share transaction data with Razorpay, Stripe, and banking partners to process payments securely. Card details are never stored on our servers.</p>
@@ -267,7 +267,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <Separator />
                   <div className="flex gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-blue-50 text-[#1D63FF] shrink-0 text-sm font-bold">3</div>
+                    <div className="flex items-center justify-center size-8 rounded-full bg-[#FFD54F]/10 text-[#0A1F44] shrink-0 text-sm font-bold">3</div>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900">With Analytics Partners</h4>
                       <p className="text-xs text-slate-500 mt-0.5">We use Google Analytics and Mixpanel to understand platform usage. All data is anonymized and aggregated before analysis.</p>
@@ -275,7 +275,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <Separator />
                   <div className="flex gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-blue-50 text-[#1D63FF] shrink-0 text-sm font-bold">4</div>
+                    <div className="flex items-center justify-center size-8 rounded-full bg-[#FFD54F]/10 text-[#0A1F44] shrink-0 text-sm font-bold">4</div>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900">For Legal Requirements</h4>
                       <p className="text-xs text-slate-500 mt-0.5">We may disclose information when required by law, court order, or government authority under the Information Technology Act, 2000, or other applicable Indian laws.</p>
@@ -283,7 +283,7 @@ export function PrivacyPolicyPage() {
                   </div>
                   <Separator />
                   <div className="flex gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-full bg-blue-50 text-[#1D63FF] shrink-0 text-sm font-bold">5</div>
+                    <div className="flex items-center justify-center size-8 rounded-full bg-[#FFD54F]/10 text-[#0A1F44] shrink-0 text-sm font-bold">5</div>
                     <div>
                       <h4 className="text-sm font-semibold text-slate-900">Business Transfers</h4>
                       <p className="text-xs text-slate-500 mt-0.5">In the event of a merger, acquisition, or sale of assets, your data may be transferred to the acquiring entity with the same level of protection.</p>
@@ -297,7 +297,7 @@ export function PrivacyPolicyPage() {
             <Card id="cookies" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Cookie className="size-5 text-[#1D63FF]" />
+                  <Cookie className="size-5 text-[#0A1F44]" />
                   4. Cookies & Tracking Technologies
                 </CardTitle>
               </CardHeader>
@@ -322,7 +322,7 @@ export function PrivacyPolicyPage() {
                         <td className="py-2 px-3">Session / 30 days</td>
                       </tr>
                       <tr className="border-b border-slate-100">
-                        <td className="py-2 px-3"><Badge variant="outline" className="text-xs bg-blue-50 text-[#0B3D91] border-blue-200">Functional</Badge></td>
+                        <td className="py-2 px-3"><Badge variant="outline" className="text-xs bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20">Functional</Badge></td>
                         <td className="py-2 px-3">Remember preferences, language, region</td>
                         <td className="py-2 px-3">1 year</td>
                       </tr>
@@ -347,7 +347,7 @@ export function PrivacyPolicyPage() {
             <Card id="data-security" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Lock className="size-5 text-[#1D63FF]" />
+                  <Lock className="size-5 text-[#0A1F44]" />
                   5. Data Security
                 </CardTitle>
               </CardHeader>
@@ -391,7 +391,7 @@ export function PrivacyPolicyPage() {
             <Card id="user-rights" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Shield className="size-5 text-[#1D63FF]" />
+                  <Shield className="size-5 text-[#0A1F44]" />
                   6. Your Rights
                 </CardTitle>
               </CardHeader>
@@ -426,7 +426,7 @@ export function PrivacyPolicyPage() {
             <Card id="children-privacy" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Baby className="size-5 text-[#1D63FF]" />
+                  <Baby className="size-5 text-[#0A1F44]" />
                   7. Children&apos;s Privacy
                 </CardTitle>
               </CardHeader>
@@ -446,7 +446,7 @@ export function PrivacyPolicyPage() {
             <Card id="changes" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <FileText className="size-5 text-[#1D63FF]" />
+                  <FileText className="size-5 text-[#0A1F44]" />
                   8. Changes to This Policy
                 </CardTitle>
               </CardHeader>
@@ -455,10 +455,10 @@ export function PrivacyPolicyPage() {
                   We may update this Privacy Policy from time to time to reflect changes in our practices, technologies, legal requirements, or other factors. When we make material changes:
                 </p>
                 <ul className="space-y-2 text-sm text-slate-600">
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> We will notify you via email and in-app notification at least 15 days before the changes take effect</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> The &quot;Last Updated&quot; date at the top of this page will be revised</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> Continued use of our platform after changes constitutes acceptance of the revised policy</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> For significant changes, we may require your explicit consent</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> We will notify you via email and in-app notification at least 15 days before the changes take effect</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> The &quot;Last Updated&quot; date at the top of this page will be revised</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> Continued use of our platform after changes constitutes acceptance of the revised policy</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> For significant changes, we may require your explicit consent</li>
                 </ul>
               </CardContent>
             </Card>
@@ -467,7 +467,7 @@ export function PrivacyPolicyPage() {
             <Card id="contact" className="bg-white rounded-xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-                  <Mail className="size-5 text-[#1D63FF]" />
+                  <Mail className="size-5 text-[#0A1F44]" />
                   9. Contact Us
                 </CardTitle>
               </CardHeader>
@@ -490,7 +490,7 @@ export function PrivacyPolicyPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
+                  <Button className="gap-2 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl">
                     <Mail className="size-4" />
                     Email Privacy Team
                   </Button>

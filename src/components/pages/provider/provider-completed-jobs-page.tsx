@@ -23,7 +23,7 @@ export function ProviderCompletedJobsPage() {
 
         <div className="grid grid-cols-2 gap-4">
           <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-emerald-600">₹{totalEarnings.toLocaleString()}</p><p className="text-xs text-slate-500">Total Earnings</p></CardContent></Card>
-          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#1D63FF]">{completedJobs.length}</p><p className="text-xs text-slate-500">Jobs Completed</p></CardContent></Card>
+          <Card className="bg-white rounded-xl"><CardContent className="p-4 text-center"><p className="text-2xl font-bold text-[#0A1F44]">{completedJobs.length}</p><p className="text-xs text-slate-500">Jobs Completed</p></CardContent></Card>
         </div>
 
         <Card className="bg-white rounded-xl">

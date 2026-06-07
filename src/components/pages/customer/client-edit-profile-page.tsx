@@ -39,7 +39,7 @@ export function ClientEditProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading profile">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -81,9 +81,9 @@ export function ClientEditProfilePage() {
             <div className="flex flex-col items-center gap-3 mb-6">
               <div className="relative">
                 <Avatar className="size-24">
-                  <AvatarFallback className="bg-[#1D63FF] text-white text-2xl">{profile?.initials ?? 'U'}</AvatarFallback>
+                  <AvatarFallback className="bg-[#0A1F44] text-white text-2xl">{profile?.initials ?? 'U'}</AvatarFallback>
                 </Avatar>
-                <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-[#1D63FF] text-white shadow-lg" aria-label="Upload avatar">
+                <button className="absolute -bottom-1 -right-1 flex size-8 items-center justify-center rounded-full bg-[#0A1F44] text-white shadow-lg" aria-label="Upload avatar">
                   <Camera className="size-4" />
                 </button>
               </div>
@@ -114,7 +114,7 @@ export function ClientEditProfilePage() {
             </div>
 
             <div className="mt-6 flex gap-3">
-              <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleSave} disabled={saving} aria-label="Save changes">
+              <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl" onClick={handleSave} disabled={saving} aria-label="Save changes">
                 {saving ? <Loader2 className="size-4 animate-spin" /> : <Save className="size-4" />} Save Changes
               </Button>
               <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={goBack}>Cancel</Button>

@@ -29,7 +29,7 @@ export function ProviderSchedulePage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Schedule</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Add Slot</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> Add Slot</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -46,7 +46,7 @@ export function ProviderSchedulePage() {
                         <Badge className="bg-red-100 text-red-700 border-red-200">Blocked</Badge>
                       ) : data.slots.length > 0 ? (
                         data.slots.map((slot) => (
-                          <Badge key={slot} className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 gap-1">
+                          <Badge key={slot} className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 gap-1">
                             <Clock className="size-3" /> {slot}
                             <button className="ml-1"><X className="size-2.5" /></button>
                           </Badge>
@@ -55,7 +55,7 @@ export function ProviderSchedulePage() {
                         <span className="text-xs text-slate-400">No slots</span>
                       )}
                     </div>
-                    {!data.blocked && <Button variant="ghost" size="sm" className="text-[#1D63FF] text-xs"><Plus className="size-3" /></Button>}
+                    {!data.blocked && <Button variant="ghost" size="sm" className="text-[#0A1F44] text-xs"><Plus className="size-3" /></Button>}
                   </div>
                   {i < weekDays.length - 1 && <Separator className="bg-slate-100" />}
                 </div>

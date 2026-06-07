@@ -16,7 +16,7 @@ const notifications = [
 ]
 
 const typeIcons: Record<string, { icon: React.ComponentType<{ className?: string }>; bg: string }> = {
-  booking: { icon: Calendar, bg: 'bg-[#1D63FF]/10' },
+  booking: { icon: Calendar, bg: 'bg-[#FFD54F]/10' },
   payment: { icon: IndianRupee, bg: 'bg-emerald-100' },
   system: { icon: Settings, bg: 'bg-purple-100' },
 }
@@ -37,14 +37,14 @@ export function ProviderNotificationsPage() {
               const Icon = config.icon
               return (
                 <div key={notif.id}>
-                  <div className={`flex items-center gap-4 py-4 px-1 ${!notif.read ? 'bg-blue-50/50 -mx-1 px-2 rounded-lg' : ''}`}>
+                  <div className={`flex items-center gap-4 py-4 px-1 ${!notif.read ? 'bg-[#FFD54F]/10/50 -mx-1 px-2 rounded-lg' : ''}`}>
                     <div className={`flex size-10 items-center justify-center rounded-lg ${config.bg} shrink-0`}>
                       <Icon className="size-5 text-slate-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="text-sm font-medium text-slate-900">{notif.title}</p>
-                        {!notif.read && <span className="size-2 rounded-full bg-[#1D63FF]" />}
+                        {!notif.read && <span className="size-2 rounded-full bg-[#0A1F44]" />}
                       </div>
                       <p className="text-xs text-slate-500 mt-0.5">{notif.message}</p>
                       <p className="text-xs text-slate-400 mt-1">{notif.time}</p>

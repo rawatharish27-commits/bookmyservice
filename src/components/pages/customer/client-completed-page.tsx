@@ -29,7 +29,7 @@ export function ClientCompletedPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading completed bookings">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -80,7 +80,7 @@ export function ClientCompletedPage() {
                     ) : (
                       <div className="flex gap-2">
                         <Button size="sm" className="gap-1 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-xs" onClick={() => navigate('client-booking-review', { id: b.id })} aria-label={`Rate ${b.service}`}><Star className="size-3" /> Rate</Button>
-                        <Button variant="outline" size="sm" className="gap-1 border-blue-200 text-[#1D63FF] hover:bg-blue-50 rounded-lg text-xs" onClick={() => navigate('client-rebook', { id: b.id })} aria-label={`Rebook ${b.service}`}><RotateCcw className="size-3" /> Rebook</Button>
+                        <Button variant="outline" size="sm" className="gap-1 border-[#FFD54F]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10 rounded-lg text-xs" onClick={() => navigate('client-rebook', { id: b.id })} aria-label={`Rebook ${b.service}`}><RotateCcw className="size-3" /> Rebook</Button>
                       </div>
                     )}
                   </div>

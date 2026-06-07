@@ -107,7 +107,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 }
 
 const metricColorMap: Record<string, { bg: string; text: string }> = {
-  blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
+  blue: { bg: 'bg-[#FFD54F]/15', text: 'text-[#0A1F44]' },
   green: { bg: 'bg-emerald-100', text: 'text-emerald-600' },
   purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
   yellow: { bg: 'bg-amber-100', text: 'text-amber-600' },
@@ -117,7 +117,7 @@ const metricColorMap: Record<string, { bg: string; text: string }> = {
 
 const statusBadgeMap: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
   Completed: { variant: 'secondary', className: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
-  Confirmed: { variant: 'secondary', className: 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100' },
+  Confirmed: { variant: 'secondary', className: 'bg-[#FFD54F]/15 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/15' },
   Pending: { variant: 'secondary', className: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100' },
   Cancelled: { variant: 'secondary', className: 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100' },
 }
@@ -246,7 +246,7 @@ export function AdminDashboard() {
               <button
                 key={item.label}
                 className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors
-                  ${item.active ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}
+                  ${item.active ? 'bg-[#0A1F44] text-white' : 'text-slate-300 hover:bg-white/10 hover:text-white'}
                 `}
               >
                 <item.icon className="size-4" />
@@ -332,7 +332,7 @@ export function AdminDashboard() {
             {/* Messages */}
             <button className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100" aria-label="Messages">
               <MessageSquare className="size-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold text-white">
+              <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-[#FFD54F]/100 text-[10px] font-bold text-white">
                 2
               </span>
             </button>
@@ -341,7 +341,7 @@ export function AdminDashboard() {
 
             {/* User Profile */}
             <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100">
-              <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+              <div className="flex size-8 items-center justify-center rounded-full bg-[#0A1F44] text-sm font-semibold text-white">
                 A
               </div>
               <div className="hidden text-left md:block">
@@ -369,7 +369,7 @@ export function AdminDashboard() {
                 <span className="hidden sm:inline">May 19 &ndash; Jun 19, 2024</span>
                 <span className="sm:hidden">Date Range</span>
               </Button>
-              <Button variant="default" size="default" className="gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+              <Button variant="default" size="default" className="gap-2 bg-[#0A1F44] hover:bg-[#0A1F44] text-white">
                 <Download className="size-4" />
                 <span className="hidden sm:inline">Export Report</span>
                 <span className="sm:hidden">Export</span>
@@ -529,7 +529,7 @@ export function AdminDashboard() {
                   </CardTitle>
                   <CardDescription>Latest booking activity on the platform</CardDescription>
                 </div>
-                <Button variant="ghost" size="sm" className="gap-1 text-blue-600">
+                <Button variant="ghost" size="sm" className="gap-1 text-[#0A1F44]">
                   View All
                   <ChevronRight className="size-4" />
                 </Button>
@@ -626,7 +626,7 @@ export function AdminDashboard() {
                       tickFormatter={(v: number) => `\u20B9${(v / 1000).toFixed(0)}K`}
                     />
                     <Tooltip
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                       
                       formatter={(value: any) => [`\u20B9${Number(value).toLocaleString()}`, 'Revenue']}
                       contentStyle={tooltipStyle}
                     />
@@ -746,7 +746,7 @@ export function AdminDashboard() {
                       domain={[8000, 13000]}
                     />
                     <Tooltip
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                       
                       formatter={(value: any) => [Number(value).toLocaleString(), 'Users']}
                       contentStyle={tooltipStyle}
                     />

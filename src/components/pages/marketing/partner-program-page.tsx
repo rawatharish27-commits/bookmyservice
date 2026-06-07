@@ -30,7 +30,7 @@ import {
 
 const benefits = [
   { icon: IndianRupee, title: 'Attractive Commissions', description: 'Earn 8-15% commission on every booking through your network. Monthly payouts directly to your bank account.', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-  { icon: Shield, title: 'Brand Partnership', description: 'Leverage the BookMyService brand — one of India\'s most trusted home service platforms with nationwide recognition.', color: 'text-[#1D63FF]', bg: 'bg-blue-50' },
+  { icon: Shield, title: 'Brand Partnership', description: 'Leverage the BookMyService brand — one of India\'s most trusted home service platforms with nationwide recognition.', color: 'text-[#0A1F44]', bg: 'bg-[#FFD54F]/10' },
   { icon: Headphones, title: 'Dedicated Support', description: 'Get a dedicated partnership manager, marketing materials, training, and 24/7 support to help you succeed.', color: 'text-purple-600', bg: 'bg-purple-50' },
   { icon: TrendingUp, title: 'Growth Opportunities', description: 'Scale from a local partner to a regional franchise. Access to performance bonuses, incentives, and growth tracks.', color: 'text-orange-600', bg: 'bg-orange-50' },
   { icon: Zap, title: 'Technology Access', description: 'White-label booking platform, CRM tools, analytics dashboard, and mobile app — all included at no extra cost.', color: 'text-cyan-600', bg: 'bg-cyan-50' },
@@ -87,15 +87,15 @@ export function PartnerProgramPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
           <div className="max-w-3xl">
-            <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">Partner Program</Badge>
+            <Badge className="bg-[#FFD54F]/100/30 text-[#FFD54F]/80 border-blue-400/30 mb-4">Partner Program</Badge>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
               Partner With India&apos;s #1 <br />
               <span className="text-blue-200">Home Services Platform</span>
             </h1>
-            <p className="text-blue-100 text-lg sm:text-xl leading-relaxed mb-8">
+            <p className="text-[#FFD54F]/80 text-lg sm:text-xl leading-relaxed mb-8">
               Build a profitable business with BookMyService. Get exclusive territory rights,
               cutting-edge technology, and comprehensive support — earn up to ₹5 lakh/month.
             </p>
@@ -117,7 +117,7 @@ export function PartnerProgramPage() {
           {successMetrics.map((metric) => (
             <Card key={metric.label} className="shadow-md border-0 text-center">
               <CardContent className="py-5">
-                <metric.icon className="size-5 text-[#1D63FF] mx-auto mb-2" />
+                <metric.icon className="size-5 text-[#0A1F44] mx-auto mb-2" />
                 <p className="text-xl sm:text-2xl font-bold text-slate-900">{metric.value}</p>
                 <p className="text-xs text-slate-500 mt-0.5">{metric.label}</p>
               </CardContent>
@@ -155,10 +155,10 @@ export function PartnerProgramPage() {
         </div>
         <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
           {commissionTiers.map((tier) => (
-            <Card key={tier.tier} className={`shadow-sm border-0 hover:shadow-md transition-shadow ${tier.tier === 'Growth' ? 'ring-2 ring-blue-500 relative' : ''}`}>
+            <Card key={tier.tier} className={`shadow-sm border-0 hover:shadow-md transition-shadow ${tier.tier === 'Growth' ? 'ring-2 ring-[#0A1F44] relative' : ''}`}>
               {tier.tier === 'Growth' && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <Badge className="bg-[#1D63FF] text-white">Most Popular</Badge>
+                  <Badge className="bg-[#0A1F44] text-white">Most Popular</Badge>
                 </div>
               )}
               <CardHeader className="text-center pb-2">
@@ -166,7 +166,7 @@ export function PartnerProgramPage() {
               </CardHeader>
               <CardContent className="p-6 pt-2">
                 <div className="text-center mb-4">
-                  <p className="text-3xl font-bold text-[#1D63FF]">{tier.commission}</p>
+                  <p className="text-3xl font-bold text-[#0A1F44]">{tier.commission}</p>
                   <p className="text-xs text-slate-400">commission per booking</p>
                 </div>
                 <div className="space-y-3 mb-4">
@@ -192,7 +192,7 @@ export function PartnerProgramPage() {
                     </li>
                   ))}
                 </ul>
-                <Button className={`w-full ${tier.tier === 'Growth' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : ''}`} variant={tier.tier === 'Growth' ? 'default' : 'outline'}>
+                <Button className={`w-full ${tier.tier === 'Growth' ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : ''}`} variant={tier.tier === 'Growth' ? 'default' : 'outline'}>
                   Choose {tier.tier}
                 </Button>
               </CardContent>
@@ -211,7 +211,7 @@ export function PartnerProgramPage() {
             <div className="grid sm:grid-cols-2 gap-3">
               {supportProvided.map((item) => (
                 <div key={item} className="flex items-start gap-2">
-                  <CheckCircle2 className="size-4 text-blue-500 mt-0.5 shrink-0" />
+                  <CheckCircle2 className="size-4 text-[#FFD54F]/800 mt-0.5 shrink-0" />
                   <span className="text-sm text-slate-600">{item}</span>
                 </div>
               ))}
@@ -223,9 +223,9 @@ export function PartnerProgramPage() {
       {/* Apply Form */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 pb-12 sm:pb-16">
         <Card className="shadow-sm border-0">
-          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white p-6 sm:p-8 rounded-t-xl">
+          <div className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] text-white p-6 sm:p-8 rounded-t-xl">
             <h2 className="text-2xl font-bold mb-2">Apply to Become a Partner</h2>
-            <p className="text-blue-100">Fill out the form below and our partnership team will contact you within 48 hours.</p>
+            <p className="text-[#FFD54F]/80">Fill out the form below and our partnership team will contact you within 48 hours.</p>
           </div>
           <CardContent className="p-6 sm:p-8">
             {formSubmitted ? (
@@ -271,7 +271,7 @@ export function PartnerProgramPage() {
                     <Input placeholder="Brief description" value={formData.experience} onChange={(e) => setFormData({ ...formData, experience: e.target.value })} />
                   </div>
                 </div>
-                <Button type="submit" size="lg" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white w-full sm:w-auto">
+                <Button type="submit" size="lg" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white w-full sm:w-auto">
                   Submit Application <ArrowRight className="size-4 ml-2" />
                 </Button>
               </form>
@@ -310,10 +310,10 @@ export function PartnerProgramPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-[#1D63FF] to-emerald-600 text-white">
+      <section className="bg-gradient-to-r from-[#0A1F44] to-emerald-600 text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 sm:py-16 text-center">
           <h2 className="text-2xl sm:text-3xl font-bold mb-3">Ready to Build Your Business?</h2>
-          <p className="text-blue-100 mb-8 max-w-lg mx-auto">
+          <p className="text-[#FFD54F]/80 mb-8 max-w-lg mx-auto">
             Join 500+ partners who are building thriving businesses with BookMyService. Limited territories available!
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

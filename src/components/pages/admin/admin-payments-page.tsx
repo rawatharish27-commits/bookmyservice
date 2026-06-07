@@ -19,7 +19,7 @@ const statusColors: Record<string, string> = {
   Successful: 'bg-emerald-100 text-emerald-700 border-emerald-200',
   Refunded: 'bg-amber-100 text-amber-700 border-amber-200',
   Failed: 'bg-red-100 text-red-700 border-red-200',
-  Pending: 'bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200',
+  Pending: 'bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20',
 }
 
 export function AdminPaymentsPage() {
@@ -57,7 +57,7 @@ export function AdminPaymentsPage() {
                 <tbody>
                   {payments.map((p) => (
                     <tr key={p.id} className="border-b border-slate-50 hover:bg-slate-50/50">
-                      <td className="px-4 py-3 text-sm font-medium text-[#1D63FF]">{p.id}</td>
+                      <td className="px-4 py-3 text-sm font-medium text-[#0A1F44]">{p.id}</td>
                       <td className="px-4 py-3"><p className="text-sm text-slate-700">{p.customer}</p><p className="text-xs text-slate-400">{p.booking} • {p.date}</p></td>
                       <td className="px-4 py-3 hidden sm:table-cell"><div className="flex items-center gap-1.5"><CreditCard className="size-3.5 text-slate-400" /><span className="text-sm text-slate-700">{p.method}</span></div></td>
                       <td className="px-4 py-3 text-sm font-semibold text-slate-700">{p.amount}</td>

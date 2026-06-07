@@ -41,8 +41,8 @@ export function ForgotPasswordPage() {
       <Card className="w-full max-w-md bg-white rounded-xl shadow-sm border-slate-100">
         <CardContent className="p-8">
           {/* Icon */}
-          <div className="w-16 h-16 rounded-2xl bg-[#1D63FF]/10 flex items-center justify-center mx-auto mb-6">
-            <Mail className="size-8 text-[#1D63FF]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#FFD54F]/10 flex items-center justify-center mx-auto mb-6">
+            <Mail className="size-8 text-[#0A1F44]" />
           </div>
 
           <div className="text-center mb-6">
@@ -63,7 +63,7 @@ export function ForgotPasswordPage() {
                 <p className="font-semibold text-emerald-700">Reset link sent!</p>
                 <p className="text-sm text-slate-500">Check your email inbox for the password reset link.</p>
               </div>
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
+              <Button className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
                 Back to Login
               </Button>
             </div>
@@ -85,7 +85,7 @@ export function ForgotPasswordPage() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl gap-2" disabled={loading}>
+              <Button type="submit" className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white py-5 rounded-xl gap-2" disabled={loading}>
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Send className="size-4" />} {loading ? 'Sending...' : 'Send Reset Link'}
               </Button>
             </form>
@@ -94,7 +94,7 @@ export function ForgotPasswordPage() {
           <Separator className="my-6" />
 
           <div className="text-center">
-            <button className="text-sm text-slate-500 hover:text-[#1D63FF] flex items-center justify-center gap-1 mx-auto" onClick={() => navigate('login')}>
+            <button className="text-sm text-slate-500 hover:text-[#0A1F44] flex items-center justify-center gap-1 mx-auto" onClick={() => navigate('login')}>
               <ArrowLeft className="size-4" /> Back to Login
             </button>
           </div>

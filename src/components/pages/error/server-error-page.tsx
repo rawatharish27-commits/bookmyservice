@@ -78,7 +78,7 @@ export function ServerErrorPage() {
             {/* Action buttons */}
             <div className="space-y-3">
               <Button
-                className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
+                className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-2 rounded-xl py-5"
                 onClick={handleRetry}
                 disabled={retrying}
               >
@@ -117,8 +117,8 @@ export function ServerErrorPage() {
 
             <div className="space-y-3">
               <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                  <RefreshCw className="size-4 text-[#1D63FF]" />
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                  <RefreshCw className="size-4 text-[#0A1F44]" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-slate-700">
@@ -131,8 +131,8 @@ export function ServerErrorPage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                  <Clock className="size-4 text-[#1D63FF]" />
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                  <Clock className="size-4 text-[#0A1F44]" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-slate-700">
@@ -146,8 +146,8 @@ export function ServerErrorPage() {
               </div>
 
               <div className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80">
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                  <ShieldCheck className="size-4 text-[#1D63FF]" />
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                  <ShieldCheck className="size-4 text-[#0A1F44]" />
                 </div>
                 <div>
                   <p className="text-sm font-medium text-slate-700">
@@ -167,7 +167,7 @@ export function ServerErrorPage() {
         <div className="text-center">
           <p className="text-xs text-slate-400">
             Still having trouble?{' '}
-            <button className="text-[#1D63FF] hover:underline inline-flex items-center gap-1">
+            <button className="text-[#0A1F44] hover:underline inline-flex items-center gap-1">
               <Mail className="size-3" /> Report the issue
             </button>
           </p>

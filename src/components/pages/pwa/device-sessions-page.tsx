@@ -149,7 +149,7 @@ function getDeviceIcon(type: DeviceSession['deviceType']) {
 
 function getDeviceColor(type: DeviceSession['deviceType']) {
   switch (type) {
-    case 'mobile': return { icon: 'text-[#1D63FF]', bg: 'bg-blue-50' }
+    case 'mobile': return { icon: 'text-[#0A1F44]', bg: 'bg-[#FFD54F]/10' }
     case 'desktop': return { icon: 'text-emerald-600', bg: 'bg-emerald-50' }
     case 'tablet': return { icon: 'text-purple-600', bg: 'bg-purple-50' }
   }
@@ -198,7 +198,7 @@ export function DeviceSessionsPage() {
       <div className="max-w-lg mx-auto px-4 sm:px-6 py-6 space-y-6">
         {/* Current Device */}
         {currentSession && (
-          <Card className="bg-white rounded-xl shadow-sm border-2 border-blue-200">
+          <Card className="bg-white rounded-xl shadow-sm border-2 border-[#FFD54F]/20">
             <CardContent className="p-4 sm:p-6">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -224,7 +224,7 @@ export function DeviceSessionsPage() {
                     </div>
                   </div>
                 </div>
-                <Badge className="bg-blue-50 text-[#0B3D91] border-0 text-[10px]">
+                <Badge className="bg-[#FFD54F]/10 text-[#0A1F44] border-0 text-[10px]">
                   <Wifi className="w-3 h-3 mr-1" /> Active
                 </Badge>
               </div>
@@ -435,7 +435,7 @@ export function DeviceSessionsPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardHeader className="pb-2">
             <div className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#1D63FF]" />
+              <Shield className="w-4 h-4 text-[#0A1F44]" />
               <CardTitle className="text-base">Security Notice</CardTitle>
             </div>
           </CardHeader>
@@ -483,7 +483,7 @@ export function DeviceSessionsPage() {
               {securityEvents.map((event) => (
                 <div key={event.id} className="flex items-center gap-3">
                   <div className={`w-2 h-2 rounded-full shrink-0 ${
-                    event.type === 'login' ? 'bg-blue-500' :
+                    event.type === 'login' ? 'bg-[#FFD54F]/100' :
                     event.type === 'warning' ? 'bg-amber-500' :
                     'bg-slate-400'
                   }`} />

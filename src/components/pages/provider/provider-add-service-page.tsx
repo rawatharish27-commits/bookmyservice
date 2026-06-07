@@ -34,7 +34,7 @@ export function ProviderAddServicePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><DollarSign className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Pricing</CardTitle></div>
+            <div className="flex items-center gap-2"><DollarSign className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Pricing</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -54,7 +54,7 @@ export function ProviderAddServicePage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Clock className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Duration & Scheduling</CardTitle></div>
+            <div className="flex items-center gap-2"><Clock className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Duration & Scheduling</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -65,7 +65,7 @@ export function ProviderAddServicePage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Service</Button>
+          <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl"><Plus className="size-4" /> Add Service</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

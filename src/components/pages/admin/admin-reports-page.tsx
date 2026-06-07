@@ -26,7 +26,7 @@ export function AdminReportsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Reports</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Custom Report</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> Custom Report</Button>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
@@ -39,7 +39,7 @@ export function AdminReportsPage() {
                 </div>
                 <p className="text-xs text-slate-500 mb-3">{report.description}</p>
                 <div className="flex gap-2">
-                  <Button size="sm" className="h-7 text-xs bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-lg"><Download className="size-3" /> Generate</Button>
+                  <Button size="sm" className="h-7 text-xs bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-lg"><Download className="size-3" /> Generate</Button>
                   <Button size="sm" variant="outline" className="h-7 text-xs rounded-lg"><Calendar className="size-3" /> Schedule</Button>
                 </div>
               </CardContent>
@@ -54,7 +54,7 @@ export function AdminReportsPage() {
               <div key={sr.id}>
                 <div className="flex items-center justify-between py-3">
                   <div>
-                    <div className="flex items-center gap-2"><FileText className="size-4 text-[#1D63FF]" /><p className="text-sm font-medium text-slate-900">{sr.name}</p></div>
+                    <div className="flex items-center gap-2"><FileText className="size-4 text-[#0A1F44]" /><p className="text-sm font-medium text-slate-900">{sr.name}</p></div>
                     <p className="text-xs text-slate-400 mt-1">{sr.schedule} • {sr.recipients}</p>
                   </div>
                   <div className="text-right">

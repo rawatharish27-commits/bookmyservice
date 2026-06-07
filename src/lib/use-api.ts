@@ -23,7 +23,6 @@ export function useApi<T>(fetcher: () => Promise<T>, deps: unknown[] = []): ApiS
     } catch (err) {
       setState({ data: null, loading: false, error: err instanceof Error ? err.message : 'Something went wrong' })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
 
   useEffect(() => {
@@ -83,7 +82,6 @@ export function useUrlApi<T>(url: string, options?: RequestInit): ApiState<T> & 
     } catch (err) {
       setState({ data: null, loading: false, error: err instanceof Error ? err.message : 'Something went wrong' })
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
   useEffect(() => {

@@ -16,7 +16,7 @@ export function TechnicianContactPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-6 text-center">
             <Avatar className="size-24 mx-auto mb-4">
-              <AvatarFallback className="bg-[#1D63FF] text-white text-2xl">AS</AvatarFallback>
+              <AvatarFallback className="bg-[#0A1F44] text-white text-2xl">AS</AvatarFallback>
             </Avatar>
             <h2 className="text-xl font-bold text-slate-900">Amit Sharma</h2>
             <p className="text-sm text-slate-500">AC Technician</p>
@@ -29,7 +29,7 @@ export function TechnicianContactPage() {
             <p className="text-xs text-slate-400 mt-1">500+ services completed</p>
             <div className="flex justify-center gap-2 mt-1">
               <Badge variant="secondary" className="bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100"><Shield className="size-3 mr-1" />Verified</Badge>
-              <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">Top Rated</Badge>
+              <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">Top Rated</Badge>
             </div>
           </CardContent>
         </Card>
@@ -37,7 +37,7 @@ export function TechnicianContactPage() {
         <Card className="bg-white rounded-xl">
           <CardContent className="p-5 space-y-3">
             <div className="flex items-center gap-3">
-              <Zap className="size-4 text-[#1D63FF]" />
+              <Zap className="size-4 text-[#0A1F44]" />
               <div className="flex-1">
                 <p className="text-sm font-medium text-slate-900">Current Service</p>
                 <p className="text-xs text-slate-400">Air Conditioner • BK001</p>
@@ -67,7 +67,7 @@ export function TechnicianContactPage() {
             <Phone className="size-5" />
             <span className="text-xs">Call</span>
           </Button>
-          <Button className="flex-col h-auto gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl py-4">
+          <Button className="flex-col h-auto gap-2 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl py-4">
             <MessageSquare className="size-5" />
             <span className="text-xs">Chat</span>
           </Button>

@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  lint-and-typecheck:
+  lint-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,13 +16,16 @@ jobs:
         run: |
           bun install
           cd mini-services/api-service && bun install
-          cd ../../frontend && bun install
-      - name: Build Frontend
-        run: cd frontend && npx vite build
+      - name: Lint
+        run: bun run lint
+      - name: Build Next.js
+        run: bun run build
+        env:
+          JWT_SECRET: ci-build-secret
+          DATABASE_URL: file:./ci.db
 
   test-backend:
     runs-on: ubuntu-latest
-    needs: lint-and-typecheck
     env:
       JWT_SECRET: test-secret-key
       NODE_ENV: test
@@ -36,7 +39,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: [test-backend]
+    needs: [lint-and-build, test-backend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4

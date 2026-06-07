@@ -26,7 +26,7 @@ export function AdminNotificationsPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Notifications</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Send className="size-4" /> Broadcast</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Send className="size-4" /> Broadcast</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -36,7 +36,7 @@ export function AdminNotificationsPage() {
             <textarea className="w-full rounded-lg border border-slate-200 p-3 text-sm resize-none" rows={3} placeholder="Type your message..." />
             <div className="flex gap-2">
               <Button size="sm" variant="outline" className="text-xs gap-1 rounded-lg"><Eye className="size-3" /> Preview</Button>
-              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs gap-1 rounded-lg"><Send className="size-3" /> Send to All</Button>
+              <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white text-xs gap-1 rounded-lg"><Send className="size-3" /> Send to All</Button>
             </div>
           </CardContent>
         </Card>
@@ -47,7 +47,7 @@ export function AdminNotificationsPage() {
             {templates.map((t, i) => (
               <div key={t.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><Bell className="size-4 text-[#1D63FF]" /></div>
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-[#FFD54F]/10"><Bell className="size-4 text-[#0A1F44]" /></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{t.name}</p>
                     <p className="text-xs text-slate-400">{t.type} • Sent {t.sentCount.toLocaleString()} times</p>

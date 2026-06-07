@@ -101,7 +101,7 @@ export function AccessDeniedPage() {
                 <ArrowLeft className="size-4" /> Go Back
               </Button>
               <Button
-                className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
+                className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-2 rounded-xl py-5"
                 onClick={() => setShowRequestForm(!showRequestForm)}
               >
                 <KeyRound className="size-4" /> Request Access
@@ -115,7 +115,7 @@ export function AccessDeniedPage() {
           <Card className="bg-white rounded-2xl shadow-sm border-slate-100">
             <CardContent className="p-6 space-y-4">
               <div className="flex items-center gap-2">
-                <FileWarning className="size-4 text-[#1D63FF]" />
+                <FileWarning className="size-4 text-[#0A1F44]" />
                 <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
                   Request Access
                 </h3>
@@ -139,10 +139,10 @@ export function AccessDeniedPage() {
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
                   placeholder="Why do you need access to this page?"
-                  className="w-full min-h-[80px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 resize-none"
+                  className="w-full min-h-[80px] rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm placeholder:text-slate-400 focus:border-[#0A1F44] focus:outline-none focus:ring-1 focus:ring-[#0A1F44] resize-none"
                 />
                 <Button
-                  className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl py-5"
+                  className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl py-5"
                   onClick={handleSubmitRequest}
                 >
                   Submit Request
@@ -208,11 +208,11 @@ export function AccessDeniedPage() {
         <div className="text-center">
           <p className="text-xs text-slate-400">
             Need help?{' '}
-            <button className="text-[#1D63FF] hover:underline inline-flex items-center gap-1">
+            <button className="text-[#0A1F44] hover:underline inline-flex items-center gap-1">
               <Headphones className="size-3" /> Contact Support
             </button>
             {' '}or{' '}
-            <button className="text-[#1D63FF] hover:underline inline-flex items-center gap-1">
+            <button className="text-[#0A1F44] hover:underline inline-flex items-center gap-1">
               <MessageCircle className="size-3" /> Chat with us
             </button>
           </p>

@@ -36,8 +36,8 @@ const features = [
     icon: Bell,
     title: 'Push Notifications',
     description: 'Get instant alerts for booking confirmations, provider arrivals, and exclusive offers.',
-    color: 'text-[#1D63FF]',
-    bg: 'bg-blue-50',
+    color: 'text-[#0A1F44]',
+    bg: 'bg-[#FFD54F]/10',
   },
   {
     icon: Zap,
@@ -111,14 +111,14 @@ export function InstallAppPage() {
       <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center p-4">
         <Card className="w-full max-w-sm bg-white rounded-xl shadow-sm">
           <CardContent className="p-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-4">
-              <Download className="w-8 h-8 text-[#1D63FF]" />
+            <div className="w-16 h-16 rounded-full bg-[#FFD54F]/10 flex items-center justify-center mx-auto mb-4">
+              <Download className="w-8 h-8 text-[#0A1F44]" />
             </div>
             <h3 className="text-lg font-semibold text-slate-900 mb-2">Install BookMyService</h3>
             <p className="text-sm text-slate-500 mb-4">
               Get the best experience with our app — faster, offline-ready, and with push notifications.
             </p>
-            <Button onClick={() => setDismissed(false)} className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white">
+            <Button onClick={() => setDismissed(false)} className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white">
               Show Install Prompt
             </Button>
           </CardContent>
@@ -130,7 +130,7 @@ export function InstallAppPage() {
   return (
     <div className="min-h-screen bg-[#f8fafc]">
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-indigo-800 text-white">
+      <div className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-indigo-800 text-white">
         <div className="max-w-lg mx-auto px-4 sm:px-6 pt-12 pb-16">
           {/* Dismiss Button */}
           <div className="flex justify-end mb-4">
@@ -151,7 +151,7 @@ export function InstallAppPage() {
               </div>
             </div>
             <h1 className="text-2xl font-bold mb-1">BookMyService</h1>
-            <p className="text-blue-100 text-sm mb-1">Home Services at Your Fingertips</p>
+            <p className="text-[#FFD54F]/80 text-sm mb-1">Home Services at Your Fingertips</p>
             <div className="flex items-center justify-center gap-2 mt-2">
               <Badge className="bg-white/20 text-white border-0 text-xs">
                 <StarIcon className="w-3 h-3 mr-1" /> 4.8 Rating
@@ -168,17 +168,17 @@ export function InstallAppPage() {
               <div className="bg-white/20 backdrop-blur-sm rounded-xl p-4 text-center border border-white/30">
                 <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-emerald-300" />
                 <p className="font-semibold text-lg">App Installed!</p>
-                <p className="text-blue-100 text-sm mt-1">Find BookMyService on your home screen</p>
+                <p className="text-[#FFD54F]/80 text-sm mt-1">Find BookMyService on your home screen</p>
               </div>
             ) : (
               <Button
                 onClick={handleInstall}
                 disabled={installing}
-                className="w-full h-12 bg-white text-[#0B3D91] hover:bg-blue-50 font-semibold text-base rounded-xl shadow-lg"
+                className="w-full h-12 bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 font-semibold text-base rounded-xl shadow-lg"
               >
                 {installing ? (
                   <>
-                    <div className="w-5 h-5 border-2 border-[#1D63FF] border-t-transparent rounded-full animate-spin mr-2" />
+                    <div className="w-5 h-5 border-2 border-[#0A1F44] border-t-transparent rounded-full animate-spin mr-2" />
                     Installing...
                   </>
                 ) : (
@@ -246,20 +246,20 @@ export function InstallAppPage() {
                   {/* App content mockup */}
                   <div className="px-4 pt-2">
                     <div className="flex items-center gap-2 mb-3">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1D63FF] to-[#FFCE32] flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#0A1F44] to-[#FFD54F] flex items-center justify-center">
                         <Sparkles className="w-4 h-4 text-white" />
                       </div>
                       <span className="text-xs font-bold text-slate-900">BookMyService</span>
                     </div>
                     <div className="text-[10px] text-slate-500 mb-2">Good morning, Priya! 👋</div>
-                    <div className="bg-[#1D63FF] rounded-lg p-2 mb-2">
-                      <div className="text-[8px] text-blue-100">Upcoming Booking</div>
+                    <div className="bg-[#0A1F44] rounded-lg p-2 mb-2">
+                      <div className="text-[8px] text-[#FFD54F]/80">Upcoming Booking</div>
                       <div className="text-[10px] text-white font-semibold">Water Tank Cleaning - Today 2:00 PM</div>
                     </div>
                     <div className="grid grid-cols-2 gap-1.5 mb-2">
                       {['Water Tank Cleaning', 'Plumber', 'Electrician', 'Kitchen Appliances'].map((cat) => (
                         <div key={cat} className="bg-slate-100 rounded-lg p-2 text-center">
-                          <div className="w-4 h-4 rounded bg-[#1D63FF]/10 mx-auto mb-1" />
+                          <div className="w-4 h-4 rounded bg-[#FFD54F]/10 mx-auto mb-1" />
                           <span className="text-[8px] text-slate-600">{cat}</span>
                         </div>
                       ))}
@@ -352,7 +352,7 @@ export function InstallAppPage() {
         <Card className="bg-white rounded-xl shadow-sm">
           <CardContent className="p-6 text-center">
             <div className="flex items-center justify-center gap-2 mb-3">
-              <QrCode className="w-5 h-5 text-[#1D63FF]" />
+              <QrCode className="w-5 h-5 text-[#0A1F44]" />
               <p className="font-semibold text-sm text-slate-900">Scan to Install on Another Device</p>
             </div>
             {/* QR Code Placeholder */}
@@ -403,8 +403,8 @@ export function InstallAppPage() {
                   </div>
                   <p className="text-sm text-slate-700 italic">&ldquo;{t.text}&rdquo;</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <div className="w-6 h-6 rounded-full bg-[#1D63FF]/10 flex items-center justify-center">
-                      <span className="text-[10px] font-bold text-[#1D63FF]">{t.name[0]}</span>
+                    <div className="w-6 h-6 rounded-full bg-[#FFD54F]/10 flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-[#0A1F44]">{t.name[0]}</span>
                     </div>
                     <div>
                       <p className="text-xs font-medium text-slate-900">{t.name}</p>
@@ -420,16 +420,16 @@ export function InstallAppPage() {
 
       {/* Bottom CTA */}
       <div className="max-w-lg mx-auto px-4 sm:px-6 mt-6 pb-8">
-        <Card className="bg-gradient-to-r from-[#1D63FF] to-indigo-700 rounded-xl shadow-sm text-white">
+        <Card className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] rounded-xl shadow-sm text-white">
           <CardContent className="p-6 text-center">
             <Clock className="w-8 h-8 mx-auto mb-3 text-blue-200" />
             <p className="font-semibold text-lg mb-1">Install in Under 30 Seconds</p>
-            <p className="text-blue-100 text-sm mb-4">No app store needed. Install directly from your browser.</p>
+            <p className="text-[#FFD54F]/80 text-sm mb-4">No app store needed. Install directly from your browser.</p>
             {!installed && (
               <Button
                 onClick={handleInstall}
                 disabled={installing}
-                className="bg-white text-[#0B3D91] hover:bg-blue-50 font-semibold"
+                className="bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 font-semibold"
               >
                 {installing ? 'Installing...' : 'Install Now'} <ArrowRight className="w-4 h-4 ml-1" />
               </Button>

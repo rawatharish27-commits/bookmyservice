@@ -13,12 +13,12 @@ export function AdminSystemSettingsPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">System Settings</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Save className="size-4" /> Save All</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Save className="size-4" /> Save All</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Settings className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">General Settings</CardTitle></div>
+            <div className="flex items-center gap-2"><Settings className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">General Settings</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -32,7 +32,7 @@ export function AdminSystemSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Globe className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Currency & Region</CardTitle></div>
+            <div className="flex items-center gap-2"><Globe className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Currency & Region</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -46,7 +46,7 @@ export function AdminSystemSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Clock className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Maintenance & System</CardTitle></div>
+            <div className="flex items-center gap-2"><Clock className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Maintenance & System</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {[

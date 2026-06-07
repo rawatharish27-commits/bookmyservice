@@ -78,11 +78,11 @@ const earningsChartConfig: ChartConfig = {
 // ─── Icon Map ────────────────────────────────────────────────────────────────
 
 const metricIconMap: Record<string, { icon: React.ComponentType<{ className?: string }>; bg: string; text: string }> = {
-  Calendar: { icon: Calendar, bg: 'bg-blue-100', text: 'text-blue-600' },
+  Calendar: { icon: Calendar, bg: 'bg-[#FFD54F]/15', text: 'text-[#0A1F44]' },
   CheckCircle: { icon: CheckCircle, bg: 'bg-emerald-100', text: 'text-emerald-600' },
   Clock: { icon: Clock, bg: 'bg-amber-100', text: 'text-amber-600' },
   XCircle: { icon: XCircle, bg: 'bg-purple-100', text: 'text-purple-600' },
-  IndianRupee: { icon: IndianRupee, bg: 'bg-blue-100', text: 'text-blue-600' },
+  IndianRupee: { icon: IndianRupee, bg: 'bg-[#FFD54F]/15', text: 'text-[#0A1F44]' },
 }
 
 // ─── Sidebar Navigation Items ───────────────────────────────────────────────
@@ -113,7 +113,7 @@ const sidebarNav: NavItem[] = [
 
 const statusBadgeMap: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
   Completed: { variant: 'secondary', className: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
-  Upcoming: { variant: 'secondary', className: 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100' },
+  Upcoming: { variant: 'secondary', className: 'bg-[#FFD54F]/15 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/15' },
   Cancelled: { variant: 'secondary', className: 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100' },
   Active: { variant: 'secondary', className: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
 }
@@ -161,8 +161,8 @@ export function ProviderDashboard() {
         {/* User Profile Section */}
         <div className="px-6 py-6 border-b border-slate-700">
           <div className="flex items-center gap-3">
-            <Avatar className="size-12 border-2 border-blue-500">
-              <AvatarFallback className="bg-blue-600 text-white text-sm font-bold">AK</AvatarFallback>
+            <Avatar className="size-12 border-2 border-[#0A1F44]">
+              <AvatarFallback className="bg-[#0A1F44] text-white text-sm font-bold">AK</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
@@ -194,7 +194,7 @@ export function ProviderDashboard() {
                   key={item.label}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors
                     ${item.active
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-[#0A1F44] text-white'
                       : 'text-slate-300 hover:bg-slate-700/50 hover:text-white'
                     }
                   `}
@@ -246,7 +246,7 @@ export function ProviderDashboard() {
 
           {/* Location */}
           <button className="hidden sm:flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
-            <MapPin className="size-3.5 text-blue-600" />
+            <MapPin className="size-3.5 text-[#0A1F44]" />
             Delhi, India
           </button>
 
@@ -270,11 +270,11 @@ export function ProviderDashboard() {
             {/* Profile Section */}
             <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100">
               <Avatar className="size-8">
-                <AvatarFallback className="bg-blue-600 text-white text-xs">CC</AvatarFallback>
+                <AvatarFallback className="bg-[#0A1F44] text-white text-xs">CC</AvatarFallback>
               </Avatar>
               <div className="hidden md:block text-left">
                 <p className="text-sm font-medium text-slate-700">Cool Care Services</p>
-                <p className="text-[11px] text-blue-600">View Profile</p>
+                <p className="text-[11px] text-[#0A1F44]">View Profile</p>
               </div>
               <ChevronDown className="size-3.5 text-slate-400 hidden md:block" />
             </button>
@@ -403,7 +403,7 @@ export function ProviderDashboard() {
                   </div>
                 </div>
 
-                <Button variant="outline" className="mt-4 w-full bg-white border-slate-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700 font-medium gap-1.5">
+                <Button variant="outline" className="mt-4 w-full bg-white border-slate-200 text-[#0A1F44] hover:bg-[#FFD54F]/10 hover:text-[#0A1F44] font-medium gap-1.5">
                   View Earnings
                   <ArrowRight className="size-3.5" />
                 </Button>
@@ -417,7 +417,7 @@ export function ProviderDashboard() {
                   <CardTitle className="text-base font-semibold text-slate-900">
                     Recent Bookings
                   </CardTitle>
-                  <Button variant="ghost" size="sm" className="gap-1 text-blue-600 text-xs">
+                  <Button variant="ghost" size="sm" className="gap-1 text-[#0A1F44] text-xs">
                     View All
                     <ChevronRight className="size-3.5" />
                   </Button>
@@ -496,7 +496,7 @@ export function ProviderDashboard() {
                                 item.status === 'completed'
                                   ? 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
                                   : item.status === 'upcoming'
-                                    ? 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100'
+                                    ? 'bg-[#FFD54F]/15 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/15'
                                     : 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100'
                               }`}
                             >
@@ -509,7 +509,7 @@ export function ProviderDashboard() {
                   })}
                 </div>
 
-                <Button className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-medium gap-1.5">
+                <Button className="mt-4 w-full bg-[#0A1F44] hover:bg-[#0A1F44] text-white font-medium gap-1.5">
                   Manage Schedule
                   <ArrowRight className="size-3.5" />
                 </Button>
@@ -622,7 +622,7 @@ export function ProviderDashboard() {
                 <div className="rounded-lg bg-slate-50 p-3">
                   <div className="flex items-center gap-2 mb-2">
                     <Avatar className="size-7">
-                      <AvatarFallback className="bg-blue-100 text-blue-700 text-[10px] font-bold">RS</AvatarFallback>
+                      <AvatarFallback className="bg-[#FFD54F]/15 text-[#0A1F44] text-[10px] font-bold">RS</AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-900">{customerReviews.recent.name}</p>
@@ -648,7 +648,7 @@ export function ProviderDashboard() {
 
                 {/* Pagination Dots */}
                 <div className="flex items-center justify-center gap-1.5 mt-4">
-                  <span className="size-2 rounded-full bg-blue-600" />
+                  <span className="size-2 rounded-full bg-[#0A1F44]" />
                   <span className="size-2 rounded-full bg-slate-300" />
                   <span className="size-2 rounded-full bg-slate-300" />
                 </div>
@@ -670,7 +670,7 @@ export function ProviderDashboard() {
                       <Wallet className="size-5 text-white" />
                     </div>
                     <div>
-                      <p className="text-xs font-medium text-blue-100">Wallet Balance</p>
+                      <p className="text-xs font-medium text-[#FFD54F]/80">Wallet Balance</p>
                       <p className="text-2xl font-bold">{earningsSummary.walletBalance}</p>
                     </div>
                   </div>
@@ -688,7 +688,7 @@ export function ProviderDashboard() {
                   </div>
                 </div>
 
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium gap-1.5">
+                <Button className="w-full bg-[#0A1F44] hover:bg-[#0A1F44] text-white font-medium gap-1.5">
                   <Wallet className="size-4" />
                   Withdraw Earnings
                 </Button>
@@ -721,15 +721,15 @@ export function ProviderDashboard() {
             {/* Need Help */}
             <Card className="bg-white border border-slate-200 overflow-hidden">
               <CardContent className="flex items-center gap-4 p-5">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                  <Headphones className="size-6 text-blue-600" />
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                  <Headphones className="size-6 text-[#0A1F44]" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-sm font-bold text-slate-900">Need Help?</h3>
                   <p className="text-xs text-slate-500 mt-1 leading-relaxed">
                     Our support team is here to help you.
                   </p>
-                  <Button variant="link" className="mt-1 h-auto p-0 text-blue-600 hover:text-blue-700 font-semibold text-xs gap-1">
+                  <Button variant="link" className="mt-1 h-auto p-0 text-[#0A1F44] hover:text-[#0A1F44] font-semibold text-xs gap-1">
                     Contact Support
                     <ArrowRight className="size-3" />
                   </Button>

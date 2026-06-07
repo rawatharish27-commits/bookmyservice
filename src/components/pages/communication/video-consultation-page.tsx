@@ -87,7 +87,7 @@ export function VideoConsultationPage() {
           {/* Simulated remote video */}
           <div className="text-center">
             <Avatar className="size-24 mx-auto mb-4">
-              <AvatarFallback className="bg-[#1D63FF] text-white text-3xl font-bold">
+              <AvatarFallback className="bg-[#0A1F44] text-white text-3xl font-bold">
                 AS
               </AvatarFallback>
             </Avatar>
@@ -140,7 +140,7 @@ export function VideoConsultationPage() {
         <div className="absolute bottom-24 right-4 sm:bottom-28 sm:right-6 z-20">
           <div
             className={`w-28 h-36 sm:w-36 sm:h-48 rounded-2xl overflow-hidden border-2 shadow-xl transition-all ${
-              isScreenSharing ? 'border-blue-500' : 'border-white/20'
+              isScreenSharing ? 'border-[#0A1F44]' : 'border-white/20'
             }`}
           >
             <div className="w-full h-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center">
@@ -191,7 +191,7 @@ export function VideoConsultationPage() {
                   <div
                     className={`max-w-[85%] rounded-xl p-2.5 ${
                       msg.from === 'self'
-                        ? 'bg-[#1D63FF] text-white rounded-br-sm'
+                        ? 'bg-[#0A1F44] text-white rounded-br-sm'
                         : 'bg-slate-700 text-slate-200 rounded-bl-sm'
                     }`}
                   >
@@ -221,11 +221,11 @@ export function VideoConsultationPage() {
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                className="flex-1 bg-slate-700 text-white text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-500"
+                className="flex-1 bg-slate-700 text-white text-xs rounded-lg px-3 py-2 focus:outline-none focus:ring-1 focus:ring-[#0A1F44] placeholder:text-slate-500"
               />
               <Button
                 size="icon"
-                className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white size-8 rounded-lg shrink-0"
+                className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white size-8 rounded-lg shrink-0"
                 onClick={sendMessage}
               >
                 <Send className="size-3.5" />
@@ -288,7 +288,7 @@ export function VideoConsultationPage() {
                 <p className="text-xs text-slate-400 mb-2">Service Provider</p>
                 <div className="flex items-center gap-3 bg-slate-700/50 rounded-xl p-3">
                   <Avatar className="size-10">
-                    <AvatarFallback className="bg-[#1D63FF] text-white text-sm font-semibold">
+                    <AvatarFallback className="bg-[#0A1F44] text-white text-sm font-semibold">
                       AS
                     </AvatarFallback>
                   </Avatar>
@@ -378,7 +378,7 @@ export function VideoConsultationPage() {
             size="icon"
             className={`size-12 rounded-full ${
               isScreenSharing
-                ? 'bg-[#1D63FF] text-white hover:bg-[#0B3D91]'
+                ? 'bg-[#0A1F44] text-white hover:bg-[#0A1F44]/90'
                 : 'bg-slate-700 text-white hover:bg-slate-600'
             }`}
             onClick={() => setIsScreenSharing(!isScreenSharing)}
@@ -391,7 +391,7 @@ export function VideoConsultationPage() {
             size="icon"
             className={`size-12 rounded-full ${
               showChat
-                ? 'bg-[#1D63FF] text-white hover:bg-[#0B3D91]'
+                ? 'bg-[#0A1F44] text-white hover:bg-[#0A1F44]/90'
                 : 'bg-slate-700 text-white hover:bg-slate-600'
             }`}
             onClick={() => setShowChat(!showChat)}

@@ -49,7 +49,7 @@ const callHistory: CallRecord[] = [
     id: 1,
     name: 'Amit Sharma',
     initials: 'AS',
-    avatarColor: 'bg-[#1D63FF]',
+    avatarColor: 'bg-[#0A1F44]',
     type: 'video',
     direction: 'outgoing',
     status: 'completed',
@@ -133,7 +133,7 @@ const callHistory: CallRecord[] = [
     id: 7,
     name: 'Kavita Iyer',
     initials: 'KI',
-    avatarColor: 'bg-indigo-600',
+    avatarColor: 'bg-[#0A1F44]',
     type: 'audio',
     direction: 'incoming',
     status: 'missed',
@@ -249,7 +249,7 @@ export function CallHistoryPage() {
               <Button
                 variant="ghost"
                 size="icon"
-                className={`text-slate-400 ${showFilters ? 'bg-blue-50 text-[#1D63FF]' : ''}`}
+                className={`text-slate-400 ${showFilters ? 'bg-[#FFD54F]/10 text-[#0A1F44]' : ''}`}
                 onClick={() => setShowFilters(!showFilters)}
               >
                 <Filter className="size-5" />
@@ -268,7 +268,7 @@ export function CallHistoryPage() {
               placeholder="Search by name, service, or booking ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF]/20"
+              className="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#0A1F44]/20"
             />
             {searchQuery && (
               <Button
@@ -324,7 +324,7 @@ export function CallHistoryPage() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           <Card className="bg-white rounded-xl shadow-sm">
             <CardContent className="p-3 sm:p-4 text-center">
-              <PhoneCall className="size-5 text-[#1D63FF] mx-auto mb-1" />
+              <PhoneCall className="size-5 text-[#0A1F44] mx-auto mb-1" />
               <p className="text-lg font-bold text-slate-900">{totalCalls}</p>
               <p className="text-[10px] sm:text-xs text-slate-500">Total Calls</p>
             </CardContent>
@@ -389,7 +389,7 @@ export function CallHistoryPage() {
                             </Avatar>
                             <div
                               className={`absolute -bottom-1 -right-1 size-5 rounded-full flex items-center justify-center border-2 border-white ${
-                                call.type === 'video' ? 'bg-purple-500' : 'bg-blue-500'
+                                call.type === 'video' ? 'bg-purple-500' : 'bg-[#FFD54F]/100'
                               }`}
                             >
                               {call.type === 'video' ? (
@@ -408,7 +408,7 @@ export function CallHistoryPage() {
                               ) : (
                                 <ArrowDownLeft
                                   className={`size-3 shrink-0 ${
-                                    call.status === 'missed' ? 'text-red-500' : 'text-blue-500'
+                                    call.status === 'missed' ? 'text-red-500' : 'text-[#FFD54F]/800'
                                   }`}
                                 />
                               )}
@@ -460,7 +460,7 @@ export function CallHistoryPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-9 rounded-full text-[#1D63FF] hover:bg-blue-50 hidden sm:flex"
+                              className="size-9 rounded-full text-[#0A1F44] hover:bg-[#FFD54F]/10 hidden sm:flex"
                             >
                               <MessageSquare className="size-4" />
                             </Button>
@@ -477,7 +477,7 @@ export function CallHistoryPage() {
         )}
 
         {/* Summary Footer */}
-        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] rounded-xl shadow-sm mt-6">
+        <Card className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] rounded-xl shadow-sm mt-6">
           <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -491,7 +491,7 @@ export function CallHistoryPage() {
                   <Phone className="size-4 mr-2" />
                   Audio
                 </Button>
-                <Button className="bg-white text-[#0B3D91] hover:bg-blue-50 rounded-xl">
+                <Button className="bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 rounded-xl">
                   <Video className="size-4 mr-2" />
                   Video
                 </Button>

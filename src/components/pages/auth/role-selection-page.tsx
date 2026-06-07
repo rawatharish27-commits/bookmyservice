@@ -13,8 +13,8 @@ const roles = [
     label: 'Customer',
     desc: 'Book and manage home services, track bookings, make payments, and review providers.',
     features: ['Book services instantly', 'Track real-time progress', 'Secure payments', 'Rate & review'],
-    color: 'bg-blue-50 border-blue-200 hover:border-blue-400',
-    iconBg: 'bg-[#1D63FF]/10 text-[#1D63FF]',
+    color: 'bg-[#FFD54F]/10 border-[#FFD54F]/20 hover:border-blue-400',
+    iconBg: 'bg-[#FFD54F]/10 text-[#0A1F44]',
   },
   {
     key: 'provider',
@@ -47,7 +47,7 @@ export function RoleSelectionPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           {roles.map((role) => (
             <Card key={role.key}
-              className={`rounded-xl border-2 cursor-pointer transition-all hover:shadow-md ${selected === role.key ? 'ring-2 ring-offset-2 ring-blue-500 ' + role.color : 'border-slate-100 bg-white hover:border-slate-200'}`}
+              className={`rounded-xl border-2 cursor-pointer transition-all hover:shadow-md ${selected === role.key ? 'ring-2 ring-offset-2 ring-[#0A1F44] ' + role.color : 'border-slate-100 bg-white hover:border-slate-200'}`}
               onClick={() => setSelected(role.key)}
               role="button"
               tabIndex={0}
@@ -59,7 +59,7 @@ export function RoleSelectionPage() {
                     <role.icon className="size-6" />
                   </div>
                   {selected === role.key && (
-                    <CheckCircle className="size-6 text-[#1D63FF]" />
+                    <CheckCircle className="size-6 text-[#0A1F44]" />
                   )}
                 </div>
                 <h3 className="font-bold text-slate-900 text-lg mb-1">{role.label}</h3>
@@ -78,7 +78,7 @@ export function RoleSelectionPage() {
         </div>
 
         <div className="mt-8 text-center">
-          <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
+          <Button className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white px-12 py-5 rounded-xl text-base gap-2" disabled={!selected} onClick={handleContinue}>
             Get Started <ArrowRight className="size-5" />
           </Button>
           <p className="text-xs text-slate-400 mt-3">You can change your role later in settings</p>

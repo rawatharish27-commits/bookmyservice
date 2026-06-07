@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator'
 import { TrendingUp, Briefcase, Star, UserCheck, Download } from 'lucide-react'
 
 const providerMetrics = [
-  { label: 'Total Providers', value: '1,234', change: '+86', icon: Briefcase, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Providers', value: '1,234', change: '+86', icon: Briefcase, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'Verified', value: '945', change: '+52', icon: UserCheck, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Avg Rating', value: '4.5', change: '+0.1', icon: Star, color: 'bg-amber-100 text-amber-600' },
 ]
@@ -61,7 +61,7 @@ export function AdminProviderAnalyticsPage() {
                 <div key={step.stage}>
                   <div className="py-3">
                     <div className="flex items-center justify-between mb-1"><span className="text-sm text-slate-700">{step.stage}</span><span className="text-sm font-semibold text-slate-700">{step.count.toLocaleString()}</span></div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-blue-500 rounded-full transition-all" style={{ width: `${step.percentage}%` }} /></div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden"><div className="h-full bg-[#FFD54F]/100 rounded-full transition-all" style={{ width: `${step.percentage}%` }} /></div>
                   </div>
                   {i < onboardingFunnel.length - 1 && <Separator className="bg-slate-100" />}
                 </div>
@@ -75,7 +75,7 @@ export function AdminProviderAnalyticsPage() {
               {topProviders.map((p, i) => (
                 <div key={p.name}>
                   <div className="flex items-center gap-3 py-3">
-                    <span className="flex size-7 items-center justify-center rounded-full bg-[#1D63FF]/10 text-xs font-bold text-[#1D63FF]">{i + 1}</span>
+                    <span className="flex size-7 items-center justify-center rounded-full bg-[#FFD54F]/10 text-xs font-bold text-[#0A1F44]">{i + 1}</span>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-900 truncate">{p.name}</p>
                       <div className="flex items-center gap-2 mt-0.5">

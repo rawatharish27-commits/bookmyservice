@@ -93,7 +93,7 @@ export function NoInternetPage() {
 
             {/* Retry button */}
             <Button
-              className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-2 rounded-xl py-5"
+              className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-2 rounded-xl py-5"
               onClick={handleRetry}
               disabled={retrying}
             >
@@ -141,7 +141,7 @@ export function NoInternetPage() {
               onClick={() => setShowTips(!showTips)}
             >
               <div className="flex items-center gap-2">
-                <Wifi className="size-4 text-[#1D63FF]" />
+                <Wifi className="size-4 text-[#0A1F44]" />
                 <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
                   Troubleshooting Tips
                 </h3>
@@ -162,12 +162,12 @@ export function NoInternetPage() {
                       key={step.title}
                       className="flex items-start gap-3 p-3 rounded-xl bg-slate-50/80"
                     >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-50">
-                        <step.icon className="size-4 text-[#1D63FF]" />
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                        <step.icon className="size-4 text-[#0A1F44]" />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-[#1D63FF]">
+                          <span className="text-xs font-bold text-[#0A1F44]">
                             {index + 1}
                           </span>
                           <p className="text-sm font-medium text-slate-700">

@@ -196,7 +196,7 @@ export function ProviderCustomerChatPage() {
             </Button>
             <div className="relative shrink-0">
               <Avatar className="size-11">
-                <AvatarFallback className="bg-[#1D63FF] text-white text-sm font-semibold">
+                <AvatarFallback className="bg-[#0A1F44] text-white text-sm font-semibold">
                   AS
                 </AvatarFallback>
               </Avatar>
@@ -218,18 +218,18 @@ export function ProviderCustomerChatPage() {
           </div>
 
           {/* Booking Context */}
-          <div className="mx-4 mb-3 p-3 bg-blue-50 border border-[#1D63FF]/10 rounded-xl">
+          <div className="mx-4 mb-3 p-3 bg-[#FFD54F]/10 border border-[#0A1F44]/10 rounded-xl">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 min-w-0">
-                <Wrench className="size-4 text-[#1D63FF] shrink-0" />
+                <Wrench className="size-4 text-[#0A1F44] shrink-0" />
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-blue-900 truncate">
                     Air Conditioner
                   </p>
-                  <p className="text-[10px] text-[#1D63FF]">BK-2024-1847 • 4 Mar, 10:00 AM</p>
+                  <p className="text-[10px] text-[#0A1F44]">BK-2024-1847 • 4 Mar, 10:00 AM</p>
                 </div>
               </div>
-              <Badge className="bg-[#1D63FF] text-white text-[10px] shrink-0">In Progress</Badge>
+              <Badge className="bg-[#0A1F44] text-white text-[10px] shrink-0">In Progress</Badge>
             </div>
           </div>
         </div>
@@ -264,7 +264,7 @@ export function ProviderCustomerChatPage() {
                 <div
                   className={`max-w-[78%] sm:max-w-[65%] rounded-2xl ${
                     isSent
-                      ? 'bg-[#1D63FF] text-white rounded-br-md'
+                      ? 'bg-[#0A1F44] text-white rounded-br-md'
                       : 'bg-white text-slate-700 rounded-bl-md shadow-sm border border-slate-100'
                   }`}
                 >
@@ -272,7 +272,7 @@ export function ProviderCustomerChatPage() {
                   {msg.type === 'image' && (
                     <div className="p-1.5 pb-0">
                       <div className="bg-slate-100 rounded-xl overflow-hidden">
-                        <div className="h-48 flex items-center justify-center bg-gradient-to-br from-[#1D63FF]/10 to-slate-100">
+                        <div className="h-48 flex items-center justify-center bg-gradient-to-br from-[#0A1F44]/10 to-slate-100">
                           <ImageIcon className="size-10 text-slate-400" />
                         </div>
                       </div>
@@ -284,7 +284,7 @@ export function ProviderCustomerChatPage() {
                     <div className="p-3 pb-1.5">
                       <div
                         className={`flex items-center gap-3 p-3 rounded-xl ${
-                          isSent ? 'bg-blue-500/30' : 'bg-slate-50'
+                          isSent ? 'bg-[#FFD54F]/100/30' : 'bg-slate-50'
                         }`}
                       >
                         <div
@@ -311,11 +311,11 @@ export function ProviderCustomerChatPage() {
                     <div className="p-1.5 pb-0">
                       <div
                         className={`rounded-xl overflow-hidden h-36 flex items-center justify-center ${
-                          isSent ? 'bg-blue-500/30' : 'bg-slate-50'
+                          isSent ? 'bg-[#FFD54F]/100/30' : 'bg-slate-50'
                         }`}
                       >
                         <div className="text-center">
-                          <MapPin className={`size-8 mx-auto mb-1 ${isSent ? 'text-white' : 'text-[#1D63FF]'}`} />
+                          <MapPin className={`size-8 mx-auto mb-1 ${isSent ? 'text-white' : 'text-[#0A1F44]'}`} />
                           <p className={`text-xs ${isSent ? 'text-blue-200' : 'text-slate-500'}`}>
                             Koramangala, Bangalore
                           </p>
@@ -383,7 +383,7 @@ export function ProviderCustomerChatPage() {
                   key={i}
                   variant="outline"
                   size="sm"
-                  className="rounded-full text-xs whitespace-nowrap border-blue-200 text-[#1D63FF] hover:bg-blue-50"
+                  className="rounded-full text-xs whitespace-nowrap border-[#FFD54F]/20 text-[#0A1F44] hover:bg-[#FFD54F]/10"
                   onClick={() => sendMessage(reply)}
                 >
                   {reply}
@@ -412,7 +412,7 @@ export function ProviderCustomerChatPage() {
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage(inputText)}
-                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 pr-10 text-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#1D63FF]/20"
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 pr-10 text-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#0A1F44]/20"
               />
               <Button
                 variant="ghost"
@@ -432,7 +432,7 @@ export function ProviderCustomerChatPage() {
             </Button>
             <Button
               size="icon"
-              className="shrink-0 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"
+              className="shrink-0 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"
               onClick={() => sendMessage(inputText)}
             >
               <Send className="size-4" />

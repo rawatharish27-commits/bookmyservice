@@ -21,7 +21,7 @@ import {
 } from 'lucide-react'
 
 const revenueMetrics = [
-  { label: 'Total Revenue', value: '₹48,75,000', change: '+22.4%', trend: 'up', icon: IndianRupee, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Revenue', value: '₹48,75,000', change: '+22.4%', trend: 'up', icon: IndianRupee, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'Active Branches', value: '12', change: '+2', trend: 'up', icon: Building2, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Monthly Bookings', value: '4,328', change: '+15.7%', trend: 'up', icon: CalendarCheck, color: 'bg-purple-100 text-purple-600' },
   { label: 'Avg Rating', value: '4.6', change: '+0.2', trend: 'up', icon: Star, color: 'bg-amber-100 text-amber-600' },
@@ -73,7 +73,7 @@ export function FranchiseDashboardPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><BarChart3 className="size-4" /> Reports</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"><BarChart3 className="size-4" /> Reports</Button>
           </div>
         </div>
 
@@ -122,7 +122,7 @@ export function FranchiseDashboardPage() {
                   <div key={m.month} className="flex-1 flex flex-col items-center gap-1">
                     <span className="text-[10px] font-medium text-slate-600">{(m.volume / 1000).toFixed(1)}k</span>
                     <div
-                      className="w-full bg-blue-500 rounded-t-md transition-all hover:bg-[#1D63FF]"
+                      className="w-full bg-[#FFD54F]/100 rounded-t-md transition-all hover:bg-[#0A1F44]"
                       style={{ height: `${(m.volume / maxVolume) * 160}px` }}
                     />
                     <span className="text-xs text-slate-500">{m.month}</span>
@@ -141,7 +141,7 @@ export function FranchiseDashboardPage() {
                 <div key={service.name}>
                   <div className="flex items-center justify-between py-3">
                     <div className="flex items-center gap-3">
-                      <span className="flex size-7 items-center justify-center rounded-full bg-blue-50 text-xs font-bold text-[#1D63FF]">
+                      <span className="flex size-7 items-center justify-center rounded-full bg-[#FFD54F]/10 text-xs font-bold text-[#0A1F44]">
                         {i + 1}
                       </span>
                       <div>
@@ -153,7 +153,7 @@ export function FranchiseDashboardPage() {
                       <p className="text-sm font-semibold text-slate-900">{service.revenue}</p>
                       <div className="flex items-center gap-1">
                         <div className="h-1.5 w-16 bg-slate-100 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${service.share}%` }} />
+                          <div className="h-full bg-[#FFD54F]/100 rounded-full" style={{ width: `${service.share}%` }} />
                         </div>
                         <span className="text-[10px] text-slate-400">{service.share}%</span>
                       </div>
@@ -171,7 +171,7 @@ export function FranchiseDashboardPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-slate-900">Branch Performance Comparison</CardTitle>
-              <Badge variant="secondary" className="bg-blue-50 text-[#0B3D91] border-blue-200 text-[10px]">12 Branches</Badge>
+              <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 text-[10px]">12 Branches</Badge>
             </div>
           </CardHeader>
           <CardContent>
@@ -229,7 +229,7 @@ export function FranchiseDashboardPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <Target className="size-4 text-[#1D63FF]" />
+              <Target className="size-4 text-[#0A1F44]" />
               <CardTitle className="text-sm font-semibold text-slate-900">Upcoming Targets</CardTitle>
             </div>
           </CardHeader>

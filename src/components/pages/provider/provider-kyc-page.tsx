@@ -50,8 +50,8 @@ export function ProviderKycPage() {
             {kycSections.map((section, i) => (
               <div key={section.id}>
                 <div className="flex items-center gap-4 py-4">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50">
-                    <section.icon className="size-5 text-[#1D63FF]" />
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#FFD54F]/10">
+                    <section.icon className="size-5 text-[#0A1F44]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{section.label}</p>

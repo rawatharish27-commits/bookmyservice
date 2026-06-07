@@ -32,7 +32,7 @@ export function ClientWalletPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading wallet">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -53,15 +53,15 @@ export function ClientWalletPage() {
         <h1 className="text-2xl font-bold text-slate-900">My Wallet</h1>
 
         <Card className="rounded-xl overflow-hidden border-0">
-          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] p-6 text-white">
+          <div className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] p-6 text-white">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-blue-100">Available Balance</span></div>
+              <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-[#FFD54F]/80">Available Balance</span></div>
               <Badge className="bg-white/20 text-white border-0 hover:bg-white/20">Active</Badge>
             </div>
             <p className="text-3xl font-bold">₹{(wallet?.balance ?? 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
           </div>
           <div className="bg-white p-4 flex gap-3">
-            <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={() => navigate('client-add-money')} aria-label="Add money to wallet"><Plus className="size-4" /> Add Money</Button>
+            <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl" onClick={() => navigate('client-add-money')} aria-label="Add money to wallet"><Plus className="size-4" /> Add Money</Button>
             <Button variant="outline" className="flex-1 gap-1 border-slate-200 rounded-xl" aria-label="Withdraw from wallet"><ArrowUpRight className="size-4" /> Withdraw</Button>
           </div>
         </Card>
@@ -70,7 +70,7 @@ export function ClientWalletPage() {
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-sm font-semibold text-slate-900">Recent Transactions</CardTitle>
-              <Button variant="ghost" size="sm" className="text-[#1D63FF] text-xs" onClick={() => navigate('client-wallet-transactions')} aria-label="View all transactions">View All</Button>
+              <Button variant="ghost" size="sm" className="text-[#0A1F44] text-xs" onClick={() => navigate('client-wallet-transactions')} aria-label="View all transactions">View All</Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-0">

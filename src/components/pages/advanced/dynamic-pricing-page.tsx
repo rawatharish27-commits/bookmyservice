@@ -57,7 +57,7 @@ const pricingRules: PricingRule[] = [
 
 const multiplierCards = [
   { label: 'Peak Hours', multiplier: '1.5x', icon: Sun, color: 'bg-amber-100 text-amber-600', services: 45, bookings: 234 },
-  { label: 'Off-Peak', multiplier: '0.85x', icon: Moon, color: 'bg-indigo-100 text-indigo-600', services: 32, bookings: 156 },
+  { label: 'Off-Peak', multiplier: '0.85x', icon: Moon, color: 'bg-[#0A1F44]/10 text-[#0A1F44]', services: 32, bookings: 156 },
   { label: 'High Demand', multiplier: '1.4x', icon: TrendingUp, color: 'bg-red-100 text-red-600', services: 28, bookings: 189 },
   { label: 'Weekend', multiplier: '1.3x', icon: Calendar, color: 'bg-purple-100 text-purple-600', services: 50, bookings: 312 },
 ]
@@ -74,7 +74,7 @@ const zonePricing = [
 ]
 
 const typeConfig: Record<PricingType, { label: string; color: string; icon: React.ReactNode }> = {
-  'time-based': { label: 'Time-Based', color: 'bg-blue-50 text-[#0B3D91]', icon: <Clock className="size-3" /> },
+  'time-based': { label: 'Time-Based', color: 'bg-[#FFD54F]/10 text-[#0A1F44]', icon: <Clock className="size-3" /> },
   'demand-based': { label: 'Demand-Based', color: 'bg-red-50 text-red-700', icon: <Activity className="size-3" /> },
   'location-based': { label: 'Location-Based', color: 'bg-emerald-50 text-emerald-700', icon: <MapPin className="size-3" /> },
 }
@@ -97,7 +97,7 @@ export function DynamicPricingPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Plus className="size-4" /> Add Rule</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"><Plus className="size-4" /> Add Rule</Button>
           </div>
         </div>
 
@@ -106,7 +106,7 @@ export function DynamicPricingPage() {
           <Card className="bg-white rounded-xl">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-lg bg-[#1D63FF]/10 text-[#1D63FF]">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-[#FFD54F]/10 text-[#0A1F44]">
                   <Settings className="size-5" />
                 </div>
                 <div>
@@ -262,7 +262,7 @@ export function DynamicPricingPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
             <div className="flex items-center gap-2">
-              <Map className="size-4 text-[#1D63FF]" />
+              <Map className="size-4 text-[#0A1F44]" />
               <CardTitle className="text-sm font-semibold text-slate-900">Zone-Based Pricing</CardTitle>
             </div>
           </CardHeader>

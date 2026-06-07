@@ -28,8 +28,8 @@ const customerSteps = [
     title: 'Search & Discover',
     description: 'Browse 200+ services or search for exactly what you need. Compare prices, read reviews, and choose the perfect service.',
     details: ['Search by service name or category', 'Filter by price, rating & distance', 'View detailed service descriptions', 'Check provider profiles & reviews'],
-    color: 'from-[#1D63FF] to-[#0B3D91]',
-    bg: 'bg-blue-50',
+    color: 'from-[#0A1F44] to-[#0A1F44]',
+    bg: 'bg-[#FFD54F]/10',
   },
   {
     step: 2,
@@ -68,7 +68,7 @@ const providerSteps = [
 ]
 
 const testimonials = [
-  { name: 'Ananya Krishnan', city: 'Chennai', avatar: 'AK', color: 'bg-[#1D63FF]', rating: 5, text: 'I booked a Water Tank Cleaning service and was amazed at the quality. The professional was on time, courteous, and my water tank looked brand new. Will definitely book again!', service: 'Water Tank Cleaning' },
+  { name: 'Ananya Krishnan', city: 'Chennai', avatar: 'AK', color: 'bg-[#0A1F44]', rating: 5, text: 'I booked a Water Tank Cleaning service and was amazed at the quality. The professional was on time, courteous, and my water tank looked brand new. Will definitely book again!', service: 'Water Tank Cleaning' },
   { name: 'Rohit Verma', city: 'Delhi', avatar: 'RV', color: 'bg-emerald-600', rating: 5, text: 'The Air Conditioner repair was done in under an hour. The technician was skilled and even explained what went wrong. Fair pricing, no hidden charges. Very impressed!', service: 'Air Conditioner' },
   { name: 'Sunita Joshi', city: 'Pune', avatar: 'SJ', color: 'bg-purple-600', rating: 5, text: 'As a working professional, I rarely have time for home maintenance. BookMyService has been a lifesaver. Getting my Geyser repaired at home is so convenient!', service: 'Geyser' },
   { name: 'Mohammed Faisal', city: 'Hyderabad', avatar: 'MF', color: 'bg-orange-600', rating: 4, text: 'Great platform for finding reliable electricians. The booking process is smooth and I love the real-time tracking feature. Highly recommended!', service: 'Electrician' },
@@ -87,13 +87,13 @@ export function HowItWorksPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Hero */}
-      <section className="bg-gradient-to-br from-[#1D63FF] via-[#0B3D91] to-[#0A2E6B] text-white">
+      <section className="bg-gradient-to-br from-[#0A1F44] via-[#0A1F44] to-[#0A2E6B] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16 sm:py-20 text-center">
-          <Badge className="bg-blue-500/30 text-blue-100 border-blue-400/30 mb-4">How It Works</Badge>
+          <Badge className="bg-[#FFD54F]/100/30 text-[#FFD54F]/80 border-blue-400/30 mb-4">How It Works</Badge>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
             Simple. Reliable. <span className="text-blue-200">Effortless.</span>
           </h1>
-          <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+          <p className="text-[#FFD54F]/80 text-lg max-w-2xl mx-auto">
             Get professional home services in 4 simple steps — or join as a provider and start earning.
           </p>
         </div>
@@ -104,7 +104,7 @@ export function HowItWorksPage() {
         <div className="flex justify-center gap-2">
           <Button
             size="lg"
-            className={activeTab === 'customer' ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
+            className={activeTab === 'customer' ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : 'bg-white text-slate-600 hover:bg-slate-50 shadow-sm'}
             onClick={() => setActiveTab('customer')}
           >
             <Users className="size-4 mr-2" /> For Customers
@@ -206,8 +206,8 @@ export function HowItWorksPage() {
           {whyChoose.map((item) => (
             <Card key={item.title} className="shadow-sm border-0 text-center">
               <CardContent className="p-6">
-                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mx-auto mb-3">
-                  <item.icon className="size-6 text-[#1D63FF]" />
+                <div className="w-12 h-12 rounded-2xl bg-[#FFD54F]/10 flex items-center justify-center mx-auto mb-3">
+                  <item.icon className="size-6 text-[#0A1F44]" />
                 </div>
                 <h3 className="font-semibold text-slate-900 text-sm mb-1">{item.title}</h3>
                 <p className="text-xs text-slate-500">{item.description}</p>
@@ -250,12 +250,12 @@ export function HowItWorksPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-[#1D63FF] to-emerald-600 text-white">
+      <section className="bg-gradient-to-r from-[#0A1F44] to-emerald-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
           <div className="grid sm:grid-cols-2 gap-8 text-center sm:text-left">
             <div>
               <h2 className="text-2xl font-bold mb-3">Ready to Book?</h2>
-              <p className="text-blue-100 mb-5">Get professional home services at your doorstep today.</p>
+              <p className="text-[#FFD54F]/80 mb-5">Get professional home services at your doorstep today.</p>
               <Button size="lg" variant="secondary">
                 Book Now <ChevronRight className="size-4 ml-1" />
               </Button>

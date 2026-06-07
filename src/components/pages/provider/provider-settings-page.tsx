@@ -13,12 +13,12 @@ export function ProviderSettingsPage() {
       <div className="mx-auto max-w-3xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Save className="size-4" /> Save All</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Save className="size-4" /> Save All</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Settings className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Business Settings</CardTitle></div>
+            <div className="flex items-center gap-2"><Settings className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Business Settings</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -32,7 +32,7 @@ export function ProviderSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Bell className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Notification Preferences</CardTitle></div>
+            <div className="flex items-center gap-2"><Bell className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Notification Preferences</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {[
@@ -45,7 +45,7 @@ export function ProviderSettingsPage() {
               <div key={pref.label}>
                 <div className="flex items-center justify-between py-3">
                   <div><p className="text-sm font-medium text-slate-900">{pref.label}</p><p className="text-xs text-slate-400">{pref.desc}</p></div>
-                  <div className={`size-10 rounded-full flex items-center justify-center cursor-pointer ${pref.enabled ? 'bg-[#1D63FF]' : 'bg-slate-200'}`}>
+                  <div className={`size-10 rounded-full flex items-center justify-center cursor-pointer ${pref.enabled ? 'bg-[#0A1F44]' : 'bg-slate-200'}`}>
                     <div className={`size-4 rounded-full bg-white transition-transform ${pref.enabled ? 'translate-x-2' : '-translate-x-2'}`} />
                   </div>
                 </div>
@@ -57,7 +57,7 @@ export function ProviderSettingsPage() {
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Shield className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Security</CardTitle></div>
+            <div className="flex items-center gap-2"><Shield className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Security</CardTitle></div>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-slate-500 mb-4">Update your password to keep your account secure.</p>

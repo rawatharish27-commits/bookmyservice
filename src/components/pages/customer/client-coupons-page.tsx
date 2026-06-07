@@ -44,7 +44,7 @@ export function ClientCouponsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading coupons">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -76,7 +76,7 @@ export function ClientCouponsPage() {
               <Card key={c.id} className="bg-white rounded-xl overflow-hidden">
                 <CardContent className="p-0">
                   <div className="flex">
-                    <div className="flex w-24 shrink-0 items-center justify-center bg-gradient-to-br from-[#1D63FF] to-[#0B3D91] text-white">
+                    <div className="flex w-24 shrink-0 items-center justify-center bg-gradient-to-br from-[#0A1F44] to-[#0A1F44] text-white">
                       <span className="text-lg font-bold">{c.discount}</span>
                     </div>
                     <div className="flex-1 p-4">
@@ -91,7 +91,7 @@ export function ClientCouponsPage() {
                         </Button>
                       </div>
                       <div className="mt-2 flex items-center gap-2">
-                        <Badge variant="outline" className="text-[10px] font-mono border-dashed border-blue-300 text-[#1D63FF]">{c.code}</Badge>
+                        <Badge variant="outline" className="text-[10px] font-mono border-dashed border-[#FFD54F]/30 text-[#0A1F44]">{c.code}</Badge>
                         <span className="flex items-center gap-1 text-[10px] text-slate-400"><Clock className="size-2.5" />Exp: {c.expiry}</span>
                       </div>
                     </div>

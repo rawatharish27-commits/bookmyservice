@@ -31,7 +31,7 @@ export function AdminAmcPage() {
       <div className="mx-auto max-w-5xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">AMC Plans</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> Add Plan</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> Add Plan</Button>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -42,7 +42,7 @@ export function AdminAmcPage() {
                   <Badge className={plan.active ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-500 border-slate-200'}>{plan.active ? 'Active' : 'Inactive'}</Badge>
                 </div>
                 <h3 className="text-sm font-bold text-slate-900">{plan.name}</h3>
-                <p className="text-lg font-bold text-[#1D63FF] mt-1">{plan.price}</p>
+                <p className="text-lg font-bold text-[#0A1F44] mt-1">{plan.price}</p>
                 <div className="mt-2 space-y-1 text-xs text-slate-500">
                   <p>{plan.services} services included</p>
                   <p>{plan.visits} visits per year</p>
@@ -59,7 +59,7 @@ export function AdminAmcPage() {
             {subscriptions.map((sub, i) => (
               <div key={sub.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-10 items-center justify-center rounded-lg bg-blue-50"><Shield className="size-5 text-[#1D63FF]" /></div>
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-[#FFD54F]/10"><Shield className="size-5 text-[#0A1F44]" /></div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{sub.customer}</p><Badge variant="secondary" className={statusColors[sub.status]}>{sub.status}</Badge></div>
                     <p className="text-xs text-slate-400">{sub.plan} • {sub.visitsUsed} visits used • {sub.startDate} - {sub.endDate}</p>

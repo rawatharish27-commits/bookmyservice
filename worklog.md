@@ -574,3 +574,117 @@ Stage Summary:
 - Font colors corrected to black on gold backgrounds
 - Button colors corrected to navy blue for primary CTAs
 - All existing sections preserved (no deletion)
+
+---
+Task ID: 4-a
+Agent: branding-audit-agent
+Task: Audit ALL page components and dashboard components for generic blue colors instead of BYS brand colors
+
+Work Log:
+- Searched all 145 files in `/home/z/my-project/src/components/pages/` for 7 color patterns: `#1D63FF`, `#3B82F6`, `#0B3D91`, `blue-100`, `blue-50`, `indigo`, `#FFCE32`
+- Searched all 3 files in `/home/z/my-project/src/components/dashboards/` for the same patterns
+- Found **139 page component files** and **3 dashboard files** containing old generic blue/yellow colors
+- Total instances found: ~630+ across all files
+- No files were modified — audit only
+
+**Color Occurrence Summary:**
+| Old Color | Instances | Pages | Dashboards |
+|-----------|-----------|-------|------------|
+| `#1D63FF` | ~220      | ~120 files | 0 |
+| `#0B3D91` | ~130      | ~100 files | 0 |
+| `blue-50` | ~110      | ~90 files  | 3 |
+| `blue-100`| ~45       | ~23 files  | 3 |
+| `#FFCE32` | ~11       | ~9 files   | 0 |
+| `indigo`  | ~18       | ~11 files  | 0 |
+| `#3B82F6` | 2         | 2 files    | 0 |
+
+**Recommended Replacement Mapping:**
+| Old Color | Context | Replace With |
+|-----------|---------|-------------|
+| `#1D63FF` | Button bg, icon text, gradient from | `#0A1F44` (Navy) for primary; `#D4A017` (Gold) for accent |
+| `#0B3D91` | Button hover, gradient to, badge text | `#0A1F44` (Navy) |
+| `#3B82F6` | Gradient via | `#0A1F44` (Navy) or remove midpoint |
+| `#FFCE32` | Gradient to/accent | `#FFD54F` (Golden Yellow) |
+| `blue-50` | Light bg, icon containers | `bg-[#0A1F44]/5` or `bg-[#FFD54F]/10` |
+| `blue-100`| Text on dark bg | `text-[#FFD54F]/80` or `text-white/80` |
+| `blue-100`| Light bg | `bg-[#0A1F44]/10` or `bg-[#FFD54F]/15` |
+| `indigo-*`| Category colors, avatars | `#0A1F44` (Navy) or `#D4A017` (Gold) variants |
+
+Stage Summary:
+- 139 page component files + 3 dashboard files contain old generic blue/yellow colors
+- ~630+ total color instances need replacement
+- HIGH priority (user-facing): 93 files — public (13), auth (9), booking (10), marketing (11), customer (30), provider (20), error (6), dashboards (3) — need immediate rebrand
+- MEDIUM priority (admin): 28 files — admin pages — internal staff, should be rebranded but lower urgency
+- LOW priority (internal/advanced): 21 files — advanced (8), pwa (4), tracking (5), legal (6) — rarely visited
+- Most common pattern: `bg-[#1D63FF] hover:bg-[#0B3D91] text-white` on buttons → replace with `bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white`
+- Second most common: `bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200` on badges → replace with `bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20`
+- Third most common: `bg-blue-50 text-[#1D63FF]` on icon containers → replace with `bg-[#FFD54F]/10 text-[#0A1F44]`
+- Gradient patterns like `from-[#1D63FF] to-[#FFCE32]` → replace with `from-[#0A1F44] to-[#FFD54F]`
+- No files modified — audit report only
+
+---
+Task ID: 3
+Agent: theme-agent
+Task: Rewrite home-page.tsx to use BYS brand theme instead of generic blue colors
+
+Work Log:
+- Read `/home/z/my-project/worklog.md` to understand previous work context
+- Read `/home/z/my-project/src/app/page.tsx` (1802 lines) as reference for BYS brand theme implementation
+- Read `/home/z/my-project/src/components/pages/public/home-page.tsx` (280 lines) as the file to rewrite
+- Completely rewrote `home-page.tsx` with all 15 changes specified in the task:
+
+**Color Replacements:**
+1. `#1D63FF` → `#0A1F44` (Navy Blue) — all primary blue backgrounds, buttons, text
+2. `#3B82F6` → removed (was gradient midpoint) — hero now uses navy bg with radial gold gradients
+3. `#0B3D91` → `#0A1F44` / `#132D5E` (Navy variants) — button hover states
+4. `bg-[#f8fafc]` → `bg-[#D4A017]` (Gold background) — page wrapper
+5. `#FFCE32` → `#FFD54F` / `#D4A017` (Gold/Yellow) — gradient endpoints, accents
+6. `text-slate-900` → `text-[#0A1F44]` — headings on gold backgrounds
+7. `text-slate-500` → `text-black/70` — body text on gold backgrounds
+8. `bg-white` cards → `bg-[#F2C94C]` (Gold Card) — category cards, feature cards, testimonial cards
+9. `fill-amber-400 text-amber-400` stars → `fill-[#D4A017] text-[#D4A017]` — BYS gold stars
+10. Loading skeleton: `text-[#1D63FF]` → `text-[#D4A017]`
+
+**Section-by-Section Changes:**
+- **Emergency Banner**: Added `bg-[#8B0000]` emergency banner at top (matching page.tsx)
+- **Trust Counter Bar**: Added social proof bar with 4 gold gradient stat cards (1500+ customers, 250+ technicians, 5000+ services, Palwal)
+- **Hero Section**: Changed from `bg-gradient-to-br from-[#1D63FF] via-[#3B82F6] to-[#FFCE32]` to `bg-[#0A1F44]` with radial gold gradient overlays; added trust badge, trust points with icons (Timer, BadgeCheck, IndianRupee, ShieldCheck, RefreshCw), search bar with navy button
+- **Category Grid**: Gold gradient card backgrounds (`from-[#F2C94C] to-[#E0B84C]` etc.) with navy icon containers (`bg-[#0A1F44] text-[#FFD54F]`), services count display
+- **Featured Services**: Gold card backgrounds (`bg-[#F2C94C]`), navy Book Now buttons (`bg-[#0A1F44] text-[#FFD54F]`), gold stars
+- **How It Works**: Navy step circles (`bg-[#0A1F44] text-[#FFD54F]`), connecting lines, 3 Palwal-specific steps (Select Service → Technician Assigned → Service Completed with warranty)
+- **Trust & Features Section**: NEW section with 6 feature cards (BadgeCheck, IndianRupee, Timer, ShieldCheck, Headphones, RefreshCw), gold card backgrounds with navy icon containers
+- **Testimonials**: Replaced generic testimonials with 6 Palwal-specific testimonials (Rajesh K./HUDA Sector, Priya S./Camp Colony, Amit M./Railway Road, Sunita D./Minar Gate, Vikram T./HUDA Sector, Anita R./Camp Colony); gold card backgrounds with area/service tags; navy avatar circles with gold text
+- **CTA Banner**: Changed from `from-[#1D63FF] to-[#FFCE32]` to `from-[#0A1F44] via-[#132D5E] to-[#0A1F44]` with radial gold gradient; navy primary button + gold secondary button; guarantee text
+- **Palwal Service Areas**: NEW section with 8 local area pills (HUDA Sector, Camp Colony, Railway Road, Minar Gate, Old City, Industrial Area, Model Town, Subhash Colony)
+
+**CATEGORY_UI Mapping Update:**
+- Changed from single `color: string` to `{ color: string; bgColor: string; textColor: string }` per category
+- All categories now use gold gradients for cards and navy containers for icons
+- Kitchen Appliances and Geyser use `bg-[#8B0000]/90` (danger red) as accent variant
+
+**Preserved (No Changes):**
+- All `useUrlApi` / `useApi` API integration calls (categories → `/api/categories`, featured → `/api/services?limit=4`, testimonials → static)
+- All `navigate()` calls and routing logic
+- All `aria-label` attributes and accessibility features
+- All `refetch()` retry buttons
+
+**Mobile Responsiveness:**
+- All buttons have `min-h-[44px]` touch targets
+- Grid layouts use responsive breakpoints (`grid-cols-2 sm:grid-cols-4 lg:grid-cols-6`)
+- Search bar and CTAs stack vertically on mobile
+- Emergency banner uses `flex-wrap whitespace-nowrap`
+- Navigation arrows hidden on mobile with `hidden sm:flex`
+
+**Verification:**
+- TypeScript check (`npx tsc --noEmit` grep for home-page): ZERO errors
+- Dev server: Running on port 3000, returning 200 status
+
+Stage Summary:
+- Completely rewrote home-page.tsx (280 → 310 lines) with BYS brand theme
+- All 15 specified changes implemented
+- Zero generic blue colors (`#1D63FF`, `#3B82F6`, `#0B3D91`) remain
+- All API integration preserved (useUrlApi, useApi)
+- All navigation and accessibility preserved
+- Palwal-specific content added (testimonials, service areas, trust indicators)
+- Mobile responsive with 44px minimum touch targets
+- Zero TypeScript errors introduced

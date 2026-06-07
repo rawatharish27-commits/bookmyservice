@@ -75,7 +75,7 @@ export function FeaturedServicesPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20" role="status" aria-label="Loading featured services">
-            <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+            <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
             <span className="sr-only">Loading...</span>
           </div>
         ) : error ? (
@@ -104,7 +104,7 @@ export function FeaturedServicesPage() {
                       <Button variant="ghost" size="icon-xs" aria-label="Add to favorites"><Heart className="size-4 text-slate-400" /></Button>
                     </div>
                   </div>
-                  <h3 className="font-bold text-slate-900 group-hover:text-[#1D63FF] transition-colors">{svc.name}</h3>
+                  <h3 className="font-bold text-slate-900 group-hover:text-[#0A1F44] transition-colors">{svc.name}</h3>
                   <p className="text-sm text-slate-500 mt-1">{svc.provider}</p>
                   <div className="flex items-center gap-1 mt-2">
                     <Star className="size-4 fill-amber-400 text-amber-400" />
@@ -120,7 +120,7 @@ export function FeaturedServicesPage() {
                     <div>
                       <span className="font-bold text-lg text-slate-900">₹{svc.price}</span>
                     </div>
-                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('service-detail', { service: svc.name })}>Book</Button>
+                    <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white" onClick={() => navigate('service-detail', { service: svc.name })}>Book</Button>
                   </div>
                 </CardContent>
               </Card>

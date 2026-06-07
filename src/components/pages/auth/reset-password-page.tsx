@@ -81,7 +81,7 @@ export function ResetPasswordPage() {
               <CheckCircle2 className="size-12 text-emerald-500" />
               <h2 className="text-2xl font-bold text-slate-900">Password Reset!</h2>
               <p className="text-slate-500 text-sm">Your password has been reset successfully. Redirecting to login...</p>
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
+              <Button className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white py-5 rounded-xl mt-4" onClick={() => navigate('login')}>
                 Go to Login
               </Button>
             </div>
@@ -95,8 +95,8 @@ export function ResetPasswordPage() {
     <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
       <Card className="w-full max-w-md bg-white rounded-xl shadow-sm border-slate-100">
         <CardContent className="p-8">
-          <div className="w-16 h-16 rounded-2xl bg-[#1D63FF]/10 flex items-center justify-center mx-auto mb-6">
-            <Shield className="size-8 text-[#1D63FF]" />
+          <div className="w-16 h-16 rounded-2xl bg-[#FFD54F]/10 flex items-center justify-center mx-auto mb-6">
+            <Shield className="size-8 text-[#0A1F44]" />
           </div>
 
           <div className="text-center mb-6">
@@ -171,7 +171,7 @@ export function ResetPasswordPage() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white py-5 rounded-xl" disabled={loading}>
+            <Button type="submit" className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white py-5 rounded-xl" disabled={loading}>
               {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : null} {loading ? 'Resetting...' : 'Reset Password'}
             </Button>
           </form>

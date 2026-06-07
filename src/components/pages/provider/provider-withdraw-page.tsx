@@ -14,8 +14,8 @@ export function ProviderWithdrawPage() {
         <h1 className="text-2xl font-bold text-slate-900">Withdraw Funds</h1>
 
         <Card className="bg-white rounded-xl overflow-hidden">
-          <div className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] p-5 text-white">
-            <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-blue-100">Available Balance</span></div>
+          <div className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] p-5 text-white">
+            <div className="flex items-center gap-2"><Wallet className="size-5" /><span className="text-sm font-medium text-[#FFD54F]/80">Available Balance</span></div>
             <p className="text-3xl font-bold mt-1">₹7,650.00</p>
           </div>
         </Card>
@@ -44,10 +44,10 @@ export function ProviderWithdrawPage() {
           </CardContent>
         </Card>
 
-        <Card className="bg-blue-50 border-blue-200 rounded-xl">
+        <Card className="bg-[#FFD54F]/10 border-[#FFD54F]/20 rounded-xl">
           <CardContent className="p-4">
-            <div className="flex gap-3"><Info className="size-4 text-[#1D63FF] shrink-0 mt-0.5" />
-              <div className="text-xs text-[#0B3D91]">
+            <div className="flex gap-3"><Info className="size-4 text-[#0A1F44] shrink-0 mt-0.5" />
+              <div className="text-xs text-[#0A1F44]">
                 <p className="font-semibold">Withdrawal Info</p>
                 <ul className="mt-1 space-y-1 list-disc ml-4">
                   <li>Minimum withdrawal: ₹500</li>
@@ -60,7 +60,7 @@ export function ProviderWithdrawPage() {
         </Card>
 
         <div className="flex gap-3">
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
+          <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl"><ArrowUpRight className="size-4" /> Withdraw</Button>
           <Button variant="outline" className="rounded-xl">Cancel</Button>
         </div>
       </div>

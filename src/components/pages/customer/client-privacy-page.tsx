@@ -40,7 +40,7 @@ export function ClientPrivacyPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading privacy settings">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -66,7 +66,7 @@ export function ClientPrivacyPage() {
         <h1 className="text-2xl font-bold text-slate-900">Privacy Settings</h1>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><Eye className="size-4 text-[#1D63FF]" /> Visibility</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><Eye className="size-4 text-[#0A1F44]" /> Visibility</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {[
               { key: 'profileVisibility' as const, label: 'Profile Visibility', desc: 'Allow providers to see your profile' },
@@ -76,7 +76,7 @@ export function ClientPrivacyPage() {
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between">
                 <div><p className="text-sm font-medium text-slate-900">{item.label}</p><p className="text-xs text-slate-400">{item.desc}</p></div>
-                <button onClick={() => toggle(item.key)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${currentSettings[item.key] ? 'bg-[#1D63FF]' : 'bg-slate-200'}`} role="switch" aria-checked={currentSettings[item.key]} aria-label={`${item.label}: ${currentSettings[item.key] ? 'on' : 'off'}`}>
+                <button onClick={() => toggle(item.key)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${currentSettings[item.key] ? 'bg-[#0A1F44]' : 'bg-slate-200'}`} role="switch" aria-checked={currentSettings[item.key]} aria-label={`${item.label}: ${currentSettings[item.key] ? 'on' : 'off'}`}>
                   <span className={`inline-block size-4 rounded-full bg-white transition-transform ${currentSettings[item.key] ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>
@@ -85,7 +85,7 @@ export function ClientPrivacyPage() {
         </Card>
 
         <Card className="bg-white rounded-xl">
-          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><Bell className="size-4 text-[#1D63FF]" /> Communications</CardTitle></CardHeader>
+          <CardHeader className="pb-3"><CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900"><Bell className="size-4 text-[#0A1F44]" /> Communications</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             {[
               { key: 'marketingEmails' as const, label: 'Marketing Emails', desc: 'Receive promotional offers' },
@@ -93,7 +93,7 @@ export function ClientPrivacyPage() {
             ].map((item) => (
               <div key={item.key} className="flex items-center justify-between">
                 <div><p className="text-sm font-medium text-slate-900">{item.label}</p><p className="text-xs text-slate-400">{item.desc}</p></div>
-                <button onClick={() => toggle(item.key)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${currentSettings[item.key] ? 'bg-[#1D63FF]' : 'bg-slate-200'}`} role="switch" aria-checked={currentSettings[item.key]} aria-label={`${item.label}: ${currentSettings[item.key] ? 'on' : 'off'}`}>
+                <button onClick={() => toggle(item.key)} className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${currentSettings[item.key] ? 'bg-[#0A1F44]' : 'bg-slate-200'}`} role="switch" aria-checked={currentSettings[item.key]} aria-label={`${item.label}: ${currentSettings[item.key] ? 'on' : 'off'}`}>
                   <span className={`inline-block size-4 rounded-full bg-white transition-transform ${currentSettings[item.key] ? 'translate-x-6' : 'translate-x-1'}`} />
                 </button>
               </div>

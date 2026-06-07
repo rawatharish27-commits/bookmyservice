@@ -43,18 +43,18 @@ export function MaintenancePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1D63FF]/5 to-[#f8fafc] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-[#0A1F44]/5 to-[#f8fafc] flex items-center justify-center p-4">
       <div className="w-full max-w-lg space-y-6">
         {/* Main Maintenance Card */}
         <Card className="bg-white rounded-2xl shadow-sm border-slate-100 overflow-hidden">
           {/* Top decorative band */}
-          <div className="h-2 bg-gradient-to-r from-blue-400 via-[#1D63FF] to-[#FFCE32]" />
+          <div className="h-2 bg-gradient-to-r from-blue-400 via-[#0A1F44] to-[#FFD54F]" />
 
           <CardContent className="p-8 text-center space-y-6">
             {/* Animated wrench icon */}
             <div className="relative mx-auto">
-              <div className="flex size-28 items-center justify-center rounded-full bg-blue-50 ring-4 ring-[#1D63FF]/20">
-                <Wrench className="size-14 text-[#1D63FF]" strokeWidth={1.5} />
+              <div className="flex size-28 items-center justify-center rounded-full bg-[#FFD54F]/10 ring-4 ring-[#0A1F44]/20">
+                <Wrench className="size-14 text-[#0A1F44]" strokeWidth={1.5} />
               </div>
               <div className="absolute -top-2 -right-2">
                 <div className="flex size-10 items-center justify-center rounded-full bg-white shadow-lg border border-slate-100">
@@ -65,7 +65,7 @@ export function MaintenancePage() {
 
             {/* Heading */}
             <div className="space-y-2">
-              <Badge className="bg-blue-50 text-[#1D63FF] hover:bg-[#1D63FF]/10 border-[#1D63FF]/10">
+              <Badge className="bg-[#FFD54F]/10 text-[#0A1F44] hover:bg-[#FFD54F]/10 border-[#0A1F44]/10">
                 <Clock className="size-3 mr-1" /> Scheduled Maintenance
               </Badge>
               <h1 className="text-2xl font-bold text-slate-900">
@@ -78,10 +78,10 @@ export function MaintenancePage() {
             </div>
 
             {/* Estimated downtime */}
-            <div className="flex items-center justify-center gap-4 p-4 rounded-xl bg-blue-50/60 border border-[#1D63FF]/10">
+            <div className="flex items-center justify-center gap-4 p-4 rounded-xl bg-[#FFD54F]/10/60 border border-[#0A1F44]/10">
               <div className="text-center">
-                <p className="text-2xl font-bold text-[#1D63FF]">~15</p>
-                <p className="text-xs text-blue-500 font-medium">Minutes</p>
+                <p className="text-2xl font-bold text-[#0A1F44]">~15</p>
+                <p className="text-xs text-[#FFD54F]/800 font-medium">Minutes</p>
               </div>
               <div className="h-8 w-px bg-blue-200" />
               <div className="text-center">
@@ -105,7 +105,7 @@ export function MaintenancePage() {
                 <span className="text-slate-500 font-medium">
                   Maintenance Progress
                 </span>
-                <span className="text-[#1D63FF] font-semibold">
+                <span className="text-[#0A1F44] font-semibold">
                   {Math.round(progress)}%
                 </span>
               </div>
@@ -121,7 +121,7 @@ export function MaintenancePage() {
         <Card className="bg-white rounded-2xl shadow-sm border-slate-100">
           <CardContent className="p-6 space-y-4">
             <div className="flex items-center gap-2">
-              <Bell className="size-4 text-[#1D63FF]" />
+              <Bell className="size-4 text-[#0A1F44]" />
               <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide">
                 Get Notified
               </h3>
@@ -158,7 +158,7 @@ export function MaintenancePage() {
                     />
                   </div>
                   <Button
-                    className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl px-4"
+                    className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl px-4"
                     onClick={handleSubscribe}
                   >
                     Notify Me <ArrowRight className="size-3" />
@@ -183,7 +183,7 @@ export function MaintenancePage() {
               <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-pink-50 hover:bg-pink-100 transition-colors text-pink-600 text-sm font-medium">
                 <Camera className="size-4" /> Instagram
               </button>
-              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-blue-50 hover:bg-[#1D63FF]/10 transition-colors text-[#1D63FF] text-sm font-medium">
+              <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#FFD54F]/10 hover:bg-[#FFD54F]/10 transition-colors text-[#0A1F44] text-sm font-medium">
                 <Globe className="size-4" /> Facebook
               </button>
             </div>

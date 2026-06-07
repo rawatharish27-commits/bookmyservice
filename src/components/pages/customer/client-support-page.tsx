@@ -43,7 +43,7 @@ export function ClientSupportPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading support data">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -63,7 +63,7 @@ export function ClientSupportPage() {
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Support</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl" aria-label="Create new ticket"><Plus className="size-4" /> New Ticket</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl" aria-label="Create new ticket"><Plus className="size-4" /> New Ticket</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
@@ -75,7 +75,7 @@ export function ClientSupportPage() {
               supportData.tickets.map((t, i) => (
                 <div key={t.id}>
                   <div className="flex items-center gap-3 py-3 cursor-pointer hover:bg-slate-50 -mx-2 px-2 rounded-lg" onClick={() => navigate('client-support-detail', { id: t.id })} role="button" tabIndex={0} aria-label={`View ticket ${t.subject}`}>
-                    <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><MessageSquare className="size-4 text-[#1D63FF]" /></div>
+                    <div className="flex size-9 items-center justify-center rounded-lg bg-[#FFD54F]/10"><MessageSquare className="size-4 text-[#0A1F44]" /></div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-slate-900">{t.subject}</p>
                       <p className="text-xs text-slate-400">{t.id} &bull; {t.date}</p>
@@ -93,7 +93,7 @@ export function ClientSupportPage() {
         {supportData?.faqs && supportData.faqs.length > 0 && (
           <Card className="bg-white rounded-xl">
             <CardHeader className="pb-3">
-              <div className="flex items-center gap-2"><HelpCircle className="size-4 text-blue-500" /><CardTitle className="text-sm font-semibold text-slate-900">Frequently Asked Questions</CardTitle></div>
+              <div className="flex items-center gap-2"><HelpCircle className="size-4 text-[#FFD54F]/800" /><CardTitle className="text-sm font-semibold text-slate-900">Frequently Asked Questions</CardTitle></div>
             </CardHeader>
             <CardContent className="space-y-2">
               {supportData.faqs.map((faq, i) => (

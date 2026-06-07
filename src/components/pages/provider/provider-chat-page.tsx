@@ -40,8 +40,8 @@ export function ProviderChatPage() {
           <ScrollArea className="flex-1">
             {conversations.map((conv, i) => (
               <div key={conv.id}>
-                <button onClick={() => setSelectedChat(conv.id)} className={`w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left ${selectedChat === conv.id ? 'bg-blue-50' : ''}`}>
-                  <div className="flex size-10 items-center justify-center rounded-full bg-[#1D63FF]/10 text-sm font-bold text-[#1D63FF]">{conv.name.charAt(0)}</div>
+                <button onClick={() => setSelectedChat(conv.id)} className={`w-full flex items-center gap-3 p-4 hover:bg-slate-50 transition-colors text-left ${selectedChat === conv.id ? 'bg-[#FFD54F]/10' : ''}`}>
+                  <div className="flex size-10 items-center justify-center rounded-full bg-[#FFD54F]/10 text-sm font-bold text-[#0A1F44]">{conv.name.charAt(0)}</div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <p className="text-sm font-medium text-slate-900 truncate">{conv.name}</p>
@@ -49,7 +49,7 @@ export function ProviderChatPage() {
                     </div>
                     <div className="flex items-center justify-between">
                       <p className="text-xs text-slate-500 truncate">{conv.lastMessage}</p>
-                      {conv.unread > 0 && <span className="flex size-4 items-center justify-center rounded-full bg-[#1D63FF] text-[10px] text-white">{conv.unread}</span>}
+                      {conv.unread > 0 && <span className="flex size-4 items-center justify-center rounded-full bg-[#0A1F44] text-[10px] text-white">{conv.unread}</span>}
                     </div>
                   </div>
                 </button>
@@ -64,13 +64,13 @@ export function ProviderChatPage() {
           <div className={`flex-1 flex flex-col bg-white ${!selectedChat ? 'hidden sm:flex' : ''}`}>
             <div className="flex items-center gap-3 p-4 border-b border-slate-200">
               <button onClick={() => setSelectedChat(null)} className="sm:hidden"><ArrowLeft className="size-5 text-slate-500" /></button>
-              <div className="flex size-8 items-center justify-center rounded-full bg-[#1D63FF]/10 text-sm font-bold text-[#1D63FF]">R</div>
+              <div className="flex size-8 items-center justify-center rounded-full bg-[#FFD54F]/10 text-sm font-bold text-[#0A1F44]">R</div>
               <div><p className="text-sm font-medium text-slate-900">Rahul Sharma</p><p className="text-xs text-emerald-500">Online</p></div>
             </div>
             <ScrollArea className="flex-1 p-4 space-y-3">
               {messages.map((msg) => (
                 <div key={msg.id} className={`flex ${msg.sender === 'provider' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[75%] rounded-xl px-3 py-2 ${msg.sender === 'provider' ? 'bg-[#1D63FF] text-white' : 'bg-slate-100 text-slate-800'}`}>
+                  <div className={`max-w-[75%] rounded-xl px-3 py-2 ${msg.sender === 'provider' ? 'bg-[#0A1F44] text-white' : 'bg-slate-100 text-slate-800'}`}>
                     <p className="text-sm">{msg.text}</p>
                     <p className={`text-[10px] mt-1 ${msg.sender === 'provider' ? 'text-blue-200' : 'text-slate-400'}`}>{msg.time}</p>
                   </div>
@@ -79,7 +79,7 @@ export function ProviderChatPage() {
             </ScrollArea>
             <div className="p-4 border-t border-slate-200 flex gap-2">
               <Input placeholder="Type a message..." className="flex-1" />
-              <Button className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1"><Send className="size-4" /></Button>
+              <Button className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1"><Send className="size-4" /></Button>
             </div>
           </div>
         )}

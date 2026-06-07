@@ -57,7 +57,7 @@ export function ClientSettingsPage() {
           <Card key={group.title} className="bg-white rounded-xl">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-sm font-semibold text-slate-900">
-                <group.icon className="size-4 text-[#1D63FF]" />{group.title}
+                <group.icon className="size-4 text-[#0A1F44]" />{group.title}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-0">

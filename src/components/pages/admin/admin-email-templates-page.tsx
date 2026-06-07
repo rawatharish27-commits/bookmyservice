@@ -24,18 +24,18 @@ export function AdminEmailTemplatesPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">Email Templates</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> New Template</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> New Template</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Mail className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Templates</CardTitle></div>
+            <div className="flex items-center gap-2"><Mail className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Templates</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {templates.map((t, i) => (
               <div key={t.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><Mail className="size-4 text-[#1D63FF]" /></div>
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-[#FFD54F]/10"><Mail className="size-4 text-[#0A1F44]" /></div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-slate-900">{t.name}</p>
                     <p className="text-xs text-slate-400 truncate">{t.subject}</p>
@@ -63,7 +63,7 @@ export function AdminEmailTemplatesPage() {
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" className="gap-1 text-xs rounded-lg"><Eye className="size-3" /> Preview</Button>
-              <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs rounded-xl">Save Template</Button>
+              <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white text-xs rounded-xl">Save Template</Button>
             </div>
           </CardContent>
         </Card>
@@ -73,7 +73,7 @@ export function AdminEmailTemplatesPage() {
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {variables.map((v) => (
-                <button key={v} className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-mono text-slate-600 hover:bg-[#1D63FF]/10 hover:text-[#1D63FF] transition-colors"><Copy className="size-3 inline mr-1" />{v}</button>
+                <button key={v} className="rounded-lg bg-slate-100 px-2.5 py-1 text-xs font-mono text-slate-600 hover:bg-[#FFD54F]/10 hover:text-[#0A1F44] transition-colors"><Copy className="size-3 inline mr-1" />{v}</button>
               ))}
             </div>
           </CardContent>

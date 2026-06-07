@@ -36,7 +36,7 @@ export function SocialCallbackPage() {
               </div>
               <h2 className="text-xl font-bold text-slate-900 mb-2">Authentication Failed</h2>
               <p className="text-sm text-slate-500 mb-4">Unable to verify your account. Please try again.</p>
-              <button className="text-[#1D63FF] font-semibold hover:underline" onClick={() => navigate('login')}>
+              <button className="text-[#0A1F44] font-semibold hover:underline" onClick={() => navigate('login')}>
                 Back to Login
               </button>
             </>
@@ -44,9 +44,9 @@ export function SocialCallbackPage() {
             <>
               <div className="relative w-20 h-20 mx-auto mb-6">
                 <div className="absolute inset-0 rounded-full border-4 border-slate-100" />
-                <div className="absolute inset-0 rounded-full border-4 border-blue-500 border-t-transparent animate-spin" />
+                <div className="absolute inset-0 rounded-full border-4 border-[#0A1F44] border-t-transparent animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <Shield className="size-8 text-[#1D63FF]" />
+                  <Shield className="size-8 text-[#0A1F44]" />
                 </div>
               </div>
 
@@ -58,7 +58,7 @@ export function SocialCallbackPage() {
               </p>
 
               <div className="w-full bg-slate-100 rounded-full h-2 mb-2">
-                <div className="bg-[#1D63FF] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} />
+                <div className="bg-[#0A1F44] h-2 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100} />
               </div>
               <p className="text-xs text-slate-400">{progress}%</p>
 

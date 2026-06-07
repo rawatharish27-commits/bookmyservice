@@ -103,7 +103,7 @@ const pointsRules = [
 ]
 
 const memberStats = [
-  { label: 'Total Members', value: '17,196', change: '+1,234', icon: Users, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  { label: 'Total Members', value: '17,196', change: '+1,234', icon: Users, color: 'bg-[#FFD54F]/10 text-[#0A1F44]' },
   { label: 'Active This Month', value: '8,432', change: '+18%', icon: TrendingUp, color: 'bg-emerald-100 text-emerald-600' },
   { label: 'Points Issued', value: '24.5L', change: '+22%', icon: Star, color: 'bg-amber-100 text-amber-600' },
   { label: 'Points Redeemed', value: '8.2L', change: '+15%', icon: Gift, color: 'bg-purple-100 text-purple-600' },
@@ -138,7 +138,7 @@ export function LoyaltyRewardsPage() {
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" className="gap-1 rounded-xl"><Download className="size-4" /> Export</Button>
-            <Button size="sm" className="gap-1 rounded-xl bg-[#1D63FF] hover:bg-[#0B3D91] text-white"><Plus className="size-4" /> Add Reward</Button>
+            <Button size="sm" className="gap-1 rounded-xl bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white"><Plus className="size-4" /> Add Reward</Button>
           </div>
         </div>
 
@@ -254,7 +254,7 @@ export function LoyaltyRewardsPage() {
                           <td className="py-3 px-4 text-slate-700">{rule.points}</td>
                           <td className="py-3 px-4 text-center">
                             <Badge variant="secondary" className={`text-[10px] ${
-                              rule.category === 'Earning' ? 'bg-blue-50 text-[#0B3D91]' : 'bg-purple-50 text-purple-700'
+                              rule.category === 'Earning' ? 'bg-[#FFD54F]/10 text-[#0A1F44]' : 'bg-purple-50 text-purple-700'
                             }`}>
                               {rule.category}
                             </Badge>
@@ -281,11 +281,11 @@ export function LoyaltyRewardsPage() {
                   <CardContent className="p-4">
                     <div className="flex items-start justify-between mb-3">
                       <div className={`flex size-10 items-center justify-center rounded-lg ${
-                        reward.category === 'Discount' ? 'bg-[#1D63FF]/10' :
+                        reward.category === 'Discount' ? 'bg-[#FFD54F]/10' :
                         reward.category === 'Service' ? 'bg-emerald-100' :
                         'bg-purple-100'
                       }`}>
-                        {reward.category === 'Discount' ? <Percent className="size-5 text-[#1D63FF]" /> :
+                        {reward.category === 'Discount' ? <Percent className="size-5 text-[#0A1F44]" /> :
                          reward.category === 'Service' ? <Sparkles className="size-5 text-emerald-600" /> :
                          <Zap className="size-5 text-purple-600" />}
                       </div>
@@ -324,7 +324,7 @@ export function LoyaltyRewardsPage() {
             <Card className="bg-white rounded-xl">
               <CardHeader className="pb-3">
                 <div className="flex items-center gap-2">
-                  <Calculator className="size-4 text-[#1D63FF]" />
+                  <Calculator className="size-4 text-[#0A1F44]" />
                   <CardTitle className="text-sm font-semibold text-slate-900">Points Calculator</CardTitle>
                 </div>
               </CardHeader>
@@ -354,10 +354,10 @@ export function LoyaltyRewardsPage() {
                       </select>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-blue-50 border border-[#1D63FF]/10">
-                      <p className="text-xs text-[#1D63FF] mb-1">Points Earned</p>
-                      <p className="text-3xl font-bold text-[#0B3D91]">{calculatedPoints} pts</p>
-                      <p className="text-xs text-blue-500 mt-1">
+                    <div className="p-4 rounded-xl bg-[#FFD54F]/10 border border-[#0A1F44]/10">
+                      <p className="text-xs text-[#0A1F44] mb-1">Points Earned</p>
+                      <p className="text-3xl font-bold text-[#0A1F44]">{calculatedPoints} pts</p>
+                      <p className="text-xs text-[#FFD54F]/800 mt-1">
                         Base: {calcAmount ? Math.floor((parseFloat(calcAmount) / 100) * 10) : 0} pts × {multipliers[calcTier]}x multiplier
                       </p>
                     </div>

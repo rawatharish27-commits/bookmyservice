@@ -108,7 +108,7 @@ export function CancellationPolicyPage() {
       <div className="bg-white border-b border-slate-200">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-12">
           <div className="flex items-center gap-3 mb-3">
-            <div className="flex items-center justify-center size-10 rounded-lg bg-[#1D63FF]">
+            <div className="flex items-center justify-center size-10 rounded-lg bg-[#0A1F44]">
               <XCircle className="size-5 text-white" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Cancellation Policy</h1>
@@ -121,7 +121,7 @@ export function CancellationPolicyPage() {
               <Clock className="size-3 mr-1" />
               Last Updated: February 15, 2025
             </Badge>
-            <Badge className="bg-[#1D63FF]/10 text-[#0B3D91] hover:bg-[#1D63FF]/10 text-xs">
+            <Badge className="bg-[#FFD54F]/10 text-[#0A1F44] hover:bg-[#FFD54F]/10 text-xs">
               <Zap className="size-3 mr-1" />
               Free Cancellation Within 2 Hours
             </Badge>
@@ -175,7 +175,7 @@ export function CancellationPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <ArrowRight className="size-5 text-[#1D63FF]" />
+              <ArrowRight className="size-5 text-[#0A1F44]" />
               Step-by-Step Cancellation Process
             </CardTitle>
           </CardHeader>
@@ -186,7 +186,7 @@ export function CancellationPolicyPage() {
                 return (
                   <div key={item.step} className="flex gap-4">
                     <div className="flex flex-col items-center">
-                      <div className="flex items-center justify-center size-10 rounded-full bg-[#1D63FF] text-white shrink-0">
+                      <div className="flex items-center justify-center size-10 rounded-full bg-[#0A1F44] text-white shrink-0">
                         <Icon className="size-5" />
                       </div>
                       {index < cancellationSteps.length - 1 && (
@@ -210,7 +210,7 @@ export function CancellationPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <IndianRupee className="size-5 text-[#1D63FF]" />
+              <IndianRupee className="size-5 text-[#0A1F44]" />
               Cancellation Fee Schedule
             </CardTitle>
           </CardHeader>
@@ -242,12 +242,12 @@ export function CancellationPolicyPage() {
               </table>
             </div>
 
-            <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 mt-4">
+            <div className="rounded-lg bg-[#FFD54F]/10 border border-[#FFD54F]/20 p-4 mt-4">
               <div className="flex items-center gap-2 mb-1">
-                <Info className="size-4 text-[#1D63FF]" />
+                <Info className="size-4 text-[#0A1F44]" />
                 <span className="text-sm font-semibold text-blue-900">Example</span>
               </div>
-              <p className="text-xs text-[#0B3D91]">
+              <p className="text-xs text-[#0A1F44]">
                 If you booked a plumber service for ₹399 and cancel 4 hours before the scheduled time, the cancellation fee would be ₹100 (25%). You would receive a refund of ₹299.
               </p>
             </div>
@@ -277,13 +277,13 @@ export function CancellationPolicyPage() {
                   <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-green-500 mt-0.5 shrink-0" /> Bookings where service cannot be provided due to provider unavailability</li>
                 </ul>
               </div>
-              <div className="rounded-lg border border-blue-200 bg-blue-50/50 p-4">
+              <div className="rounded-lg border border-[#FFD54F]/20 bg-[#FFD54F]/10/50 p-4">
                 <h4 className="text-sm font-semibold text-blue-800 mb-2">Special Free Cancellation Cases</h4>
-                <ul className="space-y-1.5 text-xs text-[#0B3D91]">
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-blue-500 mt-0.5 shrink-0" /> Service provider is running more than 30 minutes late</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-blue-500 mt-0.5 shrink-0" /> Force majeure events (natural disasters, strikes, etc.)</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-blue-500 mt-0.5 shrink-0" /> Government-mandated restrictions or lockdowns</li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-blue-500 mt-0.5 shrink-0" /> Technical errors on the platform leading to duplicate bookings</li>
+                <ul className="space-y-1.5 text-xs text-[#0A1F44]">
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-[#FFD54F]/800 mt-0.5 shrink-0" /> Service provider is running more than 30 minutes late</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-[#FFD54F]/800 mt-0.5 shrink-0" /> Force majeure events (natural disasters, strikes, etc.)</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-[#FFD54F]/800 mt-0.5 shrink-0" /> Government-mandated restrictions or lockdowns</li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-3 text-[#FFD54F]/800 mt-0.5 shrink-0" /> Technical errors on the platform leading to duplicate bookings</li>
                 </ul>
               </div>
             </div>
@@ -294,7 +294,7 @@ export function CancellationPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <UserX className="size-5 text-[#1D63FF]" />
+              <UserX className="size-5 text-[#0A1F44]" />
               When Service Providers Cancel
             </CardTitle>
           </CardHeader>
@@ -307,10 +307,10 @@ export function CancellationPolicyPage() {
               <div className="rounded-lg border border-slate-200 p-4">
                 <h4 className="text-sm font-semibold text-slate-900 mb-2">Provider Cancellation Policy</h4>
                 <ul className="space-y-1.5 text-sm text-slate-600">
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> <span><strong>Full refund:</strong> You receive a 100% refund with no cancellation fee</span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> <span><strong>Wallet credit:</strong> ₹50 BookMyService wallet credit as compensation</span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> <span><strong>Priority rebooking:</strong> First access to the next available provider for the same service</span></li>
-                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" /> <span><strong>Provider penalty:</strong> Provider receives a penalty deduction and lower visibility in search results</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> <span><strong>Full refund:</strong> You receive a 100% refund with no cancellation fee</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> <span><strong>Wallet credit:</strong> ₹50 BookMyService wallet credit as compensation</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> <span><strong>Priority rebooking:</strong> First access to the next available provider for the same service</span></li>
+                  <li className="flex items-start gap-2"><CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" /> <span><strong>Provider penalty:</strong> Provider receives a penalty deduction and lower visibility in search results</span></li>
                 </ul>
               </div>
 
@@ -372,7 +372,7 @@ export function CancellationPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <ShieldAlert className="size-5 text-[#1D63FF]" />
+              <ShieldAlert className="size-5 text-[#0A1F44]" />
               Force Majeure
             </CardTitle>
           </CardHeader>
@@ -407,7 +407,7 @@ export function CancellationPolicyPage() {
         <Card className="bg-white rounded-xl">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg font-bold text-slate-900">
-              <Info className="size-5 text-[#1D63FF]" />
+              <Info className="size-5 text-[#0A1F44]" />
               Important Notes
             </CardTitle>
           </CardHeader>
@@ -422,7 +422,7 @@ export function CancellationPolicyPage() {
               'If you need to reschedule instead of cancelling, use the Reschedule option to avoid cancellation fees.',
             ].map((note, i) => (
               <div key={i} className="flex items-start gap-2">
-                <CheckCircle2 className="size-4 text-[#1D63FF] mt-0.5 shrink-0" />
+                <CheckCircle2 className="size-4 text-[#0A1F44] mt-0.5 shrink-0" />
                 <p className="text-sm text-slate-600">{note}</p>
               </div>
             ))}
@@ -435,7 +435,7 @@ export function CancellationPolicyPage() {
             <h3 className="text-lg font-bold text-slate-900 mb-2">Need to Cancel a Booking?</h3>
             <p className="text-sm text-slate-500 mb-4">Cancel through the app for the fastest processing, or contact our support team for assistance.</p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
-              <Button className="gap-2 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl">
+              <Button className="gap-2 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl">
                 <XCircle className="size-4" />
                 Cancel a Booking
               </Button>

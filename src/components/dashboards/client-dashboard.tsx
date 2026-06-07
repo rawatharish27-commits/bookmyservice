@@ -69,7 +69,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 }
 
 const quickActionColorMap: Record<string, { bg: string; icon: string; border: string }> = {
-  blue: { bg: 'bg-blue-50', icon: 'text-blue-600', border: 'border-blue-100' },
+  blue: { bg: 'bg-[#FFD54F]/10', icon: 'text-[#0A1F44]', border: 'border-blue-100' },
   green: { bg: 'bg-emerald-50', icon: 'text-emerald-600', border: 'border-emerald-100' },
   cyan: { bg: 'bg-cyan-50', icon: 'text-cyan-600', border: 'border-cyan-100' },
   pink: { bg: 'bg-pink-50', icon: 'text-pink-600', border: 'border-pink-100' },
@@ -77,7 +77,7 @@ const quickActionColorMap: Record<string, { bg: string; icon: string; border: st
 }
 
 const metricColorMap: Record<string, { bg: string; text: string }> = {
-  blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
+  blue: { bg: 'bg-[#FFD54F]/15', text: 'text-[#0A1F44]' },
   green: { bg: 'bg-emerald-100', text: 'text-emerald-600' },
   orange: { bg: 'bg-amber-100', text: 'text-amber-600' },
   purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
@@ -85,7 +85,7 @@ const metricColorMap: Record<string, { bg: string; text: string }> = {
 
 const statusBadgeMap: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
   Completed: { variant: 'secondary', className: 'bg-emerald-100 text-emerald-700 border-emerald-200 hover:bg-emerald-100' },
-  Confirmed: { variant: 'secondary', className: 'bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100' },
+  Confirmed: { variant: 'secondary', className: 'bg-[#FFD54F]/15 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/15' },
   Pending: { variant: 'secondary', className: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100' },
   Upcoming: { variant: 'secondary', className: 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-100' },
   Cancelled: { variant: 'secondary', className: 'bg-red-100 text-red-700 border-red-200 hover:bg-red-100' },
@@ -143,7 +143,7 @@ export function ClientDashboard() {
         {/* Logo + Location */}
         <div className="flex h-16 items-center gap-3 px-6 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-full bg-blue-600 text-white">
+            <div className="flex size-8 items-center justify-center rounded-full bg-[#0A1F44] text-white">
               <Zap className="size-4" />
             </div>
             <span className="text-lg font-bold text-slate-900">MyService</span>
@@ -170,14 +170,14 @@ export function ClientDashboard() {
                   key={item.label}
                   className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors
                     ${item.active
-                      ? 'bg-blue-50 text-blue-700'
+                      ? 'bg-[#FFD54F]/10 text-[#0A1F44]'
                       : item.label === 'Logout'
                         ? 'text-red-500 hover:bg-red-50'
                         : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
                     }
                   `}
                 >
-                  <item.icon className={`size-4 ${item.active ? 'text-blue-600' : ''}`} />
+                  <item.icon className={`size-4 ${item.active ? 'text-[#0A1F44]' : ''}`} />
                   <span className="flex-1 text-left">{item.label}</span>
                   {item.badge && (
                     <span className="flex size-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white">
@@ -194,7 +194,7 @@ export function ClientDashboard() {
         <div className="border-t border-slate-100 px-4 py-4">
           <div className="flex items-center gap-3">
             <Avatar size="default">
-              <AvatarFallback className="bg-blue-600 text-white text-xs">RK</AvatarFallback>
+              <AvatarFallback className="bg-[#0A1F44] text-white text-xs">RK</AvatarFallback>
             </Avatar>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-slate-900 truncate">Rahul Kumar</p>
@@ -220,7 +220,7 @@ export function ClientDashboard() {
 
           {/* Logo (mobile) */}
           <div className="flex items-center gap-2 lg:hidden">
-            <div className="flex size-7 items-center justify-center rounded-full bg-blue-600 text-white">
+            <div className="flex size-7 items-center justify-center rounded-full bg-[#0A1F44] text-white">
               <Zap className="size-3.5" />
             </div>
             <span className="text-sm font-bold text-slate-900">MyService</span>
@@ -228,7 +228,7 @@ export function ClientDashboard() {
 
           {/* Location Selector (desktop) */}
           <button className="hidden lg:flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-50">
-            <MapPin className="size-3.5 text-blue-600" />
+            <MapPin className="size-3.5 text-[#0A1F44]" />
             Delhi
           </button>
 
@@ -243,7 +243,7 @@ export function ClientDashboard() {
                 placeholder="Search for services..."
                 className="h-9 w-full rounded-l-lg border border-r-0 border-slate-200 bg-slate-50 pl-10 pr-4 text-sm text-slate-700 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-100"
               />
-              <Button className="h-9 rounded-l-none rounded-r-lg bg-blue-600 text-white px-4 hover:bg-blue-700">
+              <Button className="h-9 rounded-l-none rounded-r-lg bg-[#0A1F44] text-white px-4 hover:bg-[#0A1F44]">
                 Search
               </Button>
             </div>
@@ -263,7 +263,7 @@ export function ClientDashboard() {
             {/* User Profile */}
             <button className="flex items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-slate-100">
               <Avatar size="default">
-                <AvatarFallback className="bg-blue-600 text-white text-xs">RK</AvatarFallback>
+                <AvatarFallback className="bg-[#0A1F44] text-white text-xs">RK</AvatarFallback>
               </Avatar>
               <div className="hidden text-left md:block">
                 <p className="text-sm font-medium text-slate-700">Rahul Kumar</p>
@@ -327,7 +327,7 @@ export function ClientDashboard() {
                         <span className="text-xs text-slate-400">vs last month</span>
                       )}
                       {'link' in metric && metric.link && (
-                        <button className="ml-auto text-xs font-semibold text-blue-600 hover:text-blue-700">
+                        <button className="ml-auto text-xs font-semibold text-[#0A1F44] hover:text-[#0A1F44]">
                           {metric.link}
                         </button>
                       )}
@@ -349,13 +349,13 @@ export function ClientDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <div className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-blue-50">
-                    <Zap className="size-7 text-blue-600" />
+                  <div className="flex size-16 shrink-0 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                    <Zap className="size-7 text-[#0A1F44]" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <h3 className="text-sm font-semibold text-slate-900">{upcomingBooking.service}</h3>
-                      <Badge variant="secondary" className="bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100">
+                      <Badge variant="secondary" className="bg-[#FFD54F]/15 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/15">
                         {upcomingBooking.status}
                       </Badge>
                     </div>
@@ -377,7 +377,7 @@ export function ClientDashboard() {
                 </div>
                 <div className="flex items-center justify-between border-t border-slate-100 pt-3">
                   <span className="text-lg font-bold text-slate-900">{upcomingBooking.amount}</span>
-                  <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700 gap-1">
+                  <Button size="sm" className="bg-[#0A1F44] text-white hover:bg-[#0A1F44] gap-1">
                     View Details
                     <ChevronRight className="size-3.5" />
                   </Button>
@@ -392,7 +392,7 @@ export function ClientDashboard() {
                   <CardTitle className="text-base font-semibold text-slate-900">
                     Recent Bookings
                   </CardTitle>
-                  <Button variant="ghost" size="sm" className="gap-1 text-blue-600">
+                  <Button variant="ghost" size="sm" className="gap-1 text-[#0A1F44]">
                     View All
                     <ChevronRight className="size-3.5" />
                   </Button>
@@ -466,7 +466,7 @@ export function ClientDashboard() {
                   <CardTitle className="text-base font-semibold text-slate-900">
                     Wallet Overview
                   </CardTitle>
-                  <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700 gap-1">
+                  <Button size="sm" className="bg-[#0A1F44] text-white hover:bg-[#0A1F44] gap-1">
                     <Plus className="size-3.5" />
                     Add Money
                   </Button>
@@ -474,7 +474,7 @@ export function ClientDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="mb-4 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 p-4 text-white">
-                  <p className="text-xs font-medium text-blue-100">Current Balance</p>
+                  <p className="text-xs font-medium text-[#FFD54F]/80">Current Balance</p>
                   <p className="text-2xl font-bold">₹1,250</p>
                 </div>
                 <div className="space-y-0">
@@ -507,7 +507,7 @@ export function ClientDashboard() {
                   ))}
                 </div>
                 <div className="mt-3 text-center">
-                  <Button variant="ghost" size="sm" className="gap-1 text-blue-600">
+                  <Button variant="ghost" size="sm" className="gap-1 text-[#0A1F44]">
                     View All
                     <ChevronRight className="size-3.5" />
                   </Button>
@@ -619,10 +619,10 @@ export function ClientDashboard() {
                     <Gift className="size-8 text-white" />
                   </div>
                   <h3 className="text-lg font-bold">Refer & Earn</h3>
-                  <p className="mt-2 text-sm text-blue-100">
+                  <p className="mt-2 text-sm text-[#FFD54F]/80">
                     Invite your friends and earn up to ₹500
                   </p>
-                  <Button className="mt-4 w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold">
+                  <Button className="mt-4 w-full bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 font-semibold">
                     Refer Now
                   </Button>
                 </div>

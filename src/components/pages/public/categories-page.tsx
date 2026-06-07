@@ -13,13 +13,13 @@ import { useUrlApi } from '@/lib/use-api'
 
 const CATEGORY_UI: Record<string, { icon: typeof Wind; color: string; desc: string }> = {
   'Air Conditioner': { icon: Wind, color: 'bg-cyan-100 text-cyan-600', desc: 'AC install, repair, service' },
-  'Refrigerator': { icon: Refrigerator, color: 'bg-[#1D63FF]/10 text-[#1D63FF]', desc: 'Fridge repair, gas refill' },
-  'Washing Machine': { icon: WashingMachine, color: 'bg-indigo-100 text-indigo-600', desc: 'Washer repair, service' },
+  'Refrigerator': { icon: Refrigerator, color: 'bg-[#FFD54F]/10 text-[#0A1F44]', desc: 'Fridge repair, gas refill' },
+  'Washing Machine': { icon: WashingMachine, color: 'bg-[#0A1F44]/10 text-[#0A1F44]', desc: 'Washer repair, service' },
   'Kitchen Appliances': { icon: Flame, color: 'bg-orange-100 text-orange-600', desc: 'Mixer, chimney, stove repair' },
   'TV Repair': { icon: Tv, color: 'bg-purple-100 text-purple-600', desc: 'LED, LCD, smart TV fix' },
   'Water Purifier': { icon: Droplets, color: 'bg-teal-100 text-teal-600', desc: 'RO install, service, filter' },
   'Geyser': { icon: Flame, color: 'bg-red-100 text-red-600', desc: 'Installation, repair, service' },
-  'Plumber': { icon: Wrench, color: 'bg-[#1D63FF]/10 text-[#1D63FF]', desc: 'Pipes, leaks, installations' },
+  'Plumber': { icon: Wrench, color: 'bg-[#FFD54F]/10 text-[#0A1F44]', desc: 'Pipes, leaks, installations' },
   'Electrician': { icon: Zap, color: 'bg-amber-100 text-amber-600', desc: 'Wiring, switches, fans' },
   'Water Tank Cleaning': { icon: Droplets, color: 'bg-emerald-100 text-emerald-600', desc: 'Tank cleaning, sanitize' },
   'Movers and Packers': { icon: Truck, color: 'bg-slate-100 text-slate-600', desc: 'House shifting, packing' },
@@ -49,10 +49,10 @@ export function CategoriesPage() {
   return (
     <div className="bg-[#f8fafc] min-h-screen">
       {/* Header */}
-      <section className="bg-gradient-to-r from-[#1D63FF] to-[#FFCE32] text-white py-12">
+      <section className="bg-gradient-to-r from-[#0A1F44] to-[#FFD54F] text-white py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">All Service Categories</h1>
-          <p className="text-blue-100 mb-6">Explore our range of professional home services</p>
+          <p className="text-[#FFD54F]/80 mb-6">Explore our range of professional home services</p>
           <div className="relative max-w-xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-5 text-slate-400" />
             <Input
@@ -80,7 +80,7 @@ export function CategoriesPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20" role="status" aria-label="Loading categories">
-            <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+            <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
             <span className="sr-only">Loading...</span>
           </div>
         ) : error ? (
@@ -108,7 +108,7 @@ export function CategoriesPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
                         <h3 className="font-bold text-slate-900">{cat.name}</h3>
-                        <ArrowRight className="size-4 text-slate-400 group-hover:text-[#1D63FF] transition-colors" />
+                        <ArrowRight className="size-4 text-slate-400 group-hover:text-[#0A1F44] transition-colors" />
                       </div>
                       <p className="text-sm text-slate-500 mt-1">{cat.desc}</p>
                       <div className="flex items-center gap-2 mt-2">
@@ -131,11 +131,11 @@ export function CategoriesPage() {
 
       {/* CTA */}
       <section className="max-w-7xl mx-auto px-4 pb-12">
-        <Card className="bg-gradient-to-r from-[#1D63FF] to-[#0B3D91] text-white rounded-2xl border-0">
+        <Card className="bg-gradient-to-r from-[#0A1F44] to-[#0A1F44] text-white rounded-2xl border-0">
           <CardContent className="p-8 sm:p-10 text-center">
             <h2 className="text-2xl font-bold mb-2">Can&apos;t find what you need?</h2>
             <p className="text-blue-200 mb-5">Tell us your requirement and we&apos;ll connect you with the right professional.</p>
-            <Button className="bg-white text-[#1D63FF] hover:bg-blue-50 font-semibold px-8" onClick={() => navigate('search')}>Search Services</Button>
+            <Button className="bg-white text-[#0A1F44] hover:bg-[#FFD54F]/10 font-semibold px-8" onClick={() => navigate('search')}>Search Services</Button>
           </CardContent>
         </Card>
       </section>

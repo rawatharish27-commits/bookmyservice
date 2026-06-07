@@ -21,20 +21,20 @@ export function AdminSmsTemplatesPage() {
       <div className="mx-auto max-w-4xl space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-bold text-slate-900">SMS Templates</h1>
-          <Button size="sm" className="gap-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white rounded-xl"><Plus className="size-4" /> New Template</Button>
+          <Button size="sm" className="gap-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white rounded-xl"><Plus className="size-4" /> New Template</Button>
         </div>
 
         <Card className="bg-white rounded-xl">
           <CardHeader className="pb-3">
-            <div className="flex items-center gap-2"><Smartphone className="size-4 text-[#1D63FF]" /><CardTitle className="text-sm font-semibold text-slate-900">Templates</CardTitle></div>
+            <div className="flex items-center gap-2"><Smartphone className="size-4 text-[#0A1F44]" /><CardTitle className="text-sm font-semibold text-slate-900">Templates</CardTitle></div>
           </CardHeader>
           <CardContent className="space-y-0">
             {templates.map((t, i) => (
               <div key={t.id}>
                 <div className="flex items-center gap-4 py-3">
-                  <div className="flex size-9 items-center justify-center rounded-lg bg-blue-50"><Smartphone className="size-4 text-[#1D63FF]" /></div>
+                  <div className="flex size-9 items-center justify-center rounded-lg bg-[#FFD54F]/10"><Smartphone className="size-4 text-[#0A1F44]" /></div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{t.name}</p><Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 text-[10px]">{t.trigger}</Badge></div>
+                    <div className="flex items-center gap-2"><p className="text-sm font-medium text-slate-900">{t.name}</p><Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 text-[10px]">{t.trigger}</Badge></div>
                     <p className="text-xs text-slate-500 truncate mt-0.5">{t.content}</p>
                     <p className="text-[10px] text-slate-400 mt-0.5">{t.chars} characters {t.chars > 160 ? '• ⚠️ Exceeds SMS limit' : '• Within SMS limit'}</p>
                   </div>
@@ -63,15 +63,15 @@ export function AdminSmsTemplatesPage() {
               </div>
               <div className="flex gap-2">
                 <Button variant="outline" size="sm" className="gap-1 text-xs rounded-lg"><Eye className="size-3" /> Preview</Button>
-                <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white text-xs rounded-xl">Save Template</Button>
+                <Button size="sm" className="bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white text-xs rounded-xl">Save Template</Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-blue-50 border-blue-200 rounded-xl">
+        <Card className="bg-[#FFD54F]/10 border-[#FFD54F]/20 rounded-xl">
           <CardContent className="p-4">
-            <p className="text-xs text-[#0B3D91]"><strong>SMS Tips:</strong> Standard SMS allows 160 characters. Unicode characters reduce the limit to 70. Messages exceeding the limit will be split into multiple SMS and may incur extra charges.</p>
+            <p className="text-xs text-[#0A1F44]"><strong>SMS Tips:</strong> Standard SMS allows 160 characters. Unicode characters reduce the limit to 70. Messages exceeding the limit will be split into multiple SMS and may incur extra charges.</p>
           </CardContent>
         </Card>
       </div>

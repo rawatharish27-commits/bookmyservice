@@ -20,7 +20,7 @@ export function PaymentSuccessPage() {
             </div>
             <h2 className="text-2xl font-bold text-slate-900">Payment Successful!</h2>
             <p className="text-sm text-slate-500">Your booking has been confirmed</p>
-            <Badge variant="secondary" className="bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10 text-sm px-4 py-1">
+            <Badge variant="secondary" className="bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10 text-sm px-4 py-1">
               Booking ID: BK001
             </Badge>
 
@@ -28,7 +28,7 @@ export function PaymentSuccessPage() {
 
             <div className="space-y-2 text-left">
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-xl bg-blue-50"><Zap className="size-5 text-[#1D63FF]" /></div>
+                <div className="flex size-10 items-center justify-center rounded-xl bg-[#FFD54F]/10"><Zap className="size-5 text-[#0A1F44]" /></div>
                 <div>
                   <p className="text-sm font-semibold text-slate-900">Air Conditioner</p>
                   <p className="text-xs text-slate-400">20 May 2025 • 10:00 AM</p>
@@ -42,7 +42,7 @@ export function PaymentSuccessPage() {
             </div>
 
             <div className="space-y-2 pt-2">
-              <Button className="w-full bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={() => navigate('booking-confirmation')}><MapPin className="size-4" /> Track Booking</Button>
+              <Button className="w-full bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl" onClick={() => navigate('booking-confirmation')}><MapPin className="size-4" /> Track Booking</Button>
               <div className="grid grid-cols-2 gap-2">
                 <Button variant="outline" className="gap-1 border-slate-200 rounded-xl" aria-label="Download receipt"><Download className="size-4" /> Receipt</Button>
                 <Button variant="outline" className="gap-1 border-slate-200 rounded-xl" aria-label="Share booking details"><Share2 className="size-4" /> Share</Button>

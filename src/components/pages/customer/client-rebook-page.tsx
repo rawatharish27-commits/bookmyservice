@@ -31,7 +31,7 @@ export function ClientRebookPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-4 sm:p-6 flex items-center justify-center" role="status" aria-label="Loading rebook data">
-        <Loader2 className="size-8 text-[#1D63FF] animate-spin" />
+        <Loader2 className="size-8 text-[#0A1F44] animate-spin" />
         <span className="sr-only">Loading...</span>
       </div>
     )
@@ -69,17 +69,17 @@ export function ClientRebookPage() {
         <h1 className="text-2xl font-bold text-slate-900">Quick Rebook</h1>
 
         {rebookInfo && (
-          <Card className="bg-blue-50 border-[#1D63FF]/10 rounded-xl">
+          <Card className="bg-[#FFD54F]/10 border-[#0A1F44]/10 rounded-xl">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
-                <div className="flex size-12 items-center justify-center rounded-xl bg-[#1D63FF]/10">
-                  <Zap className="size-6 text-[#1D63FF]" />
+                <div className="flex size-12 items-center justify-center rounded-xl bg-[#FFD54F]/10">
+                  <Zap className="size-6 text-[#0A1F44]" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-slate-900">{rebookInfo.service}</h3>
                   <p className="text-xs text-slate-500">Previously booked on {rebookInfo.previousDate}</p>
                 </div>
-                <Badge variant="secondary" className="ml-auto bg-[#1D63FF]/10 text-[#0B3D91] border-blue-200 hover:bg-[#1D63FF]/10">Rebook</Badge>
+                <Badge variant="secondary" className="ml-auto bg-[#FFD54F]/10 text-[#0A1F44] border-[#FFD54F]/20 hover:bg-[#FFD54F]/10">Rebook</Badge>
               </div>
             </CardContent>
           </Card>
@@ -102,7 +102,7 @@ export function ClientRebookPage() {
                   <div className="grid grid-cols-3 gap-2" role="group" aria-label="Select preferred time">
                     {['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'].map((t) => (
                       <Button key={t} variant={time === t ? 'default' : 'outline'} onClick={() => setTime(t)}
-                        className={`rounded-lg text-xs ${time === t ? 'bg-[#1D63FF] hover:bg-[#0B3D91] text-white' : 'border-slate-200'}`}
+                        className={`rounded-lg text-xs ${time === t ? 'bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white' : 'border-slate-200'}`}
                         aria-pressed={time === t}>{t}</Button>
                     ))}
                   </div>
@@ -114,7 +114,7 @@ export function ClientRebookPage() {
 
         <div className="flex gap-3">
           <Button variant="outline" className="flex-1 rounded-xl border-slate-200" onClick={goBack}>Cancel</Button>
-          <Button className="flex-1 bg-[#1D63FF] hover:bg-[#0B3D91] text-white gap-1 rounded-xl" onClick={handleConfirm} disabled={submitting || !date || !time} aria-label="Confirm rebook">
+          <Button className="flex-1 bg-[#0A1F44] hover:bg-[#0A1F44]/90 text-white gap-1 rounded-xl" onClick={handleConfirm} disabled={submitting || !date || !time} aria-label="Confirm rebook">
             {submitting ? <Loader2 className="size-4 animate-spin" /> : <RotateCcw className="size-4" />} Confirm Rebook
           </Button>
         </div>

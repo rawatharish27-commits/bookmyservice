@@ -52,7 +52,7 @@ export function AdminBookingAnalyticsPage() {
               {bookingTrends.map((d) => (
                 <div key={d.date} className="flex-1 flex flex-col items-center gap-1">
                   <span className="text-[9px] text-slate-400">{d.total}</span>
-                  <div className="w-full rounded-t-sm bg-blue-500" style={{ height: `${(d.total / 220) * 100}%` }} />
+                  <div className="w-full rounded-t-sm bg-[#FFD54F]/100" style={{ height: `${(d.total / 220) * 100}%` }} />
                   <span className="text-[10px] text-slate-400">{d.date}</span>
                 </div>
               ))}
