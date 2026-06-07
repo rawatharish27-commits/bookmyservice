@@ -6,8 +6,8 @@
     "dev": "next dev --port 3000",
     "dev:api": "cd mini-services/api-service && bun --hot index.ts",
     "lint": "next lint",
-    "db:push": "cd database && npx prisma db push",
-    "db:seed": "cd database && npx tsx prisma/seed.ts"
+    "db:push": "npx prisma db push",
+    "db:seed": "npx tsx prisma/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
