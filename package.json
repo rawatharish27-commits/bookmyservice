@@ -3,10 +3,8 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "node launcher.js",
-    "dev:frontend": "cd frontend && npx vite --host",
-    "dev:backend": "cd mini-services/api-service && npx tsx index.ts",
-    "build": "cd frontend && npm install && npx vite build",
+    "dev": "next dev --port 3000",
+    "dev:api": "cd mini-services/api-service && bun --hot index.ts",
     "lint": "next lint",
     "db:push": "cd database && npx prisma db push",
     "db:seed": "cd database && npx tsx prisma/seed.ts"

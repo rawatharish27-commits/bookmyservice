@@ -1,6 +1,0 @@
-# API proxy is handled by Cloudflare Pages Function (functions/api/[[path]].ts)
-# The _redirects file only supports GET/HEAD proxying — POST/PUT/PATCH/DELETE return 405.
-# The Pages Function supports all HTTP methods.
-
-# SPA fallback - all non-file routes to index.html
-/*  /index.html  200
