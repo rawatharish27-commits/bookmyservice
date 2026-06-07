@@ -131,11 +131,18 @@ const customerProblems = [
   { icon: Tv, text: 'TV display or sound problems', color: 'text-[#0A1F44]' },
 ]
 
-// NEW: Before/After Items
+// NEW: Before/After Items WITH IMAGES
 const beforeAfterItems = [
-  { service: 'AC Cleaning', before: 'Dusty coils, poor cooling, high bills', after: 'Deep cleaned, instant cooling, lower bills', icon: '❄️' },
-  { service: 'Tank Cleaning', before: 'Dirty water, sediment buildup, odour', after: 'Crystal clear water, hygienic & safe', icon: '🚿' },
-  { service: 'Appliance Repair', before: 'Broken, noisy, not working', after: 'Fixed, quiet, running perfectly', icon: '🔧' },
+  { service: 'AC Cleaning', before: 'Dusty coils, poor cooling, high bills', after: 'Deep cleaned, instant cooling, lower bills', icon: '❄️', image: '/images/air-conditioner.jpg' },
+  { service: 'Tank Cleaning', before: 'Dirty water, sediment buildup, odour', after: 'Crystal clear water, hygienic & safe', icon: '🚿', image: '/images/water-tank-cleaning.jpg' },
+  { service: 'Appliance Repair', before: 'Broken, noisy, not working', after: 'Fixed, quiet, running perfectly', icon: '🔧', image: '/images/washing-machine.jpg' },
+]
+
+// Provider Success Stories
+const providerSuccessStories = [
+  { name: 'Ramesh K.', role: 'AC Technician', area: 'HUDA Sector', income: '₹35,000+', months: 8, quote: 'Earlier I was struggling for clients. Now I get 20+ bookings monthly through BookMyService. My income doubled!', rating: 5 },
+  { name: 'Sunil V.', role: 'Electrician', area: 'Camp Colony', income: '₹28,000+', months: 6, quote: 'No more waiting for customers. BookMyService brings me consistent daily bookings. Best decision I made!', rating: 5 },
+  { name: 'Priyanka D.', role: 'Area Partner', area: 'Railway Road', income: '₹15,000+', months: 4, quote: 'As a local admin, I earn from every technician and booking in my area. Flexible work, great income!', rating: 5 },
 ]
 
 // NEW: Limited Time Offers
@@ -370,6 +377,107 @@ function FloatingWhatsApp() {
   )
 }
 
+// ─── Before/After Image Slider Component ────────────────────────────────────
+function BeforeAfterSlider({ image, service, beforeText, afterText, icon }: { image: string; service: string; beforeText: string; afterText: string; icon: string }) {
+  const [sliderPos, setSliderPos] = useState(50)
+  const [isDragging, setIsDragging] = useState(false)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const handleMove = useCallback((clientX: number) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = clientX - rect.left
+    const pct = Math.max(0, Math.min(100, (x / rect.width) * 100))
+    setSliderPos(pct)
+  }, [])
+
+  const handleMouseDown = useCallback(() => setIsDragging(true), [])
+  const handleMouseUp = useCallback(() => setIsDragging(false), [])
+  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+    if (isDragging) handleMove(e.clientX)
+  }, [isDragging, handleMove])
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (isDragging) handleMove(e.touches[0].clientX)
+  }, [isDragging, handleMove])
+
+  return (
+    <div className="rounded-2xl overflow-hidden bg-[#0C1629] border border-[#FFD54F]/15 hover:border-[#FFD54F]/30 transition-all hover:shadow-lg hover:shadow-[#FFD54F]/10">
+      {/* Service Title */}
+      <div className="p-3 text-center border-b border-[#FFD54F]/10 bg-[#0A1F44]/50">
+        <span className="text-2xl mr-2">{icon}</span>
+        <span className="font-bold text-[#FFD54F] text-base">{service}</span>
+      </div>
+
+      {/* Image Slider */}
+      <div
+        ref={containerRef}
+        className="relative aspect-[4/3] select-none cursor-ew-resize overflow-hidden"
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onTouchStart={handleMouseDown}
+        onTouchEnd={handleMouseUp}
+        onTouchMove={handleTouchMove}
+      >
+        {/* AFTER image (full width, underneath) */}
+        <img
+          src={image}
+          alt={`${service} - After professional service`}
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        />
+        {/* AFTER label */}
+        <div className="absolute top-3 right-3 z-10 px-2.5 py-1 rounded-lg bg-emerald-600/90 text-white text-[10px] font-bold uppercase tracking-wider shadow-lg">
+          After ✓
+        </div>
+
+        {/* BEFORE image (clipped, on top) */}
+        <div
+          className="absolute inset-0 overflow-hidden"
+          style={{ width: `${sliderPos}%` }}
+        >
+          <img
+            src={image}
+            alt={`${service} - Before service`}
+            className="absolute inset-0 w-full h-full object-cover"
+            style={{ filter: 'grayscale(60%) sepia(30%) brightness(0.55) contrast(1.3) saturate(0.4)', width: containerRef.current ? `${(1 / (sliderPos / 100)) * 100}%` : '100%', maxWidth: 'none' }}
+            loading="lazy"
+          />
+          {/* BEFORE label */}
+          <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-[#8B0000]/90 text-white text-[10px] font-bold uppercase tracking-wider shadow-lg">
+            Before ✗
+          </div>
+          {/* Grime overlay for "before" effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-900/30 via-amber-950/20 to-stone-900/40" />
+        </div>
+
+        {/* Slider Handle */}
+        <div
+          className="absolute top-0 bottom-0 z-20 w-1 bg-white/80 shadow-lg cursor-ew-resize"
+          style={{ left: `${sliderPos}%`, transform: 'translateX(-50%)' }}
+        >
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-xl flex items-center justify-center border-2 border-[#FFD54F]">
+            <span className="text-[#0A1F44] font-bold text-xs">⟷</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Text Labels */}
+      <div className="grid grid-cols-2 divide-x divide-[#FFD54F]/10">
+        <div className="p-3 text-center">
+          <span className="text-[10px] font-bold text-[#8B0000] uppercase tracking-wider">Before</span>
+          <p className="text-xs text-red-300/80 mt-1 leading-relaxed">{beforeText}</p>
+        </div>
+        <div className="p-3 text-center">
+          <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">After</span>
+          <p className="text-xs text-emerald-300/80 mt-1 leading-relaxed">{afterText}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Main Component ───────────────────────────────────────────────────────────
 
 export default function Home() {
@@ -403,7 +511,7 @@ export default function Home() {
             </nav>
             <div className="hidden md:flex items-center gap-3">
               <button className="px-4 py-2 text-sm font-medium text-[#FFD54F]/80 hover:text-[#FFD54F] hover:bg-[#FFD54F]/10 rounded-lg transition-all">Login</button>
-              <button className="px-5 py-2.5 text-sm font-bold bg-[#FFD54F] text-[#0A1F44] hover:bg-[#FFCE32] rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-[#FFD54F]/20">Book Now</button>
+              <button className="px-5 py-2.5 text-sm font-bold bg-[#0A1F44] text-[#FFD54F] hover:bg-[#132D5E] rounded-xl transition-all shadow-md hover:shadow-lg hover:shadow-[#0A1F44]/20 border border-[#FFD54F]/25">Book Now</button>
             </div>
             <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden p-2 text-[#FFD54F]">
               {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
@@ -419,7 +527,7 @@ export default function Home() {
               ))}
               <div className="pt-2 flex gap-2">
                 <button className="flex-1 text-sm font-medium text-[#FFD54F] px-4 py-2.5 border border-[#FFD54F]/30 rounded-xl">Login</button>
-                <button className="flex-1 text-sm font-bold bg-[#FFD54F] text-[#0A1F44] px-4 py-2.5 rounded-xl">Book Now</button>
+                <button className="flex-1 text-sm font-bold bg-[#0A1F44] text-[#FFD54F] px-4 py-2.5 rounded-xl border border-[#FFD54F]/25">Book Now</button>
               </div>
             </div>
           </div>
@@ -515,7 +623,7 @@ export default function Home() {
 
             {/* 3 Smart CTAs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-base hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:shadow-[#FFD54F]/40 hover:scale-[1.02] active:scale-[0.98]">
+              <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-bold text-base hover:bg-[#132D5E] transition-all shadow-xl shadow-[#0A1F44]/25 hover:shadow-[#0A1F44]/40 hover:scale-[1.02] active:scale-[0.98]">
                 Get Technician Fast <ArrowRight className="size-5" />
               </button>
               <button className="inline-flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-base hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
@@ -560,7 +668,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
               Fast Appliance Repair & Essential Home Utility
             </h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">
               Professional services at affordable fixed prices. All technicians are background-verified and certified.
             </p>
           </div>
@@ -598,33 +706,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ─── 4. Before / After Section ──────────────────────────────────── */}
+      {/* ─── 4. Before / After Section WITH IMAGES ────────────────────────── */}
       <section className="py-16 sm:py-20 bg-[#0A1F44] relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_40%_50%,rgba(255,213,79,0.08),transparent_60%)]" />
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#FFD54F]/15 text-[#FFD54F] text-xs font-semibold mb-4">TRANSFORMATION</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">See the Difference</h2>
-            <p className="text-lg text-[#E0B84C]/70">Visual transformation that builds trust</p>
+            <p className="text-lg text-[#E0B84C]/70">Drag the slider to see real before &amp; after results</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6">
             {beforeAfterItems.map((item) => (
-              <div key={item.service} className="rounded-2xl overflow-hidden bg-[#0C1629] border border-[#FFD54F]/15 hover:border-[#FFD54F]/30 transition-all hover:shadow-lg hover:shadow-[#FFD54F]/10">
-                <div className="p-4 text-center border-b border-[#FFD54F]/10">
-                  <div className="text-3xl mb-2">{item.icon}</div>
-                  <h3 className="font-bold text-[#FFD54F] text-lg">{item.service}</h3>
-                </div>
-                <div className="grid grid-cols-2 divide-x divide-[#FFD54F]/10">
-                  <div className="p-4 text-center">
-                    <span className="text-[10px] font-bold text-[#8B0000] uppercase tracking-wider">Before</span>
-                    <p className="text-xs text-red-300/80 mt-2 leading-relaxed">{item.before}</p>
-                  </div>
-                  <div className="p-4 text-center">
-                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">After</span>
-                    <p className="text-xs text-emerald-300/80 mt-2 leading-relaxed">{item.after}</p>
-                  </div>
-                </div>
-              </div>
+              <BeforeAfterSlider
+                key={item.service}
+                image={item.image}
+                service={item.service}
+                beforeText={item.before}
+                afterText={item.after}
+                icon={item.icon}
+              />
             ))}
           </div>
         </div>
@@ -664,7 +764,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
               Fast, Trusted & Local
             </h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">
               Income opportunity + Warranty-backed support — that&apos;s what sets us apart.
             </p>
           </div>
@@ -674,10 +774,77 @@ export default function Home() {
                 <div className="inline-flex items-center justify-center size-14 rounded-2xl bg-[#0A1F44] mb-4">
                   <feature.icon className="size-7 text-[#FFD54F]" />
                 </div>
-                <h3 className="font-bold text-[#0A1F44] mb-2">{feature.title}</h3>
-                <p className="text-sm text-[#0A1F44]/70 leading-relaxed">{feature.desc}</p>
+                <h3 className="font-bold text-black mb-2">{feature.title}</h3>
+                <p className="text-sm text-black/70 leading-relaxed">{feature.desc}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── CLIENT ATTRACTION SECTION ──────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 bg-[#D4A017] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_70%_30%,rgba(10,31,68,0.08),transparent_60%)]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44] text-[#FFD54F] text-xs font-semibold mb-4">WHY 1500+ PALWAL FAMILIES CHOOSE US</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-4">
+              Stop Searching. Start Booking.
+            </h2>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">
+              Your home deserves the best. Verified experts, honest pricing, and 3-month warranty — all just a tap away.
+            </p>
+          </div>
+
+          {/* Conversion Stats */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-12">
+            {[
+              { value: '2 Hrs', label: 'Service Guarantee', icon: Clock, color: 'bg-[#0A1F44]' },
+              { value: '₹99', label: 'Starting Price', icon: IndianRupee, color: 'bg-[#0A1F44]' },
+              { value: '3 Mo', label: 'Warranty Period', icon: ShieldCheck, color: 'bg-[#0A1F44]' },
+              { value: '4.8★', label: 'Average Rating', icon: Star, color: 'bg-[#0A1F44]' },
+            ].map((stat) => (
+              <div key={stat.label} className={cn('text-center p-5 rounded-2xl text-white shadow-lg', stat.color)}>
+                <stat.icon className="size-6 text-[#FFD54F] mx-auto mb-2" />
+                <p className="text-2xl sm:text-3xl font-extrabold">{stat.value}</p>
+                <p className="text-xs text-[#FFD54F]/80 font-semibold mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Client Conversion Points */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+            {[
+              { icon: Smartphone, title: 'Book in 30 Seconds', desc: 'Select service, pick time slot, done. No calls, no waiting, no hassle.' },
+              { icon: BadgeCheck, title: 'Background-Verified Experts', desc: 'Every technician is police-verified, skill-tested, and customer-rated.' },
+              { icon: IndianRupee, title: 'No Hidden Charges Ever', desc: 'Fixed pricing shown upfront. Pay only what you see — nothing extra.' },
+              { icon: ShieldCheck, title: '3 Months Free Warranty', desc: 'Issue comes back? We fix it again for FREE. No questions asked.' },
+              { icon: Clock, title: 'Same Day Service', desc: 'Emergency or routine — get a professional at your door within 2 hours.' },
+              { icon: Headphones, title: 'Local Palwal Support', desc: 'Our Palwal-based support team resolves your concerns quickly.' },
+            ].map((item) => (
+              <div key={item.title} className="p-5 rounded-2xl bg-[#F2C94C] border border-black/10 hover:border-[#0A1F44]/30 hover:shadow-xl hover:shadow-black/10 transition-all card-hover-lift">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center justify-center size-10 rounded-xl bg-[#0A1F44]">
+                    <item.icon className="size-5 text-[#FFD54F]" />
+                  </div>
+                  <h3 className="font-bold text-black text-sm">{item.title}</h3>
+                </div>
+                <p className="text-xs text-black/70 leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Strong CTA */}
+          <div className="text-center">
+            <div className="inline-flex flex-col sm:flex-row gap-4">
+              <button className="inline-flex items-center justify-center gap-2 px-10 py-4 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-bold text-lg hover:bg-[#132D5E] transition-all shadow-xl shadow-[#0A1F44]/30 hover:shadow-[#0A1F44]/50 hover:scale-[1.02] active:scale-[0.98]">
+                Book Trusted Technician Now <ArrowRight className="size-5" />
+              </button>
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-black/10 border-2 border-black/20 text-black font-bold text-lg hover:bg-black/15 transition-all hover:scale-[1.02]">
+                <Phone className="size-5" /> Call: +91 1800-XXX-XXXX
+              </button>
+            </div>
+            <p className="text-sm text-black/50 mt-4 font-medium">✓ No advance payment ✓ Cancel anytime ✓ 100% money-back guarantee</p>
           </div>
         </div>
       </section>
@@ -735,7 +902,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">
               3 Ways to Earn With BookMyService
             </h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Join our growing network and start earning today</p>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">Join our growing network and start earning today</p>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
@@ -861,6 +1028,88 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ─── PROVIDER ATTRACTION — SUCCESS STORIES ─────────────────────────── */}
+      <section className="py-20 sm:py-28 bg-[#D4A017] relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_70%,rgba(10,31,68,0.08),transparent_60%)]" />
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44] text-[#FFD54F] text-xs font-semibold mb-4">PROVIDER SUCCESS STORIES</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-black tracking-tight mb-4">
+              Real People. Real Earnings.
+            </h2>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">
+              See how local technicians and area partners are growing their income with BookMyService.
+            </p>
+          </div>
+
+          {/* Income Proof Cards */}
+          <div className="grid sm:grid-cols-3 gap-6 mb-12">
+            {providerSuccessStories.map((story) => (
+              <div key={story.name + story.role} className="rounded-2xl bg-[#F2C94C] border border-black/10 overflow-hidden hover:shadow-xl hover:shadow-black/10 transition-all card-hover-lift">
+                <div className="bg-[#0A1F44] p-5 text-[#FFD54F]">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="size-12 rounded-full bg-[#FFD54F]/20 flex items-center justify-center text-[#FFD54F] font-bold text-lg">{story.name[0]}</div>
+                    <div>
+                      <h3 className="font-bold text-base">{story.name}</h3>
+                      <p className="text-xs text-[#E0B84C]">{story.role} • {story.area}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 mb-2">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <Star key={i} className={cn('size-3.5', i < story.rating ? 'fill-[#FFD54F] text-[#FFD54F]' : 'text-[#FFD54F]/20')} />
+                    ))}
+                  </div>
+                </div>
+                <div className="p-5">
+                  <p className="text-sm text-black/80 leading-relaxed mb-4 italic">&ldquo;{story.quote}&rdquo;</p>
+                  <div className="flex items-center justify-between">
+                    <div className="text-center">
+                      <p className="text-2xl font-extrabold text-[#0A1F44]">{story.income}</p>
+                      <p className="text-[10px] text-black/50 font-semibold">Monthly Earning</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-2xl font-extrabold text-[#0A1F44]">{story.months} Mo</p>
+                      <p className="text-[10px] text-black/50 font-semibold">On Platform</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Earning Calculator Teaser */}
+          <div className="rounded-2xl bg-[#0A1F44] p-8 sm:p-10 text-center">
+            <h3 className="text-2xl sm:text-3xl font-extrabold text-white mb-3">How Much Can You Earn?</h3>
+            <p className="text-[#E0B84C] mb-6 max-w-xl mx-auto">Join Palwal&apos;s fastest-growing service platform and start earning from day one.</p>
+            <div className="grid sm:grid-cols-3 gap-4 max-w-3xl mx-auto mb-8">
+              <div className="p-4 rounded-xl bg-[#0C1629] border border-[#FFD54F]/15">
+                <Wrench className="size-8 text-[#FFD54F] mx-auto mb-2" />
+                <p className="text-xl font-extrabold text-white">₹25-35K</p>
+                <p className="text-xs text-[#FFD54F]/60 font-semibold">Technician/Month</p>
+              </div>
+              <div className="p-4 rounded-xl bg-[#0C1629] border border-[#FFD54F]/15">
+                <Share2 className="size-8 text-emerald-400 mx-auto mb-2" />
+                <p className="text-xl font-extrabold text-white">₹2-5K</p>
+                <p className="text-xs text-[#FFD54F]/60 font-semibold">Referral/Month</p>
+              </div>
+              <div className="p-4 rounded-xl bg-[#0C1629] border border-[#FFD54F]/15">
+                <Building2 className="size-8 text-[#FFD54F] mx-auto mb-2" />
+                <p className="text-xl font-extrabold text-white">₹10-15K</p>
+                <p className="text-xs text-[#FFD54F]/60 font-semibold">Area Partner/Month</p>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-base hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:scale-[1.02]">
+                <Wrench className="size-5" /> Join as Technician
+              </button>
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-base hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02]">
+                <Building2 className="size-5" /> Become Area Partner
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ─── 9. Limited Time Offers Section ──────────────────────────────── */}
       <section className="py-16 sm:py-20 bg-[#D4A017]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -890,7 +1139,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">SAVE MORE</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Combo Service Deals</h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Book multiple services together and save more!</p>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">Book multiple services together and save more!</p>
           </div>
           <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
             {comboServices.map((combo) => (
@@ -931,7 +1180,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">REAL REVIEWS</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">What Palwal Says About Us</h2>
-            <p className="text-lg text-[#0A1F44]/70">Real reviews from real customers in your area</p>
+            <p className="text-lg text-black/70">Real reviews from real customers in your area</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-h-[600px] overflow-y-auto scrollbar-smooth pr-1">
             {testimonials.map((t) => (
@@ -1065,7 +1314,7 @@ export default function Home() {
               <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-6">
                 Palwal&apos;s Trusted Hyperlocal Service Platform
               </h2>
-              <p className="text-[#0A1F44]/70 leading-relaxed mb-6">
+              <p className="text-black/70 leading-relaxed mb-6">
                 BookMyService connects you with verified, skilled professionals for all your home service needs. From urgent appliance repair to essential home maintenance, we ensure quality service at transparent prices with 3-month warranty.
               </p>
               <div className="grid grid-cols-3 gap-4">
@@ -1102,7 +1351,7 @@ export default function Home() {
           <div className="text-center mb-10">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">REFER & EARN</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Share & Earn Together</h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Get rewards when your referral completes a booking!</p>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">Get rewards when your referral completes a booking!</p>
           </div>
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="p-6 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10">
@@ -1188,7 +1437,7 @@ export default function Home() {
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1.5 rounded-full bg-[#0A1F44]/10 text-[#0A1F44] text-xs font-semibold mb-4">POPULAR SEARCHES</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0A1F44] tracking-tight mb-4">Find Services in Your Area</h2>
-            <p className="text-lg text-[#0A1F44]/70 max-w-2xl mx-auto">Quick access to the most searched home services across Palwal</p>
+            <p className="text-lg text-black/70 max-w-2xl mx-auto">Quick access to the most searched home services across Palwal</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
@@ -1242,7 +1491,7 @@ export default function Home() {
             ✅ 3 Months Warranty • ✅ Free Revisit • ✅ Service Within 2 Hours
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F] text-[#0A1F44] font-bold text-lg hover:bg-[#FFCE32] transition-all shadow-xl shadow-[#FFD54F]/25 hover:scale-[1.02] active:scale-[0.98]">
+            <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#0A1F44] text-[#FFD54F] font-bold text-lg hover:bg-[#132D5E] transition-all shadow-xl shadow-[#0A1F44]/25 hover:scale-[1.02] active:scale-[0.98]">
               Book Now <ArrowRight className="size-5" />
             </button>
             <button className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#FFD54F]/10 border border-[#FFD54F]/25 text-[#FFD54F] font-semibold text-lg hover:bg-[#FFD54F]/20 transition-all hover:scale-[1.02]">
