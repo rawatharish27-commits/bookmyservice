@@ -35,6 +35,7 @@ model User {
   latitude         Float?
   longitude        Float?
   lastLoginAt      DateTime?
+  deletedAt        DateTime? // Soft delete
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -49,12 +50,20 @@ model User {
   negotiations     Negotiation[]
   disputesRaised   Dispute[]      @relation("DisputeRaised")
   disputesAssigned Dispute[]      @relation("DisputeAssigned")
+  disputeMessages  DisputeMessage[] @relation("DisputeMessagesSent")
   adminLogs        AdminLog[]
   favorites        Favorite[]
   referralsGiven   Referral[]      @relation("ReferralsGiven")
   referralsReceived Referral[]     @relation("ReferralsReceived")
   areaManager      AreaManager?
   commissions      Commission[]    @relation("CommissionsEarned")
+
+  // Wallet relations
+  wallet             Wallet?
+  walletTransactions WalletTransaction[]
+  payoutRequests     PayoutRequest[]
+
+  @@index([deletedAt])
 }
 
 model ProviderKyc {
@@ -145,6 +154,7 @@ model Service {
   totalReviews        Int      @default(0)
   seoTitle            String?
   seoDescription      String?
+  deletedAt           DateTime? // Soft delete
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 
@@ -153,6 +163,8 @@ model Service {
   reviews             Review[]
   negotiations        Negotiation[]
   favorites           Favorite[]
+
+  @@index([deletedAt])
 }
 
 model ServiceAvailability {
@@ -176,7 +188,7 @@ model Booking {
   provider           User     @relation("ProviderBookings", fields: [providerId], references: [id])
   serviceId          String
   service            Service  @relation(fields: [serviceId], references: [id])
-  status             String   @default("PENDING") // PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED, REFUNDED
+  status             String   @default("PENDING") // PENDING, ASSIGNED, ACCEPTED, ON_THE_WAY, ARRIVED, IN_PROGRESS, COMPLETED, CANCELLED, REFUNDED
   scheduledDate      String   // YYYY-MM-DD
   scheduledTime      String   // HH:mm
   serviceAddress     String
@@ -194,13 +206,49 @@ model Booking {
   cancelledAt        DateTime?
   completedAt        DateTime?
   paymentStatus      String   @default("PENDING") // PENDING, PAID, REFUNDED, FAILED
+  deletedAt          DateTime? // Soft delete
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
 
+  // Booking Lifecycle Timestamps
+  assignedAt         DateTime?
+  acceptedAt         DateTime?
+  onTheWayAt         DateTime?
+  arrivedAt          DateTime?
+  startedAt          DateTime?
+
+  // Assigned Technician
+  technicianId       String?
+
+  // Booking Type
+  bookingType        String   @default("NORMAL") // NORMAL, EMERGENCY, AMC
+
+  // OTP Verification
+  otpCode            String?
+  otpVerified        Boolean  @default(false)
+  otpVerifiedAt      DateTime?
+
+  // Warranty
+  warrantyDays       Int      @default(90)
+  warrantyExpiresAt  DateTime?
+
+  // Coupon
+  couponId           String?
+  couponDiscount     Float    @default(0)
+
+  // Relations
   payment            Payment?
   review             Review?
   negotiations      Negotiation[]
   disputes           Dispute[]
+  timeline           BookingTimeline[]
+  invoice            Invoice?
+
+  @@index([deletedAt])
+  @@index([status])
+  @@index([bookingType])
+  @@index([technicianId])
+  @@index([scheduledDate])
 }
 
 model Payment {
@@ -283,6 +331,7 @@ model DisputeMessage {
   disputeId   String
   dispute     Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
   senderId    String
+  sender      User     @relation("DisputeMessagesSent", fields: [senderId], references: [id])
   message     String
   attachments String?  // JSON array
   createdAt   DateTime @default(now())
@@ -494,4 +543,166 @@ model VisitorSession {
   isActive     Boolean  @default(true)
   lastActiveAt DateTime @default(now())
   createdAt    DateTime @default(now())
+}
+
+// ============================================
+// Wallet System
+// ============================================
+
+model Wallet {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  balance         Float    @default(0)
+  cashbackBalance Float    @default(0)
+  promoBalance    Float    @default(0)
+  totalDeposited  Float    @default(0)
+  totalWithdrawn  Float    @default(0)
+  totalSpent      Float    @default(0)
+  totalEarned     Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  transactions    WalletTransaction[]
+
+  @@index([userId])
+}
+
+model WalletTransaction {
+  id            String   @id @default(cuid())
+  walletId      String
+  wallet        Wallet   @relation(fields: [walletId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  type          String   // CREDIT, DEBIT
+  category      String   // CASHBACK, REFUND, PROMO, EARNING, WITHDRAWAL, PAYMENT, PAYOUT, REFERRAL
+  amount        Float
+  description   String
+  referenceId   String?
+  referenceType String?  // BOOKING, PAYOUT, REFERRAL, COUPON
+  status        String   @default("COMPLETED") // PENDING, COMPLETED, FAILED, CANCELLED
+  metadata      String?  // JSON
+  createdAt     DateTime @default(now())
+
+  @@index([walletId])
+  @@index([userId])
+  @@index([category])
+  @@index([referenceId])
+}
+
+// ============================================
+// Coupon System
+// ============================================
+
+model Coupon {
+  id              String   @id @default(cuid())
+  code            String   @unique
+  description     String?
+  discountType    String   // PERCENTAGE, FIXED
+  discountValue   Float
+  minOrderAmount  Float    @default(0)
+  maxDiscount     Float?
+  usageLimit      Int?
+  usageCount      Int      @default(0)
+  perUserLimit    Int      @default(1)
+  validFrom       DateTime
+  validTo         DateTime
+  applicableType  String   @default("ALL") // ALL, FIRST_BOOKING, SPECIFIC_CATEGORY, SPECIFIC_SERVICE
+  isActive        Boolean  @default(true)
+  createdBy       String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  usages          CouponUsage[]
+
+  @@index([code])
+  @@index([isActive])
+  @@index([validFrom, validTo])
+}
+
+model CouponUsage {
+  id              String   @id @default(cuid())
+  couponId        String
+  coupon          Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId          String
+  bookingId       String
+  discountApplied Float
+  createdAt       DateTime @default(now())
+
+  @@unique([couponId, userId, bookingId])
+  @@index([couponId])
+  @@index([userId])
+  @@index([bookingId])
+}
+
+// ============================================
+// Invoice System
+// ============================================
+
+model Invoice {
+  id             String   @id @default(cuid())
+  bookingId      String   @unique
+  booking        Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  invoiceNumber  String   @unique
+  clientId       String
+  providerId     String
+  subtotal       Float
+  gstAmount      Float    @default(0)
+  gstRate        Float    @default(18)
+  discountAmount Float    @default(0)
+  totalAmount    Float
+  gstin          String?
+  hsnCode        String?
+  invoiceDate    DateTime @default(now())
+  pdfUrl         String?
+  status         String   @default("GENERATED") // GENERATED, SENT, PAID, CANCELLED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([invoiceNumber])
+  @@index([clientId])
+  @@index([providerId])
+}
+
+// ============================================
+// Payout System
+// ============================================
+
+model PayoutRequest {
+  id               String    @id @default(cuid())
+  userId           String
+  user             User      @relation(fields: [userId], references: [id])
+  amount           Float
+  method           String    // BANK_TRANSFER, UPI
+  status           String    @default("PENDING") // PENDING, APPROVED, PROCESSING, COMPLETED, REJECTED
+  bankRef          String?
+  processedBy      String?
+  processedAt      DateTime?
+  rejectionReason  String?
+  metadata         String?   // JSON
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+}
+
+// ============================================
+// Booking Timeline
+// ============================================
+
+model BookingTimeline {
+  id          String   @id @default(cuid())
+  bookingId   String
+  booking     Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  status      String
+  description String?
+  performedBy String?
+  metadata    String?  // JSON
+  createdAt   DateTime @default(now())
+
+  @@index([bookingId])
+  @@index([status])
+  @@index([createdAt])
 }
