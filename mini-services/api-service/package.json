@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@types/morgan": "1.9.10",
-    "@types/node": "25.9.1",
+    "@types/node": "25.9.2",
     "prisma": "6.6.0",
     "vitest": "4.1.7"
   }

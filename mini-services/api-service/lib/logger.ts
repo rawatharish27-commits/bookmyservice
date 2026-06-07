@@ -11,8 +11,8 @@
 //   logs/booking.log    → Booking events (failed bookings, payment failures)
 //   logs/api.log        → API events (500 errors, slow APIs)
 //
-// Usage:
-//   import { logger, authLogger, bookingLogger, apiLogger } from './lib/logger'
+// Usage (from files outside this directory):
+//   import { logger, authLogger, bookingLogger, apiLogger } from '../lib/logger'
 //   logger.info('Server started', { port: 3001 })
 //   authLogger.warn('Failed login attempt', { email, ip })
 //   bookingLogger.error('Booking creation failed', { userId, error })
