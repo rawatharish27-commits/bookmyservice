@@ -2,12 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware';
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 const RAZORPAY_BASE_URL = 'https://api.razorpay.com/v1';
 
 export async function POST(request: NextRequest) {
   try {
+    // Read Razorpay credentials at request time (not module level) so
+    // the module can be imported during `next build` without env vars.
+    const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || '';
+    const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
+
     const user = await requireAuth(request);
     const body = await request.json();
     const { bookingId, paymentMethod } = body;
