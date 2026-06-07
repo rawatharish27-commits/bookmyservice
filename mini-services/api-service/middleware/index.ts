@@ -17,7 +17,7 @@
  *  10. Rate Limiting (per-endpoint granular limits)
  *  11. Global Error Handler (Sentry + logger integration)
  *
- * Usage:
+ * Usage (from the main index.ts):
  *   import { applyMiddleware } from './middleware'
  *   const app = new Hono()
  *   applyMiddleware(app)
@@ -435,9 +435,9 @@ export function applyMiddleware(app: Hono): void {
  * Require a specific permission for the authenticated user.
  * Returns 401 if not authenticated, 403 if the user's role lacks the permission.
  *
- * Usage:
+ * Usage (from route files):
  *   import { requirePermission } from './middleware'
- *   import { Permission } from './lib/rbac'
+ *   import { Permission } from '../lib/rbac'
  *   app.get('/api/admin/revenue', requirePermission(Permission.ADMIN_REVENUE), handler)
  */
 export function requirePermission(permission: Permission) {
