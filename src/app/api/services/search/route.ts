@@ -30,8 +30,8 @@ export async function GET(request: NextRequest) {
     const minPrice = searchParams.get('minPrice');
     const maxPrice = searchParams.get('maxPrice');
     const categoryId = searchParams.get('category');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = Math.max(parseInt(searchParams.get('page') || '1'), 1);
+    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '10'), 1), 100);
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {

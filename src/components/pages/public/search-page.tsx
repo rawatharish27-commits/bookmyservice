@@ -8,30 +8,42 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Search, Star, Clock, X, TrendingUp, History, Sparkles, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi } from '@/lib/use-api'
 
+// Static UI data — no API endpoints for search suggestions/history
 const suggestionsData = ['Air Conditioner', 'Plumber', 'Electrician', 'Washing machine', 'Water purifier', 'TV repair']
 const recentSearchesData = ['Air Conditioner near me', 'Plumber for leak', 'Electrician for wiring', 'Geyser repair']
-const popularServicesData = [
-  { name: 'Air Conditioner', provider: 'CoolAir Solutions', rating: 4.8, price: 499, image: '❄️' },
-  { name: 'Washing Machine Repair', provider: 'WashFix Pro', rating: 4.7, price: 349, image: '🫧' },
-  { name: 'Plumber - Leak Fix', provider: 'AquaFix Experts', rating: 4.6, price: 199, image: '🔧' },
-  { name: 'Electrician - Wiring', provider: 'PowerTech Electric', rating: 4.7, price: 299, image: '⚡' },
-  { name: 'Water Purifier Service', provider: 'PureFlow Services', rating: 4.4, price: 349, image: '💧' },
-  { name: 'TV Repair', provider: 'ScreenFix Tech', rating: 4.5, price: 399, image: '📺' },
-  { name: 'Refrigerator Repair', provider: 'CoolTech Services', rating: 4.6, price: 399, image: '🧊' },
-  { name: 'Geyser Installation', provider: 'HeatFix Experts', rating: 4.5, price: 299, image: '🔥' },
-]
 const trendingSearchesData = ['Air Conditioner', 'Plumber near me', 'Electrician booking', 'Water purifier filter']
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+interface PopularService {
+  id: string; name: string; provider: string; rating: number;
+  price: number; image: string;
+}
 
 export function SearchPage() {
   const [query, setQuery] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
   const { navigate } = useApp()
 
-  const popularLoader = useCallback(() => popularServicesData, [])
-  const { data: popularServices, loading } = useMockApi(popularServicesData, 700)
+  const { data: svcResponse, loading, refetch } = useUrlApi<{ services: ApiService[]; pagination: { total: number } }>('/api/services?limit=8')
+
+  const popularServices: PopularService[] = (svcResponse?.services ?? []).map((svc) => ({
+    id: svc.id, name: svc.title, provider: svc.provider.name, rating: svc.averageRating,
+    price: svc.basePrice, image: CATEGORY_EMOJI[svc.category.name] ?? '🔧',
+  }))
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -121,8 +133,8 @@ export function SearchPage() {
           ) : popularServices && popularServices.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {popularServices.map((svc) => (
-                <Card key={svc.name} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => navigate('service-detail', { service: svc.name })}>
+                <Card key={svc.id} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow cursor-pointer"
+                  onClick={() => navigate('service-detail', { id: svc.id })}>
                   <CardContent className="p-4">
                     <span className="text-3xl" aria-hidden="true">{svc.image}</span>
                     <h3 className="font-bold text-slate-900 mt-2 text-sm">{svc.name}</h3>

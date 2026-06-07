@@ -22,19 +22,22 @@ export async function PATCH(
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
+    // Verify the user is the assigned provider
     if (booking.providerId !== user.userId && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    // Only PENDING bookings can be rejected
     if (booking.status !== 'PENDING') {
       return NextResponse.json(
         { error: 'Only pending bookings can be rejected' },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
     const body = await request.json();
     const { rejectionReason } = body;
+    const now = new Date();
 
     const updatedBooking = await db.booking.update({
       where: { id },
@@ -42,7 +45,17 @@ export async function PATCH(
         status: 'CANCELLED',
         cancellationReason: rejectionReason || 'Rejected by provider',
         cancelledBy: user.userId,
-        cancelledAt: new Date(),
+        cancelledAt: now,
+      },
+    });
+
+    // Create BookingTimeline entry
+    await db.bookingTimeline.create({
+      data: {
+        bookingId: booking.id,
+        status: 'CANCELLED',
+        description: `Booking rejected by provider ${user.email}${rejectionReason ? `: ${rejectionReason}` : ''}`,
+        performedBy: user.userId,
       },
     });
 
@@ -52,7 +65,7 @@ export async function PATCH(
         userId: booking.clientId,
         type: 'BOOKING_REJECTED',
         title: 'Booking Rejected',
-        message: `Your booking #${booking.bookingNumber} has been rejected`,
+        message: `Your booking #${booking.bookingNumber} has been rejected${rejectionReason ? `: ${rejectionReason}` : ''}`,
         actionUrl: `/bookings/${booking.id}`,
       },
     });

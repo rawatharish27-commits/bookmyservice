@@ -153,6 +153,10 @@
   html {
     scroll-behavior: smooth;
   }
+  /* iOS safe area support for bottom navigation */
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
   h1 {
     @apply font-extrabold text-4xl tracking-tight;
     font-weight: 800;

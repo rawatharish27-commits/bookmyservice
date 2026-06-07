@@ -9,28 +9,42 @@ import {
   Refrigerator, Flame, Truck, Search, Star, ArrowRight, Loader2
 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi } from '@/lib/use-api'
 
-const PERMITTED_CATEGORIES = [
-  { icon: Wind, name: 'Air Conditioner', desc: 'AC install, repair, service', color: 'bg-cyan-100 text-cyan-600' },
-  { icon: Refrigerator, name: 'Refrigerator', desc: 'Fridge repair, gas refill', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
-  { icon: WashingMachine, name: 'Washing Machine', desc: 'Washer repair, service', color: 'bg-indigo-100 text-indigo-600' },
-  { icon: Flame, name: 'Kitchen Appliances', desc: 'Mixer, chimney, stove repair', color: 'bg-orange-100 text-orange-600' },
-  { icon: Tv, name: 'TV Repair', desc: 'LED, LCD, smart TV fix', color: 'bg-purple-100 text-purple-600' },
-  { icon: Droplets, name: 'Water Purifier', desc: 'RO install, service, filter', color: 'bg-teal-100 text-teal-600' },
-  { icon: Flame, name: 'Geyser', desc: 'Installation, repair, service', color: 'bg-red-100 text-red-600' },
-  { icon: Wrench, name: 'Plumber', desc: 'Pipes, leaks, installations', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
-  { icon: Zap, name: 'Electrician', desc: 'Wiring, switches, fans', color: 'bg-amber-100 text-amber-600' },
-  { icon: Droplets, name: 'Water Tank Cleaning', desc: 'Tank cleaning, sanitize', color: 'bg-emerald-100 text-emerald-600' },
-  { icon: Truck, name: 'Movers and Packers', desc: 'House shifting, packing', color: 'bg-slate-100 text-slate-600' },
-]
+const CATEGORY_UI: Record<string, { icon: typeof Wind; color: string; desc: string }> = {
+  'Air Conditioner': { icon: Wind, color: 'bg-cyan-100 text-cyan-600', desc: 'AC install, repair, service' },
+  'Refrigerator': { icon: Refrigerator, color: 'bg-[#1D63FF]/10 text-[#1D63FF]', desc: 'Fridge repair, gas refill' },
+  'Washing Machine': { icon: WashingMachine, color: 'bg-indigo-100 text-indigo-600', desc: 'Washer repair, service' },
+  'Kitchen Appliances': { icon: Flame, color: 'bg-orange-100 text-orange-600', desc: 'Mixer, chimney, stove repair' },
+  'TV Repair': { icon: Tv, color: 'bg-purple-100 text-purple-600', desc: 'LED, LCD, smart TV fix' },
+  'Water Purifier': { icon: Droplets, color: 'bg-teal-100 text-teal-600', desc: 'RO install, service, filter' },
+  'Geyser': { icon: Flame, color: 'bg-red-100 text-red-600', desc: 'Installation, repair, service' },
+  'Plumber': { icon: Wrench, color: 'bg-[#1D63FF]/10 text-[#1D63FF]', desc: 'Pipes, leaks, installations' },
+  'Electrician': { icon: Zap, color: 'bg-amber-100 text-amber-600', desc: 'Wiring, switches, fans' },
+  'Water Tank Cleaning': { icon: Droplets, color: 'bg-emerald-100 text-emerald-600', desc: 'Tank cleaning, sanitize' },
+  'Movers and Packers': { icon: Truck, color: 'bg-slate-100 text-slate-600', desc: 'House shifting, packing' },
+}
+const DEFAULT_CATEGORY_UI = { icon: Wrench, color: 'bg-slate-100 text-slate-600', desc: 'Professional home services' }
+
+interface ApiCategory {
+  id: number; name: string; slug: string; description: string | null;
+  iconUrl: string | null; icon: string | null; displayOrder: number;
+  subcategoriesCount: number; servicesCount: number;
+}
+interface CategoryWithUi {
+  id: number; name: string; slug: string; desc: string; servicesCount: number;
+  icon: typeof Wind; color: string;
+}
 
 export function CategoriesPage() {
   const { navigate } = useApp()
 
-  const categoriesLoader = useCallback(() => PERMITTED_CATEGORIES, [])
-  const { data: categories, loading, error } = useMockApi(PERMITTED_CATEGORIES, 600)
+  const { data: catResponse, loading, error, refetch } = useUrlApi<{ categories: ApiCategory[]; total: number }>('/api/categories')
+
+  const categories: CategoryWithUi[] = (catResponse?.categories ?? []).map((cat) => {
+    const ui = CATEGORY_UI[cat.name] ?? DEFAULT_CATEGORY_UI
+    return { id: cat.id, name: cat.name, slug: cat.slug, desc: cat.description ?? ui.desc, servicesCount: cat.servicesCount, icon: ui.icon, color: ui.color }
+  })
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -72,7 +86,7 @@ export function CategoriesPage() {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 mb-4">Failed to load categories</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+            <Button variant="outline" onClick={refetch}>Retry</Button>
           </div>
         ) : categories && categories.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

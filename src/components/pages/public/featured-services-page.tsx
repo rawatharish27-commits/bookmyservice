@@ -6,25 +6,50 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Star, Clock, MapPin, Heart, Sparkles, TrendingUp, Zap, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi } from '@/lib/use-api'
 
-const featuredData = [
-  { name: 'AC Summer Service', provider: 'CoolAir Solutions', rating: 4.8, reviews: 234, price: 499, originalPrice: 499, image: '❄️', discount: 20, tag: 'Summer Special' },
-  { name: 'Plumber - Emergency Fix', provider: 'AquaFix Experts', rating: 4.6, reviews: 167, price: 199, originalPrice: 199, image: '🔧', discount: 15, tag: 'Urgent' },
-  { name: 'Electrician - Safety Check', provider: 'PowerTech Electric', rating: 4.7, reviews: 189, price: 299, originalPrice: 299, image: '⚡', discount: 30, tag: 'Top Rated' },
-  { name: 'Water Purifier Service', provider: 'PureFlow Services', rating: 4.4, reviews: 145, price: 349, originalPrice: 349, image: '💧', discount: 25, tag: 'Essential' },
-  { name: 'Washing Machine Repair', provider: 'WashFix Pro', rating: 4.7, reviews: 112, price: 349, originalPrice: 349, image: '🫧', discount: 20, tag: 'Best Seller' },
-  { name: 'TV Repair - LED/LCD', provider: 'ScreenFix Tech', rating: 4.5, reviews: 98, price: 399, originalPrice: 399, image: '📺', discount: 15, tag: 'Featured' },
-  { name: 'Geyser Installation', provider: 'HeatFix Experts', rating: 4.5, reviews: 112, price: 299, originalPrice: 299, image: '🔥', discount: 20, tag: 'Winter Ready' },
-  { name: 'Refrigerator Repair', provider: 'CoolTech Services', rating: 4.6, reviews: 156, price: 399, originalPrice: 399, image: '🧊', discount: 10, tag: 'Weekend Offer' },
-]
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
+
+const CATEGORY_TAG: Record<string, string> = {
+  'Air Conditioner': 'Summer Special',
+  'Plumber': 'Urgent',
+  'Electrician': 'Top Rated',
+  'Water Purifier': 'Essential',
+  'Washing Machine': 'Best Seller',
+  'TV Repair': 'Featured',
+  'Geyser': 'Winter Ready',
+  'Refrigerator': 'Weekend Offer',
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+interface FeaturedService {
+  id: string; name: string; provider: string; rating: number; reviews: number;
+  price: number; originalPrice: number; image: string; discount: number; tag: string;
+}
 
 export function FeaturedServicesPage() {
   const { navigate } = useApp()
 
-  const featuredLoader = useCallback(() => featuredData, [])
-  const { data: featured, loading, error } = useMockApi(featuredData, 700)
+  const { data: svcResponse, loading, error, refetch } = useUrlApi<{ services: ApiService[]; pagination: { total: number } }>('/api/services?limit=8')
+
+  // Map API services to featured shape with discount and tag
+  const featured: FeaturedService[] = (svcResponse?.services ?? []).map((svc, i) => ({
+    id: svc.id, name: svc.title, provider: svc.provider.name, rating: svc.averageRating,
+    reviews: svc.totalReviews, price: svc.basePrice, originalPrice: svc.basePrice,
+    image: CATEGORY_EMOJI[svc.category.name] ?? '🔧',
+    discount: Math.max(10, 30 - i * 3),
+    tag: CATEGORY_TAG[svc.category.name] ?? 'Featured',
+  }))
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -56,7 +81,7 @@ export function FeaturedServicesPage() {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 mb-4">Failed to load featured services</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+            <Button variant="outline" onClick={refetch}>Retry</Button>
           </div>
         ) : featured && featured.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

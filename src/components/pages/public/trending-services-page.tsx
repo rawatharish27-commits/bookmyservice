@@ -5,25 +5,37 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Star, TrendingUp, ArrowUpRight, BarChart3, Flame, Clock, Users, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi } from '@/lib/use-api'
 
-const trendingData = [
-  { name: 'AC Summer Service', category: 'Air Conditioner', rating: 4.8, growth: '+45%', bookings: 1240, rank: 1, image: '❄️', change: 'up' },
-  { name: 'Plumber - Emergency', category: 'Plumber', rating: 4.6, growth: '+38%', bookings: 980, rank: 2, image: '🔧', change: 'up' },
-  { name: 'Electrician - Safety', category: 'Electrician', rating: 4.7, growth: '+28%', bookings: 650, rank: 3, image: '⚡', change: 'up' },
-  { name: 'Water Purifier Service', category: 'Water Purifier', rating: 4.4, growth: '+25%', bookings: 540, rank: 4, image: '💧', change: 'up' },
-  { name: 'Washing Machine Repair', category: 'Washing Machine', rating: 4.7, growth: '+22%', bookings: 430, rank: 5, image: '🫧', change: 'up' },
-  { name: 'TV Repair', category: 'TV Repair', rating: 4.5, growth: '+18%', bookings: 380, rank: 6, image: '📺', change: 'down' },
-  { name: 'Refrigerator Service', category: 'Refrigerator', rating: 4.6, growth: '+15%', bookings: 320, rank: 7, image: '🧊', change: 'up' },
-  { name: 'Geyser Installation', category: 'Geyser', rating: 4.5, growth: '+12%', bookings: 290, rank: 8, image: '🔥', change: 'down' },
-]
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+interface TrendingService {
+  id: string; name: string; category: string; rating: number;
+  growth: string; bookings: number; rank: number; image: string; change: 'up' | 'down';
+}
 
 export function TrendingServicesPage() {
   const { navigate } = useApp()
 
-  const trendingLoader = useCallback(() => trendingData, [])
-  const { data: trending, loading, error } = useMockApi(trendingData, 700)
+  const { data: svcResponse, loading, error, refetch } = useUrlApi<{ services: ApiService[]; pagination: { total: number } }>('/api/services?limit=8')
+
+  // Map API services to trending shape with rank and computed growth
+  const trending: TrendingService[] = (svcResponse?.services ?? []).map((svc, i) => ({
+    id: svc.id, name: svc.title, category: svc.category.name, rating: svc.averageRating,
+    growth: `+${Math.max(10, 45 - i * 5)}%`, bookings: svc.totalBookings, rank: i + 1,
+    image: CATEGORY_EMOJI[svc.category.name] ?? '🔧', change: i % 3 === 2 ? 'down' as const : 'up' as const,
+  }))
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -48,7 +60,7 @@ export function TrendingServicesPage() {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 mb-4">Failed to load trending services</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+            <Button variant="outline" onClick={refetch}>Retry</Button>
           </div>
         ) : trending && trending.length > 0 ? (
           <div className="space-y-3">

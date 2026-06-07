@@ -10,26 +10,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
-
-const serviceData = {
-  name: 'Air Conditioner Service & Repair',
-  category: 'Air Conditioner',
-  description: 'Professional AC servicing, repair, and installation by certified technicians.',
-  provider: { name: 'CoolAir Solutions', rating: 4.8, reviews: 234, experience: '8 yrs', completed: 1520, avatar: '❄️', verified: true },
-  pricing: [
-    { plan: 'Basic Service', desc: 'AC cleaning & filter check', price: 199, popular: false },
-    { plan: 'Standard Service', desc: 'Full cleaning, gas check, filter replacement', price: 349, popular: true },
-    { plan: 'Premium Service', desc: 'Deep clean, gas refill, all parts check, warranty', price: 499, popular: false },
-  ],
-}
-
-const reviewsData = [
-  { name: 'Priya S.', rating: 5, date: '2 days ago', text: 'Excellent service! The technician was very professional and fixed my AC in no time.' },
-  { name: 'Rahul M.', rating: 4, date: '1 week ago', text: 'Good service overall. A bit late arrival but the work quality was great.' },
-  { name: 'Sneha K.', rating: 5, date: '2 weeks ago', text: 'Best AC service I have ever had. Will definitely book again!' },
-]
+import { useApi } from '@/lib/use-api'
 
 const faqs = [
   { q: 'What is included in the basic service?', a: 'Basic service includes AC unit cleaning, filter check, and performance testing.' },
@@ -38,15 +19,71 @@ const faqs = [
   { q: 'Can I reschedule my booking?', a: 'Yes, you can reschedule up to 2 hours before the appointment at no extra cost.' },
 ]
 
+interface ApiReview {
+  id: string; rating: number; comment: string | null; createdAt: string;
+  reviewer: { id: number; name: string; profileImageUrl: string | null };
+}
+
+interface ApiServiceDetail {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number;
+  images: string | null; city: string | null;
+  provider: { id: number; name: string; profileImageUrl: string | null; city: string | null };
+  category: { id: number; name: string; slug: string };
+  reviews: ApiReview[];
+}
+
+interface MappedReview {
+  name: string; rating: number; date: string; text: string;
+}
+
+interface MappedService {
+  name: string; category: string; description: string;
+  provider: { name: string; rating: number; reviews: number; experience: string; completed: number; avatar: string; verified: boolean };
+  pricing: { plan: string; desc: string; price: number; popular: boolean }[];
+}
+
 export function ServiceDetailPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0)
-  const { navigate } = useApp()
+  const { navigate, nav } = useApp()
+  const serviceId = nav.params.id || nav.params.service || ''
 
-  const serviceLoader = useCallback(() => serviceData, [])
-  const reviewsLoader = useCallback(() => reviewsData, [])
+  const { data: apiService, loading: svcLoading, refetch: refetchService } = useApi<ApiServiceDetail | null>(async () => {
+    if (!serviceId) return null
+    const res = await fetch(`/api/services/${encodeURIComponent(serviceId)}`)
+    if (!res.ok) throw new Error('Failed to load service details')
+    return res.json()
+  }, [serviceId])
 
-  const { data: service, loading: svcLoading } = useMockApi(serviceData, 600)
-  const { data: reviews, loading: revLoading } = useMockApi(reviewsData, 800)
+  // Map API service to component shape
+  const service: MappedService | null = apiService ? {
+    name: apiService.title,
+    category: apiService.category.name,
+    description: apiService.description ?? 'Professional home service by verified experts.',
+    provider: {
+      name: apiService.provider.name,
+      rating: apiService.averageRating,
+      reviews: apiService.totalReviews,
+      experience: `${Math.max(1, Math.floor(apiService.totalBookings / 200))} yrs`,
+      completed: apiService.totalBookings,
+      avatar: '🔧',
+      verified: apiService.averageRating >= 4.0,
+    },
+    pricing: [
+      { plan: 'Basic Service', desc: 'Standard checkup and minor fixes', price: apiService.basePrice, popular: false },
+      { plan: 'Standard Service', desc: 'Full service with parts inspection', price: Math.round(apiService.basePrice * 1.3), popular: true },
+      { plan: 'Premium Service', desc: 'Complete service with warranty', price: Math.round(apiService.basePrice * 1.6), popular: false },
+    ],
+  } : null
+
+  // Map API reviews to component shape
+  const reviews: MappedReview[] = (apiService?.reviews ?? []).map((r) => ({
+    name: r.reviewer.name,
+    rating: r.rating,
+    date: new Date(r.createdAt).toLocaleDateString(),
+    text: r.comment ?? '',
+  }))
+  const revLoading = svcLoading
 
   if (svcLoading) {
     return (

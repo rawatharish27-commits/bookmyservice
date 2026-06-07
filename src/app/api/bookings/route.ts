@@ -3,9 +3,16 @@ import { db } from '@/lib/db';
 import { requireAuth } from '@/lib/middleware';
 
 function generateBookingNumber(): string {
-  const year = new Date().getFullYear();
-  const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-  return `BYS-${year}-${random}`;
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  const seq = String(Math.floor(Math.random() * 10000)).padStart(4, '0');
+  return `BMS-${y}${m}${d}-${seq}`;
+}
+
+function generateOtpCode(): string {
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 export async function GET(request: NextRequest) {
@@ -13,8 +20,8 @@ export async function GET(request: NextRequest) {
     const user = await requireAuth(request);
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
-    const page = parseInt(searchParams.get('page') || '1');
-    const limit = parseInt(searchParams.get('limit') || '10');
+    const page = Math.max(parseInt(searchParams.get('page') || '1'), 1);
+    const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '10'), 1), 100);
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
@@ -97,6 +104,7 @@ export async function POST(request: NextRequest) {
       serviceLongitude,
       distanceKm,
       specialInstructions,
+      bookingType,
     } = body;
 
     if (!serviceId || !scheduledDate || !scheduledTime || !serviceAddress) {
@@ -106,9 +114,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get service details
+    // Validate the service exists and is active
     const service = await db.service.findUnique({
       where: { id: serviceId },
+      include: {
+        provider: {
+          select: { id: true, name: true, status: true, profileImageUrl: true },
+        },
+      },
     });
 
     if (!service) {
@@ -125,13 +138,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate the provider exists and is active
+    if (service.provider.status !== 'ACTIVE') {
+      return NextResponse.json(
+        { error: 'Service provider is not available' },
+        { status: 400 }
+      );
+    }
+
     const basePrice = service.basePrice;
     const platformFee = Math.max(5, basePrice * 0.05);
     const finalPrice = basePrice + platformFee;
 
+    // Generate booking number (BMS-YYYYMMDD-XXXX) and OTP code
+    const bookingNumber = generateBookingNumber();
+    const otpCode = generateOtpCode();
+
     const booking = await db.booking.create({
       data: {
-        bookingNumber: generateBookingNumber(),
+        bookingNumber,
         clientId: user.userId,
         providerId: service.providerId,
         serviceId,
@@ -147,10 +172,23 @@ export async function POST(request: NextRequest) {
         platformFee,
         providerEarnings: basePrice - platformFee,
         specialInstructions,
+        bookingType: bookingType || 'NORMAL',
+        otpCode,
+        warrantyDays: 90,
       },
       include: {
         service: { select: { id: true, title: true, basePrice: true } },
         provider: { select: { id: true, name: true, profileImageUrl: true } },
+      },
+    });
+
+    // Create BookingTimeline entry for booking creation
+    await db.bookingTimeline.create({
+      data: {
+        bookingId: booking.id,
+        status: 'PENDING',
+        description: `Booking created by ${user.email}`,
+        performedBy: user.userId,
       },
     });
 

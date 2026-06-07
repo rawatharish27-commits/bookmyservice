@@ -536,8 +536,8 @@ export function AdminDashboard() {
               </div>
             </CardHeader>
             <CardContent className="px-0 pb-0">
-              <div className="overflow-x-auto">
-                <table className="w-full">
+              <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="border-y border-slate-100">
                       <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
@@ -650,8 +650,8 @@ export function AdminDashboard() {
                 <CardDescription>Best performing services by revenue</CardDescription>
               </CardHeader>
               <CardContent className="px-0 pb-0">
-                <div className="overflow-x-auto">
-                  <table className="w-full">
+                <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+                  <table className="w-full min-w-[600px]">
                     <thead>
                       <tr className="border-y border-slate-100">
                         <th className="px-4 py-2 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500">

@@ -8,11 +8,19 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Wallet, CreditCard, Smartphone, Tag, Check, Shield, Zap, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 
-const paymentData = {
-  service: { name: 'Air Conditioner', date: '20 May 2025', time: '10:00 AM' },
+// Payment methods and pricing are client-side state (UI config + booking context)
+// In production, the booking amount and applied coupons would come from the booking API
+interface PaymentData {
+  service: { name: string; date: string; time: string };
+  total: number;
+  methods: { id: string; label: string; icon: typeof Wallet; balance: string; desc: string }[];
+  pricing: { subtotal: number; discount: number; pay: number };
+}
+
+const staticPaymentData: PaymentData = {
+  service: { name: 'Home Service', date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }), time: '10:00 AM' },
   total: 299,
   methods: [
     { id: 'wallet', label: 'MyService Wallet', icon: Wallet, balance: '₹1,250', desc: 'Available balance' },
@@ -27,8 +35,7 @@ export function BookingPaymentPage() {
   const [coupon, setCoupon] = useState('')
   const { navigate } = useApp()
 
-  const paymentLoader = useCallback(() => paymentData, [])
-  const { data, loading } = useMockApi(paymentData, 600)
+  const { data, loading } = useApi(() => Promise.resolve(staticPaymentData), [])
 
   if (loading) {
     return (

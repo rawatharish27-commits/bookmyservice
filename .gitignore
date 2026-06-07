@@ -1,58 +1,37 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 node_modules/
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
 
-# testing
-/coverage
-
-# next.js / vite
+# next.js
 .next/
-/out/
+out/
 
-# production
-/build
+# environment
+.env
+.env*.local
+.env.production
 
-# misc
-.DS_Store
-*.pem
+# database
+db/*.db
+db/*.db-journal
 
 # debug
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
 
-# env files
-.env*
-!.env.example
-.env.local
-.env.production
-
-# vercel
-.vercel
-
-
-# typescript
+# misc
+.DS_Store
 *.tsbuildinfo
 next-env.d.ts
-local-env*
-.claude
-.z-ai-config
-*.log
-dev.log
-dev.out.log
-test
-prompt
 
-server.log
+# upload
+upload/
+
+# logs
+mini-services/api-service/logs/
+*.log
+
+# agent context
+agent-ctx/
+
 # Vite build output
 dist/
 
@@ -60,23 +39,22 @@ dist/
 .idea/
 .vscode/
 
-# Uploads
-uploads/
-upload/
-
 # Certificates
 *.crt
 *.key
-*.pem
-
-# SQL dumps
-*.sql
 
 # Cloudflare
 .open-next/
 .wrangler/
 
-# Skills directory
-/skills/
 # Runtime artifacts
 .zscripts/
+
+# Coverage
+coverage/
+
+# Vercel
+.vercel
+
+# Skills directory
+/skills/

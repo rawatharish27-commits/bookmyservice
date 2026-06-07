@@ -728,9 +728,9 @@ app.get('/api/auth/profile', async (c) => {
     const secret = new TextEncoder().encode(JWT_SECRET)
     const jwtResult = await jwtVerify(authHeader.split(' ')[1], secret, { issuer: 'bookyourservice', audience: 'bookyourservice' })
     payload = jwtResult.payload
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const { roleName, ...profile } = result.rows[0]
     setSentryUser({ id: profile.id, email: profile.email, role: roleName })
     // Issue a fresh token so the JWT doesn't expire mid-session
     const newToken = await new SignJWT({ sub: profile.id, email: profile.email, role: roleName, roleId: profile.roleId })
@@ -807,8 +807,8 @@ app.patch('/api/auth/profile', async (c) => {
     updates.push(`"updatedAt" = NOW()`)
     values.push(payload.sub)
     await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [payload.sub])
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ message: 'Profile updated', user: { ...profile, role: roleName } })
   } catch (e: any) { 
     console.error('Profile update error:', e); 
@@ -861,10 +861,10 @@ app.post('/api/auth/refresh', async (c) => {
         })
 
         // Get user profile
-        const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [row.userId])
+        const userResult = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [row.userId])
         const user = userResult.rows[0]
         if (user) {
-          const { passwordHash, roleName, ...safeUser } = user
+          const { roleName, ...safeUser } = user
           return c.json({ accessToken: newAccessToken, user: { ...safeUser, role: roleName } })
         }
         return c.json({ accessToken: newAccessToken })
@@ -888,7 +888,7 @@ app.post('/api/auth/refresh', async (c) => {
         })
 
         // Verify user still exists and is active
-        const userResult = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1 AND u.status = \'ACTIVE\'', [payload.sub])
+        const userResult = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1 AND u.status = \'ACTIVE\'', [payload.sub])
         if (!userResult.rows[0]) {
           return c.json({ error: 'User not found or inactive', code: 'USER_INACTIVE' }, 401)
         }
@@ -2693,9 +2693,9 @@ app.get('/api/admin/users/:id', async (c) => {
     const admin = await requireAdmin(c)
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
     const id = c.req.param('id')
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ user: { ...profile, role: roleName } })
   } catch (e) { return c.json({ error: 'Failed to get user' }, 500) }
 })
@@ -2721,8 +2721,8 @@ app.patch('/api/admin/users/:id', async (c) => {
     // Log admin action
     const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, 'UPDATE_USER', 'USER', id, JSON.stringify(body)])
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ message: 'User updated', user: { ...profile, role: roleName } })
   } catch (e) { console.error('Admin update user error:', e); return c.json({ error: 'Failed to update user' }, 500) }
 })
@@ -3203,9 +3203,9 @@ app.get('/api/technician/profile', async (c) => {
   try {
     const user = await getAuthUser(c)
     if (!user) return c.json({ error: 'Auth required' }, 401)
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.id])
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [user.id])
     if (!result.rows[0]) return c.json({ error: 'Not found' }, 404)
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ profile: { ...profile, role: roleName } })
   } catch (e) { return c.json({ profile: null }) }
 })

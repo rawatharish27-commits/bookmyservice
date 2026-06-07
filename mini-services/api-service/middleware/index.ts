@@ -257,7 +257,7 @@ function applySecurityHeaders(app: Hono): void {
     c.header('Referrer-Policy', 'strict-origin-when-cross-origin')
     c.header(
       'Content-Security-Policy',
-      "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; img-src 'self' data: blob: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'",
+      "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; connect-src 'self' https://api.razorpay.com https://*.razorpay.com wss:; frame-src https://api.razorpay.com; worker-src 'self' blob:"
     )
   })
 }

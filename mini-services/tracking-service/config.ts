@@ -7,6 +7,9 @@
 
 export const PORT = 3003
 
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  throw new Error('FATAL: JWT_SECRET environment variable is required in production.');
+}
 export const JWT_SECRET = process.env.JWT_SECRET || 'bys-dev-secret-key-change-in-production-2024'
 
 // Allowed CORS origins — matches main API service

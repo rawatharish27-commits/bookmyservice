@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev --port 3000",
     "dev:api": "cd mini-services/api-service && bun --hot index.ts",
+    "build": "next build",
+    "start": "next start --port 3000",
     "lint": "next lint",
     "db:push": "npx prisma db push",
     "db:seed": "npx tsx prisma/seed.ts"

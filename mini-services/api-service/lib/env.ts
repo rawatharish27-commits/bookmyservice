@@ -27,7 +27,7 @@ const ENV_SCHEMA: EnvVarSchema[] = [
   { name: 'DATABASE_URL', required: true, type: 'url', description: 'PostgreSQL connection string' },
 
   // Auth
-  { name: 'JWT_SECRET', required: false, type: 'string', default: 'dev-fallback-secret', description: 'JWT signing secret', sensitive: true },
+  { name: 'JWT_SECRET', required: process.env.NODE_ENV === 'production', type: 'string', description: 'JWT signing secret', sensitive: true },
 
   // Redis
   { name: 'REDIS_URL', required: false, type: 'url', description: 'Redis connection URL' },

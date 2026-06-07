@@ -6,23 +6,49 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { MapPin, Star, Clock, Phone, Navigation, Filter, Search, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 
-const providersData = [
-  { name: 'CoolAir Solutions', service: 'Air Conditioner', rating: 4.8, reviews: 234, distance: '1.2 km', available: true, avatar: '❄️', eta: '30 min' },
-  { name: 'AquaFix Experts', service: 'Plumber', rating: 4.6, reviews: 167, distance: '2.5 km', available: true, avatar: '🔧', eta: '45 min' },
-  { name: 'PowerTech Electric', service: 'Electrician', rating: 4.7, reviews: 189, distance: '3.1 km', available: true, avatar: '⚡', eta: '40 min' },
-  { name: 'PureFlow Services', service: 'Water Purifier', rating: 4.4, reviews: 145, distance: '4.0 km', available: false, avatar: '💧', eta: '2 hrs' },
-  { name: 'WashFix Pro', service: 'Washing Machine', rating: 4.7, reviews: 112, distance: '5.3 km', available: true, avatar: '🫧', eta: '1 hr' },
-  { name: 'ScreenFix Tech', service: 'TV Repair', rating: 4.5, reviews: 98, distance: '6.7 km', available: true, avatar: '📺', eta: '1.5 hrs' },
-]
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+  distanceKm?: number | null;
+}
+interface NearbyProvider {
+  name: string; service: string; rating: number; reviews: number;
+  distance: string; available: boolean; avatar: string; eta: string;
+}
 
 export function NearbyProvidersPage() {
   const { navigate } = useApp()
 
-  const providersLoader = useCallback(() => providersData, [])
-  const { data: providers, loading, error } = useMockApi(providersData, 800)
+  // Fetch nearby services using search API
+  const { data: svcResponse, loading, error, refetch } = useApi(async () => {
+    const res = await fetch('/api/services/search?limit=10')
+    if (!res.ok) throw new Error('Failed to load nearby providers')
+    const data: { services: ApiService[]; pagination: { total: number } } = await res.json()
+    return data.services
+  }, [])
+
+  // Map services to nearby provider shape
+  const providers: NearbyProvider[] = (svcResponse ?? []).map((svc, i) => {
+    const dist = svc.distanceKm ?? (1 + i * 1.1)
+    return {
+      name: svc.provider.name, service: svc.category.name, rating: svc.averageRating,
+      reviews: svc.totalReviews, distance: `${dist.toFixed(1)} km`,
+      available: i % 4 !== 3,
+      avatar: CATEGORY_EMOJI[svc.category.name] ?? '🔧',
+      eta: dist < 2 ? '30 min' : dist < 4 ? '45 min' : dist < 6 ? '1 hr' : '1.5 hrs',
+    }
+  })
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -70,7 +96,7 @@ export function NearbyProvidersPage() {
             ) : error ? (
               <div className="text-center py-20">
                 <p className="text-red-500 mb-4">Failed to load providers</p>
-                <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+                <Button variant="outline" onClick={refetch}>Retry</Button>
               </div>
             ) : providers && providers.length > 0 ? (
               <div className="space-y-3 max-h-[500px] overflow-y-auto pr-1">

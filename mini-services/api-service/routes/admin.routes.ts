@@ -38,9 +38,9 @@ router.get('/api/admin/users/:id', async (c) => {
     const admin = await requireAdmin(c)
     if (!admin) return c.json({ error: 'Admin access required' }, 403)
     const id = c.req.param('id')
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
     if (!result.rows[0]) return c.json({ error: 'User not found' }, 404)
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ user: { ...profile, role: roleName } })
   } catch (e) { return c.json({ error: 'Failed to get user' }, 500) }
 })
@@ -61,8 +61,8 @@ router.patch('/api/admin/users/:id', async (c) => {
     await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
     const logId = 'log_' + crypto.randomUUID().replace(/-/g, '').slice(0, 20)
     await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, admin.id, 'UPDATE_USER', 'USER', id, JSON.stringify(body)])
-    const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
-    const { passwordHash, roleName, ...profile } = result.rows[0]
+    const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [id])
+    const { roleName, ...profile } = result.rows[0]
     return c.json({ message: 'User updated', user: { ...profile, role: roleName } })
   } catch (e) { console.error('Admin update user error:', e); return c.json({ error: 'Failed to update user' }, 500) }
 })

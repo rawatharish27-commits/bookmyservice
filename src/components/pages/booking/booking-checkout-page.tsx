@@ -7,24 +7,50 @@ import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MapPin, User, Tag, Zap, ChevronRight, ArrowRight, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 
-const checkoutData = {
-  service: { name: 'Air Conditioner', desc: 'Complete AC diagnostic and repair service', price: 349 },
-  provider: { name: 'Amit Sharma', rating: '4.9', services: '500+', distance: '2 km' },
-  addresses: [
-    { id: '1', label: 'Home', address: '42, Rajouri Garden, New Delhi', selected: true },
-    { id: '2', label: 'Work', address: 'Cyber Hub, Gurugram', selected: false },
-  ],
-  pricing: { serviceCharge: 299, convenienceFee: 50, discount: 50, total: 299 },
+// Checkout data derived from service API + static booking config
+interface CheckoutData {
+  service: { name: string; desc: string; price: number };
+  provider: { name: string; rating: string; services: string; distance: string };
+  addresses: { id: string; label: string; address: string; selected: boolean }[];
+  pricing: { serviceCharge: number; convenienceFee: number; discount: number; total: number };
 }
 
 export function BookingCheckoutPage() {
-  const { navigate } = useApp()
+  const { navigate, nav } = useApp()
+  const serviceId = nav.params.id || nav.params.service || ''
 
-  const checkoutLoader = useCallback(() => checkoutData, [])
-  const { data, loading, error } = useMockApi(checkoutData, 600)
+  const { data, loading, error, refetch } = useApi<CheckoutData>(async () => {
+    // Fetch service details from API if we have a service ID
+    if (serviceId) {
+      const res = await fetch(`/api/services/${encodeURIComponent(serviceId)}`)
+      if (!res.ok) throw new Error('Failed to load checkout details')
+      const svc = await res.json()
+      const serviceCharge = svc.basePrice
+      const convenienceFee = Math.max(5, Math.round(svc.basePrice * 0.05))
+      const discount = Math.round(svc.basePrice * 0.15)
+      return {
+        service: { name: svc.title, desc: svc.description ?? 'Professional home service', price: svc.basePrice },
+        provider: { name: svc.provider.name, rating: svc.averageRating?.toFixed(1) ?? '4.5', services: `${svc.totalBookings ?? 0}+`, distance: '2 km' },
+        addresses: [
+          { id: '1', label: 'Home', address: '42, Rajouri Garden, New Delhi', selected: true },
+          { id: '2', label: 'Work', address: 'Cyber Hub, Gurugram', selected: false },
+        ],
+        pricing: { serviceCharge, convenienceFee, discount, total: serviceCharge + convenienceFee - discount },
+      }
+    }
+    // Fallback: no service ID in nav params
+    return {
+      service: { name: 'Home Service', desc: 'Professional home service by verified experts', price: 349 },
+      provider: { name: 'Expert Professional', rating: '4.8', services: '500+', distance: '2 km' },
+      addresses: [
+        { id: '1', label: 'Home', address: '42, Rajouri Garden, New Delhi', selected: true },
+        { id: '2', label: 'Work', address: 'Cyber Hub, Gurugram', selected: false },
+      ],
+      pricing: { serviceCharge: 299, convenienceFee: 50, discount: 50, total: 299 },
+    }
+  }, [serviceId])
 
   if (loading) {
     return (

@@ -11,34 +11,46 @@ import {
   Grid3x3, List, Heart, ArrowUpDown, Filter, X, Loader2
 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi } from '@/lib/use-api'
 
-const servicesData = [
-  { id: '1', name: 'Air Conditioner', provider: 'CoolAir Solutions', rating: 4.8, reviews: 234, price: 499, category: 'Air Conditioner', image: '❄️', verified: true },
-  { id: '2', name: 'Washing Machine Repair', provider: 'WashFix Pro', rating: 4.7, reviews: 189, price: 349, category: 'Washing Machine', image: '🫧', verified: true },
-  { id: '3', name: 'Electrician - Wiring', provider: 'PowerTech Electric', rating: 4.7, reviews: 189, price: 299, category: 'Electrician', image: '⚡', verified: false },
-  { id: '4', name: 'Plumber - Leak Fix', provider: 'AquaFix Experts', rating: 4.6, reviews: 167, price: 199, category: 'Plumber', image: '🔧', verified: true },
-  { id: '5', name: 'RO Water Purifier Service', provider: 'PureFlow Services', rating: 4.4, reviews: 145, price: 349, category: 'Water Purifier', image: '💧', verified: true },
-  { id: '6', name: 'TV Repair - LED/LCD', provider: 'ScreenFix Tech', rating: 4.5, reviews: 98, price: 399, category: 'TV Repair', image: '📺', verified: true },
-  { id: '7', name: 'Refrigerator Repair', provider: 'CoolTech Services', rating: 4.6, reviews: 156, price: 399, category: 'Refrigerator', image: '🧊', verified: false },
-  { id: '8', name: 'Geyser Installation', provider: 'HeatFix Experts', rating: 4.5, reviews: 112, price: 299, category: 'Geyser', image: '🔥', verified: true },
-  { id: '9', name: 'Water Tank Cleaning', provider: 'AquaClean Pro', rating: 4.3, reviews: 87, price: 199, category: 'Water Tank Cleaning', image: '🪣', verified: false },
-]
-
+// Static filter options (UI config, not from API)
 const filterOptions = {
   categories: ['All', 'Air Conditioner', 'Washing Machine', 'Electrician', 'Plumber', 'Water Purifier', 'TV Repair', 'Refrigerator', 'Geyser', 'Kitchen Appliances', 'Water Tank Cleaning', 'Movers and Packers'],
   priceRanges: ['All', 'Under ₹200', '₹200-₹300', '₹300-₹400', '₹400-₹499'],
   ratings: ['All', '4.5+', '4.0+', '3.5+'],
 }
 
-export function ServiceListingPage() {
-  const [activeCategory, setActiveCategory] = useState('All')
-  const [showFilters, setShowFilters] = useState(false)
-  const { navigate } = useApp()
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
 
-  const servicesLoader = useCallback(() => servicesData, [])
-  const { data: services, loading, error } = useMockApi(servicesData, 700)
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+interface MappedService {
+  id: string; name: string; provider: string; rating: number; reviews: number;
+  price: number; category: string; image: string; verified: boolean;
+}
+
+export function ServiceListingPage() {
+  const { navigate, nav } = useApp()
+  const categoryFilter = nav.params.category || 'All'
+  const [activeCategory, setActiveCategory] = useState(categoryFilter)
+  const [showFilters, setShowFilters] = useState(false)
+
+  const { data: svcResponse, loading, error, refetch } = useUrlApi<{ services: ApiService[]; pagination: { total: number } }>('/api/services?limit=50')
+
+  const services: MappedService[] = (svcResponse?.services ?? []).map((svc) => ({
+    id: svc.id, name: svc.title, provider: svc.provider.name, rating: svc.averageRating,
+    reviews: svc.totalReviews, price: svc.basePrice, category: svc.category.name,
+    image: CATEGORY_EMOJI[svc.category.name] ?? '🔧', verified: svc.averageRating >= 4.0,
+  }))
 
   const filteredServices = services?.filter((s) =>
     activeCategory === 'All' || s.category === activeCategory
@@ -121,7 +133,7 @@ export function ServiceListingPage() {
             ) : error ? (
               <div className="text-center py-20">
                 <p className="text-red-500 mb-4">Failed to load services</p>
-                <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+                <Button variant="outline" onClick={refetch}>Retry</Button>
               </div>
             ) : (
               <>

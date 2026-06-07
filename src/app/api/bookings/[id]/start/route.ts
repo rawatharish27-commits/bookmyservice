@@ -22,20 +22,37 @@ export async function PATCH(
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
+    // Verify the user is the assigned provider
     if (booking.providerId !== user.userId && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
+    // Only ACCEPTED bookings can be started
     if (booking.status !== 'ACCEPTED') {
       return NextResponse.json(
         { error: 'Only accepted bookings can be started' },
-        { status: 400 }
+        { status: 409 }
       );
     }
 
+    const now = new Date();
+
     const updatedBooking = await db.booking.update({
       where: { id },
-      data: { status: 'IN_PROGRESS' },
+      data: {
+        status: 'IN_PROGRESS',
+        startedAt: now,
+      },
+    });
+
+    // Create BookingTimeline entry
+    await db.bookingTimeline.create({
+      data: {
+        bookingId: booking.id,
+        status: 'IN_PROGRESS',
+        description: `Service started by provider ${user.email}`,
+        performedBy: user.userId,
+      },
     });
 
     // Notify client

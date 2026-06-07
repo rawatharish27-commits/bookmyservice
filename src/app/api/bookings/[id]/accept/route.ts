@@ -22,20 +22,37 @@ export async function PATCH(
       return NextResponse.json({ error: 'Booking not found' }, { status: 404 });
     }
 
+    // Verify the user is the assigned provider for this booking
     if (booking.providerId !== user.userId && user.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    if (booking.status !== 'PENDING') {
+    // Only PENDING or ASSIGNED bookings can be accepted
+    if (booking.status !== 'PENDING' && booking.status !== 'ASSIGNED') {
       return NextResponse.json(
-        { error: 'Only pending bookings can be accepted' },
-        { status: 400 }
+        { error: 'Only pending or assigned bookings can be accepted' },
+        { status: 409 }
       );
     }
 
+    const now = new Date();
+
     const updatedBooking = await db.booking.update({
       where: { id },
-      data: { status: 'ACCEPTED' },
+      data: {
+        status: 'ACCEPTED',
+        acceptedAt: now,
+      },
+    });
+
+    // Create BookingTimeline entry
+    await db.bookingTimeline.create({
+      data: {
+        bookingId: booking.id,
+        status: 'ACCEPTED',
+        description: `Booking accepted by provider ${user.email}`,
+        performedBy: user.userId,
+      },
     });
 
     // Notify client

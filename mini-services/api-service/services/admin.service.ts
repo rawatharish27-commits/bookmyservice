@@ -93,9 +93,9 @@ export async function listUsers(pool: Pool, filters: ListUsersFilters) {
 }
 
 export async function getUser(pool: Pool, userId: string) {
-  const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
+  const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
   if (!result.rows[0]) return null
-  const { passwordHash, roleName, ...profile } = result.rows[0]
+  const { roleName, ...profile } = result.rows[0]
   return { ...profile, role: roleName }
 }
 
@@ -113,8 +113,8 @@ export async function updateUser(pool: Pool, adminId: string, userId: string, fi
   await pool.query(`UPDATE "User" SET ${updates.join(', ')} WHERE id = $${idx}`, values)
   const logId = generateLogId()
   await pool.query('INSERT INTO "AdminLog" (id, "adminId", action, "targetType", "targetId", details, "createdAt") VALUES ($1, $2, $3, $4, $5, $6, NOW())', [logId, adminId, 'UPDATE_USER', 'USER', userId, JSON.stringify(fields)])
-  const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
-  const { passwordHash, roleName, ...profile } = result.rows[0]
+  const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
+  const { roleName, ...profile } = result.rows[0]
   return { message: 'User updated', user: { ...profile, role: roleName } }
 }
 

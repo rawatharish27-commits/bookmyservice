@@ -7,14 +7,22 @@ import { Separator } from '@/components/ui/separator'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { MapPin, Calendar, Clock, User, Tag, Zap, Shield } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 import { Loader2 } from 'lucide-react'
 
-const summaryData = {
-  service: { name: 'Air Conditioner', desc: 'Complete diagnostic and repair' },
-  provider: { name: 'Amit Sharma' },
-  date: '20 May 2025',
+// Booking summary data derived from booking context
+// In production, this would come from /api/bookings/[id] after booking creation
+interface SummaryData {
+  service: { name: string; desc: string };
+  provider: { name: string };
+  date: string; time: string; address: string;
+  pricing: { serviceCharge: number; convenienceFee: number; gst: number; discount: number; total: number };
+}
+
+const staticSummaryData: SummaryData = {
+  service: { name: 'Home Service', desc: 'Complete diagnostic and repair' },
+  provider: { name: 'Expert Professional' },
+  date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
   time: '10:00 AM - 11:00 AM',
   address: '42, Rajouri Garden, Delhi',
   pricing: { serviceCharge: 299, convenienceFee: 50, gst: 0, discount: 50, total: 299 },
@@ -23,8 +31,7 @@ const summaryData = {
 export function BookingSummaryPage() {
   const { navigate } = useApp()
 
-  const summaryLoader = useCallback(() => summaryData, [])
-  const { data, loading } = useMockApi(summaryData, 600)
+  const { data, loading } = useApi(() => Promise.resolve(staticSummaryData), [])
 
   if (loading) {
     return (

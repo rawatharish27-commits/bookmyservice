@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
@@ -6,6 +6,13 @@ import { cn } from "@/lib/utils";
 const geist = Geist({ subsets: ['latin'], variable: '--font-sans' });
 
 const SITE_URL = "https://bookyourservice.co.in";
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0A1F44',
+};
 
 // ─── LocalBusiness Schema ───────────────────────────────────────────────────
 const localBusinessSchema = {
@@ -395,11 +402,13 @@ export const metadata: Metadata = {
     siteName: "BookMyService",
     title: "BookMyService — Palwal's #1 Home Service Platform",
     description: "AC Repair, RO Service, Electrician, Plumber & More — Service Within 2 Hours. 3 Months Warranty. Starting ₹99.",
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'BookMyService - Palwal Home Services' }],
   },
   twitter: {
     card: "summary_large_image",
     title: "BookMyService — Palwal's #1 Home Service Platform",
     description: "Book verified technicians for home services in Palwal. Service within 2 hours. 3 months warranty.",
+    images: ['/og-image.png'],
   },
   other: {
     'cache-control': 'no-cache',

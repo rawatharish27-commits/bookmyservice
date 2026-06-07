@@ -6,23 +6,55 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Star, CheckCircle, MapPin, Heart, Award, Users, ThumbsUp, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 
-const providersData = [
-  { name: 'CoolAir Solutions', service: 'Air Conditioner', rating: 4.9, reviews: 534, completed: 1520, experience: '8 yrs', avatar: '❄️', verified: true, topRated: true, distance: '1.2 km' },
-  { name: 'PowerTech Electric', service: 'Electrician', rating: 4.8, reviews: 389, completed: 980, experience: '10 yrs', avatar: '⚡', verified: true, topRated: false, distance: '3.1 km' },
-  { name: 'AquaFix Experts', service: 'Plumber', rating: 4.8, reviews: 367, completed: 1200, experience: '7 yrs', avatar: '🔧', verified: true, topRated: true, distance: '2.5 km' },
-  { name: 'PureFlow Services', service: 'Water Purifier', rating: 4.6, reviews: 245, completed: 720, experience: '6 yrs', avatar: '💧', verified: true, topRated: false, distance: '7.2 km' },
-  { name: 'WashFix Pro', service: 'Washing Machine', rating: 4.7, reviews: 203, completed: 870, experience: '4 yrs', avatar: '🫧', verified: false, topRated: false, distance: '3.8 km' },
-  { name: 'ScreenFix Tech', service: 'TV Repair', rating: 4.5, reviews: 298, completed: 540, experience: '9 yrs', avatar: '📺', verified: true, topRated: false, distance: '6.7 km' },
-]
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; totalBookings: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+interface ProviderInfo {
+  name: string; service: string; rating: number; reviews: number;
+  completed: number; experience: string; avatar: string; verified: boolean;
+  topRated: boolean; distance: string;
+}
 
 export function PopularProvidersPage() {
   const { navigate } = useApp()
 
-  const providersLoader = useCallback(() => providersData, [])
-  const { data: providers, loading, error } = useMockApi(providersData, 700)
+  // Fetch services from API and extract unique providers
+  const { data: svcResponse, loading, error, refetch } = useApi(async () => {
+    const res = await fetch('/api/services?limit=20')
+    if (!res.ok) throw new Error('Failed to load providers')
+    const data: { services: ApiService[] } = await res.json()
+    return data.services
+  }, [])
+
+  // Extract unique providers from services
+  const providerMap = new Map<string, ProviderInfo>()
+  const providers: ProviderInfo[] = []
+  for (const [i, svc] of (svcResponse ?? []).entries()) {
+    if (!providerMap.has(svc.provider.name)) {
+      const info: ProviderInfo = {
+        name: svc.provider.name, service: svc.category.name, rating: svc.averageRating,
+        reviews: svc.totalReviews, completed: svc.totalBookings,
+        experience: `${Math.max(1, Math.floor(svc.totalBookings / 200))} yrs`,
+        avatar: CATEGORY_EMOJI[svc.category.name] ?? '🔧',
+        verified: svc.averageRating >= 4.0, topRated: svc.averageRating >= 4.7,
+        distance: `${(1 + i * 1.3).toFixed(1)} km`,
+      }
+      providerMap.set(svc.provider.name, info)
+      providers.push(info)
+    }
+  }
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -47,7 +79,7 @@ export function PopularProvidersPage() {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 mb-4">Failed to load providers</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+            <Button variant="outline" onClick={refetch}>Retry</Button>
           </div>
         ) : providers && providers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">

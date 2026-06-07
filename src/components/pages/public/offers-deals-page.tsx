@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Clock, Tag, Copy, Sparkles, Gift, Loader2 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useApi } from '@/lib/use-api'
 
+// Offers data is static marketing content — no /api/offers endpoint exists
+// Using useApi with static data instead of useMockApi to remove artificial delay
 const offersData = [
   { title: 'AC Summer Bonanza', desc: 'Get 20% off on all AC services', code: 'SUMMER20', discount: '20% OFF', gradient: 'from-[#1D63FF] to-[#FFCE32]', validTill: '2025-03-31', category: 'Air Conditioner' },
   { title: 'Plumber Fix Sale', desc: '₹50 off on plumber services', code: 'FIX50', discount: '₹50 OFF', gradient: 'from-amber-500 to-yellow-400', validTill: '2025-03-28', category: 'Plumber' },
@@ -55,8 +56,7 @@ export function OffersDealsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null)
   const { navigate } = useApp()
 
-  const offersLoader = useCallback(() => offersData, [])
-  const { data: offers, loading, error } = useMockApi(offersData, 700)
+  const { data: offers, loading, error, refetch } = useApi(() => Promise.resolve(offersData), [])
 
   const handleCopy = (code: string) => {
     navigator.clipboard.writeText(code)
@@ -94,7 +94,7 @@ export function OffersDealsPage() {
         ) : error ? (
           <div className="text-center py-20">
             <p className="text-red-500 mb-4">Failed to load offers</p>
-            <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+            <Button variant="outline" onClick={refetch}>Retry</Button>
           </div>
         ) : offers && offers.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">

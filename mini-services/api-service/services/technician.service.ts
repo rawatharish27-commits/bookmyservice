@@ -9,9 +9,9 @@ import { pool } from '../lib/shared'
 export async function getTechnicianProfile(userId: string): Promise<{
   success: true; profile: any
 } | { success: false; error: string; status: number }> {
-  const result = await pool.query('SELECT u.*, r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
+  const result = await pool.query('SELECT u.id, u.email, u.name, u.phone, u."roleId", u.status, u."emailVerified", u."phoneVerified", u."profileImageUrl", u.address, u.city, u.state, u.country, u.pincode, u.latitude, u.longitude, u."lastLoginAt", u."deletedAt", u."createdAt", u."updatedAt", r.name as "roleName" FROM "User" u JOIN "Role" r ON r.id = u."roleId" WHERE u.id = $1', [userId])
   if (!result.rows[0]) return { success: false, error: 'Not found', status: 404 }
-  const { passwordHash, roleName, ...profile } = result.rows[0]
+  const { roleName, ...profile } = result.rows[0]
   return { success: true, profile: { ...profile, role: roleName } }
 }
 

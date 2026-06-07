@@ -324,7 +324,7 @@ function LiveActivityPopup() {
   if (!visible) return null
 
   return (
-    <div className="fixed bottom-20 left-4 z-40 max-w-xs animate-slide-in-up">
+    <div className="fixed bottom-20 left-4 z-40 max-w-xs animate-slide-in-up md:bottom-6">
       <div className="bg-[#0A1F44]/95 backdrop-blur-xl text-white rounded-2xl p-3.5 shadow-2xl shadow-[#0A1F44]/30 border border-[#FFD54F]/20 flex items-start gap-3">
         <div className="flex items-center justify-center size-8 rounded-full bg-emerald-500/20 shrink-0">
           <CheckCircle className="size-4 text-emerald-400" />
@@ -351,7 +351,7 @@ function FloatingWhatsApp() {
   }, [])
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-end gap-3">
+    <div className="fixed bottom-20 right-4 z-50 flex items-end gap-3 md:bottom-6 md:right-6">
       {tooltip && (
         <div className="bg-white text-[#0A1F44] text-xs font-semibold px-3 py-2 rounded-xl shadow-lg animate-slide-in-right whitespace-nowrap">
           Need urgent help?
@@ -453,10 +453,10 @@ export default function Home() {
       </div>
 
       {/* ─── Emergency Sticky Banner ────────────────────────────────────── */}
-      <div className="bg-[#8B0000] text-white py-2.5 px-4 text-center">
-        <div className="flex items-center justify-center gap-2 text-sm font-semibold">
+      <div id="emergency" className="bg-[#8B0000] text-white py-2.5 px-4 text-center overflow-hidden">
+        <div className="flex items-center justify-center gap-2 text-sm font-semibold flex-wrap">
           <span className="animate-pulse">🚨</span>
-          <span>Emergency Appliance & Home Service Available — Service Within 2 Hours</span>
+          <span className="whitespace-nowrap">Emergency Appliance & Home Service Available — Service Within 2 Hours</span>
           <span className="animate-pulse">🚨</span>
         </div>
       </div>
@@ -577,7 +577,7 @@ export default function Home() {
                   {services.filter(s => cat.services.includes(s.name)).map((service) => (
                     <button
                       key={service.slug}
-                      className="group relative p-4 sm:p-5 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/30 hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 text-left card-hover-lift"
+                      className="group relative p-4 sm:p-5 rounded-2xl bg-[#F2C94C] border border-[#0A1F44]/10 hover:border-[#0A1F44]/30 hover:shadow-xl hover:shadow-[#0A1F44]/10 transition-all duration-300 text-left card-hover-lift min-h-[44px]"
                     >
                       {/* Warranty badge */}
                       <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-md bg-[#0A1F44]/80 text-[#FFD54F] text-[9px] font-bold flex items-center gap-0.5">
@@ -1282,7 +1282,7 @@ export default function Home() {
       </section>
 
       {/* ─── 17. Premium Footer ────────────────────────────────────────────── */}
-      <footer className="bg-[#0A1F44] text-[#FFD54F] mt-auto">
+      <footer className="bg-[#0A1F44] text-[#FFD54F] mt-auto pb-16 md:pb-0">
         <div className="h-1.5 w-full bg-gradient-to-r from-[#FFD54F] via-[#D4A017] to-[#FFD54F]" />
 
         {/* Trust Badges Row */}
@@ -1378,7 +1378,7 @@ export default function Home() {
                 { icon: MessageCircle, label: 'WhatsApp' },
                 { icon: Smartphone, label: 'App' },
               ].map((social) => (
-                <button key={social.label} className="flex items-center justify-center size-9 rounded-lg bg-[#FFD54F]/10 text-[#FFD54F]/60 hover:text-[#FFD54F] hover:bg-[#FFD54F]/20 transition-all" aria-label={social.label}>
+                <button key={social.label} className="flex items-center justify-center size-11 min-w-[44px] min-h-[44px] rounded-lg bg-[#FFD54F]/10 text-[#FFD54F]/60 hover:text-[#FFD54F] hover:bg-[#FFD54F]/20 transition-all" aria-label={social.label}>
                   <social.icon className="size-4" />
                 </button>
               ))}
@@ -1387,11 +1387,166 @@ export default function Home() {
         </div>
       </footer>
 
+      {/* ─── Mobile Bottom Navigation ────────────────────────────────────── */}
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#0A1F44]/95 backdrop-blur-xl border-t border-[#FFD54F]/20 md:hidden safe-area-bottom">
+        <div className="flex items-center justify-around py-2">
+          {[
+            { icon: HomeIcon, label: 'Home', id: 'home' },
+            { icon: Wrench, label: 'Services', id: 'services' },
+            { icon: Zap, label: 'Emergency', id: 'emergency' },
+            { icon: Phone, label: 'Contact', id: 'contact' },
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex flex-col items-center gap-0.5 px-3 py-1.5 text-[#FFD54F]/70 hover:text-[#FFD54F] transition-colors min-w-[60px] min-h-[44px]"
+            >
+              <item.icon className="size-5" />
+              <span className="text-[10px] font-medium">{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+
       {/* ─── 15. Floating WhatsApp Button ─────────────────────────────────── */}
       <FloatingWhatsApp />
 
       {/* ─── 18. Live Activity Popups ─────────────────────────────────────── */}
       <LiveActivityPopup />
+
+      {/* ─── JSON-LD Structured Data for SEO ─────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'HomeAndConstructionBusiness',
+            name: 'BookMyService',
+            description: "Palwal's #1 Home Service Platform — AC, RO, Electrician, Plumber & More",
+            url: 'https://bookyourservice.co.in',
+            telephone: '+91-9999999999',
+            address: {
+              '@type': 'PostalAddress',
+              addressLocality: 'Palwal',
+              addressRegion: 'Haryana',
+              addressCountry: 'IN',
+            },
+            geo: {
+              '@type': 'GeoCoordinates',
+              latitude: 28.1286,
+              longitude: 76.9904,
+            },
+            areaServed: {
+              '@type': 'City',
+              name: 'Palwal',
+            },
+            priceRange: '₹99-₹499',
+            aggregateRating: {
+              '@type': 'AggregateRating',
+              ratingValue: '4.8',
+              reviewCount: '1500',
+            },
+            sameAs: [],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'FAQPage',
+            mainEntity: [
+              {
+                '@type': 'Question',
+                name: 'What services does BookMyService offer in Palwal?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'AC repair, RO service, electrician, plumber, TV repair, washing machine, geyser, water tank cleaning, movers & packers, and kitchen appliance repair.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'How fast can I get a technician in Palwal?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Within 2 hours for regular bookings, and within 1 hour for emergency bookings.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'Is there a warranty on services?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Yes, all services come with a 3-month warranty. If the issue persists, we provide a free revisit.',
+                },
+              },
+              {
+                '@type': 'Question',
+                name: 'What are the service charges in Palwal?',
+                acceptedAnswer: {
+                  '@type': 'Answer',
+                  text: 'Services start from ₹99 with transparent fixed pricing. No hidden charges.',
+                },
+              },
+            ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: 'AC Repair & Service in Palwal',
+            description: 'Professional AC repair, installation, gas refilling, and annual maintenance service in Palwal. Expert technicians for split AC, window AC, and central AC units. 3-month warranty included.',
+            serviceType: 'AC Repair & Service',
+            provider: {
+              '@type': 'HomeAndConstructionBusiness',
+              name: 'BookMyService',
+            },
+            areaServed: { '@type': 'City', name: 'Palwal' },
+            offers: { '@type': 'Offer', price: '149', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: 'RO Service & Repair in Palwal',
+            description: 'RO water purifier service, filter replacement, membrane change, and repair in Palwal. All brands serviced with genuine parts. Starting from ₹149.',
+            serviceType: 'RO Service & Repair',
+            provider: {
+              '@type': 'HomeAndConstructionBusiness',
+              name: 'BookMyService',
+            },
+            areaServed: { '@type': 'City', name: 'Palwal' },
+            offers: { '@type': 'Offer', price: '149', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Service',
+            name: 'Electrician Services in Palwal',
+            description: 'Licensed electrician for wiring, switchboard repair, fan installation, MCB replacement, and all electrical work in Palwal. Same-day service available.',
+            serviceType: 'Electrician Services',
+            provider: {
+              '@type': 'HomeAndConstructionBusiness',
+              name: 'BookMyService',
+            },
+            areaServed: { '@type': 'City', name: 'Palwal' },
+            offers: { '@type': 'Offer', price: '199', priceCurrency: 'INR', availability: 'https://schema.org/InStock' },
+          }),
+        }}
+      />
     </div>
   )
 }

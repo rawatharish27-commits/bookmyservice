@@ -10,29 +10,52 @@ import {
   Refrigerator, Flame, Truck, Star, ArrowRight, CheckCircle, ChevronLeft, ChevronRight, Users, Clock, Loader2
 } from 'lucide-react'
 import { useApp } from '@/lib/app-context'
-import { useMockApi } from '@/lib/use-api'
-import { useCallback } from 'react'
+import { useUrlApi, useApi } from '@/lib/use-api'
 
-const PERMITTED_CATEGORIES = [
-  { icon: Wind, name: 'Air Conditioner', color: 'bg-cyan-100 text-cyan-600' },
-  { icon: Refrigerator, name: 'Refrigerator', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
-  { icon: WashingMachine, name: 'Washing Machine', color: 'bg-indigo-100 text-indigo-600' },
-  { icon: Flame, name: 'Kitchen Appliances', color: 'bg-orange-100 text-orange-600' },
-  { icon: Tv, name: 'TV Repair', color: 'bg-purple-100 text-purple-600' },
-  { icon: Droplets, name: 'Water Purifier', color: 'bg-teal-100 text-teal-600' },
-  { icon: Flame, name: 'Geyser', color: 'bg-red-100 text-red-600' },
-  { icon: Wrench, name: 'Plumber', color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
-  { icon: Zap, name: 'Electrician', color: 'bg-amber-100 text-amber-600' },
-  { icon: Droplets, name: 'Water Tank Cleaning', color: 'bg-emerald-100 text-emerald-600' },
-  { icon: Truck, name: 'Movers and Packers', color: 'bg-slate-100 text-slate-600' },
-]
+// UI config mapping: category name → icon component + color class
+const CATEGORY_UI: Record<string, { icon: typeof Wind; color: string }> = {
+  'Air Conditioner': { icon: Wind, color: 'bg-cyan-100 text-cyan-600' },
+  'Refrigerator': { icon: Refrigerator, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  'Washing Machine': { icon: WashingMachine, color: 'bg-indigo-100 text-indigo-600' },
+  'Kitchen Appliances': { icon: Flame, color: 'bg-orange-100 text-orange-600' },
+  'TV Repair': { icon: Tv, color: 'bg-purple-100 text-purple-600' },
+  'Water Purifier': { icon: Droplets, color: 'bg-teal-100 text-teal-600' },
+  'Geyser': { icon: Flame, color: 'bg-red-100 text-red-600' },
+  'Plumber': { icon: Wrench, color: 'bg-[#1D63FF]/10 text-[#1D63FF]' },
+  'Electrician': { icon: Zap, color: 'bg-amber-100 text-amber-600' },
+  'Water Tank Cleaning': { icon: Droplets, color: 'bg-emerald-100 text-emerald-600' },
+  'Movers and Packers': { icon: Truck, color: 'bg-slate-100 text-slate-600' },
+}
+const DEFAULT_CATEGORY_UI = { icon: Wrench, color: 'bg-slate-100 text-slate-600' }
 
-const featuredData = [
-  { name: 'Air Conditioner', provider: 'CoolAir Solutions', rating: 4.8, reviews: 234, price: 499, image: '❄️' },
-  { name: 'Washing Machine Repair', provider: 'WashFix Pro', rating: 4.7, reviews: 189, price: 349, image: '🫧' },
-  { name: 'Plumber - Leak Fix', provider: 'AquaFix Experts', rating: 4.6, reviews: 167, price: 199, image: '🔧' },
-  { name: 'Electrician - Wiring', provider: 'PowerTech Electric', rating: 4.7, reviews: 145, price: 299, image: '⚡' },
-]
+interface ApiCategory {
+  id: number; name: string; slug: string; description: string | null;
+  iconUrl: string | null; icon: string | null; displayOrder: number;
+  subcategoriesCount: number; servicesCount: number;
+}
+interface CategoryWithUi {
+  id: number; name: string; slug: string; servicesCount: number;
+  icon: typeof Wind; color: string;
+}
+
+interface ApiService {
+  id: string; title: string; description: string | null; basePrice: number;
+  averageRating: number; totalReviews: number; city: string | null;
+  images: string | null; provider: { id: number; name: string; profileImageUrl: string | null };
+  category: { id: number; name: string; slug: string };
+}
+
+interface FeaturedService {
+  id: string; name: string; provider: string; rating: number;
+  reviews: number; price: number; image: string;
+}
+
+const CATEGORY_EMOJI: Record<string, string> = {
+  'Air Conditioner': '❄️', 'Refrigerator': '🧊', 'Washing Machine': '🫧',
+  'Kitchen Appliances': '🍳', 'TV Repair': '📺', 'Water Purifier': '💧',
+  'Geyser': '🔥', 'Plumber': '🔧', 'Electrician': '⚡',
+  'Water Tank Cleaning': '🪣', 'Movers and Packers': '🚚',
+}
 
 const testimonialData = [
   { name: 'Priya S.', text: 'Found an amazing plumber within minutes! The service was top-notch and the pricing was transparent.', rating: 5 },
@@ -52,13 +75,26 @@ function LoadingSkeleton() {
 export function HomePage() {
   const { navigate } = useApp()
 
-  const categoriesLoader = useCallback(() => PERMITTED_CATEGORIES, [])
-  const featuredLoader = useCallback(() => featuredData, [])
-  const testimonialsLoader = useCallback(() => testimonialData, [])
+  // Fetch categories from real API
+  const { data: catResponse, loading: catLoading, refetch: refetchCategories } = useUrlApi<{ categories: ApiCategory[]; total: number }>('/api/categories')
 
-  const { data: categories, loading: catLoading } = useMockApi(PERMITTED_CATEGORIES, 600)
-  const { data: featured, loading: featLoading } = useMockApi(featuredData, 900)
-  const { data: testimonials, loading: testLoading } = useMockApi(testimonialData, 1100)
+  // Fetch featured services from real API
+  const { data: svcResponse, loading: featLoading, refetch: refetchFeatured } = useUrlApi<{ services: ApiService[]; pagination: { total: number } }>('/api/services?limit=4')
+
+  // Testimonials are static marketing content — no API endpoint
+  const { data: testimonials, loading: testLoading } = useApi(() => Promise.resolve(testimonialData), [])
+
+  // Map API categories to component shape with UI config
+  const categories: CategoryWithUi[] = (catResponse?.categories ?? []).map((cat) => {
+    const ui = CATEGORY_UI[cat.name] ?? DEFAULT_CATEGORY_UI
+    return { id: cat.id, name: cat.name, slug: cat.slug, servicesCount: cat.servicesCount, icon: ui.icon, color: ui.color }
+  })
+
+  // Map API services to featured service shape
+  const featured: FeaturedService[] = (svcResponse?.services ?? []).map((svc) => ({
+    id: svc.id, name: svc.title, provider: svc.provider.name, rating: svc.averageRating,
+    reviews: svc.totalReviews, price: svc.basePrice, image: CATEGORY_EMOJI[svc.category.name] ?? '🔧',
+  }))
 
   return (
     <div className="bg-[#f8fafc] min-h-screen">
@@ -145,7 +181,7 @@ export function HomePage() {
         ) : featured && featured.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featured.map((svc) => (
-              <Card key={svc.name} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow">
+              <Card key={svc.id} className="bg-white rounded-xl shadow-sm border-slate-100 hover:shadow-md transition-shadow">
                 <CardContent className="p-5">
                   <div className="text-4xl mb-3" aria-hidden="true">{svc.image}</div>
                   <h3 className="font-bold text-slate-900">{svc.name}</h3>
@@ -158,7 +194,7 @@ export function HomePage() {
                   <Separator className="my-3" />
                   <div className="flex items-center justify-between">
                     <span className="font-bold text-slate-900">₹{svc.price}</span>
-                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('service-detail', { service: svc.name })}>Book Now</Button>
+                    <Button size="sm" className="bg-[#1D63FF] hover:bg-[#0B3D91] text-white" onClick={() => navigate('service-detail', { id: svc.id })}>Book Now</Button>
                   </div>
                 </CardContent>
               </Card>

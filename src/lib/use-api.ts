@@ -66,6 +66,11 @@ export function useUrlApi<T>(url: string, options?: RequestInit): ApiState<T> & 
   const fetchData = useCallback(async () => {
     setState({ data: null, loading: true, error: null })
     try {
+      if (!url) {
+        // No URL provided — skip fetch, resolve with null
+        setState({ data: null, loading: false, error: null })
+        return
+      }
       const baseUrl = process.env.NEXT_PUBLIC_API_URL || ''
       const fullUrl = url.startsWith('http') ? url : `${baseUrl}${url}`
       const res = await fetch(fullUrl, {
