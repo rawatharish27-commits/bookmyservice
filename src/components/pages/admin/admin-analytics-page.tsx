@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { TrendingUp, Users, Calendar, IndianRupee, BarChart3, Download, Loader2, AlertCircle } from 'lucide-react'
-import { useApi } from '@/hooks/use-api'
+import { useUrlApi } from '@/lib/use-api'
 
 export function AdminAnalyticsPage() {
-  const { data: kpiData, isLoading: kpiLoading, error: kpiError } = useApi<{ label: string; value: string; change: string; icon: string; color: string }[]>('/admin/analytics/kpi')
-  const { data: healthData, isLoading: healthLoading, error: healthError } = useApi<{ metric: string; value: string; status: string }[]>('/admin/analytics/health')
+  const { data: kpiData, loading: kpiLoading, error: kpiError } = useUrlApi<{ label: string; value: string; change: string; icon: string; color: string }[]>('/admin/analytics/kpi')
+  const { data: healthData, loading: healthLoading, error: healthError } = useUrlApi<{ metric: string; value: string; status: string }[]>('/admin/analytics/health')
 
   const iconMap: Record<string, React.ElementType> = { IndianRupee, Users, Calendar, TrendingUp }
 

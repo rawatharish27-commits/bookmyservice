@@ -84,3 +84,36 @@ Stage Summary:
   10. ✅ SEO - Added LocalBusiness, FAQ, Service, WebSite, BreadcrumbList schemas + canonical URLs
   11. ✅ Mobile Responsiveness - Homepage already mobile-first with responsive grid layouts
   12. ✅ Database Architecture - Enhanced from 26 to 33+ models, soft delete, proper indexes, wallet system
+
+---
+Task ID: 2
+Agent: cleanup-agent
+Task: Delete dead/duplicate files (bys/, frontend-service/, proxy.js, duplicate assets)
+
+Work Log:
+- Verified auth-context.tsx imports: only imported by 17 bys/ components → safe to delete
+- Verified app-context.tsx imports: only imported by 62 bys/ components → safe to delete
+- Verified movers-packers.jpg: codebase uses movers-and-packers.jpg (the kept one), movers-packers.jpg is unreferenced duplicate
+- Deleted src/components/bys/ directory (72 legacy component files)
+- Deleted src/contexts/app-context.tsx (only used by deleted bys/ components)
+- Deleted src/contexts/auth-context.tsx (only used by deleted bys/ components)
+- Removed empty src/contexts/ directory
+- Deleted mini-services/frontend-service/ directory (2 files: index.ts, package.json — served deleted Vite frontend)
+- Deleted mini-services/proxy.js (old proxy for Vite+API, Next.js runs directly now)
+- Deleted public/images/movers-packers.jpg (100% identical duplicate of movers-and-packers.jpg)
+- Deleted skills/ui-ux-pro-max/assets/data/ directory (24 CSV files, 100% identical duplicate of skills/ui-ux-pro-max/data/)
+- Removed empty skills/ui-ux-pro-max/assets/ directory
+- Updated skills/ui-ux-pro-max/SKILL.md: changed data path reference from assets/data/ to data/
+- Ran TypeScript type check (tsc --noEmit): zero new errors from deletions
+  - Pre-existing errors only in mini-services/api-service/ (type mismatches) and src/components/ui/ (missing npm packages)
+  - No broken imports from deleted files detected
+
+Stage Summary:
+- Removed 72 legacy component files (bys/ directory)
+- Removed 2 dead context files (app-context.tsx, auth-context.tsx)
+- Removed 2 dead mini-service files (frontend-service/, proxy.js)
+- Removed 1 duplicate image (movers-packers.jpg)
+- Removed 24 duplicate CSV data files (assets/data/)
+- Updated 1 SKILL.md reference path
+- Total files deleted: ~101
+- Zero broken imports or new TypeScript errors introduced

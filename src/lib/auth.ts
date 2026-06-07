@@ -20,7 +20,7 @@ export async function signAccessToken(payload: TokenPayload): Promise<string> {
     .setIssuedAt()
     .setExpirationTime(ACCESS_TOKEN_EXPIRY)
     .setIssuer('bookyourservice')
-    .setAudience('bookyourservice-api')
+    .setAudience('bookyourservice')
     .sign(JWT_SECRET);
 }
 
@@ -30,7 +30,7 @@ export async function signRefreshToken(payload: TokenPayload): Promise<string> {
     .setIssuedAt()
     .setExpirationTime(REFRESH_TOKEN_EXPIRY)
     .setIssuer('bookyourservice')
-    .setAudience('bookyourservice-api')
+    .setAudience('bookyourservice')
     .sign(JWT_SECRET);
 }
 
@@ -38,7 +38,7 @@ export async function verifyToken(token: string): Promise<TokenPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET, {
       issuer: 'bookyourservice',
-      audience: 'bookyourservice-api',
+      audience: 'bookyourservice',
     });
     return {
       userId: payload.userId as string,
