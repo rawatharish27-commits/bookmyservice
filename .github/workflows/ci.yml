@@ -10,7 +10,7 @@ jobs:
   lint-and-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: |
@@ -30,7 +30,7 @@ jobs:
       JWT_SECRET: test-secret-key
       NODE_ENV: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
       - name: Install dependencies
         run: cd mini-services/api-service && bun install
@@ -42,6 +42,6 @@ jobs:
     needs: [lint-and-build, test-backend]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Deploy notification
         run: echo "All checks passed — ready for deployment"
